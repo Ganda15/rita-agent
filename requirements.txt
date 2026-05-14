@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+anthropic
+yfinance
+psycopg2-binary
+pytest
+httpx
+pandas
+pyarrow
