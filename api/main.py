@@ -3,6 +3,8 @@ from fastapi.security.api_key import APIKeyHeader
 from dotenv import load_dotenv
 import os
 
+from graph.workflow import generer_briefing_complet
+
 load_dotenv()
 
 app = FastAPI(title="RITA API", version="1.0.0")
@@ -21,5 +23,13 @@ def health():
 
 @app.post("/briefing")
 def briefing(ticker: str, api_key: str = Security(verify_api_key)):
-    # Placeholder — will call Claude API in later step
-    return {"ticker": ticker, "briefing": "À implémenter"}
+    resultat = generer_briefing_complet(ticker)
+    if resultat["error"]:
+        raise HTTPException(status_code=502, detail=resultat["error"])
+    return {
+        "ticker": resultat["ticker"],
+        "price": resultat["price"],
+        "change_pct": resultat["change_pct"],
+        "currency": resultat["currency"],
+        "briefing": resultat["briefing"],
+    }
