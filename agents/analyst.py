@@ -1,29 +1,39 @@
-"""Analyst agent — génère un briefing via Claude API (C8, C9, C10)."""
-import anthropic
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-
-client = anthropic.Anthropic()
+"""Rédacteur — génère le briefing en français via src/llm.py (C8, C9, C10)."""
+from src.llm import generer_texte
 
 
-def generate_briefing(ticker: str, price: float, change_pct: float, volume: int) -> str:
-    """Envoie les données à Claude et retourne un briefing en français."""
-    prompt = f"""Tu es un analyste financier senior. Génère un briefing concis en français pour :
-- Ticker : {ticker}
-- Prix de clôture : {price} USD
-- Variation : {change_pct:+.2f}%
+def generate_briefing(ticker: str, price: float, change_pct: float, volume: int,
+                       currency: str) -> str:
+    """Rédige un briefing français à partir des données du Scout.
+
+    Args:
+        ticker: code boursier, ex. 'MC.PA'.
+        price: prix de clôture.
+        change_pct: variation en pourcentage.
+        volume: volume échangé.
+        currency: devise du prix, ex. 'EUR'.
+
+    Returns:
+        Briefing en français, 3 à 5 phrases.
+    """
+    direction = "hausse" if change_pct >= 0 else "baisse"
+
+    prompt = f"""Tu es un analyste financier français qui rédige des briefings courts pour des investisseurs particuliers.
+
+Données du jour :
+- Action : {ticker}
+- Prix de clôture : {price} {currency}
+- Variation : {change_pct}% ({direction})
 - Volume : {volume:,}
 
-Briefing en 3 phrases maximum : tendance, signal notable, conseil de surveillance."""
+Rédige un briefing de 3 à 5 phrases en français qui :
+1. Résume la performance du jour avec un ton factuel
+2. Indique le niveau de variation (faible / modérée / forte)
+3. Signale un point à surveiller pour la séance suivante
 
-    try:
-        response = client.messages.create(
-            model="claude-opus-4-6",
-            max_tokens=300,
-            messages=[{"role": "user", "content": prompt}]
-        )
-        return response.content[0].text
-    except Exception as e:
-        return f"Erreur génération briefing : {e}"
+Règles strictes :
+- AUCUNE recommandation d'achat ou de vente
+- Pas d'invention de chiffres ou d'événements non fournis
+- Ton neutre, professionnel, accessible"""
+
+    return generer_texte(prompt, max_tokens=500)
