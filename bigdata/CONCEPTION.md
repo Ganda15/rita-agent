@@ -46,30 +46,58 @@ combined.to_parquet(DATA_DIR / "ohlcv_5y.parquet")
 Avec 10 tickers × ~1 250 séances × 5 ans ≈ **~62 500 lignes**. Le format Parquet (colonnaire,
 compressé) est déjà le bon format d'entrée pour un moteur big data.
 
-## ⚠️ Le volume — dire la vérité plutôt que gonfler un chiffre
+## ✅ Le volume — chiffres MESURÉS, pas estimés (29/07/2026)
 
-**Décision d'Era (29/07) : option A, SBF 120 × 10 ans ≈ 306 000 lignes.**
+**Décision : l'univers réel d'Era**, pas un indice emprunté. Extrait de son classeur de suivi
+personnel (`Ganda bourse 672.xlsm`, feuille nommée « RITA »), **122 valeurs** identifiées, puis
+**126 tickers candidats testés un par un contre yfinance**.
 
-Mais il faut être clair sur ce que ça représente :
+### Résultat du test réel
+
+| Statut | Nb | Détail |
+|---|---|---|
+| `OK` | 103 | 2 560 lignes chacune (10 ans complets) |
+| `OK_APRES_CORRECTION` | 4 | ticker renommé — récupérées après correction |
+| `OK_PARTIEL` | 5 | série interrompue (délistage en cours de période) |
+| `DELISTEE` | 12 | événement de société confirmé — définitivement perdues |
+| `A_VERIFIER` | 2 | ticker à confirmer manuellement |
+| **Exploitable** | **112** | **276 168 lignes sur 10 ans** |
+
+Fichier produit : `data/univers-155.csv` — nom, ticker, statut, nombre de lignes, première
+date, et **la cause documentée** pour chaque échec.
+
+### Ce que ça reste, honnêtement
 
 | | Volume | Parquet | `pandas` s'en sort ? |
 |---|---|---|---|
-| Option B — 10 tickers × 5 ans | ~62 500 lignes | ~3 Mo | instantané |
-| **Option A — SBF 120 × 10 ans** ✅ | **~306 000 lignes** | **~15 Mo** | **instantané aussi** |
+| **Univers réel d'Era** ✅ | **276 168 lignes** | **~14 Mo** | **instantané** |
 | Vrai big data | milliards de lignes | téraoctets | ❌ impossible sur une machine |
 
-**A est 5× plus gros que B, et tout aussi peu « big ».** Les deux sont du *small data*.
+**Ce n'est pas du big data en volume, et il faut l'assumer.** Le plafond est structurel : avec
+les données gratuites yfinance, l'intraday est limité (1 min → 7 jours d'historique, 5 min →
+60 jours, horaire → 730 jours). Aucun moyen honnête d'atteindre le téraoctet.
 
-### Peut-on atteindre du vrai volume ? Non, pas avec des données gratuites
+### 💎 Mais ce jeu de données a une valeur que le SBF 120 n'aurait jamais eue
 
-| Granularité yfinance | Historique autorisé | Volume max (120 tickers) |
+Les 4 renommages et 12 délistages ne sont pas des ratés — **c'est exactement la matière que le
+critère C3 demande** :
+
+> *« développer des règles d'agrégation […] la suppression des entrées corrompues […]
+> l'homogénéisation des formats des données »*
+
+| Problème réel rencontré | Exemple mesuré | Nourrit |
 |---|---|---|
-| Journalier | illimité | ~306 000 |
-| Horaire | 730 jours | ~700 000 |
-| 5 minutes | 60 jours | ~690 000 |
-| 1 minute | **7 jours seulement** | ~115 000 |
+| Société renommée, ticker changé | CGG → **Viridien** (`VIRI.PA`) · Plastic Omnium → **OPmobility** (`OPM.PA`) | C3 |
+| Fusion / absorption | Peugeot → **Stellantis** (`STLAP.PA`) | C3 |
+| Transfert de place de cotation | TechnipFMC : Paris → **NYSE** (`FTI`) | C3 |
+| Rachat, retrait de la cote | Iliad, Ingenico, Natixis, Suez, EDF… (12 cas) | C1 + C3 |
+| Série partielle | Zodiac Aerospace : 411 lignes puis plus rien (absorbée par Safran) | C3 |
+| Multi-devises | EUR (Paris, Xetra) + USD (NYSE) | C3 |
+| Multi-places | Euronext Paris, Xetra, NYSE, Amsterdam, Bruxelles | C3 |
+| Source sans cotation | ~65 SICAV : valorisées 1×/jour par le gestionnaire, absentes de yfinance | C1 + C3 |
 
-Le plafond est structurel, pas un manque d'effort.
+Un univers SBF 120 propre n'aurait posé **aucun** de ces problèmes. Ici, ils sont réels,
+mesurés, et documentés dans un CSV versionné.
 
 ### Ce qui rend quand même la preuve valable
 
@@ -85,15 +113,25 @@ chiffre.
 
 ### 🎤 Position à l'oral (à apprendre telle quelle)
 
-> « J'ai construit un jeu Parquet de 306 000 lignes sur le SBF 120, et je l'interroge avec
-> PySpark et Spark SQL. **Ce volume ne nécessite pas Spark** — pandas le traiterait
-> instantanément. Je l'ai fait pour démontrer la compétence sur un système big data, dans un
-> laboratoire séparé, sans l'imposer au pipeline de production où il n'apporterait rien. Si le
-> volume passait à l'échelle réelle, l'architecture ne changerait pas : c'est déjà du Parquet
-> partitionné lu par Spark. »
+> « J'ai pris mon univers réel : les 155 titres que je suivais à la main chaque matin sur mon
+> compte-titres. J'ai testé chaque ticker un par un — **112 sont exploitables, 276 000 lignes
+> sur 10 ans**. Les autres sont des sociétés rachetées, renommées ou liquidées : Iliad,
+> Ingenico, Natixis, Suez… et 4 que j'ai récupérées en corrigeant le ticker, comme CGG devenue
+> Viridien ou Peugeot devenue Stellantis.
+>
+> **Ce volume n'est pas du big data**, et je l'assume : pandas le traiterait instantanément. Ce
+> que je démontre, c'est la capacité à programmer contre un système big data — Spark, Parquet
+> partitionné par année, lecture avec *predicate pushdown*. L'architecture serait identique sur
+> des téraoctets.
+>
+> Et ce jeu de données a une qualité qu'un indice propre n'aurait pas : il contient de vrais
+> défauts — des tickers morts, des renommages, deux devises, cinq places de cotation. C'est ce
+> qui m'a permis de construire mes règles d'agrégation et de nettoyage sur des cas réels, pas
+> sur des cas d'école. »
 
 Cette réponse est **plus solide** que « j'ai du big data » : un juré qui travaille en data verra
-immédiatement que 306 000 lignes n'en sont pas. L'admettre coûte moins cher que le nier.
+immédiatement que 276 000 lignes n'en sont pas. L'admettre coûte moins cher que le nier — et le
+récit des tickers morts prouve qu'on a manipulé de la vraie donnée.
 
 ## Structure prévue (à créer seulement après son retour)
 
