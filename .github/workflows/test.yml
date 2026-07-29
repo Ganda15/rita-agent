@@ -2,9 +2,9 @@ name: Tests
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   pytest:
@@ -18,3 +18,19 @@ jobs:
         run: pip install -r requirements.txt
       - name: Lancer les tests
         run: pytest -v
+
+  # Porte de qualité : la mesure des garde-fous bloque le merge si elle régresse.
+  # Standard Velmo 2.0 — une porte d'évaluation à chaque transition de branche.
+  evals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Installer les dépendances
+        run: pip install -r requirements.txt
+      - name: Mesurer les garde-fous
+        run: python -m evals.mesurer_gardefou
+      - name: Gates non compensables
+        run: pytest tests/test_evals.py -v
