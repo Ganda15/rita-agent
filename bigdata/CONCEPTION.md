@@ -46,27 +46,69 @@ combined.to_parquet(DATA_DIR / "ohlcv_5y.parquet")
 Avec 10 tickers × ~1 250 séances × 5 ans ≈ **~62 500 lignes**. Le format Parquet (colonnaire,
 compressé) est déjà le bon format d'entrée pour un moteur big data.
 
-⚠️ **À vérifier avant de s'engager** : ce volume est-il suffisant pour être présenté comme
-« big data » ? Une réponse honnête est non — c'est un volume qu'un `pandas` avale sans
-broncher. Deux façons d'être défendable :
+## ⚠️ Le volume — dire la vérité plutôt que gonfler un chiffre
 
-| Option | Volume | Argument |
+**Décision d'Era (29/07) : option A, SBF 120 × 10 ans ≈ 306 000 lignes.**
+
+Mais il faut être clair sur ce que ça représente :
+
+| | Volume | Parquet | `pandas` s'en sort ? |
+|---|---|---|---|
+| Option B — 10 tickers × 5 ans | ~62 500 lignes | ~3 Mo | instantané |
+| **Option A — SBF 120 × 10 ans** ✅ | **~306 000 lignes** | **~15 Mo** | **instantané aussi** |
+| Vrai big data | milliards de lignes | téraoctets | ❌ impossible sur une machine |
+
+**A est 5× plus gros que B, et tout aussi peu « big ».** Les deux sont du *small data*.
+
+### Peut-on atteindre du vrai volume ? Non, pas avec des données gratuites
+
+| Granularité yfinance | Historique autorisé | Volume max (120 tickers) |
 |---|---|---|
-| **A — élargir l'univers** | tout le SBF 120 sur 10 ans ≈ **300 000 lignes** | plus crédible, ~5 min de téléchargement |
-| **B — assumer le volume** | ~62 500 lignes | *« le critère demande de savoir programmer le script adapté, pas d'atteindre un seuil de volume »* |
+| Journalier | illimité | ~306 000 |
+| Horaire | 730 jours | ~700 000 |
+| 5 minutes | 60 jours | ~690 000 |
+| 1 minute | **7 jours seulement** | ~115 000 |
 
-Recommandation : **A**, parce que le mot « big data » appelle une attente de volume, et qu'y
-répondre coûte quelques minutes de téléchargement.
+Le plafond est structurel, pas un manque d'effort.
+
+### Ce qui rend quand même la preuve valable
+
+Le critère officiel ne parle **jamais** de volume :
+
+> « Automatiser l'extraction de données depuis […] **un système big data** en **programmant le
+> script adapté** »
+
+Ce qui est évalué : **savoir programmer contre un système big data**. Un étudiant n'a pas de
+cluster, le référentiel le sait. Donc ce qui compte, c'est d'utiliser réellement Spark —
+moteur distribué, Spark SQL, exécution paresseuse, Parquet partitionné — pas de gonfler un
+chiffre.
+
+### 🎤 Position à l'oral (à apprendre telle quelle)
+
+> « J'ai construit un jeu Parquet de 306 000 lignes sur le SBF 120, et je l'interroge avec
+> PySpark et Spark SQL. **Ce volume ne nécessite pas Spark** — pandas le traiterait
+> instantanément. Je l'ai fait pour démontrer la compétence sur un système big data, dans un
+> laboratoire séparé, sans l'imposer au pipeline de production où il n'apporterait rien. Si le
+> volume passait à l'échelle réelle, l'architecture ne changerait pas : c'est déjà du Parquet
+> partitionné lu par Spark. »
+
+Cette réponse est **plus solide** que « j'ai du big data » : un juré qui travaille en data verra
+immédiatement que 306 000 lignes n'en sont pas. L'admettre coûte moins cher que le nier.
 
 ## Structure prévue (à créer seulement après son retour)
 
 ```
 bigdata/
 ├── CONCEPTION.md          ← ce fichier
-├── build_parquet.py       ⬜ construit le jeu Parquet (SBF 120 × 10 ans)
+├── build_parquet.py       ⬜ SBF 120 × 10 ans → Parquet partitionné (~306 000 lignes)
 ├── extract_spark.py       ⬜ C1 : extraction depuis le système big data
 └── query_spark.py         ⬜ C2 : requêtes Spark SQL — SEULEMENT si le formateur le demande
 ```
+
+**Partitionnement prévu** : `data/bigdata/ohlcv/annee=YYYY/` — c'est ce partitionnement qui
+rend la démonstration crédible indépendamment du volume. Spark lit uniquement les partitions
+nécessaires (*predicate pushdown*), exactement comme il le ferait sur des téraoctets. C'est la
+**méthode** qui prouve la compétence, pas la taille du fichier.
 
 **Aucun de ces fichiers n'existe.** Le dossier ne contient que cette conception.
 
