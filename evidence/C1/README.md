@@ -15,27 +15,44 @@
 |---|---|---|---|---|---|
 | 1 | yfinance / OpenBB | **service web** | `agents/scout.py` | `preuve-01-yfinance.md` | ✅ |
 | 2 | FRED (macro US) | **service web** | `sources/fred.py` | — | ⬜ |
-| 3 | ECB (macro UE) | **service web** | `sources/ecb.py` | — | ⬜ |
+| 3 | ECB (macro UE) | **service web** | `sources/ecb.py` | `preuve-03-ecb.md` | ✅ |
 | 4 | RSS actualités | *complément* | `sources/rss.py` | — | ⬜ |
 | 5 | Scraper HTML | **page web (scraping)** | `sources/scraper.py` | — | ⬜ |
 | 6 | CSV positions | **fichier de données** | `pipelines/ingest.py` | — | ⬜ |
 | 7 | PDF officiels | **fichier de données** | `pipelines/rag.py` (Q3) | — | ⬜ |
 | — | PostgreSQL relu en SQL | **base de données** | `db/requetes.sql` | → voir `C2/` | ⬜ |
-| — | **Big data** | **système big data** | `bigdata/` (isolé) | ⏸ **en attente formateur** | ⏸ |
+| — | **Big data** | **système big data** | `bigdata/build_parquet.py` | `preuve-08-bigdata-parquet.md` | 🔶 étape 1/4 |
 
 **Couverture visée : 5 types sur 5** (4 par le pipeline principal + 1 par la preuve big data
 séparée).
 
-## ⏸ Big data — en attente
+## 🧾 Preuves attendues en plus des critères (Règlement p. 53)
+
+Le règlement spécifique liste, **séparément des 135 critères**, les éléments de preuve que
+le jury s'attend à voir pour le Bloc 1. Repéré le 31/07/2026 en relisant les PDF sources.
+
+| Élément attendu | Preuve | État |
+|---|---|---|
+| Script de récupération des données | `scout.py`, `ecb.py`, `build_parquet.py` | ✅ |
+| **Résultats de l'analyse exploratoire** | `preuve-09-analyse-exploratoire.md` | ✅ |
+| Script de pré-traitement (dont **dédoublonnage**) | `../C3/preuve-dedoublonnage-cgg.md` | 🔶 documenté, à coder dans `ingest.py` v2 |
+| Conception BDD **« orientée requêtes »** | plan 5.2 Task 1 | ⬜ justification à réécrire |
+| Procédure de création de la BDD | plan 5.2 Task 1 | ⬜ |
+| Script d'insertion en base | plan 5.2 Task 5 | ⬜ |
+
+## 🔶 Big data — étape 1 sur 4
 
 Le formateur a accepté d'ajouter le big data **séparément** (*« Yeah. It is. »*) et a annoncé
 qu'il examinerait le schéma (*« Yep. I'll do that. »*).
+
+Étape 1 faite : jeu Parquet partitionné par année, 276 168 lignes, *predicate pushdown*
+mesuré à 9,4×. Étapes 2-4 (PySpark, extraction Spark, Spark SQL) non commencées.
 
 **Question à lui poser, jamais posée à ce jour** : la preuve big data doit-elle couvrir
 **C1 seulement** (extraction depuis un système big data), ou **aussi C2** (requêtes SQL sur ce
 système, type Spark SQL) ?
 
-**Rien n'est codé côté big data avant sa réponse.** Voir `bigdata/CONCEPTION.md`.
+Voir `bigdata/CONCEPTION.md`.
 
 ## Les 6 autres critères de C1
 
