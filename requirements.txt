@@ -9,3 +9,4 @@ httpx
 pandas
 pyarrow
 langgraph
+feedparser==6.0.14

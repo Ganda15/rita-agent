@@ -16,8 +16,8 @@
 | 1 | yfinance / OpenBB | **service web** | `agents/scout.py` | `preuve-01-yfinance.md` | ✅ |
 | 2 | FRED (macro US) | **service web** | `sources/fred.py` | — | ⬜ |
 | 3 | ECB (macro UE) | **service web** | `sources/ecb.py` | `preuve-03-ecb.md` | ✅ |
-| 4 | RSS actualités | *complément* | `sources/rss.py` | — | ⬜ |
-| 5 | Scraper HTML | **page web (scraping)** | `sources/scraper.py` | — | ⬜ |
+| 4 | RSS actualités | *complément* | `sources/rss.py` | `preuve-04-rss.md` | ✅ |
+| 5 | Scraper HTML | **page web (scraping)** | `sources/scraper.py` | `preuve-05-scraper.md` | ✅ |
 | 6 | CSV positions | **fichier de données** | `pipelines/ingest.py` | — | ⬜ |
 | 7 | PDF officiels | **fichier de données** | `pipelines/rag.py` (Q3) | — | ⬜ |
 | — | PostgreSQL relu en SQL | **base de données** | `db/requetes.sql` | → voir `C2/` | ⬜ |
