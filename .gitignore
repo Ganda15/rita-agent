@@ -9,3 +9,14 @@ node_modules/
 *.parquet
 *.log
 evidence/*.png
+
+# --- Données personnelles : JAMAIS versionnées ---------------------------------
+# Le portefeuille réel d'Era (quantités, prix de revient, plus-values) est une
+# information financière personnelle. Seul l'exemple anonymisé est suivi par Git.
+data/positions.csv
+data/positions-reelles*.csv
+*bourse*.xlsm
+*bourse*.xlsx
+*portefeuille*.csv
+*portefeuille*.xlsx
+!data/positions-exemple.csv

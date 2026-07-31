@@ -18,7 +18,7 @@
 | 3 | ECB (macro UE) | **service web** | `sources/ecb.py` | `preuve-03-ecb.md` | ✅ |
 | 4 | RSS actualités | *complément* | `sources/rss.py` | `preuve-04-rss.md` | ✅ |
 | 5 | Scraper HTML | **page web (scraping)** | `sources/scraper.py` | `preuve-05-scraper.md` | ✅ |
-| 6 | CSV positions | **fichier de données** | `pipelines/ingest.py` | — | ⬜ |
+| 6 | CSV positions | **fichier de données** | `sources/positions.py` | `preuve-06-positions-csv.md` | ✅ |
 | 7 | PDF officiels | **fichier de données** | `pipelines/rag.py` (Q3) | — | ⬜ |
 | — | PostgreSQL relu en SQL | **base de données** | `db/requetes.sql` | → voir `C2/` | ⬜ |
 | — | **Big data** | **système big data** | `bigdata/build_parquet.py` | `preuve-08-bigdata-parquet.md` | 🔶 étape 1/4 |
