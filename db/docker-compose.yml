@@ -1,0 +1,40 @@
+# PostgreSQL local pour RITA — décision D15 (31/07/2026) : PostgreSQL directement,
+# pas d'étape SQLite intermédiaire.
+#
+# Démarrage :   docker compose -f db/docker-compose.yml up -d
+# Arrêt :       docker compose -f db/docker-compose.yml down
+# Remise à zéro : docker compose -f db/docker-compose.yml down -v   (⚠️ efface les données)
+#
+# Le schéma de db/schema.sql est joué automatiquement à la PREMIÈRE création du volume.
+# Ensuite il ne l'est plus : c'est le comportement de /docker-entrypoint-initdb.d.
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: rita-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: rita
+      POSTGRES_USER: rita
+      # Mot de passe de développement local uniquement. En production il vient du
+      # gestionnaire de secrets de l'hébergeur, jamais d'un fichier versionné.
+      POSTGRES_PASSWORD: rita_dev_local
+      # Collation FR pour que les tris alphabétiques traitent correctement les accents
+      # (« Société Générale » doit se trier comme « Societe Generale »).
+      LANG: fr_FR.utf8
+    ports:
+      - "5432:5432"
+    volumes:
+      - rita_pgdata:/var/lib/postgresql/data
+      - ./schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      # Sans healthcheck, un script d'import lancé trop tôt échoue sur « connection
+      # refused » alors que le conteneur est « up » : PostgreSQL accepte les connexions
+      # plusieurs secondes après le démarrage du conteneur.
+      test: ["CMD-SHELL", "pg_isready -U rita -d rita"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  rita_pgdata:
