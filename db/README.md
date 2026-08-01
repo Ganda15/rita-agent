@@ -187,11 +187,30 @@ Aucune de ces décisions ne vient d'une intuition de modélisation :
 
 ---
 
-## 8. ⚠️ Données personnelles
+## 8. ⚠️ Données personnelles et RGPD
 
 La table `position` contient la **situation financière de l'utilisateur** (quantités, prix
-de revient). Traitement à inscrire au registre RGPD — **document à rédiger**, voir
-`db/RGPD-registre-des-traitements.md` (non encore écrit au 31/07).
+de revient). **4 traitements sont recensés** dans
+[`RGPD-registre-des-traitements.md`](RGPD-registre-des-traitements.md) — article 30 du RGPD.
+
+Les procédures de tri automatisables sont **exécutables** :
+
+```powershell
+C:\Python314\python.exe -X utf8 -m db.rgpd_purge                 # simulation (defaut)
+C:\Python314\python.exe -X utf8 -m db.rgpd_purge --appliquer     # execution reelle
+```
+
+Vérification du 01/08/2026 sur jeu d'essai (5 lignes d'audit, dont 3 de plus de 90 jours) :
+
+```
+SIMULATION  : 3 lignes « seraient supprimees »  -> memory_audit = 5 (inchange)
+EXECUTION   : 3 lignes supprimees               -> memory_audit = 2 (les recentes)
+P3 doublons : MC.PA du 2023-04-18 signale       -> positions = 8 (inchange, arbitrage humain)
+```
+
+**Le mode par défaut est la simulation.** Une purge déclenchée par accident est une perte de
+données irréversible : le comportement par défaut doit être inoffensif. Testé
+(`tests/test_rgpd_purge.py`, 11 tests).
 
 Le fichier source n'est jamais versionné : voir `.gitignore` et
 `evidence/C1/preuve-06-positions-csv.md`.
@@ -202,7 +221,9 @@ Le fichier source n'est jamais versionné : voir `.gitignore` et
 
 | Élément | Compétence | État |
 |---|---|---|
-| Registre des traitements RGPD + procédures de tri | C4 | ⬜ |
-| MCD Merise (modèle conceptuel) | C4 | ⬜ — seul le MPD existe |
+| Registre des traitements RGPD + procédures de tri | C4 | ✅ `RGPD-registre-des-traitements.md` + `rgpd_purge.py` |
+| MCD Merise (modèle conceptuel) | C4 | ✅ `Projets/RITA/02-Schemas/SCHEMA-MCD-MERISE-RITA.png` + `.drawio` |
+| ⚠️ Masquer les montants dans les traces LangSmith | RGPD | 🔴 ouvert — transfert hors UE (registre §5) |
+| ⚠️ Hook Git `pre-commit` bloquant les fichiers personnels | RGPD | 🟠 ouvert (procédure P4) |
 | 3 requêtes SQL documentées (sélections, jointures, optimisations) | C2 | ⬜ |
 | Extraction programmatique depuis la base = 5ᵉ type C1 | C1 | ⬜ |
