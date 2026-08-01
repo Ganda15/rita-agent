@@ -10,3 +10,7 @@ pandas
 pyarrow
 langgraph
 feedparser==6.0.14
+
+# Big data (C1 connexion + C2 requetes). Necessite un JDK 21 dans JAVA_HOME.
+# Sans JDK, les tests d'integration de tests/test_spark.py sont ignores, pas en echec.
+pyspark==4.2.0
