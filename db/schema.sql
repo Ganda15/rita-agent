@@ -19,6 +19,27 @@
 SET client_encoding = 'UTF8';
 
 -- =============================================================================
+-- 0. DEVISE — les monnaies
+-- =============================================================================
+-- ⚠️ Cette table a été AJOUTÉE le 01/08 après un écart constaté entre le MCD et le MPD :
+-- le MCD déclarait DEVISE comme entité, le schéma physique n'avait qu'une colonne
+-- CHAR(3) répétée dans trois tables. L'écart a été révélé en écrivant les requêtes C2 —
+-- un INSERT sur `devise` échouait, la table n'existait pas.
+--
+-- Pourquoi la table plutôt que la colonne seule : sans elle, rien n'empêche d'écrire
+-- 'US$', 'usd' ou 'DOLLAR' dans trois tables différentes. La clé étrangère impose un
+-- vocabulaire unique — c'est exactement ce que C3 appelle « homogénéisation des formats ».
+CREATE TABLE devise (
+    code        CHAR(3)     PRIMARY KEY,
+    libelle     VARCHAR(40) NOT NULL
+);
+
+INSERT INTO devise (code, libelle) VALUES
+    ('EUR', 'Euro'), ('USD', 'Dollar americain'), ('GBP', 'Livre sterling'),
+    ('CHF', 'Franc suisse'), ('JPY', 'Yen japonais');
+
+
+-- =============================================================================
 -- 1. VALEUR — une société cotée, identifiée par son ticker
 -- =============================================================================
 -- Pourquoi une table séparée de `cotation` : l'analyse exploratoire a montré
@@ -30,7 +51,7 @@ CREATE TABLE valeur (
     ticker              VARCHAR(16)  PRIMARY KEY,
     isin                CHAR(12),
     nom_officiel        VARCHAR(120) NOT NULL,
-    devise              CHAR(3)      NOT NULL DEFAULT 'EUR',
+    devise              CHAR(3)      NOT NULL DEFAULT 'EUR' REFERENCES devise (code),
     place_cotation      VARCHAR(60),
 
     -- Sert la requête « performance sur 10 ans » en écartant le biais de survie :
@@ -137,7 +158,7 @@ CREATE TABLE position (
     ticker          VARCHAR(16)   NOT NULL REFERENCES valeur (ticker),
     quantite        NUMERIC(16,4) NOT NULL,
     pru             NUMERIC(14,4) NOT NULL,
-    devise          CHAR(3)       NOT NULL DEFAULT 'EUR',
+    devise          CHAR(3)       NOT NULL DEFAULT 'EUR' REFERENCES devise (code),
     date_achat      DATE,
     importe_le      TIMESTAMPTZ   NOT NULL DEFAULT now(),
 
@@ -159,7 +180,7 @@ CREATE INDEX idx_position_ticker ON position (ticker);
 -- Sans cette table, le total du portefeuille additionne des euros et des dollars —
 -- un nombre dépourvu de sens (constaté par sources/positions.py : 26 700,95 « bruts »).
 CREATE TABLE taux_change (
-    devise          CHAR(3)       NOT NULL,
+    devise          CHAR(3)       NOT NULL REFERENCES devise (code),
     date_taux       DATE          NOT NULL,
     valeur_pour_eur NUMERIC(14,6) NOT NULL,
 

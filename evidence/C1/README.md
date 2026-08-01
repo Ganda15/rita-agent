@@ -20,11 +20,11 @@
 | 5 | Scraper HTML | **page web (scraping)** | `sources/scraper.py` | `preuve-05-scraper.md` | ✅ |
 | 6 | CSV positions | **fichier de données** | `sources/positions.py` | `preuve-06-positions-csv.md` | ✅ |
 | 7 | PDF officiels | **fichier de données** | `pipelines/rag.py` (Q3) | — | ⬜ |
-| — | PostgreSQL relu en SQL | **base de données** | `db/requetes.sql` | → voir `C2/` | ⬜ |
+| — | PostgreSQL relu en SQL | **base de données** | `sources/database.py` | `preuve-07-base-de-donnees.md` | ✅ |
 | — | **Big data** | **système big data** | `bigdata/build_parquet.py` | `preuve-08-bigdata-parquet.md` | 🔶 étape 1/4 |
 
-**Couverture visée : 5 types sur 5** (4 par le pipeline principal + 1 par la preuve big data
-séparée).
+✅ **Couverture atteinte : les 5 types sont touchés** — 4 pleinement aboutis, le big data à
+l'étape 1 sur 4.
 
 ## 🧾 Preuves attendues en plus des critères (Règlement p. 53)
 
@@ -36,9 +36,9 @@ le jury s'attend à voir pour le Bloc 1. Repéré le 31/07/2026 en relisant les 
 | Script de récupération des données | `scout.py`, `ecb.py`, `build_parquet.py` | ✅ |
 | **Résultats de l'analyse exploratoire** | `preuve-09-analyse-exploratoire.md` | ✅ |
 | Script de pré-traitement (dont **dédoublonnage**) | `../C3/preuve-dedoublonnage-cgg.md` | 🔶 documenté, à coder dans `ingest.py` v2 |
-| Conception BDD **« orientée requêtes »** | plan 5.2 Task 1 | ⬜ justification à réécrire |
-| Procédure de création de la BDD | plan 5.2 Task 1 | ⬜ |
-| Script d'insertion en base | plan 5.2 Task 5 | ⬜ |
+| Conception BDD **« orientée requêtes »** | `db/schema.sql` + `db/README.md` §6 | ✅ index mesurés par `EXPLAIN ANALYZE` |
+| Procédure de création de la BDD | `db/README.md` §2-§5 | ✅ rejouée depuis une base vierge |
+| Script d'insertion en base | `db/importer.py` | ✅ 273 608 lignes insérées |
 
 ## 🔶 Big data — étape 1 sur 4
 
