@@ -48,11 +48,13 @@ logger = logging.getLogger(__name__)
 BASE = "https://www.boursorama.com/cours/{symbole}/"
 DELAI_S = 20.0
 
-# Symboles Boursorama de quelques valeurs de l'univers d'Era.
+# Symbole Boursorama -> ticker Yahoo. Les deux sources n'emploient pas les mêmes
+# identifiants : `1rPMC` chez Boursorama, `MC.PA` chez Yahoo. Cette table est la clé de
+# rapprochement — sans elle, les cours scrapés ne peuvent rejoindre l'historique en base.
 SYMBOLES = {
-    "1rPMC": "LVMH",
-    "1rPOR": "L'Oreal",
-    "1rPAI": "Air Liquide",
+    "1rPMC": "MC.PA",     # LVMH
+    "1rPOR": "OR.PA",     # L'Oreal
+    "1rPAI": "AI.PA",     # Air Liquide
 }
 
 # Sélecteurs CSS -> champ. En configuration : quand Boursorama change son HTML,
