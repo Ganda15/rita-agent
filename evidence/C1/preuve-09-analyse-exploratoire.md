@@ -161,11 +161,20 @@ EMEIS.PA        8 137.6
 | Ticker | Symptômes | Diagnostic |
 |---|---|---|
 | **STLAP.PA** | 1 142 clôtures hors bornes **+** 1 143 volumes nuls | Ligne incohérente. Ce ticker était déjà classé `OK_APRES_CORRECTION` dans `univers-155.csv` — la correction n'a pas suffi. |
-| **ALJXR.PA** | prix max 7,15 **millions** + 1 088 volumes nuls | Échelle de prix aberrante (probablement une ligne de droits/bons non ajustée). Inexploitable en l'état. |
+| **ALJXR.PA** | prix max 7,15 **millions** + 1 088 volumes nuls | ~~Échelle de prix aberrante (probablement une ligne de droits/bons non ajustée)~~ → **hypothèse corrigée le 02/08** : regroupement d'actions rétro-ajusté. Voir `../C3/preuve-artefact-reverse-split.md`. |
 
 → **Ces deux valeurs doivent être écartées ou corrigées avant l'import en base (C3).**
 Sans cette analyse, elles seraient entrées silencieusement et auraient faussé toute
 statistique de portefeuille.
+
+> ⚠️ **Correction d'hypothèse — 02/08/2026.** Le diagnostic ci-dessus disait « probablement une
+> ligne de droits/bons non ajustée ». C'était une **supposition**, signalée comme telle par le
+> mot « probablement », et elle était **fausse**. En croisant le prix avec le **volume** — ce que
+> cette analyse-ci n'avait pas fait — le mécanisme réel apparaît : un **regroupement d'actions
+> rétro-ajusté**. Le prix est divisé par ~36 millions entre 2016 et 2024, le volume multiplié
+> dans les mêmes proportions. Conséquence directe : **les 1 088 volumes nuls d'ALJXR.PA ne sont
+> pas une anomalie de qualité distincte** — ils ont la **même cause** que le prix aberrant.
+> Preuve complète : `evidence/C3/preuve-artefact-reverse-split.md`.
 
 ## [7] Statistiques descriptives
 
