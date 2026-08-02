@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Rapport E1 — RITA — Collecte, stockage et mise à disposition des données</title>
+<style>
+:root{
+  --ink:#16202B; --ink-soft:#4A5766; --paper:#FFFFFF;
+  --rule:#D5DCE4; --rule-strong:#9DAAB8;
+  --accent:#14607F; --wash:#ECF3F7; --flag:#9E4318; --flag-wash:#FBF1EC;
+}
+@page{ size:A4; margin:11mm 12mm 10mm 12mm; }
+*{ box-sizing:border-box; }
+html{ font-size:10px; }
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Segoe UI","Calibri",system-ui,sans-serif;
+  font-size:8.7pt; line-height:1.36;
+  font-variant-numeric:tabular-nums;
+  -webkit-print-color-adjust:exact; print-color-adjust:exact;
+}
+h1,h2,h3{ font-family:Georgia,"Times New Roman",serif; font-weight:600; margin:0; }
+
+/* ---------- bandeau de titre ---------- */
+.cover{ border-top:2.5pt solid var(--accent); padding-top:7pt; margin-bottom:11pt; }
+.cover .kicker{
+  font-size:7.3pt; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); font-weight:600; margin-bottom:4pt;
+}
+.cover h1{ font-size:18pt; line-height:1.16; letter-spacing:-.01em; text-wrap:balance; }
+.cover .sub{ font-size:10.2pt; color:var(--ink-soft); margin-top:3pt; font-family:Georgia,serif; font-style:italic; }
+.idcard{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:0;
+  margin-top:9pt; border-top:.5pt solid var(--rule); border-bottom:.5pt solid var(--rule);
+}
+.idcard div{ padding:5pt 8pt 5pt 0; border-right:.5pt solid var(--rule); }
+.idcard div:last-child{ border-right:0; padding-right:0; }
+.idcard dt{ font-size:6.8pt; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-soft); }
+.idcard dd{ margin:1.5pt 0 0; font-size:8.6pt; font-weight:600; }
+.idcard dd small{ display:block; font-weight:400; color:var(--ink-soft); font-size:7.6pt; }
+
+/* ---------- titres de section ---------- */
+h2{
+  font-size:11.4pt; margin:13pt 0 5pt; padding-bottom:2.5pt;
+  border-bottom:.75pt solid var(--rule-strong);
+  display:flex; align-items:baseline; gap:7pt;
+}
+h2 .n{ color:var(--accent); font-size:9pt; font-family:"Segoe UI",sans-serif; font-weight:700; }
+h2 .tag{
+  margin-left:auto; font-family:"Segoe UI",sans-serif; font-size:6.9pt; font-weight:700;
+  letter-spacing:.07em; color:#fff; background:var(--accent);
+  padding:1.5pt 5pt; border-radius:2pt;
+}
+h3{ font-size:9.2pt; margin:8pt 0 3pt; color:var(--accent); }
+p{ margin:0 0 4.5pt; }
+ul{ margin:0 0 5pt; padding-left:12pt; }
+li{ margin-bottom:1.5pt; }
+strong{ font-weight:600; }
+code{ font-family:Consolas,"Courier New",monospace; font-size:8pt; background:var(--wash); padding:0 2pt; border-radius:2pt; }
+
+/* ---------- tableaux ---------- */
+table{ width:100%; border-collapse:collapse; margin:4pt 0 6pt; font-size:8.2pt; }
+th{
+  text-align:left; font-weight:700; font-size:6.9pt; letter-spacing:.07em; text-transform:uppercase;
+  color:var(--ink-soft); border-bottom:.75pt solid var(--rule-strong); padding:3pt 5pt 2.5pt 0; vertical-align:bottom;
+}
+td{ padding:2.8pt 5pt 2.8pt 0; border-bottom:.4pt solid var(--rule); vertical-align:top; }
+tr:last-child td{ border-bottom:0; }
+td.num,th.num{ text-align:right; padding-right:9pt; font-variant-numeric:tabular-nums; }
+td.mono{ font-family:Consolas,monospace; font-size:7.6pt; }
+.ok{ color:var(--accent); font-weight:700; }
+
+/* ---------- encarts ---------- */
+.callout{
+  border-left:2.2pt solid var(--accent); background:var(--wash);
+  padding:5pt 8pt; margin:6pt 0; font-size:8.3pt;
+}
+.callout.warn{ border-left-color:var(--flag); background:var(--flag-wash); }
+.callout .lab{
+  display:block; font-size:6.8pt; letter-spacing:.1em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin-bottom:2pt;
+}
+.callout.warn .lab{ color:var(--flag); }
+
+/* ---------- chiffres clés ---------- */
+.stats{ display:grid; grid-template-columns:repeat(5,1fr); gap:0; margin:6pt 0 7pt;
+        border-top:.75pt solid var(--rule-strong); border-bottom:.5pt solid var(--rule); }
+.stats div{ padding:5pt 6pt 5pt 0; border-right:.4pt solid var(--rule); }
+.stats div:last-child{ border-right:0; }
+.stats b{ display:block; font-family:Georgia,serif; font-size:14pt; line-height:1; color:var(--accent); }
+.stats span{ display:block; font-size:6.9pt; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-soft); margin-top:2.5pt; }
+
+/* ---------- code ---------- */
+pre{
+  font-family:Consolas,monospace; font-size:7.5pt; line-height:1.4;
+  background:#F7F9FB; border:.4pt solid var(--rule); border-left:2pt solid var(--rule-strong);
+  padding:5pt 7pt; margin:4pt 0 6pt; white-space:pre-wrap; overflow-wrap:anywhere;
+}
+pre b{ color:var(--accent); font-weight:700; }
+
+.cols{ display:grid; grid-template-columns:1fr 1fr; gap:0 14pt; }
+/* Le document coule librement : on interdit seulement les coupures LAIDES
+   (un encart ou un schéma scindé en deux). Aucun saut forcé — ce sont eux
+   qui créaient des pages à moitié vides. */
+.callout,figure,pre,.stats{ break-inside:avoid; }
+h2,h3{ break-after:avoid; }
+tr{ break-inside:avoid; }
+figure{ margin:5pt 0 6pt; }
+figcaption{ font-size:7.3pt; color:var(--ink-soft); margin-top:3pt; font-style:italic; }
+svg{ width:100%; height:auto; display:block; }
+
+footer.sign{ margin-top:9pt; padding-top:5pt; border-top:.75pt solid var(--rule-strong);
+             font-size:7.6pt; color:var(--ink-soft); display:flex; justify-content:space-between; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ PAGE 1 ══════════════════ -->
+<header class="cover">
+  <div class="kicker">Titre professionnel · Développeur en intelligence artificielle · RNCP 37827</div>
+  <h1>Collecte, stockage et mise à disposition des données du projet RITA</h1>
+  <div class="sub">Livrable E1 — Bloc de compétences BC01 · Compétences C1 à C5</div>
+  <dl class="idcard">
+    <div><dt>Candidat</dt><dd>Eramalingam Gandakumar<small>erama70@outlook.com<br>ganda70@gmail.com</small></dd></div>
+    <div><dt>Organisme</dt><dd>Simplon × Wild Code School<small>Session 2026</small></dd></div>
+    <div><dt>Dépôt du code</dt><dd>Ganda15/rita-agent<small>github.com · branche <code>develop</code></small></dd></div>
+    <div><dt>Date</dt><dd>2 août 2026<small>version 1.0</small></dd></div>
+  </dl>
+</header>
+
+<h2><span class="n">1</span> Contexte, acteurs et cadrage du projet <span class="tag">C1</span></h2>
+
+<p><strong>RITA</strong> est un assistant qui produit chaque matin un <strong>briefing factuel</strong> sur un portefeuille
+d'actions européennes. Le présent livrable ne traite pas de l'agent lui-même mais de ce qui le rend possible :
+la <strong>chaîne de données</strong> qui alimente ce briefing, depuis la collecte jusqu'à sa mise à disposition.</p>
+
+<p>Le problème d'origine est concret. Les données de marché nécessaires au suivi d'un portefeuille sont
+<strong>dispersées</strong> (cours, taux de change, actualités, positions détenues), publiées dans des
+<strong>formats hétérogènes</strong>, et de <strong>qualité inégale</strong>. Sans traitement préalable, toute analyse
+construite dessus hérite de ces défauts. L'objet de E1 est de rendre ces données fiables, traçables et exploitables.</p>
+
+<table>
+  <tr><th style="width:21%">Dimension</th><th>Contenu</th></tr>
+  <tr><td><strong>Acteurs</strong></td><td>Développeur et responsable de traitement : Eramalingam Gandakumar — Utilisateur final : un investisseur particulier suivant son propre portefeuille — Consommateur technique : les agents de RITA, qui lisent les données par l'API</td></tr>
+  <tr><td><strong>Objectifs fonctionnels</strong></td><td>Consolider les cours de 111 valeurs · valoriser un portefeuille multi-devises · détecter les anomalies de marché · fournir un contexte d'actualité</td></tr>
+  <tr><td><strong>Objectifs techniques</strong></td><td>Automatiser l'extraction depuis <strong>les 5 types de sources</strong> du référentiel · stocker en base relationnelle modélisée Merise · exposer le jeu de données par une API REST authentifiée</td></tr>
+  <tr><td><strong>Environnement</strong></td><td>Windows 11 · Python 3.14 · PostgreSQL 18 (port 5433) · Apache Spark 4.2.0 sur JDK Temurin 21 · Git / GitHub</td></tr>
+  <tr><td><strong>Contraintes</strong></td><td><strong>Budget 0 €</strong> : toutes les sources retenues sont gratuites et sans carte bancaire · poste <strong>sans droits administrateur</strong> (AppLocker bloque <code>pip.exe</code>, Docker indisponible) · conformité RGPD sur les positions détenues</td></tr>
+  <tr><td><strong>Organisation</strong></td><td>Branche <code>develop</code> puis fusion vers <code>main</code> · commits conventionnels · une preuve écrite par compétence dans <code>evidence/</code> · journal de bord daté</td></tr>
+  <tr><td><strong>Planification</strong></td><td>Collecte et qualité (juillet) → base de données et requêtes (1<sup>er</sup> août) → big data (2 août) → remise des livrables <strong>5 novembre 2026</strong> · soutenance 30 novembre</td></tr>
+</table>
+
+<h2><span class="n">2</span> Spécifications techniques et périmètre <span class="tag">C1</span></h2>
+
+<div class="cols">
+<div>
+<h3>Technologies et services externes</h3>
+<table>
+  <tr><th>Brique</th><th>Choix</th><th>Raison</th></tr>
+  <tr><td>Base</td><td>PostgreSQL 18</td><td>contraintes déclaratives, <code>LATERAL</code>, plan d'exécution mesurable</td></tr>
+  <tr><td style="white-space:nowrap">Big data</td><td>Spark 4.2.0</td><td>nommé par le référentiel</td></tr>
+  <tr><td>API</td><td>FastAPI</td><td>OpenAPI généré nativement</td></tr>
+  <tr><td>Format</td><td>Parquet</td><td>colonnaire et partitionnable</td></tr>
+  <tr><td>Services</td><td>BCE, RSS, Boursorama</td><td>gratuits, sans clé, sans quota</td></tr>
+</table>
+</div>
+<div>
+<h3>Exigences de programmation</h3>
+<ul>
+  <li>Aucun secret dans le code : tout passe par <code>.env</code>, exclu de Git.</li>
+  <li>Requêtes SQL <strong>paramétrées</strong> exclusivement — jamais de chaîne concaténée.</li>
+  <li>Une source qui échoue <strong>n'interrompt pas</strong> les autres.</li>
+  <li>Toute anomalie de structure lève une exception nommée plutôt que de renvoyer un résultat vide silencieux.</li>
+  <li>Chaque module est couvert par des tests : <strong>167 tests</strong> au total.</li>
+</ul>
+<h3>Accessibilité et disponibilité</h3>
+<p>L'API écoute en local, protégée par clé en en-tête. Les données restent disponibles hors ligne :
+une source indisponible n'efface rien, la base conserve l'historique déjà chargé.</p>
+</div>
+</div>
+
+<div class="callout">
+  <span class="lab">Périmètre — ce qui est couvert, et ce qui ne l'est pas</span>
+  <strong>Couvert :</strong> l'ensemble des moyens techniques d'extraction (5 types de sources), l'agrégation, le
+  stockage, l'interrogation et la mise à disposition. <strong>Hors périmètre de E1 :</strong> le raisonnement des
+  agents, la génération du briefing et le tableau de bord, traités dans les livrables E3 et E4.
+</div>
+
+<!-- ══════════════════ PAGE 2 ══════════════════ -->
+<h2><span class="n">3</span> Collecte automatisée multi-source <span class="tag">C1</span></h2>
+
+<p>Le référentiel demande une extraction depuis <strong>au moins deux</strong> types de sources. RITA en couvre
+<strong>cinq sur cinq</strong>. Ce choix n'est pas une accumulation : chaque type apporte une donnée que les autres
+ne fournissent pas.</p>
+
+<table>
+  <tr><th style="width:15%">Type</th><th style="width:22%">Source réelle</th><th>Ce qu'elle apporte, et la difficulté qu'elle a posée</th></tr>
+  <tr>
+    <td><strong>Service web</strong></td><td class="mono">sources/ecb.py<br>Banque centrale européenne</td>
+    <td>Taux de change officiels. Sans eux, un portefeuille multi-devises est faux. Source publique, sans clé, sans quota.</td></tr>
+  <tr>
+    <td><strong>Flux RSS</strong></td><td class="mono">sources/rss.py</td>
+    <td>Contexte d'actualité. <strong>3 flux retenus sur 9 testés.</strong> <code>feedparser</code> masquait les erreurs HTTP : un refus 403 apparaissait comme « flux mal formé ». Corrigé en téléchargeant d'abord avec <code>httpx</code> et en appelant <code>raise_for_status()</code>.</td></tr>
+  <tr>
+    <td><strong>Scraping</strong></td><td class="mono">sources/scraper.py<br>Boursorama</td>
+    <td>Cours de séance. <code>robots.txt</code> est lu puis mis en cache — 3 téléchargements réduits à 1. Si la page change de structure, le code lève <code>StructurePageModifiee</code> au lieu de renvoyer <code>None</code> en silence.</td></tr>
+  <tr>
+    <td><strong>Fichier</strong></td><td class="mono">sources/positions.py<br>export courtier</td>
+    <td>Positions détenues. Quatre pièges réels d'un export courtier : séparateur <code>;</code>, encodage <code>cp1252</code>, nombres français avec espace insécable, et en-têtes variables — un test a révélé que les libellés anglais n'étaient pas gérés.</td></tr>
+  <tr>
+    <td><strong>Base de données</strong></td><td class="mono">sources/database.py</td>
+    <td>Relecture programmatique du stock déjà constitué, en requêtes paramétrées.</td></tr>
+  <tr>
+    <td><strong>Big data</strong></td><td class="mono">bigdata/extract_spark.py</td>
+    <td>Lecture d'un jeu Parquet partitionné par année via Spark — voir §&nbsp;6.2.</td></tr>
+</table>
+
+<h3>Structure du script d'extraction</h3>
+<p>Le référentiel énumère six éléments attendus dans un script d'extraction. Ils sont matérialisés par des
+repères dans <code>pipelines/ingest.py</code>, de sorte que la correspondance soit vérifiable à la lecture.</p>
+
+<table>
+  <tr><th style="width:26%">Élément attendu</th><th style="width:16%">Repère</th><th>Mise en œuvre</th></tr>
+  <tr><td>Point de lancement</td><td class="mono">[1]</td><td><code>executer()</code> + interface en ligne de commande avec choix des étapes</td></tr>
+  <tr><td>Initialisation des connexions</td><td class="mono">[2]</td><td>connexion PostgreSQL et clients HTTP ouverts une seule fois</td></tr>
+  <tr><td>Règles logiques</td><td class="mono">[3]</td><td>une fonction par source, indépendante des autres</td></tr>
+  <tr><td>Gestion des erreurs</td><td class="mono">[4]</td><td>l'étape en échec est annulée et tracée ; <strong>les suivantes continuent</strong></td></tr>
+  <tr><td>Fin de traitement</td><td class="mono">[5]</td><td>bilan par étape : lignes lues, insérées, ignorées</td></tr>
+  <tr><td>Sauvegarde</td><td class="mono">[6]</td><td><strong>un <code>COMMIT</code> par étape</strong>, non un seul global</td></tr>
+</table>
+
+<div class="callout">
+  <span class="lab">Décision de conception — un commit par étape</span>
+  Un <code>COMMIT</code> global unique aurait un défaut coûteux : si le scraping échoue après que les taux de change
+  ont été chargés, <strong>tout</strong> serait annulé. En validant étape par étape, une panne de la source la plus
+  fragile ne détruit pas le travail des sources fiables. Le mode <strong>simulation</strong> est par ailleurs
+  disponible sur chaque étape, ce qui permet de vérifier une collecte sans écrire en base.
+</div>
+
+<p><strong>Versionnement.</strong> L'intégralité du code est versionnée sur un dépôt Git distant
+(<code>github.com/Ganda15/rita-agent</code>), avec un historique de commits documentés. Le dépôt est actuellement
+privé : son passage en public est prévu avant la remise des livrables, plusieurs critères en dépendant.</p>
+
+<!-- ══════════════════ PAGE 3 ══════════════════ -->
+<h2><span class="n">4</span> Analyse exploratoire, nettoyage et agrégation <span class="tag">C3</span></h2>
+
+<p>Avant de modéliser quoi que ce soit, le jeu de données a été <strong>mesuré</strong>. Chaque défaut trouvé a
+entraîné une décision de conception précise — c'est la justification de la structure retenue au §&nbsp;5.</p>
+
+<div class="stats">
+  <div><b>276 168</b><span>lignes analysées</span></div>
+  <div><b>5 120</b><span>doublons détectés</span></div>
+  <div><b>1 533</b><span>clôtures hors bornes</span></div>
+  <div><b>2 802</b><span>volumes nuls</span></div>
+  <div><b>0</b><span>valeur manquante</span></div>
+</div>
+
+<table>
+  <tr><th style="width:30%">Défaut mesuré</th><th style="width:32%">Conséquence si ignoré</th><th>Décision prise</th></tr>
+  <tr><td><strong>5 120 doublons</strong>, principalement sur VIRI.PA</td><td>l'import échoue entièrement sur violation de clé primaire</td><td>dédoublonnage <strong>avant</strong> insertion, sur le couple <code>(ticker, date)</code></td></tr>
+  <tr><td><strong>1 533 clôtures hors intervalle</strong> haut/bas, dont 1 142 pour STLAP.PA</td><td>des variations aberrantes remontent jusqu'au briefing</td><td>contrainte <code>CHECK</code> déclarative en base : la donnée fausse est <strong>refusée</strong>, pas corrigée en silence</td></tr>
+  <tr><td>Cours maximum à <strong>7 156 748</strong> (ALJXR.PA)</td><td>toute moyenne devient illisible</td><td>valeur conservée mais <strong>signalée</strong> ; sa suppression relèverait d'une décision métier, pas technique</td></tr>
+  <tr><td>Libellés de portefeuille ≠ tickers de marché</td><td>une position ne se rattache à aucun cours</td><td>création de l'entité <strong>ALIAS</strong> au modèle (§&nbsp;5)</td></tr>
+</table>
+
+<p>Le pipeline d'agrégation réunit ensuite ces sources hétérogènes en <strong>un jeu de données unique</strong> :
+homogénéisation des dates au format ISO 8601, des devises en ISO 4217 majuscules, conversion des nombres au format
+français, enrichissement des codes ISIN manquants, puis chargement.</p>
+
+<pre><b>276 168</b> lignes lues  →  <b>2 560</b> doublons écartés  →  <b>273 608</b> lignes insérées en base</pre>
+
+<h2><span class="n">5</span> Modélisation Merise et choix du SGBD <span class="tag">C4</span></h2>
+
+<figure>
+<svg viewBox="0 0 640 330" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif">
+  <defs>
+    <style>
+      .ent{ fill:#ECF3F7; stroke:#14607F; stroke-width:1.1; }
+      .ent-rgpd{ fill:#FBF1EC; stroke:#9E4318; stroke-width:1.1; }
+      .en{ font-size:10px; font-weight:700; fill:#16202B; text-anchor:middle; }
+      .ek{ font-size:8px; fill:#4A5766; text-anchor:middle; }
+      .as{ fill:#FFFFFF; stroke:#9DAAB8; stroke-width:.9; }
+      .av{ font-size:8.4px; fill:#14607F; font-style:italic; text-anchor:middle; }
+      .ln{ stroke:#9DAAB8; stroke-width:.9; fill:none; }
+      .cd{ font-size:7.6px; fill:#16202B; font-weight:700; text-anchor:middle; }
+    </style>
+  </defs>
+
+  <!-- liaisons (tracées avant les boîtes) -->
+  <line class="ln" x1="150" y1="60"  x2="490" y2="60"/>
+  <line class="ln" x1="150" y1="175" x2="490" y2="175"/>
+  <line class="ln" x1="285" y1="84"  x2="120" y2="151"/>
+  <line class="ln" x1="355" y1="84"  x2="520" y2="151"/>
+  <line class="ln" x1="85"  y1="199" x2="85"  y2="266"/>
+
+  <!-- associations -->
+  <ellipse class="as" cx="202" cy="60"  rx="47" ry="16"/><text class="av" x="202" y="63">est nommée</text>
+  <ellipse class="as" cx="437" cy="60"  rx="52" ry="16"/><text class="av" x="437" y="63">est cotée lors</text>
+  <ellipse class="as" cx="202" cy="117" rx="47" ry="16"/><text class="av" x="202" y="120">est cotée en</text>
+  <ellipse class="as" cx="437" cy="117" rx="45" ry="16"/><text class="av" x="437" y="120">est détenue</text>
+  <ellipse class="as" cx="320" cy="175" rx="52" ry="16"/><text class="av" x="320" y="178">est libellée en</text>
+  <ellipse class="as" cx="85"  cy="232" rx="47" ry="16"/><text class="av" x="85"  y="235">a pour cours</text>
+
+  <!-- entités -->
+  <rect class="ent" x="20"  y="36"  width="130" height="48" rx="2"/>
+  <text class="en" x="85" y="55">ALIAS</text><text class="ek" x="85" y="70">libelle · ticker</text>
+
+  <rect class="ent" x="255" y="36"  width="130" height="48" rx="2"/>
+  <text class="en" x="320" y="55">VALEUR</text><text class="ek" x="320" y="70">ticker · isin · nom</text>
+
+  <rect class="ent" x="490" y="36"  width="130" height="48" rx="2"/>
+  <text class="en" x="555" y="55">COTATION</text><text class="ek" x="555" y="70">date · o/h/l/c · volume</text>
+
+  <rect class="ent" x="20"  y="151" width="130" height="48" rx="2"/>
+  <text class="en" x="85" y="170">DEVISE</text><text class="ek" x="85" y="185">code · libelle</text>
+
+  <rect class="ent-rgpd" x="490" y="151" width="130" height="48" rx="2"/>
+  <text class="en" x="555" y="170">POSITION</text><text class="ek" x="555" y="185">quantite · prix revient</text>
+
+  <rect class="ent" x="20"  y="266" width="130" height="48" rx="2"/>
+  <text class="en" x="85" y="285">TAUX_CHANGE</text><text class="ek" x="85" y="300">date · taux</text>
+
+  <!-- cardinalités -->
+  <text class="cd" x="163" y="53">1,1</text><text class="cd" x="243" y="53">1,n</text>
+  <text class="cd" x="398" y="53">1,n</text><text class="cd" x="478" y="53">1,1</text>
+  <text class="cd" x="272" y="99">1,1</text><text class="cd" x="137" y="140">0,n</text>
+  <text class="cd" x="368" y="99">0,n</text><text class="cd" x="505" y="140">1,1</text>
+  <text class="cd" x="163" y="168">0,n</text><text class="cd" x="478" y="168">1,1</text>
+  <text class="cd" x="97"  y="212">1,n</text><text class="cd" x="97"  y="262">1,1</text>
+</svg>
+<figcaption>Modèle conceptuel de données (MCD, formalisme Merise) — 6 entités, 6 associations, aucune relation
+n-n. En orangé : la seule entité contenant des <strong>données à caractère personnel</strong>.</figcaption>
+</figure>
+
+<div class="callout">
+  <span class="lab">La cardinalité qui corrige un défaut mesuré</span>
+  <code>VALEUR&nbsp;—1,n—&nbsp;est nommée&nbsp;—1,1—&nbsp;ALIAS</code> : une même société porte plusieurs libellés
+  selon la source. Écrire <code>1,1</code> de ce côté aurait imposé un nom unique par valeur — exactement le défaut
+  relevé à l'analyse exploratoire, où des positions ne se rattachaient à aucun cours.
+</div>
+
+<h3>Passage au modèle physique et choix du SGBD</h3>
+<p>Les règles Merise ont été appliquées littéralement : une entité devient une table, son identifiant devient la
+clé primaire, et pour une association <code>1,n ↔ 1,1</code> la clé migre du côté <code>1,1</code>. Le modèle
+physique compte <strong>8 tables</strong> (les deux tables supplémentaires, <code>article</code> et
+<code>memory_audit</code>, sont techniques et n'ont pas leur place dans un modèle conceptuel métier),
+<strong>6 index explicites</strong> et <strong>9 contraintes <code>CHECK</code></strong>.</p>
+<p><strong>PostgreSQL</strong> a été retenu pour trois raisons directement liées au modèle : les contraintes
+<code>CHECK</code> permettent d'imposer en base les règles issues de l'analyse exploratoire plutôt que de les
+répéter dans chaque script ; <code>EXPLAIN ANALYZE</code> rend les choix d'optimisation mesurables (§&nbsp;6) ;
+et <code>LATERAL</code> résout efficacement la requête centrale du projet. L'installation est reproductible via un
+script unique et un fichier <code>docker-compose.yml</code>.</p>
+
+<!-- ══════════════════ PAGE 4 ══════════════════ -->
+<h2><span class="n">6</span> Requêtes d'extraction <span class="tag">C2</span></h2>
+
+<h3>6.1 &nbsp;Requêtes SQL sur la base relationnelle</h3>
+<table>
+  <tr><th style="width:23%">Requête</th><th style="width:38%">Sélections, filtrages et jointures</th><th>Optimisation appliquée</th></tr>
+  <tr><td><strong>R1 — Portefeuille valorisé</strong></td>
+      <td>jointure <code>position</code> × <code>valeur</code> × dernière <code>cotation</code>, conversion par <code>taux_change</code></td>
+      <td><code>LEFT JOIN LATERAL</code> : la dernière cotation est cherchée par ticker via l'index, sans trier la table</td></tr>
+  <tr><td><strong>R2 — Plus fortes variations</strong></td>
+      <td>fonction de fenêtrage <code>LAG()</code> partitionnée par ticker, filtrée sur une fenêtre de dates</td>
+      <td>filtrage sur la date <strong>avant</strong> le calcul de fenêtre, pour réduire l'ensemble traité</td></tr>
+  <tr><td><strong>R3 — Volumes anormaux</strong></td>
+      <td>moyenne mobile <code>AVG() OVER (ROWS BETWEEN)</code>, condition <code>HAVING</code> sur l'écart</td>
+      <td>index partiel : seules les lignes de volume non nul sont indexées</td></tr>
+</table>
+
+<div class="callout warn">
+  <span class="lab">Une optimisation invalidée par la mesure</span>
+  La première version utilisait <code>DISTINCT ON</code> pour obtenir la dernière cotation de chaque valeur — une
+  écriture élégante, et présentée comme l'optimisation. <code>EXPLAIN ANALYZE</code> a montré l'inverse :
+  <code>DISTINCT ON</code> impose un tri de <strong>toute</strong> la table.
+  <table style="margin:4pt 0 0">
+    <tr><th>Écriture testée</th><th class="num">Portefeuille (111 lignes)</th><th class="num">Dernière cotation (273 608 lignes)</th></tr>
+    <tr><td><code>DISTINCT ON</code></td><td class="num">295,19 ms</td><td class="num">258,00 ms</td></tr>
+    <tr><td><strong><code>LEFT JOIN LATERAL</code> (retenu)</strong></td><td class="num ok">1,19 ms</td><td class="num ok">0,12 ms</td></tr>
+  </table>
+  <p style="margin:4pt 0 0"><strong>Une optimisation que l'on n'a pas mesurée n'est qu'une croyance.</strong> Le même
+  raisonnement a conduit à <strong>supprimer</strong> un index créé par excès de zèle : les statistiques
+  d'utilisation montraient <strong>1 balayage</strong> pour lui contre <strong>273 609</strong> pour la clé primaire.
+  Il coûtait 9 Mo et un surcoût à chaque écriture, sans rien accélérer.</p>
+</div>
+
+<h3>6.2 &nbsp;Requêtes sur le système big data</h3>
+<p>La compétence C2 demande des requêtes sur une base de données <strong>et</strong> sur un système big data. Le
+moteur retenu est <strong>Apache Spark</strong>, nommé par le référentiel, interrogé en <strong>Spark SQL</strong>
+sur un jeu Parquet partitionné par année. Trois requêtes sont documentées : volumétrie annuelle, amplitude moyenne
+par valeur, et meilleure séance de chaque valeur (fenêtrage <code>LAG</code> + <code>RANK</code>).</p>
+
+<pre>PartitionFilters: [isnotnull(annee), (<b>annee = 2024</b>)]
+Fichiers connus de Spark : <b>11</b>  →  un seul est ouvert · 27 648 lignes extraites</pre>
+
+<p>Cet extrait du plan physique est la preuve du <strong>partition pruning</strong> : les dix autres fichiers ne
+sont pas filtrés après lecture, ils ne sont <strong>jamais lus</strong>. C'est ce qui distingue les deux mondes.</p>
+
+<table>
+  <tr><th style="width:22%"></th><th style="width:39%">PostgreSQL</th><th>Spark SQL</th></tr>
+  <tr><td><strong>Structure d'accès</strong></td><td>index B-tree sur <code>(ticker, date)</code></td><td>partitionnement par répertoire <code>annee=</code></td></tr>
+  <tr><td><strong>Optimiser, c'est</strong></td><td>choisir le <strong>bon chemin d'accès</strong></td><td><strong>ne pas lire</strong> les partitions inutiles</td></tr>
+  <tr><td><strong>Ce qui coûte cher</strong></td><td>un balayage séquentiel</td><td>un <strong>shuffle</strong> entre exécuteurs</td></tr>
+</table>
+
+<div class="callout warn">
+  <span class="lab">Limite assumée, et un refus documenté</span>
+  <strong>276 168 lignes ne constituent pas du big data</strong> : 13 Mo tiennent en mémoire. Ce qui est démontré
+  ici est la <strong>méthode</strong>, identique à une autre échelle. Par ailleurs, Spark échouait sous Windows
+  faute des binaires Hadoop <code>winutils.exe</code> et <code>hadoop.dll</code>. La solution communément proposée
+  — les télécharger depuis un dépôt communautaire — a été <strong>écartée</strong> : ce sont des exécutables non
+  signés, chargés dans la machine virtuelle Java. Sur un projet qui documente par ailleurs sa conformité RGPD,
+  ce serait incohérent. Le code natif n'étant appelé que pour <em>lister</em> un répertoire, le listage est fait
+  par Python et les fichiers sont passés explicitement à Spark.
+</div>
+
+<!-- ══════════════════ PAGE 5 ══════════════════ -->
+<h2><span class="n">7</span> Conformité RGPD <span class="tag">C4</span></h2>
+
+<p>Une seule table contient des <strong>données à caractère personnel</strong> : <code>position</code>, qui porte
+les quantités détenues et les prix de revient réels de l'utilisateur. Le fichier source du portefeuille n'est
+<strong>jamais</strong> versionné dans Git, ce qui est vérifié par une règle d'exclusion explicite.</p>
+
+<div class="callout">
+  <span class="lab">Une précision juridique qui compte</span>
+  Les données financières <strong>ne sont pas</strong> des « données sensibles » au sens de l'<strong>article 9</strong>
+  du RGPD, lequel vise la santé, les opinions politiques, l'origine ou les convictions. Ce sont des données
+  personnelles ordinaires, protégées au titre de l'<strong>article 6</strong> (base légale). La base légale retenue
+  est l'<strong>intérêt légitime</strong> pour un usage strictement personnel.
+</div>
+
+<div class="cols">
+<div>
+<h3>Registre des traitements (art. 30)</h3>
+<table>
+  <tr><th>N°</th><th>Traitement</th><th>Conservation</th></tr>
+  <tr><td>T1</td><td>Stockage du portefeuille</td><td>vie active + 3 ans</td></tr>
+  <tr><td>T2</td><td>Journal d'accès des agents</td><td>90 jours</td></tr>
+  <tr><td>T3</td><td>Traces d'exécution LangSmith</td><td>selon éditeur</td></tr>
+  <tr><td>T4</td><td>Fichier source du portefeuille</td><td>hors dépôt, local</td></tr>
+</table>
+<p style="font-size:7.8pt"><strong>Transfert hors UE identifié :</strong> T3 transmet des traces à un
+sous-traitant américain. Le point est inscrit au registre comme action ouverte plutôt que passé sous silence.</p>
+</div>
+<div>
+<h3>Procédures de tri (<code>db/rgpd_purge.py</code>)</h3>
+<table>
+  <tr><th>N°</th><th>Traitement</th><th>Fréquence</th></tr>
+  <tr><td>P1</td><td>Purge du journal au-delà de 90 jours</td><td>hebdomadaire</td></tr>
+  <tr><td>P2</td><td>Suppression des positions soldées depuis 3 ans</td><td>mensuelle</td></tr>
+  <tr><td>P3</td><td>Détection des doublons de positions</td><td>mensuelle</td></tr>
+</table>
+<p style="font-size:7.8pt"><strong>P3 ne supprime jamais</strong> : deux achats identiques le même jour au même prix
+sont possibles. Les trois procédures s'exécutent en <strong>simulation par défaut</strong> ; la suppression exige
+un argument explicite.</p>
+</div>
+</div>
+
+<h2><span class="n">8</span> Mise à disposition par API REST <span class="tag">C5</span></h2>
+
+<p>Six points de terminaison exposent le <strong>jeu de données</strong> lui-même — l'univers suivi, l'historique
+des cours, le portefeuille valorisé, les mouvements, les volumes anormaux et les articles — et non un texte
+produit par un modèle, qui relève d'une autre compétence. La documentation est générée au standard
+<strong>OpenAPI 3.1.0</strong> et couvre 8 chemins, y compris les règles d'autorisation.</p>
+
+<pre>app.include_router(routeur_donnees, dependencies=[Depends(<b>verify_api_key</b>)])</pre>
+
+<p>L'authentification est posée sur le <strong>routeur entier</strong>, non route par route : un point de
+terminaison ajouté plus tard sera protégé d'office. <strong>Un garde-fou de conception vaut mieux qu'un garde-fou
+de vigilance.</strong> Un test parcourt les routes déclarées et échoue si l'une répond autre chose que 403 sans clé.
+La pagination est plafonnée côté serveur, et les articles marqués comme porteurs d'injection ne sortent jamais de
+l'API.</p>
+
+<h2><span class="n">9</span> Installation reproductible, dépendances et commandes <span class="tag">C4</span></h2>
+
+<p>La documentation technique est versionnée <strong>à la racine du dépôt</strong> (<code>README.md</code>,
+<code>db/README.md</code>, <code>bigdata/CONCEPTION.md</code>). Les dépendances sont déclarées dans
+<code>requirements.txt</code> avec les versions épinglées lorsqu'elles conditionnent le fonctionnement.
+La séquence ci-dessous reconstruit le projet entier depuis un dépôt vierge.</p>
+
+<pre>python -m pip install -r requirements.txt        <b># dependances</b>
+psql -h localhost -p 5433 -f db/schema.sql       <b># 8 tables, 6 index, 9 contraintes CHECK</b>
+python -m db.importer                            <b># 276 168 -> 273 608 lignes</b>
+python -m pipelines.ingest                       <b># taux de change + RSS + scraping</b>
+python -m bigdata.build_parquet                  <b># jeu Parquet partitionne par annee</b>
+uvicorn api.main:app                             <b># API + documentation sur /docs</b>
+pytest -q                                        <b># 167 passed</b></pre>
+
+<table>
+  <tr><th style="width:24%">Dépendance</th><th style="width:18%">Version</th><th>Pourquoi elle est requise</th></tr>
+  <tr><td>PostgreSQL</td><td>18 (port 5433)</td><td>SGBD cible ; l'authentification est en <code>scram-sha-256</code></td></tr>
+  <tr><td><code>psycopg2-binary</code></td><td>—</td><td>pilote PostgreSQL, requêtes paramétrées</td></tr>
+  <tr><td><code>feedparser</code></td><td><strong>épinglée 6.0.14</strong></td><td>le comportement d'analyse des flux varie d'une version à l'autre</td></tr>
+  <tr><td><code>pyspark</code></td><td><strong>épinglée 4.2.0</strong></td><td>système big data ; exige un <strong>JDK 21</strong> dans <code>JAVA_HOME</code></td></tr>
+  <tr><td><code>pyarrow</code> · <code>pandas</code></td><td>—</td><td>écriture et lecture du format Parquet</td></tr>
+  <tr><td><code>fastapi</code> · <code>uvicorn</code></td><td>—</td><td>API REST et documentation OpenAPI</td></tr>
+</table>
+
+<p>En l'absence de JDK, la suite de tests <strong>reste verte</strong> : les tests d'intégration Spark s'ignorent
+d'eux-mêmes plutôt que d'échouer. Un test qui échoue faute d'environnement n'apprend rien — il apprend seulement
+à ignorer les échecs.</p>
+
+<h2><span class="n">10</span> Matrice de preuves et limites</h2>
+
+<table>
+  <tr><th style="width:8%">Comp.</th><th style="width:38%">Preuve</th><th>Emplacement dans le dépôt</th></tr>
+  <tr><td><strong>C1</strong></td><td>5 types de sources · script structuré en 6 étapes · 167 tests</td><td class="mono">sources/ · pipelines/ingest.py · evidence/C1/</td></tr>
+  <tr><td><strong>C2</strong></td><td>3 requêtes SQL + 3 requêtes Spark SQL, optimisations mesurées</td><td class="mono">db/requetes.sql · bigdata/query_spark.py</td></tr>
+  <tr><td><strong>C3</strong></td><td>analyse exploratoire · dédoublonnage · normalisation</td><td class="mono">bigdata/explorer.py · evidence/C3/</td></tr>
+  <tr><td><strong>C4</strong></td><td>MCD + MPD · 9 contraintes · registre RGPD · 3 procédures de tri</td><td class="mono">db/schema.sql · db/RGPD-registre-des-traitements.md</td></tr>
+  <tr><td><strong>C5</strong></td><td>6 points de terminaison · OpenAPI 3.1.0 · autorisation testée</td><td class="mono">api/donnees.py · evidence/C5/</td></tr>
+</table>
+
+<div class="callout warn">
+  <span class="lab">Ce qui n'est pas fait, dit franchement</span>
+  <strong>Regroupements d'actions non traités</strong> — VIRI.PA affiche une variation de +4 164 % qui n'est
+  qu'un artefact de <em>reverse split</em>. La table <code>operation_sur_titre</code> est conçue mais non
+  construite. <strong>Dépôt encore privé</strong> — son ouverture conditionne plusieurs critères et est prévue
+  avant la remise. <strong>Volumétrie</strong> — la démonstration big data porte sur un volume qui ne l'exige pas ;
+  c'est la méthode qui est démontrée, et cette limite est énoncée plutôt que défendue.
+</div>
+
+<footer class="sign">
+  <span>RITA — Livrable E1 · Bloc BC01 · Compétences C1 à C5</span>
+  <span>Eramalingam Gandakumar · 2 août 2026</span>
+</footer>
+
+</body>
+</html>
