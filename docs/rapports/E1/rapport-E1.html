@@ -15,7 +15,7 @@ html{ font-size:10px; }
 body{
   margin:0; background:var(--paper); color:var(--ink);
   font-family:"Segoe UI","Calibri",system-ui,sans-serif;
-  font-size:8.7pt; line-height:1.36;
+  font-size:8.6pt; line-height:1.34;
   font-variant-numeric:tabular-nums;
   -webkit-print-color-adjust:exact; print-color-adjust:exact;
 }
@@ -41,7 +41,7 @@ h1,h2,h3{ font-family:Georgia,"Times New Roman",serif; font-weight:600; margin:0
 
 /* ---------- titres de section ---------- */
 h2{
-  font-size:11.4pt; margin:13pt 0 5pt; padding-bottom:2.5pt;
+  font-size:11.4pt; margin:10.5pt 0 4.5pt; padding-bottom:2.5pt;
   border-bottom:.75pt solid var(--rule-strong);
   display:flex; align-items:baseline; gap:7pt;
 }
@@ -73,7 +73,7 @@ td.mono{ font-family:Consolas,monospace; font-size:7.6pt; }
 /* ---------- encarts ---------- */
 .callout{
   border-left:2.2pt solid var(--accent); background:var(--wash);
-  padding:5pt 8pt; margin:6pt 0; font-size:8.3pt;
+  padding:4pt 8pt; margin:4.5pt 0; font-size:8.3pt;
 }
 .callout.warn{ border-left-color:var(--flag); background:var(--flag-wash); }
 .callout .lab{
@@ -109,7 +109,7 @@ figure{ margin:5pt 0 6pt; }
 figcaption{ font-size:7.3pt; color:var(--ink-soft); margin-top:3pt; font-style:italic; }
 svg{ width:100%; height:auto; display:block; }
 
-footer.sign{ margin-top:9pt; padding-top:5pt; border-top:.75pt solid var(--rule-strong);
+footer.sign{ margin-top:4pt; padding-top:3.5pt; border-top:.75pt solid var(--rule-strong);
              font-size:7.6pt; color:var(--ink-soft); display:flex; justify-content:space-between; }
 </style>
 </head>
@@ -262,9 +262,22 @@ entraîné une décision de conception précise — c'est la justification de la
   <tr><th style="width:30%">Défaut mesuré</th><th style="width:32%">Conséquence si ignoré</th><th>Décision prise</th></tr>
   <tr><td><strong>5 120 doublons</strong>, principalement sur VIRI.PA</td><td>l'import échoue entièrement sur violation de clé primaire</td><td>dédoublonnage <strong>avant</strong> insertion, sur le couple <code>(ticker, date)</code></td></tr>
   <tr><td><strong>1 533 clôtures hors intervalle</strong> haut/bas, dont 1 142 pour STLAP.PA</td><td>des variations aberrantes remontent jusqu'au briefing</td><td>contrainte <code>CHECK</code> déclarative en base : la donnée fausse est <strong>refusée</strong>, pas corrigée en silence</td></tr>
-  <tr><td>Cours maximum à <strong>7 156 748</strong> (ALJXR.PA)</td><td>toute moyenne devient illisible</td><td>valeur conservée mais <strong>signalée</strong> ; sa suppression relèverait d'une décision métier, pas technique</td></tr>
+  <tr><td>Cours maximum à <strong>7 156 748</strong> (ALJXR.PA)</td><td>toute moyenne devient illisible</td><td>valeur <strong>conservée</strong> — le mécanisme est identifié, voir l'encadré ci-dessous : la donnée n'est pas fausse, elle est <em>transformée</em></td></tr>
   <tr><td>Libellés de portefeuille ≠ tickers de marché</td><td>une position ne se rattache à aucun cours</td><td>création de l'entité <strong>ALIAS</strong> au modèle (§&nbsp;5)</td></tr>
 </table>
+
+<div class="callout">
+  <span class="lab">Une hypothèse corrigée par la mesure — ALJXR.PA</span>
+  L'analyse initiale attribuait ce cours à « <em>probablement</em> une ligne de droits non ajustée » — une
+  supposition, et elle était fausse. En croisant le prix avec le <strong>volume</strong> :
+  <strong>2016</strong> → clôture 7 156 748 €, volume <strong>0</strong> sur les 110 séances ;
+  <strong>2024</strong> → clôture <strong>0,03 €</strong>, volume 1 445 110. Le prix est <strong>divisé</strong>
+  par ~36 millions, le volume <strong>multiplié</strong> d'autant. Deux grandeurs qui évoluent en sens exactement
+  inverse dans le même rapport ne sont pas du bruit : c'est un <strong>regroupement d'actions rétro-ajusté</strong>.
+  Conséquence — les volumes nuls de ce ticker <strong>ne sont pas une anomalie distincte</strong> : ce sont des
+  volumes réels écrasés par la division. Deux symptômes, <strong>un seul mécanisme</strong>, et la justification
+  mesurée de la table <code>operation_sur_titre</code> (§&nbsp;10).
+</div>
 
 <p>Le pipeline d'agrégation réunit ensuite ces sources hétérogènes en <strong>un jeu de données unique</strong> :
 homogénéisation des dates au format ISO 8601, des devises en ISO 4217 majuscules, conversion des nombres au format
@@ -499,9 +512,8 @@ pytest -q                                        <b># 176 passed</b></pre>
   <tr><td><code>fastapi</code> · <code>uvicorn</code></td><td>—</td><td>API REST et documentation OpenAPI</td></tr>
 </table>
 
-<p>En l'absence de JDK, la suite de tests <strong>reste verte</strong> : les tests d'intégration Spark s'ignorent
-d'eux-mêmes plutôt que d'échouer. Un test qui échoue faute d'environnement n'apprend rien — il apprend seulement
-à ignorer les échecs.</p>
+<p>En l'absence de JDK, la suite <strong>reste verte</strong> : les tests d'intégration Spark s'ignorent d'eux-mêmes
+plutôt que d'échouer. Un test qui échoue faute d'environnement apprend seulement à ignorer les échecs.</p>
 
 <h2><span class="n">10</span> Matrice de preuves et limites</h2>
 
@@ -516,11 +528,11 @@ d'eux-mêmes plutôt que d'échouer. Un test qui échoue faute d'environnement n
 
 <div class="callout warn">
   <span class="lab">Ce qui n'est pas fait, dit franchement</span>
-  <strong>Regroupements d'actions non traités</strong> — VIRI.PA affiche une variation de +4 164 % qui n'est
-  qu'un artefact de <em>reverse split</em>. La table <code>operation_sur_titre</code> est conçue mais non
-  construite. <strong>Dépôt encore privé</strong> — son ouverture conditionne plusieurs critères et est prévue
-  avant la remise. <strong>Volumétrie</strong> — la démonstration big data porte sur un volume qui ne l'exige pas ;
-  c'est la méthode qui est démontrée, et cette limite est énoncée plutôt que défendue.
+  <strong>Regroupements d'actions non traités</strong> — mécanisme identifié (§&nbsp;4),
+  <code>operation_sur_titre</code> conçue non construite ; VIRI.PA affiche +4 164 % pour cette raison.
+  <strong>Dépôt encore privé</strong> — ouverture prévue avant la remise. <strong>Volumétrie</strong> — le big
+  data est démontré sur un volume qui ne l'exige pas : c'est la méthode qui est prouvée, et cette limite est
+  énoncée plutôt que défendue.
 </div>
 
 <footer class="sign">
