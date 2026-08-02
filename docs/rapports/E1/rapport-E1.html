@@ -171,7 +171,7 @@ construite dessus hérite de ces défauts. L'objet de E1 est de rendre ces donn�
   <li>Requêtes SQL <strong>paramétrées</strong> exclusivement — jamais de chaîne concaténée.</li>
   <li>Une source qui échoue <strong>n'interrompt pas</strong> les autres.</li>
   <li>Toute anomalie de structure lève une exception nommée plutôt que de renvoyer un résultat vide silencieux.</li>
-  <li>Chaque module est couvert par des tests : <strong>167 tests</strong> au total.</li>
+  <li>Chaque module est couvert par des tests : <strong>176 tests</strong> au total.</li>
 </ul>
 <h3>Accessibilité et disponibilité</h3>
 <p>L'API écoute en local, protégée par clé en en-tête. Les données restent disponibles hors ligne :
@@ -198,6 +198,9 @@ ne fournissent pas.</p>
   <tr>
     <td><strong>Service web</strong></td><td class="mono">sources/ecb.py<br>Banque centrale européenne</td>
     <td>Taux de change officiels. Sans eux, un portefeuille multi-devises est faux. Source publique, sans clé, sans quota.</td></tr>
+  <tr>
+    <td><strong>Service web</strong></td><td class="mono">sources/fred.py<br>Réserve fédérale de St. Louis</td>
+    <td>Contexte macro-économique américain — les taux américains pilotent les marchés mondiaux. <strong>Seule source exigeant une clé</strong> : elle passe en paramètre de requête, jamais dans l'URL, car les serveurs journalisent les URL complètes. Valeur manquante notée <code>"."</code> : <strong>17 cas sur 400</strong>, tous des jours fériés fédéraux américains.</td></tr>
   <tr>
     <td><strong>Flux RSS</strong></td><td class="mono">sources/rss.py</td>
     <td>Contexte d'actualité. <strong>3 flux retenus sur 9 testés.</strong> <code>feedparser</code> masquait les erreurs HTTP : un refus 403 apparaissait comme « flux mal formé ». Corrigé en téléchargeant d'abord avec <code>httpx</code> et en appelant <code>raise_for_status()</code>.</td></tr>
@@ -484,7 +487,7 @@ python -m db.importer                            <b># 276 168 -> 273 608 lignes<
 python -m pipelines.ingest                       <b># taux de change + RSS + scraping</b>
 python -m bigdata.build_parquet                  <b># jeu Parquet partitionne par annee</b>
 uvicorn api.main:app                             <b># API + documentation sur /docs</b>
-pytest -q                                        <b># 167 passed</b></pre>
+pytest -q                                        <b># 176 passed</b></pre>
 
 <table>
   <tr><th style="width:24%">Dépendance</th><th style="width:18%">Version</th><th>Pourquoi elle est requise</th></tr>
@@ -504,7 +507,7 @@ d'eux-mêmes plutôt que d'échouer. Un test qui échoue faute d'environnement n
 
 <table>
   <tr><th style="width:8%">Comp.</th><th style="width:38%">Preuve</th><th>Emplacement dans le dépôt</th></tr>
-  <tr><td><strong>C1</strong></td><td>5 types de sources · script structuré en 6 étapes · 167 tests</td><td class="mono">sources/ · pipelines/ingest.py · evidence/C1/</td></tr>
+  <tr><td><strong>C1</strong></td><td>5 types de sources · script structuré en 6 étapes · 176 tests</td><td class="mono">sources/ · pipelines/ingest.py · evidence/C1/</td></tr>
   <tr><td><strong>C2</strong></td><td>3 requêtes SQL + 3 requêtes Spark SQL, optimisations mesurées</td><td class="mono">db/requetes.sql · bigdata/query_spark.py</td></tr>
   <tr><td><strong>C3</strong></td><td>analyse exploratoire · dédoublonnage · normalisation</td><td class="mono">bigdata/explorer.py · evidence/C3/</td></tr>
   <tr><td><strong>C4</strong></td><td>MCD + MPD · 9 contraintes · registre RGPD · 3 procédures de tri</td><td class="mono">db/schema.sql · db/RGPD-registre-des-traitements.md</td></tr>
