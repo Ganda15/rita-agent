@@ -100,6 +100,81 @@ def etape_taux_change(cur, simulation: bool) -> Bilan:
     return b
 
 
+def etape_cotations(cur, simulation: bool) -> Bilan:
+    """yfinance -> table `cotation`. Rafraîchissement **incrémental** des 111 valeurs.
+
+    C'est l'étape qui « pérennise » la collecte au sens de C1 : elle ne retélécharge pas
+    l'historique, elle comble l'écart entre la dernière séance en base et aujourd'hui.
+
+    Trois choix à défendre :
+
+    * **Par groupe de dernière séance.** Les tickers sont regroupés par date de dernière
+      cotation connue, un téléchargement par groupe. Sans ce regroupement, une valeur
+      retirée de la cote en 2018 (ZC.PA, GTO.PA…) ferait retélécharger 8 ans à *tout* le
+      monde.
+    * **Borne de départ INCLUSIVE.** La dernière séance en base peut avoir été capturée
+      avant la clôture — mesuré : MC.PA au 29/07 valait 466,80 en base contre 467,95 à la
+      clôture réelle. On la re-télécharge pour l'écraser.
+    * **`ON CONFLICT DO UPDATE`.** L'étape est **rejouable** : la lancer deux fois dans la
+      journée ne crée pas de doublon et corrige une capture partielle.
+    """
+    from collections import defaultdict
+
+    from sources.cotations import fetch_cotations
+
+    b = Bilan("cotations (yfinance)")
+
+    # Dernière séance connue, valeur par valeur. LEFT JOIN : une valeur sans aucune
+    # cotation doit apparaître aussi, sinon elle ne serait jamais alimentée.
+    cur.execute("""
+        SELECT v.ticker, MAX(c.date_seance)
+        FROM   valeur v
+        LEFT   JOIN cotation c ON c.ticker = v.ticker
+        GROUP  BY v.ticker
+    """)
+    par_date: dict = defaultdict(list)
+    for ticker, derniere in cur.fetchall():
+        par_date[derniere].append(ticker)
+
+    if not par_date:
+        b.erreur = "aucune valeur en base — lancer db.importer d'abord"
+        return b
+
+    lignes = []
+    for derniere, tickers in par_date.items():
+        if derniere is None:                    # jamais alimentée : on ne devine pas
+            b.rejetees += len(tickers)
+            b.details.append(f"{len(tickers)} valeur(s) sans historique — voir db.importer")
+            continue
+        try:
+            recu = fetch_cotations(tickers, derniere)
+            lignes.extend(recu)
+            b.lues += len(recu)
+        except Exception as erreur:                       # noqa: BLE001
+            b.rejetees += len(tickers)
+            b.details.append(f"depuis {derniere} : {type(erreur).__name__}")
+
+    if lignes and not simulation:
+        execute_values(cur, """
+            INSERT INTO cotation
+                (ticker, date_seance, ouverture, haut, bas, cloture, volume)
+            VALUES %s
+            ON CONFLICT (ticker, date_seance) DO UPDATE
+              SET ouverture = EXCLUDED.ouverture,
+                  haut      = EXCLUDED.haut,
+                  bas       = EXCLUDED.bas,
+                  cloture   = EXCLUDED.cloture,
+                  volume    = EXCLUDED.volume
+        """, [(l["ticker"], l["date_seance"], l["ouverture"], l["haut"],
+               l["bas"], l["cloture"], l["volume"]) for l in lignes])
+        b.ecrites = len(lignes)
+
+    if lignes:
+        b.details.append(f"seances du {min(l['date_seance'] for l in lignes)} "
+                         f"au {max(l['date_seance'] for l in lignes)}")
+    return b
+
+
 def etape_articles(cur, simulation: bool) -> Bilan:
     """RSS -> table `article`.
 
@@ -198,6 +273,7 @@ def etape_cours_scrapes(cur, simulation: bool) -> Bilan:
 
 ETAPES = {
     "ecb": etape_taux_change,
+    "cotations": etape_cotations,
     "rss": etape_articles,
     "scraping": etape_cours_scrapes,
 }
@@ -247,6 +323,18 @@ def executer(dsn: str | None = None, etapes: list[str] | None = None,
 
 if __name__ == "__main__":                                # [1] point de lancement
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+
+    # Le fichier .env n'est lu QU'ICI, au lancement en ligne de commande — jamais à
+    # l'import. Un module qui lit des fichiers quand on l'importe est imprévisible en
+    # test. C'est aussi ce qui permet à la tâche planifiée de trouver DATABASE_URL :
+    # le Planificateur Windows ne connaît pas les variables d'un terminal.
+    try:
+        from pathlib import Path
+
+        from dotenv import load_dotenv
+        load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+    except ImportError:                                   # python-dotenv absent
+        logger.warning("python-dotenv absent : .env ignoré")
 
     parseur = argparse.ArgumentParser(description="Pipeline d'agregation RITA (C3)")
     parseur.add_argument("--dsn", default=None)
