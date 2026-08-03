@@ -68,11 +68,32 @@ une base **à moitié créée** en indiquant « succès ».
 
 ## 4. Import des données
 
+⚠️ **Le DSN dépend de la voie choisie au §2 ou §3.** Les deux ne diffèrent pas seulement par
+le port : l'utilisateur n'est pas le même non plus.
+
+| Voie suivie | DSN à utiliser |
+|---|---|
+| **A — Docker** (§2) | `postgresql://rita:rita_dev_local@localhost:5432/rita` |
+| **B — PostgreSQL installé** (§3) | `postgresql://postgres:<mot de passe>@localhost:**5433**/rita` |
+
+> **Corrigé le 2026-08-03.** Cette page ne donnait que le DSN de la voie A. En suivant la
+> voie B puis ce paragraphe, on obtient `connection refused ... port 5432` — le serveur
+> écoute sur 5433 et l'utilisateur `rita` n'existe pas. Vérifier le port réel :
+> `Get-NetTCPConnection -State Listen -LocalPort 5432,5433`
+
+**Le plus simple : mettre le DSN dans `.env`**, une fois pour toutes. Le pipeline et la tâche
+planifiée le liront automatiquement — une variable de terminal, elle, disparaît à la fermeture
+et n'est pas visible du Planificateur Windows.
+
+```
+# dans .env, à la racine du dépôt (jamais versionné)
+DATABASE_URL=postgresql://postgres:<mot de passe>@localhost:5433/rita
+```
+
 ```powershell
-$env:DATABASE_URL = "postgresql://rita:rita_dev_local@localhost:5432/rita"
 C:\Python314\python.exe -X utf8 -m db.importer
 
-# ou sans variable d'environnement :
+# ou en passant le DSN explicitement, sans .env :
 C:\Python314\python.exe -X utf8 -m db.importer --dsn "postgresql://..." --limite-annees 3
 ```
 
