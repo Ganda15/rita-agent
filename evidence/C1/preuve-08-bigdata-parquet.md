@@ -98,7 +98,7 @@ avec Spark SQL ? Jamais posée au formateur — il a seulement dit qu'il examine
 > « J'ai construit un jeu Parquet de 276 000 lignes sur mon univers réel — 112 titres, 10 ans —
 > partitionné par année. Une requête filtrée sur 2024 ne lit qu'une partition sur onze : je l'ai
 > mesuré, c'est **9,4 fois plus rapide** que de tout lire. **Ce volume ne nécessite pas Spark**,
-> et je l'assume : 13 mégaoctets tiennent en mémoire. Ce que je démontre, c'est la méthode —
+> et je l'assume : 14 mégaoctets tiennent en mémoire. Ce que je démontre, c'est la méthode —
 > partitionnement, format colonnaire, *predicate pushdown* — qui serait rigoureusement la même
 > sur des téraoctets. »
 

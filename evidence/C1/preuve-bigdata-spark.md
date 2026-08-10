@@ -37,7 +37,7 @@ Le référentiel nomme lui-même les technologies attendues : « un système big
 
 | Option | Écartée parce que |
 |---|---|
-| Hive | Exige Hadoop + un metastore — une infrastructure entière pour 13 Mo |
+| Hive | Exige Hadoop + un metastore — une infrastructure entière pour 14 Mo |
 | Impala | Distribution Cloudera, pas installable proprement sous Windows |
 | DuckDB | Excellent, mais **pas** un système big data — c'est un moteur mono-machine |
 | **Spark** | ✅ Nommé au référentiel, installable en local, SQL standard |

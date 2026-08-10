@@ -280,5 +280,7 @@ pourquoi il était appelé.
 | Tests | **16 verts** en 14 s | `pytest tests/test_spark.py` |
 | Partition pruning | **11 fichiers connus → 1 seul ouvert**, 27 648 lignes | plan physique Spark |
 
-⚠️ **Attention à l'unité.** Le rapport E1 annonce « 13 Mo » : c'est **13,3 Mio**, soit
-**14,0 Mo** en base 10. Si le jury pousse, la réponse exacte est **13 972 899 octets**.
+⚠️ **Attention à l'unité.** Le rapport E1 annonce **« 14 Mo »** — corrigé le 10/08, il disait
+« 13 Mo » jusque-là, ce qui était un arrondi vers le bas dans **les deux** conventions
+(13,97 Mo en base 10, 13,33 Mio en base 2). Si le jury pousse, la réponse exacte est
+**13 972 899 octets**.
