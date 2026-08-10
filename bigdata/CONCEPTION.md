@@ -270,6 +270,30 @@ pourquoi il était appelé.
 
 ---
 
+## 🖼️ Le schéma — créé le 10/08/2026
+
+Le formateur avait annoncé qu'il **examinerait le schéma** (*« Yep. I'll do that. »*).
+**Il n'y en avait aucun** : 284 lignes de texte, deux preuves écrites, zéro image.
+
+📎 `Projets/RITA/02-Schemas/SCHEMA-BIGDATA-partition-pruning.drawio` **+** `.svg`
+
+Il montre en une page les quatre choses qui comptent :
+
+| Bloc | Contenu |
+|---|---|
+| ① **La chaîne** | `build_parquet` → `session_spark` → `extract_spark` (C1) / `query_spark` (C2) |
+| ② **Le partitionnement** | les **11 partitions** avec leur volumétrie réelle, `annee=2024` en évidence |
+| ③ **La preuve** | l'extrait du plan physique : `PartitionFilters`, 11 fichiers connus, **1 ouvert** |
+| ④ **La comparaison** | pourquoi optimiser ne veut pas dire la même chose en SQL et en Spark |
+
+> **Pourquoi un dessin plutôt qu'un paragraphe** : le *partition pruning* est visuel par
+> nature — dix barres grises et une bleue disent en trois secondes ce qu'un paragraphe
+> explique mal.
+
+⚠️ **`.png` à exporter depuis draw.io** (File → Export as → PNG).
+
+---
+
 ## 🔢 Les chiffres à citer, vérifiés le 10/08/2026
 
 | Grandeur | Valeur | Vérifiée par |
