@@ -1,7 +1,24 @@
-# Laboratoire Big Data — conception (⏸ non implémenté)
+# Laboratoire Big Data — conception et réalisation
 
-> **Statut : CONCEPTION SEULE. Aucun code écrit.**
-> En attente du retour du formateur après examen du schéma (*« Yep. I'll do that. »*).
+> ## ✅ Statut : **IMPLÉMENTÉ** — 4 étapes sur 4, terminé le 02/08/2026
+>
+> | | |
+> |---|---|
+> | Code | `build_parquet.py` · `session_spark.py` · `extract_spark.py` · `query_spark.py` · `explorer.py` |
+> | Tests | **16 verts** (`tests/test_spark.py`) — vérifié le 10/08 |
+> | Jeu de données | **11 partitions** `annee=2016` → `annee=2026` · **13 972 899 octets** |
+> | Preuves | `evidence/C1/preuve-08-bigdata-parquet.md` · `evidence/C1/preuve-bigdata-spark.md` |
+> | Critères | **C1** *(5ᵉ type de source)* **et C2** *(requêtes Spark SQL)* |
+>
+> ⚠️ **Ce fichier annonçait « CONCEPTION SEULE, aucun code écrit » jusqu'au 10/08/2026.**
+> Il avait été rédigé le 29/07, avant l'implémentation du 02/08, et n'avait jamais été remis
+> à niveau — alors que le rapport E1 y renvoie explicitement. Un lecteur suivant le lien lisait
+> donc « aucun code écrit » à propos d'un travail terminé.
+>
+> **La partie conception ci-dessous est conservée telle quelle** : le raisonnement sur le
+> volume, la valeur du jeu de données et la position à tenir à l'oral restent vrais, et ce sont
+> eux qui justifient les choix faits. Seuls le statut, la structure et la charge ont été
+> réécrits pour décrire ce qui **existe** au lieu de ce qui était **prévu**.
 
 ## D'où vient ce dossier
 
@@ -21,7 +38,14 @@ Rendez-vous formateur du 28/07/2026. Sur l'ajout d'une preuve big data **sépar�
 > système big data), ou **aussi C2** (développer des requêtes de type SQL sur ce système,
 > par exemple en Spark SQL) ?
 
-La réponse change la charge de travail du simple au double. **Ne rien coder avant.**
+> ✅ **Résolu par les faits, le 02/08.** La question n'a toujours pas reçu de réponse, mais elle
+> **n'est plus bloquante : les deux compétences sont couvertes.** `extract_spark.py` répond à
+> C1 (connexion et extraction programmatique depuis un système big data), `query_spark.py`
+> répond à C2 (trois requêtes dans le langage propre au système). Coder les deux a coûté une
+> demi-journée de plus que d'en coder un seul — moins cher que d'attendre une réponse qui n'est
+> jamais venue.
+>
+> **Reste à la lui poser pour confirmation**, sans que rien n'en dépende.
 
 ## Pourquoi « séparé » et pas dans le pipeline principal
 
@@ -33,18 +57,31 @@ machine seule ne tient pas — ce n'est pas le cas de 10 valeurs du CAC 40.
 C'est aussi la position la plus honnête devant un jury — « j'ai su l'utiliser, et j'ai su
 décider de ne pas l'utiliser en production » vaut mieux que du Spark décoratif.
 
-## Ce qui existe déjà et sert de socle
+## Ce qui servait de socle au 29/07 — et ce que c'est devenu
 
-`pipelines/ingest.py` (V0, écrit en mai, jamais modifié depuis) télécharge **5 ans d'historique
-OHLCV** et écrit en **Parquet** :
+> ⚠️ **Section réécrite le 10/08 : elle décrivait du code qui n'existe plus.**
 
-```python
-df = yf.download(ticker, period="5y", auto_adjust=True)
-combined.to_parquet(DATA_DIR / "ohlcv_5y.parquet")
-```
+**Ce qui était écrit ici le 29/07** : *« `pipelines/ingest.py` (V0, écrit en mai, jamais modifié
+depuis) télécharge 5 ans d'historique OHLCV et écrit en Parquet — avec 10 tickers ×
+~1 250 séances ≈ 62 500 lignes. »*
 
-Avec 10 tickers × ~1 250 séances × 5 ans ≈ **~62 500 lignes**. Le format Parquet (colonnaire,
-compressé) est déjà le bon format d'entrée pour un moteur big data.
+**Ce qui est vrai aujourd'hui** : ce code **n'est plus dans `ingest.py`**. Deux choses ont
+changé depuis :
+
+| | Avant (mai → 29/07) | Maintenant |
+|---|---|---|
+| **L'écriture Parquet** | dans `pipelines/ingest.py` | déplacée dans **`bigdata/build_parquet.py`**, seul fichier du dépôt qui appelle encore `to_parquet` |
+| **`pipelines/ingest.py`** | téléchargeait et écrivait du Parquet | est devenu le **pipeline d'agrégation** (C3) : 4 étapes — `ecb`, `cotations`, `rss`, `scraping` — qui écrivent en **PostgreSQL**, avec un `COMMIT` par étape |
+| **Le volume** | ~62 500 lignes *(10 tickers × 5 ans)* | **276 168 lignes** *(112 valeurs × 10 ans)* |
+
+**Pourquoi la séparation est meilleure** : le Parquet est un **artefact de démonstration** pour
+le laboratoire big data ; la base PostgreSQL est le **stockage de production** du briefing. Les
+mélanger obligerait à reconstruire l'un chaque fois qu'on alimente l'autre. Aujourd'hui
+`build_parquet.py` se relance en ~32 s quand on en a besoin, et le pipeline quotidien ne le
+touche pas.
+
+Le format Parquet (colonnaire, compressé, partitionnable) reste le bon format d'entrée pour un
+moteur big data — c'est le seul point de cette section qui n'a pas bougé.
 
 ## ✅ Le volume — chiffres MESURÉS, pas estimés (29/07/2026)
 
@@ -133,33 +170,70 @@ Cette réponse est **plus solide** que « j'ai du big data » : un juré qui tra
 immédiatement que 276 000 lignes n'en sont pas. L'admettre coûte moins cher que le nier — et le
 récit des tickers morts prouve qu'on a manipulé de la vraie donnée.
 
-## Structure prévue (à créer seulement après son retour)
+## ✅ Structure réelle (au 10/08/2026)
 
 ```
 bigdata/
 ├── CONCEPTION.md          ← ce fichier
-├── build_parquet.py       ⬜ SBF 120 × 10 ans → Parquet partitionné (~306 000 lignes)
-├── extract_spark.py       ⬜ C1 : extraction depuis le système big data
-└── query_spark.py         ⬜ C2 : requêtes Spark SQL — SEULEMENT si le formateur le demande
+├── explorer.py            ✅ analyse exploratoire — 276 168 lignes, 6 questions
+├── build_parquet.py       ✅ univers réel × 10 ans → Parquet partitionné par année
+├── session_spark.py       ✅ session Spark 4.2.0, renseigne JAVA_HOME toute seule
+├── extract_spark.py       ✅ C1 : extraction depuis le système big data
+└── query_spark.py         ✅ C2 : 3 requêtes Spark SQL
 ```
 
-**Partitionnement prévu** : `data/bigdata/ohlcv/annee=YYYY/` — c'est ce partitionnement qui
-rend la démonstration crédible indépendamment du volume. Spark lit uniquement les partitions
-nécessaires (*predicate pushdown*), exactement comme il le ferait sur des téraoctets. C'est la
-**méthode** qui prouve la compétence, pas la taille du fichier.
+⚠️ **Deux écarts avec le plan initial, tous deux volontaires :**
 
-**Aucun de ces fichiers n'existe.** Le dossier ne contient que cette conception.
+| Prévu | Réalisé | Pourquoi |
+|---|---|---|
+| SBF 120, ~306 000 lignes | **univers réel d'Era**, 276 168 lignes | un indice propre n'aurait posé aucun des défauts qui nourrissent C3 — voir §« Mais ce jeu de données a une valeur… » |
+| `query_spark.py` **seulement si le formateur le demande** | **codé quand même** | la réponse n'est jamais venue ; coder les deux a coûté une demi-journée et débloque C2 |
 
-## Choix du moteur — à trancher avec lui
+Deux modules non prévus se sont ajoutés : `explorer.py` (l'analyse exploratoire, qui a dicté
+tout le modèle de données) et `session_spark.py` (parce que faire démarrer Spark sous Windows
+mérite son propre module — voir ci-dessous).
+
+**Partitionnement réalisé** : `data/bigdata/ohlcv/annee=YYYY/`, **11 partitions** de 2016 à
+2026. C'est ce partitionnement qui rend la démonstration crédible indépendamment du volume.
+Mesuré dans le plan physique de Spark : **11 fichiers connus, 1 seul ouvert** sur une requête
+filtrée par année. Les dix autres ne sont pas filtrés après lecture — ils ne sont **jamais
+lus**. C'est la **méthode** qui prouve la compétence, pas la taille du fichier.
+
+## ✅ Choix du moteur — tranché : PySpark
 
 | Moteur | Pour | Contre |
 |---|---|---|
-| **PySpark local** | c'est *le* nom que le jury attend derrière « système big data » ; Spark SQL couvre C2 directement | lourd à installer (JVM), lent au démarrage |
+| **PySpark local** ✅ **retenu** | c'est *le* nom que le jury attend derrière « système big data » ; Spark SQL couvre C2 directement | lourd à installer (JVM), lent au démarrage |
 | **DuckDB** | installation triviale, SQL natif, très rapide sur Parquet | moins reconnaissable comme « big data » par un jury |
 
-Recommandation : **PySpark**, précisément parce que le critère nomme un « système big data » et
-que Spark est la réponse canonique. DuckDB serait plus élégant techniquement mais demanderait
-de justifier pourquoi ce n'est pas Spark — un débat qu'on n'a pas besoin d'ouvrir.
+**PySpark**, précisément parce que le critère nomme un « système big data » et que Spark est la
+réponse canonique. DuckDB aurait été plus élégant techniquement mais aurait demandé de
+justifier pourquoi ce n'est pas Spark — un débat inutile à ouvrir.
+
+**Version installée** : `pyspark 4.2.0` sur **Eclipse Temurin JDK 21.0.12+8**, dans
+`C:\Users\kanda\Tools\jdk-21.0.12+8` — installé **sans droits administrateur**, SHA256 vérifié.
+`session_spark.preparer_environnement()` renseigne `JAVA_HOME` tout seul : rien à exporter à la
+main, et la suite de tests reste verte sur une machine sans JDK (les tests d'intégration Spark
+s'ignorent d'eux-mêmes plutôt que d'échouer).
+
+## ⚠️ Le piège Windows — et le refus assumé
+
+Sous Windows, Spark lève `UnsatisfiedLinkError: NativeIO$Windows.access0` faute de deux
+binaires Hadoop : `winutils.exe` et `hadoop.dll`.
+
+**Tous les tutoriels disent de les télécharger depuis un dépôt communautaire. Ça n'a pas été
+fait** — ce sont des exécutables **non signés**, issus d'un tiers non officiel, chargés dans la
+machine virtuelle Java. Sur un projet qui documente par ailleurs sa conformité RGPD, ce serait
+incohérent.
+
+**Le contournement** : chercher **pourquoi** ce code natif est appelé. Réponse — uniquement
+pour **lister** un répertoire. Donc le listage est fait en Python et les fichiers sont passés
+explicitement à `spark.read`, avec `basePath` pour conserver la colonne de partition.
+
+> 🎤 **À l'oral** : *« Le problème n'a pas été contourné en baissant la garde — il a été
+> compris, puis évité. »*
+
+⚠️ **Ne jamais « réparer » ça en installant les binaires.**
 
 ## Ce que ça change pour la décision D9
 
@@ -169,14 +243,42 @@ valide** — le laboratoire est séparé, il ne réintroduit pas Spark dans le f
 Ce qui change : avant, le big data était considéré comme « non nécessaire ». Maintenant, il
 devient **une preuve supplémentaire valorisable**, dans un périmètre isolé et borné.
 
-## Charge estimée
+## ✅ Charge — estimée le 29/07, réalisée le 02/08
 
-| Tâche | Charge |
-|---|---|
-| Construire le Parquet SBF 120 × 10 ans | ~½ journée |
-| Installer PySpark et le faire tourner sous Windows | ~½ journée (piège classique : `JAVA_HOME`, `winutils.exe`) |
-| Script d'extraction C1 + preuve | ~½ journée |
-| Requêtes Spark SQL C2 + preuve *(si demandé)* | ~½ journée |
-| **Total** | **1,5 à 2 journées** |
+| Tâche | Estimé | Réalisé |
+|---|---|---|
+| Construire le Parquet × 10 ans | ~½ journée | ✅ ~32 s d'exécution, une fois le code écrit |
+| Installer PySpark sous Windows | ~½ journée | ✅ **le piège annoncé s'est produit** — `JAVA_HOME` **et** `winutils.exe` |
+| Script d'extraction C1 + preuve | ~½ journée | ✅ `extract_spark.py` + `preuve-bigdata-spark.md` |
+| Requêtes Spark SQL C2 + preuve | ~½ journée *(si demandé)* | ✅ **fait sans attendre la réponse** |
+| **Total** | **1,5 à 2 journées** | **1 journée** (02/08) |
 
-À caser en Q2 ou Q3 selon sa réponse — pas avant.
+L'estimation était bonne, et le piège annoncé — `winutils.exe` — est exactement celui qui s'est
+produit. Ce qui a fait gagner du temps : le refuser au lieu de l'installer, et chercher
+pourquoi il était appelé.
+
+---
+
+## 📋 Ce qui reste ouvert
+
+| # | Sujet | Bloquant ? |
+|---|---|---|
+| 1 | La question au formateur : la preuve big data couvre-t-elle C1 seul ou aussi C2 ? | ❌ **non** — les deux sont couvertes de fait |
+| 2 | Il avait annoncé qu'il examinerait le schéma (*« Yep. I'll do that. »*) — pas de retour à ce jour | ❌ non |
+
+**Rien ne bloque.** Le laboratoire big data est terminé, testé et prouvé.
+
+---
+
+## 🔢 Les chiffres à citer, vérifiés le 10/08/2026
+
+| Grandeur | Valeur | Vérifiée par |
+|---|---|---|
+| Partitions | **11** *(`annee=2016` → `annee=2026`)* | `ls -d data/bigdata/ohlcv/annee=*` |
+| Taille du jeu | **13 972 899 octets** = **13,3 Mio** = **14,0 Mo** | somme des 11 fichiers `.parquet` |
+| Lignes | **276 168** | `explorer.py` |
+| Tests | **16 verts** en 14 s | `pytest tests/test_spark.py` |
+| Partition pruning | **11 fichiers connus → 1 seul ouvert**, 27 648 lignes | plan physique Spark |
+
+⚠️ **Attention à l'unité.** Le rapport E1 annonce « 13 Mo » : c'est **13,3 Mio**, soit
+**14,0 Mo** en base 10. Si le jury pousse, la réponse exacte est **13 972 899 octets**.
