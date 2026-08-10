@@ -122,17 +122,23 @@ Prérequis : le jeu Parquet doit exister. Sinon :
 
 ```sql
 SELECT count(*) FROM information_schema.tables
-  WHERE table_schema='public' AND table_type='BASE TABLE';   -- attendu : 7
+  WHERE table_schema='public' AND table_type='BASE TABLE';   -- attendu : 8
 SELECT count(*) FROM information_schema.views  WHERE table_schema='public';  -- 1
 SELECT count(*) FROM pg_indexes                WHERE schemaname='public';   -- 14
 ```
 
 | Objet | Attendu | Obtenu le 31/07 |
 |---|---|---|
-| Tables | 7 | ✅ 7 |
+| Tables | 8 | ✅ 8 |
 | Vues | 1 | ✅ 1 |
 | Index | 14 | ✅ 14 |
 | Contraintes `CHECK` | 9 | ✅ 9 |
+
+> ⚠️ **Deux façons de compter les index, les deux justes.** `pg_indexes` en renvoie **14** : les
+> **6** `CREATE INDEX` explicites **plus** les **8** index créés automatiquement par les clés
+> primaires, un par table. Le rapport E1 annonce « 6 index explicites » — c'est le même schéma,
+> compté autrement. Vérifiable : `grep -c "CREATE INDEX" db/schema.sql` → 6,
+> `grep -c "PRIMARY KEY" db/schema.sql` → 8.
 
 ### Les garde-fous refusent-ils vraiment les données incohérentes ?
 
@@ -246,5 +252,5 @@ Le fichier source n'est jamais versionné : voir `.gitignore` et
 | MCD Merise (modèle conceptuel) | C4 | ✅ `Projets/RITA/02-Schemas/SCHEMA-MCD-MERISE-RITA.png` + `.drawio` |
 | ⚠️ Masquer les montants dans les traces LangSmith | RGPD | 🔴 ouvert — transfert hors UE (registre §5) |
 | ⚠️ Hook Git `pre-commit` bloquant les fichiers personnels | RGPD | 🟠 ouvert (procédure P4) |
-| 3 requêtes SQL documentées (sélections, jointures, optimisations) | C2 | ⬜ |
-| Extraction programmatique depuis la base = 5ᵉ type C1 | C1 | ⬜ |
+| 3 requêtes SQL documentées (sélections, jointures, optimisations) | C2 | ✅ `requetes.sql` + `../evidence/C2/preuve-requetes-sql.md` |
+| Extraction programmatique depuis la base = 5ᵉ type C1 | C1 | ✅ `../sources/database.py` + `../evidence/C1/preuve-07-base-de-donnees.md` |
