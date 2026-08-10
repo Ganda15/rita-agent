@@ -124,21 +124,31 @@ Prérequis : le jeu Parquet doit exister. Sinon :
 SELECT count(*) FROM information_schema.tables
   WHERE table_schema='public' AND table_type='BASE TABLE';   -- attendu : 8
 SELECT count(*) FROM information_schema.views  WHERE table_schema='public';  -- 1
-SELECT count(*) FROM pg_indexes                WHERE schemaname='public';   -- 14
+SELECT count(*) FROM pg_indexes                WHERE schemaname='public';   -- 15
 ```
 
-| Objet | Attendu | Obtenu le 31/07 |
+| Objet | Attendu | Obtenu le 10/08 |
 |---|---|---|
 | Tables | 8 | ✅ 8 |
 | Vues | 1 | ✅ 1 |
-| Index | 14 | ✅ 14 |
+| Index | 15 | ✅ 15 |
 | Contraintes `CHECK` | 9 | ✅ 9 |
 
-> ⚠️ **Deux façons de compter les index, les deux justes.** `pg_indexes` en renvoie **14** : les
-> **6** `CREATE INDEX` explicites **plus** les **8** index créés automatiquement par les clés
-> primaires, un par table. Le rapport E1 annonce « 6 index explicites » — c'est le même schéma,
-> compté autrement. Vérifiable : `grep -c "CREATE INDEX" db/schema.sql` → 6,
-> `grep -c "PRIMARY KEY" db/schema.sql` → 8.
+> ⚠️ **Deux façons de compter les index, les deux justes.** Le rapport E1 annonce
+> **6 index explicites** ; `pg_indexes` en renvoie **15**. Le détail, mesuré le 10/08 sur une
+> instance neuve :
+>
+> | Origine | Nombre | Lesquels |
+> |---|---|---|
+> | `CREATE INDEX` explicites | **6** | `idx_valeur_isin` · `idx_alias_ticker` · `idx_cotation_date` · `idx_position_ticker` · `idx_article_publie` · `idx_memory_audit_agent_date` |
+> | Clés primaires *(créés par PostgreSQL)* | **8** | un par table |
+> | Contrainte `UNIQUE` *(créée par PostgreSQL)* | **1** | `article_lien_key`, sur `article.lien` |
+>
+> **6 + 8 + 1 = 15.** Le chiffre annoncé ici était **14** jusqu'au 10/08 : l'index de la
+> contrainte `UNIQUE` sur `article.lien` avait été oublié — celui-là même qui assure le
+> dédoublonnage naturel des dépêches RSS.
+>
+> Reproductible : `SELECT indexname FROM pg_indexes WHERE schemaname='public';`
 
 ### Les garde-fous refusent-ils vraiment les données incohérentes ?
 

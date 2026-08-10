@@ -238,16 +238,40 @@ CREATE INDEX idx_memory_audit_agent_date ON memory_audit (agent, horodatage DESC
 
 
 -- =============================================================================
--- VUE — le briefing quotidien, requête Q1 + Q2 assemblées
+-- VUE — le briefing quotidien : la requête R1, empaquetée
 -- =============================================================================
--- Justifie à elle seule idx_cotation_ticker_date : DISTINCT ON (ticker) ... ORDER BY
--- ticker, date_seance DESC est exactement le motif d'accès que cet index sert.
+-- ⚠️ RÉÉCRITE LE 10/08/2026. La première version avait deux défauts, et ils venaient
+-- tous deux du fait qu'elle avait été écrite AVANT les mesures de db/requetes.sql :
+--
+--   1. Elle utilisait `DISTINCT ON (ticker)` sur toute la table `cotation`. EXPLAIN
+--      ANALYZE sur les 273 608 lignes réelles a mesuré 295,19 ms pour cette écriture
+--      contre 1,19 ms pour LEFT JOIN LATERAL — 250x. Raison : DISTINCT ON TRIE les
+--      273 608 lignes pour calculer le dernier cours des 111 valeurs, alors que le
+--      portefeuille n'en détient que 7. LATERAL fait 7 recherches d'index.
+--   2. Elle ne convertissait PAS les devises. Elle additionnait donc des euros et des
+--      dollars — le défaut même que `taux_change` existe pour corriger.
+--
+--   Son commentaire justifiait par ailleurs `idx_cotation_ticker_date`, un index
+--   SUPPRIMÉ depuis (voir le bloc §3 ci-dessus) : la justification survivait à son objet.
+--
+-- La vue reprend désormais mot pour mot la requête R1 de db/requetes.sql, elle-même
+-- reprise par sources/database.py (SQL_PORTEFEUILLE) que sert l'API /portefeuille.
+-- Une seule écriture pour un seul besoin : trois copies divergentes, c'est trois fois
+-- l'occasion d'en corriger deux sur trois.
+--
+-- ⚠️ Colonnes renommées pour s'aligner sur R1 : montant_investi -> investi_eur,
+--    valorisation -> valorisation_eur, cours_actuel -> cours. Le suffixe _eur dit que
+--    la valeur est convertie ; sans lui, rien ne distingue un total converti d'un total
+--    faux.
 CREATE VIEW v_portefeuille_valorise AS
-WITH derniere_cotation AS (
-    SELECT DISTINCT ON (ticker)
-           ticker, date_seance, cloture
-    FROM   cotation
-    ORDER  BY ticker, date_seance DESC
+WITH taux_du_jour AS (
+    -- DISTINCT ON reste légitime ICI : `taux_change` compte 5 devises, pas 273 608
+    -- cotations. Le tri porte sur un jeu minuscule. Ce qui était coûteux plus haut ne
+    -- l'est pas ici — c'est le volume qui décide, pas l'écriture.
+    SELECT DISTINCT ON (devise)
+           devise, valeur_pour_eur
+    FROM   taux_change
+    ORDER  BY devise, date_taux DESC
 )
 SELECT  v.ticker,
         v.nom_officiel,
@@ -255,15 +279,27 @@ SELECT  v.ticker,
         p.quantite,
         p.pru,
         p.devise,
-        d.date_seance                              AS date_cours,
-        d.cloture                                  AS cours_actuel,
-        ROUND(p.quantite * p.pru, 2)               AS montant_investi,
-        ROUND(p.quantite * d.cloture, 2)           AS valorisation,
-        ROUND((d.cloture - p.pru) / p.pru * 100, 2) AS performance_pct
+        d.date_seance                                                      AS date_cours,
+        d.cloture                                                          AS cours,
+        ROUND(p.quantite * p.pru / COALESCE(t.valeur_pour_eur, 1), 2)      AS investi_eur,
+        ROUND(p.quantite * d.cloture / COALESCE(t.valeur_pour_eur, 1), 2)  AS valorisation_eur,
+        ROUND((d.cloture - p.pru) / p.pru * 100, 2)                        AS performance_pct
 FROM        position p
 JOIN        valeur   v ON v.ticker = p.ticker
-LEFT JOIN   derniere_cotation d ON d.ticker = p.ticker;
+LEFT JOIN LATERAL (
+    -- LATERAL : la sous-requête voit `p.ticker` de la ligne courante. C'est ce qui
+    -- permet le Nested Loop + Index Scan au lieu du tri complet.
+    SELECT c.date_seance, c.cloture
+    FROM   cotation c
+    WHERE  c.ticker = p.ticker
+    ORDER  BY c.date_seance DESC
+    LIMIT  1
+) d ON TRUE
+LEFT JOIN   taux_du_jour t ON t.devise = p.devise
+ORDER BY    performance_pct DESC NULLS LAST;
 
 COMMENT ON VIEW v_portefeuille_valorise IS
-    'Briefing quotidien. LEFT JOIN volontaire : une position sans cotation doit rester '
-    'visible avec un cours NULL, sinon elle disparait silencieusement du briefing.';
+    'Briefing quotidien, converti en euros. Deux LEFT JOIN volontaires : une position '
+    'sans cotation reste visible avec un cours NULL, et une devise sans taux reste a son '
+    'montant nominal via COALESCE. Un INNER JOIN les ferait disparaitre en silence — le '
+    'pire comportement possible pour un outil financier.';
