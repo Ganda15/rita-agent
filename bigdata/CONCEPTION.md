@@ -299,6 +299,7 @@ Il montre en une page les quatre choses qui comptent :
 | Grandeur | Valeur | Vérifiée par |
 |---|---|---|
 | Partitions | **11** *(`annee=2016` → `annee=2026`)* | `ls -d data/bigdata/ohlcv/annee=*` |
+| Profondeur | **10 ans pile** — 28/07/2016 → 29/07/2026, **3 652 jours** | min/max de la colonne `date` |
 | Taille du jeu | **13 972 899 octets** = **13,3 Mio** = **14,0 Mo** | somme des 11 fichiers `.parquet` |
 | Lignes | **276 168** | `explorer.py` |
 | Tests | **16 verts** en 14 s | `pytest tests/test_spark.py` |
@@ -308,3 +309,28 @@ Il montre en une page les quatre choses qui comptent :
 « 13 Mo » jusque-là, ce qui était un arrondi vers le bas dans **les deux** conventions
 (13,97 Mo en base 10, 13,33 Mio en base 2). Si le jury pousse, la réponse exacte est
 **13 972 899 octets**.
+
+### ⚠️ « 10 ans » et « 11 partitions » — les deux sont vrais
+
+Contradiction apparente, repérée le 10/08 en regardant le schéma. La réponse est précise et
+vaut la peine d'être sue :
+
+| | |
+|---|---|
+| Première séance | **2016-07-28** |
+| Dernière séance | **2026-07-29** |
+| Durée | **3 652 jours = 10,00 ans** |
+
+Le téléchargement utilise `period="10y"` depuis le 29/07/2026. Une fenêtre de dix ans qui
+**commence en juillet** traverse **onze années civiles** :
+
+```
+2016 : du 28 juillet      →  ~5 mois   (11 980 lignes)
+2017 → 2025 : pleines     →   9 ans    (~27 500 lignes chacune)
+2026 : jusqu'au 29 juillet →  ~7 mois   (15 903 lignes)
+                              ─────────
+                              10 ans
+```
+
+**Les deux bouts partiels se complètent** : 5 mois + 7 mois = 12 mois. C'est visible sur le
+schéma — les barres 2016 et 2026 sont nettement plus courtes que les neuf autres.
