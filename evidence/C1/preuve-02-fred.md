@@ -159,7 +159,13 @@ C:\Python314\python.exe -m pytest tests/test_fred.py -v
 consommer le quota**. Un test qui dépend du réseau échoue un jour pour une raison qui n'a rien
 à voir avec le code.
 
-**Suite complète du projet : 176 tests verts** (167 avant cette source).
+**Suite complète du projet : 176 tests verts** (167 avant cette source) — soit **+9 apportés
+par FRED**.
+
+> ℹ️ Chiffre **daté du 02/08/2026**, laissé tel quel volontairement : c'est la mesure qui
+> établit l'apport de cette source. Le projet en compte **186** depuis le 03/08 (commit
+> `d87e850`, rafraîchissement quotidien des cotations). Les deux chiffres sont justes, ils
+> ne datent simplement pas du même jour.
 
 ## 9. Ce qui reste à faire
 
