@@ -112,7 +112,7 @@ Le critère demande « un point de lancement, l'initialisation des dépendances 
 connexions externes, les règles logiques de traitement, la gestion des erreurs et des
 exceptions, la fin du traitement et la sauvegarde des résultats ».
 
-Les six sont **repérés par des commentaires `# [n]`** dans le code — un jury peut les pointer
+Les six sont **repérés par des commentaires `# [n]`** dans le code — un lecteur peut les pointer
 sans lire tout le fichier.
 
 ## Tolérance aux pannes
@@ -135,15 +135,6 @@ appelé, `commit` jamais.
 C:\Python314\python.exe -m pytest tests/test_ingest.py -q
 → 15 passed
 ```
-
-## 🎤 Phrase pour l'oral
-
-> « Mon audit a trouvé que trois de mes sources collectaient sans jamais rien écrire en base.
-> J'ai écrit le pipeline d'agrégation qui manquait. Le point intéressant, c'est le
-> rapprochement : Boursorama dit `1rPMC`, Yahoo dit `MC.PA`, et mon univers ne contenait
-> aucun ISIN. Mon premier essai a échoué 3 fois sur 3. J'ai donc fait deux choses : une table
-> de correspondance entre les deux sources, et l'écriture de l'ISIN manquant dans ma base au
-> passage — la source qui possède la donnée comble celle qui ne l'a pas. »
 
 ## 📖 Glossaire
 

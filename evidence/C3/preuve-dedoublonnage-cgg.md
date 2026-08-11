@@ -78,13 +78,16 @@ Le dernier point est le plus net : **sans dédoublonnage, l'import en base ne pa
 séparer l'identité de la société de la cotation :
 
 ```python
+
 # 1. Dédoublonnage sur la clé métier
 avant = len(df)
 df = df.drop_duplicates(subset=["ticker", "date"], keep="first")
 print(f"Dédoublonnage : {avant:,} -> {len(df):,} lignes ({avant - len(df):,} retirées)")
 
 # 2. Le nom n'est PAS un attribut de la cotation : il remonte dans une table dédiée
+
 #    valeur(ticker PK, nom_officiel, noms_portefeuille[], statut_qualite)
+
 #    cotation(ticker FK, date, ouverture, haut, bas, cloture, volume, annee)
 ```
 
@@ -106,17 +109,3 @@ donnée.
 | Suppression des entrées corrompues | ✅ règle `drop_duplicates` sur clé métier explicite |
 | Homogénéisation des formats | ✅ dates converties en UTC dans `build_parquet.py` (5 places de marché) |
 | Documentation des choix | ✅ ce document — cause, effet mesuré, règle, justification du choix |
-
-## 🎤 Phrase pour l'oral
-
-> « Mon script annonçait 112 valeurs sur 112 — sans erreur. C'est l'analyse exploratoire
-> qui a montré que deux lignes de mon univers pointaient vers le même ticker : les bons de
-> souscription et le regroupement de CGG, devenue Viridien. Deux instruments, une seule
-> série de cours. Le code était juste ; c'est mon hypothèse "une ligne = une valeur" qui
-> était fausse. J'ai dédoublonné sur `(ticker, date)` et séparé la société de la cotation
-> dans le modèle — sinon Viridien pesait double dans tous mes calculs, et l'import en base
-> échouait sur la clé primaire. »
-
----
-
-*Le cas est réel, issu du portefeuille d'Era, pas d'un jeu de test fabriqué.*

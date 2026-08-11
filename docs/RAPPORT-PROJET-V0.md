@@ -489,7 +489,8 @@ ORDER BY semaine DESC, h.ticker;
 - Sources suivies : Anthropic blog, LangGraph releases, yfinance changelog
 - Fréquence : minimum 1 heure par semaine (règle C6)
 - Format : fichier `docs/veille/veille-SXX-mois2026.md`
-- Partage : repo GitHub public visible par le jury
+- Partage : dépôt GitHub **privé**, accès donné au formateur et au jury en tant que
+  collaborateurs (pas d'ouverture publique)
 
 **Sujets de veille identifiés :**
 ```

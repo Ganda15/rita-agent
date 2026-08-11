@@ -76,11 +76,3 @@ devient un contre-exemple ajouté au jeu (point 9).
 
 Ces seuils sont volontairement plus bas que les valeurs actuelles : ils laissent de la marge
 pour enrichir le jeu de cas avec des cas plus durs sans casser la CI au premier ajout.
-
-## 🎤 Phrase pour l'oral
-
-> « Mon garde-fou d'injection bloque 100 % des cas malveillants de mon jeu, avec 0 % de faux
-> positifs, en 0,008 ms. **Mais je précise que ce jeu est circulaire** : j'ai écrit les motifs
-> et les cas ensemble, donc ce chiffre mesure surtout que le harnais fonctionne. Ce qu'il
-> établit vraiment, c'est qu'une régression future casserait la CI, et que j'ai les deux
-> chiffres — parce qu'un taux de blocage seul ne veut rien dire : bloquer tout donne 100 %. »

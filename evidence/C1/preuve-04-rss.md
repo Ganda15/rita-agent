@@ -124,11 +124,3 @@ Un flux mort **ne doit jamais** emporter les autres. Deux tests le vérifient :
 C:\Python314\python.exe -m pytest tests/test_rss.py -q
 → 8 passed
 ```
-
-## 🎤 Phrase pour l'oral
-
-> « Sur les neuf flux RSS financiers français que j'ai testés, six refusent l'accès
-> programmatique — 403 ou 404. Je les ai documentés avec leur cause plutôt que de
-> contourner le blocage. Et j'ai corrigé un piège : `feedparser.parse(url)` transformait
-> mes 403 en "flux malformé". En séparant la requête HTTP du parsing, j'ai récupéré la
-> vraie cause dans mes logs. »

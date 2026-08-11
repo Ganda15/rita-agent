@@ -28,8 +28,7 @@ suit. C'est la raison d'être de cette source — **pas** un critère supplémen
 FRED est de type **service web**, exactement comme la BCE. Elle **ne fait gagner aucun critère
 C1** : le référentiel raisonne en *types* de sources, et ce type était déjà couvert.
 
-Elle a été codée pour une raison **produit**, pas pour une raison de grille. Le dire au jury
-avant qu'il ne pose la question vaut mieux que de le défendre après.
+Elle a été codée pour une raison **produit**, pas pour une raison de grille.
 
 ## 3. Les trois séries retenues
 
@@ -180,16 +179,6 @@ Ce module **récupère** les données ; il ne les **stocke** pas encore.
 
 Décision assumée : ces étapes viennent **après** la remise du Bloc 1. Le module existe, il est
 testé, il fonctionne sur données réelles — l'intégration en base touche un livrable déjà finalisé.
-
-## 🎤 Phrase pour l'oral
-
-> « FRED est ma seule source qui exige une clé. Ça m'a obligé à me poser une question que les
-> autres ne posaient pas : où vit le secret ? La clé est dans un `.env` exclu de Git, et elle
-> passe en paramètre de requête, jamais dans l'URL — parce que les serveurs journalisent les URL
-> complètes. J'ai verrouillé ça par un test qui vérifie que la clé n'apparaît pas dans l'URL
-> appelée. Et je suis franc sur un point : FRED ne me fait gagner aucun critère, c'est un
-> service web comme la BCE. Je l'ai codée parce qu'elle apporte le contexte macro qui manquait
-> au briefing, pas pour remplir une case. »
 
 ## 📖 Glossaire
 

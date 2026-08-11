@@ -121,17 +121,6 @@ cd D:\KandaWork\RITA_PROJECT\rita-agent
 C:\Python314\python.exe -c "import pandas as pd, glob; df=pd.concat([pd.read_parquet(x) for x in sorted(glob.glob('data/bigdata/ohlcv/*/*.parquet'))]); print(df.nlargest(5,'cloture')[['ticker','date','haut','cloture','volume']].to_string(index=False))"
 ```
 
-## 🎤 Phrase pour l'oral
-
-> « J'avais une valeur à 7 millions d'euros, et je l'avais mise de côté en écrivant "probablement
-> une ligne de droits non ajustée". C'était une supposition, et elle était fausse. En regardant
-> le prix **et le volume ensemble**, le mécanisme apparaît : entre 2016 et 2024 le prix est
-> divisé par 36 millions et le volume multiplié d'autant. Deux grandeurs qui bougent en sens
-> exactement inverse dans le même rapport, ce n'est pas du bruit — c'est un regroupement
-> d'actions rétro-ajusté. Et ça m'a appris quelque chose sur ma propre analyse : j'avais compté
-> le prix aberrant et les volumes nuls comme deux anomalies séparées. C'était **un seul
-> mécanisme, deux symptômes**. »
-
 ## 📖 Glossaire
 
 | Terme | En clair |

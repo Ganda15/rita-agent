@@ -162,12 +162,3 @@ C:\Python314\python.exe -m pytest tests/test_scraper.py -q
 | Dépend de la structure HTML de Boursorama | rupture possible sans préavis — d'où `StructurePageModifiee` |
 | Ne lit pas les pages rendues en JavaScript | l'AMF resterait hors de portée sans navigateur *headless* |
 | Pas de cache des pages | acceptable : 3 valeurs, briefing quotidien (décision D8) |
-
-## 🎤 Phrase pour l'oral
-
-> « Pour le scraping, j'ai testé quatre cibles. L'AMF répond HTTP 200 mais sa liste
-> d'actualités est rendue en JavaScript : la page est accessible, le contenu ne l'est pas.
-> J'ai retenu Boursorama, en HTML statique, après avoir vérifié son robots.txt — que je
-> mets en cache par domaine, sinon je le téléchargerais 111 fois pour 111 valeurs. Et si
-> Boursorama change sa structure, mon scraper lève une exception au lieu de retourner des
-> valeurs vides : une panne silencieuse qui pollue la base est bien pire qu'un plantage. »

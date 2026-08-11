@@ -25,8 +25,7 @@
 
 **276 168 lignes ne sont pas du big data.** 13,3 Mo tiennent en mémoire ; PostgreSQL les
 traite en millisecondes. Ce qui est démontré ici c'est la **méthode** — elle serait identique
-sur des téraoctets. Le dire au jury **avant** qu'il pose la question vaut mieux que de le
-défendre après.
+sur des téraoctets.
 
 ---
 
@@ -213,22 +212,6 @@ Le référentiel cite le big data dans **C1** (connexion + extraction) **et C2**
 Les deux sont couvertes ici. **À confirmer avec Elbby** : attend-il une démonstration sur un
 cluster réel, ou la méthode sur un jeu local suffit-elle dès lors que la limite est
 explicitement énoncée ?
-
----
-
-## 9. 🎤 Phrase pour l'oral
-
-> « Le référentiel demande un système big data, j'ai pris Spark parce qu'il y est nommé.
-> Mais je préfère le dire tout de suite : 276 000 lignes, ce n'est pas du big data. Ce que je
-> démontre, c'est la méthode. Sous Windows, Spark plantait faute de deux binaires Hadoop. La
-> solution que tout le monde donne, c'est de télécharger un `.exe` et une `.dll` non signés
-> sur un dépôt communautaire, et de les charger dans la JVM. Je ne l'ai pas fait — sur un
-> projet où je documente le RGPD, ç'aurait été incohérent. J'ai cherché pourquoi ce code natif
-> était appelé : uniquement pour lister un répertoire. Donc je liste avec Python et je passe
-> les fichiers à Spark. Et le partition pruning fonctionne — c'est visible dans le plan :
-> Spark connaît onze fichiers, il en ouvre un. »
-
----
 
 ## 📖 Glossaire
 

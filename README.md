@@ -37,7 +37,7 @@ rita-agent-certif/
 ├── docs/
 │   ├── veille/      # Fiches veille hebdomadaires
 │   └── rapports/    # Rapports E1–E5
-├── evidence/        # Screenshots, logs, preuves jury
+├── evidence/        # Screenshots, logs, preuves de certification
 ├── frontend/        # Next.js dashboard
 ├── pipelines/       # Ingestion, transformation
 └── tests/           # pytest

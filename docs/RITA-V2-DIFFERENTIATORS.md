@@ -1,5 +1,7 @@
 # RITA v2 — Différenciateurs Uniques
+
 # Document de positionnement concurrentiel
+
 # Certification RNCP37827 | Eramalingam GANDAKUMAR
 
 ---
@@ -169,15 +171,6 @@ PREUVE: rend RITA accessible aux débutants
 > Perplexity Finance le fait en anglais, payant, pour développeurs.
 > RITA le fait en français, gratuit, déployé sur le web, pour particuliers.
 > Ce n'est pas la même chose."
-
-### Face au jury "pourquoi pas ai-hedge-fund ?"
-> "J'ai étudié ai-hedge-fund en détail. J'ai pris son architecture
-> multi-agents et ses 4 types d'analyse. Mais je l'ai transformé :
-> français natif, web déployé, RGPD, 3 personas accessibles,
-> et ajouté ce qu'il n'a pas : transparence du prompt et éco-score.
-> Ce sont des choix documentés avec raison et alternative."
-
----
 
 ## 6. MAPPING CERTIFICATION
 

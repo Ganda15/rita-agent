@@ -210,17 +210,3 @@ requêtes »** :
 | 111 tickers / 112 noms | ✅ le nom **n'est pas** un attribut de la cotation : table dédiée |
 | Historiques très inégaux (286 → 2 560 lignes) | ✅ colonnes `premiere_cotation` / `derniere_cotation` sur la table `valeur` |
 | 2 tickers aberrants | ✅ colonne `statut_qualite` pour exclure sans supprimer |
-
-## 🎤 Phrase pour l'oral
-
-> « Avant de modéliser la base, j'ai exploré le jeu récupéré. Trois choses en sont sorties
-> que je n'avais pas vues : un ticker en double sur 2 560 lignes, deux valeurs aux données
-> incohérentes, et des historiques allant de 286 à 2 560 séances. Chacune a changé le
-> schéma — la clé primaire, une table séparée pour les sociétés, une colonne de statut
-> qualité. Sans cette exploration, ces trois problèmes seraient entrés en base
-> silencieusement. »
-
----
-
-*Reproductible : le script relit le Parquet existant, il ne retélécharge rien. Si le jeu
-est absent, il indique la commande de régénération.*

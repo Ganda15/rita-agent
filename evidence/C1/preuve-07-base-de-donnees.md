@@ -16,7 +16,8 @@ exécute les trois requêtes documentées de `db/requetes.sql`.
 ## Commande
 
 ```powershell
-Set-Location "D:\KandaWork\RITA_PROJECTita-agent"
+Set-Location "D:\KandaWork\RITA_PROJECT
+ita-agent"
 C:\Python314\python.exe -X utf8 -m sources.database
 ```
 
@@ -91,11 +92,3 @@ Connexion simulée : aucun test ne nécessite une base.
 | **système big data** | Parquet partitionné | 🔶 étape 1/4 |
 
 **5 types sur 5 sont touchés**, dont 4 pleinement aboutis.
-
-## 🎤 Phrase pour l'oral
-
-> « Cette source est la seule qui relit de la donnée déjà traitée. Les cinq autres
-> collectent du brut ; celle-ci rend un portefeuille dédoublonné, normalisé en UTC, contrôlé
-> par neuf contraintes et converti en euros. C'est ce qui fait que mon total de 31 160 euros
-> est un nombre qu'on peut additionner — alors que le même calcul sur le CSV brut mélangeait
-> des euros et des dollars. »

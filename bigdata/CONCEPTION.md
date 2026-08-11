@@ -16,8 +16,8 @@
 > donc « aucun code écrit » à propos d'un travail terminé.
 >
 > **La partie conception ci-dessous est conservée telle quelle** : le raisonnement sur le
-> volume, la valeur du jeu de données et la position à tenir à l'oral restent vrais, et ce sont
-> eux qui justifient les choix faits. Seuls le statut, la structure et la charge ont été
+> volume et la valeur du jeu de données reste vrai, et c'est lui qui justifie les choix
+> faits. Seuls le statut, la structure et la charge ont été
 > réécrits pour décrire ce qui **existe** au lieu de ce qui était **prévu**.
 
 ## D'où vient ce dossier
@@ -54,8 +54,8 @@ Y injecter Spark serait une complexité sans usage : Spark sert à traiter des v
 machine seule ne tient pas — ce n'est pas le cas de 10 valeurs du CAC 40.
 
 **Le laboratoire est donc isolé** : il démontre la compétence sans dégrader l'architecture.
-C'est aussi la position la plus honnête devant un jury — « j'ai su l'utiliser, et j'ai su
-décider de ne pas l'utiliser en production » vaut mieux que du Spark décoratif.
+C'est aussi la position la plus honnête : savoir utiliser Spark **et** savoir décider de
+ne pas l'utiliser en production vaut mieux que du Spark décoratif.
 
 ## Ce qui servait de socle au 29/07 — et ce que c'est devenu
 
@@ -148,28 +148,6 @@ cluster, le référentiel le sait. Donc ce qui compte, c'est d'utiliser réellem
 moteur distribué, Spark SQL, exécution paresseuse, Parquet partitionné — pas de gonfler un
 chiffre.
 
-### 🎤 Position à l'oral (à apprendre telle quelle)
-
-> « J'ai pris mon univers réel : les 155 titres que je suivais à la main chaque matin sur mon
-> compte-titres. J'ai testé chaque ticker un par un — **112 sont exploitables, 276 000 lignes
-> sur 10 ans**. Les autres sont des sociétés rachetées, renommées ou liquidées : Iliad,
-> Ingenico, Natixis, Suez… et 4 que j'ai récupérées en corrigeant le ticker, comme CGG devenue
-> Viridien ou Peugeot devenue Stellantis.
->
-> **Ce volume n'est pas du big data**, et je l'assume : pandas le traiterait instantanément. Ce
-> que je démontre, c'est la capacité à programmer contre un système big data — Spark, Parquet
-> partitionné par année, lecture avec *predicate pushdown*. L'architecture serait identique sur
-> des téraoctets.
->
-> Et ce jeu de données a une qualité qu'un indice propre n'aurait pas : il contient de vrais
-> défauts — des tickers morts, des renommages, deux devises, cinq places de cotation. C'est ce
-> qui m'a permis de construire mes règles d'agrégation et de nettoyage sur des cas réels, pas
-> sur des cas d'école. »
-
-Cette réponse est **plus solide** que « j'ai du big data » : un juré qui travaille en data verra
-immédiatement que 276 000 lignes n'en sont pas. L'admettre coûte moins cher que le nier — et le
-récit des tickers morts prouve qu'on a manipulé de la vraie donnée.
-
 ## ✅ Structure réelle (au 10/08/2026)
 
 ```
@@ -203,8 +181,8 @@ lus**. C'est la **méthode** qui prouve la compétence, pas la taille du fichier
 
 | Moteur | Pour | Contre |
 |---|---|---|
-| **PySpark local** ✅ **retenu** | c'est *le* nom que le jury attend derrière « système big data » ; Spark SQL couvre C2 directement | lourd à installer (JVM), lent au démarrage |
-| **DuckDB** | installation triviale, SQL natif, très rapide sur Parquet | moins reconnaissable comme « big data » par un jury |
+| **PySpark local** ✅ **retenu** | c'est *le* nom standard de l'industrie derrière « système big data » ; Spark SQL couvre C2 directement | lourd à installer (JVM), lent au démarrage |
+| **DuckDB** | installation triviale, SQL natif, très rapide sur Parquet | moins identifié comme « big data » |
 
 **PySpark**, précisément parce que le critère nomme un « système big data » et que Spark est la
 réponse canonique. DuckDB aurait été plus élégant techniquement mais aurait demandé de
@@ -229,9 +207,6 @@ incohérent.
 **Le contournement** : chercher **pourquoi** ce code natif est appelé. Réponse — uniquement
 pour **lister** un répertoire. Donc le listage est fait en Python et les fichiers sont passés
 explicitement à `spark.read`, avec `basePath` pour conserver la colonne de partition.
-
-> 🎤 **À l'oral** : *« Le problème n'a pas été contourné en baissant la garde — il a été
-> compris, puis évité. »*
 
 ⚠️ **Ne jamais « réparer » ça en installant les binaires.**
 
@@ -328,8 +303,7 @@ Spark SQL, et surtout **ce que chacune déclenche** dans le moteur.
 
 ⚠️ **Attention à l'unité.** Le rapport E1 annonce **« 14 Mo »** — corrigé le 10/08, il disait
 « 13 Mo » jusque-là, ce qui était un arrondi vers le bas dans **les deux** conventions
-(13,97 Mo en base 10, 13,33 Mio en base 2). Si le jury pousse, la réponse exacte est
-**13 972 899 octets**.
+(13,97 Mo en base 10, 13,33 Mio en base 2). La valeur exacte est **13 972 899 octets**.
 
 ### ⚠️ « 10 ans » et « 11 partitions » — les deux sont vrais
 

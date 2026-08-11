@@ -1,6 +1,9 @@
 # RITA v2 — Architecture Complète
+
 # Certification RNCP37827 — Développeur en Intelligence Artificielle
+
 # Auteur: Eramalingam GANDAKUMAR | WCS Bootcamp Dev IA Agentique
+
 # Version: 2.0 | Date: Mai 2026
 
 ---
@@ -81,6 +84,7 @@ Collecter toutes les données brutes : cours, historique, actualités.
 
 ### Sources de données (toutes gratuites)
 ```python
+
 # 1. Cours + historique (yfinance)
 import yfinance as yf
 ticker = yf.Ticker("MC.PA")
@@ -648,6 +652,7 @@ rita-agent-certif/
 ## REQUIREMENTS.TXT v2
 
 ```
+
 # Core
 anthropic>=0.25.0           # Claude API — PAS openai
 langgraph>=0.2.0
@@ -689,21 +694,3 @@ httpx>=0.27.0
 # Utils
 python-dotenv>=1.0.0
 ```
-
----
-
-## PHRASE FINALE POUR LE JURY
-
-> "RITA v2 n'est pas un clone de ai-hedge-fund ou de Perplexity Finance.
-> C'est ce qu'ils auraient dû construire pour l'investisseur particulier
-> francophone : 5 agents spécialisés, données équivalentes à un outil
-> professionnel, entièrement gratuit grâce à yfinance + pandas-ta,
-> déployé sur le web, en français, RGPD conforme, et transparent sur
-> ce qu'il consomme en coût et en carbone.
-> C'est le vide du marché français FinAI que RITA remplit."
-
----
-
-*RITA v2 — Architecture Document*
-*Eramalingam GANDAKUMAR | WCS Bootcamp Dev IA Agentique | Mai 2026*
-*Certification RNCP37827 — Développeur en Intelligence Artificielle*

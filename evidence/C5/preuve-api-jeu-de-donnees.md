@@ -102,7 +102,7 @@ Testé : `test_les_articles_bloques_ne_sortent_jamais` inspecte le SQL réelleme
 
 RITA est mono-utilisateur (décision D10). Un système de comptes serait de la complexité sans
 besoin. **La contrepartie est réelle** : pas de révocation partielle, pas de traçabilité par
-appelant. Documenté dans la docstring de `verify_api_key` — à dire tel quel au jury.
+appelant. Documenté dans la docstring de `verify_api_key`.
 
 ## Tests
 
@@ -114,15 +114,6 @@ C:\Python314\python.exe -m pytest tests/test_api_donnees.py -q
 **12 des 25 tests portent sur l'autorisation** — le critère central de C5. Chaque route est
 testée **sans clé** et **avec une mauvaise clé** : un contrôle d'accès qui protège 5 routes
 sur 6 ne protège rien.
-
-## 🎤 Phrase pour l'oral
-
-> « Mon API exposait un briefing rédigé — mais C5 demande le jeu de données. J'ai donc ajouté
-> six points de terminaison sur la donnée brute, filtrable. Le choix dont je suis le plus
-> satisfait, c'est d'avoir posé l'authentification sur le routeur entier plutôt que route par
-> route : un point de terminaison ajouté demain sera protégé d'office. Et je l'ai verrouillé
-> par un test qui parcourt toutes les routes déclarées — si l'une répond autre chose que 403
-> sans clé, le test casse. »
 
 ## 📖 Glossaire
 

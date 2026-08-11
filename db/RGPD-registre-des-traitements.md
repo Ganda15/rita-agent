@@ -133,8 +133,8 @@ accident est une perte de données irréversible.*
 ## 4. Exercice des droits (art. 15 à 22)
 
 Era étant la personne concernée, les droits s'exercent par simple accès à la base. Les
-commandes sont néanmoins documentées — c'est ce qu'un jury attend, et ce qui serait
-nécessaire dès le deuxième utilisateur.
+commandes sont néanmoins documentées — elles seraient nécessaires dès le deuxième
+utilisateur.
 
 | Droit | Article | Comment l'exercer aujourd'hui |
 |---|---|---|
@@ -185,14 +185,3 @@ nécessaire dès le deuxième utilisateur.
 | **Mode simulation** (*dry-run*) | Le script montre ce qu'il ferait, sans le faire | Comportement par défaut de `rgpd_purge.py` |
 | **Hook pre-commit** | Script Git qui s'exécute **avant** d'enregistrer un commit | Empêcherait d'ajouter un fichier personnel |
 | **PRU** | *Prix de Revient Unitaire* — prix moyen d'achat d'un titre | Donnée personnelle : révèle la plus-value |
-
----
-
-## 7. 🎤 Phrase pour l'oral
-
-> « J'ai recensé quatre traitements de données personnelles. Le plus sensible n'est pas
-> celui qu'on croit : ce n'est pas ma table `position`, qui reste sur ma machine — c'est le
-> traçage LangSmith, parce qu'il envoie mes prompts, et donc potentiellement mes montants, à
-> un sous-traitant américain. C'est un transfert hors UE, encadré par les clauses
-> contractuelles types, mais que je n'ai **pas encore** réduit. Je l'ai inscrit au registre
-> comme une action ouverte plutôt que de l'omettre. »

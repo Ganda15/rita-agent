@@ -13,7 +13,7 @@ Trois choses distinguent cette source des quatre autres :
 2. **On doit demander la permission.** `robots.txt` est vérifié **avant** toute requête.
    C'est l'« identification des contraintes techniques propres aux sources de données, dont
    les règles de confidentialité » que demande C1, et c'est aussi la seule attitude
-   défendable devant un jury.
+   défendable.
 
 3. **Le contenu est hostile par défaut.** Toute chaîne extraite d'une page tierce passe par
    `guardrails/injection.py` avant de pouvoir approcher un LLM.

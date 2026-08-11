@@ -25,8 +25,10 @@ requête propre au système afin de préparer la collecte des données nécessai
 
 ```powershell
 Set-Location "D:\KandaWork\RITA_PROJECT\rita-agent"
+
 # les requêtes seules
 psql -h localhost -p 5432 -U rita -d rita -f db/requetes.sql
+
 # l'extraction programmatique (C1 — 5e type)
 C:\Python314\python.exe -X utf8 -m sources.database
 ```
@@ -214,20 +216,6 @@ C:\Python314\python.exe -m pytest tests/test_database.py -q
 
 > Les tests **verrouillent les décisions mesurées**. Si quelqu'un remet un `DISTINCT ON`
 > dans R1, un test rouge le lui dira — la mesure ne se perd pas dans un commentaire.
-
----
-
-## 7. 🎤 Phrase pour l'oral
-
-> « Sur mes trois requêtes, l'optimisation la plus intéressante est celle que j'ai eue à
-> l'envers. J'avais écrit un `DISTINCT ON` en pensant éviter une sous-requête exécutée à
-> chaque ligne. `EXPLAIN ANALYZE` sur mes 273 608 cotations réelles a montré que ma version
-> était **2 000 fois plus lente** : avec 7 positions, la sous-requête fait 7 recherches
-> d'index, alors que le `DISTINCT ON` trie toute la table. Je suis passé à un
-> `LEFT JOIN LATERAL` — même plan, mais lisible. Et j'ai verrouillé la décision par un test,
-> pour qu'elle ne se perde pas. »
-
----
 
 ## 📖 Glossaire
 

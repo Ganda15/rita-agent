@@ -92,17 +92,3 @@ Il n'existe aucun moyen honnête d'atteindre le téraoctet dans ce cadre.
 
 ⏸ **Question toujours ouverte** : la preuve big data couvre-t-elle **C1 seul**, ou **aussi C2**
 avec Spark SQL ? Jamais posée au formateur — il a seulement dit qu'il examinerait le schéma.
-
-## 🎤 Phrase pour l'oral
-
-> « J'ai construit un jeu Parquet de 276 000 lignes sur mon univers réel — 112 titres, 10 ans —
-> partitionné par année. Une requête filtrée sur 2024 ne lit qu'une partition sur onze : je l'ai
-> mesuré, c'est **9,4 fois plus rapide** que de tout lire. **Ce volume ne nécessite pas Spark**,
-> et je l'assume : 14 mégaoctets tiennent en mémoire. Ce que je démontre, c'est la méthode —
-> partitionnement, format colonnaire, *predicate pushdown* — qui serait rigoureusement la même
-> sur des téraoctets. »
-
----
-
-*Note : les fichiers `.parquet` ne sont pas versionnés (`.gitignore`) — ce sont des données
-régénérables en 32 secondes par le script, pas du code.*

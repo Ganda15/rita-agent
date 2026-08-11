@@ -17,6 +17,7 @@ Trois mesures, et une vérification :
 3. **`.gitignore` bloque les motifs de fichiers personnels**
 
 ```gitignore
+
 # --- Données personnelles : JAMAIS versionnées ---
 data/positions.csv
 data/positions-reelles*.csv
@@ -42,7 +43,7 @@ $ git status --short --untracked-files=all | grep -iE "positions|bourse"
 Seuls l'exemple, le code et les tests sont visibles. **La règle est vérifiée, pas
 seulement écrite.**
 
-> Bénéfice secondaire : le script tourne pour le jury **sans aucune donnée personnelle**.
+> Bénéfice secondaire : le script tourne **sans aucune donnée personnelle**.
 > La démonstration est reproductible telle quelle.
 
 ## Commande
@@ -183,13 +184,3 @@ Correction : synonymes EN ajoutés. **C'est le test qui a révélé le trou, pas
 | **système big data** | Parquet partitionné + Spark | 🔶 1/4 |
 
 **4 types sur 5.** Le dernier dépend de la création de la base (décision D15 : PostgreSQL).
-
-## 🎤 Phrase pour l'oral
-
-> « Le lecteur de positions n'est pas un `read_csv`. Un export de courtier français cumule
-> quatre pièges : séparateur point-virgule, encodage cp1252, virgule décimale avec espaces
-> insécables pour les milliers, et des en-têtes qui changent d'un courtier à l'autre. Je
-> les traite tous les quatre, et je trace chaque ligne rejetée avec sa cause plutôt que de
-> l'effacer. Et comme ce fichier contient mes vraies positions, le dépôt ne contient qu'un
-> exemple anonymisé — j'ai vérifié avec `git check-ignore` que le vrai fichier est bien
-> invisible. »

@@ -222,7 +222,7 @@ CREATE INDEX idx_article_publie ON article (publie_le DESC)
 -- 7. MEMORY_AUDIT — journal des écritures en mémoire des agents
 -- =============================================================================
 -- Prévu au plan 5.2. Standard Velmo 2.0 : une mémoire d'agent qui s'écrit sans trace
--- est une mémoire qu'on ne peut ni déboguer ni expliquer au jury.
+-- est une mémoire qu'on ne peut ni déboguer ni expliquer.
 CREATE TABLE memory_audit (
     id              BIGSERIAL PRIMARY KEY,
     agent           VARCHAR(40)  NOT NULL,
