@@ -92,3 +92,9 @@ C:\Python314\python.exe -m pytest tests/test_ecb.py -v
 | fichier de données | CSV positions · PDF | ⬜ |
 | base de données | PostgreSQL relu en SQL | ⬜ → C2 |
 | système big data | Parquet partitionné + Spark | 🔶 étape 1/4 |
+
+> 📌 **Ce tableau est un instantané du 30/07/2026** — il dit la couverture *au moment de cette
+> preuve*, et il est conservé tel quel pour cette raison. **La couverture finale est de 5 types
+> sur 5**, atteinte le 02/08 : scraping (`preuve-05`), fichier (`preuve-06`), base de données
+> (`preuve-07`), big data 4 étapes sur 4 (`preuve-bigdata-spark`). État à jour : `README.md`
+> de ce dossier.

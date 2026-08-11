@@ -90,5 +90,11 @@ Il n'existe aucun moyen honnête d'atteindre le téraoctet dans ce cadre.
 | 3 · `extract_spark.py` — extraction C1 | ⬜ |
 | 4 · `query_spark.py` — Spark SQL C2 | ⏸ **seulement si le formateur le demande** |
 
+> 📌 **Plan du 30/07/2026, conservé tel quel** — il montre ce qui était prévu et ce que ça
+> devait coûter. **Les 4 étapes ont été faites le 02/08**, en une journée au lieu des 1,5 à 2
+> estimées. Les deux pièges annoncés se sont bien produits (`JAVA_HOME`, puis `winutils.exe`,
+> refusé et contourné). L'étape 4 a été codée **sans attendre** la réponse du formateur —
+> voir `preuve-bigdata-spark.md` et `bigdata/CONCEPTION.md`.
+
 ⏸ **Question toujours ouverte** : la preuve big data couvre-t-elle **C1 seul**, ou **aussi C2**
 avec Spark SQL ? Jamais posée au formateur — il a seulement dit qu'il examinerait le schéma.

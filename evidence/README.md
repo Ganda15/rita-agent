@@ -15,15 +15,29 @@ La preuve se constitue **au fil de l'eau**, jamais reconstituée après coup.
 Une preuve = ce qu'un évaluateur peut ouvrir seul et comprendre sans explication orale :
 capture d'écran horodatée, sortie de commande, fichier produit, lien vers un run CI.
 
-## État au 28/07/2026
+## État au 11/08/2026
 
-| Dossier | Compétence | Preuve attendue | État |
+| Dossier | Compétence | Preuve | État |
 |---|---|---|---|
-| `C1/` | Automatiser l'extraction depuis plusieurs types de sources | script fonctionnel + sortie réelle par source + tableau de couverture des types + preuve big data séparée | 1 source /7 |
-| `C2/` | Requêtes SQL d'extraction | les 3 requêtes + leur sortie + documentation des jointures et optimisations | ⬜ |
-| `C3/` | Règles d'agrégation et nettoyage | rapport qualité : entrées corrompues supprimées, formats homogénéisés, vérification croisée | ⬜ |
-| `C4/` | Base de données dans le respect du RGPD | MCD + MPD (MERISE) + note RGPD + script d'import | ⬜ |
-| `C5/` | API et tests | OpenAPI + tests automatisés + couverture | partiel (Q1 : 15 tests, `/health` + `/briefing`) |
+| `C1/` | Extraction depuis plusieurs types de sources | 10 preuves — une par source + big data séparée + analyse exploratoire | ✅ **7 sources · les 5 types** |
+| `C2/` | Requêtes SQL d'extraction | `preuve-requetes-sql.md` — 3 requêtes, sorties réelles, jointures et optimisations mesurées | ✅ |
+| `C3/` | Règles d'agrégation et nettoyage | 3 preuves — déduplication, artefact de regroupement, pipeline d'agrégation | ✅ |
+| `C4/` | Base de données dans le respect du RGPD | `preuve-mcd-merise.md` + le MCD (`.png` et `.drawio`) · MPD dans `../db/schema.sql` · RGPD dans `../db/RGPD-registre-des-traitements.md` | ✅ |
+| `C5/` | API et tests | `preuve-api-jeu-de-donnees.md` (OpenAPI 3.1.0, 8 chemins) + `mesure-garde-fou-injection.md` | ✅ |
+
+**186 tests verts** (`pytest -q`). Base : 8 tables · 1 vue · 15 index · 9 contraintes `CHECK` ·
+273 608 lignes importées.
+
+> ⚠️ **Ce tableau annonçait encore l'état du 28/07** (`C2` `C3` `C4` non commencées, `C1` à
+> « 1 source sur 7 ») **jusqu'au 11/08/2026**. Le travail avait avancé, ce fichier non — et
+> c'est le premier fichier qu'un évaluateur ouvre. Corrigé, et la leçon est notée : **un
+> document d'état daté reste faux si personne ne lit la date.**
+
+## Ce qui reste
+
+| Critère | Ce qui manque | Nature |
+|---|---|---|
+| **C1#6** · **C3#2** | *« accessible depuis un dépôt Git »* — le dépôt est **privé** et n'a pour l'instant qu'un seul compte autorisé | ⚠️ **accès à donner** (invitation en collaborateur), pas du travail à produire |
 
 ## Ordre de travail imposé
 

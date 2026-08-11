@@ -184,3 +184,8 @@ Correction : synonymes EN ajoutés. **C'est le test qui a révélé le trou, pas
 | **système big data** | Parquet partitionné + Spark | 🔶 1/4 |
 
 **4 types sur 5.** Le dernier dépend de la création de la base (décision D15 : PostgreSQL).
+
+> 📌 **Instantané du 30/07/2026**, conservé tel quel. **Les 5 types sont couverts depuis le
+> 02/08** : la base de données par `preuve-07-base-de-donnees.md`, le big data par
+> `preuve-bigdata-spark.md` (4 étapes sur 4). FRED n'était pas écartée mais **bloquée faute de
+> clé** — obtenue le 02/08, codée, 9 tests (`preuve-02-fred.md`).
