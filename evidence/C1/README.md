@@ -9,6 +9,12 @@
 > données est faite depuis **un mix entre au moins** les sources suivantes : un service web
 > (API REST), un fichier de données, un scraping, une base de données et un système big data. »
 
+📎 **Vue d'ensemble en une image** :
+[`SCHEMA-C1-collecte-multisource.png`](SCHEMA-C1-collecte-multisource.png) — les 7 sources, les
+5 types exigés, les traitements traversés et la destination. Source éditable :
+[`.svg`](SCHEMA-C1-collecte-multisource.svg).
+Le big data a ses propres schémas : [`../../bigdata/schemas/`](../../bigdata/schemas/).
+
 ## Les 7 sources et les 5 types
 
 | # | Source | Type C1 | Fichier | Preuve | État |

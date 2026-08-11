@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" width="900" height="700" font-family="Segoe UI, Calibri, system-ui, sans-serif">
+<style>
+  .ttl   { font-size:17px; font-weight:600; fill:#16202B; font-family:Georgia,serif; }
+  .sub   { font-size:10.5px; fill:#4A5766; font-style:italic; font-family:Georgia,serif; }
+  .step  { font-size:11px; font-weight:700; fill:#14607F; letter-spacing:.06em; }
+  .qname { font-size:12px; font-weight:700; fill:#16202B; }
+  .qgoal { font-size:9.4px; fill:#4A5766; }
+  .lab   { font-size:8.2px; font-weight:700; fill:#4A5766; letter-spacing:.07em; }
+  .mono  { font-family:Consolas,"Courier New",monospace; font-size:9px; fill:#16202B; }
+  .monoA { font-family:Consolas,"Courier New",monospace; font-size:9px; font-weight:700; fill:#14607F; }
+  .big   { font-size:15px; font-weight:700; fill:#14607F; font-family:Georgia,serif; }
+  .bigR  { font-size:15px; font-weight:700; fill:#9E4318; font-family:Georgia,serif; }
+  .unit  { font-size:8px; fill:#9DAAB8; }
+  .note  { font-size:9.2px; fill:#4A5766; }
+  .rule  { stroke:#D5DCE4; stroke-width:.8; }
+  .card  { fill:#FFFFFF; stroke:#D5DCE4; stroke-width:.9; }
+  .barbg { fill:#EEF2F5; }
+  .barfg { fill:#14607F; }
+  .barwn { fill:#9E4318; }
+  .tagP  { fill:#ECF3F7; stroke:#14607F; stroke-width:.9; }
+  .tagS  { fill:#FBF1EC; stroke:#9E4318; stroke-width:.9; }
+  .tagPt { font-size:8.4px; font-weight:700; fill:#14607F; }
+  .tagSt { font-size:8.4px; font-weight:700; fill:#9E4318; }
+</style>
+
+<rect x="0" y="0" width="900" height="700" fill="#FFFFFF"/>
+<line x1="40" y1="26" x2="860" y2="26" stroke="#14607F" stroke-width="2.5"/>
+
+<text class="ttl" x="40" y="50">Les trois requêtes Spark SQL — et ce que chacune déclenche</text>
+<text class="sub" x="40" y="68">RITA · compétence C2, versant big data · <tspan font-family="Consolas,monospace" font-style="normal">bigdata/query_spark.py</tspan> · volumes mesurés, pas estimés</text>
+
+<!-- ══════════ LÉGENDE DES DEUX MÉCANISMES ══════════ -->
+<rect class="tagP" x="40" y="86" width="196" height="36" rx="2"/>
+<text class="tagPt" x="52" y="101">PARTITION PRUNING — gratuit</text>
+<text class="note" x="52" y="115" font-size="8.6">Spark n'ouvre pas le fichier. Coût nul.</text>
+
+<rect class="tagS" x="248" y="86" width="220" height="36" rx="2"/>
+<text class="tagSt" x="260" y="101">SHUFFLE — coûteux</text>
+<text class="note" x="260" y="115" font-size="8.6">Redistribution entre exécuteurs. Inévitable ici.</text>
+
+<text class="note" x="486" y="101"><tspan font-weight="700">La règle :</tspan> on choisit ses filtres pour <tspan font-weight="700" fill="#14607F">élaguer</tspan>,</text>
+<text class="note" x="486" y="115">on accepte le <tspan font-style="italic">shuffle</tspan> quand le calcul l'exige.</text>
+
+<!-- ══════════ S1 ══════════ -->
+<line class="rule" x1="40" y1="140" x2="860" y2="140"/>
+<text class="qname" x="40" y="160">S1 · Volumétrie par année</text>
+<text class="qgoal" x="40" y="175">Vérifier l'équilibre des partitions et la couverture temporelle.</text>
+
+<text class="lab" x="40" y="196">REQUÊTE</text>
+<text class="mono" x="40" y="210">SELECT annee, COUNT(*), COUNT(DISTINCT ticker), AVG(cloture)</text>
+<text class="mono" x="40" y="223">FROM cotation <tspan class="monoA">GROUP BY annee</tspan></text>
+
+<text class="lab" x="440" y="196">CE QUE ÇA LIT</text>
+<rect class="barbg" x="440" y="203" width="240" height="13"/>
+<rect class="barwn" x="440" y="203" width="240" height="13"/>
+<text class="big" x="690" y="215" fill="#9E4318">11<tspan class="unit" fill="#9DAAB8">/11 partitions</tspan></text>
+<text class="note" x="440" y="231">276 168 lignes — <tspan font-weight="700" fill="#9E4318">100 % du jeu</tspan></text>
+
+<rect class="tagS" x="440" y="240" width="152" height="17" rx="2"/>
+<text class="tagSt" x="450" y="252">SHUFFLE (GROUP BY)</text>
+<text class="mono" x="604" y="252">PartitionFilters: <tspan fill="#9E4318" font-weight="700">[]</tspan></text>
+
+<text class="note" x="40" y="252"><tspan font-weight="700">Aucun élagage — et c'est voulu</tspan> : la question porte sur <tspan font-style="italic">toutes</tspan> les années.</text>
+<text class="note" x="40" y="266">Le format colonnaire limite quand même le coût : compter des lignes ne charge pas les prix.</text>
+
+<!-- ══════════ S2 ══════════ -->
+<line class="rule" x1="40" y1="284" x2="860" y2="284"/>
+<text class="qname" x="40" y="304">S2 · Amplitude moyenne par valeur</text>
+<text class="qgoal" x="40" y="319">Classer les valeurs par volatilité intraséance — un fait observable, pas une recommandation.</text>
+
+<text class="lab" x="40" y="340">REQUÊTE</text>
+<text class="mono" x="40" y="354">SELECT ticker, AVG((haut-bas)/bas*100) ... FROM cotation</text>
+<text class="mono" x="40" y="367">WHERE <tspan class="monoA">annee &gt;= 2024</tspan> AND bas &gt; 0</text>
+<text class="mono" x="40" y="380">GROUP BY ticker <tspan class="monoA">HAVING COUNT(*) &gt;= 200</tspan></text>
+
+<text class="lab" x="440" y="340">CE QUE ÇA LIT</text>
+<rect class="barbg" x="440" y="347" width="240" height="13"/>
+<rect class="barfg" x="440" y="347" width="62" height="13"/>
+<text class="big" x="690" y="359">3<tspan class="unit">/11 partitions</tspan></text>
+<text class="note" x="440" y="375">71 334 lignes — <tspan font-weight="700" fill="#14607F">25,8 % du jeu</tspan></text>
+
+<rect class="tagP" x="440" y="384" width="152" height="17" rx="2"/>
+<text class="tagPt" x="450" y="396">PRUNING : 8 fichiers évités</text>
+<rect class="tagS" x="602" y="384" width="120" height="17" rx="2"/>
+<text class="tagSt" x="612" y="396">SHUFFLE (GROUP BY)</text>
+
+<text class="note" x="40" y="398"><tspan font-weight="700" fill="#14607F">Le filtre sur la colonne de partition est l'optimisation majeure.</tspan></text>
+<text class="note" x="40" y="412"><tspan font-family="Consolas,monospace">bas &gt; 0</tspan> évite une division par zéro — l'analyse exploratoire avait mesuré des volumes nuls.</text>
+<text class="note" x="40" y="426"><tspan font-family="Consolas,monospace">HAVING &gt;= 200</tspan> écarte les valeurs trop peu cotées : 12 séances ne se comparent pas à 500.</text>
+
+<!-- ══════════ S3 ══════════ -->
+<line class="rule" x1="40" y1="444" x2="860" y2="444"/>
+<text class="qname" x="40" y="464">S3 · Meilleure séance de chaque valeur</text>
+<text class="qgoal" x="40" y="479">Situer une séance dans l'historique de sa propre valeur — fenêtrage <tspan font-family="Consolas,monospace">LAG</tspan> puis <tspan font-family="Consolas,monospace">RANK</tspan>.</text>
+
+<text class="lab" x="40" y="500">REQUÊTE</text>
+<text class="mono" x="40" y="514"><tspan class="monoA">LAG(cloture) OVER (PARTITION BY ticker ORDER BY date)</tspan></text>
+<text class="mono" x="40" y="527"><tspan class="monoA">RANK() OVER (PARTITION BY ticker ORDER BY variation DESC)</tspan></text>
+<text class="mono" x="40" y="540">WHERE <tspan class="monoA">annee &gt;= 2025</tspan> ... WHERE rang_hausse = 1</text>
+
+<text class="lab" x="440" y="500">CE QUE ÇA LIT</text>
+<rect class="barbg" x="440" y="507" width="240" height="13"/>
+<rect class="barfg" x="440" y="507" width="38" height="13"/>
+<text class="big" x="690" y="519">2<tspan class="unit">/11 partitions</tspan></text>
+<text class="note" x="440" y="535">43 686 lignes — <tspan font-weight="700" fill="#14607F">15,8 % du jeu</tspan></text>
+
+<rect class="tagP" x="440" y="544" width="152" height="17" rx="2"/>
+<text class="tagPt" x="450" y="556">PRUNING : 9 fichiers évités</text>
+<rect class="tagS" x="602" y="544" width="176" height="17" rx="2"/>
+<text class="tagSt" x="612" y="556">SHUFFLE (PARTITION BY ticker)</text>
+
+<text class="note" x="40" y="558"><tspan font-weight="700" fill="#9E4318">C'est la requête la plus chère, et elle lit le moins de données.</tspan></text>
+<text class="note" x="40" y="572"><tspan font-family="Consolas,monospace">PARTITION BY ticker</tspan> oblige Spark à regrouper chaque valeur sur un même exécuteur :</text>
+<text class="note" x="40" y="586">c'est le <tspan font-style="italic">shuffle</tspan>, l'opération la plus coûteuse du monde distribué.</text>
+
+<!-- ══════════ LA LEÇON ══════════ -->
+<line class="rule" x1="40" y1="604" x2="860" y2="604"/>
+<text class="step" x="40" y="622">CE QUE LES TROIS ENSEMBLE DÉMONTRENT</text>
+
+<rect class="card" x="40" y="632" width="266" height="46" rx="2"/>
+<text class="note" x="52" y="649"><tspan font-weight="700">Lire moins ≠ aller plus vite.</tspan></text>
+<text class="note" x="52" y="663" font-size="8.6">S3 lit 15,8 % du jeu et coûte plus que S2 qui en lit</text>
+<text class="note" x="52" y="674" font-size="8.6">25,8 % : le <tspan font-style="italic">shuffle</tspan> pèse plus que la lecture.</text>
+
+<rect class="card" x="318" y="632" width="266" height="46" rx="2"/>
+<text class="note" x="330" y="649"><tspan font-weight="700">Le filtre décide du coût.</tspan></text>
+<text class="note" x="330" y="663" font-size="8.6">Filtrer sur <tspan font-family="Consolas,monospace">annee</tspan> — la colonne de partition —</text>
+<text class="note" x="330" y="674" font-size="8.6">écarte des fichiers entiers avant toute lecture.</text>
+
+<rect class="card" x="596" y="632" width="264" height="46" rx="2"/>
+<text class="note" x="608" y="649"><tspan font-weight="700">Le langage ne change pas.</tspan></text>
+<text class="note" x="608" y="663" font-size="8.6"><tspan font-family="Consolas,monospace">LAG</tspan>, <tspan font-family="Consolas,monospace">RANK</tspan>, <tspan font-family="Consolas,monospace">HAVING</tspan> : même vocabulaire qu'en SQL.</text>
+<text class="note" x="608" y="674" font-size="8.6">C'est le <tspan font-weight="700">moteur</tspan> qui diffère, pas la syntaxe.</text>
+
+<text class="note" x="700" y="694" font-size="8.4" fill="#9DAAB8">RITA · RNCP 37827 · C2</text>
+</svg>

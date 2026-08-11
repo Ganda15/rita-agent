@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 660" width="900" height="660" font-family="Segoe UI, Calibri, system-ui, sans-serif">
+<style>
+  .bg    { fill:#FFFFFF; }
+  .ttl   { font-size:17px; font-weight:600; fill:#16202B; font-family:Georgia,serif; }
+  .sub   { font-size:10.5px; fill:#4A5766; font-style:italic; font-family:Georgia,serif; }
+  .step  { font-size:11px; font-weight:700; fill:#14607F; letter-spacing:.06em; }
+  .box   { fill:#ECF3F7; stroke:#14607F; stroke-width:1.1; }
+  .boxw  { fill:#FBF1EC; stroke:#9E4318; stroke-width:1.1; }
+  .mod   { font-size:10.5px; font-weight:700; fill:#16202B; text-anchor:middle; }
+  .modx  { font-size:8.8px; fill:#4A5766; text-anchor:middle; }
+  .barR  { fill:#D8E3EA; }
+  .barA  { fill:#14607F; }
+  .yr    { font-size:8.6px; fill:#4A5766; text-anchor:middle; }
+  .yrA   { font-size:8.6px; font-weight:700; fill:#14607F; text-anchor:middle; }
+  .n     { font-size:7.6px; fill:#9DAAB8; text-anchor:middle; }
+  .nA    { font-size:8.4px; font-weight:700; fill:#14607F; text-anchor:middle; }
+  .mono  { font-family:Consolas,"Courier New",monospace; font-size:9.5px; fill:#16202B; }
+  .monoA { font-family:Consolas,"Courier New",monospace; font-size:9.5px; font-weight:700; fill:#14607F; }
+  .ln    { stroke:#9DAAB8; stroke-width:1.1; fill:none; }
+  .lnA   { stroke:#14607F; stroke-width:1.6; fill:none; }
+  .th    { font-size:8.4px; font-weight:700; fill:#4A5766; letter-spacing:.07em; }
+  .td    { font-size:9.6px; fill:#16202B; }
+  .tdA   { font-size:9.6px; font-weight:700; fill:#14607F; }
+  .rule  { stroke:#D5DCE4; stroke-width:.8; }
+  .note  { font-size:9.2px; fill:#4A5766; }
+  .noteB { font-size:9.2px; font-weight:700; fill:#9E4318; }
+</style>
+
+<rect class="bg" x="0" y="0" width="900" height="660"/>
+<line x1="40" y1="26" x2="860" y2="26" stroke="#14607F" stroke-width="2.5"/>
+
+<text class="ttl" x="40" y="50">Système big data — ce qui distingue Spark d'une base SQL</text>
+<text class="sub" x="40" y="68">RITA · compétences C1 (extraction) et C2 (requêtes) · jeu Parquet partitionné par année</text>
+
+<!-- ══════════ ① LA CHAÎNE ══════════ -->
+<text class="step" x="40" y="100">① LA CHAÎNE — TROIS MODULES, TROIS RÔLES</text>
+<line class="rule" x1="40" y1="107" x2="860" y2="107"/>
+
+<rect class="box" x="40" y="120" width="180" height="46" rx="2"/>
+<text class="mod" x="130" y="139">build_parquet.py</text>
+<text class="modx" x="130" y="155">écrit · 276 168 lignes → 11 partitions</text>
+
+<path class="ln" d="M220 143 H252" marker-end="url(#a)"/>
+
+<rect class="box" x="252" y="120" width="180" height="46" rx="2"/>
+<text class="mod" x="342" y="139">session_spark.py</text>
+<text class="modx" x="342" y="155">démarre · JAVA_HOME automatique</text>
+
+<path class="ln" d="M432 143 H464" marker-end="url(#a)"/>
+
+<rect class="box" x="464" y="120" width="185" height="46" rx="2"/>
+<text class="mod" x="556" y="139">extract_spark.py</text>
+<text class="modx" x="556" y="155">lit · C1 — extraction programmatique</text>
+
+<rect class="box" x="670" y="120" width="190" height="46" rx="2"/>
+<text class="mod" x="765" y="139">query_spark.py</text>
+<text class="modx" x="765" y="155">interroge · C2 — 3 requêtes Spark SQL</text>
+
+<path class="ln" d="M649 143 H668" marker-end="url(#a)"/>
+
+<defs>
+  <marker id="a" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+    <path d="M0,0 L6,3 L0,6 z" fill="#9DAAB8"/>
+  </marker>
+  <marker id="aA" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto">
+    <path d="M0,0 L7,3.5 L0,7 z" fill="#14607F"/>
+  </marker>
+</defs>
+
+<!-- ══════════ ② LE PARTITIONNEMENT ══════════ -->
+<text class="step" x="40" y="204">② LE PARTITIONNEMENT — 10 ANS DE DONNÉES, 11 RÉPERTOIRES</text>
+<line class="rule" x1="40" y1="211" x2="860" y2="211"/>
+
+<text class="mono" x="40" y="230">data/bigdata/ohlcv/annee=YYYY/</text>
+<text class="note" x="40" y="245">28/07/2016 → 29/07/2026</text>
+<text class="note" x="40" y="258" font-size="8.6">soit 3 652 jours</text>
+
+<!-- barres : hauteur proportionnelle au nombre de lignes, max 27 783 -> 108 px -->
+<!-- 2016 : 11 980 -> 47 -->
+<rect class="barR" x="70"  y="309" width="58" height="47"/>
+<text class="yr"  x="99"  y="370">2016</text><text class="n" x="99" y="381">11 980</text>
+<!-- 2017 : 27 770 -> 108 -->
+<rect class="barR" x="136" y="248" width="58" height="108"/>
+<text class="yr"  x="165" y="370">2017</text><text class="n" x="165" y="381">27 770</text>
+<!-- 2018 : 27 610 -> 107 -->
+<rect class="barR" x="202" y="249" width="58" height="107"/>
+<text class="yr"  x="231" y="370">2018</text><text class="n" x="231" y="381">27 610</text>
+<!-- 2019 : 27 463 -> 107 -->
+<rect class="barR" x="268" y="249" width="58" height="107"/>
+<text class="yr"  x="297" y="370">2019</text><text class="n" x="297" y="381">27 463</text>
+<!-- 2020 : 27 488 -> 107 -->
+<rect class="barR" x="334" y="249" width="58" height="107"/>
+<text class="yr"  x="363" y="370">2020</text><text class="n" x="363" y="381">27 488</text>
+<!-- 2021 : 27 589 -> 107 -->
+<rect class="barR" x="400" y="249" width="58" height="107"/>
+<text class="yr"  x="429" y="370">2021</text><text class="n" x="429" y="381">27 589</text>
+<!-- 2022 : 27 480 -> 107 -->
+<rect class="barR" x="466" y="249" width="58" height="107"/>
+<text class="yr"  x="495" y="370">2022</text><text class="n" x="495" y="381">27 480</text>
+<!-- 2023 : 27 454 -> 107 -->
+<rect class="barR" x="532" y="249" width="58" height="107"/>
+<text class="yr"  x="561" y="370">2023</text><text class="n" x="561" y="381">27 454</text>
+<!-- 2024 : 27 648 -> 107  ← LA SEULE LUE -->
+<rect class="barA" x="598" y="249" width="58" height="107"/>
+<text class="yrA" x="627" y="370">2024</text><text class="nA" x="627" y="381">27 648</text>
+<!-- 2025 : 27 783 -> 108 -->
+<rect class="barR" x="664" y="248" width="58" height="108"/>
+<text class="yr"  x="693" y="370">2025</text><text class="n" x="693" y="381">27 783</text>
+<!-- 2026 : 15 903 -> 62 -->
+<rect class="barR" x="730" y="294" width="58" height="62"/>
+<text class="yr"  x="759" y="370">2026</text><text class="n" x="759" y="381">15 903</text>
+
+<line class="rule" x1="70" y1="356" x2="788" y2="356"/>
+
+<!-- fleche de la requete vers la partition 2024 -->
+<path class="lnA" d="M627 228 V244" marker-end="url(#aA)"/>
+<rect x="540" y="208" width="176" height="19" rx="2" fill="#14607F"/>
+<text x="628" y="221" font-family="Consolas,monospace" font-size="10" font-weight="700" fill="#FFFFFF" text-anchor="middle">WHERE annee = 2024</text>
+
+<text class="note" x="70" y="400">Les dix autres partitions ne sont pas <tspan font-style="italic">filtrées après lecture</tspan> : elles ne sont <tspan font-weight="700" fill="#14607F">jamais ouvertes</tspan>.</text>
+<text class="note" x="70" y="414"><tspan font-weight="700">Pourquoi 11 partitions pour 10 ans</tspan> : la fenêtre commence le 28 juillet, elle traverse donc 11 années civiles. 2016 (5 mois) + 2017→2025 (9 ans pleins) + 2026 (7 mois) = <tspan font-weight="700" fill="#14607F">10 ans</tspan>.</text>
+
+<!-- ══════════ ③ LA PREUVE ══════════ -->
+<text class="step" x="40" y="432">③ LA PREUVE — L'EXTRAIT DU PLAN PHYSIQUE DE SPARK</text>
+<line class="rule" x1="40" y1="439" x2="860" y2="439"/>
+
+<rect x="40" y="450" width="470" height="58" fill="#F7F9FB" stroke="#D5DCE4" stroke-width=".8"/>
+<line x1="41" y1="450" x2="41" y2="508" stroke="#9DAAB8" stroke-width="2.5"/>
+<text class="mono" x="54" y="469">PartitionFilters: [isnotnull(annee), (<tspan class="monoA">annee = 2024</tspan>)]</text>
+<text class="mono" x="54" y="486">Fichiers connus de Spark : <tspan class="monoA">11</tspan>  →  un seul est ouvert</text>
+<text class="mono" x="54" y="503"><tspan class="monoA">27 648</tspan> lignes extraites sur 276 168</text>
+
+<rect class="boxw" x="528" y="450" width="332" height="58" rx="2"/>
+<text class="noteB" x="542" y="468">C'est ça, le <tspan font-style="italic">partition pruning</tspan></text>
+<text class="note" x="542" y="483">Le moteur écarte les fichiers <tspan font-weight="700">avant</tspan> de les lire,</text>
+<text class="note" x="542" y="497">en se fiant au seul nom du répertoire.</text>
+
+<!-- ══════════ ④ LA COMPARAISON ══════════ -->
+<text class="step" x="40" y="534">④ POURQUOI CE N'EST PAS DU SQL — OPTIMISER NE VEUT PAS DIRE LA MÊME CHOSE</text>
+<line class="rule" x1="40" y1="541" x2="860" y2="541"/>
+
+<text class="th" x="40"  y="558">·</text>
+<text class="th" x="250" y="558">POSTGRESQL</text>
+<text class="th" x="560" y="558">SPARK SQL</text>
+<line class="rule" x1="40" y1="563" x2="860" y2="563"/>
+
+<text class="td" x="40"  y="579">Structure d'accès</text>
+<text class="td" x="250" y="579">index B-tree sur (ticker, date)</text>
+<text class="td" x="560" y="579">partitionnement par répertoire annee=</text>
+<line class="rule" x1="40" y1="585" x2="860" y2="585"/>
+
+<text class="td" x="40"  y="601">Optimiser, c'est</text>
+<text class="tdA" x="250" y="601">choisir le bon chemin d'accès</text>
+<text class="tdA" x="560" y="601">ne pas lire les partitions inutiles</text>
+<line class="rule" x1="40" y1="607" x2="860" y2="607"/>
+
+<text class="td" x="40"  y="623">Ce qui coûte cher</text>
+<text class="td" x="250" y="623">un balayage séquentiel</text>
+<text class="td" x="560" y="623">un <tspan font-style="italic">shuffle</tspan> entre exécuteurs</text>
+
+<line x1="40" y1="638" x2="860" y2="638" stroke="#9DAAB8" stroke-width=".9"/>
+<text class="note" x="40" y="652">Limite assumée : <tspan font-weight="700">276 168 lignes (14 Mo) ne sont pas du big data</tspan> — c'est la <tspan font-style="italic">méthode</tspan> qui est démontrée, identique à une autre échelle.</text>
+<text class="note" x="700" y="652" text-anchor="start">RITA · RNCP 37827</text>
+</svg>

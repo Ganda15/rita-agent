@@ -1,0 +1,146 @@
+<mxfile host="app.diagrams.net" modified="2026-08-10T00:00:00.000Z" agent="RITA" version="24.0.0" type="device">
+  <diagram id="bigdata-pruning" name="Big data — partition pruning">
+    <mxGraphModel dx="1400" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="660" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="rule-top" value="" style="line;strokeWidth=2.5;html=1;strokeColor=#14607F;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="820" height="10" as="geometry" />
+        </mxCell>
+
+        <mxCell id="title" value="Système big data — ce qui distingue Spark d'une base SQL" style="text;html=1;align=left;verticalAlign=middle;fontSize=17;fontStyle=1;fontColor=#16202B;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="40" y="34" width="700" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" value="RITA · compétences C1 (extraction) et C2 (requêtes) · jeu Parquet partitionné par année" style="text;html=1;align=left;verticalAlign=middle;fontSize=10.5;fontStyle=2;fontColor=#4A5766;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="40" y="58" width="700" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s1" value="① LA CHAÎNE — TROIS MODULES, TROIS RÔLES" style="text;html=1;align=left;fontSize=11;fontStyle=1;fontColor=#14607F;" vertex="1" parent="1">
+          <mxGeometry x="40" y="90" width="500" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="m1" value="&lt;b&gt;build_parquet.py&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;color:#4A5766&quot;&gt;écrit · 276 168 lignes → 11 partitions&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ECF3F7;strokeColor=#14607F;fontSize=10.5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="120" width="180" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="m2" value="&lt;b&gt;session_spark.py&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;color:#4A5766&quot;&gt;démarre · JAVA_HOME automatique&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ECF3F7;strokeColor=#14607F;fontSize=10.5;" vertex="1" parent="1">
+          <mxGeometry x="252" y="120" width="180" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="m3" value="&lt;b&gt;extract_spark.py&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;color:#4A5766&quot;&gt;lit · C1 — extraction programmatique&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ECF3F7;strokeColor=#14607F;fontSize=10.5;" vertex="1" parent="1">
+          <mxGeometry x="464" y="120" width="185" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="m4" value="&lt;b&gt;query_spark.py&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9px;color:#4A5766&quot;&gt;interroge · C2 — 3 requêtes Spark SQL&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ECF3F7;strokeColor=#14607F;fontSize=10.5;" vertex="1" parent="1">
+          <mxGeometry x="670" y="120" width="190" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#9DAAB8;endArrow=block;endFill=1;" edge="1" parent="1" source="m1" target="m2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#9DAAB8;endArrow=block;endFill=1;" edge="1" parent="1" source="m2" target="m3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#9DAAB8;endArrow=block;endFill=1;" edge="1" parent="1" source="m3" target="m4"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <mxCell id="s2" value="② LE PARTITIONNEMENT — 10 ANS DE DONNÉES, 11 RÉPERTOIRES" style="text;html=1;align=left;fontSize=11;fontStyle=1;fontColor=#14607F;" vertex="1" parent="1">
+          <mxGeometry x="40" y="194" width="500" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="path" value="data/bigdata/ohlcv/annee=YYYY/" style="text;html=1;align=left;fontSize=9.5;fontFamily=Courier New;fontColor=#16202B;" vertex="1" parent="1">
+          <mxGeometry x="40" y="222" width="240" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="dates" value="28/07/2016 → 29/07/2026&lt;br&gt;&lt;font style=&quot;font-size:8.6px&quot;&gt;soit 3 652 jours&lt;/font&gt;" style="text;html=1;align=left;fontSize=9.2;fontColor=#4A5766;" vertex="1" parent="1">
+          <mxGeometry x="40" y="238" width="200" height="26" as="geometry" />
+        </mxCell>
+
+        <mxCell id="q" value="WHERE annee = 2024" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#14607F;strokeColor=none;fontColor=#FFFFFF;fontSize=10;fontStyle=1;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="540" y="208" width="176" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p2016" value="2016&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#9DAAB8&quot;&gt;11 980&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D8E3EA;strokeColor=none;fontSize=8.6;fontColor=#4A5766;verticalAlign=bottom;" vertex="1" parent="1">
+          <mxGeometry x="70" y="309" width="58" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="p2017" value="2017&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#9DAAB8&quot;&gt;27 770&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D8E3EA;strokeColor=none;fontSize=8.6;fontColor=#4A5766;verticalAlign=bottom;" vertex="1" parent="1">
+          <mxGeometry x="136" y="248" width="58" height="136" as="geometry" />
+        </mxCell>
+        <mxCell id="p2018" value="2018&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#9DAAB8&quot;&gt;27 610&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D8E3EA;strokeColor=none;fontSize=8.6;fontColor=#4A5766;verticalAlign=bottom;" vertex="1" parent="1">
+          <mxGeometry x="202" y="249" width="58" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="p2019" value="2019&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#9DAAB8&quot;&gt;27 463&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D8E3EA;strokeColor=none;fontSize=8.6;fontColor=#4A5766;verticalAlign=bottom;" vertex="1" parent="1">
+          <mxGeometry x="268" y="249" width="58" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="p2020" value="2020&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#9DAAB8&quot;&gt;27 488&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D8E3EA;strokeColor=none;fontSize=8.6;fontColor=#4A5766;verticalAlign=bottom;" vertex="1" parent="1">
+          <mxGeometry x="334" y="249" width="58" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="p2021" value="2021&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#9DAAB8&quot;&gt;27 589&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D8E3EA;strokeColor=none;fontSize=8.6;fontColor=#4A5766;verticalAlign=bottom;" vertex="1" parent="1">
+          <mxGeometry x="400" y="249" width="58" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="p2022" value="2022&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#9DAAB8&quot;&gt;27 480&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D8E3EA;strokeColor=none;fontSize=8.6;fontColor=#4A5766;verticalAlign=bottom;" vertex="1" parent="1">
+          <mxGeometry x="466" y="249" width="58" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="p2023" value="2023&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#9DAAB8&quot;&gt;27 454&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D8E3EA;strokeColor=none;fontSize=8.6;fontColor=#4A5766;verticalAlign=bottom;" vertex="1" parent="1">
+          <mxGeometry x="532" y="249" width="58" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="p2024" value="&lt;b&gt;2024&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8.4px&quot;&gt;&lt;b&gt;27 648&lt;/b&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#14607F;strokeColor=none;fontSize=8.6;fontColor=#14607F;verticalAlign=bottom;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="598" y="249" width="58" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="p2025" value="2025&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#9DAAB8&quot;&gt;27 783&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D8E3EA;strokeColor=none;fontSize=8.6;fontColor=#4A5766;verticalAlign=bottom;" vertex="1" parent="1">
+          <mxGeometry x="664" y="248" width="58" height="136" as="geometry" />
+        </mxCell>
+        <mxCell id="p2026" value="2026&lt;br&gt;&lt;font style=&quot;font-size:7.5px;color:#9DAAB8&quot;&gt;15 903&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#D8E3EA;strokeColor=none;fontSize=8.6;fontColor=#4A5766;verticalAlign=bottom;" vertex="1" parent="1">
+          <mxGeometry x="730" y="294" width="58" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="arrowq" style="edgeStyle=none;html=1;strokeColor=#14607F;strokeWidth=1.6;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="q" target="p2024"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+        <mxCell id="note2" value="Les dix autres partitions ne sont pas &lt;i&gt;filtrées après lecture&lt;/i&gt; : elles ne sont &lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;jamais ouvertes&lt;/font&gt;&lt;/b&gt;.&lt;br&gt;&lt;b&gt;Pourquoi 11 partitions pour 10 ans&lt;/b&gt; : la fenêtre commence le 28 juillet, elle traverse donc 11 années civiles. 2016 (5 mois) + 2017→2025 (9 ans pleins) + 2026 (7 mois) = &lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;10 ans&lt;/font&gt;&lt;/b&gt;." style="text;html=1;align=left;fontSize=9.2;fontColor=#4A5766;" vertex="1" parent="1">
+          <mxGeometry x="70" y="390" width="790" height="28" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s3" value="③ LA PREUVE — L'EXTRAIT DU PLAN PHYSIQUE DE SPARK" style="text;html=1;align=left;fontSize=11;fontStyle=1;fontColor=#14607F;" vertex="1" parent="1">
+          <mxGeometry x="40" y="422" width="500" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="plan" value="&lt;div style=&quot;text-align:left;font-family:Courier New;font-size:9.5px&quot;&gt;PartitionFilters: [isnotnull(annee), (&lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;annee = 2024&lt;/font&gt;&lt;/b&gt;)]&lt;br&gt;Fichiers connus de Spark : &lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;11&lt;/font&gt;&lt;/b&gt;  →  un seul est ouvert&lt;br&gt;&lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;27 648&lt;/font&gt;&lt;/b&gt; lignes extraites sur 276 168&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F7F9FB;strokeColor=#D5DCE4;align=left;verticalAlign=middle;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="450" width="470" height="58" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pruning" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b&gt;&lt;font color=&quot;#9E4318&quot;&gt;C'est ça, le &lt;i&gt;partition pruning&lt;/i&gt;&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:9.2px;color:#4A5766&quot;&gt;Le moteur écarte les fichiers &lt;b&gt;avant&lt;/b&gt; de les lire,&lt;br&gt;en se fiant au seul nom du répertoire.&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FBF1EC;strokeColor=#9E4318;align=left;verticalAlign=middle;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="528" y="450" width="332" height="58" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s4" value="④ POURQUOI CE N'EST PAS DU SQL — OPTIMISER NE VEUT PAS DIRE LA MÊME CHOSE" style="text;html=1;align=left;fontSize=11;fontStyle=1;fontColor=#14607F;" vertex="1" parent="1">
+          <mxGeometry x="40" y="524" width="640" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl" value="" style="shape=table;html=1;childLayout=tableLayout;startSize=0;collapsible=0;strokeColor=#D5DCE4;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="548" width="820" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="r0" value="" style="shape=tableRow;html=1;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];strokeColor=#D5DCE4;" vertex="1" parent="tbl"><mxGeometry y="0" width="820" height="20" as="geometry" /></mxCell>
+        <mxCell id="c00" value="" style="shape=partialRectangle;html=1;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=1;right=0;strokeColor=#D5DCE4;align=left;spacingLeft=4;fontSize=8.4;fontStyle=1;fontColor=#4A5766;" vertex="1" parent="r0"><mxGeometry width="210" height="20" as="geometry" /></mxCell>
+        <mxCell id="c01" value="POSTGRESQL" style="shape=partialRectangle;html=1;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=1;right=0;strokeColor=#D5DCE4;align=left;spacingLeft=4;fontSize=8.4;fontStyle=1;fontColor=#4A5766;" vertex="1" parent="r0"><mxGeometry x="210" width="310" height="20" as="geometry" /></mxCell>
+        <mxCell id="c02" value="SPARK SQL" style="shape=partialRectangle;html=1;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=1;right=0;strokeColor=#D5DCE4;align=left;spacingLeft=4;fontSize=8.4;fontStyle=1;fontColor=#4A5766;" vertex="1" parent="r0"><mxGeometry x="520" width="300" height="20" as="geometry" /></mxCell>
+
+        <mxCell id="r1" value="" style="shape=tableRow;html=1;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];strokeColor=#D5DCE4;" vertex="1" parent="tbl"><mxGeometry y="20" width="820" height="20" as="geometry" /></mxCell>
+        <mxCell id="c10" value="Structure d'accès" style="shape=partialRectangle;html=1;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=1;right=0;strokeColor=#D5DCE4;align=left;spacingLeft=4;fontSize=9.6;" vertex="1" parent="r1"><mxGeometry width="210" height="20" as="geometry" /></mxCell>
+        <mxCell id="c11" value="index B-tree sur (ticker, date)" style="shape=partialRectangle;html=1;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=1;right=0;strokeColor=#D5DCE4;align=left;spacingLeft=4;fontSize=9.6;" vertex="1" parent="r1"><mxGeometry x="210" width="310" height="20" as="geometry" /></mxCell>
+        <mxCell id="c12" value="partitionnement par répertoire annee=" style="shape=partialRectangle;html=1;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=1;right=0;strokeColor=#D5DCE4;align=left;spacingLeft=4;fontSize=9.6;" vertex="1" parent="r1"><mxGeometry x="520" width="300" height="20" as="geometry" /></mxCell>
+
+        <mxCell id="r2" value="" style="shape=tableRow;html=1;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];strokeColor=#D5DCE4;" vertex="1" parent="tbl"><mxGeometry y="40" width="820" height="20" as="geometry" /></mxCell>
+        <mxCell id="c20" value="Optimiser, c'est" style="shape=partialRectangle;html=1;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=1;right=0;strokeColor=#D5DCE4;align=left;spacingLeft=4;fontSize=9.6;" vertex="1" parent="r2"><mxGeometry width="210" height="20" as="geometry" /></mxCell>
+        <mxCell id="c21" value="choisir le bon chemin d'accès" style="shape=partialRectangle;html=1;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=1;right=0;strokeColor=#D5DCE4;align=left;spacingLeft=4;fontSize=9.6;fontStyle=1;fontColor=#14607F;" vertex="1" parent="r2"><mxGeometry x="210" width="310" height="20" as="geometry" /></mxCell>
+        <mxCell id="c22" value="ne pas lire les partitions inutiles" style="shape=partialRectangle;html=1;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=1;right=0;strokeColor=#D5DCE4;align=left;spacingLeft=4;fontSize=9.6;fontStyle=1;fontColor=#14607F;" vertex="1" parent="r2"><mxGeometry x="520" width="300" height="20" as="geometry" /></mxCell>
+
+        <mxCell id="r3" value="" style="shape=tableRow;html=1;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];strokeColor=#D5DCE4;" vertex="1" parent="tbl"><mxGeometry y="60" width="820" height="20" as="geometry" /></mxCell>
+        <mxCell id="c30" value="Ce qui coûte cher" style="shape=partialRectangle;html=1;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;strokeColor=#D5DCE4;align=left;spacingLeft=4;fontSize=9.6;" vertex="1" parent="r3"><mxGeometry width="210" height="20" as="geometry" /></mxCell>
+        <mxCell id="c31" value="un balayage séquentiel" style="shape=partialRectangle;html=1;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;strokeColor=#D5DCE4;align=left;spacingLeft=4;fontSize=9.6;" vertex="1" parent="r3"><mxGeometry x="210" width="310" height="20" as="geometry" /></mxCell>
+        <mxCell id="c32" value="un &lt;i&gt;shuffle&lt;/i&gt; entre exécuteurs" style="shape=partialRectangle;html=1;overflow=hidden;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;strokeColor=#D5DCE4;align=left;spacingLeft=4;fontSize=9.6;" vertex="1" parent="r3"><mxGeometry x="520" width="300" height="20" as="geometry" /></mxCell>
+
+        <mxCell id="footline" value="" style="line;strokeWidth=0.9;html=1;strokeColor=#9DAAB8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="632" width="820" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="foot" value="Limite assumée : &lt;b&gt;276 168 lignes (14 Mo) ne sont pas du big data&lt;/b&gt; — c'est la &lt;i&gt;méthode&lt;/i&gt; qui est démontrée, identique à une autre échelle." style="text;html=1;align=left;fontSize=9.2;fontColor=#4A5766;" vertex="1" parent="1">
+          <mxGeometry x="40" y="642" width="640" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="foot2" value="RITA · RNCP 37827" style="text;html=1;align=right;fontSize=9.2;fontColor=#4A5766;" vertex="1" parent="1">
+          <mxGeometry x="700" y="642" width="160" height="14" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

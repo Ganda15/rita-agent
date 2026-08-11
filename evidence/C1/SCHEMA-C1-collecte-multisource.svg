@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 720" width="1120" height="720" font-family="Segoe UI, Calibri, system-ui, sans-serif">
+<style>
+  .ttl  { font-size:19px; font-weight:600; fill:#16202B; font-family:Georgia,serif; text-anchor:middle; }
+  .sub  { font-size:10.5px; fill:#4A5766; font-style:italic; font-family:Georgia,serif; text-anchor:middle; }
+  .col  { font-size:11px; font-weight:700; fill:#14607F; letter-spacing:.07em; text-anchor:middle; }
+  .bxT  { fill:#E8F1EC; stroke:#2E7D5B; stroke-width:1.1; }
+  .bxB  { fill:#FFFFFF; stroke:#2E7D5B; stroke-width:1.1; }
+  .bxTb { fill:#ECF3F7; stroke:#14607F; stroke-width:1.1; }
+  .bxBb { fill:#FFFFFF; stroke:#14607F; stroke-width:1.1; }
+  .bxTr { fill:#FBECEC; stroke:#9E2B2B; stroke-width:1.1; }
+  .bxBr { fill:#FFFFFF; stroke:#9E2B2B; stroke-width:1.1; }
+  .bxTg { fill:#F0F1F2; stroke:#6B7280; stroke-width:1.1; }
+  .bxBg { fill:#FFFFFF; stroke:#6B7280; stroke-width:1.1; }
+  .hd   { font-size:10.5px; font-weight:700; text-anchor:middle; }
+  .hdg  { fill:#2E7D5B; } .hdb { fill:#14607F; } .hdr { fill:#9E2B2B; } .hdgy { fill:#4A5766; }
+  .bd   { font-size:8.6px; fill:#4A5766; }
+  .ok   { font-size:14px; font-weight:700; fill:#2E7D5B; text-anchor:middle; }
+  .ln   { stroke:#B7C2CC; stroke-width:1; fill:none; }
+  .rule { stroke:#D5DCE4; stroke-width:.9; }
+  .foot { font-size:9.6px; fill:#16202B; }
+  .lg   { font-size:9px; fill:#4A5766; }
+</style>
+
+<rect x="0" y="0" width="1120" height="720" fill="#FFFFFF"/>
+
+<text class="ttl" x="560" y="34">C1 — Flux de collecte multi-source de RITA</text>
+<text class="sub" x="560" y="53">« Automatiser l'extraction de données depuis un service web, une page web (scraping), un fichier de données, une base de données et un système big data »</text>
+
+<text class="col" x="150" y="84">1 · SOURCES</text><line class="rule" x1="40" y1="90" x2="260" y2="90"/>
+<text class="col" x="400" y="84">2 · TYPE EXIGÉ PAR C1</text><line class="rule" x1="300" y1="90" x2="500" y2="90"/>
+<text class="col" x="655" y="84">3 · TRAITEMENTS</text><line class="rule" x1="540" y1="90" x2="770" y2="90"/>
+<text class="col" x="945" y="84">4 · DESTINATION</text><line class="rule" x1="820" y1="90" x2="1070" y2="90"/>
+
+<!-- ═══ COLONNE 1 — SOURCES ═══ -->
+<rect class="bxT" x="40" y="104" width="220" height="17"/><text class="hd hdg" x="150" y="116">yfinance / OpenBB</text>
+<rect class="bxB" x="40" y="121" width="220" height="30"/><text class="bd" x="48" y="133">OHLCV · 10 ans · 111 valeurs</text><text class="bd" x="48" y="145">preuve-01</text>
+
+<rect class="bxT" x="40" y="161" width="220" height="17"/><text class="hd hdg" x="150" y="173">BCE (ECB SDMX)</text>
+<rect class="bxB" x="40" y="178" width="220" height="30"/><text class="bd" x="48" y="190">taux de change · sans clé</text><text class="bd" x="48" y="202">preuve-03</text>
+
+<rect class="bxT" x="40" y="218" width="220" height="17"/><text class="hd hdg" x="150" y="230">FRED (macro US)</text>
+<rect class="bxB" x="40" y="235" width="220" height="30"/><text class="bd" x="48" y="247">clé obtenue 02/08 · 9 tests</text><text class="bd" x="48" y="259">17 manquantes / 400 · preuve-02</text>
+
+<rect class="bxT" x="40" y="275" width="220" height="17"/><text class="hd hdg" x="150" y="287">Boursorama /cours/</text>
+<rect class="bxB" x="40" y="292" width="220" height="30"/><text class="bd" x="48" y="304">scraping HTML · robots.txt lu</text><text class="bd" x="48" y="316">preuve-05</text>
+
+<rect class="bxT" x="40" y="332" width="220" height="17"/><text class="hd hdg" x="150" y="344">CSV positions</text>
+<rect class="bxB" x="40" y="349" width="220" height="30"/><text class="bd" x="48" y="361">portefeuille · données perso</text><text class="bd" x="48" y="373">preuve-06</text>
+
+<rect class="bxT" x="40" y="389" width="220" height="17"/><text class="hd hdg" x="150" y="401">PostgreSQL relu</text>
+<rect class="bxB" x="40" y="406" width="220" height="30"/><text class="bd" x="48" y="418">sources/database.py</text><text class="bd" x="48" y="430">requêtes paramétrées · preuve-07</text>
+
+<rect class="bxT" x="40" y="446" width="220" height="17"/><text class="hd hdg" x="150" y="458">Parquet + Spark</text>
+<rect class="bxB" x="40" y="463" width="220" height="30"/><text class="bd" x="48" y="475">276 168 lignes · 11 partitions</text><text class="bd" x="48" y="487">preuve-08 · preuve-bigdata-spark</text>
+
+<rect class="bxTg" x="40" y="503" width="220" height="17"/><text class="hd hdgy" x="150" y="515">RSS (3 flux sur 9)</text>
+<rect class="bxBg" x="40" y="520" width="220" height="30"/><text class="bd" x="48" y="532">BFM · La Tribune · Le Monde</text><text class="bd" x="48" y="544">preuve-04</text>
+
+<!-- ═══ COLONNE 2 — TYPES C1 ═══ -->
+<rect class="bxT" x="300" y="104" width="200" height="17"/><text class="hd hdg" x="400" y="116">service web (API REST)</text>
+<rect class="bxB" x="300" y="121" width="200" height="19"/><text class="bd" x="308" y="134">yfinance · BCE · FRED</text>
+<text class="ok" x="520" y="129">✓</text>
+
+<rect class="bxT" x="300" y="180" width="200" height="17"/><text class="hd hdg" x="400" y="192">page web (scraping)</text>
+<rect class="bxB" x="300" y="197" width="200" height="19"/><text class="bd" x="308" y="210">Boursorama</text>
+<text class="ok" x="520" y="205">✓</text>
+
+<rect class="bxT" x="300" y="256" width="200" height="17"/><text class="hd hdg" x="400" y="268">fichier de données</text>
+<rect class="bxB" x="300" y="273" width="200" height="19"/><text class="bd" x="308" y="286">CSV positions</text>
+<text class="ok" x="520" y="281">✓</text>
+
+<rect class="bxT" x="300" y="332" width="200" height="17"/><text class="hd hdg" x="400" y="344">base de données</text>
+<rect class="bxB" x="300" y="349" width="200" height="19"/><text class="bd" x="308" y="362">PostgreSQL, relu en SQL</text>
+<text class="ok" x="520" y="357">✓</text>
+
+<rect class="bxT" x="300" y="408" width="200" height="17"/><text class="hd hdg" x="400" y="420">système big data</text>
+<rect class="bxB" x="300" y="425" width="200" height="19"/><text class="bd" x="308" y="438">Parquet + Spark SQL · 4 étapes /4</text>
+<text class="ok" x="520" y="433">✓</text>
+
+<rect class="bxTg" x="300" y="503" width="200" height="17"/><text class="hd hdgy" x="400" y="515">(complément)</text>
+<rect class="bxBg" x="300" y="520" width="200" height="19"/><text class="bd" x="308" y="533">RSS actualités — hors des 5 types</text>
+
+<!-- liaisons sources -> types -->
+<path class="ln" d="M260 136 H298"/>
+<path class="ln" d="M260 193 C280 193 282 140 298 132"/>
+<path class="ln" d="M260 250 C282 250 284 142 298 128"/>
+<path class="ln" d="M260 307 C282 307 284 210 298 200"/>
+<path class="ln" d="M260 364 H298"/>
+<path class="ln" d="M260 421 C282 421 284 380 298 358"/>
+<path class="ln" d="M260 478 C282 478 284 450 298 434"/>
+<path class="ln" d="M260 535 H298"/>
+
+<!-- ═══ COLONNE 3 — TRAITEMENTS ═══ -->
+<rect class="bxTr" x="540" y="104" width="230" height="17"/><text class="hd hdr" x="655" y="116">GARDE-FOU INJECTION (C17)</text>
+<rect class="bxBr" x="540" y="121" width="230" height="52"/>
+<text class="bd" x="548" y="134">appliqué sur RSS + scraping</text>
+<text class="bd" x="548" y="146">9 motifs FR/EN détectés</text>
+<text class="bd" x="548" y="158">100 % blocage · 0 % faux positif</text>
+<text class="bd" x="548" y="169">article marqué, conservé pour audit</text>
+
+<rect class="bxTb" x="540" y="196" width="230" height="17"/><text class="hd hdb" x="655" y="208">NETTOYAGE (C3)</text>
+<rect class="bxBb" x="540" y="213" width="230" height="52"/>
+<text class="bd" x="548" y="226">dédoublonnage (ticker, date)</text>
+<text class="bd" x="548" y="238">2 560 lignes écartées</text>
+<text class="bd" x="548" y="250">ISO 8601 · ISO 4217 · ISIN enrichis</text>
+<text class="bd" x="548" y="261">rejets tracés avec leur cause</text>
+
+<rect class="bxTb" x="540" y="288" width="230" height="17"/><text class="hd hdb" x="655" y="300">ANALYSE EXPLORATOIRE</text>
+<rect class="bxBb" x="540" y="305" width="230" height="52"/>
+<text class="bd" x="548" y="318">6 questions → 6 décisions de schéma</text>
+<text class="bd" x="548" y="330">5 120 doublons · 1 533 hors bornes</text>
+<text class="bd" x="548" y="342">ALJXR : regroupement d'actions</text>
+<text class="bd" x="548" y="353">exigée p. 53 · preuve-09</text>
+
+<rect class="bxTb" x="540" y="380" width="230" height="17"/><text class="hd hdb" x="655" y="392">QUALITÉ</text>
+<rect class="bxBb" x="540" y="397" width="230" height="40"/>
+<text class="bd" x="548" y="410">statut_qualite : exclure sans supprimer</text>
+<text class="bd" x="548" y="422">STLAP · ALJXR conservés avec leur cause</text>
+<text class="bd" x="548" y="433">biais de survie signalé</text>
+
+<path class="ln" d="M500 130 H538"/>
+<path class="ln" d="M500 206 C520 206 522 225 538 232"/>
+<path class="ln" d="M500 282 C520 282 522 300 538 320"/>
+<path class="ln" d="M500 358 C520 358 522 380 538 405"/>
+<path class="ln" d="M500 434 C520 434 522 420 538 412"/>
+<path class="ln" d="M500 529 C520 529 522 240 538 236"/>
+
+<!-- ═══ COLONNE 4 — DESTINATION ═══ -->
+<rect class="bxTb" x="820" y="140" width="250" height="17"/><text class="hd hdb" x="945" y="152">PostgreSQL 18</text>
+<rect class="bxBb" x="820" y="157" width="250" height="88"/>
+<text class="bd" x="828" y="171" font-weight="700">8 tables · 6 index explicites · 9 CHECK</text>
+<text class="bd" x="828" y="183">(15 index au total avec les clés)</text>
+<text class="bd" x="828" y="199">devise · valeur · alias_valeur · cotation</text>
+<text class="bd" x="828" y="211">position · taux_change · article · memory_audit</text>
+<text class="bd" x="828" y="227">1 vue : v_portefeuille_valorise</text>
+<text class="bd" x="828" y="239" font-weight="700">273 608 lignes importées</text>
+
+<rect class="bxTr" x="820" y="278" width="250" height="17"/><text class="hd hdr" x="945" y="290">RGPD (art. 30)</text>
+<rect class="bxBr" x="820" y="295" width="250" height="66"/>
+<text class="bd" x="828" y="309">4 traitements recensés (T1 → T4)</text>
+<text class="bd" x="828" y="321">3 procédures de tri (P1 → P3)</text>
+<text class="bd" x="828" y="333">purge : mode simulation par défaut</text>
+<text class="bd" x="828" y="345">P3 ne supprime jamais — arbitrage humain</text>
+<text class="bd" x="828" y="356">transfert hors UE inscrit, non passé sous silence</text>
+
+<path class="ln" d="M770 147 C795 147 800 180 818 190"/>
+<path class="ln" d="M770 239 H818"/>
+<path class="ln" d="M770 331 C795 331 800 250 818 215"/>
+<path class="ln" d="M770 417 C795 417 800 330 818 320"/>
+
+<!-- ═══ BANDEAU DE COUVERTURE ═══ -->
+<rect x="40" y="578" width="1030" height="52" fill="#ECF3F7" stroke="#14607F" stroke-width="1.2"/>
+<text class="foot" x="56" y="598" font-size="12" font-weight="700" fill="#14607F">COUVERTURE C1 :</text>
+<text class="foot" x="190" y="598" font-weight="700" fill="#2E7D5B">✓ service web   ✓ page web   ✓ fichier   ✓ base de données   ✓ système big data</text>
+<text class="foot" x="56" y="617"><tspan font-weight="700">Les 5 types sur 5</tspan> · 7 sources codées et prouvées · <tspan font-weight="700">186 tests verts</tspan> · une preuve écrite par source dans <tspan font-family="Consolas,monospace">evidence/C1/</tspan></text>
+
+<!-- légende -->
+<rect x="40" y="648" width="9" height="9" fill="#2E7D5B"/><text class="lg" x="55" y="656">type C1 couvert, codé et prouvé</text>
+<rect x="252" y="648" width="9" height="9" fill="#6B7280"/><text class="lg" x="267" y="656">hors des 5 types (complément utile au produit)</text>
+<rect x="560" y="648" width="9" height="9" fill="#9E2B2B"/><text class="lg" x="575" y="656">garde-fou ou conformité</text>
+<text class="lg" x="1070" y="656" text-anchor="end">RITA · RNCP 37827 · vérifié le 11/08/2026</text>
+</svg>

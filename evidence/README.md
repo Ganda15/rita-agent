@@ -28,6 +28,18 @@ capture d'écran horodatée, sortie de commande, fichier produit, lien vers un r
 **186 tests verts** (`pytest -q`). Base : 8 tables · 1 vue · 15 index · 9 contraintes `CHECK` ·
 273 608 lignes importées.
 
+### Les schémas, et où ils sont
+
+| Schéma | Couvre | Emplacement |
+|---|---|---|
+| Flux de collecte multi-source | **C1** | [`C1/SCHEMA-C1-collecte-multisource.png`](C1/SCHEMA-C1-collecte-multisource.png) |
+| *Partition pruning* Parquet + Spark | **C1** | [`../bigdata/schemas/`](../bigdata/schemas/) |
+| Les 3 requêtes Spark SQL | **C2** | [`../bigdata/schemas/`](../bigdata/schemas/) |
+| MCD Merise | **C4** | [`C4/MCD-MERISE-RITA.png`](C4/MCD-MERISE-RITA.png) |
+
+Chaque schéma a sa **source éditable** à côté (`.svg`, et `.drawio` quand il existe) — un
+schéma qu'on ne peut pas rouvrir est un schéma qu'on ne peut pas corriger.
+
 > ⚠️ **Ce tableau annonçait encore l'état du 28/07** (`C2` `C3` `C4` non commencées, `C1` à
 > « 1 source sur 7 ») **jusqu'au 11/08/2026**. Le travail avait avancé, ce fichier non — et
 > c'est le premier fichier qu'un évaluateur ouvre. Corrigé, et la leçon est notée : **un

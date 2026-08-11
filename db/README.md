@@ -259,7 +259,7 @@ Le fichier source n'est jamais versionné : voir `.gitignore` et
 | Élément | Compétence | État |
 |---|---|---|
 | Registre des traitements RGPD + procédures de tri | C4 | ✅ `RGPD-registre-des-traitements.md` + `rgpd_purge.py` |
-| MCD Merise (modèle conceptuel) | C4 | ✅ `Projets/RITA/02-Schemas/SCHEMA-MCD-MERISE-RITA.png` + `.drawio` |
+| MCD Merise (modèle conceptuel) | C4 | ✅ `../evidence/C4/` — le schéma (`.png` + `.drawio`) et sa justification cardinalité par cardinalité |
 | ⚠️ Masquer les montants dans les traces LangSmith | RGPD | 🔴 ouvert — transfert hors UE (registre §5) |
 | ⚠️ Hook Git `pre-commit` bloquant les fichiers personnels | RGPD | 🟠 ouvert (procédure P4) |
 | 3 requêtes SQL documentées (sélections, jointures, optimisations) | C2 | ✅ `requetes.sql` + `../evidence/C2/preuve-requetes-sql.md` |

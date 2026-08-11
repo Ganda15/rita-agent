@@ -250,7 +250,9 @@ pourquoi il était appelé.
 Le formateur avait annoncé qu'il **examinerait le schéma** (*« Yep. I'll do that. »*).
 **Il n'y en avait aucun** : 284 lignes de texte, deux preuves écrites, zéro image.
 
-📎 `Projets/RITA/02-Schemas/SCHEMA-BIGDATA-partition-pruning.drawio` **+** `.svg`
+📎 [`schemas/SCHEMA-BIGDATA-partition-pruning.png`](schemas/SCHEMA-BIGDATA-partition-pruning.png)
+— à regarder · sources éditables : [`.svg`](schemas/SCHEMA-BIGDATA-partition-pruning.svg) et
+[`.drawio`](schemas/SCHEMA-BIGDATA-partition-pruning.drawio)
 
 Il montre en une page les quatre choses qui comptent :
 
@@ -265,7 +267,10 @@ Il montre en une page les quatre choses qui comptent :
 > nature — dix barres grises et une bleue disent en trois secondes ce qu'un paragraphe
 > explique mal.
 
-### ② `SCHEMA-BIGDATA-3-requetes-sparksql.drawio` + `.svg` — **C2**
+### ② [`schemas/SCHEMA-BIGDATA-3-requetes-sparksql.png`](schemas/SCHEMA-BIGDATA-3-requetes-sparksql.png) — **C2**
+
+*(sources éditables : [`.svg`](schemas/SCHEMA-BIGDATA-3-requetes-sparksql.svg) ·
+[`.drawio`](schemas/SCHEMA-BIGDATA-3-requetes-sparksql.drawio))*
 
 Le premier schéma couvre **C1** (l'extraction). Celui-ci couvre **C2** : les trois requêtes
 Spark SQL, et surtout **ce que chacune déclenche** dans le moteur.

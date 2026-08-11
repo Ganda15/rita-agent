@@ -1,0 +1,146 @@
+<mxfile host="app.diagrams.net" modified="2026-08-11T00:00:00.000Z" agent="RITA" version="24.0.0" type="device">
+  <diagram id="sparksql-3-requetes" name="C2 — 3 requêtes Spark SQL">
+    <mxGraphModel dx="1400" dy="900" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="topline" value="" style="line;strokeWidth=2.5;html=1;strokeColor=#14607F;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="820" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="ttl" value="Les trois requêtes Spark SQL — et ce que chacune déclenche" style="text;html=1;align=left;fontSize=17;fontStyle=1;fontColor=#16202B;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="40" y="34" width="700" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="sub" value="RITA · compétence C2, versant big data · bigdata/query_spark.py · volumes mesurés, pas estimés" style="text;html=1;align=left;fontSize=10.5;fontStyle=2;fontColor=#4A5766;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="40" y="58" width="700" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="lgP" value="&lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;PARTITION PRUNING — gratuit&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8.6px;color:#4A5766&quot;&gt;Spark n'ouvre pas le fichier. Coût nul.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ECF3F7;strokeColor=#14607F;align=left;spacingLeft=10;fontSize=8.4;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="86" width="196" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="lgS" value="&lt;b&gt;&lt;font color=&quot;#9E4318&quot;&gt;SHUFFLE — coûteux&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8.6px;color:#4A5766&quot;&gt;Redistribution entre exécuteurs. Inévitable ici.&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FBF1EC;strokeColor=#9E4318;align=left;spacingLeft=10;fontSize=8.4;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="248" y="86" width="220" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="lgR" value="&lt;b&gt;La règle :&lt;/b&gt; on choisit ses filtres pour &lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;élaguer&lt;/font&gt;&lt;/b&gt;,&lt;br&gt;on accepte le &lt;i&gt;shuffle&lt;/i&gt; quand le calcul l'exige." style="text;html=1;align=left;fontSize=9.2;fontColor=#4A5766;" vertex="1" parent="1">
+          <mxGeometry x="486" y="88" width="374" height="32" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r1" value="" style="line;strokeWidth=0.8;html=1;strokeColor=#D5DCE4;" vertex="1" parent="1"><mxGeometry x="40" y="135" width="820" height="10" as="geometry" /></mxCell>
+
+        <mxCell id="s1n" value="S1 · Volumétrie par année" style="text;html=1;align=left;fontSize=12;fontStyle=1;fontColor=#16202B;" vertex="1" parent="1">
+          <mxGeometry x="40" y="150" width="380" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="s1g" value="Vérifier l'équilibre des partitions et la couverture temporelle." style="text;html=1;align=left;fontSize=9.4;fontColor=#4A5766;" vertex="1" parent="1">
+          <mxGeometry x="40" y="168" width="380" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="s1q" value="SELECT annee, COUNT(*), COUNT(DISTINCT ticker), AVG(cloture)&lt;br&gt;FROM cotation &lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;GROUP BY annee&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=left;fontSize=9;fontFamily=Courier New;fontColor=#16202B;" vertex="1" parent="1">
+          <mxGeometry x="40" y="196" width="390" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s1b" value="" style="rounded=0;html=1;fillColor=#9E4318;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="440" y="203" width="240" height="13" as="geometry" />
+        </mxCell>
+        <mxCell id="s1v" value="&lt;b&gt;&lt;font color=&quot;#9E4318&quot; style=&quot;font-size:15px&quot;&gt;11&lt;/font&gt;&lt;/b&gt;&lt;font style=&quot;font-size:8px;color:#9DAAB8&quot;&gt;/11 partitions&lt;/font&gt;" style="text;html=1;align=left;fontSize=9;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="690" y="200" width="150" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="s1l" value="276 168 lignes — &lt;b&gt;&lt;font color=&quot;#9E4318&quot;&gt;100 % du jeu&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=left;fontSize=9.2;fontColor=#4A5766;" vertex="1" parent="1">
+          <mxGeometry x="440" y="222" width="240" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="s1t" value="SHUFFLE (GROUP BY)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FBF1EC;strokeColor=#9E4318;fontSize=8.4;fontStyle=1;fontColor=#9E4318;" vertex="1" parent="1">
+          <mxGeometry x="440" y="240" width="152" height="17" as="geometry" />
+        </mxCell>
+        <mxCell id="s1p" value="PartitionFilters: &lt;b&gt;&lt;font color=&quot;#9E4318&quot;&gt;[]&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=left;fontSize=9;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="604" y="242" width="200" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="s1c" value="&lt;b&gt;Aucun élagage — et c'est voulu&lt;/b&gt; : la question porte sur &lt;i&gt;toutes&lt;/i&gt; les années.&lt;br&gt;Le format colonnaire limite quand même le coût : compter des lignes ne charge pas les prix." style="text;html=1;align=left;fontSize=9.2;fontColor=#4A5766;" vertex="1" parent="1">
+          <mxGeometry x="40" y="242" width="390" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r2" value="" style="line;strokeWidth=0.8;html=1;strokeColor=#D5DCE4;" vertex="1" parent="1"><mxGeometry x="40" y="279" width="820" height="10" as="geometry" /></mxCell>
+
+        <mxCell id="s2n" value="S2 · Amplitude moyenne par valeur" style="text;html=1;align=left;fontSize=12;fontStyle=1;fontColor=#16202B;" vertex="1" parent="1">
+          <mxGeometry x="40" y="294" width="380" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="s2g" value="Classer les valeurs par volatilité intraséance — un fait observable, pas une recommandation." style="text;html=1;align=left;fontSize=9.4;fontColor=#4A5766;" vertex="1" parent="1">
+          <mxGeometry x="40" y="312" width="400" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="s2q" value="SELECT ticker, AVG((haut-bas)/bas*100) ... FROM cotation&lt;br&gt;WHERE &lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;annee &amp;gt;= 2024&lt;/font&gt;&lt;/b&gt; AND bas &amp;gt; 0&lt;br&gt;GROUP BY ticker &lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;HAVING COUNT(*) &amp;gt;= 200&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=left;fontSize=9;fontFamily=Courier New;fontColor=#16202B;" vertex="1" parent="1">
+          <mxGeometry x="40" y="340" width="390" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="s2bg" value="" style="rounded=0;html=1;fillColor=#EEF2F5;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="440" y="347" width="240" height="13" as="geometry" />
+        </mxCell>
+        <mxCell id="s2b" value="" style="rounded=0;html=1;fillColor=#14607F;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="440" y="347" width="62" height="13" as="geometry" />
+        </mxCell>
+        <mxCell id="s2v" value="&lt;b&gt;&lt;font color=&quot;#14607F&quot; style=&quot;font-size:15px&quot;&gt;3&lt;/font&gt;&lt;/b&gt;&lt;font style=&quot;font-size:8px;color:#9DAAB8&quot;&gt;/11 partitions&lt;/font&gt;" style="text;html=1;align=left;fontSize=9;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="690" y="344" width="150" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="s2l" value="71 334 lignes — &lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;25,8 % du jeu&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=left;fontSize=9.2;fontColor=#4A5766;" vertex="1" parent="1">
+          <mxGeometry x="440" y="366" width="240" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="s2tp" value="PRUNING : 8 fichiers évités" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ECF3F7;strokeColor=#14607F;fontSize=8.4;fontStyle=1;fontColor=#14607F;" vertex="1" parent="1">
+          <mxGeometry x="440" y="384" width="152" height="17" as="geometry" />
+        </mxCell>
+        <mxCell id="s2ts" value="SHUFFLE (GROUP BY)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FBF1EC;strokeColor=#9E4318;fontSize=8.4;fontStyle=1;fontColor=#9E4318;" vertex="1" parent="1">
+          <mxGeometry x="602" y="384" width="120" height="17" as="geometry" />
+        </mxCell>
+        <mxCell id="s2c" value="&lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;Le filtre sur la colonne de partition est l'optimisation majeure.&lt;/font&gt;&lt;/b&gt;&lt;br&gt;bas &amp;gt; 0 évite une division par zéro — l'analyse exploratoire avait mesuré des volumes nuls.&lt;br&gt;HAVING &amp;gt;= 200 écarte les valeurs trop peu cotées : 12 séances ne se comparent pas à 500." style="text;html=1;align=left;fontSize=9.2;fontColor=#4A5766;" vertex="1" parent="1">
+          <mxGeometry x="40" y="390" width="390" height="44" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r3" value="" style="line;strokeWidth=0.8;html=1;strokeColor=#D5DCE4;" vertex="1" parent="1"><mxGeometry x="40" y="439" width="820" height="10" as="geometry" /></mxCell>
+
+        <mxCell id="s3n" value="S3 · Meilleure séance de chaque valeur" style="text;html=1;align=left;fontSize=12;fontStyle=1;fontColor=#16202B;" vertex="1" parent="1">
+          <mxGeometry x="40" y="454" width="380" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="s3g" value="Situer une séance dans l'historique de sa propre valeur — fenêtrage LAG puis RANK." style="text;html=1;align=left;fontSize=9.4;fontColor=#4A5766;" vertex="1" parent="1">
+          <mxGeometry x="40" y="472" width="400" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="s3q" value="&lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;LAG(cloture) OVER (PARTITION BY ticker ORDER BY date)&lt;/font&gt;&lt;/b&gt;&lt;br&gt;&lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;RANK() OVER (PARTITION BY ticker ORDER BY variation DESC)&lt;/font&gt;&lt;/b&gt;&lt;br&gt;WHERE &lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;annee &amp;gt;= 2025&lt;/font&gt;&lt;/b&gt; ... WHERE rang_hausse = 1" style="text;html=1;align=left;fontSize=9;fontFamily=Courier New;fontColor=#16202B;" vertex="1" parent="1">
+          <mxGeometry x="40" y="500" width="390" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="s3bg" value="" style="rounded=0;html=1;fillColor=#EEF2F5;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="440" y="507" width="240" height="13" as="geometry" />
+        </mxCell>
+        <mxCell id="s3b" value="" style="rounded=0;html=1;fillColor=#14607F;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="440" y="507" width="38" height="13" as="geometry" />
+        </mxCell>
+        <mxCell id="s3v" value="&lt;b&gt;&lt;font color=&quot;#14607F&quot; style=&quot;font-size:15px&quot;&gt;2&lt;/font&gt;&lt;/b&gt;&lt;font style=&quot;font-size:8px;color:#9DAAB8&quot;&gt;/11 partitions&lt;/font&gt;" style="text;html=1;align=left;fontSize=9;fontFamily=Georgia;" vertex="1" parent="1">
+          <mxGeometry x="690" y="504" width="150" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="s3l" value="43 686 lignes — &lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;15,8 % du jeu&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=left;fontSize=9.2;fontColor=#4A5766;" vertex="1" parent="1">
+          <mxGeometry x="440" y="526" width="240" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="s3tp" value="PRUNING : 9 fichiers évités" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ECF3F7;strokeColor=#14607F;fontSize=8.4;fontStyle=1;fontColor=#14607F;" vertex="1" parent="1">
+          <mxGeometry x="440" y="544" width="152" height="17" as="geometry" />
+        </mxCell>
+        <mxCell id="s3ts" value="SHUFFLE (PARTITION BY ticker)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FBF1EC;strokeColor=#9E4318;fontSize=8.4;fontStyle=1;fontColor=#9E4318;" vertex="1" parent="1">
+          <mxGeometry x="602" y="544" width="176" height="17" as="geometry" />
+        </mxCell>
+        <mxCell id="s3c" value="&lt;b&gt;&lt;font color=&quot;#9E4318&quot;&gt;C'est la requête la plus chère, et elle lit le moins de données.&lt;/font&gt;&lt;/b&gt;&lt;br&gt;PARTITION BY ticker oblige Spark à regrouper chaque valeur sur un même exécuteur :&lt;br&gt;c'est le &lt;i&gt;shuffle&lt;/i&gt;, l'opération la plus coûteuse du monde distribué." style="text;html=1;align=left;fontSize=9.2;fontColor=#4A5766;" vertex="1" parent="1">
+          <mxGeometry x="40" y="550" width="390" height="44" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r4" value="" style="line;strokeWidth=0.8;html=1;strokeColor=#D5DCE4;" vertex="1" parent="1"><mxGeometry x="40" y="599" width="820" height="10" as="geometry" /></mxCell>
+        <mxCell id="lesson" value="CE QUE LES TROIS ENSEMBLE DÉMONTRENT" style="text;html=1;align=left;fontSize=11;fontStyle=1;fontColor=#14607F;" vertex="1" parent="1">
+          <mxGeometry x="40" y="612" width="400" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="k1" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b&gt;Lire moins ≠ aller plus vite.&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8.6px&quot;&gt;S3 lit 15,8 % du jeu et coûte plus que S2 qui en lit 25,8 % : le &lt;i&gt;shuffle&lt;/i&gt; pèse plus que la lecture.&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5DCE4;align=left;spacingLeft=10;fontSize=9.2;fontColor=#4A5766;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="632" width="266" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="k2" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b&gt;Le filtre décide du coût.&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8.6px&quot;&gt;Filtrer sur annee — la colonne de partition — écarte des fichiers entiers avant toute lecture.&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5DCE4;align=left;spacingLeft=10;fontSize=9.2;fontColor=#4A5766;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="318" y="632" width="266" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="k3" value="&lt;div style=&quot;text-align:left&quot;&gt;&lt;b&gt;Le langage ne change pas.&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:8.6px&quot;&gt;LAG, RANK, HAVING : même vocabulaire qu'en SQL. C'est le &lt;b&gt;moteur&lt;/b&gt; qui diffère, pas la syntaxe.&lt;/font&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D5DCE4;align=left;spacingLeft=10;fontSize=9.2;fontColor=#4A5766;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="596" y="632" width="264" height="46" as="geometry" />
+        </mxCell>
+
+        <mxCell id="foot" value="RITA · RNCP 37827 · C2" style="text;html=1;align=right;fontSize=8.4;fontColor=#9DAAB8;" vertex="1" parent="1">
+          <mxGeometry x="660" y="684" width="200" height="14" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

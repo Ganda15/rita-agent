@@ -9,6 +9,11 @@ requête propre au système afin de préparer la collecte des données nécessai
 **Base** : PostgreSQL 18.4 · **273 608 cotations · 111 valeurs · 7 positions**
 **Date** : 2026-08-01
 
+📎 **Le volet big data de C2 en une image** :
+[`../../bigdata/schemas/SCHEMA-BIGDATA-3-requetes-sparksql.png`](../../bigdata/schemas/SCHEMA-BIGDATA-3-requetes-sparksql.png)
+— les 3 requêtes Spark SQL et ce que chacune déclenche dans le moteur (partitions lues,
+*pruning*, *shuffle*). Les requêtes elles-mêmes : `bigdata/query_spark.py`.
+
 ---
 
 ## Les trois critères de C2, et où ils sont traités
