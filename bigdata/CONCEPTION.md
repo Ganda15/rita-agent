@@ -270,7 +270,7 @@ pourquoi il était appelé.
 
 ---
 
-## 🖼️ Le schéma — créé le 10/08/2026
+## 🖼️ Les deux schémas — créés les 10 et 11/08/2026
 
 Le formateur avait annoncé qu'il **examinerait le schéma** (*« Yep. I'll do that. »*).
 **Il n'y en avait aucun** : 284 lignes de texte, deux preuves écrites, zéro image.
@@ -290,7 +290,28 @@ Il montre en une page les quatre choses qui comptent :
 > nature — dix barres grises et une bleue disent en trois secondes ce qu'un paragraphe
 > explique mal.
 
-⚠️ **`.png` à exporter depuis draw.io** (File → Export as → PNG).
+### ② `SCHEMA-BIGDATA-3-requetes-sparksql.drawio` + `.svg` — **C2**
+
+Le premier schéma couvre **C1** (l'extraction). Celui-ci couvre **C2** : les trois requêtes
+Spark SQL, et surtout **ce que chacune déclenche** dans le moteur.
+
+| Requête | Filtre | Partitions lues | Lignes lues | Mécanisme |
+|---|---|---|---|---|
+| **S1** volumétrie | aucun | **11 / 11** | 276 168 — **100 %** | shuffle *(GROUP BY)*, **aucun élagage** |
+| **S2** amplitude | `annee >= 2024` | **3 / 11** | 71 334 — **25,8 %** | **pruning** *(8 fichiers évités)* + shuffle |
+| **S3** extrêmes | `annee >= 2025` | **2 / 11** | 43 686 — **15,8 %** | **pruning** *(9 évités)* + shuffle *(`PARTITION BY ticker`)* |
+
+**Ce que les trois démontrent ensemble** — et c'est le point non évident :
+
+> ⚠️ **Lire moins ne veut pas dire aller plus vite.** Mesuré en session chaude : **S2 = 0,90 s**
+> en lisant 25,8 % du jeu, **S3 = 1,33 s** en n'en lisant que 15,8 %. S3 lit **moins** et coûte
+> **plus**, parce que `PARTITION BY ticker` force un *shuffle* — la redistribution des données
+> entre exécuteurs, l'opération la plus chère du monde distribué.
+>
+> **Le filtre décide du coût de lecture ; la forme du calcul décide du coût de traitement.**
+> Les deux sont indépendants, et c'est ce qui distingue vraiment Spark d'une base relationnelle.
+
+⚠️ **`.png` à exporter depuis draw.io pour les deux** (File → Export as → PNG).
 
 ---
 
