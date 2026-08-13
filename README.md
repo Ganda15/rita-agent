@@ -15,8 +15,8 @@ Simplon & Wild Code School · Eramalingam GANDAKUMAR · ganda70@gmail.com · 202
 
 | Épreuve | Compétences | État | Document | Tag Git |
 |---|---|---|---|---|
-| **E1** — Données | C1–C5 | ✅ **livré** — 26 critères / 28 | `docs/rapports/E1/rapport-E1.pdf` (v1.3) | `livrable-E1-v1` |
-| **E2** — Veille & services IA | C6–C8 | 🟡 veille hebdomadaire en cours | `docs/veille/` | — |
+| **E1** — Données | C1–C5 | ✅ **livré** — 26 critères / 28 | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) (v1.3) · [preuves](evidence/) | `livrable-E1-v1` |
+| **E2** — Veille & services IA | C6–C8 | 🟡 veille hebdomadaire en cours | [docs/veille/](docs/veille/) | — |
 | **E3** — API modèle & MLOps | C9–C13 | 🔨 **en construction** | — | — |
 | **E4** — Application | C14–C19 | ⬜ non commencé | — | — |
 | **E5** — Monitorage | C20–C21 | ⬜ non commencé | — | — |
@@ -103,7 +103,10 @@ copy .env.example .env      # puis renseigner les clés
 
 *(Sous Linux/macOS, l'exécutable est `.venv/bin/python`.)*
 
-Documentation interactive : <http://127.0.0.1:8000/docs>
+Le serveur tourne alors **en local**. La documentation interactive est servie sur
+`http://127.0.0.1:8000/docs`, le contrat OpenAPI sur `http://127.0.0.1:8000/openapi.json`.
+Ces adresses ne sont pas atteignables depuis GitHub : elles n'existent que sur la machine
+qui lance le serveur.
 
 ## Lancer les tests
 
@@ -124,5 +127,6 @@ python -m pytest -q
 
 ## RGPD
 
-Le registre des traitements est dans `db/RGPD-registre-des-traitements.md`.
-La purge des données personnelles est automatisée : `db/rgpd_purge.py`.
+Le registre des traitements est dans
+[db/RGPD-registre-des-traitements.md](db/RGPD-registre-des-traitements.md).
+La purge des données personnelles est automatisée : [db/rgpd_purge.py](db/rgpd_purge.py).
