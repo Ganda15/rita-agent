@@ -1,3 +1,15 @@
+> ⚠️ **DOCUMENT HISTORIQUE — mai 2026. Ce n'est pas un livrable de certification.**
+>
+> Il décrit un état antérieur du projet et **ne correspond plus au code**. Notamment,
+> plusieurs flux RSS cités ici ne répondent plus ; `sources/rss.py` en utilise d'autres.
+> Conservé pour la trace de l'évolution de la conception.
+>
+> **Référence à jour :** [README](../../README.md) ·
+> [rapport E1](../rapports/E1/rapport-E1.pdf) · [preuves](../../evidence/) ·
+> [pourquoi ce dossier](README.md)
+
+---
+
 # RITA v2 — Rapport de Projet
 # Version 0 — Mai 2026
 # ─────────────────────────────────────────────────────────

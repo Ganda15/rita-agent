@@ -1,3 +1,14 @@
+> ⚠️ **DOCUMENT HISTORIQUE — mai 2026. Ce n'est pas un livrable de certification.**
+>
+> L'architecture décrite ici **n'est pas celle du code actuel**, et plusieurs flux RSS
+> qu'elle cite ne répondent plus. Conservé pour la trace de l'évolution de la conception.
+>
+> **Référence à jour :** [README](../../README.md) ·
+> [rapport E1](../rapports/E1/rapport-E1.pdf) · [preuves](../../evidence/) ·
+> [pourquoi ce dossier](README.md)
+
+---
+
 # RITA v2 — Architecture Complète
 
 # Certification RNCP37827 — Développeur en Intelligence Artificielle

@@ -1,3 +1,14 @@
+> ⚠️ **DOCUMENT HISTORIQUE — mai 2026. Ce n'est pas un livrable de certification.**
+>
+> Document de positionnement écrit avant l'implémentation. Il **ne décrit pas le code
+> actuel**. Conservé pour la trace de l'évolution de la conception.
+>
+> **Référence à jour :** [README](../../README.md) ·
+> [rapport E1](../rapports/E1/rapport-E1.pdf) · [preuves](../../evidence/) ·
+> [pourquoi ce dossier](README.md)
+
+---
+
 # RITA v2 — Différenciateurs Uniques
 
 # Document de positionnement concurrentiel
