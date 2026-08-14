@@ -19,10 +19,21 @@
 
 ## 🧭 Prochaine action
 
-**Écrire la PREMIÈRE note de veille C6 — semaine S33** (Era la rédige lui-même).
+**Trancher les deux trous du protocole de veille C6** — repérés le 14/08 en relisant
+JOURNAL-005 :
+
+1. **La veille partagée n'est pas traitée.** Deux critères sur huit exigent qu'elle soit
+   *« communiquée aux parties prenantes »* et menée *« en animant le travail collectif »*.
+   **Une veille solo n'en coche aucun.** → décider **à qui** les synthèses sont envoyées.
+2. **L'outil de veille existant est ignoré** : `C:\Users\kanda\Desktop\Veille-IA\` (Google
+   News, Hacker News, arXiv, envoi Telegram). Le protocole propose RSS via `sources/rss.py`
+   sans le mentionner. → dire **lequel fait quoi**.
+
+✅ **Note S33 faite le 14/08** — `docs/veille/2026-S33-injection-de-prompt.md`
+(OWASP Top 10 2026 vérifié à la source · trifecta : 2 conditions sur 3, la 3ᵉ absente par
+construction · agent sans outil ni écriture en base). **1 note sur ~12.**
 
 - Gabarit : `docs/veille/_MODELE-note-hebdomadaire.md`
-- À enregistrer sous : `docs/veille/2026-S33-<sujet>.md`
 - Protocole complet (sources, fiabilité, accessibilité) : `docs/veille/README.md`
 
 Thématique arrêtée le 14/08 : **sécurité des agents LLM — injection de prompt**. Choisie
@@ -55,7 +66,7 @@ IA serait une preuve fabriquée).
 | **C3** | `pipelines/ingest.py`, 15 tests, règles justifiées par mesure | invitation en attente d'acceptation |
 | **C4** | MCD Merise 6 entités, MPD 8 tables, registre RGPD, purge testée | — |
 | **C5** | 6 endpoints, OpenAPI 3.1.0, auth au niveau routeur, 25 tests | — |
-| **C6** | protocole écrit (thématique, 7 sources pesées, outil + budget 0 €, règles d'accessibilité), gabarit de note, récurrence planifiée lundi 09h00 | ⚠️ **les notes elles-mêmes** — 0 écrite à ce jour |
+| **C6** | protocole, gabarit, récurrence (tâche planifiée + agenda), **1re note écrite le 14/08 (S33)** | ⚠️ ~11 notes à venir · la veille **partagée** (2 critères sur 8) non traitée |
 | **C7** | **rien** — aucun benchmark de services IA | tout |
 | **C8** | cascade 3 fournisseurs testée, clé en `.env` | monitorage du service · doc d'exploitation |
 | **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection | revue OWASP · doc d'architecture · invitation en attente |
