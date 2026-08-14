@@ -1,0 +1,84 @@
+# ÉTAT — où on en est
+
+> **Ce fichier se périme.** Il porte l'état du jour ; `CLAUDE.md` porte ce qui ne change pas.
+> À relire au démarrage de chaque session, à mettre à jour à la fin.
+
+**Dernière mise à jour : 2026-08-14** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+
+---
+
+## ▶️ Comment Era reprend le travail
+
+1. Ouvrir Claude Code sur le dossier **`D:\KandaWork\RITA_PROJECT\rita-agent`**
+   (jamais sur `C:\Users\kanda` — sinon rien ne se charge).
+2. Écrire : **« on reprend »**.
+3. Claude lit ce fichier et annonce en 3 lignes : où on s'est arrêté, la prochaine action,
+   les verrous. Era n'a **rien** à réexpliquer.
+
+---
+
+## 🧭 Prochaine action
+
+**Choisir la thématique de veille C6 et écrire la première note** dans `docs/veille/`.
+
+Recommandation : *sécurité des agents LLM / injection de prompt* — déjà branchée sur
+`guardrails/injection.py` et `evals/cas.py`, donc chaque note peut finir par « ce que ça
+change dans mon code », ce qui satisfait le *« formuler des recommandations pour le projet »*
+du référentiel sans travail supplémentaire.
+
+---
+
+## Les 5 livrables
+
+| Épreuve | Compét. | État | Tag Git |
+|---|---|---|---|
+| **E1** — Données | C1–C5 | ✅ **livré** — 26 critères / 28 | `livrable-E1-v1` |
+| **E2** — Veille & services IA | C6–C8 | 🔴 C6 et C7 **non commencés** · C8 partiel | — |
+| **E3** — API modèle & MLOps | C9–C13 | 🔨 C9/C12/C13 partiels · C10 et C11 **non commencés** | — |
+| **E4** — Application | C14–C19 | ⬜ non commencé | — |
+| **E5** — Monitorage | C20–C21 | ⬜ non commencé | — |
+
+## Ce qui existe vraiment, compétence par compétence
+
+| C | Fait | Manque |
+|---|---|---|
+| **C1** | 7 sources, les 5 types, script en 6 points | dépôt privé (critère « accessible depuis Git ») |
+| **C2** | 3 requêtes SQL, optimisation LATERAL mesurée ×2000 | — |
+| **C3** | `pipelines/ingest.py`, 15 tests, règles justifiées par mesure | dépôt privé |
+| **C4** | MCD Merise 6 entités, MPD 8 tables, registre RGPD, purge testée | — |
+| **C5** | 6 endpoints, OpenAPI 3.1.0, auth au niveau routeur, 25 tests | — |
+| **C6** | **rien** — `docs/veille/` ne contient que `.gitkeep` | ⚠️ **tout**, et la récurrence hebdo ne se rattrape pas |
+| **C7** | **rien** — aucun benchmark de services IA | tout |
+| **C8** | cascade 3 fournisseurs testée, clé en `.env` | monitorage du service · doc d'exploitation |
+| **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection | revue OWASP · doc d'architecture · dépôt privé |
+| **C10** | **rien** — `frontend/` est vide | tout |
+| **C11** | **rien** | tout |
+| **C12** | 186 tests, 15 cas d'éval, seuils non compensables en CI | ⚠️ **couverture non mesurée** (`pytest-cov` absent) · DVC |
+| **C13** | GitHub Actions, 2 jobs, porte garde-fous | packaging · Docker · déploiement · test des données |
+
+## Les 5 manques ouverts, par urgence
+
+1. 🔴 **C6 — récurrence hebdomadaire de veille.** Le seul qui **ne se rattrape pas** :
+   12 semaines restantes au 14/08, une semaine perdue = une preuve perdue définitivement.
+2. 🔴 **Dépôt privé.** Inviter le formateur et le jury en collaborateurs, attendre
+   l'acceptation, puis envoyer le PDF + le lien du tag. Bloque C1#6, C3#2, C9.
+3. 🟠 **Couverture de tests non mesurée** (C12) — `pytest-cov` à brancher, seuil à fixer.
+4. 🟠 **Chaîne de LIVRAISON absente** (C13) — aujourd'hui c'est de l'intégration continue.
+5. 🟡 **Revue OWASP API Top 10** (C9) non écrite.
+
+## Fichiers de suivi hors dépôt
+
+| Quoi | Où |
+|---|---|
+| Rédaction par compétences (modèle Simplon, à rendre) | `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP.xlsx` |
+| ⤷ rempli pour | C1 C2 C3 C4 C5 C8 C9 C12 C13 — les autres **volontairement vides** |
+| Boussole (tâche principale + pile de détours) | `C:\Users\kanda\Desktop\RITA PROJET PRO\BOUSSOLE-RITA.md` |
+| Journal (7 entrées, JOURNAL-000 → 005) | `C:\Users\kanda\Documents\Formation-IA\Formation-IA\Projets\RITA\07-Journal\` — ou via le MCP Obsidian : `Projets/RITA/07-Journal/` |
+
+## Décisions prises, à ne pas re-débattre
+
+- Dépôt **privé** avec accès collaborateur — décision assumée, pas un oubli.
+- Une seule clé d'API (mono-utilisateur, décision D10) — pas de système de comptes.
+- `article` et `memory_audit` hors du MCD : collecte brute et journal technique ne sont pas
+  des entités métier. 6 entités + 2 tables techniques = 8 tables.
+- `/briefing` relève de **C9**, pas de C5 : c'est une rédaction, pas de la donnée.
