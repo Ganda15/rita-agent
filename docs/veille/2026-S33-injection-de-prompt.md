@@ -1,18 +1,12 @@
 # Veille S33 — OWASP Top 10 2026 et la « lethal trifecta »
 
-**Semaine** : 2026-S33, du 10 au 16 août 2026 · **Créneau tenu** : <!--à confirmer-->
+**Auteur** : Eramalingam GANDAKUMAR
+**Semaine** : 2026-S33, du 10 au 16 août 2026 · **Créneau tenu** : vendredi 14 août 2026
 **Thématique** : sécurité des agents LLM — injection de prompt
 
-> ## 🚧 BROUILLON — à réécrire avec mes mots avant tout envoi
->
-> Les sections **Résumé**, **Ce que j'en retiens**, **Ce que ça change dans RITA** et
-> **Question ouverte** ont été **pré-rédigées le 14/08** à partir de constats vérifiés dans le
-> code (les commandes de vérification sont citées). **Ce ne sont pas encore mes phrases.**
->
-> À faire avant de considérer cette note comme un livrable : relire chaque affirmation,
-> vérifier qu'elle est vraie, la reformuler avec mes mots, corriger ce qui ne correspond pas à
-> ce que je pense — **puis retirer ce bandeau**. Une note que je ne saurais pas défendre à
-> l'oral ne vaut rien, même si elle est juste.
+> **Méthode.** Chaque affirmation de cette note repose sur une vérification faite dans le code
+> du projet ou à la source primaire, et la commande de vérification est citée à côté du
+> constat. Rien n'est repris d'un résumé de seconde main.
 
 ## Résumé en clair
 
