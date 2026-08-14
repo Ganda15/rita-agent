@@ -42,15 +42,15 @@ du référentiel sans travail supplémentaire.
 
 | C | Fait | Manque |
 |---|---|---|
-| **C1** | 7 sources, les 5 types, script en 6 points | dépôt privé (critère « accessible depuis Git ») |
+| **C1** | 7 sources, les 5 types, script en 6 points | invitation `bybysker` en attente d'acceptation |
 | **C2** | 3 requêtes SQL, optimisation LATERAL mesurée ×2000 | — |
-| **C3** | `pipelines/ingest.py`, 15 tests, règles justifiées par mesure | dépôt privé |
+| **C3** | `pipelines/ingest.py`, 15 tests, règles justifiées par mesure | invitation en attente d'acceptation |
 | **C4** | MCD Merise 6 entités, MPD 8 tables, registre RGPD, purge testée | — |
 | **C5** | 6 endpoints, OpenAPI 3.1.0, auth au niveau routeur, 25 tests | — |
 | **C6** | **rien** — `docs/veille/` ne contient que `.gitkeep` | ⚠️ **tout**, et la récurrence hebdo ne se rattrape pas |
 | **C7** | **rien** — aucun benchmark de services IA | tout |
 | **C8** | cascade 3 fournisseurs testée, clé en `.env` | monitorage du service · doc d'exploitation |
-| **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection | revue OWASP · doc d'architecture · dépôt privé |
+| **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection | revue OWASP · doc d'architecture · invitation en attente |
 | **C10** | **rien** — `frontend/` est vide | tout |
 | **C11** | **rien** | tout |
 | **C12** | 186 tests, 15 cas d'éval, seuils non compensables en CI | ⚠️ **couverture non mesurée** (`pytest-cov` absent) · DVC |
@@ -60,8 +60,13 @@ du référentiel sans travail supplémentaire.
 
 1. 🔴 **C6 — récurrence hebdomadaire de veille.** Le seul qui **ne se rattrape pas** :
    12 semaines restantes au 14/08, une semaine perdue = une preuve perdue définitivement.
-2. 🔴 **Dépôt privé.** Inviter le formateur et le jury en collaborateurs, attendre
-   l'acceptation, puis envoyer le PDF + le lien du tag. Bloque C1#6, C3#2, C9.
+2. 🟠 **Accès au dépôt — invitation envoyée, pas encore acceptée.** Vérifié sur GitHub le
+   14/08 : `bybysker` a été invité le **13/08 à 15h16** en droit `read`. Il est dans
+   `/invitations`, **pas encore dans `/collaborators`** — donc le critère *« accessible
+   depuis un dépôt Git »* (C1#6, C3#2, C9) n'est **pas encore satisfait**.
+   **Reste à faire** : relancer si l'invitation n'est pas acceptée · inviter le **jury**
+   le moment venu. Commande de vérification :
+   `gh api repos/Ganda15/rita-agent/collaborators --jq '.[].login'`
 3. 🟠 **Couverture de tests non mesurée** (C12) — `pytest-cov` à brancher, seuil à fixer.
 4. 🟠 **Chaîne de LIVRAISON absente** (C13) — aujourd'hui c'est de l'intégration continue.
 5. 🟡 **Revue OWASP API Top 10** (C9) non écrite.

@@ -28,6 +28,12 @@
 - **Rédigé** dans le modèle Simplon (`D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP.xlsx`) :
   C1 C2 C3 C4 C5 C8 C9 C12 C13. **C6, C7, C10 et C11 laissés délibérément vides — rien n'est
   fait.** Une cellule vide se rattrape ; une affirmation fausse devant le jury, non.
+- **Vérifié sur GitHub** (`gh api`) l'état réel de l'accès au dépôt, au lieu de le supposer :
+  dépôt `PRIVATE`, un seul collaborateur (`Ganda15`, admin), et **une invitation envoyée le
+  13/08 à 15h16 à `bybysker` en droit `read`, toujours en attente d'acceptation**.
+  L'action a donc bien été faite le 13/08 — mais tant que l'invitation n'est pas acceptée,
+  le critère *« accessible depuis un dépôt Git »* n'est pas satisfait.
+  *Une invitation envoyée n'est pas un accès donné.*
 - **Manque confirmé, le plus urgent** : C6 exige *« à minima une récurrence d'une heure
   hebdomadaire »*. `docs/veille/` ne contient que `.gitkeep`. **12 semaines avant la
   deadline** — c'est le seul critère qui ne se rattrape pas rétroactivement.
