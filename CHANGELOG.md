@@ -9,6 +9,26 @@
 
 ---
 
+## 2026-08-14 — C6 : la veille est lancée
+
+- **Thématique arrêtée** : **sécurité des agents LLM — l'injection de prompt**. Retenue parce
+  qu'elle porte sur un risque **réel** du projet (RITA lit des pages et des flux écrits par des
+  tiers) et sur un outil qu'il possède déjà (`guardrails/injection.py`), pas sur un sujet
+  choisi pour l'exercice.
+- **Ajouté** `docs/veille/README.md` — le protocole : 7 sources **pesées une par une** sur les
+  critères de fiabilité du référentiel (auteur identifié, notoriété, intérêts), dont deux
+  gardées **sous condition** (éditeurs de modèles = intérêt commercial ; arXiv = non relu par
+  les pairs), trois écartées avec motif. Outil d'agrégation : **RSS via `sources/rss.py`**, le
+  code que le projet possède déjà — **budget 0 €**. Plus les 7 règles d'accessibilité
+  appliquées à chaque note.
+- **Ajouté** `docs/veille/_MODELE-note-hebdomadaire.md`, avec la section obligatoire
+  **« Ce que ça change dans RITA »** et une liste de contrôle d'accessibilité.
+- **Récurrence en place** : tâche planifiée `veille-hebdo-securite-llm`, **lundi 09h00**.
+- **Décidé** : la tâche planifiée **prépare** une liste de candidats, elle **n'écrit pas la
+  note**. *Une note de veille produite par une IA serait une preuve fabriquée devant le jury —
+  et ne prouverait aucune compétence.*
+- **Reste** : les notes elles-mêmes. **0 écrite à ce jour.**
+
 ## 2026-08-14 — Continuité entre sessions
 
 - **Ajouté** `CLAUDE.md` (identité du projet, invariante) et `ETAT.md` (état du jour) à la

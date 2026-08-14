@@ -19,12 +19,20 @@
 
 ## 🧭 Prochaine action
 
-**Choisir la thématique de veille C6 et écrire la première note** dans `docs/veille/`.
+**Écrire la PREMIÈRE note de veille C6 — semaine S33** (Era la rédige lui-même).
 
-Recommandation : *sécurité des agents LLM / injection de prompt* — déjà branchée sur
-`guardrails/injection.py` et `evals/cas.py`, donc chaque note peut finir par « ce que ça
-change dans mon code », ce qui satisfait le *« formuler des recommandations pour le projet »*
-du référentiel sans travail supplémentaire.
+- Gabarit : `docs/veille/_MODELE-note-hebdomadaire.md`
+- À enregistrer sous : `docs/veille/2026-S33-<sujet>.md`
+- Protocole complet (sources, fiabilité, accessibilité) : `docs/veille/README.md`
+
+Thématique arrêtée le 14/08 : **sécurité des agents LLM — injection de prompt**. Choisie
+parce qu'elle est déjà branchée sur `guardrails/injection.py` et `evals/cas.py` : chaque note
+finit par « ce que ça change dans RITA », ce qui satisfait le *« formuler des recommandations
+pour le projet »* du référentiel sans travail supplémentaire.
+
+⏰ Récurrence en place : tâche planifiée `veille-hebdo-securite-llm`, **tous les lundis 09h00**.
+Elle prépare une liste de candidats — **elle n'écrit pas la note** (une note produite par une
+IA serait une preuve fabriquée).
 
 ---
 
@@ -47,7 +55,7 @@ du référentiel sans travail supplémentaire.
 | **C3** | `pipelines/ingest.py`, 15 tests, règles justifiées par mesure | invitation en attente d'acceptation |
 | **C4** | MCD Merise 6 entités, MPD 8 tables, registre RGPD, purge testée | — |
 | **C5** | 6 endpoints, OpenAPI 3.1.0, auth au niveau routeur, 25 tests | — |
-| **C6** | **rien** — `docs/veille/` ne contient que `.gitkeep` | ⚠️ **tout**, et la récurrence hebdo ne se rattrape pas |
+| **C6** | protocole écrit (thématique, 7 sources pesées, outil + budget 0 €, règles d'accessibilité), gabarit de note, récurrence planifiée lundi 09h00 | ⚠️ **les notes elles-mêmes** — 0 écrite à ce jour |
 | **C7** | **rien** — aucun benchmark de services IA | tout |
 | **C8** | cascade 3 fournisseurs testée, clé en `.env` | monitorage du service · doc d'exploitation |
 | **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection | revue OWASP · doc d'architecture · invitation en attente |
