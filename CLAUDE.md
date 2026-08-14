@@ -106,7 +106,21 @@ C:\Python314\python.exe -m pytest -q                          # les 186 tests
 C:\Python314\python.exe -m evals.mesurer_gardefou             # taux de blocage + faux positifs
 C:\Python314\python.exe -X utf8 -m pipelines.ingest --simulation
 C:\Python314\python.exe -m uvicorn api.main:app --reload      # API sur :8000
+C:\Python314\python.exe scripts\verifier_liens.py             # liens internes + externes
 ```
+
+## 🔗 Avant CHAQUE envoi de livrable — vérifier les liens
+
+```powershell
+C:\Python314\python.exe scripts\verifier_liens.py
+```
+
+**Zéro lien cassé exigé.** Le script contrôle les liens externes (HTTP) **et** internes (le
+fichier visé existe-t-il, et est-il bien **dans** le dépôt). *Un livrable ne pointe jamais
+hors du dépôt* — règle établie le 11/08 après avoir trouvé `bigdata/CONCEPTION.md` qui
+renvoyait ses schémas vers une adresse Obsidian, invisible pour un évaluateur.
+
+**Ne jamais écrire une URL sans l'avoir testée** — dans un fichier comme dans le chat.
 
 ## État des livrables
 
