@@ -9,6 +9,25 @@
 
 ---
 
+## 2026-08-14 — RGPD : un traitement déclaré qui n'existait pas
+
+- **Manque découvert** : le registre décrivait **T3** (traçage LangSmith) comme un traitement
+  **actif**, avec transfert de données personnelles vers les États-Unis et un risque classé
+  🔴 haute. Vérification : ni `LANGCHAIN_TRACING_V2` ni `LANGCHAIN_API_KEY` dans le `.env`
+  réel, aucun appel à LangSmith dans le code. **Aucune donnée ne sort de la machine.**
+  T3 passe en *« envisagé, non activé »*, criticité abaissée à 🟠.
+  *Un registre qui sur-déclare est aussi inexact qu'un registre qui oublie.*
+- **Décision documentée** : le choix de l'outil de monitorage a une conséquence RGPD directe —
+  LangSmith crée un transfert hors UE, Langfuse auto-hébergé le supprime, Langfuse Cloud
+  région UE le maintient sans transfert au sens de l'article 44. Le formateur a validé
+  LangSmith ; le tableau reste au registre pour le jour où la question se reposera.
+  Obstacle réel à l'auto-hébergement : **Docker ne démarre pas sur cette machine** — il
+  manque aussi pour C13.
+- **Ajouté** `scripts/verifier_liens.py` : contrôle des liens externes (HTTP) **et** internes
+  (le fichier visé existe-t-il, et est-il **dans** le dépôt). Première exécution :
+  **34 fichiers · 38 liens internes · 5 externes · 0 cassé.** Règle inscrite dans `CLAUDE.md` :
+  à lancer avant chaque envoi de livrable.
+
 ## 2026-08-14 — C6 : la veille est lancée
 
 - **Thématique arrêtée** : **sécurité des agents LLM — l'injection de prompt**. Retenue parce
