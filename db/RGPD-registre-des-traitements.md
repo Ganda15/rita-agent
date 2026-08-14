@@ -11,7 +11,7 @@
 **Base réglementaire** : RGPD (Règlement Général sur la Protection des Données,
 UE 2016/679), **article 30** — registre des activités de traitement.
 
-**Dernière mise à jour** : 2026-08-01
+**Dernière mise à jour** : 2026-08-14 *(correction de T3 — voir §1)*
 
 ---
 
@@ -68,9 +68,32 @@ divulgation cause un préjudice réel, donc à protéger sérieusement.
 | **Durée de conservation** | **90 jours** — au-delà, un log de débogage n'a plus d'utilité |
 | **Sécurité** | Purge automatisée (voir §2) |
 
-### T3 — Traces d'exécution LangSmith
+### T3 — Traces d'exécution LangSmith — ⏸ **ENVISAGÉ, NON ACTIVÉ**
 
-| Rubrique | Contenu |
+> ## ⚠️ Correction du 2026-08-14 — ce traitement n'a **jamais eu lieu**
+>
+> Ce registre décrivait T3 comme un traitement **actif**, avec transfert de données
+> personnelles vers les États-Unis et un risque classé 🔴 haute. **Vérification faite :
+> c'est faux.**
+>
+> | Contrôle | Constat |
+> |---|---|
+> | `LANGCHAIN_TRACING_V2` dans le `.env` réel | **absent** |
+> | `LANGCHAIN_API_KEY` dans le `.env` réel | **absent** |
+> | Appel à LangSmith dans le code (`grep`) | **aucun** |
+> | `langsmith` installé | oui — **dépendance transitive** de `langchain-core`, jamais activée |
+>
+> Les deux variables n'existent que dans `.env.example`, à titre d'exemple.
+> **Sans drapeau ni clé, aucune trace ne quitte la machine.**
+>
+> 🔑 **La leçon** : un registre qui **sur-déclare** est aussi inexact qu'un registre qui
+> oublie. Déclarer un transfert hors UE qui n'existe pas, c'est se décrire moins protecteur
+> qu'on ne l'est — et rendre invérifiable tout le reste du document.
+
+**Le jour où le traçage sera activé**, ce traitement redeviendra réel et les rubriques
+ci-dessous s'appliqueront telles quelles. Elles sont conservées pour cette raison.
+
+| Rubrique | Contenu *(applicable seulement après activation)* |
 |---|---|
 | **Finalité** | Monitorage des agents : latence, coût, qualité des réponses (C11/C20) |
 | **Base légale** | Intérêt légitime |
@@ -78,11 +101,22 @@ divulgation cause un préjudice réel, donc à protéger sérieusement.
 | **⚠️ Destinataire** | **LangChain Inc. (États-Unis)** — sous-traitant |
 | **⚠️ Transfert hors UE** | **OUI** — encadré par les clauses contractuelles types (CCT) et le *Data Privacy Framework* UE–États-Unis |
 | **Durée de conservation** | Selon la politique LangSmith (non maîtrisée par nous) |
-| **Mesure de réduction** | ⬜ **À FAIRE** : masquer les montants dans les prompts tracés, ou désactiver le traçage sur les nœuds manipulant le portefeuille |
+| **Mesure de réduction** | ⬜ masquer les montants dans les prompts tracés, ou désactiver le traçage sur les nœuds manipulant le portefeuille |
 
-> 🔴 **T3 est le point faible du dispositif et il est signalé comme tel.** Envoyer des
-> montants de portefeuille à un service américain est une décision qui doit être consciente.
-> **Ce n'est pas encore corrigé** — c'est une action ouverte, pas un acquis.
+#### Décision à prendre **avant** d'activer le traçage
+
+L'outil de monitorage n'est pas encore arrêté, et le choix a une conséquence RGPD directe :
+
+| Option | Sous-traitant | Transfert hors UE | Conséquence pour ce registre |
+|---|---|---|---|
+| **LangSmith** | LangChain Inc. (États-Unis) | **oui** | T3 devient actif, CCT / *Data Privacy Framework* à invoquer |
+| **Langfuse auto-hébergé** (cœur sous licence MIT) | **aucun** | **non** | **T3 disparaît** — les données ne quittent pas la machine |
+| **Langfuse Cloud, région UE** (Irlande) | Langfuse | **non** | T3 reste, mais sans transfert au titre de l'article 44 |
+
+> 💡 **Le meilleur traitement de données personnelles est celui qu'on ne fait pas.**
+> L'auto-hébergement supprime le sous-traitant, le transfert, et les clauses à justifier.
+> ⚠️ Il exige Docker — **aujourd'hui le démon ne démarre pas sur la machine d'Era**, c'est
+> le vrai obstacle, et il vaut aussi pour C13 (empaquetage, livraison continue).
 
 ### T4 — Fichier CSV source du portefeuille
 
@@ -151,7 +185,7 @@ utilisateur.
 
 | # | Action | Criticité |
 |---|---|---|
-| 1 | **Masquer les montants dans les traces LangSmith** (T3) | 🔴 haute |
+| 1 | **Choisir l'outil de monitorage AVANT d'activer le traçage** (T3) — l'auto-hébergement supprime le transfert hors UE ; LangSmith le crée | 🟠 moyenne *(abaissée le 14/08 : le traçage n'est pas activé, donc aucune donnée ne sort aujourd'hui)* |
 | 2 | **Hook Git `pre-commit`** interdisant l'ajout d'un fichier personnel (P4) | 🟠 moyenne |
 | 3 | Brancher P1 et P2 sur APScheduler (aujourd'hui : lancement manuel) | 🟠 moyenne |
 | 4 | Chiffrer la sauvegarde de la base si elle sort de la machine | 🟡 basse tant que tout est local |
