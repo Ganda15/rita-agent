@@ -19,15 +19,25 @@
 
 ## 🧭 Prochaine action
 
-**Trancher les deux trous du protocole de veille C6** — repérés le 14/08 en relisant
-JOURNAL-005 :
+**Faire le premier envoi de veille.** Le protocole est complet depuis le 15/08 — il ne
+manque plus que l'acte.
 
-1. **La veille partagée n'est pas traitée.** Deux critères sur huit exigent qu'elle soit
-   *« communiquée aux parties prenantes »* et menée *« en animant le travail collectif »*.
-   **Une veille solo n'en coche aucun.** → décider **à qui** les synthèses sont envoyées.
-2. **L'outil de veille existant est ignoré** : `C:\Users\kanda\Desktop\Veille-IA\` (Google
-   News, Hacker News, arXiv, envoi Telegram). Le protocole propose RSS via `sources/rss.py`
-   sans le mentionner. → dire **lequel fait quoi**.
+1. Envoyer la note **S33** au **formateur référent**, en PDF, par mail.
+2. La poster dans le **canal de la promo**, en terminant par une **question ouverte** —
+   ce sont les *réponses* qui prouvent l'animation du travail collectif, pas l'envoi.
+3. Créer `evidence/C6/`, y déposer la preuve (capture ou export du mail).
+4. Remplir la ligne dans `docs/veille/_JOURNAL-DES-ENVOIS.md` **le jour même**.
+
+⚠️ **Ce registre est vide au 15/08. Tant qu'il l'est, deux critères de C6 sur huit valent
+zéro**, quelle que soit la qualité des notes. Personne ne peut faire cet envoi à la place
+d'Era.
+
+✅ **Les deux trous du 14/08 sont comblés** (`docs/veille/README.md`) :
+- **§5** — le partage : destinataires, cadence (mensuel au formateur, à chaque note pour la
+  promo), registre de trace, et les faiblesses déclarées.
+- **§4** — les deux outils : `sources/rss.py` est **l'outil de C6** ; `Veille-IA` est une
+  veille personnelle **hors C6** — sa sortie est rédigée par un LLM, ce qui en ferait une
+  preuve fabriquée. Mesuré le 15/08 : à l'arrêt depuis le 27/07.
 
 ✅ **Note S33 faite le 14/08** — `docs/veille/2026-S33-injection-de-prompt.md`
 (OWASP Top 10 2026 vérifié à la source · trifecta : 2 conditions sur 3, la 3ᵉ absente par
@@ -66,7 +76,7 @@ IA serait une preuve fabriquée).
 | **C3** | `pipelines/ingest.py`, 15 tests, règles justifiées par mesure | invitation en attente d'acceptation |
 | **C4** | MCD Merise 6 entités, MPD 8 tables, registre RGPD, purge testée | — |
 | **C5** | 6 endpoints, OpenAPI 3.1.0, auth au niveau routeur, 25 tests | — |
-| **C6** | protocole, gabarit, récurrence (tâche planifiée + agenda), **1re note écrite le 14/08 (S33)** | ⚠️ ~11 notes à venir · la veille **partagée** (2 critères sur 8) non traitée |
+| **C6** | protocole **complet** (partage + rôle des 2 outils tranchés le 15/08), gabarit, récurrence, registre d'envois, **1re note écrite le 14/08 (S33)** | ⚠️ ~11 notes à venir · 🔴 **aucun envoi effectué** — le registre est vide, 2 critères sur 8 valent zéro |
 | **C7** | **rien** — aucun benchmark de services IA | tout |
 | **C8** | cascade 3 fournisseurs testée, clé en `.env` | monitorage du service · doc d'exploitation |
 | **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection | revue OWASP · doc d'architecture · invitation en attente |
@@ -77,8 +87,10 @@ IA serait une preuve fabriquée).
 
 ## Les 5 manques ouverts, par urgence
 
-1. 🔴 **C6 — récurrence hebdomadaire de veille.** Le seul qui **ne se rattrape pas** :
-   12 semaines restantes au 14/08, une semaine perdue = une preuve perdue définitivement.
+1. 🔴 **C6 — la récurrence ET le partage.** Le seul qui **ne se rattrape pas** : 12 semaines
+   restantes au 14/08, une semaine perdue = une preuve perdue définitivement. Depuis le
+   15/08 le protocole est complet, mais **zéro envoi** : `docs/veille/_JOURNAL-DES-ENVOIS.md`
+   est vide.
 2. 🟠 **Accès au dépôt — invitation envoyée, pas encore acceptée.** Vérifié sur GitHub le
    14/08 : `bybysker` a été invité le **13/08 à 15h16** en droit `read`. Il est dans
    `/invitations`, **pas encore dans `/collaborators`** — donc le critère *« accessible

@@ -98,9 +98,84 @@ flux, et il faudrait justifier une dépense pour une fonction que le projet sait
 **Pourquoi pas les newsletters** : elles arrivent dans une boîte mail personnelle — ni
 versionnable, ni consultable par un tiers.
 
+### ⚠️ Deux outils de veille coexistent — voici lequel fait quoi
+
+Un second outil existe **hors du dépôt** : `C:\Users\kanda\Desktop\Veille-IA\`. Ce protocole
+ne le mentionnait pas, ce qui laissait un évaluateur devant deux outils pour un seul besoin,
+sans savoir lequel fait foi. **Tranché le 15/08/2026.**
+
+| | `sources/rss.py` — **dans le dépôt** | `Veille-IA` — **hors dépôt** |
+|---|---|---|
+| **Rôle pour C6** | ✅ **l'outil de la veille C6** — celui qui produit la preuve | ❌ **hors C6** — veille personnelle d'éveil |
+| **Thématique** | sécurité des agents LLM, injection de prompt | IA en finance, IA agentique, outils de dev (`config.yaml`, `focus_weights`) |
+| **Sources** | les flux RSS des 5 sources pesées au §3 | Google News, Hacker News, DuckDuckGo, arXiv (`src/websearch.py`) |
+| **Sortie** | une liste de candidats — **Era écrit la note** | top-10 quotidien sur Telegram, puis diapositives et script oral **rédigés par un LLM** |
+| **Budget** | 0 € | 0 € (OpenRouter, modèle gratuit) |
+| **Versionné et testé** | ✅ dépôt Git, `tests/test_rss.py` | ❌ ni versionné, ni testé |
+
+**Pourquoi `Veille-IA` ne peut pas être l'outil de C6** — trois raisons, dont une rédhibitoire :
+
+1. 🔴 **Sa sortie est rédigée par un modèle de langage.** Le §2 de ce protocole pose déjà la
+   règle : *une note produite automatiquement ne prouverait aucune compétence*. Présenter des
+   diapositives générées par un LLM comme preuve d'une veille personnelle serait une **preuve
+   fabriquée**.
+2. **Sa thématique n'est pas celle de C6.** Ses pondérations visent l'IA en finance et l'IA
+   agentique — utile pour la culture d'Era, sans rapport avec l'injection de prompt.
+3. **Il est hors du dépôt**, donc invisible pour un évaluateur qui ne dispose que de Git.
+
+**État réel de l'outil, mesuré le 15/08/2026** : `data/latest.json` date du **27/07**, et
+`output/` ne contient **qu'un seul** dossier, du **19/07**. L'outil est à l'arrêt depuis
+environ trois semaines — il ne pourrait donc pas non plus revendiquer une récurrence.
+
+**Décision** : `Veille-IA` est **conservé et assumé** comme outil de veille personnelle, cité
+ici pour qu'aucun évaluateur ne le découvre sans explication. Il ne produit aucune preuve C6.
+
 ---
 
-## 5. Le format de partage — et l'accessibilité
+## 5. Le partage — à qui, quand, et comment on le prouve
+
+> ⚠️ **Trou comblé le 15/08/2026.** Ce protocole décrivait le *format* du partage mais jamais
+> son *destinataire*. Or **deux critères sur huit** portent là-dessus : les synthèses doivent
+> être *« communiquées aux parties prenantes »* et la veille menée *« en animant le travail
+> collectif »*. **Une veille solo n'en coche aucun des deux** — même parfaitement rédigée.
+
+### 5.1 À qui, et à quelle cadence
+
+| Cercle | Destinataire | Canal | Cadence | Ce que ça prouve |
+|---|---|---|---|---|
+| **Principal** | le **formateur référent** | mail, note convertie en PDF | **mensuel**, une synthèse groupant ~4 notes | *« communiquées aux parties prenantes »* |
+| **Second** | la **promo** | canal de classe | **à chaque note**, avec une question ouverte | *« en animant le travail collectif »* |
+
+**Pourquoi le formateur en destinataire principal.** C'est la partie prenante la plus
+incontestable devant un jury : son rôle est écrit, sa réception vérifiable.
+
+**Pourquoi mensuel et non hebdomadaire.** Un envoi hebdomadaire à un formateur devient du
+bruit et cesse d'être lu — une trace non lue ne prouve rien. Trois envois d'ici le 05/11
+valent mieux que douze ignorés. **La note reste hebdomadaire** ; c'est l'*envoi* qui est
+mensuel.
+
+**Pourquoi une question ouverte dans le canal de la promo.** *« Animer le travail collectif »*
+n'est pas *« publier »*. Un message sans réponse ne prouve aucune animation. Chaque note
+postée se termine donc par une question adressée au groupe, et **les réponses reçues sont la
+preuve** — pas le message envoyé.
+
+### 5.2 La trace des envois
+
+Registre : **`docs/veille/_JOURNAL-DES-ENVOIS.md`** — une ligne par envoi (date, destinataire,
+canal, notes couvertes, retour reçu).
+
+⚠️ **Rempli le jour de l'envoi, jamais reconstitué après.** Un registre rempli d'un bloc à la
+veille du rendu se voit : les dates ne collent plus avec les notes qu'il prétend accompagner.
+
+### 5.3 Ce qui reste non résolu — à dire franchement
+
+- **Aucun envoi n'a encore eu lieu au 15/08/2026.** Le registre existe, il est vide. Le
+  premier envoi est à faire par Era — aucun outil ne peut le faire à sa place.
+- **L'animation du travail collectif reste le point faible du dispositif.** Elle dépend de
+  réponses que d'autres personnes doivent écrire. Si aucune réponse n'arrive après deux
+  notes, il faudra changer de canal plutôt que continuer à publier dans le vide.
+
+### 5.4 Le format, et l'accessibilité
 
 Le critère impose que les synthèses soient *« communiquées aux parties prenantes dans un
 format qui respecte les recommandations d'accessibilité »* (Valentin Haüy, Atalan AcceDe).
@@ -126,6 +201,7 @@ elles figurent dans le modèle et sont vérifiables une par une :
 docs/veille/
 ├── README.md                          ce protocole
 ├── _MODELE-note-hebdomadaire.md       le gabarit
+├── _JOURNAL-DES-ENVOIS.md             la trace des partages (§5.2)
 └── 2026-S33-injection-de-prompt.md    une note par semaine : AAAA-Sxx-sujet.md
 ```
 

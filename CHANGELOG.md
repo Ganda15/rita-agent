@@ -9,6 +9,32 @@
 
 ---
 
+## 2026-08-15 — C6 : le partage tranché, et le second outil de veille sorti de l'ombre
+
+Les deux trous repérés le 14/08 en relisant JOURNAL-005 sont comblés dans
+`docs/veille/README.md`.
+
+- **Trou 1 — le partage (§5).** Le protocole décrivait le *format* des synthèses mais jamais
+  leur *destinataire*. Or **deux critères sur huit** portent là-dessus. **Décision** :
+  formateur référent en destinataire principal (mail, PDF, **mensuel** — un envoi
+  hebdomadaire devient du bruit et cesse d'être lu), canal de la promo en second cercle
+  (**à chaque note**, terminée par une question ouverte). *« Animer le travail collectif »
+  n'est pas « publier » : la preuve, ce sont les **réponses**, pas les envois.*
+- **Ajouté** `docs/veille/_JOURNAL-DES-ENVOIS.md` — registre des envois, rempli **le jour de
+  l'envoi**, jamais reconstitué.
+- **Manque déclaré, non résolu** : **aucun envoi n'a eu lieu**. Le registre est vide. Tant
+  qu'il l'est, ces deux critères valent **zéro**, quelle que soit la qualité des notes.
+  Écrit noir sur blanc dans le registre et dans `ETAT.md` plutôt que laissé implicite.
+- **Trou 2 — les deux outils (§4).** `C:\Users\kanda\Desktop\Veille-IA\` existait sans être
+  mentionné nulle part. **Décision** : `sources/rss.py` est **l'outil de C6** ; `Veille-IA`
+  est une veille **personnelle, hors C6**. Raison rédhibitoire : **sa sortie est rédigée par
+  un LLM**, ce qui en ferait une preuve fabriquée — la règle était déjà posée au §2 du
+  protocole. S'y ajoutent une thématique différente (IA/finance/agentique) et l'absence de
+  versionnement.
+- **Mesure, pas supposition** : `Veille-IA/data/latest.json` date du **27/07** et `output/`
+  ne contient **qu'un** dossier, du **19/07**. L'outil est à l'arrêt depuis trois semaines —
+  il ne pourrait pas non plus revendiquer une récurrence.
+
 ## 2026-08-15 — Décision : les indicateurs de marché, triés et datés
 
 - **Décision structurante** : 19 indicateurs proposés, ramenés à **13 réellement à coder**,
