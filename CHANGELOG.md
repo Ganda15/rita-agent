@@ -9,6 +9,36 @@
 
 ---
 
+## 2026-08-15 — Décision : les indicateurs de marché, triés et datés
+
+- **Décision structurante** : 19 indicateurs proposés, ramenés à **13 réellement à coder**,
+  répartis en 4 lots par **coût de données** — le seul critère qui commande l'ordre.
+  Spécification : `docs/indicateurs/CONCEPTION.md` — **conception seule, aucun code écrit**.
+- **Le mot « stratégie » est abandonné dans tout le projet.** Un indicateur est un *fait*
+  (« le RSI vaut 71 »), une stratégie est un *conseil* (« RSI > 70 → vendre »). Le second
+  contredirait le garde-fou AMF inscrit dans `CLAUDE.md`. *Un livrable dont le titre
+  contredit son propre garde-fou ne tient pas cinq minutes devant un jury.*
+- **Vérification avant rédaction — 3 des 19 existaient déjà** : dernier cours et performance
+  1 jour (R2 de `db/requetes.sql`), volume relatif 20 séances (R3), volatilité intraséance
+  (S2 de `bigdata/query_spark.py`). **Et le portefeuille est déjà valorisé** par la vue
+  `v_portefeuille_valorise`, conversion des devises comprise : le lot portefeuille tombe de
+  3 ajouts à **2** (poids par ligne, exposition par devise).
+- **Manque découvert** : `sources/cotations.py` collecte avec `auto_adjust=True`. C'est le
+  bon choix — une performance sur cours bruts serait fausse — mais **les cours passés sont
+  réécrits à chaque dividende**. Une performance 1 an n'est donc pas strictement reproductible
+  dans le temps. Inscrit comme piège, pas dissimulé.
+- **Écarté : le ratio de Sharpe.** `sources/fred.py` ne collecte que `DGS10`, le Trésor
+  **américain**, pour un portefeuille en euros ; très bruité sur un an de données
+  quotidiennes ; et c'est le seul indicateur de la liste qui **classe** — donc le plus proche
+  du conseil. Écart **assumé et présenté à l'oral**, pas un oubli.
+- **Erreur corrigée** : la proposition parlait des « 135 instruments ». RITA en compte **111**.
+  Le 135 venait du suivi des 135 critères RNCP — deux objets sans rapport.
+- **Rattachement** : livrable **E4** (C14–C19). Ces indicateurs ne rapportent **rien** en C2,
+  déjà livré avec R1–R3 et S1–S3 : ajouter des requêtes ne re-prouve pas une compétence
+  prouvée. Ils sont le contenu de `frontend/`, vide à ce jour.
+- **Rien n'est codé, et rien ne doit l'être avant l'ouverture d'E4** : au 15/08 il reste
+  12 semaines et C6 est le seul chantier qui ne se rattrape pas.
+
 ## 2026-08-14 — RGPD : un traitement déclaré qui n'existait pas
 
 - **Manque découvert** : le registre décrivait **T3** (traçage LangSmith) comme un traitement

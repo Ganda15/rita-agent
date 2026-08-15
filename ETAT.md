@@ -3,7 +3,7 @@
 > **Ce fichier se périme.** Il porte l'état du jour ; `CLAUDE.md` porte ce qui ne change pas.
 > À relire au démarrage de chaque session, à mettre à jour à la fin.
 
-**Dernière mise à jour : 2026-08-14** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+**Dernière mise à jour : 2026-08-15** · deadline livrables **05/11/2026** · jury **30/11–01/12**
 
 ---
 
@@ -106,3 +106,8 @@ IA serait une preuve fabriquée).
 - `article` et `memory_audit` hors du MCD : collecte brute et journal technique ne sont pas
   des entités métier. 6 entités + 2 tables techniques = 8 tables.
 - `/briefing` relève de **C9**, pas de C5 : c'est une rédaction, pas de la donnée.
+- **Indicateurs de marché — 15/08.** 19 proposés → **13 à coder**, en 4 lots. Le mot
+  « stratégie » est banni (indicateur = fait, stratégie = conseil → garde-fou AMF). Sharpe
+  écarté. Destination **E4**, pas C2. Spécification figée :
+  `docs/indicateurs/CONCEPTION.md`. **Rien à coder avant l'ouverture d'E4** — ne pas rouvrir
+  le débat, lire le fichier.
