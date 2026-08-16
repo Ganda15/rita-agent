@@ -20,7 +20,7 @@ from graph.workflow import generer_briefing_complet
 load_dotenv()
 
 DESCRIPTION = """
-API de **RITA** — *Retrieval Intelligence for Trading Analysis*.
+API de **RITA** — *Retrieval Intelligence pour le Tracking et l'Analyse*.
 
 ### Authentification
 Tous les points de terminaison sauf `/health` exigent l'en-tête **`X-API-Key`**.
