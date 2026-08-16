@@ -35,8 +35,12 @@ serrer les dents.
 
 Deux tâches courtes à caser dans la même semaine :
 1. **Note de veille S34**, lundi 17/08 09h00 (créneau fixe, ne cède jamais sa place).
-2. **Compléter `docs/veille/_JOURNAL-DES-ENVOIS.md`** — Era a envoyé la note S33, la ligne
-   du registre reste à écrire (date et canal exacts connus de lui seul).
+2. **Poster la note S33 dans le canal de la promo.** Elle est **écrite et prête depuis le
+   14/08, mais toujours pas partie** : Era attend le retour de congé du formateur.
+   ⚠️ **Le formateur est bloqué — la promo ne l'est pas.** Le critère *« en animant le
+   travail collectif »* ne dépend que du canal de classe, et il est disponible aujourd'hui.
+   Attendre le formateur pour *les deux* laisse deux critères sur huit à zéro pendant
+   toute la durée du congé, sans nécessité.
 
 ✅ **Les deux trous du 14/08 sont comblés** (`docs/veille/README.md`) :
 - **§5** — le partage : destinataires, cadence (mensuel au formateur, à chaque note pour la
