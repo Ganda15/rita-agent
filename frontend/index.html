@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RITA — Mon portefeuille</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>RITA — Mon portefeuille</h1>
+    <p class="sous-titre">Retrieval Intelligence pour le Tracking et l'Analyse</p>
+    <p class="avertissement">
+      Aide à la lecture. Aucune recommandation d'achat ou de vente.
+    </p>
+  </header>
+
+  <main>
+    <!-- ÉTAT 1 — pas de clé d'API : on la demande -->
+    <section id="connexion" hidden>
+      <h2>Connexion</h2>
+      <form id="form-cle">
+        <label for="cle">Clé d'API</label>
+        <input type="password" id="cle" name="cle" required autocomplete="off">
+        <button type="submit">Se connecter</button>
+      </form>
+    </section>
+
+    <!-- ÉTATS 2 et 3 — chargement / erreur.
+         role="status" + aria-live : tout changement de texte ici est annoncé par un
+         lecteur d'écran, sans interrompre la lecture en cours. Sans ça, une personne
+         aveugle ne saurait jamais que la page charge. -->
+    <p id="statut" role="status" aria-live="polite"></p>
+
+    <!-- ÉTAT 4 — les données -->
+    <section id="resultat" hidden>
+      <p class="total">
+        Total du portefeuille&nbsp;: <strong id="total">—</strong><span id="nb-lignes"></span>
+      </p>
+
+      <table>
+        <caption id="legende">Portefeuille valorisé</caption>
+        <thead>
+          <tr>
+            <th scope="col">Ticker</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Qté</th>
+            <th scope="col">PRU</th>
+            <th scope="col">Cours</th>
+            <th scope="col">Investi (€)</th>
+            <th scope="col">Valorisation (€)</th>
+            <th scope="col">Performance</th>
+          </tr>
+        </thead>
+        <tbody id="lignes"></tbody>
+      </table>
+
+      <details>
+        <summary>Comment lire ce tableau&nbsp;?</summary>
+        <dl>
+          <dt>PRU</dt>
+          <dd>Prix de Revient Unitaire : ce que t'a coûté en moyenne une action détenue.</dd>
+          <dt>Investi (€)</dt>
+          <dd>Quantité × PRU, converti en euros au dernier taux BCE connu.</dd>
+          <dt>Valorisation (€)</dt>
+          <dd>Quantité × dernier cours de clôture, converti en euros.</dd>
+          <dt>Performance</dt>
+          <dd>Écart entre le cours actuel et le PRU, en pourcentage.
+              Le signe est toujours affiché : l'information n'est jamais portée
+              par la seule couleur.</dd>
+          <dt>Donnée douteuse</dt>
+          <dd>La valeur est marquée <code>INCOHERENT</code> en base : son historique a
+              échoué aux contrôles de qualité. Le chiffre est affiché, mais signalé.</dd>
+        </dl>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <p>RNCP 37827 · Eramalingam GANDAKUMAR · données personnelles, traitement T1 du registre RGPD</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

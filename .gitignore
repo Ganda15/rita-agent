@@ -20,3 +20,6 @@ data/positions-reelles*.csv
 *portefeuille*.csv
 *portefeuille*.xlsx
 !data/positions-exemple.csv
+
+# Configuration locale de l outil de developpement (non livrable)
+.claude/
