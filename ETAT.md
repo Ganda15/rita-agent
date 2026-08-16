@@ -3,7 +3,11 @@
 > **Ce fichier se périme.** Il porte l'état du jour ; `CLAUDE.md` porte ce qui ne change pas.
 > À relire au démarrage de chaque session, à mettre à jour à la fin.
 
-**Dernière mise à jour : 2026-08-15** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+**Dernière mise à jour : 2026-08-16** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+
+📅 **Le plan des 12 semaines est écrit : `docs/PLAN-12-SEMAINES.md`.**
+Le formateur est en congé → on ne l'attend pas : **produire → geler → mettre en file
+(`docs/FILE-DE-VALIDATION.md`) → continuer.**
 
 ---
 
@@ -19,18 +23,20 @@
 
 ## 🧭 Prochaine action
 
-**Faire le premier envoi de veille.** Le protocole est complet depuis le 15/08 — il ne
-manque plus que l'acte.
+**S34 — le squelette de l'application.** C'est la **semaine de vacances**, donc la seule
+plage de temps long avant le 05/11. Elle va au chantier le plus lourd : l'application, qui
+porte **7 compétences** à elle seule (C10 + C14–C19). Voir `docs/PLAN-12-SEMAINES.md` §2.
 
-1. Envoyer la note **S33** au **formateur référent**, en PDF, par mail.
-2. La poster dans le **canal de la promo**, en terminant par une **question ouverte** —
-   ce sont les *réponses* qui prouvent l'animation du travail collectif, pas l'envoi.
-3. Créer `evidence/C6/`, y déposer la preuve (capture ou export du mail).
-4. Remplir la ligne dans `docs/veille/_JOURNAL-DES-ENVOIS.md` **le jour même**.
+**À la fin de S34 (23/08), l'application doit démarrer et afficher le portefeuille réel
+depuis l'API.** Rien de plus, rien de moins.
 
-⚠️ **Ce registre est vide au 15/08. Tant qu'il l'est, deux critères de C6 sur huit valent
-zéro**, quelle que soit la qualité des notes. Personne ne peut faire cet envoi à la place
-d'Era.
+⚠️ **Si ce n'est pas le cas le 23/08, tout le plan glisse** — et il faut re-trancher, pas
+serrer les dents.
+
+Deux tâches courtes à caser dans la même semaine :
+1. **Note de veille S34**, lundi 17/08 09h00 (créneau fixe, ne cède jamais sa place).
+2. **Compléter `docs/veille/_JOURNAL-DES-ENVOIS.md`** — Era a envoyé la note S33, la ligne
+   du registre reste à écrire (date et canal exacts connus de lui seul).
 
 ✅ **Les deux trous du 14/08 sont comblés** (`docs/veille/README.md`) :
 - **§5** — le partage : destinataires, cadence (mensuel au formateur, à chaque note pour la
