@@ -24,12 +24,16 @@
 
 | # | Date | Destinataire | Canal | Notes couvertes | Retour reçu | Preuve |
 |---|---|---|---|---|---|---|
-| — | — | — | — | — | — | — |
+| **1** | **2026-08-16** | **la promo** | **Discord** — canal général | **S33** — injection de prompt | ⬜ en attente | ⬜ capture à faire **après** les réponses |
+| 2 | ⬜ | le formateur référent | mail + PDF | S33 | ⬜ | ⬜ — bloqué : congé |
 
-> **Au 2026-08-16 : aucun envoi. Ce tableau est vide, et c'est un manque réel.**
-> La note S33 est **écrite et prête depuis le 14/08**, mais n'a été communiquée à personne :
-> Era attend le retour de congé du formateur. Tant que ce tableau reste vide, **deux critères
-> de C6 sur huit valent zéro**, quelle que soit la qualité des notes produites.
+> **Au 2026-08-16 : 1 partage effectué sur 2.**
+> ✅ La note S33 a été **postée dans le canal Discord de la promo le 16/08**, terminée par une
+> question ouverte — le critère *« en animant le travail collectif »* est **lancé**.
+> ⬜ Il n'est **pas encore prouvé** : ce sont les **réponses** qui font la preuve, pas le
+> message. La capture est à faire dans un ou deux jours, une fois le fil nourri.
+> 🔴 L'envoi au **formateur** reste à faire — bloqué par son congé, en file
+> (`../FILE-DE-VALIDATION.md`, ligne 4).
 
 ### ⚠️ Le formateur est bloqué. La promo ne l'est pas.
 

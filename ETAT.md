@@ -35,12 +35,11 @@ serrer les dents.
 
 Deux tâches courtes à caser dans la même semaine :
 1. **Note de veille S34**, lundi 17/08 09h00 (créneau fixe, ne cède jamais sa place).
-2. **Poster la note S33 dans le canal de la promo.** Elle est **écrite et prête depuis le
-   14/08, mais toujours pas partie** : Era attend le retour de congé du formateur.
-   ⚠️ **Le formateur est bloqué — la promo ne l'est pas.** Le critère *« en animant le
-   travail collectif »* ne dépend que du canal de classe, et il est disponible aujourd'hui.
-   Attendre le formateur pour *les deux* laisse deux critères sur huit à zéro pendant
-   toute la durée du congé, sans nécessité.
+2. **Capturer le fil Discord** — la note S33 y a été postée le **16/08** avec une question
+   ouverte. ⚠️ **Attendre 1 à 2 jours** : ce sont les *réponses* qui prouvent l'animation du
+   travail collectif, pas le message. Capture → `evidence/C6/discussion-2026-08-__-discord.png`.
+   *(L'envoi au formateur reste bloqué par son congé — en file, voir
+   `docs/FILE-DE-VALIDATION.md`.)*
 
 ✅ **Les deux trous du 14/08 sont comblés** (`docs/veille/README.md`) :
 - **§5** — le partage : destinataires, cadence (mensuel au formateur, à chaque note pour la
@@ -86,7 +85,7 @@ IA serait une preuve fabriquée).
 | **C3** | `pipelines/ingest.py`, 15 tests, règles justifiées par mesure | invitation en attente d'acceptation |
 | **C4** | MCD Merise 6 entités, MPD 8 tables, registre RGPD, purge testée | — |
 | **C5** | 6 endpoints, OpenAPI 3.1.0, auth au niveau routeur, 25 tests | — |
-| **C6** | protocole **complet** (partage + rôle des 2 outils tranchés le 15/08), gabarit, récurrence, registre d'envois, **1re note écrite le 14/08 (S33)** | ⚠️ ~11 notes à venir · 🔴 **aucun envoi effectué** — le registre est vide, 2 critères sur 8 valent zéro |
+| **C6** | protocole **complet** (15/08), gabarit, récurrence, registre, note S33 (14/08), **partage promo lancé le 16/08 sur Discord** | ⚠️ ~11 notes à venir · 🟠 réponses Discord à capturer · 🔴 envoi **formateur** non fait (congé) |
 | **C7** | **rien** — aucun benchmark de services IA | tout |
 | **C8** | cascade 3 fournisseurs testée, clé en `.env` | monitorage du service · doc d'exploitation |
 | **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection | revue OWASP · doc d'architecture · invitation en attente |

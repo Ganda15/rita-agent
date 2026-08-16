@@ -14,8 +14,8 @@ Pour C6, il en faut **trois familles**, et deux ne peuvent pas être fabriquées
 | Famille | Fichier attendu | Ce que ça prouve | État au 16/08 |
 |---|---|---|---|
 | **La récurrence** | les notes elles-mêmes, dans `../../docs/veille/` | *« veille organisée et réalisée »* — le numéro de semaine ISO rend un trou visible | 🔨 **1 note sur ~12** (S33) |
-| **Le partage** | `envoi-<date>-<destinataire>.png` — capture ou export | *« communiquées aux parties prenantes »* | 🔴 **rien** |
-| **L'animation** | `discussion-<date>-<canal>.png` — le fil **avec les réponses** | *« en animant le travail collectif »* | 🔴 **rien** |
+| **Le partage** | `envoi-<date>-<destinataire>.png` — capture ou export | *« communiquées aux parties prenantes »* | 🔴 **rien** — formateur en congé |
+| **L'animation** | `discussion-<date>-<canal>.png` — le fil **avec les réponses** | *« en animant le travail collectif »* | 🟠 **lancé le 16/08** — posté sur Discord, réponses attendues |
 
 ⚠️ **La capture d'un message posté ne prouve pas l'animation.** Ce qui la prouve, ce sont les
 **réponses** des autres. Capturer le fil **après** les réponses, pas au moment de poster.
@@ -31,16 +31,21 @@ evidence/C6/
 
 ## État réel — à ne pas enjoliver
 
-**Au 2026-08-16, ce dossier est vide.**
+**Au 2026-08-16, ce dossier ne contient encore aucune capture.**
 
-La note S33 est **écrite et prête depuis le 14/08**, mais n'est **partie nulle part** : Era
-attend le retour de congé du formateur. Tant qu'il n'y a rien ici, **deux critères de C6 sur
-huit valent zéro**, quelle que soit la qualité des notes produites.
+✅ **Le 16/08, la note S33 a été postée dans le canal Discord de la promo**, terminée par une
+question ouverte sur le filtrage du texte avant passage au modèle. Le critère *« en animant le
+travail collectif »* est donc **lancé**.
 
-⚠️ **Le formateur est bloqué, la promo ne l'est pas.** Le critère *« en animant le travail
-collectif »* vise le canal de classe — **Discord**, l'outil quotidien de la formation — et
-n'a jamais dépendu du formateur. C'est aussi le plus lent à produire : il faut que d'autres
-personnes répondent. Plus il démarre tard, moins il a de chances d'aboutir avant le 05/11.
+⚠️ **Lancé n'est pas prouvé.** Ce qui prouve l'animation, ce sont les **réponses** des autres,
+pas le message posté. La capture du fil est à faire dans un ou deux jours, **une fois qu'il y
+a des réponses à montrer**. Capturer aujourd'hui donnerait une preuve d'auto-publication.
+
+🔴 **L'envoi au formateur reste à faire** — il est en congé. En file dans
+`../../docs/FILE-DE-VALIDATION.md` (ligne 4).
+
+**Si aucune réponse n'arrive après deux notes**, changer de canal plutôt que continuer à
+publier dans le vide — règle posée dans `../../docs/veille/_JOURNAL-DES-ENVOIS.md`.
 
 Registre des envois : `../../docs/veille/_JOURNAL-DES-ENVOIS.md` — vide, et il le dit.
 
