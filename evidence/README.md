@@ -24,6 +24,7 @@ capture d'écran horodatée, sortie de commande, fichier produit, lien vers un r
 | `C3/` | Règles d'agrégation et nettoyage | 3 preuves — déduplication, artefact de regroupement, pipeline d'agrégation | ✅ |
 | `C4/` | Base de données dans le respect du RGPD | `preuve-mcd-merise.md` + le MCD (`.png` et `.drawio`) · MPD dans `../db/schema.sql` · RGPD dans `../db/RGPD-registre-des-traitements.md` | ✅ |
 | `C5/` | API et tests | `preuve-api-jeu-de-donnees.md` (OpenAPI 3.1.0, 8 chemins) + `mesure-garde-fou-injection.md` | ✅ |
+| `C6/` | Veille technique et réglementaire | protocole et notes dans `../docs/veille/` — **le dossier de preuves est vide** : rien n'a encore été partagé | 🔴 **1 note sur ~12 · 0 envoi** |
 
 **186 tests verts** (`pytest -q`). Base : 8 tables · 1 vue · 15 index · 9 contraintes `CHECK` ·
 273 608 lignes importées.
