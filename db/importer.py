@@ -28,7 +28,14 @@ from pathlib import Path
 
 import pandas as pd
 import psycopg2
+from dotenv import load_dotenv
 from psycopg2.extras import execute_values
+
+# Sans cette ligne, le script ne lit PAS le .env et retombe sur DSN_DEFAUT, qui
+# pointe le port 5432 du docker-compose — alors que le PostgreSQL réel écoute sur
+# 5433. Constaté le 16/08/2026 : l'import échouait avec « Connection refused » sur
+# un port que personne n'écoutait. Seul api/main.py chargeait le .env.
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
