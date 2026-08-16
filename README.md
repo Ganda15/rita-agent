@@ -1,6 +1,6 @@
-# RITA — Retrieval Intelligence for Trading Analysis
+# RITA — Retrieval Intelligence pour le Tracking et l'Analyse
 
-*Retrieval Intelligent pour le Trading et l'Analyse*
+*Suivi et analyse de portefeuille — une aide à la lecture, jamais une recommandation*
 
 **Certification RNCP37827 — Développeur en Intelligence Artificielle**
 Simplon & Wild Code School · Eramalingam GANDAKUMAR · ganda70@gmail.com · 2026
