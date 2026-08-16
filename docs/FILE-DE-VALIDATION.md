@@ -36,11 +36,13 @@ besoins, deux registres.
 | 1 | 2026-08-13 | **E1 — Données** | C1–C5 | `livrable-E1-v1` | ⬜ | ⬜ | — |
 | 2 | 2026-08-15 | Protocole de veille C6 (complet) | C6 | `27ff359` | ⬜ | ⬜ | — |
 | 3 | 2026-08-15 | Conception des indicateurs (E4) | — *(conception)* | `81780cb` | ⬜ | ⬜ | — |
+| 4 | 2026-08-14 | **Note de veille S33** — injection de prompt | C6 | `1da976f` | ⬜ **prête, non partie** | ⬜ | — |
 
 **Légende** : ⬜ = pas encore fait · ✅ = fait, avec la date.
 
-> **État au 2026-08-16 : 3 éléments en file, 0 envoyé.** Le formateur est en congé.
-> La note de veille S33 a été envoyée séparément — voir `docs/veille/_JOURNAL-DES-ENVOIS.md`.
+> **État au 2026-08-16 : 4 éléments en file, 0 envoyé.** Le formateur est en congé.
+> **La note de veille S33 est écrite et prête, mais n'est pas partie** — voir la ligne 4
+> ci-dessus et `docs/veille/_JOURNAL-DES-ENVOIS.md`, qui reste vide et le dit.
 
 ---
 

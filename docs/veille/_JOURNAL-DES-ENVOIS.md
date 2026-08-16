@@ -26,10 +26,24 @@
 |---|---|---|---|---|---|---|
 | — | — | — | — | — | — | — |
 
-> **Au 2026-08-15 : aucun envoi. Ce tableau est vide, et c'est un manque réel.**
-> La note S33 est écrite depuis le 14/08 mais n'a été communiquée à personne. Tant que ce
-> tableau reste vide, **deux critères de C6 sur huit valent zéro**, quelle que soit la qualité
-> des notes produites.
+> **Au 2026-08-16 : aucun envoi. Ce tableau est vide, et c'est un manque réel.**
+> La note S33 est **écrite et prête depuis le 14/08**, mais n'a été communiquée à personne :
+> Era attend le retour de congé du formateur. Tant que ce tableau reste vide, **deux critères
+> de C6 sur huit valent zéro**, quelle que soit la qualité des notes produites.
+
+### ⚠️ Le formateur est bloqué. La promo ne l'est pas.
+
+Les deux critères ne visent pas le même destinataire :
+
+| Critère | Destinataire | Bloqué par le congé ? |
+|---|---|---|
+| *« communiquées aux parties prenantes »* | le **formateur** | ✅ oui — attendre son retour est légitime |
+| *« en animant le travail collectif »* | la **promo** | ❌ **non** — le canal de classe est disponible aujourd'hui |
+
+**Attendre le formateur pour les deux, c'est laisser à zéro un critère qui n'a jamais dépendu
+de lui.** Et l'animation du travail collectif est le plus lent des deux à produire : il faut
+que d'autres personnes répondent, ce qui prend des jours. Plus il démarre tard, moins il a de
+chances d'aboutir avant le 05/11.
 
 ---
 
