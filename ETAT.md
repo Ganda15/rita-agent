@@ -23,15 +23,28 @@ Le formateur est en congé → on ne l'attend pas : **produire → geler → met
 
 ## 🧭 Prochaine action
 
-**S34 — le squelette de l'application.** C'est la **semaine de vacances**, donc la seule
-plage de temps long avant le 05/11. Elle va au chantier le plus lourd : l'application, qui
-porte **7 compétences** à elle seule (C10 + C14–C19). Voir `docs/PLAN-12-SEMAINES.md` §2.
+🚩 **Le point de contrôle du 23/08 est atteint dès le 16/08.** L'application démarre et
+affiche le portefeuille réel depuis l'API. La semaine S34 est donc **libre pour aller plus
+loin que prévu**.
 
-**À la fin de S34 (23/08), l'application doit démarrer et afficher le portefeuille réel
-depuis l'API.** Rien de plus, rien de moins.
+**Prochaines actions, dans l'ordre :**
 
-⚠️ **Si ce n'est pas le cas le 23/08, tout le plan glisse** — et il faut re-trancher, pas
-serrer les dents.
+1. 🟠 **`taux_change` est vide** — les taux BCE n'ont pas été réimportés. Sans eux,
+   `COALESCE(t.valeur_pour_eur, 1)` retombe sur 1 : **aucune conversion n'est appliquée**.
+   Sans effet aujourd'hui (les 7 positions sont en euros), **faux dès la première ligne en
+   devise**. Relancer `sources/ecb.py`. *(Révélé par un `EXPLAIN ANALYZE` : `Seq Scan on
+   taux_change … rows=0.00`.)*
+2. 🟡 **`ANALYZE;`** — les statistiques du planificateur sont périmées depuis la
+   reconstruction (il estime 550 lignes dans `position` là où il y en a 7).
+3. **Les deux schémas obligatoires de E4**, jamais faits :
+   - **wireframes** des 3 états de l'écran → **C14** (*« modélisation des parcours
+     utilisateurs : schéma fonctionnel, wireframes »*)
+   - **diagramme de flux de données** de l'application → **C15**
+   *(Le MCD Merise existant satisfait déjà le volet « modélisation des données » de C14.)*
+4. **Écran 2 — les indicateurs**, 9 colonnes du lot 1 (`docs/indicateurs/CONCEPTION.md`).
+   ⚠️ Le moteur existe déjà, écrit par Era hors de ce dépôt : `quant_metrics.py` dans
+   `Ganda15/daily-stock-analysis-era` (350 lignes, 13 fonctions, 9 tests verts). **Le porter
+   plutôt que le réécrire.**
 
 Deux tâches courtes à caser dans la même semaine :
 1. **Note de veille S34**, lundi 17/08 09h00 (créneau fixe, ne cède jamais sa place).
@@ -73,7 +86,7 @@ IA serait une preuve fabriquée).
 | **E1** — Données | C1–C5 | ✅ **livré** — 26 critères / 28 | `livrable-E1-v1` |
 | **E2** — Veille & services IA | C6–C8 | 🔴 C6 et C7 **non commencés** · C8 partiel | — |
 | **E3** — API modèle & MLOps | C9–C13 | 🔨 C9/C12/C13 partiels · C10 et C11 **non commencés** | — |
-| **E4** — Application | C14–C19 | ⬜ non commencé | — |
+| **E4** — Application | C14–C19 | 🔨 **démarré le 16/08** — 1er écran livré | — |
 | **E5** — Monitorage | C20–C21 | ⬜ non commencé | — |
 
 ## Ce qui existe vraiment, compétence par compétence
@@ -89,17 +102,23 @@ IA serait une preuve fabriquée).
 | **C7** | **rien** — aucun benchmark de services IA | tout |
 | **C8** | cascade 3 fournisseurs testée, clé en `.env` | monitorage du service · doc d'exploitation |
 | **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection | revue OWASP · doc d'architecture · invitation en attente |
-| **C10** | **rien** — `frontend/` est vide | tout |
+| **C10** | 🔨 **16/08** — `frontend/` : écran portefeuille servi par l'API, authentification par clé saisie (jamais en dur), 403 et erreurs traités, RGAA (`caption`, `scope`, `aria-live`, signe explicite), **15 tests** dont 2 de non-régression du montage | autres points de terminaison · doc d'architecture |
 | **C11** | **rien** | tout |
-| **C12** | 186 tests, 15 cas d'éval, seuils non compensables en CI | ⚠️ **couverture non mesurée** (`pytest-cov` absent) · DVC |
+| **C12** | 201 tests, 15 cas d'éval, seuils non compensables en CI | ⚠️ **couverture non mesurée** (`pytest-cov` absent) · DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
 | **C13** | GitHub Actions, 2 jobs, porte garde-fous | packaging · Docker · déploiement · test des données |
 
 ## Les 5 manques ouverts, par urgence
 
+0. 🔴 **AUCUNE SAUVEGARDE DE LA BASE.** Découvert le 16/08 de la pire façon : la base
+   `rita` **n'existait plus**. PostgreSQL 18 avait été réinstallé, vide — ni base, ni rôle.
+   Reconstruite le soir même par `db/importer.py` depuis les Parquet, **au chiffre près**
+   (111 valeurs · 112 alias · 2 560 dédoublonnées · 273 608 insérées · 7 positions).
+   *Rien n'a été perdu parce que les sources étaient versionnées — pas parce qu'il y avait
+   une sauvegarde.* → **`pg_dump` hebdomadaire, le lundi après la note de veille.**
 1. 🔴 **C6 — la récurrence ET le partage.** Le seul qui **ne se rattrape pas** : 12 semaines
    restantes au 14/08, une semaine perdue = une preuve perdue définitivement. Depuis le
-   15/08 le protocole est complet, mais **zéro envoi** : `docs/veille/_JOURNAL-DES-ENVOIS.md`
-   est vide.
+   15/08 le protocole est complet ; **1 partage sur 2 fait** (promo Discord le 16/08,
+   formateur toujours bloqué par son congé).
 2. 🟠 **Accès au dépôt — invitation envoyée, pas encore acceptée.** Vérifié sur GitHub le
    14/08 : `bybysker` a été invité le **13/08 à 15h16** en droit `read`. Il est dans
    `/invitations`, **pas encore dans `/collaborators`** — donc le critère *« accessible
@@ -109,7 +128,16 @@ IA serait une preuve fabriquée).
    `gh api repos/Ganda15/rita-agent/collaborators --jq '.[].login'`
 3. 🟠 **Couverture de tests non mesurée** (C12) — `pytest-cov` à brancher, seuil à fixer.
 4. 🟠 **Chaîne de LIVRAISON absente** (C13) — aujourd'hui c'est de l'intégration continue.
-5. 🟡 **Revue OWASP API Top 10** (C9) non écrite.
+5. 🟡 **Revue OWASP API Top 10** (C9) non écrite. Deux entrées déjà identifiées :
+   **API2** — `os.getenv("RITA_API_KEY", "dev-key")` accepte une clé par défaut devinable
+   si la variable est absente (et elle l'est) · **A03** — le front n'utilise que
+   `textContent`, jamais `innerHTML` : à documenter comme mesure prise.
+6. 🟡 **`.env.example` ne permet pas de démarrer le projet** — il documente `POSTGRES_URL`
+   port **5432**, alors que le code lit `DATABASE_URL` et que le serveur écoute sur **5433**.
+   Un évaluateur qui le suit échoue. Cinq minutes à corriger.
+7. 🟡 **`python-dotenv could not parse statement starting at line 5`** — s'affiche à chaque
+   démarrage. Sans conséquence, mais pollue toutes les sorties.
+8. 🟠 **`taux_change` est vide** — voir « Prochaine action », point 1.
 
 ## Fichiers de suivi hors dépôt
 
@@ -127,6 +155,22 @@ IA serait une preuve fabriquée).
 - `article` et `memory_audit` hors du MCD : collecte brute et journal technique ne sont pas
   des entités métier. 6 entités + 2 tables techniques = 8 tables.
 - `/briefing` relève de **C9**, pas de C5 : c'est une rédaction, pas de la donnée.
+- **Le nom du projet — 16/08.** L'expansion du sigle passe de *« Retrieval Intelligence for
+  **Trading** Analysis »* à *« Retrieval Intelligence pour le **Tracking** et l'Analyse »*.
+  « Trading » = acheter et vendre, ce que RITA refuse de conseiller : le nom contredisait le
+  garde-fou AMF dans la même en-tête. **Le sigle RITA ne change pas** — tag, dépôt, journal
+  et preuves restent valides.
+- **Le front est en HTML/CSS/JS servi par FastAPI — 16/08.** Pas de React, pas de build.
+  Trois raisons tirées du texte des critères : l'éco-conception de C17 récompense le léger ·
+  le RGAA se contrôle ligne par ligne sur du HTML · Era doit pouvoir défendre chaque ligne
+  pendant 20 minutes. **Règle : générer la surface (CSS, mise en page), écrire soi-même la
+  couture** (`frontend/app.js` — appels API, authentification, erreurs), car c'est elle
+  qui relève de C10 et c'est elle que le jury interrogera.
+- **E4 n'est pas six compétences de développement, c'en est une — 16/08.** C14 = spécifications
+  et wireframes · C15 = architecture et déploiement en pré-production · C16 = **méthode agile**
+  (kanban, backlog, rituels — aucune ligne de code) · **C17 = le seul développement** ·
+  C18 = intégration continue · C19 = livraison continue. **C18 et C19 recouvrent largement
+  C13 : une seule chaîne CI/CD prouve trois compétences.**
 - **Indicateurs de marché — 15/08.** 19 proposés → **13 à coder**, en 4 lots. Le mot
   « stratégie » est banni (indicateur = fait, stratégie = conseil → garde-fou AMF). Sharpe
   écarté. Destination **E4**, pas C2. Spécification figée :
