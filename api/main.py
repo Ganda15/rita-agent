@@ -9,10 +9,12 @@ Documentation interactive : http://127.0.0.1:8000/docs
 Contrat OpenAPI :           http://127.0.0.1:8000/openapi.json
 """
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Security
 from fastapi.security.api_key import APIKeyHeader
+from fastapi.staticfiles import StaticFiles
 
 from api.donnees import routeur as routeur_donnees
 from graph.workflow import generer_briefing_complet
@@ -91,3 +93,13 @@ def briefing(ticker: str, api_key: str = Security(verify_api_key)):
         "currency": resultat["currency"],
         "briefing": resultat["briefing"],
     }
+
+
+# --- L'interface (C10, C17) --------------------------------------------------
+# Servie par la MÊME application que l'API : même origine, donc aucune règle CORS
+# à ouvrir. Une porte de moins à justifier dans la revue OWASP.
+#
+# ⚠️ Ce montage doit rester la DERNIÈRE instruction du fichier : `/` capture toutes
+# les adresses restantes. Placé plus haut, il masquerait /donnees et /briefing.
+app.mount("/", StaticFiles(directory=Path(__file__).parent.parent / "frontend",
+                           html=True), name="interface")

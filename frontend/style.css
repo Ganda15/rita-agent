@@ -1,0 +1,163 @@
+/* =============================================================================
+   RITA — mise en forme.
+   Éco-conception (C17) : aucune police téléchargée, aucune bibliothèque, aucune
+   image. Uniquement des polices déjà présentes sur la machine.
+   Contrastes vérifiés ≥ 4,5:1 sur fond blanc (RGAA 3.2).
+   ============================================================================= */
+
+:root {
+  --texte: #1a1a1a;          /* 16,1:1 sur blanc */
+  --texte-doux: #4a4a4a;     /*  8,6:1 sur blanc */
+  --bord: #d0d0d0;
+  --fond-alt: #f6f6f6;
+  --accent: #12507a;         /*  7,6:1 sur blanc */
+  --alerte: #8a1f11;         /*  8,2:1 sur blanc */
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 1.5rem;
+  max-width: 72rem;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--texte);
+  background: #fff;
+}
+
+/* --- Focus visible : indispensable pour la navigation au clavier (RGAA 10.7) */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* --- En-tête ---------------------------------------------------------------- */
+h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+
+.sous-titre {
+  margin: 0 0 .5rem;
+  color: var(--texte-doux);
+  font-size: .95rem;
+}
+
+.avertissement {
+  margin: 0 0 1.5rem;
+  padding: .6rem .8rem;
+  border-left: 4px solid var(--accent);
+  background: var(--fond-alt);
+  font-size: .9rem;
+}
+
+/* --- Connexion -------------------------------------------------------------- */
+#connexion h2 { font-size: 1.2rem; }
+
+#form-cle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  align-items: center;
+}
+
+label { font-weight: 600; }
+
+input[type="password"] {
+  padding: .5rem .6rem;
+  min-width: 16rem;
+  border: 1px solid var(--bord);
+  border-radius: 4px;
+  font: inherit;
+}
+
+button {
+  padding: .5rem 1.1rem;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:hover { background: #0d3d5e; }
+
+/* --- Statut (chargement / erreur) ------------------------------------------- */
+#statut:not(:empty) {
+  margin: 1rem 0;
+  padding: .6rem .8rem;
+  border-left: 4px solid var(--alerte);
+  background: var(--fond-alt);
+  color: var(--alerte);
+  font-weight: 600;
+}
+
+/* --- Total ------------------------------------------------------------------ */
+.total {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+}
+
+.total strong { font-size: 1.35rem; }
+
+/* --- Tableau ---------------------------------------------------------------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;  /* les chiffres s'alignent en colonnes */
+}
+
+caption {
+  caption-side: top;
+  padding-bottom: .5rem;
+  color: var(--texte-doux);
+  text-align: left;
+  font-style: italic;
+}
+
+th, td {
+  padding: .45rem .6rem;
+  border-bottom: 1px solid var(--bord);
+  text-align: right;
+}
+
+thead th {
+  border-bottom: 2px solid var(--texte);
+  background: var(--fond-alt);
+  white-space: nowrap;
+}
+
+/* Les deux premières colonnes sont du texte : elles s'alignent à gauche. */
+th[scope="row"], tbody td:first-of-type { text-align: left; }
+thead th:nth-child(1), thead th:nth-child(2) { text-align: left; }
+
+tbody tr:hover { background: var(--fond-alt); }
+
+/* --- Aide « Comment lire ce tableau ? » ------------------------------------- */
+details { margin-top: 1.5rem; }
+
+summary {
+  padding: .4rem 0;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+dl { margin: .5rem 0 0; }
+dt { margin-top: .7rem; font-weight: 600; }
+dd { margin: .15rem 0 0 1.5rem; color: var(--texte-doux); }
+
+/* --- Pied de page ----------------------------------------------------------- */
+footer {
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--bord);
+  color: var(--texte-doux);
+  font-size: .85rem;
+}
+
+/* --- Petits écrans : le tableau défile plutôt que de déborder --------------- */
+@media (max-width: 48rem) {
+  body { padding: 1rem; }
+  table { display: block; overflow-x: auto; }
+}
