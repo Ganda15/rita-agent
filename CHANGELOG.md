@@ -9,6 +9,35 @@
 
 ---
 
+## 2026-08-16 — Le plan des 12 semaines, et comment travailler sans le relecteur
+
+- **Décision structurante — on n'attend plus la validation pour avancer.** Le formateur est
+  en congé. Sa règle (*une compétence prouvée → envoyée → puis la suivante*) existe pour
+  empêcher d'empiler du travail non relu ; **elle ne dit pas d'attendre un absent**. Règle
+  appliquée désormais : **produire → geler → mettre en file → continuer**, avec envoi **un
+  par un** à son retour. *Ce qui se reproche, c'est de n'avoir jamais cherché la validation.*
+- **Ajouté** `docs/FILE-DE-VALIDATION.md` — la file des livrables gelés en attente de revue.
+  **3 en file au 16/08, 0 envoyé** : E1, le protocole C6, la conception des indicateurs.
+- **Ajouté** `docs/PLAN-12-SEMAINES.md` — le calendrier S34 → S45. Deux décisions le
+  structurent :
+  - **Les 13 compétences restantes sont 4 chantiers, pas 13 tâches.** L'application porte à
+    elle seule **7 compétences** (C10 + C14–C19) : `frontend/` est vide, et un seul artefact
+    prouve l'interface *et* tout E4. **C'est le pari du plan** — s'il échoue, le plan échoue.
+  - **Le temps d'Era n'est pas homogène.** La semaine de vacances (S34) va au chantier long ;
+    les créneaux courts des semaines de cours vont aux tâches fragmentables (couverture,
+    revue OWASP, doc d'exploitation). *La couverture de tests se fait un mardi soir ; le
+    squelette de l'application, non.*
+- **Constat qui change le calendrier** : entre le 05/11 (livrables) et le 30/11 (jury) il y a
+  **25 jours**. Le guide d'étude et la préparation d'oral s'y logent — **ils ne sont pas dans
+  les 12 semaines**. Les mélanger, c'est ne finir ni l'un ni l'autre.
+- **Risque n° 1 nommé** : **Docker ne démarre pas sur cette machine** et C13 en dépend. Si le
+  blocage tient, on livre un packaging sans Docker, documenté — un obstacle mesuré et
+  expliqué vaut mieux qu'une case vide.
+- **Fusionné `develop` dans `main`** (`7b68252`). `main` accusait 12 commits de retard : un
+  collaborateur invité en lecture y atterrit et ne voyait rien du travail depuis le 13/08,
+  alors que trois critères exigent que le travail soit accessible depuis un dépôt Git.
+  186 tests verts après fusion.
+
 ## 2026-08-15 — C6 : le partage tranché, et le second outil de veille sorti de l'ombre
 
 Les deux trous repérés le 14/08 en relisant JOURNAL-005 sont comblés dans
