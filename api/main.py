@@ -18,6 +18,7 @@ from fastapi.staticfiles import StaticFiles
 
 from api.donnees import routeur as routeur_donnees
 from graph.workflow import generer_briefing_complet
+from guardrails.sortie import verifier_sortie
 
 load_dotenv()
 
@@ -86,12 +87,22 @@ def briefing(ticker: str, api_key: str = Security(verify_api_key)):
     resultat = generer_briefing_complet(ticker)
     if resultat["error"]:
         raise HTTPException(status_code=502, detail=resultat["error"])
+
+    # Garde-fou de SORTIE (C17) — l'interdit AMF s'applique au texte produit, pas
+    # seulement au prompt. Le prompt demande déjà « aucune recommandation » ; un prompt
+    # est une consigne, pas un contrôle. Ajouté le 17/08/2026 : il était invoqué par le
+    # docstring de guardrails/injection.py sans exister. Fail-closed : en cas de doute,
+    # on ne diffuse pas.
+    verdict = verifier_sortie(resultat["briefing"])
+
     return {
         "ticker": resultat["ticker"],
         "price": resultat["price"],
         "change_pct": resultat["change_pct"],
         "currency": resultat["currency"],
-        "briefing": resultat["briefing"],
+        "briefing": verdict["texte_diffusable"],
+        "conforme_amf": verdict["conforme"],
+        "motifs_amf": verdict["motifs_detectes"],
     }
 
 
