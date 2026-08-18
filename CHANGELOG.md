@@ -94,6 +94,22 @@ Les deux trous repérés le 14/08 en relisant JOURNAL-005 sont comblés dans
 - **Rien n'est codé, et rien ne doit l'être avant l'ouverture d'E4** : au 15/08 il reste
   12 semaines et C6 est le seul chantier qui ne se rattrape pas.
 
+## 2026-08-18 — Le journal et les guides d'étude remis à leur place
+
+- **Manque découvert** : le journal s'arrêtait à `JOURNAL-007` (15-16 août). **Les séances du
+  17 et du 18 n'avaient aucune entrée** — soit la journée de veille S34 et la plus grosse
+  journée du projet. `JOURNAL-008` et `JOURNAL-009` écrits.
+- **Corrigé** : `docs/etude/` contenait deux guides d'étude en anglais, c'est-à-dire de la
+  **préparation dans le dépôt de livrables** — contraire à la règle du 11/08. Déplacés dans
+  Obsidian (`09-EN-personnel/`), copies **vérifiées identiques par empreinte SHA-256** avant
+  suppression du dossier.
+- *Le dépôt reçoit les livrables, jamais la préparation. La règle avait été posée après avoir
+  trouvé 19 blocs « phrase pour l'oral » à l'intérieur des livrables eux-mêmes ; elle se
+  re-vérifie à chaque ajout de dossier.*
+- **Ajouté** au même commit : les 4 fichiers de travail de la veille S34 (`_candidats`,
+  `_decisions`, `_source-OWASP-agentique`, `_verifications-code`), jusque-là non suivis. Ils
+  accompagnent la note, comme `_candidats-2026-S33.md`.
+
 ## 2026-08-18 — Sécurité de l'API, et la pré-production Docker
 
 ### A — OWASP API2 : la clé par défaut supprimée
