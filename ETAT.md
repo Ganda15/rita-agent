@@ -14,7 +14,11 @@
 - ⚠️ **`tests/test_evals.py` est ROUGE et doit le rester** (70 % < seuil 85 %). Ne pas
   baisser le seuil : l'arbitrage est la question ouverte de S35. Suite : `200 passed, 1 failed`.
 - Le **garde-fou de sortie mesure aussi 70 %** — motifs écrits d'abord, cas d'évasion ensuite.
-- Deux guides d'étude en anglais : `docs/etude/` (les concepts, et la méthode).
+- Deux guides d'étude en anglais. ⚠️ **Déplacés dans Obsidian le 18/08** : ils étaient dans
+  `docs/etude/`, c'est-à-dire de la **préparation dans le dépôt de livrables** — contraire à
+  la règle du 11/08. Ils vivent désormais dans
+  `Projets/RITA/09-EN-personnel/` (« Prompt injection and agent security » pour les concepts,
+  « 17 August 2026 » pour la méthode).
 
 📅 **Le plan des 12 semaines est écrit : `docs/PLAN-12-SEMAINES.md`.**
 Le formateur est en congé → on ne l'attend pas : **produire → geler → mettre en file
