@@ -29,6 +29,76 @@ besoins, deux registres.
 
 ---
 
+## ⛔ La règle d'envoi : le lien du TAG, jamais l'adresse du dépôt
+
+> **Le problème, constaté le 18/08/2026.** `main` est la branche par défaut : c'est elle que
+> GitHub affiche à qui ouvre le dépôt. Or `main` **avance** — au 18/08 elle comptait déjà
+> **29 commits de plus** que le tag `livrable-E1-v1`, dont le renommage du projet, le premier
+> écran d'E4 et la reconstruction de la base.
+>
+> Un formateur qui ouvre `github.com/Ganda15/rita-agent` ne voit donc **pas** le livrable E1 :
+> il voit le projet d'aujourd'hui. Il jugerait E1 sur du travail qui n'en fait pas partie.
+
+**Ce qui règle le problème, et qui existe déjà** : chaque livrable est figé par un tag. Il
+suffit d'envoyer **l'adresse du tag**.
+
+| ❌ Ne jamais envoyer | ✅ Toujours envoyer |
+|---|---|
+| `https://github.com/Ganda15/rita-agent` | `https://github.com/Ganda15/rita-agent/tree/livrable-E1-v1` |
+
+### Vérifier avant d'envoyer — trois commandes
+
+```powershell
+gh api repos/Ganda15/rita-agent/git/ref/tags/livrable-E1-v1 --jq .object.sha
+```
+```powershell
+gh api repos/Ganda15/rita-agent/collaborators --jq ".[].login"
+```
+```powershell
+C:\Python314\python.exe scripts\verifier_liens.py
+```
+
+1. **Le tag existe** sur GitHub, et pointe où on croit.
+2. **Le destinataire est bien collaborateur** — une invitation *envoyée* n'est pas un accès
+   *donné* : tant qu'elle n'est pas acceptée, le lien renvoie une page 404.
+3. **Zéro lien cassé** dans le dépôt.
+
+### Gabarit du message
+
+> Bonjour,
+>
+> Le livrable **E1 — Données (C1 à C5)** est prêt. Deux éléments :
+>
+> - **Le rapport** : `rapport-E1.pdf` (ci-joint)
+> - **Le code, figé au jour de l'envoi** :
+>   <https://github.com/Ganda15/rita-agent/tree/livrable-E1-v1>
+>
+> ⚠️ Ce lien pointe sur un **tag Git**, pas sur la branche principale. Il montre le dépôt
+> exactement tel qu'il était lors de la remise. La branche principale, elle, continue
+> d'avancer avec les livrables suivants — l'ouvrir donnerait une image faussée d'E1.
+>
+> Le dépôt est privé ; vous y avez été invité en tant que collaborateur.
+>
+> Bien à vous,
+> Eramalingam GANDAKUMAR
+
+**Pourquoi expliquer le tag dans le message** : personne n'est tenu de connaître cette
+convention. Un lien qu'on ne comprend pas est un lien qu'on remplace par celui qu'on connaît.
+
+### ⚠️ Le piège du tag — rencontré deux fois
+
+**Un tag ne suit pas les commits** : il reste sur celui où on l'a posé. Tant que le lien
+**n'est pas parti**, on peut le déplacer. **Une fois parti, on ne le déplace plus** — on crée
+un `-v2`, sinon le destinataire et l'expéditeur ne regardent plus la même chose.
+
+Et GitHub refuse `git push --force` sur un tag annoté (erreur 500). La séquence qui marche :
+
+```powershell
+git push origin refs/tags/livrable-E1-v1:refs/tags/livrable-E1-v1
+```
+
+---
+
 ## La file
 
 | # | Gelé le | Livrable | Compétences | Tag / commit | Envoyé le | Retour reçu | Ce que le retour change |

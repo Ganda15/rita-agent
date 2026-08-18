@@ -9,16 +9,24 @@ Simplon & Wild Code School · Eramalingam GANDAKUMAR · ganda70@gmail.com · 202
 
 ## 📋 État des livrables
 
-> Ce tableau dit ce qui est **livré** et ce qui est **en cours**. Il est tenu à jour à
-> chaque envoi. Chaque livrable est figé par un **tag Git** : ouvrir le tag montre le
-> dépôt exactement tel qu'il était le jour de l'envoi.
+> ### ⚠️ Vous évaluez un livrable ? Ouvrez son **tag**, pas cette page.
+>
+> Cette branche (`main`) porte le projet **tel qu'il est aujourd'hui** : elle avance à
+> chaque session et contient donc déjà des travaux postérieurs aux livrables envoyés.
+>
+> **Chaque livrable est figé par un tag Git.** Ouvrir le tag montre le dépôt **exactement
+> tel qu'il était le jour de l'envoi** — ni plus, ni moins. C'est le lien de la colonne
+> « Livrable figé » ci-dessous qu'il faut suivre.
+>
+> *Un dépôt unique qui grandit est la règle du référentiel ; le tag est ce qui permet
+> malgré tout d'évaluer un livrable dans son état d'origine.*
 
-| Épreuve | Compétences | État | Document | Tag Git |
+| Épreuve | Compétences | État | Documents | 🔒 Livrable figé |
 |---|---|---|---|---|
-| **E1** — Données | C1–C5 | ✅ **livré** — 26 critères / 28 | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) (v1.3) · [preuves](evidence/) | `livrable-E1-v1` |
-| **E2** — Veille & services IA | C6–C8 | 🟡 veille hebdomadaire en cours | [docs/veille/](docs/veille/) | — |
-| **E3** — API modèle & MLOps | C9–C13 | 🔨 **en construction** | — | — |
-| **E4** — Application | C14–C19 | ⬜ non commencé | — | — |
+| **E1** — Données | C1–C5 | ✅ **livré** — 26 critères / 28 | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) (v1.3) · [preuves](evidence/) | **[`livrable-E1-v1`](https://github.com/Ganda15/rita-agent/tree/livrable-E1-v1)** |
+| **E2** — Veille & services IA | C6–C8 | 🔨 veille hebdomadaire **en cours** — protocole, récurrence, 2 notes · C7 non commencé | [docs/veille/](docs/veille/) | — |
+| **E3** — API modèle & MLOps | C9–C13 | 🔨 **en construction** — API du modèle, garde-fous mesurés, CI · C11 non commencé | [evidence/](evidence/) | — |
+| **E4** — Application | C14–C19 | 🔨 **en construction** — 2 écrans, spécifications et schémas C14/C15, pré-production Docker | [evidence/C14/](evidence/C14/) · [evidence/C15/](evidence/C15/) | — |
 | **E5** — Monitorage | C20–C21 | ⬜ non commencé | — | — |
 
 *Les 2 critères restants d'E1 (C1#6, C3#2) demandent un accès au dépôt Git — ils sont

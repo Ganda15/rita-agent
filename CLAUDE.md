@@ -109,6 +109,19 @@ C:\Python314\python.exe -m uvicorn api.main:app --reload      # API sur :8000
 C:\Python314\python.exe scripts\verifier_liens.py             # liens internes + externes
 ```
 
+## 📤 Envoyer un livrable — le lien du TAG, jamais celui du dépôt
+
+`main` est la branche par défaut et elle **avance** : au 18/08 elle comptait 29 commits de
+plus que le tag `livrable-E1-v1`. Qui ouvre `github.com/Ganda15/rita-agent` voit le projet
+**d'aujourd'hui**, pas le livrable.
+
+```
+❌  https://github.com/Ganda15/rita-agent
+✅  https://github.com/Ganda15/rita-agent/tree/livrable-E1-v1
+```
+
+Procédure complète, gabarit de message et vérifications : **`docs/FILE-DE-VALIDATION.md`**.
+
 ## 🔗 Avant CHAQUE envoi de livrable — vérifier les liens
 
 ```powershell
