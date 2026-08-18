@@ -14,7 +14,9 @@ from fastapi.testclient import TestClient
 from api.main import app
 from sources.database import Extraction
 
-CLE = {"X-API-Key": "dev-key"}
+from tests.conftest import CLE_DE_TEST
+
+CLE = {"X-API-Key": CLE_DE_TEST}
 
 ROUTES_PROTEGEES = [
     "/donnees/valeurs",
