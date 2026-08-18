@@ -1,18 +1,23 @@
 # Indicateurs de marché — conception
 
-> ## ⚠️ Statut : **CONCEPTION SEULE — aucun code écrit** · 15/08/2026
+> ## Statut : **LOT 1 CODÉ** · réécrit le 18/08/2026
 >
 > | | |
 > |---|---|
-> | Code | **aucun** |
-> | Tests | **aucun** |
-> | Destination | livrable **E4** (application, C14–C19) — `frontend/` est vide à ce jour |
-> | Ce fichier sert à | ne pas re-débattre la liste dans six semaines |
+> | Code | ✅ **lot 1** — `db/indicateurs.sql` · `indicateurs/socle.py` |
+> | Tests | ✅ **13** — `tests/test_indicateurs_socle.py` |
+> | Preuve | `evidence/C14/preuve-indicateurs-lot1.md` — exécution réelle, 111 valeurs, 194 ms |
+> | Reste | lot 2 (portefeuille, 2 indicateurs) · lot 3 (risque, 3) · **l'écran 2 lui-même** |
+> | Destination | livrable **E4** (application, C14–C19) |
 >
-> **Ce bandeau doit être réécrit le jour où le premier indicateur est codé.**
-> `bigdata/CONCEPTION.md` a annoncé « aucun code écrit » pendant huit jours après
-> l'implémentation, alors que le rapport E1 y renvoyait. On ne refait pas l'erreur :
-> tant que ce bandeau dit « conception seule », c'est que rien n'existe.
+> ⚠️ **Écart constaté à l'implémentation** : le §4 annonçait **8 indicateurs restants** pour
+> le lot 1. La requête en rend **11 calculés** (les 3 « déjà faits » du §2 vivaient dans
+> d'autres requêtes, les recalculer ici coûte zéro parcours de table supplémentaire), plus
+> une **12ᵉ colonne non prévue** — `fraicheur_jours`, ajoutée après avoir mesuré que
+> **3 valeurs radiées** portaient encore `statut_qualite = 'OK'`.
+>
+> **Ce bandeau a été réécrit le jour où le lot 1 a été codé** — la règle qu'il posait
+> lui-même a été tenue.
 
 ## D'où vient ce dossier
 
