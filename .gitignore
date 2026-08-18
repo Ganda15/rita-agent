@@ -1,4 +1,10 @@
 .env
+# ⚠️ Motif élargi le 18/08/2026. `.env` seul ne couvrait QUE le nom exact : une copie
+#    comme `.env.sauvegarde-2026-08-18` ou `.env.local` restait visible de Git, et un
+#    `git add .` l'aurait committée avec toutes les clés. Le défaut a été créé puis
+#    trouvé le jour même, avant tout commit.
+.env.*
+!.env.example
 .venv/
 __pycache__/
 *.pyc
