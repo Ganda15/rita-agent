@@ -69,12 +69,44 @@ S35) : rien de nouveau cassé.
 - 🔴 **2 critères de C15 restent NON satisfaits** : preuve de concept en **pré-production** et
   sa conclusion. Bloqués par Docker, qui ne démarre pas — **même obstacle que C13**.
 
+✅ **Indicateurs lot 1 codés — 18/08**, commit `a047b58`. `db/indicateurs.sql` +
+`indicateurs/socle.py` + **13 tests**. 11 indicateurs par valeur en **une requête**,
+**111 valeurs sur 111**, **194 ms** mesurées. Preuve : `evidence/C14/preuve-indicateurs-lot1.md`.
+- 🆕 **Défaut trouvé par la mesure** : **3 valeurs radiées** (Zodiac 2018, Euler Hermes 2018,
+  Gemalto 2019) portent encore `statut_qualite = 'OK'`. L'écran aurait affiché pour elles une
+  « performance 1 jour » calculée sur des cours vieux de 8 ans. Colonne `fraicheur_jours`
+  ajoutée (seuil 40 j). **`statut_qualite` décrit la qualité de l'historique, pas sa fraîcheur.**
+- 🆕 **Les cours datent du 29/07** — 3 semaines de retard. `sources/cotations.py` n'a pas été
+  rejoué depuis la reconstruction du 16/08 : **même famille de défaut** que `taux_change` et
+  `article` corrigés le 17/08.
+
 **Prochaines actions, dans l'ordre :**
 
-1. **Écran 2 — les indicateurs**, 9 colonnes du lot 1 (`docs/indicateurs/CONCEPTION.md`).
-   ⚠️ Le moteur existe déjà, écrit par Era hors de ce dépôt : `quant_metrics.py` dans
-   `Ganda15/daily-stock-analysis-era` (350 lignes, 13 fonctions, 9 tests verts). **Le porter
-   plutôt que le réécrire.**
+1. 🟠 **Rejouer `sources/cotations.py`** — les cours s'arrêtent au 29/07. Tous les indicateurs
+   sont calculés sur des données périmées de 3 semaines.
+2. **Exposer le lot 1 par l'API** (`api/donnees.py`), puis **construire l'écran 2**.
+   Le calcul existe ; il n'est ni exposé ni affiché.
+3. **Lots 2 et 3** — portefeuille (2 indicateurs) et risque (3). 5 restants sur 13.
+
+*Référence : `docs/indicateurs/CONCEPTION.md` (bandeau réécrit le 18/08).*
+
+   ⚠️ **Correction du 18/08 — la consigne précédente était fausse.** `ETAT.md` disait :
+   *« le moteur existe déjà (`quant_metrics.py` dans `Ganda15/daily-stock-analysis-era`),
+   le porter plutôt que le réécrire »*. Le fichier a été **lu** le 18/08 (350 lignes,
+   15 fonctions) : **il ne convient pas au lot 1.**
+
+   | | `quant_metrics.py` | ce que la spec exige |
+   |---|---|---|
+   | Technologie | pandas, en mémoire | **SQL**, fonctions fenêtre |
+   | Portée | **un** instrument | **les 111**, en une requête |
+   | Fenêtre des performances | **nombre de lignes** (`series.iloc[-periods-1]`) | **jours de calendrier** |
+
+   Le décalage en nombre de lignes est **exactement le piège n°1 de la spec** (« ne pas
+   utiliser `LAG(cloture, 5)` »). Le porter importerait le bug contre lequel la spec a été
+   écrite. Il calcule en plus Sharpe, Sortino, Calmar et bêta — que la spec écarte.
+
+   **Réutilisable plus tard, hors lot 1** : `_perf_ytd`, `_rsi`, `_max_drawdown_pct`,
+   `_annualized_vol`. **Direction retenue : coder le lot 1 en SQL**, conformément à la spec.
 
 Tâche courte à caser dans la semaine :
 1. ✅ **Note de veille S34** — faite le 17/08, terminée le 18/08 (commit `237c2b7`).

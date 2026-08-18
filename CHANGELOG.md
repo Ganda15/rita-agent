@@ -94,6 +94,34 @@ Les deux trous repérés le 14/08 en relisant JOURNAL-005 sont comblés dans
 - **Rien n'est codé, et rien ne doit l'être avant l'ouverture d'E4** : au 15/08 il reste
   12 semaines et C6 est le seul chantier qui ne se rattrape pas.
 
+## 2026-08-18 — Indicateurs lot 1, et trois valeurs radiées découvertes
+
+- **Livré** le lot 1 des indicateurs : `db/indicateurs.sql` + `indicateurs/socle.py` +
+  13 tests. **11 indicateurs par valeur en une seule requête** — 111 valeurs sur 111,
+  **194 ms** mesurées par `EXPLAIN ANALYZE`.
+- **Décision contredite après vérification** : `ETAT.md` recommandait de **porter**
+  `quant_metrics.py` depuis `Ganda15/daily-stock-analysis-era`. Le fichier a été **lu**
+  (350 lignes) : il travaille en pandas, sur un instrument à la fois, avec des fenêtres en
+  **nombre de lignes** — soit **exactement le piège n°1 de la spécification**. Le porter
+  aurait importé le défaut contre lequel elle a été écrite.
+  *La consigne du 15/08 avait été écrite sans avoir ouvert le fichier. Corrigée, pas effacée.*
+- 🔴 **Manque découvert par la mesure** : **trois valeurs radiées** — Zodiac Aerospace
+  (dernière séance 2018-03-22), Euler Hermes (2018-04-26), Gemalto (2019-05-28) — portent
+  encore `statut_qualite = 'OK'`. L'écran aurait affiché pour elles une « performance
+  1 jour » calculée sur des cours vieux de huit ans. Colonne `fraicheur_jours` ajoutée,
+  seuil 40 jours ; les lignes restent affichées **avec la mention**.
+  *`statut_qualite` décrit la qualité de l'historique, pas sa fraîcheur. Confondre les deux
+  produisait un écran faux avec des données valides.*
+- 🟠 **Manque découvert** : les cours s'arrêtent au **29/07** — trois semaines de retard.
+  `sources/cotations.py` n'a pas été rejoué depuis la reconstruction du 16/08. **Même famille
+  de défaut** que `taux_change` et `article`, corrigés la veille : la reconstruction n'a
+  rechargé que ce qui avait une source Parquet.
+- **Deux défauts rencontrés en écrivant, tous deux verrouillés par un test** : le module ne
+  lisait pas son `.env` (**même défaut que `db/importer.py` le 17/08** — la cause est
+  structurelle, seul `api/main.py` appelait `load_dotenv()`), et un caractère « pour-cent »
+  dans un **commentaire SQL** cassait `cur.execute` (psycopg2 interpole dès que le second
+  argument n'est pas `None`).
+
 ## 2026-08-18 — C14 et C15 : les deux schémas obligatoires de E4
 
 - **Livré** `evidence/C14/` — wireframes des **4 états** de l'écran portefeuille et
