@@ -94,6 +94,52 @@ Les deux trous repérés le 14/08 en relisant JOURNAL-005 sont comblés dans
 - **Rien n'est codé, et rien ne doit l'être avant l'ouverture d'E4** : au 15/08 il reste
   12 semaines et C6 est le seul chantier qui ne se rattrape pas.
 
+## 2026-08-18 — Sécurité de l'API, et la pré-production Docker
+
+### A — OWASP API2 : la clé par défaut supprimée
+
+- 🔴 **Manque corrigé** : `api/main.py` disait `os.getenv("RITA_API_KEY", "dev-key")`. La
+  variable n'étant pas définie, l'API acceptait en réalité la chaîne **`dev-key`, écrite en
+  clair dans un fichier que le formateur et le jury vont lire.**
+  *Une clé par défaut n'est pas une clé : c'est une porte ouverte documentée.*
+  Remplacée par une **panne au démarrage**, une longueur minimale de 16, et
+  `secrets.compare_digest` (une comparaison ordinaire s'arrête au premier caractère
+  différent, et son temps d'exécution renseigne un attaquant).
+  Vérifié sur le serveur réel : `dev-key` → **403**, vraie clé → **200**.
+- **Corrigé** `.env.example`, qui **ne permettait pas de démarrer le projet** : il documentait
+  `POSTGRES_URL` sur le port 5432 alors que le code lit `DATABASE_URL` sur 5433, et omettait
+  trois variables. Les variables de traçage y passent en commentaire, avec le renvoi au
+  traitement **T3** du registre RGPD — les décommenter enverrait des montants hors UE.
+- 🐛 **Défaut créé puis trouvé le jour même, avant tout commit** : `.gitignore` ne couvrait que
+  le nom exact `.env`. Une copie `.env.sauvegarde-*` restait visible de Git, et un `git add .`
+  l'aurait committée avec toutes les clés. Élargi à `.env.*` + `!.env.example`. **Rien n'a fuité.**
+- **Leçon de test, la troisième fois** : un test cherchait `"dev-key"` dans la source de
+  `cle_attendue()` — et le trouvait dans la **docstring** qui explique le défaut corrigé.
+  Réécrit pour inspecter l'**AST** et ignorer la docstring. Après `LAG(` dans un commentaire
+  SQL et `innerHTML` dans un commentaire JavaScript :
+  *un test doit porter sur le code exécuté, jamais sur ce qui l'explique.*
+
+### B — Docker : la preuve de concept tourne
+
+- ✅ **C15 critères 4 et 5 : de 🔴 à ✅.** Déclarés non satisfaits la veille faute de démon
+  Docker — **Docker a démarré le 18/08**. `docker compose up -d --build` → **2 conteneurs
+  `healthy` en moins de 20 s**, 8 tables créées seules, 403/200 corrects, interface servie.
+- **Décidé** : `pyspark` (**492 Mo**) **n'entre pas dans l'image**. Il n'est importé que dans
+  `bigdata/session_spark.py`, jamais atteint par l'API. D'où `requirements-api.txt`, aux
+  versions **toutes épinglées et relevées par `importlib.metadata`** — pas choisies au jugé.
+  *C'est le critère d'éco-conception appliqué là où il se mesure : un demi-gigaoctet
+  transféré et stocké à chaque déploiement, pour du code qui ne s'exécute pas.*
+- **Décidé** : construction en deux étapes (les outils de compilation ne quittent pas l'étape
+  de construction) · utilisateur **non privilégié** · système de fichiers **en lecture seule**
+  + `no-new-privileges` · **base non publiée vers l'hôte** (seule l'API lui parle, et cela
+  évite tout conflit avec le PostgreSQL natif sur 5433).
+- **Vérifié dans le conteneur** : aucun `.env`, `pyspark` absent, `touch /app` refusé,
+  `dev-key` → 403. *Embarquer un `.env` dans une image poussée sur un registre est l'une des
+  fuites de secrets les plus courantes.*
+- **Conclusion de la preuve de concept écrite** (critère 5), **avec ce qu'elle ne démontre
+  pas** : pré-production **locale** et non distante, base contenant le schéma mais pas les
+  275 118 cotations, aucun déploiement automatisé, et 595 Mo encore lourds.
+
 ## 2026-08-18 — Écran 2 : les indicateurs, exposés et affichés
 
 - **Livré** `GET /donnees/indicateurs` — **7ᵉ** point de terminaison du routeur `donnees`.

@@ -66,8 +66,7 @@ S35) : rien de nouveau cassé.
   le 1er critère de C14 — non refait, un doublon deviendrait une contradiction.
 - **C15** — `evidence/C15/` : diagramme de flux en **6 zones** découpées sur les frontières
   réelles du code, + spécifications techniques (13 dépendances, environnement, éco-conception).
-- 🔴 **2 critères de C15 restent NON satisfaits** : preuve de concept en **pré-production** et
-  sa conclusion. Bloqués par Docker, qui ne démarre pas — **même obstacle que C13**.
+- ✅ **Les 2 critères qui restaient de C15 sont faits le 18/08** — Docker a démarré (voir plus bas).
 
 ✅ **Indicateurs lot 1 codés — 18/08**, commit `a047b58`. `db/indicateurs.sql` +
 `indicateurs/socle.py` + **13 tests**. 11 indicateurs par valeur en **une requête**,
@@ -100,13 +99,39 @@ défile pas horizontalement. **241 tests** (32 front, 34 API).
   du 17/08** : *un contrôle documenté mais absent est pire qu'un contrôle absent.*
 - Preuve : `evidence/C10/preuve-ecran-indicateurs.md`.
 
+✅ **A — OWASP API2 corrigé, 18/08**, commit `a4042b9`. `os.getenv("RITA_API_KEY", "dev-key")`
+acceptait en réalité la chaîne **`dev-key`, écrite en clair dans `api/main.py`**. Remplacé par
+une **panne au démarrage** + longueur minimale 16 + `secrets.compare_digest`. Vérifié sur le
+serveur réel : `dev-key` → **403**, vraie clé (43 c.) → **200**.
+- `.env.example` **entièrement réécrit** — il documentait `POSTGRES_URL` port 5432 alors que le
+  code lit `DATABASE_URL` sur 5433, et omettait 3 variables. Un évaluateur qui le suivait échouait.
+- `tests/conftest.py` créé : clé de test posée une fois pour toutes en `autouse`.
+- 🐛 **`.gitignore` trop étroit** — `.env` seul ne couvrait que le nom exact ; une copie
+  `.env.sauvegarde-*` restait visible de Git. Élargi à `.env.*` + `!.env.example` (`0a8ff0b`).
+  Défaut créé puis trouvé le jour même, **avant tout commit — rien n'a fuité**.
+- 🟡 **Reste** : ton `.env` contient **deux clés OpenRouter différentes**. La seconde était sur
+  une ligne au format YAML que `python-dotenv` refusait (l'avertissement à chaque démarrage,
+  maintenant disparu). Ligne **commentée, valeur conservée** — à toi de trancher laquelle garder.
+
+✅ **B — Docker : pré-production en marche, 18/08**, commit `d1d8dfb`. **Docker a démarré.**
+`docker compose up -d --build` → 2 conteneurs **`healthy` en < 20 s**, 8 tables créées seules,
+403/200 corrects, interface servie sur **:8001** (le dev garde :8000, les deux cohabitent).
+- **C15 critères 4 et 5 : de 🔴 à ✅** — preuve de concept **et** sa conclusion.
+- Image **595 Mo** : `pyspark` (**492 Mo**) exclu via `requirements-api.txt`, versions toutes
+  épinglées. Non-root (uid 10001), **lecture seule**, `no-new-privileges`, base **non publiée**.
+- Vérifié dans le conteneur : **aucun `.env`**, `pyspark` absent, `dev-key` → 403.
+- Preuve : `evidence/C15/preuve-preproduction-docker.md`.
+
 **Prochaines actions, dans l'ordre :**
 
 1. **Lots 2 et 3 des indicateurs** — portefeuille (2) et risque (3). **5 restants sur 13.**
    Le lot 2 est le plus défendable : il porte sur **les 7 positions et leur PRU**, ce que
    ne fait aucun site de cotations (`docs/indicateurs/CONCEPTION.md` §6).
 2. 🟠 **Couverture de tests non mesurée** (C12) — `pytest-cov` à brancher.
-3. 🔴 **Docker** — débloquerait **C13 ET C15** (preuve de concept en pré-production).
+3. **C13 — le volet LIVRAISON**, maintenant à portée : faire construire et publier l'image
+   **par GitHub Actions**. L'empaquetage est fait ; aujourd'hui la CI ne fait que tester.
+4. 🟡 Importer les données dans la base de pré-production :
+   `docker compose exec api python -m db.importer`.
 
 *Référence : `docs/indicateurs/CONCEPTION.md` (bandeau réécrit le 18/08).*
 
@@ -179,9 +204,9 @@ IA serait une preuve fabriquée).
 | **C10** | 🔨 **18/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **7 points de terminaison** intégrés. **32 tests** front | tri/recherche · audit RGAA outillé · doc d'architecture |
 | **C11** | **rien** | tout |
 | **C12** | 201 tests, 15 cas d'éval, seuils non compensables en CI | ⚠️ **couverture non mesurée** (`pytest-cov` absent) · DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
-| **C13** | GitHub Actions, 2 jobs, porte garde-fous | packaging · Docker · déploiement · test des données |
+| **C13** | GitHub Actions (2 jobs, porte garde-fous) · **empaquetage Docker fait le 18/08** — image 595 Mo, non-root, lecture seule | 🔴 **livraison** : construire/publier l'image **par la CI** · déploiement · test des données |
 | **C14** | 🔨 **18/08** — wireframes des 4 états (`evidence/C14/`), spécification US-1 : contexte, 5 scénarios, 11 critères d'acceptation dont 6 avec numéro de règle RGAA. Modélisation des données déjà couverte par le MCD Merise de C4 | US de l'**écran 2** non spécifiées · aucun audit RGAA outillé · aucun test avec un vrai lecteur d'écran |
-| **C15** | 🔨 **18/08** — diagramme de flux en 6 zones (`evidence/C15/`), spécifications techniques : 13 dépendances, environnement d'exécution, éco-conception | 🔴 **preuve de concept en pré-production** et sa **conclusion** — bloquées par Docker · 11 dépendances sur 13 non épinglées (OWASP ASI04) |
+| **C15** | ✅ **18/08 — les 5 critères couverts** : diagramme de flux 6 zones, spécifications techniques, **pré-production Docker Compose** (2 conteneurs `healthy` < 20 s) et **conclusion de la preuve de concept** | pré-production **locale**, aucun hébergeur choisi · base de préprod sans données · `requirements.txt` toujours non épinglé |
 | **C16** | **rien** — aucune méthode agile outillée | tout (kanban, backlog, rituels) |
 | **C17** | garde-fou de sortie écrit et mesuré (17/08) · **2 écrans** HTML/CSS/JS sans build · indicateurs lot 1 en SQL + module + API (18/08) | lots 2 et 3 des indicateurs · tri/recherche |
 | **C18–C19** | recouvrent largement C13 | idem C13 |
@@ -207,15 +232,13 @@ IA serait une preuve fabriquée).
    `gh api repos/Ganda15/rita-agent/collaborators --jq '.[].login'`
 3. 🟠 **Couverture de tests non mesurée** (C12) — `pytest-cov` à brancher, seuil à fixer.
 4. 🟠 **Chaîne de LIVRAISON absente** (C13) — aujourd'hui c'est de l'intégration continue.
-5. 🟡 **Revue OWASP API Top 10** (C9) non écrite. Deux entrées déjà identifiées :
-   **API2** — `os.getenv("RITA_API_KEY", "dev-key")` accepte une clé par défaut devinable
-   si la variable est absente (et elle l'est) · **A03** — le front n'utilise que
-   `textContent`, jamais `innerHTML` : à documenter comme mesure prise.
-6. 🟡 **`.env.example` ne permet pas de démarrer le projet** — il documente `POSTGRES_URL`
-   port **5432**, alors que le code lit `DATABASE_URL` et que le serveur écoute sur **5433**.
-   Un évaluateur qui le suit échoue. Cinq minutes à corriger.
-7. 🟡 **`python-dotenv could not parse statement starting at line 5`** — s'affiche à chaque
-   démarrage. Sans conséquence, mais pollue toutes les sorties.
+5. 🟡 **Revue OWASP API Top 10** (C9) non écrite — mais **2 entrées sur 10 déjà traitées** :
+   **API2** ✅ **corrigé le 18/08** (plus de clé par défaut, `compare_digest`, 4 tests) ·
+   **A03** ✅ le front n'utilise que `textContent` : à documenter comme mesure prise.
+   Il reste à **rédiger la revue** elle-même, les 8 autres entrées comprises.
+6. ✅ **`.env.example` corrigé le 18/08** — entièrement réécrit.
+7. ✅ **Avertissement `python-dotenv` supprimé le 18/08** — une ligne au format YAML dans le
+   `.env` (une **seconde clé OpenRouter**). Commentée, valeur conservée : à Era de trancher.
 
 ## Fichiers de suivi hors dépôt
 
