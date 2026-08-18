@@ -24,11 +24,17 @@
 | 1 | *« Les spécifications techniques couvrent l'architecture, ses dépendances et son environnement d'exécution »* | ✅ **§2 et §3** |
 | 2 | *« Les services et prestataires ayant une démarche éco-responsable sont favorisés »* | ✅ **§4** |
 | 3 | *« Les flux de données sont représentés par un diagramme de flux de données »* | ✅ **le diagramme de ce dossier** |
-| 4 | *« La preuve de concept est accessible et fonctionnelle en environnement de pré-production »* | 🔴 **NON FAIT** — voir §6 |
-| 5 | *« La conclusion à l'issue de la preuve de concept donne un avis précis »* | 🔴 **NON FAIT** — dépend du critère 4 |
+| 4 | *« La preuve de concept est accessible et fonctionnelle en environnement de pré-production »* | ✅ **FAIT le 18/08** — [`preuve-preproduction-docker.md`](preuve-preproduction-docker.md) |
+| 5 | *« La conclusion à l'issue de la preuve de concept donne un avis précis »* | ✅ **FAIT le 18/08** — même document, §4 |
 
-> **Deux critères sur cinq ne sont pas satisfaits, et c'est écrit ici plutôt qu'ailleurs.**
-> Ils demandent un déploiement en pré-production, qui n'existe pas encore.
+> ✅ **Les cinq critères sont désormais couverts.** Les critères 4 et 5 étaient bloqués par
+> Docker, dont le démon ne démarrait pas sur la machine. **Il a démarré le 18/08** et la pile
+> de pré-production a été construite dans la foulée : `docker compose up -d --build` →
+> deux conteneurs `healthy` en moins de 20 secondes, 403/200 corrects, interface servie.
+>
+> ⚠️ **Ce qui reste dit franchement** : la pré-production est **locale**, aucun hébergeur
+> n'est choisi, et la base de pré-production ne contient que le schéma — pas les
+> 275 618 cotations. Détail au §4 du document de preuve.
 
 ---
 
@@ -96,7 +102,7 @@ Elle produit néanmoins exactement l'effet que le Top 10 agentique d'OWASP recom
 |---|---|
 | **Développement** | Windows 11 · Python 3.14.6 · PostgreSQL local sur 5433 |
 | **Intégration continue** | GitHub Actions · `ubuntu-latest` · Python 3.13 · 2 jobs (tests, évaluations) |
-| **Pré-production** | 🔴 **inexistante** — voir §6 |
+| **Pré-production** | ✅ **Docker Compose** — `postgres:17-alpine` + image `rita-api:local` (595 Mo), non-root, lecture seule. Voir [`preuve-preproduction-docker.md`](preuve-preproduction-docker.md) |
 | **Secrets** | variables d'environnement lues dans `.env`, jamais versionné (`.gitignore`) |
 | **Front** | servi par FastAPI (`StaticFiles`), pas de serveur séparé |
 
@@ -143,23 +149,21 @@ de l'onglet et n'est jamais écrite dans le code.
 
 ---
 
-## 6. Ce qui manque — les deux critères non satisfaits
+## 6. Ce qui manque encore
 
-### 🔴 Critère 4 — la preuve de concept en pré-production
+> ✅ **Les critères 4 et 5 sont sortis de cette liste le 18/08** — Docker a démarré, la pile
+> de pré-production existe. Voir [`preuve-preproduction-docker.md`](preuve-preproduction-docker.md).
+> Ce paragraphe annonçait *« ni serveur de pré-production, ni conteneur »* : il est conservé
+> corrigé plutôt qu'effacé, parce que l'obstacle était réel et sa levée fait partie de
+> l'histoire du projet.
 
-**L'application ne tourne aujourd'hui que sur la machine d'Era.** Il n'existe ni serveur de
-pré-production, ni URL accessible à un tiers, ni conteneur.
-
-**Ce qui bloque, concrètement** : le déploiement passerait par Docker, et **le démon Docker
-ne démarre pas sur cette machine** — le même obstacle bloque déjà C13 (livraison continue).
-Une réparation débloquerait les deux compétences.
-
-### 🔴 Critère 5 — la conclusion de la preuve de concept
-
-Sans preuve de concept déployée, il n'y a pas de conclusion à en tirer. Écrire un avis sur un
-déploiement qui n'a pas eu lieu serait une preuve fabriquée.
-
-**Ces deux critères sont donc ouverts, et comptés comme tels dans le suivi.**
+| Manque | Portée |
+|---|---|
+| **La pré-production est locale**, pas distante | aucun hébergeur n'est choisi. Le critère parle d'un *environnement*, pas d'un serveur public — mais un hébergeur reste à sélectionner, et c'est là que le critère d'éco-responsabilité (§4) se jouera vraiment |
+| **La base de pré-production ne contient que le schéma** | les 275 118 cotations ne sont pas importées. `docker compose exec api python -m db.importer` reste à jouer |
+| **Aucun déploiement automatisé** | l'image se construit à la main. C'est le volet **livraison** de C13, toujours ouvert : GitHub Actions fait de l'intégration continue, pas de la livraison continue |
+| **11 dépendances sur 13 non épinglées** dans `requirements.txt` | corrigé **seulement** dans `requirements-api.txt`, qui sert à l'image. OWASP ASI04 reste partiellement ouvert |
+| **595 Mo pour l'image** | `pandas` (35 Mo) et `yfinance` y sont pour `agents/scout.py`. Extraire le scout du chemin de l'API la réduirait encore |
 
 ---
 

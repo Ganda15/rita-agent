@@ -1,0 +1,87 @@
+# =============================================================================
+# RITA — pile complète : l'API et sa base, ensemble
+#
+# C'est l'**environnement de pré-production** exigé par C15 :
+#   « La preuve de concept est accessible et fonctionnelle en environnement de
+#     pré-production. »
+#
+# Démarrer :   docker compose up -d --build
+# Journaux :   docker compose logs -f api
+# Arrêter :    docker compose down
+# Tout effacer : docker compose down -v      ⚠️ supprime aussi les données
+#
+# ⚠️ À ne pas confondre avec `db/docker-compose.yml`, qui ne lance QUE PostgreSQL
+#    pour le développement local — l'API tournant alors sur la machine hôte.
+#    Celui-ci lance les deux, comme en production.
+# =============================================================================
+
+services:
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: rita-postgres-preprod
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: rita
+      POSTGRES_USER: rita
+      # Mot de passe de pré-production locale. En production réelle il viendrait du
+      # gestionnaire de secrets de l'hébergeur, jamais d'un fichier versionné.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rita_preprod_local}
+      LANG: fr_FR.utf8
+    volumes:
+      - rita_pgdata_preprod:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    # ⚠️ AUCUN port publié vers l'hôte, et c'est délibéré :
+    #   1. la base n'a pas à être joignable depuis l'extérieur — seule l'API lui parle,
+    #      par le réseau interne de Compose ;
+    #   2. cela évite tout conflit avec le PostgreSQL installé nativement sur la
+    #      machine d'Era, qui écoute déjà sur 5433.
+    # Pour inspecter la base : `docker compose exec postgres psql -U rita -d rita`
+    healthcheck:
+      # Sans cela, l'API démarrerait pendant que PostgreSQL accepte encore mal les
+      # connexions : un conteneur « up » n'est pas un service « prêt ».
+      test: ["CMD-SHELL", "pg_isready -U rita -d rita"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rita-api:local
+    container_name: rita-api-preprod
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        # `service_healthy` et non `service_started` : on attend que la base réponde
+        # vraiment, pas que son conteneur existe.
+        condition: service_healthy
+    environment:
+      # Le nom d'hôte `postgres` est celui du service ci-dessus : Compose le résout
+      # sur son réseau interne. Le port est 5432 — celui du conteneur, pas le 5433
+      # de l'installation native.
+      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:-rita_preprod_local}@postgres:5432/rita
+      # ⚠️ OBLIGATOIRE. L'API refuse de démarrer sans elle (OWASP API2). Elle est
+      # lue depuis le `.env` de la machine, JAMAIS écrite ici.
+      RITA_API_KEY: ${RITA_API_KEY:?RITA_API_KEY absente - la definir dans .env}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      LLM_ORDRE: ${LLM_ORDRE:-anthropic,openrouter}
+    ports:
+      - "8001:8000"
+    # ⚠️ 8001 côté hôte, pas 8000 : le serveur de développement occupe déjà 8000.
+    #    Les deux peuvent donc tourner en même temps, et on compare.
+
+    # --- Durcissement -------------------------------------------------------
+    # L'application n'écrit nulle part : le système de fichiers peut être en lecture
+    # seule. Une écriture inattendue échoue au lieu de persister.
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      # Empêche un processus d'obtenir plus de privilèges que son parent.
+      - no-new-privileges:true
+
+volumes:
+  rita_pgdata_preprod:
