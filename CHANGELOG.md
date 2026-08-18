@@ -94,6 +94,30 @@ Les deux trous repérés le 14/08 en relisant JOURNAL-005 sont comblés dans
 - **Rien n'est codé, et rien ne doit l'être avant l'ouverture d'E4** : au 15/08 il reste
   12 semaines et C6 est le seul chantier qui ne se rattrape pas.
 
+## 2026-08-18 — C14 et C15 : les deux schémas obligatoires de E4
+
+- **Livré** `evidence/C14/` — wireframes des **4 états** de l'écran portefeuille et
+  spécification fonctionnelle de US-1 : contexte, 5 scénarios, **11 critères d'acceptation
+  dont 6 portant un numéro de règle RGAA**.
+  *Les objectifs d'accessibilité ne sont pas une annexe : ce sont des critères d'acceptation.
+  Une US qui afficherait les bons chiffres sans `scope` serait refusée.*
+- **Décidé** : les 4 états représentés sont ceux du code réel, **erreurs comprises**. Un
+  wireframe qui ne montre que le cas nominal décrit une démonstration, pas une application.
+  Les 3 pannes traitées par `app.js` sont de natures différentes — une clé refusée n'est pas
+  une panne, et une absence totale de réponse n'a aucun statut HTTP à lire.
+- **Décidé** : le **MCD Merise de C4 satisfait déjà** le critère « modélisation des données »
+  de C14. Il n'a pas été refait — un second modèle des mêmes données serait un doublon à
+  maintenir, donc une future contradiction.
+- **Livré** `evidence/C15/` — diagramme de flux de données en **6 zones**, découpées sur les
+  frontières réelles du code, et spécifications techniques : 13 dépendances, environnement
+  d'exécution, choix d'éco-conception.
+- **Manque déclaré** : **2 des 5 critères de C15 ne sont pas satisfaits** — la preuve de
+  concept en **pré-production** et sa conclusion. Le déploiement passerait par Docker, dont
+  le démon ne démarre pas sur cette machine : **le même obstacle bloque déjà C13**. Une
+  réparation débloquerait deux compétences.
+- **Manque déclaré** : sur 13 dépendances, **2 seulement sont épinglées**. OWASP ASI04
+  recommande *« allowlist and pin »* — relevé par la veille S34, action ouverte.
+
 ## 2026-08-17 — Deux tables vides retrouvées après la reconstruction du 16/08
 
 - **Manque découvert** : `taux_change` était vide. Sans taux, `COALESCE(t.valeur_pour_eur, 1)`

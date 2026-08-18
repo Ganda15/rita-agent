@@ -59,20 +59,25 @@ fonctionne à nouveau.
 est `test_seuils_minimaux_du_gardefou`, **volontairement rouge** depuis S34 (question ouverte
 S35) : rien de nouveau cassé.
 
+✅ **Les 2 schémas obligatoires de E4 sont faits — 18/08**, commit `0c8b8f5` :
+- **C14** — `evidence/C14/` : wireframes des **4 états** de l'écran (pas 4 écrans : les états
+  réels pilotés par `app.js`), + spécification US-1 (contexte, 5 scénarios, **11 critères
+  d'acceptation dont 6 portant un numéro de règle RGAA**). Le MCD Merise de C4 satisfait déjà
+  le 1er critère de C14 — non refait, un doublon deviendrait une contradiction.
+- **C15** — `evidence/C15/` : diagramme de flux en **6 zones** découpées sur les frontières
+  réelles du code, + spécifications techniques (13 dépendances, environnement, éco-conception).
+- 🔴 **2 critères de C15 restent NON satisfaits** : preuve de concept en **pré-production** et
+  sa conclusion. Bloqués par Docker, qui ne démarre pas — **même obstacle que C13**.
+
 **Prochaines actions, dans l'ordre :**
 
-1. **Les deux schémas obligatoires de E4**, jamais faits :
-   - **wireframes** des 3 états de l'écran → **C14** (*« modélisation des parcours
-     utilisateurs : schéma fonctionnel, wireframes »*)
-   - **diagramme de flux de données** de l'application → **C15**
-   *(Le MCD Merise existant satisfait déjà le volet « modélisation des données » de C14.)*
-4. **Écran 2 — les indicateurs**, 9 colonnes du lot 1 (`docs/indicateurs/CONCEPTION.md`).
+1. **Écran 2 — les indicateurs**, 9 colonnes du lot 1 (`docs/indicateurs/CONCEPTION.md`).
    ⚠️ Le moteur existe déjà, écrit par Era hors de ce dépôt : `quant_metrics.py` dans
    `Ganda15/daily-stock-analysis-era` (350 lignes, 13 fonctions, 9 tests verts). **Le porter
    plutôt que le réécrire.**
 
-Deux tâches courtes à caser dans la même semaine :
-1. **Note de veille S34**, lundi 17/08 09h00 (créneau fixe, ne cède jamais sa place).
+Tâche courte à caser dans la semaine :
+1. ✅ **Note de veille S34** — faite le 17/08, terminée le 18/08 (commit `237c2b7`).
 2. **Capturer le fil Discord** — la note S33 y a été postée le **16/08** avec une question
    ouverte. ⚠️ **Attendre 1 à 2 jours** : ce sont les *réponses* qui prouvent l'animation du
    travail collectif, pas le message. Capture → `evidence/C6/discussion-2026-08-__-discord.png`.
@@ -131,6 +136,11 @@ IA serait une preuve fabriquée).
 | **C11** | **rien** | tout |
 | **C12** | 201 tests, 15 cas d'éval, seuils non compensables en CI | ⚠️ **couverture non mesurée** (`pytest-cov` absent) · DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
 | **C13** | GitHub Actions, 2 jobs, porte garde-fous | packaging · Docker · déploiement · test des données |
+| **C14** | 🔨 **18/08** — wireframes des 4 états (`evidence/C14/`), spécification US-1 : contexte, 5 scénarios, 11 critères d'acceptation dont 6 avec numéro de règle RGAA. Modélisation des données déjà couverte par le MCD Merise de C4 | US de l'**écran 2** non spécifiées · aucun audit RGAA outillé · aucun test avec un vrai lecteur d'écran |
+| **C15** | 🔨 **18/08** — diagramme de flux en 6 zones (`evidence/C15/`), spécifications techniques : 13 dépendances, environnement d'exécution, éco-conception | 🔴 **preuve de concept en pré-production** et sa **conclusion** — bloquées par Docker · 11 dépendances sur 13 non épinglées (OWASP ASI04) |
+| **C16** | **rien** — aucune méthode agile outillée | tout (kanban, backlog, rituels) |
+| **C17** | garde-fou de sortie écrit et mesuré le 17/08 · front HTML/CSS/JS | le gros du développement |
+| **C18–C19** | recouvrent largement C13 | idem C13 |
 
 ## Les 5 manques ouverts, par urgence
 
