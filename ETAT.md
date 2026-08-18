@@ -3,7 +3,7 @@
 > **Ce fichier se périme.** Il porte l'état du jour ; `CLAUDE.md` porte ce qui ne change pas.
 > À relire au démarrage de chaque session, à mettre à jour à la fin.
 
-**Dernière mise à jour : 2026-08-17** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+**Dernière mise à jour : 2026-08-18** · deadline livrables **05/11/2026** · jury **30/11–01/12**
 
 🆕 **Séance de veille S34 du 17/08 — ce qu'elle a changé dans le code.** Commit `c7c8811`.
 - Le **garde-fou de sortie** (interdit AMF) était invoqué par `guardrails/injection.py:9`
@@ -90,31 +90,35 @@ dernière séance et attrape l'exception **par groupe** — un seul ticker radi�
 groupe), faux dès qu'une radiée partagerait sa date avec des valeurs vivantes.
 Avant : 1 618 lues / **3 rejetées**. Après : 1 618 lues / **0 rejetée**. +2 tests.
 
+✅ **Écran 2 livré — 18/08**, commit `52ad1ae`. `GET /donnees/indicateurs` (**7ᵉ** point de
+terminaison) + `frontend/indicateurs.html` / `.js`. Vérifié **dans le navigateur** sur le
+serveur réel : rendu, filtre testé par un vrai clic, **aucune erreur console**, la page ne
+défile pas horizontalement. **241 tests** (32 front, 34 API).
+- 🐛 **Défaut trouvé en vérifiant** : le commentaire CSS annonçait `tabindex` + `role="region"`
+  sur la zone défilable — **ils n'étaient nulle part dans le HTML**. Une personne au clavier
+  n'aurait jamais vu la moitié droite du tableau. **Même famille que le garde-fou de sortie
+  du 17/08** : *un contrôle documenté mais absent est pire qu'un contrôle absent.*
+- Preuve : `evidence/C10/preuve-ecran-indicateurs.md`.
+
 **Prochaines actions, dans l'ordre :**
 
-1. **Exposer le lot 1 par l'API** (`api/donnees.py`), puis **construire l'écran 2**.
-   Le calcul existe ; il n'est ni exposé ni affiché.
-2. **Lots 2 et 3** — portefeuille (2 indicateurs) et risque (3). 5 restants sur 13.
+1. **Lots 2 et 3 des indicateurs** — portefeuille (2) et risque (3). **5 restants sur 13.**
+   Le lot 2 est le plus défendable : il porte sur **les 7 positions et leur PRU**, ce que
+   ne fait aucun site de cotations (`docs/indicateurs/CONCEPTION.md` §6).
+2. 🟠 **Couverture de tests non mesurée** (C12) — `pytest-cov` à brancher.
+3. 🔴 **Docker** — débloquerait **C13 ET C15** (preuve de concept en pré-production).
 
 *Référence : `docs/indicateurs/CONCEPTION.md` (bandeau réécrit le 18/08).*
 
-   ⚠️ **Correction du 18/08 — la consigne précédente était fausse.** `ETAT.md` disait :
-   *« le moteur existe déjà (`quant_metrics.py` dans `Ganda15/daily-stock-analysis-era`),
-   le porter plutôt que le réécrire »*. Le fichier a été **lu** le 18/08 (350 lignes,
-   15 fonctions) : **il ne convient pas au lot 1.**
-
-   | | `quant_metrics.py` | ce que la spec exige |
-   |---|---|---|
-   | Technologie | pandas, en mémoire | **SQL**, fonctions fenêtre |
-   | Portée | **un** instrument | **les 111**, en une requête |
-   | Fenêtre des performances | **nombre de lignes** (`series.iloc[-periods-1]`) | **jours de calendrier** |
-
-   Le décalage en nombre de lignes est **exactement le piège n°1 de la spec** (« ne pas
-   utiliser `LAG(cloture, 5)` »). Le porter importerait le bug contre lequel la spec a été
-   écrite. Il calcule en plus Sharpe, Sortino, Calmar et bêta — que la spec écarte.
-
-   **Réutilisable plus tard, hors lot 1** : `_perf_ytd`, `_rsi`, `_max_drawdown_pct`,
-   `_annualized_vol`. **Direction retenue : coder le lot 1 en SQL**, conformément à la spec.
+⚠️ **Consigne périmée, corrigée le 18/08 — ne pas la réinscrire.** `ETAT.md` disait
+*« le moteur existe déjà (`quant_metrics.py` dans `Ganda15/daily-stock-analysis-era`), le
+porter plutôt que le réécrire »*. Le fichier a été **lu** (350 lignes, 15 fonctions) : il
+travaille en **pandas**, sur **un** instrument, avec des fenêtres en **nombre de lignes** —
+soit exactement le **piège n°1** de la spécification (*« ne pas utiliser `LAG(cloture, 5)` »*).
+Le porter aurait importé le défaut contre lequel elle a été écrite ; il calcule en outre
+Sharpe, Sortino, Calmar et bêta, que la spécification écarte.
+**Réutilisable plus tard, hors lot 1** : `_perf_ytd`, `_rsi`, `_max_drawdown_pct`,
+`_annualized_vol`.
 
 Tâche courte à caser dans la semaine :
 1. ✅ **Note de veille S34** — faite le 17/08, terminée le 18/08 (commit `237c2b7`).
@@ -172,14 +176,14 @@ IA serait une preuve fabriquée).
 | **C7** | **rien** — aucun benchmark de services IA | tout |
 | **C8** | cascade 3 fournisseurs testée, clé en `.env` | monitorage du service · doc d'exploitation |
 | **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection | revue OWASP · doc d'architecture · invitation en attente |
-| **C10** | 🔨 **16/08** — `frontend/` : écran portefeuille servi par l'API, authentification par clé saisie (jamais en dur), 403 et erreurs traités, RGAA (`caption`, `scope`, `aria-live`, signe explicite), **15 tests** dont 2 de non-régression du montage | autres points de terminaison · doc d'architecture |
+| **C10** | 🔨 **18/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **7 points de terminaison** intégrés. **32 tests** front | tri/recherche · audit RGAA outillé · doc d'architecture |
 | **C11** | **rien** | tout |
 | **C12** | 201 tests, 15 cas d'éval, seuils non compensables en CI | ⚠️ **couverture non mesurée** (`pytest-cov` absent) · DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
 | **C13** | GitHub Actions, 2 jobs, porte garde-fous | packaging · Docker · déploiement · test des données |
 | **C14** | 🔨 **18/08** — wireframes des 4 états (`evidence/C14/`), spécification US-1 : contexte, 5 scénarios, 11 critères d'acceptation dont 6 avec numéro de règle RGAA. Modélisation des données déjà couverte par le MCD Merise de C4 | US de l'**écran 2** non spécifiées · aucun audit RGAA outillé · aucun test avec un vrai lecteur d'écran |
 | **C15** | 🔨 **18/08** — diagramme de flux en 6 zones (`evidence/C15/`), spécifications techniques : 13 dépendances, environnement d'exécution, éco-conception | 🔴 **preuve de concept en pré-production** et sa **conclusion** — bloquées par Docker · 11 dépendances sur 13 non épinglées (OWASP ASI04) |
 | **C16** | **rien** — aucune méthode agile outillée | tout (kanban, backlog, rituels) |
-| **C17** | garde-fou de sortie écrit et mesuré le 17/08 · front HTML/CSS/JS | le gros du développement |
+| **C17** | garde-fou de sortie écrit et mesuré (17/08) · **2 écrans** HTML/CSS/JS sans build · indicateurs lot 1 en SQL + module + API (18/08) | lots 2 et 3 des indicateurs · tri/recherche |
 | **C18–C19** | recouvrent largement C13 | idem C13 |
 
 ## Les 5 manques ouverts, par urgence

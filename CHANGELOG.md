@@ -94,6 +94,33 @@ Les deux trous repérés le 14/08 en relisant JOURNAL-005 sont comblés dans
 - **Rien n'est codé, et rien ne doit l'être avant l'ouverture d'E4** : au 15/08 il reste
   12 semaines et C6 est le seul chantier qui ne se rattrape pas.
 
+## 2026-08-18 — Écran 2 : les indicateurs, exposés et affichés
+
+- **Livré** `GET /donnees/indicateurs` — **7ᵉ** point de terminaison du routeur `donnees`.
+  Filtre par ticker répétable, et `masquer_perimees` qui vaut **faux par défaut** : les trois
+  valeurs radiées sortent, **avec leur drapeau**. `statut_qualite` et `fraicheur_jours` sont
+  deux champs distincts, et l'appelant décide.
+- **Livré** `frontend/indicateurs.html` + `indicateurs.js` — mêmes 4 états que l'écran
+  portefeuille, **même clé en `sessionStorage`** : passer d'un écran à l'autre ne redemande
+  pas de s'authentifier.
+- **Décidé** — quatre choix commentés à côté du code : un **tiret n'est pas un zéro**
+  (`null` = pas calculable, `0` = aucune variation) · la péremption est portée par le
+  **texte** de la cellule, la couleur n'étant qu'un renfort (RGAA 3.1) · le filtre agit sur
+  les données **déjà chargées**, sans aller-retour réseau · **le tableau défile, pas la page**.
+- 🐛 **Défaut trouvé en vérifiant dans le navigateur** : le commentaire du CSS annonçait que
+  `tabindex` et `role="region"` rendaient la zone défilable atteignable au clavier — **ils
+  n'étaient nulle part dans le HTML**. Douze colonnes ne tenant pas à l'écran, une personne
+  naviguant au clavier n'aurait jamais vu la moitié droite du tableau.
+  **Même famille que le garde-fou de sortie du 17/08** : *un contrôle documenté mais absent
+  est pire qu'un contrôle absent — tant qu'il est écrit, personne ne le cherche.*
+- **Vérifié dans le navigateur**, sur le serveur réel : rendu contrôlé, filtre testé par un
+  vrai clic, **aucune erreur console**, la page ne défile pas horizontalement, 11 contrôles
+  d'accessibilité mesurés.
+- **Leçon de test** : un test cherchait `scope="row"` dans le HTML — impossible, les lignes
+  sont créées à l'exécution. Il échouait sur du code correct.
+  *Un test doit chercher là où la chose est réellement écrite* — même leçon que le `innerHTML`
+  trouvé dans un commentaire le 16/08.
+
 ## 2026-08-18 — Cours rafraîchis, et un bug latent trouvé en le faisant
 
 - **Rafraîchi** les cours, qui s'arrêtaient au **29/07** — trois semaines de retard.
