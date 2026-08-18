@@ -76,17 +76,25 @@ S35) : rien de nouveau cassé.
   Gemalto 2019) portent encore `statut_qualite = 'OK'`. L'écran aurait affiché pour elles une
   « performance 1 jour » calculée sur des cours vieux de 8 ans. Colonne `fraicheur_jours`
   ajoutée (seuil 40 j). **`statut_qualite` décrit la qualité de l'historique, pas sa fraîcheur.**
-- 🆕 **Les cours datent du 29/07** — 3 semaines de retard. `sources/cotations.py` n'a pas été
-  rejoué depuis la reconstruction du 16/08 : **même famille de défaut** que `taux_change` et
-  `article` corrigés le 17/08.
+✅ **Cours rafraîchis — 18/08.** Ils s'arrêtaient au 29/07 (3 semaines de retard, même famille
+de défaut que `taux_change` et `article`). `pipelines.ingest --etapes cotations` :
+**1 618 séances écrites**, du 28/07 au 18/08. Base : **275 118** cotations, **retard 0 jour**.
+`ANALYZE cotation` refait, indicateurs recalculés sur données fraîches.
+
+🐛 **Bug corrigé au passage — commit `8df76ba`.** Le rafraîchissement rejetait 3 tickers avec
+un `TypeError` : `_ligne_valide` se protégeait du `NaN` par `x == x`, mais yfinance rend
+**`None`** — pas `NaN` — pour une valeur **radiée**, et `None == None` est **vrai**.
+**La gravité n'est pas la ligne perdue** : `etape_cotations` groupe les tickers par date de
+dernière séance et attrape l'exception **par groupe** — un seul ticker radié faisait perdre
+**tout son groupe**. Sans conséquence aujourd'hui (les 3 radiées sont seules dans leur
+groupe), faux dès qu'une radiée partagerait sa date avec des valeurs vivantes.
+Avant : 1 618 lues / **3 rejetées**. Après : 1 618 lues / **0 rejetée**. +2 tests.
 
 **Prochaines actions, dans l'ordre :**
 
-1. 🟠 **Rejouer `sources/cotations.py`** — les cours s'arrêtent au 29/07. Tous les indicateurs
-   sont calculés sur des données périmées de 3 semaines.
-2. **Exposer le lot 1 par l'API** (`api/donnees.py`), puis **construire l'écran 2**.
+1. **Exposer le lot 1 par l'API** (`api/donnees.py`), puis **construire l'écran 2**.
    Le calcul existe ; il n'est ni exposé ni affiché.
-3. **Lots 2 et 3** — portefeuille (2 indicateurs) et risque (3). 5 restants sur 13.
+2. **Lots 2 et 3** — portefeuille (2 indicateurs) et risque (3). 5 restants sur 13.
 
 *Référence : `docs/indicateurs/CONCEPTION.md` (bandeau réécrit le 18/08).*
 

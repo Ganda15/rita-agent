@@ -94,6 +94,21 @@ Les deux trous repérés le 14/08 en relisant JOURNAL-005 sont comblés dans
 - **Rien n'est codé, et rien ne doit l'être avant l'ouverture d'E4** : au 15/08 il reste
   12 semaines et C6 est le seul chantier qui ne se rattrape pas.
 
+## 2026-08-18 — Cours rafraîchis, et un bug latent trouvé en le faisant
+
+- **Rafraîchi** les cours, qui s'arrêtaient au **29/07** — trois semaines de retard.
+  `pipelines.ingest --etapes cotations` : **1 618 séances** écrites (28/07 → 18/08).
+  Base à **275 118** cotations, **retard 0 jour**. Indicateurs recalculés.
+- 🐛 **Bug corrigé** : `_ligne_valide` se protégeait du `NaN` par `x == x`, mais yfinance rend
+  **`None`** — pas `NaN` — pour une valeur **radiée**, et `None == None` est **vrai**. Le
+  garde-fou laissait donc passer, et `c > 0` levait un `TypeError`.
+  **La gravité n'est pas la ligne perdue** : `etape_cotations` groupe les tickers par date de
+  dernière séance et attrape l'exception **par groupe** — un seul ticker radié faisait perdre
+  **tout son groupe**. Sans conséquence aujourd'hui, faux dès qu'une valeur radiée partagerait
+  sa date avec des valeurs vivantes.
+  Avant : 1 618 lues / **3 rejetées**. Après : 1 618 lues / **0 rejetée**. +2 tests.
+  *Un garde-fou qui traite une seule des deux formes d'absence n'en est pas un.*
+
 ## 2026-08-18 — Indicateurs lot 1, et trois valeurs radiées découvertes
 
 - **Livré** le lot 1 des indicateurs : `db/indicateurs.sql` + `indicateurs/socle.py` +
