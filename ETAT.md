@@ -3,7 +3,18 @@
 > **Ce fichier se périme.** Il porte l'état du jour ; `CLAUDE.md` porte ce qui ne change pas.
 > À relire au démarrage de chaque session, à mettre à jour à la fin.
 
-**Dernière mise à jour : 2026-08-16** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+**Dernière mise à jour : 2026-08-17** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+
+🆕 **Séance de veille S34 du 17/08 — ce qu'elle a changé dans le code.** Commit `c7c8811`.
+- Le **garde-fou de sortie** (interdit AMF) était invoqué par `guardrails/injection.py:9`
+  et **n'existait pas** ; `api/main.py` diffusait le texte du modèle sans contrôle. Écrit
+  (`guardrails/sortie.py`), câblé sur `/briefing`, mesuré (`evals/mesurer_sortie.py`).
+- Le **100 % du garde-fou d'entrée était circulaire** : 7 cas de test pour 9 motifs, un pour
+  un. 3 cas adverses ajoutés → **taux réel 70 %**, faux positifs 0 %.
+- ⚠️ **`tests/test_evals.py` est ROUGE et doit le rester** (70 % < seuil 85 %). Ne pas
+  baisser le seuil : l'arbitrage est la question ouverte de S35. Suite : `200 passed, 1 failed`.
+- Le **garde-fou de sortie mesure aussi 70 %** — motifs écrits d'abord, cas d'évasion ensuite.
+- Deux guides d'étude en anglais : `docs/etude/` (les concepts, et la méthode).
 
 📅 **Le plan des 12 semaines est écrit : `docs/PLAN-12-SEMAINES.md`.**
 Le formateur est en congé → on ne l'attend pas : **produire → geler → mettre en file
@@ -28,6 +39,17 @@ affiche le portefeuille réel depuis l'API. La semaine S34 est donc **libre pour
 loin que prévu**.
 
 **Prochaines actions, dans l'ordre :**
+
+0. 🔴 **FINIR LA NOTE S34 — 1 section, ~5 lignes.** ⚠️ Correction du 17/08 en fin de
+   journée : le tableau d'analyse de fiabilité **était déjà écrit** (lignes 32-73, avec les
+   deux arbitrages justifiés) — cette liste le disait manquant à tort. Il ne reste que :
+   - le **résumé en clair** (ligne 9, `docs/veille/2026-S34-top10-agentique.md`) — brouillon
+     proposé, à reprendre avec les mots d'Era avant de le fixer.
+
+   Puis les 7 cases d'accessibilité en bas (aucune cochée pour l'instant), puis commit.
+   ⚠️ **Ne pas passer aux actions suivantes avant.** Une note à 90 % ne prouve rien, et le
+   contexte se perd en une nuit. Méthode pas à pas :
+   `docs/etude/STUDY-GUIDE-session-2026-08-17-EN.md` §10.
 
 1. 🟠 **`taux_change` est vide** — les taux BCE n'ont pas été réimportés. Sans eux,
    `COALESCE(t.valeur_pour_eur, 1)` retombe sur 1 : **aucune conversion n'est appliquée**.
