@@ -101,6 +101,34 @@ def test_une_valeur_manquante_est_ecartee():
         assert fetch_cotations(["MC.PA", "OR.PA"], date(2026, 7, 30)) == []
 
 
+def test_une_valeur_radiee_rend_None_et_ne_fait_pas_planter_le_groupe():
+    """Une valeur RADIÉE rend `None`, pas `NaN` — et `None == None` est vrai.
+
+    Le garde-fou `x == x` attrapait donc le NaN mais laissait passer le None, et
+    la comparaison `c > 0` levait `TypeError`. Mesuré le 18/08/2026 sur ZC.PA
+    (Zodiac Aerospace, radiée en 2018).
+
+    La gravité n'est pas la ligne perdue : `etape_cotations` regroupe les tickers
+    par date de dernière séance et attrape l'exception **par groupe**. Un seul
+    ticker radié faisait donc perdre TOUT son groupe.
+    """
+    rep = _fausse_reponse(UNE_SEANCE, {"MC.PA": {
+        "Open": [None], "High": [None], "Low": [None],
+        "Close": [None], "Volume": [None]}})
+    with patch("yfinance.download", return_value=rep):
+        assert fetch_cotations(["MC.PA", "OR.PA"], date(2026, 7, 30)) == []
+
+
+def test_un_seul_None_suffit_a_ecarter_la_ligne():
+    """Une séance partiellement renseignée n'est pas rattrapable : la base impose
+    NOT NULL sur les cinq colonnes."""
+    rep = _fausse_reponse(UNE_SEANCE, {"MC.PA": {
+        "Open": [1.0], "High": [2.0], "Low": [0.5],
+        "Close": [None], "Volume": [10]}})
+    with patch("yfinance.download", return_value=rep):
+        assert fetch_cotations(["MC.PA", "OR.PA"], date(2026, 7, 30)) == []
+
+
 def test_un_ticker_absent_de_la_reponse_ne_plante_pas():
     """yfinance omet silencieusement un ticker inconnu — ce n'est pas une raison
     pour perdre les autres."""

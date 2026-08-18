@@ -31,6 +31,19 @@ DEPUIS_INCLUSIF = True
 # Les bornes que la base refusera de toute façon (contraintes CHECK de `cotation`).
 # Filtrer ici évite de faire échouer un lot entier pour une ligne aberrante.
 def _ligne_valide(o: float, h: float, b: float, c: float, v: float) -> bool:
+    # ⚠️ Deux formes d'absence, pas une seule.
+    #
+    #   NaN  -> `x == x` est FAUX. C'est ce que rend yfinance pour un jour non coté.
+    #   None -> `x == x` est VRAI. C'est ce qu'il rend pour une valeur RADIÉE.
+    #
+    # Le test `x == x` seul laissait donc passer les None, et la comparaison
+    # `c > 0` levait ensuite `TypeError: '>' not supported between instances of
+    # 'NoneType' and 'int'`. Mesuré le 18/08/2026 sur ZC.PA (Zodiac Aerospace,
+    # radiée en 2018) : l'exception remontait jusqu'à `etape_cotations`, où le
+    # `except Exception` faisait perdre **tout le groupe** de tickers partageant
+    # cette date de dernière séance — pas seulement le ticker fautif.
+    if any(x is None for x in (o, h, b, c, v)):
+        return False
     return (
         all(x == x for x in (o, h, b, c, v))   # x != x est vrai pour NaN
         and c > 0 and o > 0
