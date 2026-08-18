@@ -38,27 +38,30 @@ Le formateur est en congé → on ne l'attend pas : **produire → geler → met
 affiche le portefeuille réel depuis l'API. La semaine S34 est donc **libre pour aller plus
 loin que prévu**.
 
+✅ **Note S34 terminée le 17/08** — résumé rédigé et validé par Era, 7/7 accessibilité,
+31 liens externes vérifiés, 0 cassé. Commit `237c2b7`.
+
+✅ **`taux_change` réimporté le 17/08** — `python -m pipelines.ingest --etapes ecb` (simulation
+d'abord, puis réel) : 5 lignes (EUR + USD/GBP/CHF/JPY, taux du jour). La conversion de devise
+fonctionne à nouveau.
+
+✅ **`ANALYZE;` exécuté le 17/08** — les statistiques étaient bien plus périmées que prévu :
+**presque toutes les tables estimées à 0** depuis la reconstruction du 16/08, pas seulement
+`position`. Corrigé : `cotation` 273 608 · `valeur` 111 · `alias_valeur` 112 · `position` 7 ·
+`taux_change` 5 — tous exacts, vérifiés.
+
+✅ **`article` réimporté le 17/08** — même cause que `taux_change` : la reconstruction du
+16/08 n'a rechargé que ce qui a une source Parquet (`db/importer.py`), jamais les articles.
+`python -m pipelines.ingest --etapes rss` (simulation puis réel) : **30 lignes, 0 bloquée**,
+3/3 flux OK. `ANALYZE article;` refait.
+
+✅ **Suite complète rejouée après les 2 réimports** — `200 passed, 1 failed`. L'unique échec
+est `test_seuils_minimaux_du_gardefou`, **volontairement rouge** depuis S34 (question ouverte
+S35) : rien de nouveau cassé.
+
 **Prochaines actions, dans l'ordre :**
 
-0. 🔴 **FINIR LA NOTE S34 — 1 section, ~5 lignes.** ⚠️ Correction du 17/08 en fin de
-   journée : le tableau d'analyse de fiabilité **était déjà écrit** (lignes 32-73, avec les
-   deux arbitrages justifiés) — cette liste le disait manquant à tort. Il ne reste que :
-   - le **résumé en clair** (ligne 9, `docs/veille/2026-S34-top10-agentique.md`) — brouillon
-     proposé, à reprendre avec les mots d'Era avant de le fixer.
-
-   Puis les 7 cases d'accessibilité en bas (aucune cochée pour l'instant), puis commit.
-   ⚠️ **Ne pas passer aux actions suivantes avant.** Une note à 90 % ne prouve rien, et le
-   contexte se perd en une nuit. Méthode pas à pas :
-   `docs/etude/STUDY-GUIDE-session-2026-08-17-EN.md` §10.
-
-1. 🟠 **`taux_change` est vide** — les taux BCE n'ont pas été réimportés. Sans eux,
-   `COALESCE(t.valeur_pour_eur, 1)` retombe sur 1 : **aucune conversion n'est appliquée**.
-   Sans effet aujourd'hui (les 7 positions sont en euros), **faux dès la première ligne en
-   devise**. Relancer `sources/ecb.py`. *(Révélé par un `EXPLAIN ANALYZE` : `Seq Scan on
-   taux_change … rows=0.00`.)*
-2. 🟡 **`ANALYZE;`** — les statistiques du planificateur sont périmées depuis la
-   reconstruction (il estime 550 lignes dans `position` là où il y en a 7).
-3. **Les deux schémas obligatoires de E4**, jamais faits :
+1. **Les deux schémas obligatoires de E4**, jamais faits :
    - **wireframes** des 3 états de l'écran → **C14** (*« modélisation des parcours
      utilisateurs : schéma fonctionnel, wireframes »*)
    - **diagramme de flux de données** de l'application → **C15**
@@ -159,7 +162,6 @@ IA serait une preuve fabriquée).
    Un évaluateur qui le suit échoue. Cinq minutes à corriger.
 7. 🟡 **`python-dotenv could not parse statement starting at line 5`** — s'affiche à chaque
    démarrage. Sans conséquence, mais pollue toutes les sorties.
-8. 🟠 **`taux_change` est vide** — voir « Prochaine action », point 1.
 
 ## Fichiers de suivi hors dépôt
 

@@ -94,6 +94,26 @@ Les deux trous repérés le 14/08 en relisant JOURNAL-005 sont comblés dans
 - **Rien n'est codé, et rien ne doit l'être avant l'ouverture d'E4** : au 15/08 il reste
   12 semaines et C6 est le seul chantier qui ne se rattrape pas.
 
+## 2026-08-17 — Deux tables vides retrouvées après la reconstruction du 16/08
+
+- **Manque découvert** : `taux_change` était vide. Sans taux, `COALESCE(t.valeur_pour_eur, 1)`
+  retombe silencieusement sur 1 — aucune conversion de devise n'était appliquée. Révélé par
+  un `EXPLAIN ANALYZE` (`Seq Scan on taux_change … rows=0.00`). Réimporté via
+  `python -m pipelines.ingest --etapes ecb` : 5 devises, taux du 17/08.
+- **Cause identifiée, et le même défaut trouvé une seconde fois** : la reconstruction de la
+  base le 16/08 (voir entrée précédente) n'a rechargé que ce qui a une source Parquet
+  (`db/importer.py`). `article` (flux RSS) n'en a pas — elle était donc **elle aussi vide**,
+  sans lien avec `taux_change`. Réimportée : `python -m pipelines.ingest --etapes rss`,
+  30 lignes, 0 bloquée.
+  *Une table vide qui devrait avoir des lignes est un signal à ne pas laisser traîner — c'est
+  exactement ce qui avait caché `taux_change`.*
+- **`ANALYZE`** exécuté sur toute la base : les statistiques du planificateur étaient bien
+  plus périmées que prévu — **presque toutes les tables estimées à 0**, pas seulement
+  `position`. Corrigé et vérifié exact table par table.
+- **Suite de tests rejouée après les deux réimports** : `200 passed, 1 failed`, l'unique échec
+  restant volontairement en place depuis la veille S34 (seuil du garde-fou, question ouverte
+  S35). Rien de nouveau cassé par les réimports.
+
 ## 2026-08-14 — RGPD : un traitement déclaré qui n'existait pas
 
 - **Manque découvert** : le registre décrivait **T3** (traçage LangSmith) comme un traitement
