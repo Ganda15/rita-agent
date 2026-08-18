@@ -130,3 +130,94 @@ def test_l_avertissement_amf_est_affiche(client):
     """La contrainte n'est pas seulement dans le prompt : l'utilisateur la lit."""
     page = client.get("/").text
     assert "Aucune recommandation d'achat ou de vente" in page
+
+
+# --- Écran 2 : les indicateurs (lot 1) ----------------------------------------
+
+@pytest.mark.parametrize("fichier", ["indicateurs.html", "indicateurs.js"])
+def test_l_ecran_indicateurs_est_servi(client, fichier):
+    assert client.get(f"/{fichier}").status_code == 200
+
+
+def test_aucune_cle_d_api_dans_le_code_de_l_ecran_indicateurs():
+    """Même exigence que pour le premier écran : la clé est saisie, jamais écrite."""
+    code = code_sans_commentaires("indicateurs.js")
+    assert "dev-key" not in code
+    assert not re.search(r"X-API-Key\"\s*:\s*\"[^\"]+\"", code), \
+        "une clé littérale est écrite dans l'en-tête"
+
+
+def test_l_ecran_indicateurs_n_utilise_jamais_innerhtml():
+    """Un nom d'instrument contenant du HTML serait exécuté — OWASP A03."""
+    assert "innerHTML" not in code_sans_commentaires("indicateurs.js")
+
+
+@pytest.mark.parametrize("marqueur, regle", [
+    ('lang="fr"', "RGAA 8.3 — langue de la page"),
+    ('scope="col"', "RGAA 5.7 — en-têtes de colonne"),
+    ("<caption", "RGAA 5.4 — titre du tableau"),
+    ('aria-live="polite"', "RGAA 12.x — annonce des changements de statut"),
+    ('role="status"', "zone de statut identifiée"),
+    ('aria-current="page"', "page courante signalée dans la navigation"),
+    ('aria-controls="tableau-indicateurs"', "le filtre est relié au tableau qu'il modifie"),
+])
+def test_les_marqueurs_d_accessibilite_de_l_ecran_2(marqueur, regle):
+    html = (FRONTEND / "indicateurs.html").read_text(encoding="utf-8")
+    assert marqueur in html, f"marqueur absent — {regle}"
+
+
+def test_les_en_tetes_de_ligne_sont_poses_par_le_rendu():
+    """`scope="row"` ne peut PAS être dans le HTML : les lignes du tableau sont
+    créées à l'exécution, une fois les données reçues. Le chercher dans la page
+    aurait fait échouer le test sur un code pourtant correct — c'est ce qui est
+    arrivé le 18/08. **Un test doit chercher là où la chose est réellement écrite.**"""
+    assert 'setAttribute("scope", "row")' in code_sans_commentaires("indicateurs.js")
+
+
+def test_la_zone_qui_defile_est_atteignable_au_clavier():
+    """⚠️ Écrit après un défaut réel, le 18/08/2026.
+
+    Le commentaire du CSS annonçait que `tabindex` et `role="region"` rendaient la
+    zone défilable atteignable au clavier — **ils n'étaient nulle part dans le HTML**.
+    Douze colonnes ne tenant pas à l'écran, une personne naviguant au clavier
+    n'aurait jamais pu voir les colonnes de droite.
+
+    Même famille de défaut que le garde-fou de sortie du 17/08 : **un contrôle
+    documenté mais absent est pire qu'un contrôle absent** — tant qu'il est écrit,
+    personne ne le cherche.
+    """
+    html = (FRONTEND / "indicateurs.html").read_text(encoding="utf-8")
+    zone = re.search(r'<div class="tableau-large"[^>]*>', html)
+    assert zone, "la zone de défilement a disparu"
+    assert 'tabindex="0"' in zone.group(0)
+    assert 'role="region"' in zone.group(0)
+    assert "aria-label" in zone.group(0), "une région doit porter un nom accessible"
+
+
+def test_le_signe_est_toujours_affiche_sur_les_indicateurs():
+    """RGAA 3.1 : l'information n'est jamais portée par la seule couleur.
+    Une performance négative doit se lire au signe, pas à la teinte."""
+    assert 'signDisplay: "always"' in code_sans_commentaires("indicateurs.js")
+
+
+def test_une_valeur_absente_devient_un_tiret_et_non_un_zero():
+    """`null` signifie « pas calculable » ; `0` signifierait « aucune variation ».
+    Afficher 0 à la place d'un tiret ferait lire une performance nulle inexistante."""
+    code = code_sans_commentaires("indicateurs.js")
+    assert 'return n === null ? "—"' in code or "n === null ? \"—\"" in code
+
+
+def test_la_peremption_est_signalee_en_texte_pas_seulement_en_couleur():
+    """La classe CSS `perimee` n'est qu'un renfort visuel. L'information doit
+    exister dans le TEXTE de la cellule, sinon elle n'existe pas pour un lecteur
+    d'écran ni pour une personne qui ne perçoit pas les couleurs."""
+    code = code_sans_commentaires("indicateurs.js")
+    assert "cotation périmée" in code, "la mention textuelle a disparu"
+
+
+def test_les_deux_ecrans_se_relient(client):
+    """Un écran isolé n'est pas une application. La navigation doit exister des
+    deux côtés, sinon on entre dans l'écran 2 sans pouvoir en sortir."""
+    for page, cible in [("index.html", "indicateurs.html"), ("indicateurs.html", "index.html")]:
+        html = (FRONTEND / page).read_text(encoding="utf-8")
+        assert f'href="{cible}"' in html, f"{page} ne renvoie pas vers {cible}"

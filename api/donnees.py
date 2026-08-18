@@ -32,6 +32,7 @@ from datetime import date
 
 from fastapi import APIRouter, HTTPException, Query
 
+from indicateurs import socle
 from sources import database
 
 routeur = APIRouter(prefix="/donnees", tags=["jeu de données"])
@@ -118,6 +119,45 @@ def volumes(
     """Signal pour l'agent Technique : un fait observable, **pas une recommandation**."""
     e = database.volumes_anormaux(seuil=seuil, limite=limite)
     return {"nb": e.nb, "seuil": seuil, "volumes_anormaux": e.lignes}
+
+
+@routeur.get("/indicateurs", summary="Indicateurs de marché du lot 1 (socle)")
+def indicateurs(
+    ticker: list[str] | None = Query(
+        None, description="Restreindre à certaines valeurs. Répétable : "
+                          "?ticker=MC.PA&ticker=OR.PA. Absent = tout l'univers (111)."),
+    masquer_perimees: bool = Query(
+        False, description="Écarter les valeurs dont la dernière cotation dépasse "
+                           "le seuil de péremption. Par défaut elles sont RENVOYÉES, "
+                           "avec le drapeau cotation_perimee à vrai."),
+) -> dict:
+    """Les 11 indicateurs du socle, par valeur : dernier cours, 5 performances
+    (1 jour, 1 semaine, 1 mois, depuis le 1ᵉʳ janvier, 1 an), MA20, MA50, ADTV20,
+    et la distance au plus haut sur un an.
+
+    **Des faits, jamais des conseils.** Chaque champ est un nombre, son unité et sa
+    date. Aucun verbe d'action, aucun classement « meilleures valeurs », aucun seuil
+    d'alerte : ce serait une recommandation, ce que l'interdit AMF proscrit.
+
+    **Un champ à `null` n'est pas un zéro** : il signifie que l'historique ne remonte
+    pas assez loin pour ce calcul. Une MA50 sur 30 séances serait un chiffre inventé.
+
+    ⚠️ **`cotation_perimee`** vaut vrai quand la dernière séance connue dépasse
+    `SEUIL_PERIME_JOURS`. Trois valeurs de l'univers sont radiées depuis 2018-2019 et
+    portent pourtant `statut_qualite = "OK"` — le statut décrit la **qualité** de
+    l'historique, pas sa **fraîcheur**. Les deux champs sont donc exposés séparément,
+    et les lignes sont renvoyées par défaut : *on montre le chiffre, on signale le doute.*
+    """
+    lignes = socle.lire_socle(ticker or None)
+    if masquer_perimees:
+        lignes = [i for i in lignes if not i.cotation_perimee]
+
+    return {
+        "nb": len(lignes),
+        "seuil_perime_jours": socle.SEUIL_PERIME_JOURS,
+        "nb_perimees": sum(i.cotation_perimee for i in lignes),
+        "indicateurs": [i.en_dict() for i in lignes],
+    }
 
 
 @routeur.get("/articles", summary="Actualités collectées par flux RSS")

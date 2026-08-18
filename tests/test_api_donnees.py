@@ -4,6 +4,8 @@ Le critère central de C5 est **« l'API restreint par une autorisation l'accès
 données »**. C'est donc la première chose testée, et sur *chaque* point de terminaison :
 un contrôle d'accès qui protège 5 routes sur 6 ne protège rien.
 """
+from datetime import date
+from decimal import Decimal
 from unittest.mock import patch
 
 import pytest
@@ -21,6 +23,7 @@ ROUTES_PROTEGEES = [
     "/donnees/mouvements",
     "/donnees/volumes-anormaux",
     "/donnees/articles",
+    "/donnees/indicateurs",
 ]
 
 
@@ -127,7 +130,7 @@ def test_openapi_est_genere_et_complet(client):
     assert o["openapi"].startswith("3.")
     for route in ("/donnees/valeurs", "/donnees/portefeuille", "/donnees/cotations",
                   "/donnees/mouvements", "/donnees/volumes-anormaux",
-                  "/donnees/articles", "/briefing", "/health"):
+                  "/donnees/articles", "/donnees/indicateurs", "/briefing", "/health"):
         assert route in o["paths"], f"{route} absent du contrat OpenAPI"
 
 
@@ -144,3 +147,111 @@ def test_le_schema_de_securite_est_declare(client):
     o = client.get("/openapi.json").json()
     schemas = o.get("components", {}).get("securitySchemes", {})
     assert any(s.get("name") == "X-API-Key" for s in schemas.values())
+
+
+# --- /donnees/indicateurs (lot 1) ---------------------------------------------
+
+def _ligne_indicateur(**surcharges):
+    """Une ligne telle que `db/indicateurs.sql` la rend."""
+    base = {
+        "ticker": "MC.PA", "nom_officiel": "LVMH", "statut_qualite": "OK",
+        "date_cours": date(2026, 8, 18), "cours": Decimal("545.2000"),
+        "fraicheur_jours": 0,
+        "perf_1j_pct": Decimal("-1.10"), "perf_1s_pct": Decimal("2.40"),
+        "perf_1m_pct": Decimal("-3.80"), "perf_ytd_pct": Decimal("5.20"),
+        "perf_1a_pct": Decimal("-11.10"),
+        "ma20": Decimal("552.3000"), "ma50": Decimal("561.9000"),
+        "adtv20": Decimal("128456789"),
+        "distance_plus_haut_1a_pct": Decimal("-14.20"),
+    }
+    base.update(surcharges)
+    return base
+
+
+@pytest.fixture
+def indicateurs_simules():
+    """Deux valeurs : une fraîche, une radiée depuis 2018."""
+    lignes = [
+        _ligne_indicateur(),
+        _ligne_indicateur(ticker="ZC.PA", nom_officiel="ZODIAC AEROSPACE",
+                          statut_qualite="OK", date_cours=date(2018, 3, 22),
+                          fraicheur_jours=3071, perf_1a_pct=None, ma50=None),
+    ]
+    with patch("indicateurs.socle._executer", return_value=lignes):
+        yield
+
+
+def test_indicateurs_retourne_le_compte_et_le_seuil(client, indicateurs_simules):
+    r = client.get("/donnees/indicateurs", headers=CLE)
+    assert r.status_code == 200
+    d = r.json()
+    assert d["nb"] == 2
+    assert d["seuil_perime_jours"] == 40
+    assert [i["ticker"] for i in d["indicateurs"]] == ["MC.PA", "ZC.PA"]
+
+
+def test_une_valeur_radiee_sort_signalee_et_non_masquee(client, indicateurs_simules):
+    """LE test qui compte. Zodiac est radiée depuis 2018 et porte `statut_qualite = OK`.
+    L'API la renvoie — avec le drapeau. On montre le chiffre, on signale le doute."""
+    d = client.get("/donnees/indicateurs", headers=CLE).json()
+    zodiac = next(i for i in d["indicateurs"] if i["ticker"] == "ZC.PA")
+
+    assert zodiac["statut_qualite"] == "OK"        # le statut ne dit rien de la fraîcheur
+    assert zodiac["cotation_perimee"] is True      # le drapeau, lui, le dit
+    assert d["nb_perimees"] == 1
+
+
+def test_masquer_perimees_les_ecarte(client, indicateurs_simules):
+    d = client.get("/donnees/indicateurs?masquer_perimees=true", headers=CLE).json()
+    assert d["nb"] == 1
+    assert d["nb_perimees"] == 0
+    assert [i["ticker"] for i in d["indicateurs"]] == ["MC.PA"]
+
+
+def test_un_historique_court_sort_en_null_et_non_en_zero(client, indicateurs_simules):
+    """`null` signifie « pas calculable », `0` signifierait « aucune variation ».
+    Confondre les deux ferait afficher une performance nulle là où il n'y en a pas."""
+    d = client.get("/donnees/indicateurs", headers=CLE).json()
+    zodiac = next(i for i in d["indicateurs"] if i["ticker"] == "ZC.PA")
+    assert zodiac["perf_1a_pct"] is None
+    assert zodiac["ma50"] is None
+
+
+def test_le_filtre_par_ticker_est_repetable(client):
+    """`?ticker=A&ticker=B` — la liste doit arriver entière jusqu'à la requête."""
+    vu = {}
+
+    def espion(tickers=None):
+        vu["tickers"] = tickers
+        return []
+
+    with patch("indicateurs.socle.lire_socle", side_effect=espion):
+        r = client.get("/donnees/indicateurs?ticker=MC.PA&ticker=OR.PA", headers=CLE)
+
+    assert r.status_code == 200
+    assert vu["tickers"] == ["MC.PA", "OR.PA"]
+
+
+def test_sans_ticker_aucun_filtre_n_est_transmis(client):
+    """Une liste vide et « pas de filtre » ne sont pas la même chose : la première
+    ne renverrait rien du tout."""
+    vu = {}
+
+    def espion(tickers=None):
+        vu["tickers"] = tickers
+        return []
+
+    with patch("indicateurs.socle.lire_socle", side_effect=espion):
+        client.get("/donnees/indicateurs", headers=CLE)
+
+    assert vu["tickers"] is None
+
+
+def test_les_decimal_sortent_en_json_natif(client, indicateurs_simules):
+    """Un `Decimal` n'est pas sérialisable en JSON. La conversion doit avoir lieu
+    avant la réponse, pas dans un encodeur de dernière minute."""
+    d = client.get("/donnees/indicateurs", headers=CLE).json()
+    lvmh = d["indicateurs"][0]
+    assert isinstance(lvmh["cours"], float)
+    assert isinstance(lvmh["ma20"], float)
+    assert lvmh["date_cours"] == "2026-08-18"

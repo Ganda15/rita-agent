@@ -161,3 +161,47 @@ footer {
   body { padding: 1rem; }
   table { display: block; overflow-x: auto; }
 }
+
+/* --- Navigation entre les deux écrans ------------------------------------ */
+nav {
+  margin-top: .9rem;
+  display: flex;
+  gap: 1rem;
+  font-size: .95rem;
+}
+nav a { color: var(--accent); }
+/* La page courante n'est pas un lien : cliquer sur l'endroit où l'on est déjà
+   n'a aucun sens, et `aria-current` l'annonce aux lecteurs d'écran. */
+nav [aria-current="page"] { font-weight: 600; color: var(--texte-doux); }
+
+/* --- Écran 2 : indicateurs ------------------------------------------------ */
+.barre-outils {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.filtre { display: flex; align-items: center; gap: .45rem; }
+.filtre label { font-weight: 400; }
+
+/* Douze colonnes ne tiennent pas sur un écran étroit. On fait défiler le TABLEAU,
+   jamais la page entière. Les attributs `tabindex="0"` et `role="region"` sont posés
+   sur le div DANS LE HTML — sans eux, le défilement serait réservé à la souris. */
+.tableau-large {
+  overflow-x: auto;
+  margin-top: .5rem;
+}
+/* La zone est focalisable : son focus doit donc se voir. Un `outline: none` ici
+   rendrait la navigation au clavier invisible. */
+.tableau-large:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.tableau-large table { min-width: 60rem; }
+
+/* Une cotation périmée est signalée par le TEXTE de la cellule « Nom ».
+   Ce fond n'est qu'un renfort : à lui seul, il ne porterait aucune information
+   pour une personne qui ne perçoit pas les couleurs (RGAA 3.1). */
+tbody tr.perimee { background: #fdf6e3; }
+tbody tr.perimee:hover { background: #f8edd0; }
