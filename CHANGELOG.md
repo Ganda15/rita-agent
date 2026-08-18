@@ -94,6 +94,26 @@ Les deux trous repérés le 14/08 en relisant JOURNAL-005 sont comblés dans
 - **Rien n'est codé, et rien ne doit l'être avant l'ouverture d'E4** : au 15/08 il reste
   12 semaines et C6 est le seul chantier qui ne se rattrape pas.
 
+## 2026-08-18 — Le livrable s'ouvre par son tag, pas par la branche par défaut
+
+- 🔴 **Manque découvert** : `main` est la branche par défaut — c'est elle que GitHub montre à
+  qui ouvre le dépôt — et elle **avance**. Au 18/08 elle comptait **29 commits de plus** que
+  le tag `livrable-E1-v1`. Un formateur ouvrant `github.com/Ganda15/rita-agent` **ne voyait
+  pas E1** : il voyait le projet du jour, et aurait jugé E1 sur du travail postérieur.
+- **Corrigé** dans `README.md` : avertissement en tête du tableau des livrables, et le tag
+  devient un **lien cliquable** au lieu d'un texte. Les lignes E2/E3/E4 remises à jour —
+  **E4 annonçait « non commencé »** alors qu'il a deux écrans et les schémas C14/C15.
+- **Ajouté** dans `docs/FILE-DE-VALIDATION.md` : la règle d'envoi, trois commandes de
+  vérification (le tag existe · le destinataire est **collaborateur** et pas seulement
+  invité · zéro lien cassé), et un **gabarit de message qui explique le tag**.
+  *Un lien qu'on ne comprend pas est un lien qu'on remplace par celui qu'on connaît.*
+- 🐛 **Faux positif de `scripts/verifier_liens.py`**, corrigé. Le dépôt est **privé** : une
+  requête HTTP anonyme reçoit **404** sur un lien valide. Le script signalait donc comme cassé
+  **le lien du tag — celui-là même qu'on envoie au formateur.** Il retente désormais via `gh`,
+  authentifié. Vérifié : le vrai tag passe, un tag inexistant est toujours détecté.
+  *Un vérificateur qui crie au loup sur des liens corrects finit ignoré — et c'est alors le
+  vrai lien cassé qui passe.*
+
 ## 2026-08-18 — Le journal et les guides d'étude remis à leur place
 
 - **Manque découvert** : le journal s'arrêtait à `JOURNAL-007` (15-16 août). **Les séances du
