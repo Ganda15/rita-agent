@@ -41,6 +41,7 @@ from fastapi import APIRouter, HTTPException, Query
 # Renommer la route aurait été l'autre solution ; l'alias est plus sûr, car le nom
 # de la fonction de route apparaît ailleurs (tests, OpenAPI).
 from indicateurs import portefeuille as indicateurs_portefeuille_module
+from indicateurs import risque as indicateurs_risque_module
 from indicateurs import socle
 from sources import database
 
@@ -199,6 +200,43 @@ def indicateurs_portefeuille() -> dict:
         "lignes": [l.en_dict() for l in lignes],
         "exposition": [e.en_dict() for e in indicateurs_portefeuille_module.lire_exposition()],
     }
+
+
+@routeur.get("/indicateurs-risque", summary="Volatilité, drawdown et RSI (lot 3)")
+def indicateurs_risque(
+    ticker: list[str] | None = Query(
+        None, description="Restreindre à certaines valeurs. Répétable : "
+                          "?ticker=MC.PA&ticker=OR.PA. Absent = tout l'univers."),
+) -> dict:
+    """La volatilité annualisée (20 séances), le drawdown maximal (1 an) et le
+    RSI 14 de chaque valeur.
+
+    **Des faits, jamais des conseils.** « RSI = 71 » est un indicateur. « RSI > 70
+    → vendre » serait une recommandation — l'exemple même que le référentiel donne
+    de ce que l'interdit AMF proscrit. Aucun seuil n'est renvoyé, aucune couleur.
+
+    **Deux méthodes de calcul, documentées parce qu'elles ne sont pas les seules
+    possibles** : la volatilité utilise un rendement **logarithmique** (pas un
+    rendement simple) ; le RSI utilise le lissage **récursif de Wilder** (pas une
+    moyenne mobile simple). Les deux variantes circulent tout autant et donnent des
+    chiffres différents — voir `db/indicateurs_risque.sql` et `indicateurs/risque.py`.
+
+    Un champ à `null` signifie que l'historique est trop court pour ce calcul —
+    jamais un zéro. `cotation_perimee` signale une dernière séance ancienne
+    (> 40 jours) : la volatilité et le drawdown restent affichés (une mesure
+    passée reste valide), mais `rsi_14` devient `null` — un RSI « actuel »
+    calculé sur des données de 2018 ne dirait rien d'utile sur aujourd'hui.
+    """
+    volat = {v.ticker: v for v in indicateurs_risque_module.lire_volatilite_drawdown(ticker)}
+    rsi = {r.ticker: r.rsi_14 for r in indicateurs_risque_module.lire_rsi(ticker)}
+
+    lignes = []
+    for t, v in volat.items():
+        d = v.en_dict()
+        d["rsi_14"] = rsi.get(t)
+        lignes.append(d)
+
+    return {"nb": len(lignes), "indicateurs": lignes}
 
 
 @routeur.get("/articles", summary="Actualités collectées par flux RSS")

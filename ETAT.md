@@ -152,21 +152,37 @@ Somme des poids : **exactement 100,00 %**. Plus forte ligne : **34,83 % (VIRI.PA
 - ⚠️ **Les 7 positions sont toutes en euros** : le chemin multi-devises n'est **jamais exercé
   en production**, seuls les tests le couvrent.
 
+✅ **Lot 3 des indicateurs — risque, fait le 19/08.** `db/indicateurs_risque.sql` (volatilité,
+drawdown) + `indicateurs/risque.py` (RSI 14, Wilder) + **19 tests**. **Les 13 indicateurs de
+la spécification sont désormais codés, exposés et affichés.** `GET /donnees/indicateurs-risque`
+(**9ᵉ** point de terminaison), 3 colonnes sur l'écran 2. Preuve :
+`evidence/C14/preuve-indicateurs-lot3.md`.
+- 🐛 **Bug SQL trouvé et corrigé** : la première version rendait la volatilité **`NULL` pour
+  les 111 valeurs** — les fonctions fenêtre étaient placées après un filtre qui réduisait
+  chaque ticker à une seule ligne. Vérifié contre l'exemple exact de la spec
+  (100→150→90→120 ⇒ drawdown **−40,00 %**, obtenu exactement).
+- 🆕 **Même angle mort que le lot 1, retrouvé** : les 3 valeurs radiées affichaient volatilité
+  et drawdown sur des données de 2018 sans signal — `cotation_perimee` ajouté. Le RSI, lui,
+  reste absent pour ces valeurs (décision documentée, pas un oubli).
+- `quant_metrics.py` relu une **deuxième fois**, toujours non réutilisé — 3 formules
+  différentes de la spec (rendement simple, `cummax` incluant le jour courant, moyenne mobile
+  simple au lieu de Wilder).
+- 🐛 **Deux échecs de test successifs, même piège** : bannir « acheter » puis « il faut
+  acheter » a échoué les deux fois — les deux étaient des sous-chaînes de la phrase qui
+  **explique** l'interdit. Corrigé en cherchant des formes impératives.
+
 **Prochaines actions, dans l'ordre :**
 
-1. **Lot 3 des indicateurs — risque** (3 indicateurs). **3 restants sur 13**
-   (`docs/indicateurs/CONCEPTION.md` §7).
-2. ✅ **Couverture mesurée le 19/08** (`230136d`) — **81 %**, seuil **80 %** verrouillé en CI.
-   🔴 **Deux manques révélés** : `db/importer.py` **0 %** (85 instructions, exigé
-   **fonctionnel** par C4) et `evals/mesurer_sortie.py` **0 %** (l'outil qui produit le
-   chiffre de 70 % du garde-fou). Les couvrir porterait le total à **91 %** — le seuil
-   montera alors à 90 %.
-3. ✅ **C13 volet LIVRAISON — fait le 19/08** (`7570bc9`). Reste : le **déploiement** lui-même
+1. 🔴 **`db/importer.py` à 0 % de couverture** (85 instructions), exigé **fonctionnel** par C4.
+2. 🟠 `evals/mesurer_sortie.py` à 0 % — l'outil qui produit le chiffre de 70 % du garde-fou.
+3. ✅ **Couverture mesurée le 19/08** (`230136d`) — **83 %** après lot 3, seuil **80 %** verrouillé
+   en CI. Couvrir les deux manques ci-dessus rapprocherait encore le total du seuil suivant.
+4. ✅ **C13 volet LIVRAISON — fait le 19/08** (`7570bc9`). Reste : le **déploiement** lui-même
    (aucun hébergeur choisi) et le test des données.
-4. 🟡 Importer les données dans la base de pré-production :
+5. 🟡 Importer les données dans la base de pré-production :
    `docker compose exec api python -m db.importer`.
 
-*Référence : `docs/indicateurs/CONCEPTION.md` (bandeau réécrit le 18/08).*
+*Référence : `docs/indicateurs/CONCEPTION.md` (bandeau réécrit le 19/08).*
 
 ⚠️ **Consigne périmée, corrigée le 18/08 — ne pas la réinscrire.** `ETAT.md` disait
 *« le moteur existe déjà (`quant_metrics.py` dans `Ganda15/daily-stock-analysis-era`), le
@@ -234,14 +250,14 @@ IA serait une preuve fabriquée).
 | **C7** | **rien** — aucun benchmark de services IA | tout |
 | **C8** | cascade 3 fournisseurs testée, clé en `.env` · **doc d'exploitation écrite le 19/08** (`docs/EXPLOITATION.md`) : accès, installation avec et sans Docker, dépendances, données, dépannage | 🔴 **monitorage du service** · la doc reste à **communiquer** aux parties prenantes (5ᵉ critère) |
 | **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection | revue OWASP · doc d'architecture · invitation en attente |
-| **C10** | 🔨 **18/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **7 points de terminaison** intégrés. **32 tests** front | tri/recherche · audit RGAA outillé · doc d'architecture |
+| **C10** | 🔨 **19/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **9 points de terminaison** intégrés. **46 tests** front | tri/recherche · audit RGAA outillé · doc d'architecture |
 | **C11** | **rien** | tout |
-| **C12** | **271 tests**, 15 cas d'éval, seuils non compensables en CI · **couverture 81 %** mesurée et seuil **80 %** verrouillé (19/08) · procédure documentée | 🔴 **`db/importer.py` à 0 %** (85 instructions) alors que C4 l'exige **fonctionnel** · `evals/mesurer_sortie.py` à 0 % · DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
+| **C12** | **302 tests** (1 xfailed volontaire), 15 cas d'éval, seuils non compensables en CI · **couverture 83 %** mesurée et seuil **80 %** verrouillé (19/08) · procédure documentée | 🔴 **`db/importer.py` à 0 %** (85 instructions) alors que C4 l'exige **fonctionnel** · `evals/mesurer_sortie.py` à 0 % · DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
 | **C13** | GitHub Actions (2 jobs, porte garde-fous) · **empaquetage Docker fait le 18/08** — image 595 Mo, non-root, lecture seule | 🔴 **livraison** : construire/publier l'image **par la CI** · déploiement · test des données |
 | **C14** | 🔨 **18/08** — wireframes des 4 états (`evidence/C14/`), spécification US-1 : contexte, 5 scénarios, 11 critères d'acceptation dont 6 avec numéro de règle RGAA. Modélisation des données déjà couverte par le MCD Merise de C4 | US de l'**écran 2** non spécifiées · aucun audit RGAA outillé · aucun test avec un vrai lecteur d'écran |
 | **C15** | ✅ **18/08 — les 5 critères couverts** : diagramme de flux 6 zones, spécifications techniques, **pré-production Docker Compose** (2 conteneurs `healthy` < 20 s) et **conclusion de la preuve de concept** | pré-production **locale**, aucun hébergeur choisi · base de préprod sans données · `requirements.txt` toujours non épinglé |
 | **C16** | **rien** — aucune méthode agile outillée | tout (kanban, backlog, rituels) |
-| **C17** | garde-fou de sortie écrit et mesuré (17/08) · **2 écrans** HTML/CSS/JS sans build · indicateurs lot 1 en SQL + module + API (18/08) | lots 2 et 3 des indicateurs · tri/recherche |
+| **C17** | garde-fou de sortie écrit et mesuré (17/08) · **2 écrans** HTML/CSS/JS sans build · **les 13 indicateurs codés** (SQL + Python + API + affichage), lots 1-2-3 complets (19/08) | tri/recherche · doc d'architecture |
 | **C18–C19** | recouvrent largement C13 | idem C13 |
 
 ## Les 5 manques ouverts, par urgence

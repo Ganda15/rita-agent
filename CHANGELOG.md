@@ -9,6 +9,42 @@
 
 ---
 
+## 2026-08-19 — Lot 3 des indicateurs : les 13 sont codés, exposés et affichés
+
+- **Livré** `db/indicateurs_risque.sql` (volatilité, drawdown) + `indicateurs/risque.py`
+  (RSI 14) + `GET /donnees/indicateurs-risque` (**9ᵉ** point de terminaison) + 3 colonnes sur
+  l'écran 2. **19 tests**, suite complète **302 passed, 1 xfailed** (couverture 83 %).
+  **Les 13 indicateurs de la spécification sont désormais codés du bout en bout.**
+- 🐛 **Manque découvert et corrigé** : la première version de la requête rendait la
+  volatilité **`NULL` pour les 111 valeurs**. Cause : les fonctions fenêtre étaient placées
+  dans le `SELECT` final, **après** la jointure sur la dernière séance — cette jointure réduit
+  chaque ticker à une seule ligne avant que la fenêtre ne soit évaluée. Corrigé en calculant
+  les fonctions fenêtre dans une CTE sur l'historique complet, filtrée seulement ensuite.
+  *Le même bug avait aussi produit 2 drawdowns positifs — impossible en théorie — sur la
+  première mesure.*
+  Vérifié sur l'exemple exact de la spécification : série 100→150→90→120 ⇒ drawdown
+  **−40,00 %**, obtenu au chiffre près.
+- **Décidé** : le RSI est calculé en **Python**, pas en SQL — le lissage de Wilder est
+  **récursif** (chaque moyenne dépend de la précédente), ce qu'une fonction fenêtre SQL ne
+  peut pas exprimer sans un CTE récursif jugé illisible par la spécification.
+- `quant_metrics.py` relu une **deuxième fois** (après le lot 1) et de nouveau **non
+  réutilisé** : rendement simple au lieu de logarithmique, maximum incluant le jour courant
+  au lieu de s'arrêter à la veille, moyenne mobile simple au lieu du lissage de Wilder — trois
+  défauts différents, un seul verdict.
+- 🆕 **Même angle mort que le lot 1, retrouvé au lieu d'être généralisé du premier coup** :
+  les 3 valeurs radiées affichaient une volatilité et un drawdown calculés sur des données de
+  **2018**, `fraicheur_jours` présent mais non exploité. `cotation_perimee` ajouté — la
+  mesure reste affichée (une volatilité passée reste valide), mais le **RSI disparaît** pour
+  ces valeurs : *un RSI daté de 2018 ne dirait rien d'utile sur aujourd'hui*.
+- 🐛 **Deux échecs de test successifs, le même piège en plus subtil à chaque fois** : un test
+  du garde-fou AMF bannissait le mot « acheter », trouvé dans la phrase qui **explique**
+  l'interdit (« RITA n'indique jamais qu'il faut acheter ou vendre ») ; la version suivante
+  bannissait « il faut acheter » — toujours une sous-chaîne de la même phrase de négation.
+  Corrigé en cherchant des formes **impératives** (« achetez »), absentes de toute négation à
+  l'infinitif en français correct.
+  *Une négation contient forcément les mots qu'elle nie — chercher un mot isolé ne suffit
+  jamais à distinguer une interdiction de ce qu'elle interdit.*
+
 ## 2026-08-19 — Le seuil de couverture tombait en CI : la mesure dépendait de la machine
 
 - 🐛 **La CI a échoué au premier passage** avec le nouveau seuil : **79 %** contre **82 %**

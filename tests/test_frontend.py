@@ -280,3 +280,76 @@ def test_aucun_seuil_de_concentration_n_est_affiche():
     for mot in ("excessive", "trop concentré", "alléger", "surpondér", "risqué"):
         assert mot not in html.lower(), f"conseil dans la page : {mot}"
         assert mot not in code.lower(), f"conseil dans le code : {mot}"
+
+
+# --- Écran 2 : le lot 3 (volatilité, drawdown, RSI) ----------------------------
+
+def test_les_3_colonnes_du_lot_3_existent():
+    html = (FRONTEND / "indicateurs.html").read_text(encoding="utf-8")
+    for colonne in ("Volatilité (1 an)", "Pire baisse (1 an)", "RSI 14"):
+        assert f'<th scope="col">{colonne}</th>' in html
+
+
+def test_les_deux_points_de_terminaison_du_lot_3_sont_appeles_en_parallele():
+    code = code_sans_commentaires("indicateurs.js")
+    assert "Promise.all" in code
+    assert "/donnees/indicateurs-risque" in code
+
+
+def test_le_lot_3_est_apparie_par_ticker():
+    """Même défaut potentiel que sur l'écran portefeuille : les deux points de
+    terminaison n'ont aucune raison de renvoyer leurs lignes dans le même
+    ordre — vérifié dans le navigateur le 19/08 avec un ordre volontairement
+    inversé."""
+    code = code_sans_commentaires("indicateurs.js")
+    assert "risqueParTicker" in code
+    assert "new Map(" in code
+
+
+def test_une_panne_du_lot_3_ne_fait_pas_tomber_le_lot_1():
+    code = code_sans_commentaires("indicateurs.js")
+    assert "reponseRisque.ok" in code
+    assert "? await reponseRisque.json()" in code
+
+
+def test_la_volatilite_s_affiche_sans_signe():
+    """Une volatilité est une amplitude, toujours ≥ 0 — jamais « +22,14 % »,
+    qui suggérerait une variation."""
+    code = code_sans_commentaires("indicateurs.js")
+    assert "formatPourcentSansSigne" in code
+
+
+def test_le_rsi_n_est_pas_affiche_pour_une_valeur_perimee():
+    """La règle est écrite dans la page, pas seulement dans le code : un
+    utilisateur ne lit pas le JavaScript."""
+    html = (FRONTEND / "indicateurs.html").read_text(encoding="utf-8")
+    assert "RSI" in html and "n'est pas affiché" in html
+
+
+def test_aucun_conseil_sur_le_rsi_dans_la_page_ou_le_code():
+    """Garde-fou AMF : « RSI > 70 → vendre » est l'exemple même que la
+    spécification donne d'un conseil interdit.
+
+    ⚠️ **Deux versions précédentes cassées par le même piège**, chacune plus
+    subtile que la précédente :
+    - la 1ʳᵉ bannissait le mot « acheter » à l'état brut — trouvé dans la
+      phrase qui EXPLIQUE l'interdit ;
+    - la 2ᵉ bannissait « il faut acheter » — encore trouvé, en SOUS-CHAÎNE de
+      « …qu'il faut acheter ou vendre », toujours la même phrase de négation.
+
+    Une négation à l'infinitif contient forcément les mots qu'elle nie. Ce
+    test cherche des formes IMPÉRATIVES (« achetez », « vendez »), qui
+    n'apparaissent dans aucune tournure de négation en français correct —
+    contrairement à l'infinitif, qui s'y niche naturellement."""
+    html = (FRONTEND / "indicateurs.html").read_text(encoding="utf-8").lower()
+    code = code_sans_commentaires("indicateurs.js").lower()
+    formes_imperatives = (
+        "achetez", "vendez", "achète maintenant", "vends maintenant",
+        "signal d'achat", "signal de vente", "survendu", "suracheté",
+    )
+    for forme in formes_imperatives:
+        assert forme not in html, f"conseil dans la page : {forme}"
+        assert forme not in code, f"conseil dans le code : {forme}"
+
+    # Contrôle inverse : le disclaimer qui NIE le conseil doit, lui, être présent.
+    assert "n'indique jamais" in html

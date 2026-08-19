@@ -75,6 +75,9 @@
               <th scope="col">MA50</th>
               <th scope="col">Échangé/jour</th>
               <th scope="col">Écart au plus haut</th>
+              <th scope="col">Volatilité (1 an)</th>
+              <th scope="col">Pire baisse (1 an)</th>
+              <th scope="col">RSI 14</th>
             </tr>
           </thead>
           <tbody id="lignes"></tbody>
@@ -102,10 +105,23 @@
               Approximation : RITA n'a pas le détail intraséance.</dd>
           <dt>Écart au plus haut</dt>
           <dd>Distance au plus haut atteint sur un an, en séance. Toujours négatif ou nul.</dd>
+          <dt>Volatilité (1 an)</dt>
+          <dd>Amplitude des variations quotidiennes des 20 dernières séances, annualisée.
+              Un nombre, jamais un jugement : une volatilité élevée n'est ni bonne ni
+              mauvaise en soi.</dd>
+          <dt>Pire baisse (1 an)</dt>
+          <dd>La plus forte chute entre un sommet et le creux qui a suivi, sur les 252
+              dernières séances. Toujours négatif ou nul.</dd>
+          <dt>RSI 14</dt>
+          <dd>Rapport entre hausses et baisses des 14 dernières séances, sur 100. Un
+              <strong>fait mesuré</strong> — RITA n'indique jamais qu'un niveau de RSI
+              signifierait qu'il faut acheter ou vendre.</dd>
           <dt>Cotation périmée</dt>
           <dd>La valeur n'a plus coté depuis longtemps — elle est probablement
               <strong>radiée</strong>. Ses chiffres sont affichés tels quels, mais ils
-              décrivent le passé. Trois valeurs de l'univers sont dans ce cas.</dd>
+              décrivent le passé. Trois valeurs de l'univers sont dans ce cas.
+              <strong>Le RSI, lui, n'est pas affiché</strong> pour ces valeurs : un RSI
+              calculé sur des cours de 2018 ne dirait rien d'utile sur aujourd'hui.</dd>
           <dt>Tiret</dt>
           <dd>Le calcul n'est pas possible faute d'historique. Ce n'est pas un zéro.</dd>
         </dl>

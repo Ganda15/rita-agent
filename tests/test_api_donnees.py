@@ -4,7 +4,7 @@ Le critère central de C5 est **« l'API restreint par une autorisation l'accès
 données »**. C'est donc la première chose testée, et sur *chaque* point de terminaison :
 un contrôle d'accès qui protège 5 routes sur 6 ne protège rien.
 """
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
 from unittest.mock import patch
 
@@ -27,6 +27,7 @@ ROUTES_PROTEGEES = [
     "/donnees/articles",
     "/donnees/indicateurs",
     "/donnees/indicateurs-portefeuille",
+    "/donnees/indicateurs-risque",
 ]
 
 
@@ -134,7 +135,8 @@ def test_openapi_est_genere_et_complet(client):
     for route in ("/donnees/valeurs", "/donnees/portefeuille", "/donnees/cotations",
                   "/donnees/mouvements", "/donnees/volumes-anormaux",
                   "/donnees/articles", "/donnees/indicateurs",
-                  "/donnees/indicateurs-portefeuille", "/briefing", "/health"):
+                  "/donnees/indicateurs-portefeuille", "/donnees/indicateurs-risque",
+                  "/briefing", "/health"):
         assert route in o["paths"], f"{route} absent du contrat OpenAPI"
 
 
@@ -330,3 +332,60 @@ def test_aucun_seuil_ni_classement_de_risque_n_est_renvoye(client, portefeuille_
     for ligne in d["lignes"]:
         assert not (interdits & set(ligne)), f"champ de conseil dans la réponse : {ligne}"
     assert not (interdits & set(d))
+
+
+# --- /donnees/indicateurs-risque (lot 3) --------------------------------------
+
+@pytest.fixture
+def risque_simule():
+    """Deux valeurs : une fraîche, une radiée depuis 2018."""
+    volat = [
+        {"ticker": "MC.PA", "nom_officiel": "LVMH", "statut_qualite": "OK",
+         "date_cours": date(2026, 8, 18), "cours": Decimal("449.65"),
+         "fraicheur_jours": 1, "volatilite_annualisee_pct": Decimal("22.14"),
+         "drawdown_max_1a_pct": Decimal("-18.30")},
+        {"ticker": "ZC.PA", "nom_officiel": "ZODIAC AEROSPACE", "statut_qualite": "OK",
+         "date_cours": date(2018, 3, 22), "cours": Decimal("24.83"),
+         "fraicheur_jours": 3072, "volatilite_annualisee_pct": Decimal("16.70"),
+         "drawdown_max_1a_pct": Decimal("-24.78")},
+    ]
+    # rsi_wilder exige plus de 14 variations : 20 points de cours, en hausse.
+    rsi = [{"ticker": "MC.PA", "date_seance": date(2026, 7, 20) + timedelta(days=i),
+            "cloture": Decimal(str(440 + i))} for i in range(20)]
+
+    def espion(sql, parametres=None):
+        # lire_volatilite_drawdown appelle sans parametres ; lire_rsi passe {"tickers": ...}.
+        return volat if parametres is None else rsi
+
+    with patch("indicateurs.socle._executer", side_effect=espion):
+        yield
+
+
+def test_indicateurs_risque_combine_volatilite_drawdown_et_rsi(client, risque_simule):
+    r = client.get("/donnees/indicateurs-risque", headers=CLE)
+    assert r.status_code == 200
+    d = r.json()
+    assert d["nb"] == 2
+    mc = next(x for x in d["indicateurs"] if x["ticker"] == "MC.PA")
+    assert mc["volatilite_annualisee_pct"] == 22.14
+    assert mc["rsi_14"] == 100.0  # 20 séances strictement haussières
+
+
+def test_indicateurs_risque_valeur_radiee_a_rsi_null(client, risque_simule):
+    """⚠️ Le test de la découverte du 19/08 : une valeur radiée doit ressortir
+    signalée (`cotation_perimee`) et sans RSI (`rsi_14 = null`), pas avec un
+    RSI daté de 2018 présenté comme actuel."""
+    d = client.get("/donnees/indicateurs-risque", headers=CLE).json()
+    zc = next(x for x in d["indicateurs"] if x["ticker"] == "ZC.PA")
+    assert zc["cotation_perimee"] is True
+    assert zc["rsi_14"] is None
+    assert zc["volatilite_annualisee_pct"] == 16.70   # la mesure reste affichée
+
+
+def test_indicateurs_risque_aucun_conseil_dans_la_reponse(client, risque_simule):
+    """Garde-fou AMF, même exigence que pour le lot 2 : aucun seuil, aucune
+    recommandation dans un point de terminaison qui expose un RSI."""
+    d = client.get("/donnees/indicateurs-risque", headers=CLE).json()
+    interdits = {"alerte", "risque_niveau", "recommandation", "conseil", "seuil", "action", "signal"}
+    for ligne in d["indicateurs"]:
+        assert not (interdits & set(ligne)), f"champ de conseil : {ligne}"
