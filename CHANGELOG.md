@@ -9,6 +9,34 @@
 
 ---
 
+## 2026-08-19 — C12 : la couverture mesurée, et deux trous qu'elle révèle
+
+- **Livré** la mesure de couverture : `.coveragerc`, seuil en CI, procédure documentée.
+  C12 exige *« la couverture souhaitée **établie** »* et une documentation du *« calcul de la
+  couverture »*. **271 tests existaient sans qu'aucun chiffre ne dise ce qu'ils couvrent.**
+- ⚠️ **Le premier chiffre était trompeur** : **78 %** en mesure brute — elle incluait les
+  **fichiers de tests eux-mêmes**, couverts à 100 % par construction puisqu'ils s'exécutent.
+  *Se noter sur sa propre copie.* Sans eux : **67 %**.
+- **Décidé** — trois exclusions, chacune motivée : `tests/`, les `__init__` vides, et les trois
+  scripts `bigdata/` lancés à la main une fois. L'argument pour ces derniers **ne vient pas de
+  là** : `.dockerignore` les écarte déjà de l'image livrée faute de `pyspark` — ils **ne
+  peuvent pas** tourner dans le système livré.
+- **Décidé** : `db/importer.py` **n'est pas exclu**, bien qu'il soit aussi lancé à la main. Un
+  critère de C4 exige qu'il soit **fonctionnel**. *Son 0 % est un vrai manque, déclaré — pas
+  quelque chose qu'on fait disparaître par une ligne de configuration.*
+- **Mesure finale : 82 %** (1 000 instructions, 183 non couvertes). **Seuil fixé à 80 %**,
+  deux points sous la mesure. *Ce n'est pas le « 80 % qu'on voit partout » : un seuil recopié
+  d'un article de blog est aussi arbitraire que 50 %.*
+- 🔴 **Deux manques révélés par la mesure — et c'était le but de l'exercice** :
+  `db/importer.py` (**85 instructions, 0 %**) — il fonctionne, on le lance, mais **rien ne le
+  vérifie automatiquement : le jour où quelqu'un le casse, la suite reste verte** ·
+  `evals/mesurer_sortie.py` (**10 instructions, 0 %**) — c'est **l'outil qui produit le chiffre
+  de 70 %** du garde-fou de sortie. *La mesure n'est pas mesurée.*
+  Les couvrir porterait le total à **91 %** ; le seuil montera alors à 90 %.
+- **Décidé** : le seuil vit dans `.coveragerc`, **pas dans le workflow** — écrit en CI il serait
+  invisible depuis la machine de développement, et la régression se découvrirait après avoir
+  poussé.
+
 ## 2026-08-19 — Doc d'exploitation (C8)
 
 - **Livré** `docs/EXPLOITATION.md` — le 4ᵉ critère de C8 : *« la documentation couvre la
