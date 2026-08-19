@@ -214,15 +214,17 @@ la spécification sont désormais codés, exposés et affichés.** `GET /donnees
   `docker-compose.yml` fixe **postgres:17-alpine**. Contourné ici (transfert *données
   seules*, le schéma existant déjà côté serveur), mais c'est un « ça marche chez moi » en
   puissance — à aligner.
-- ⚠️ **Le pare-feu Hetzner n'est pas configuré** : aucun n'est attaché, donc tous les ports
-  sont ouverts. À restreindre (22 + 8001) avant de communiquer l'adresse.
+- ✅ **Pare-feu actif le 19/08** — `ufw` **sur le serveur**, pas celui de Hetzner : la console
+  web faisait tourner en rond, et le terminal donne le même résultat, vérifiable.
+  `Default: deny (incoming)`, seuls **22/tcp** et **8001/tcp** autorisés (IPv4 + IPv6).
+  **Vérifié depuis l'extérieur** : 8001 → 200 · 22 → ouvert · **5432 → fermé** ·
+  **80 → fermé**. *PostgreSQL n'était de toute façon jamais publié — double protection.*
 - Le déploiement n'utilise **que** le jeu de démonstration : aucune donnée personnelle
   d'Era n'est sur cette machine (`--exclude-table-data=position` à l'export).
 
 **Prochaines actions, dans l'ordre :**
 
-1. 🔴 **Pare-feu Hetzner** — n'autoriser que 22 (SSH) et 8001 (API). 5 minutes.
-2. ✅ **C13 volet LIVRAISON — fait le 19/08** (`7570bc9`). Reste : le **test des données**
+1. ✅ **C13 volet LIVRAISON — fait le 19/08** (`7570bc9`). Reste : le **test des données**
    côté critères.
    📅 **Historique de la décision d'hébergement (19/08)** :
    - Un serveur Hetzner **CPX32 dormait depuis 4 mois** (`ubuntu-8gb-nbg1-1`, Nuremberg,
@@ -312,7 +314,7 @@ IA serait une preuve fabriquée).
 | **C10** | 🔨 **19/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **9 points de terminaison** intégrés. **46 tests** front | tri/recherche · audit RGAA outillé · doc d'architecture |
 | **C11** | **rien** | tout |
 | **C12** | **319 tests** (2 xfailed volontaires — entrée et sortie), 15 cas d'éval, seuils non compensables en CI · **couverture 92 %**, seuil **90 %** verrouillé en CI (19/08, `db/importer.py` et `evals/mesurer_sortie.py` fermés 0→100 %) · procédure documentée | DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
-| **C13** | GitHub Actions (2 jobs, porte garde-fous) · **empaquetage Docker 18/08** — image 595 Mo, non-root, lecture seule · **volet LIVRAISON 19/08** (`7570bc9`) : publie sur GHCR uniquement sur tag `livrable-*`, démarre l'image et vérifie `/health` + 403 · ✅ **DÉPLOYÉ 19/08** sur Hetzner CX23 (`178.104.184.125:8001`), vérifié depuis l'extérieur, 275 118 cotations chargées | 🔴 **pare-feu non configuré** (tous ports ouverts) · 🔴 `db/importer.py` **ne tourne pas dans l'image** (pyarrow exclu) · écart PostgreSQL 18 local / 17 conteneur |
+| **C13** | GitHub Actions (2 jobs, porte garde-fous) · **empaquetage Docker 18/08** — image 595 Mo, non-root, lecture seule · **volet LIVRAISON 19/08** (`7570bc9`) : publie sur GHCR uniquement sur tag `livrable-*`, démarre l'image et vérifie `/health` + 403 · ✅ **DÉPLOYÉ 19/08** sur Hetzner CX23 (`178.104.184.125:8001`), vérifié depuis l'extérieur, 275 118 cotations chargées, **pare-feu `ufw` actif** (22 + 8001 seuls, 5432 et 80 fermés — vérifié de l'extérieur) | 🔴 `db/importer.py` **ne tourne pas dans l'image** (pyarrow exclu) · écart PostgreSQL 18 local / 17 conteneur · pas de HTTPS ni de nom de domaine |
 | **C14** | 🔨 **18/08** — wireframes des 4 états (`evidence/C14/`), spécification US-1 : contexte, 5 scénarios, 11 critères d'acceptation dont 6 avec numéro de règle RGAA. Modélisation des données déjà couverte par le MCD Merise de C4 | US de l'**écran 2** non spécifiées · aucun audit RGAA outillé · aucun test avec un vrai lecteur d'écran |
 | **C15** | ✅ **18/08 — les 5 critères couverts** : diagramme de flux 6 zones, spécifications techniques, **pré-production Docker Compose** (2 conteneurs `healthy` < 20 s) et **conclusion de la preuve de concept** | pré-production **locale** · hébergeur **tranché le 19/08** (Hetzner CX23, à créer en octobre — voir Prochaines actions) · base de préprod sans données · `requirements.txt` toujours non épinglé |
 | **C16** | **rien** — aucune méthode agile outillée | tout (kanban, backlog, rituels) |

@@ -40,8 +40,13 @@
 - 💡 **Précision gagnée au passage** : si le chemin multi-devises n'est jamais exercé, ce
   n'est pas faute de lignes étrangères — l'exemple **contient** AAPL et MSFT en USD, mais
   elles sont **rejetées à l'import**, absentes de l'univers de 111 valeurs françaises.
-- 🔴 **Reste à faire** : le **pare-feu Hetzner n'est pas configuré** — aucun n'est attaché,
-  donc tous les ports sont ouverts. À restreindre à 22 + 8001.
+- 🔒 **Pare-feu posé dans la foulée** — `ufw` **sur le serveur** plutôt que celui de Hetzner :
+  la console web tournait en rond, le terminal donne le même résultat et se vérifie.
+  `Default: deny (incoming)`, seuls **22/tcp** et **8001/tcp** ouverts (IPv4 + IPv6).
+  **Vérifié depuis l'extérieur** : 8001 → **200** · 22 → ouvert · **5432 → fermé** ·
+  **80 → fermé**.
+- 🔴 **Restent ouverts** : pas de **HTTPS** ni de nom de domaine (l'API répond en clair sur
+  une IP) · `db/importer.py` toujours inutilisable dans l'image · écart PostgreSQL 18/17.
 
 ## 2026-08-19 — Second manque fermé : seuil de couverture relevé à 90 %
 
