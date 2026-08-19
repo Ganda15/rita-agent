@@ -221,3 +221,62 @@ def test_les_deux_ecrans_se_relient(client):
     for page, cible in [("index.html", "indicateurs.html"), ("indicateurs.html", "index.html")]:
         html = (FRONTEND / page).read_text(encoding="utf-8")
         assert f'href="{cible}"' in html, f"{page} ne renvoie pas vers {cible}"
+
+
+# --- Écran 1 : le lot 2 des indicateurs (poids et exposition) ------------------
+
+def test_la_colonne_poids_existe_dans_l_ecran_portefeuille():
+    html = (FRONTEND / "index.html").read_text(encoding="utf-8")
+    assert "<th scope=\"col\">Poids</th>" in html
+
+
+def test_les_deux_points_de_terminaison_sont_appeles_en_parallele():
+    """`Promise.all` et non deux `await` enchaînés : l'attente doit être celle du
+    plus lent, pas la somme des deux. Enchaîner doublerait le temps perçu pour rien."""
+    code = code_sans_commentaires("app.js")
+    assert "Promise.all" in code
+    assert "/donnees/indicateurs-portefeuille" in code
+
+
+def test_le_poids_est_apparie_par_ticker_et_non_par_position():
+    """⚠️ Vérifié dans le navigateur le 19/08 : les deux points de terminaison
+    renvoient leurs lignes dans des ordres DIFFÉRENTS. Se fier à l'ordre serait un
+    défaut invisible tant que les deux ordres coïncident par hasard."""
+    code = code_sans_commentaires("app.js")
+    assert "new Map(" in code
+    assert "poidsParTicker.get(p.ticker)" in code
+
+
+def test_une_panne_des_indicateurs_ne_fait_pas_tomber_le_portefeuille():
+    """Les poids sont un COMPLÉMENT. Perdre la répartition ne doit pas priver
+    l'utilisateur de ses positions et de leur valorisation — une dépendance
+    secondaire qui fait tomber l'écran principal est une erreur de conception."""
+    code = code_sans_commentaires("app.js")
+    assert "reponseIndicateurs.ok" in code
+    assert "? await reponseIndicateurs.json()" in code
+
+
+def test_le_poids_s_affiche_sans_signe():
+    """Un poids est toujours positif. « +34,83 % » suggérerait une variation,
+    alors que c'est une part. Le format sans signe est donc distinct de celui
+    des performances."""
+    code = code_sans_commentaires("app.js")
+    assert "pourcentSansSigne" in code
+
+
+def test_la_distinction_cotation_vs_economique_est_affichee():
+    """Sans cette mention, le chiffre d'exposition se lit de travers. Elle doit
+    être dans la PAGE, pas seulement dans le code — un utilisateur ne lit pas le
+    JavaScript."""
+    html = (FRONTEND / "index.html").read_text(encoding="utf-8")
+    assert "cotation" in html and "économique" in html
+
+
+def test_aucun_seuil_de_concentration_n_est_affiche():
+    """⚠️ Garde-fou AMF. Un poids de 34,83 % est un fait. « Concentration
+    excessive », « à alléger » ou un code couleur d'alerte seraient des conseils."""
+    html = (FRONTEND / "index.html").read_text(encoding="utf-8")
+    code = code_sans_commentaires("app.js")
+    for mot in ("excessive", "trop concentré", "alléger", "surpondér", "risqué"):
+        assert mot not in html.lower(), f"conseil dans la page : {mot}"
+        assert mot not in code.lower(), f"conseil dans le code : {mot}"

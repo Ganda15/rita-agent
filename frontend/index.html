@@ -54,10 +54,25 @@
             <th scope="col">Investi (€)</th>
             <th scope="col">Valorisation (€)</th>
             <th scope="col">Performance</th>
+            <th scope="col">Poids</th>
           </tr>
         </thead>
         <tbody id="lignes"></tbody>
       </table>
+
+      <!-- Exposition par devise — lot 2 des indicateurs.
+           Une liste de définitions (`dl`) et non un tableau : il s'agit de paires
+           devise → part, pas d'un croisement de lignes et de colonnes. Un tableau
+           à deux colonnes serait lu comme tel par un lecteur d'écran, avec des
+           en-têtes qui n'apportent rien. -->
+      <section id="bloc-exposition" hidden>
+        <h2>Exposition par devise</h2>
+        <p class="precision">
+          Devise de <strong>cotation</strong> — pas l'exposition économique. Une valeur
+          cotée en euros peut réaliser l'essentiel de son chiffre d'affaires ailleurs.
+        </p>
+        <dl id="exposition"></dl>
+      </section>
 
       <details>
         <summary>Comment lire ce tableau&nbsp;?</summary>
@@ -72,6 +87,14 @@
           <dd>Écart entre le cours actuel et le PRU, en pourcentage.
               Le signe est toujours affiché : l'information n'est jamais portée
               par la seule couleur.</dd>
+          <dt>Poids</dt>
+          <dd>Part de la ligne dans le total du portefeuille, après conversion en euros.
+              La somme des poids fait 100&nbsp;%. C'est un <strong>fait</strong> : RITA
+              n'indique aucun seuil et ne dit jamais qu'une ligne serait trop lourde.</dd>
+          <dt>Exposition par devise</dt>
+          <dd>Répartition du portefeuille selon la monnaie dans laquelle chaque titre est
+              <strong>coté</strong>. Ce n'est pas l'exposition économique&nbsp;: une société
+              cotée en euros peut vendre surtout en dollars.</dd>
           <dt>Donnée douteuse</dt>
           <dd>La valeur est marquée <code>INCOHERENT</code> en base : son historique a
               échoué aux contrôles de qualité. Le chiffre est affiché, mais signalé.</dd>

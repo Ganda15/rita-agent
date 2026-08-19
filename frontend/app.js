@@ -10,6 +10,13 @@
 // =============================================================================
 
 const ENDPOINT = "/donnees/portefeuille";
+// Lot 2 des indicateurs : poids par ligne et exposition par devise.
+//
+// Deux points de terminaison plutôt qu'un seul élargi : chacun garde une
+// responsabilité. `/portefeuille` valorise, `/indicateurs-portefeuille` répartit.
+// Les deux appels partent EN PARALLÈLE (`Promise.all`) — le temps d'attente est
+// celui du plus lent, pas la somme des deux.
+const ENDPOINT_INDICATEURS = "/donnees/indicateurs-portefeuille";
 const CLE_STOCKAGE = "rita_api_key";
 
 // --- Formatage : une seule source de vérité pour les nombres -----------------
@@ -20,6 +27,11 @@ const euro = new Intl.NumberFormat("fr-FR", {
 });
 const pourcent = new Intl.NumberFormat("fr-FR", {
   minimumFractionDigits: 2, maximumFractionDigits: 2, signDisplay: "always",
+});
+// Un poids n'a pas de signe : il est toujours positif. Afficher « +34,83 % »
+// suggérerait une variation, alors que c'est une part.
+const pourcentSansSigne = new Intl.NumberFormat("fr-FR", {
+  minimumFractionDigits: 2, maximumFractionDigits: 2,
 });
 const nombre = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 4 });
 
@@ -51,9 +63,16 @@ async function chargerPortefeuille(cle) {
   elConnexion.hidden = true;
   afficherStatut("Chargement du portefeuille…");
 
-  let reponse;
+  const entetes = { headers: { "X-API-Key": cle } };
+
+  let reponse, reponseIndicateurs;
   try {
-    reponse = await fetch(ENDPOINT, { headers: { "X-API-Key": cle } });
+    // Les deux appels partent ensemble : l'attente est celle du plus lent, pas
+    // la somme des deux. Les enchaîner doublerait le temps perçu pour rien.
+    [reponse, reponseIndicateurs] = await Promise.all([
+      fetch(ENDPOINT, entetes),
+      fetch(ENDPOINT_INDICATEURS, entetes),
+    ]);
   } catch (erreurReseau) {
     // Le serveur n'a pas répondu DU TOUT : il n'y a aucun statut HTTP à lire.
     // C'est un cas différent d'une réponse en erreur — d'où le try/catch.
@@ -74,16 +93,32 @@ async function chargerPortefeuille(cle) {
   }
 
   const donnees = await reponse.json();
+
+  // ⚠️ Le portefeuille reste affiché même si les indicateurs échouent.
+  // Les poids sont un COMPLÉMENT : perdre la répartition ne doit pas priver
+  // l'utilisateur de ses positions et de leur valorisation. Une dépendance
+  // secondaire qui fait tomber l'écran principal est une erreur de conception.
+  const indicateurs = reponseIndicateurs.ok
+    ? await reponseIndicateurs.json()
+    : null;
+
   // On ne mémorise la clé qu'APRÈS l'avoir vue fonctionner.
   sessionStorage.setItem(CLE_STOCKAGE, cle);
-  afficher(donnees);
+  afficher(donnees, indicateurs);
 }
 
 // --- LE RENDU ----------------------------------------------------------------
-function afficher(donnees) {
+function afficher(donnees, indicateurs) {
   document.getElementById("total").textContent = euro.format(nb(donnees.total_eur));
   document.getElementById("nb-lignes").textContent =
     ` · ${donnees.nb} ligne${donnees.nb > 1 ? "s" : ""}`;
+
+  // Le poids est indexé par ticker : les deux points de terminaison n'ont aucune
+  // raison de renvoyer leurs lignes dans le même ordre, et se fier à l'ordre
+  // serait un défaut invisible tant que l'ordre coïncide par hasard.
+  const poidsParTicker = new Map(
+    (indicateurs?.lignes ?? []).map((l) => [l.ticker, nb(l.poids_pct)]),
+  );
 
   const corps = document.getElementById("lignes");
   corps.replaceChildren();   // vide le tableau sans passer par innerHTML
@@ -107,8 +142,17 @@ function afficher(donnees) {
     ajouterCellule(tr, euro.format(nb(p.valorisation_eur)));
     ajouterCellule(tr, textePerf);
 
+    // Un tiret si le poids manque — jamais « 0,00 % », qui se lirait comme une
+    // ligne de valeur nulle. Absent et nul ne sont pas la même chose.
+    const poids = poidsParTicker.get(p.ticker);
+    ajouterCellule(tr, poids === undefined || poids === null
+      ? "—"
+      : `${pourcentSansSigne.format(poids)} %`);
+
     corps.appendChild(tr);
   }
+
+  afficherExposition(indicateurs?.exposition);
 
   const date = donnees.positions[0]?.date_cours;
   if (date) {
@@ -118,6 +162,39 @@ function afficher(donnees) {
 
   afficherStatut("");
   elResultat.hidden = false;
+}
+
+// --- Exposition par devise (lot 2) -------------------------------------------
+function afficherExposition(expositions) {
+  const bloc = document.getElementById("bloc-exposition");
+
+  // Si les indicateurs n'ont pas répondu, on masque le bloc plutôt que d'afficher
+  // une section vide : une rubrique sans contenu se lit comme une panne.
+  if (!expositions || expositions.length === 0) {
+    bloc.hidden = true;
+    return;
+  }
+
+  const liste = document.getElementById("exposition");
+  liste.replaceChildren();
+
+  for (const e of expositions) {
+    const dt = document.createElement("dt");
+    dt.textContent = e.devise;
+
+    const dd = document.createElement("dd");
+    const part = nb(e.exposition_pct);
+    // Le nombre de lignes est donné en toutes lettres : « 7 lignes » se comprend
+    // sans en-tête de colonne, contrairement à un « 7 » isolé.
+    dd.textContent =
+      `${part === null ? "—" : pourcentSansSigne.format(part)} %`
+      + ` — ${e.nb_lignes} ligne${e.nb_lignes > 1 ? "s" : ""},`
+      + ` ${euro.format(nb(e.valorisation_eur))}`;
+
+    liste.append(dt, dd);
+  }
+
+  bloc.hidden = false;
 }
 
 function ajouterCellule(tr, texte, balise = "td") {

@@ -205,3 +205,19 @@ nav [aria-current="page"] { font-weight: 600; color: var(--texte-doux); }
    pour une personne qui ne perçoit pas les couleurs (RGAA 3.1). */
 tbody tr.perimee { background: #fdf6e3; }
 tbody tr.perimee:hover { background: #f8edd0; }
+
+/* --- Exposition par devise (lot 2) --------------------------------------- */
+#bloc-exposition { margin-top: 1.75rem; }
+#bloc-exposition h2 { font-size: 1.1rem; margin: 0 0 .3rem; }
+/* La précision « cotation, pas exposition économique » n'est pas un détail
+   décoratif : sans elle le chiffre se lit de travers. Elle reste donc lisible,
+   pas réduite à une note de bas de page grisée. */
+.precision {
+  margin: 0 0 .75rem;
+  font-size: .9rem;
+  color: var(--texte-doux);
+  max-width: 55ch;
+}
+#exposition { display: grid; grid-template-columns: auto 1fr; gap: .35rem 1rem; margin: 0; }
+#exposition dt { font-weight: 600; margin: 0; }
+#exposition dd { margin: 0; color: var(--texte-doux); }
