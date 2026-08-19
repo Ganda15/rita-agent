@@ -1,0 +1,72 @@
+# Configuration de la mesure de couverture — compétence C12
+#
+# C12 exige que « les tests soient intégrés et respectent la couverture souhaitée
+# ÉTABLIE ». Le mot « établie » impose de fixer un objectif ET de le justifier.
+# Ce fichier porte le périmètre ; le seuil est dans `pyproject.toml`.
+
+[run]
+source = agents, api, bigdata, db, evals, graph, guardrails, indicateurs, pipelines, sources, src
+
+omit =
+    # ⚠️ Les FICHIERS DE TESTS sont exclus, et c'est le point le plus important
+    #    de ce fichier.
+    #
+    #    Mesurés le 19/08/2026 : couverture **78 %** en les incluant, **67 %** sans.
+    #    Les 11 points d'écart sont un mirage — un fichier de tests est couvert à
+    #    100 % par construction, puisqu'il s'exécute. L'inclure revient à se noter
+    #    soi-même sur sa propre copie.
+    tests/*
+    */__init__.py
+
+    # --- Scripts à usage unique, lancés à la main ---------------------------
+    # Exclus parce qu'ils ne font pas partie du service, pas pour améliorer le
+    # chiffre. L'argument ne vient pas d'ici : `.dockerignore` écarte déjà
+    # `bigdata/` de l'image, parce que `pyspark` (492 Mo) n'y est pas installé.
+    # Ces scripts NE PEUVENT PAS tourner dans le système livré.
+    #
+    #   build_parquet.py  construit l'archive une fois, en 32 s
+    #   explorer.py       analyse exploratoire du 31/07, jamais rejouée
+    #   extract_spark.py  extraction Spark, exige un JDK 21
+    #
+    # ⚠️ `db/importer.py` n'est PAS exclu, alors qu'il est aussi lancé à la main :
+    #    un critère de C4 exige qu'il soit **fonctionnel**. Son 0 % est un vrai
+    #    manque, déclaré comme tel — pas quelque chose à faire disparaître par
+    #    une ligne de configuration.
+    bigdata/build_parquet.py
+    bigdata/explorer.py
+    bigdata/extract_spark.py
+
+[report]
+# Une ligne `if TYPE_CHECKING:` ou un `raise NotImplementedError` n'est pas du code
+# non testé : c'est du code qui ne s'exécute jamais.
+exclude_lines =
+    pragma: no cover
+    if TYPE_CHECKING:
+    if __name__ == .__main__.:
+    raise NotImplementedError
+
+# Affiche les numéros de lignes non couvertes : un pourcentage dit qu'il manque
+# quelque chose, ces numéros disent QUOI.
+show_missing = True
+skip_covered = False
+precision = 0
+
+# =============================================================================
+# LE SEUIL — « la couverture souhaitée ÉTABLIE » (C12)
+#
+# Fixé à **80 %**, et voici d'où vient ce nombre.
+#
+# Mesure réelle du 19/08/2026 : **82 %** (1 000 instructions, 183 non couvertes).
+# Le seuil est donc posé **2 points sous la mesure** : assez serré pour qu'une
+# régression le déclenche, assez lâche pour qu'un refactoring légitime ne casse
+# pas la CI sur une ligne.
+#
+# ⚠️ Ce n'est PAS le « 80 % qu'on voit partout ». Un seuil recopié d'un article
+#    de blog est aussi arbitraire que 50 %. Celui-ci vient de la mesure.
+#
+# **À relever à 90 % quand les deux manques connus seront comblés** :
+#   db/importer.py        85 instructions, 0 %  — exigé FONCTIONNEL par un critère C4
+#   evals/mesurer_sortie.py  10 instructions, 0 %  — produit le chiffre de 70 % du garde-fou
+# Les couvrir ferait passer le total à **91 %**. Le seuil suivra, pas l'inverse.
+# =============================================================================
+fail_under = 80

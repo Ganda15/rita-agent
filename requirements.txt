@@ -5,6 +5,7 @@ anthropic
 yfinance
 psycopg2-binary
 pytest
+pytest-cov      # mesure de couverture (C12) - seuil dans .coveragerc
 httpx
 pandas
 pyarrow

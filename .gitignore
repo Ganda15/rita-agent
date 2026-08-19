@@ -29,3 +29,12 @@ data/positions-reelles*.csv
 
 # Configuration locale de l outil de developpement (non livrable)
 .claude/
+
+# --- Artefacts de mesure de couverture (C12) ----------------------------------
+# Regenerables par `pytest --cov` : les versionner ferait grossir le depot d'un
+# rapport HTML complet a chaque execution, pour une information qui se recalcule
+# en 20 secondes.
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
