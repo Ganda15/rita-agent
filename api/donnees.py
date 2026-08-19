@@ -32,6 +32,15 @@ from datetime import date
 
 from fastapi import APIRouter, HTTPException, Query
 
+# ⚠️ Alias obligatoire, pas cosmétique. Ce fichier définit plus bas une FONCTION
+# `portefeuille()` — la route `/donnees/portefeuille`. Un `from indicateurs import
+# portefeuille` serait donc écrasé par cette définition au chargement du module, et
+# l'appel échouerait à l'exécution avec « 'function' object has no attribute
+# 'lire_poids' ». Constaté le 19/08/2026.
+#
+# Renommer la route aurait été l'autre solution ; l'alias est plus sûr, car le nom
+# de la fonction de route apparaît ailleurs (tests, OpenAPI).
+from indicateurs import portefeuille as indicateurs_portefeuille_module
 from indicateurs import socle
 from sources import database
 
@@ -157,6 +166,38 @@ def indicateurs(
         "seuil_perime_jours": socle.SEUIL_PERIME_JOURS,
         "nb_perimees": sum(i.cotation_perimee for i in lignes),
         "indicateurs": [i.en_dict() for i in lignes],
+    }
+
+
+@routeur.get("/indicateurs-portefeuille",
+             summary="Poids de chaque ligne et exposition par devise (lot 2)")
+def indicateurs_portefeuille() -> dict:
+    """Le poids de chaque ligne détenue dans le total, et l'exposition par devise.
+
+    ⚠️ **Données personnelles (RGPD)** — ces chiffres décrivent la répartition du
+    patrimoine de l'utilisateur. Traitement **T1** du registre ; l'accès est restreint
+    par la clé d'API au niveau du routeur, comme `/donnees/portefeuille`.
+
+    **Des faits, pas des conseils.** Un poids de 34,83 % est un fait. « Vous êtes trop
+    concentré » serait une recommandation, que l'interdit AMF proscrit : aucun seuil
+    d'alerte n'est renvoyé, aucun classement « à surveiller ».
+
+    ⚠️ **`exposition` mesure la devise de COTATION, pas l'exposition économique.**
+    LVMH est cotée en euros mais réalise une part importante de son chiffre d'affaires
+    en dollars. Un portefeuille « 100 % EUR » ici peut être fortement exposé au dollar
+    dans les faits — la distinction est dans la documentation parce que, sans elle, le
+    chiffre se lit de travers.
+
+    Le `total_eur` est renvoyé avec les lignes plutôt que laissé à l'appelant :
+    additionner soi-même les valorisations reviendrait à refaire un calcul déjà fait,
+    et deux calculs de la même chose finissent par diverger.
+    """
+    lignes, total = indicateurs_portefeuille_module.lire_poids()
+    return {
+        "nb": len(lignes),
+        "total_eur": total,
+        "lignes": [l.en_dict() for l in lignes],
+        "exposition": [e.en_dict() for e in indicateurs_portefeuille_module.lire_exposition()],
     }
 
 

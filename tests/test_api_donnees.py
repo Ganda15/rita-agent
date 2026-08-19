@@ -26,6 +26,7 @@ ROUTES_PROTEGEES = [
     "/donnees/volumes-anormaux",
     "/donnees/articles",
     "/donnees/indicateurs",
+    "/donnees/indicateurs-portefeuille",
 ]
 
 
@@ -132,7 +133,8 @@ def test_openapi_est_genere_et_complet(client):
     assert o["openapi"].startswith("3.")
     for route in ("/donnees/valeurs", "/donnees/portefeuille", "/donnees/cotations",
                   "/donnees/mouvements", "/donnees/volumes-anormaux",
-                  "/donnees/articles", "/donnees/indicateurs", "/briefing", "/health"):
+                  "/donnees/articles", "/donnees/indicateurs",
+                  "/donnees/indicateurs-portefeuille", "/briefing", "/health"):
         assert route in o["paths"], f"{route} absent du contrat OpenAPI"
 
 
@@ -257,3 +259,74 @@ def test_les_decimal_sortent_en_json_natif(client, indicateurs_simules):
     assert isinstance(lvmh["cours"], float)
     assert isinstance(lvmh["ma20"], float)
     assert lvmh["date_cours"] == "2026-08-18"
+
+
+# --- /donnees/indicateurs-portefeuille (lot 2) --------------------------------
+
+@pytest.fixture
+def portefeuille_simule():
+    """Deux lignes, deux devises — le cas que les données réelles n'exercent pas :
+    les 7 positions d'Era sont toutes en euros."""
+    poids = [
+        {"ticker": "MC.PA", "nom_officiel": "LVMH", "devise": "EUR",
+         "quantite": Decimal("12"), "valorisation_eur": Decimal("3000.00"),
+         "poids_pct": Decimal("75.00"), "total_eur": Decimal("4000.00")},
+        {"ticker": "AAPL", "nom_officiel": "APPLE", "devise": "USD",
+         "quantite": Decimal("5"), "valorisation_eur": Decimal("1000.00"),
+         "poids_pct": Decimal("25.00"), "total_eur": Decimal("4000.00")},
+    ]
+    exposition = [
+        {"devise": "EUR", "nb_lignes": 1, "valorisation_eur": Decimal("3000.00"),
+         "exposition_pct": Decimal("75.00")},
+        {"devise": "USD", "nb_lignes": 1, "valorisation_eur": Decimal("1000.00"),
+         "exposition_pct": Decimal("25.00")},
+    ]
+    appels = {"n": 0}
+
+    def faux(sql, parametres=None):
+        # La route appelle les deux requêtes : poids d'abord, exposition ensuite.
+        appels["n"] += 1
+        return poids if appels["n"] == 1 else exposition
+
+    with patch("indicateurs.socle._executer", side_effect=faux):
+        yield
+
+
+def test_le_poids_et_l_exposition_sortent_ensemble(client, portefeuille_simule):
+    """Un seul appel rend les deux : l'écran en a besoin en même temps, et deux
+    allers-retours pour une même vue seraient du gaspillage."""
+    r = client.get("/donnees/indicateurs-portefeuille", headers=CLE)
+    assert r.status_code == 200
+    d = r.json()
+    assert d["nb"] == 2
+    assert d["total_eur"] == 4000.00
+    assert [l["ticker"] for l in d["lignes"]] == ["MC.PA", "AAPL"]
+    assert {e["devise"]: e["exposition_pct"] for e in d["exposition"]} == {"EUR": 75.0, "USD": 25.0}
+
+
+def test_la_somme_des_poids_fait_cent(client, portefeuille_simule):
+    """Le contrôle que la spécification demande explicitement (§6.1)."""
+    d = client.get("/donnees/indicateurs-portefeuille", headers=CLE).json()
+    assert sum(l["poids_pct"] for l in d["lignes"]) == pytest.approx(100.0, abs=0.05)
+
+
+def test_le_total_est_renvoye_et_non_laisse_a_l_appelant(client, portefeuille_simule):
+    """Additionner soi-même les valorisations reviendrait à refaire un calcul déjà
+    fait par la vue — et deux calculs de la même chose finissent par diverger."""
+    d = client.get("/donnees/indicateurs-portefeuille", headers=CLE).json()
+    assert d["total_eur"] == 4000.00
+    assert d["total_eur"] != d["lignes"][0]["valorisation_eur"]
+
+
+def test_aucun_seuil_ni_classement_de_risque_n_est_renvoye(client, portefeuille_simule):
+    """⚠️ Garde-fou AMF, verrouillé par un test.
+
+    Un poids de 75 % est un **fait**. « Concentration excessive », « à alléger » ou
+    un drapeau `alerte` seraient des **conseils** — ce que l'interdit AMF proscrit.
+    Ce test échouera si un champ de ce genre apparaît un jour dans la réponse.
+    """
+    d = client.get("/donnees/indicateurs-portefeuille", headers=CLE).json()
+    interdits = {"alerte", "risque", "recommandation", "conseil", "seuil", "action"}
+    for ligne in d["lignes"]:
+        assert not (interdits & set(ligne)), f"champ de conseil dans la réponse : {ligne}"
+    assert not (interdits & set(d))
