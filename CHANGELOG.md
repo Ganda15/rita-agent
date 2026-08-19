@@ -9,6 +9,25 @@
 
 ---
 
+## 2026-08-19 — `db/importer.py` couvert : 0 % → 100 %, sans toucher une vraie base
+
+- **Livré** `tests/test_importer.py` — **13 tests**, curseur simulé (`MagicMock`),
+  `execute_values` remplacé par un double inspecté (même remède que
+  `pipelines/ingest.py` : la vraie fonction encode via `cur.connection`, absent d'un
+  curseur simulé). **Aucun test ne touche PostgreSQL.**
+- **Manque fermé** : C4 exige ce script **fonctionnel**, mais il était à 0 % de
+  couverture depuis le début du projet — un défaut pouvait y dormir indéfiniment sans
+  que la suite ne le signale.
+- **Verrouillé** : le dédoublonnage `(ticker, date_seance)`, le filtrage des tickers
+  hors univers (contrainte de clé étrangère), la résolution des alias de portefeuille —
+  dont le **cas CGG** (deux libellés, « CGG BS »/« CGG RGPT », une seule valeur
+  `VIRI.PA`, deux alias) — et le fait qu'un portefeuille vide ou sans correspondance
+  n'insère jamais rien.
+- **Conséquence mesurée** : couverture totale **83 % → 91 %** en fermant ce seul
+  manque — au-dessus de la prévision à 91 % écrite la veille pour les **deux** manques
+  ensemble. Le seuil CI reste à **80 %** : le relever à 90 % attend la fermeture du
+  second manque (`evals/mesurer_sortie.py`, 0 %), pas un seul sur deux.
+
 ## 2026-08-19 — Lot 3 des indicateurs : les 13 sont codés, exposés et affichés
 
 - **Livré** `db/indicateurs_risque.sql` (volatilité, drawdown) + `indicateurs/risque.py`
