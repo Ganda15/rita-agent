@@ -41,8 +41,8 @@ Le formateur est en congé → on ne l'attend pas : **produire → geler → met
 ## 🧭 Prochaine action
 
 🚩 **Le point de contrôle du 23/08 est atteint dès le 16/08.** L'application démarre et
-affiche le portefeuille réel depuis l'API. La semaine S34 est donc **libre pour aller plus
-loin que prévu**.
+affiche **le portefeuille de démonstration** depuis l'API (jeu anonymisé — voir la précision
+du 19/08 plus bas). La semaine S34 est donc **libre pour aller plus loin que prévu**.
 
 ✅ **Note S34 terminée le 17/08** — résumé rédigé et validé par Era, 7/7 accessibilité,
 31 liens externes vérifiés, 0 cassé. Commit `237c2b7`.
@@ -145,12 +145,23 @@ suite** — on sera prévenu.
 `db/indicateurs_portefeuille.sql` + `indicateurs/portefeuille.py` + `GET
 /donnees/indicateurs-portefeuille` (**8ᵉ** point de terminaison) + **affichage sur l'écran 1**.
 Somme des poids : **exactement 100,00 %**. Plus forte ligne : **34,83 % (VIRI.PA)**.
+- 🔴 **Précision établie le 19/08, à ne plus jamais présenter autrement** : ces chiffres
+  (33 214,80 €, 7 lignes, 34,83 %) viennent de **`data/positions-exemple.csv`**, le jeu de
+  **démonstration anonymisé** — **pas** du portefeuille réel d'Era. Vérifié : `POSITIONS_CSV`
+  n'a jamais été défini dans le `.env`, donc `sources/positions.py` a **toujours** pris
+  l'exemple par défaut, et la base locale contient ces 7 lignes à l'identique.
+  *Devant un jury, dire « voici mon portefeuille » serait inexact. Un jeu de démonstration
+  assumé est parfaitement légitime ; le faire passer pour des données réelles ne l'est pas.*
 - 🐛 **4 défauts trouvés en écrivant** : `from module import fonction` faisait recevoir à
   4 tests les **vraies** données au lieu du jeu simulé · une **fonction** `portefeuille()`
   écrasait l'import du module · un test cherchait `taux_change` dans un **commentaire**
   (**4ᵉ fois** ce piège) · le vérificateur de liens criait au loup sur le dépôt privé.
 - ⚠️ **Les 7 positions sont toutes en euros** : le chemin multi-devises n'est **jamais exercé
-  en production**, seuls les tests le couvrent.
+  en production**, seuls les tests le couvrent. **Raison exacte, établie le 19/08** : le
+  fichier d'exemple *contient bien* deux lignes en USD (AAPL, MSFT) — mais elles sont
+  **rejetées à l'import**, car absentes de l'univers de 111 valeurs françaises (contrainte de
+  clé étrangère). Ce n'est donc pas « il n'y a pas de devises étrangères », c'est « elles
+  n'arrivent jamais jusqu'en base ».
 
 ✅ **Lot 3 des indicateurs — risque, fait le 19/08.** `db/indicateurs_risque.sql` (volatilité,
 drawdown) + `indicateurs/risque.py` (RSI 14, Wilder) + **19 tests**. **Les 13 indicateurs de
@@ -184,28 +195,51 @@ la spécification sont désormais codés, exposés et affichés.** `GET /donnees
   90 %** (`.coveragerc`) — seulement maintenant que les deux manques sont réellement fermés
   et le nouveau chiffre confirmé, pas anticipé. Suite complète : **319 passed, 2 xfailed**.
 
+🚀 **DÉPLOYÉ EN LIGNE LE 19/08 — le manque C13 « déploiement » est comblé.**
+- **`http://178.104.184.125:8001/`** — Hetzner Cloud CX23, Falkenstein, Ubuntu 26.04,
+  7,19 €/mo TTC. Docker + Compose, mêmes conteneurs qu'en local.
+- **Vérifié depuis l'extérieur** (pas depuis le serveur) : `/health` → **200** en 0,07 s ·
+  `/donnees/valeurs` sans clé → **403**. *Le garde-fou OWASP API2 a survécu au déploiement.*
+- **Données chargées et vérifiées en base** : 111 valeurs · 275 118 cotations · 112 alias ·
+  30 articles · 5 taux · 7 positions (jeu de démonstration). `ANALYZE` exécuté.
+- 🐛 **Défaut de conception trouvé en déployant** : `db/importer.py` **ne peut pas tourner
+  dans l'image livrée** — `requirements-api.txt` exclut volontairement `pyarrow` (« le
+  Parquet ne sert qu'à l'archive et à l'import initial »), mais l'importateur en a besoin.
+  Le commentaire dit *« import initial »* sans jamais dire **comment** le faire une fois
+  déployé. Contourné par un transfert `pg_dump --data-only` depuis le poste local, mais
+  **le trou de conception reste ouvert** : soit ajouter `pyarrow`, soit assumer une image
+  d'outillage séparée. *(Même fichier que le 0 % de couverture d'aujourd'hui : deux angles
+  morts sur `db/importer.py`.)*
+- ⚠️ **Écart d'environnement à traiter** : poste local en **PostgreSQL 18.4**,
+  `docker-compose.yml` fixe **postgres:17-alpine**. Contourné ici (transfert *données
+  seules*, le schéma existant déjà côté serveur), mais c'est un « ça marche chez moi » en
+  puissance — à aligner.
+- ⚠️ **Le pare-feu Hetzner n'est pas configuré** : aucun n'est attaché, donc tous les ports
+  sont ouverts. À restreindre (22 + 8001) avant de communiquer l'adresse.
+- Le déploiement n'utilise **que** le jeu de démonstration : aucune donnée personnelle
+  d'Era n'est sur cette machine (`--exclude-table-data=position` à l'export).
+
 **Prochaines actions, dans l'ordre :**
 
-1. ✅ **C13 volet LIVRAISON — fait le 19/08** (`7570bc9`). Reste : le **déploiement** lui-même
-   et le test des données.
-   📅 **Hébergeur tranché le 19/08 — Hetzner Cloud, mais PAS avant octobre.**
+1. 🔴 **Pare-feu Hetzner** — n'autoriser que 22 (SSH) et 8001 (API). 5 minutes.
+2. ✅ **C13 volet LIVRAISON — fait le 19/08** (`7570bc9`). Reste : le **test des données**
+   côté critères.
+   📅 **Historique de la décision d'hébergement (19/08)** :
    - Un serveur Hetzner **CPX32 dormait depuis 4 mois** (`ubuntu-8gb-nbg1-1`, Nuremberg,
-     **17,39 €/mois pour rien** — jamais utilisé, rien dessus). **Supprimé le 19/08**, ainsi
-     que ses IP primaires. Volumes, Floating IPs, Snapshots : vérifiés vides.
-   - **À recréer début/mi-octobre** (cohérent avec S42 du `docs/PLAN-12-SEMAINES.md`) :
-     **CX23** — 2 vCPU, 4 Go, 40 Go — **6,59 €/mo + 0,60 € d'IPv4 = 7,19 €/mo TTC** (prix
-     relevé dans la console, pas estimé). Suffisant : image 595 Mo, base 40 Mo.
-   - **Pourquoi pas maintenant** : rien à déployer d'urgent, et surtout **ne pas payer
-     ~3 mois à vide**. Pourquoi pas du gratuit non plus : la base PostgreSQL gratuite de
-     Render **expire 30 jours après sa création**, et le crédit Railway (5 $) s'épuise —
-     les deux tomberaient **avant** le rendu du 05/11. Un serveur payé ne s'éteint pas tout
-     seul la veille du jury.
-   - ⚠️ **Ne pas confondre les deux Docker** : la pile qui tourne (`rita-api-preprod`,
-     `rita-postgres-preprod`, `healthy`) est **celle du PC d'Era**, pas un déploiement
-     distant. **Rien n'a jamais été déployé sur Hetzner.** Confusion faite le 19/08 en
-     lisant un `docker ps -a` sans regarder l'invite (`PS C:\Users\kanda>` = machine locale).
-2. 🟡 Importer les données dans la base de pré-production :
-   `docker compose exec api python -m db.importer`.
+     **17,39 €/mois pour rien** — jamais utilisé, rien dessus). **Supprimé**, ainsi que ses
+     IP primaires. Volumes, Floating IPs, Snapshots : vérifiés vides. **−17,39 €/mois.**
+   - **Pourquoi pas du gratuit** : la base PostgreSQL gratuite de Render **expire 30 jours
+     après sa création**, et le crédit Railway (5 $) s'épuise — les deux tomberaient
+     **avant** le rendu du 05/11. Un serveur payé ne s'éteint pas seul la veille du jury.
+   - Le déploiement était d'abord planifié pour octobre (S42), puis **fait le jour même** :
+     un CX23 neuf à 7,19 €/mo remplace le CPX32 à 17,39 €. **Moins cher qu'avant, et en
+     ligne.**
+   - ⚠️ **Piège de lecture, à ne pas refaire** : un `docker ps -a` montrant
+     `rita-api-preprod` *healthy* peut être **celui du PC**, pas du serveur. Toujours
+     regarder l'invite : `PS C:\Users\kanda>` = machine locale · `root@…:~#` = serveur.
+     Erreur commise le 19/08, qui a fait croire à tort à un déploiement déjà existant.
+2. 🟡 Aligner `docker-compose.yml` sur PostgreSQL 18 (ou l'inverse) — voir l'écart
+   d'environnement signalé ci-dessus.
 
 *Référence : `docs/indicateurs/CONCEPTION.md` (bandeau réécrit le 19/08).*
 
@@ -278,7 +312,7 @@ IA serait une preuve fabriquée).
 | **C10** | 🔨 **19/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **9 points de terminaison** intégrés. **46 tests** front | tri/recherche · audit RGAA outillé · doc d'architecture |
 | **C11** | **rien** | tout |
 | **C12** | **319 tests** (2 xfailed volontaires — entrée et sortie), 15 cas d'éval, seuils non compensables en CI · **couverture 92 %**, seuil **90 %** verrouillé en CI (19/08, `db/importer.py` et `evals/mesurer_sortie.py` fermés 0→100 %) · procédure documentée | DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
-| **C13** | GitHub Actions (2 jobs, porte garde-fous) · **empaquetage Docker fait le 18/08** — image 595 Mo, non-root, lecture seule · **volet LIVRAISON fait le 19/08** (`7570bc9`) : `livraison.yml` construit sur `main`/`develop`, publie sur GHCR uniquement sur un tag `livrable-*`, démarre l'image et vérifie `/health` + le 403 avant de conclure | 🔴 **déploiement** : aucun hébergeur choisi · **test des données** en pré-production |
+| **C13** | GitHub Actions (2 jobs, porte garde-fous) · **empaquetage Docker 18/08** — image 595 Mo, non-root, lecture seule · **volet LIVRAISON 19/08** (`7570bc9`) : publie sur GHCR uniquement sur tag `livrable-*`, démarre l'image et vérifie `/health` + 403 · ✅ **DÉPLOYÉ 19/08** sur Hetzner CX23 (`178.104.184.125:8001`), vérifié depuis l'extérieur, 275 118 cotations chargées | 🔴 **pare-feu non configuré** (tous ports ouverts) · 🔴 `db/importer.py` **ne tourne pas dans l'image** (pyarrow exclu) · écart PostgreSQL 18 local / 17 conteneur |
 | **C14** | 🔨 **18/08** — wireframes des 4 états (`evidence/C14/`), spécification US-1 : contexte, 5 scénarios, 11 critères d'acceptation dont 6 avec numéro de règle RGAA. Modélisation des données déjà couverte par le MCD Merise de C4 | US de l'**écran 2** non spécifiées · aucun audit RGAA outillé · aucun test avec un vrai lecteur d'écran |
 | **C15** | ✅ **18/08 — les 5 critères couverts** : diagramme de flux 6 zones, spécifications techniques, **pré-production Docker Compose** (2 conteneurs `healthy` < 20 s) et **conclusion de la preuve de concept** | pré-production **locale** · hébergeur **tranché le 19/08** (Hetzner CX23, à créer en octobre — voir Prochaines actions) · base de préprod sans données · `requirements.txt` toujours non épinglé |
 | **C16** | **rien** — aucune méthode agile outillée | tout (kanban, backlog, rituels) |

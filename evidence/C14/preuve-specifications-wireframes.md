@@ -63,9 +63,16 @@ Les trois pannes traitées dans `app.js` sont **distinctes**, et leur message l'
 
 ### Contexte
 
-Era détient 7 lignes, potentiellement libellées en plusieurs devises. Les cours sont en base
-(273 608 cotations), les taux de change également (5 devises). Sans écran, ces données ne
-sont lisibles qu'en SQL.
+Le portefeuille compte 7 lignes, potentiellement libellées en plusieurs devises. Les cours
+sont en base (273 608 cotations), les taux de change également (5 devises). Sans écran, ces
+données ne sont lisibles qu'en SQL.
+
+> ⚠️ **Précision établie le 19/08/2026** : les 7 lignes utilisées en développement, en
+> démonstration et en déploiement proviennent de **`data/positions-exemple.csv`**, un jeu
+> **anonymisé de démonstration** — pas du portefeuille réel de l'auteur. La variable
+> `POSITIONS_CSV` n'a jamais été définie, donc `sources/positions.py` a toujours pris cet
+> exemple par défaut. *Un jeu de démonstration assumé est légitime ; le présenter comme des
+> données réelles ne le serait pas.*
 
 **Le besoin** : voir, en une page, ce que vaut le portefeuille aujourd'hui, converti en
 euros, avec l'écart par rapport au prix d'achat.

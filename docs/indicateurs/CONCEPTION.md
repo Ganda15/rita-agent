@@ -112,7 +112,8 @@ C'est le seul critère qui commande l'ordre des lots ci-dessous.
 
 **Pourquoi le portefeuille passe avant le risque.** Les 19 lignes proposées décrivaient
 toutes des *instruments* — ce que fait déjà n'importe quel site de cotations. Ce qui rend
-RITA défendable, c'est qu'elle connaît **les 7 positions et leur PRU**. À la question
+RITA défendable, c'est qu'elle connaît **les 7 positions et leur PRU** (jeu de démonstration
+anonymisé — voir la précision du 19/08 dans `ETAT.md`). À la question
 « qu'est-ce qui est spécifique à votre projet ? », un RSI ne répond rien ; une exposition
 par devise répond tout.
 

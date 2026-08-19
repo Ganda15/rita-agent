@@ -9,6 +9,40 @@
 
 ---
 
+## 2026-08-19 — RITA est en ligne : déploiement réel, et deux vérités rétablies
+
+- 🚀 **Déployée sur Hetzner Cloud** — CX23, Falkenstein, Ubuntu 26.04, **7,19 €/mo TTC**.
+  `http://178.104.184.125:8001/`. Docker + Compose, mêmes conteneurs qu'en local.
+  **Vérifié depuis l'extérieur, pas depuis le serveur** : `/health` → **200 en 0,07 s**,
+  `/donnees/valeurs` sans clé → **403**. *Le garde-fou OWASP API2 a survécu au déploiement.*
+  **111 valeurs · 275 118 cotations · 112 alias · 30 articles · 5 taux · 7 positions**
+  chargées et comptées en base, `ANALYZE` exécuté. **Le manque C13 « déploiement » est
+  comblé.**
+- 💰 **Un serveur payé pour rien depuis 4 mois** (`CPX32`, **17,39 €/mois**, jamais utilisé,
+  vide) supprimé le même jour. Le déploiement réel coûte donc **moins cher que l'inaction**.
+- 🐛 **Défaut de conception trouvé en déployant** : `db/importer.py` **ne peut pas tourner
+  dans l'image livrée**. `requirements-api.txt` exclut `pyarrow` avec un commentaire qui dit
+  *« le Parquet ne sert qu'à l'archive et à l'import initial »* — mais l'importateur en a
+  besoin, et rien ne dit **comment** faire cet import initial une fois déployé. Contourné par
+  `pg_dump --data-only` depuis le poste local ; **le trou reste ouvert**. *Même fichier que
+  le 0 % de couverture comblé ce matin : deux angles morts sur `db/importer.py` le même jour.*
+- ⚠️ **Écart d'environnement relevé** : poste local en **PostgreSQL 18.4**,
+  `docker-compose.yml` fixe **postgres:17-alpine**. Contourné (transfert *données seules*),
+  mais c'est un « ça marche chez moi » à aligner.
+- 🔴 **Vérité rétablie sur le portefeuille.** Les chiffres présentés depuis le début —
+  **33 214,80 €, 7 lignes, plus forte ligne 34,83 % (VIRI.PA)** — proviennent de
+  **`data/positions-exemple.csv`**, le jeu **anonymisé de démonstration**, **pas** du
+  portefeuille réel. Vérifié : `POSITIONS_CSV` n'a jamais été défini, donc
+  `sources/positions.py` a toujours pris l'exemple ; la base locale contient ces 7 lignes à
+  l'identique. `ETAT.md`, `evidence/C14/` et `docs/indicateurs/CONCEPTION.md` corrigés.
+  *Un jeu de démonstration assumé est légitime ; le faire passer pour des données réelles
+  ne l'est pas — surtout devant un jury.*
+- 💡 **Précision gagnée au passage** : si le chemin multi-devises n'est jamais exercé, ce
+  n'est pas faute de lignes étrangères — l'exemple **contient** AAPL et MSFT en USD, mais
+  elles sont **rejetées à l'import**, absentes de l'univers de 111 valeurs françaises.
+- 🔴 **Reste à faire** : le **pare-feu Hetzner n'est pas configuré** — aucun n'est attaché,
+  donc tous les ports sont ouverts. À restreindre à 22 + 8001.
+
 ## 2026-08-19 — Second manque fermé : seuil de couverture relevé à 90 %
 
 - **Livré** 5 tests dans `tests/test_evals.py` pour `evals/mesurer_sortie.py` — en miroir
