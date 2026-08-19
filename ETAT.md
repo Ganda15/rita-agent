@@ -187,7 +187,23 @@ la spécification sont désormais codés, exposés et affichés.** `GET /donnees
 **Prochaines actions, dans l'ordre :**
 
 1. ✅ **C13 volet LIVRAISON — fait le 19/08** (`7570bc9`). Reste : le **déploiement** lui-même
-   (aucun hébergeur choisi) et le test des données.
+   et le test des données.
+   📅 **Hébergeur tranché le 19/08 — Hetzner Cloud, mais PAS avant octobre.**
+   - Un serveur Hetzner **CPX32 dormait depuis 4 mois** (`ubuntu-8gb-nbg1-1`, Nuremberg,
+     **17,39 €/mois pour rien** — jamais utilisé, rien dessus). **Supprimé le 19/08**, ainsi
+     que ses IP primaires. Volumes, Floating IPs, Snapshots : vérifiés vides.
+   - **À recréer début/mi-octobre** (cohérent avec S42 du `docs/PLAN-12-SEMAINES.md`) :
+     **CX23** — 2 vCPU, 4 Go, 40 Go — **6,59 €/mo + 0,60 € d'IPv4 = 7,19 €/mo TTC** (prix
+     relevé dans la console, pas estimé). Suffisant : image 595 Mo, base 40 Mo.
+   - **Pourquoi pas maintenant** : rien à déployer d'urgent, et surtout **ne pas payer
+     ~3 mois à vide**. Pourquoi pas du gratuit non plus : la base PostgreSQL gratuite de
+     Render **expire 30 jours après sa création**, et le crédit Railway (5 $) s'épuise —
+     les deux tomberaient **avant** le rendu du 05/11. Un serveur payé ne s'éteint pas tout
+     seul la veille du jury.
+   - ⚠️ **Ne pas confondre les deux Docker** : la pile qui tourne (`rita-api-preprod`,
+     `rita-postgres-preprod`, `healthy`) est **celle du PC d'Era**, pas un déploiement
+     distant. **Rien n'a jamais été déployé sur Hetzner.** Confusion faite le 19/08 en
+     lisant un `docker ps -a` sans regarder l'invite (`PS C:\Users\kanda>` = machine locale).
 2. 🟡 Importer les données dans la base de pré-production :
    `docker compose exec api python -m db.importer`.
 
@@ -264,7 +280,7 @@ IA serait une preuve fabriquée).
 | **C12** | **319 tests** (2 xfailed volontaires — entrée et sortie), 15 cas d'éval, seuils non compensables en CI · **couverture 92 %**, seuil **90 %** verrouillé en CI (19/08, `db/importer.py` et `evals/mesurer_sortie.py` fermés 0→100 %) · procédure documentée | DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
 | **C13** | GitHub Actions (2 jobs, porte garde-fous) · **empaquetage Docker fait le 18/08** — image 595 Mo, non-root, lecture seule · **volet LIVRAISON fait le 19/08** (`7570bc9`) : `livraison.yml` construit sur `main`/`develop`, publie sur GHCR uniquement sur un tag `livrable-*`, démarre l'image et vérifie `/health` + le 403 avant de conclure | 🔴 **déploiement** : aucun hébergeur choisi · **test des données** en pré-production |
 | **C14** | 🔨 **18/08** — wireframes des 4 états (`evidence/C14/`), spécification US-1 : contexte, 5 scénarios, 11 critères d'acceptation dont 6 avec numéro de règle RGAA. Modélisation des données déjà couverte par le MCD Merise de C4 | US de l'**écran 2** non spécifiées · aucun audit RGAA outillé · aucun test avec un vrai lecteur d'écran |
-| **C15** | ✅ **18/08 — les 5 critères couverts** : diagramme de flux 6 zones, spécifications techniques, **pré-production Docker Compose** (2 conteneurs `healthy` < 20 s) et **conclusion de la preuve de concept** | pré-production **locale**, aucun hébergeur choisi · base de préprod sans données · `requirements.txt` toujours non épinglé |
+| **C15** | ✅ **18/08 — les 5 critères couverts** : diagramme de flux 6 zones, spécifications techniques, **pré-production Docker Compose** (2 conteneurs `healthy` < 20 s) et **conclusion de la preuve de concept** | pré-production **locale** · hébergeur **tranché le 19/08** (Hetzner CX23, à créer en octobre — voir Prochaines actions) · base de préprod sans données · `requirements.txt` toujours non épinglé |
 | **C16** | **rien** — aucune méthode agile outillée | tout (kanban, backlog, rituels) |
 | **C17** | garde-fou de sortie écrit et mesuré (17/08) · **2 écrans** HTML/CSS/JS sans build · **les 13 indicateurs codés** (SQL + Python + API + affichage), lots 1-2-3 complets (19/08) | tri/recherche · doc d'architecture |
 | **C18–C19** | recouvrent largement C13 | idem C13 |
