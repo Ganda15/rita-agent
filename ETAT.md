@@ -156,7 +156,7 @@ Somme des poids : **exactement 100,00 %**. Plus forte ligne : **34,83 % (VIRI.PA
 
 1. **Lot 3 des indicateurs — risque** (3 indicateurs). **3 restants sur 13**
    (`docs/indicateurs/CONCEPTION.md` §7).
-2. ✅ **Couverture mesurée le 19/08** (`230136d`) — **82 %**, seuil **80 %** verrouillé en CI.
+2. ✅ **Couverture mesurée le 19/08** (`230136d`) — **81 %**, seuil **80 %** verrouillé en CI.
    🔴 **Deux manques révélés** : `db/importer.py` **0 %** (85 instructions, exigé
    **fonctionnel** par C4) et `evals/mesurer_sortie.py` **0 %** (l'outil qui produit le
    chiffre de 70 % du garde-fou). Les couvrir porterait le total à **91 %** — le seuil
@@ -236,7 +236,7 @@ IA serait une preuve fabriquée).
 | **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection | revue OWASP · doc d'architecture · invitation en attente |
 | **C10** | 🔨 **18/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **7 points de terminaison** intégrés. **32 tests** front | tri/recherche · audit RGAA outillé · doc d'architecture |
 | **C11** | **rien** | tout |
-| **C12** | **271 tests**, 15 cas d'éval, seuils non compensables en CI · **couverture 82 %** mesurée et seuil **80 %** verrouillé (19/08) · procédure documentée | 🔴 **`db/importer.py` à 0 %** (85 instructions) alors que C4 l'exige **fonctionnel** · `evals/mesurer_sortie.py` à 0 % · DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
+| **C12** | **271 tests**, 15 cas d'éval, seuils non compensables en CI · **couverture 81 %** mesurée et seuil **80 %** verrouillé (19/08) · procédure documentée | 🔴 **`db/importer.py` à 0 %** (85 instructions) alors que C4 l'exige **fonctionnel** · `evals/mesurer_sortie.py` à 0 % · DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
 | **C13** | GitHub Actions (2 jobs, porte garde-fous) · **empaquetage Docker fait le 18/08** — image 595 Mo, non-root, lecture seule | 🔴 **livraison** : construire/publier l'image **par la CI** · déploiement · test des données |
 | **C14** | 🔨 **18/08** — wireframes des 4 états (`evidence/C14/`), spécification US-1 : contexte, 5 scénarios, 11 critères d'acceptation dont 6 avec numéro de règle RGAA. Modélisation des données déjà couverte par le MCD Merise de C4 | US de l'**écran 2** non spécifiées · aucun audit RGAA outillé · aucun test avec un vrai lecteur d'écran |
 | **C15** | ✅ **18/08 — les 5 critères couverts** : diagramme de flux 6 zones, spécifications techniques, **pré-production Docker Compose** (2 conteneurs `healthy` < 20 s) et **conclusion de la preuve de concept** | pré-production **locale**, aucun hébergeur choisi · base de préprod sans données · `requirements.txt` toujours non épinglé |
@@ -263,7 +263,7 @@ IA serait une preuve fabriquée).
    **Reste à faire** : relancer si l'invitation n'est pas acceptée · inviter le **jury**
    le moment venu. Commande de vérification :
    `gh api repos/Ganda15/rita-agent/collaborators --jq '.[].login'`
-3. ✅ **Couverture mesurée le 19/08** — **82 %**, seuil **80 %** en CI. Restent 2 fichiers à 0 % (voir ci-dessus).
+3. ✅ **Couverture mesurée le 19/08** — **81 %**, seuil **80 %** en CI. Restent 2 fichiers à 0 % (voir ci-dessus).
 4. 🟠 **Chaîne de LIVRAISON absente** (C13) — aujourd'hui c'est de l'intégration continue.
 5. 🟡 **Revue OWASP API Top 10** (C9) non écrite — mais **2 entrées sur 10 déjà traitées** :
    **API2** ✅ **corrigé le 18/08** (plus de clé par défaut, `compare_digest`, 4 tests) ·

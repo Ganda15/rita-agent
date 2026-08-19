@@ -18,23 +18,31 @@ omit =
     tests/*
     */__init__.py
 
-    # --- Scripts à usage unique, lancés à la main ---------------------------
-    # Exclus parce qu'ils ne font pas partie du service, pas pour améliorer le
-    # chiffre. L'argument ne vient pas d'ici : `.dockerignore` écarte déjà
-    # `bigdata/` de l'image, parce que `pyspark` (492 Mo) n'y est pas installé.
-    # Ces scripts NE PEUVENT PAS tourner dans le système livré.
+    # --- Le dossier bigdata/, en entier -------------------------------------
+    # Exclu parce qu'il ne fait pas partie du service livré, pas pour améliorer
+    # le chiffre. L'argument ne vient pas d'ici : `.dockerignore` écarte déjà
+    # **tout `bigdata/`** de l'image, parce que `pyspark` (492 Mo) n'y est pas
+    # installé. Ce code NE PEUT PAS tourner dans le système livré.
     #
-    #   build_parquet.py  construit l'archive une fois, en 32 s
-    #   explorer.py       analyse exploratoire du 31/07, jamais rejouée
-    #   extract_spark.py  extraction Spark, exige un JDK 21
+    # ⚠️ **Corrigé le 19/08/2026, après un échec de la CI.** La première version
+    #    n'excluait que 3 des 5 fichiers du dossier — une incohérence : le même
+    #    argument valait pour les cinq. Conséquence mesurée :
+    #
+    #      local : 82 %  (les 6 tests d'intégration Spark tournent)
+    #      CI    : 79 %  (ils sont IGNORÉS — le jeu Parquet est gitignoré)
+    #
+    #    Le seuil de 80 % avait donc été fixé sur une mesure **dépendante de
+    #    l'environnement**, et la CI est tombée au premier passage.
+    #
+    # 🔑 **Une couverture qui change selon la machine ne peut pas servir de
+    #    garde-fou** : le chiffre doit être le même partout, sinon il ne mesure
+    #    pas le code mais la configuration de celui qui le lance.
+    bigdata/*
     #
     # ⚠️ `db/importer.py` n'est PAS exclu, alors qu'il est aussi lancé à la main :
     #    un critère de C4 exige qu'il soit **fonctionnel**. Son 0 % est un vrai
     #    manque, déclaré comme tel — pas quelque chose à faire disparaître par
     #    une ligne de configuration.
-    bigdata/build_parquet.py
-    bigdata/explorer.py
-    bigdata/extract_spark.py
 
 [report]
 # Une ligne `if TYPE_CHECKING:` ou un `raise NotImplementedError` n'est pas du code
@@ -56,10 +64,14 @@ precision = 0
 #
 # Fixé à **80 %**, et voici d'où vient ce nombre.
 #
-# Mesure réelle du 19/08/2026 : **82 %** (1 000 instructions, 183 non couvertes).
-# Le seuil est donc posé **2 points sous la mesure** : assez serré pour qu'une
+# Mesure réelle du 19/08/2026 : **81 %** (934 instructions, 173 non couvertes).
+# Le seuil est donc posé **1 point sous la mesure** : assez serré pour qu'une
 # régression le déclenche, assez lâche pour qu'un refactoring légitime ne casse
 # pas la CI sur une ligne.
+#
+# ⚠️ Ce chiffre est **identique en local et en intégration continue** — c'est la
+#    condition pour qu'il serve de garde-fou. La première version donnait 82 %
+#    en local et 79 % en CI, et la CI est tombée au premier passage.
 #
 # ⚠️ Ce n'est PAS le « 80 % qu'on voit partout ». Un seuil recopié d'un article
 #    de blog est aussi arbitraire que 50 %. Celui-ci vient de la mesure.

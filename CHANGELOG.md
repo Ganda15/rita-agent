@@ -9,6 +9,25 @@
 
 ---
 
+## 2026-08-19 — Le seuil de couverture tombait en CI : la mesure dépendait de la machine
+
+- 🐛 **La CI a échoué au premier passage** avec le nouveau seuil : **79 %** contre **82 %**
+  mesurés en local. Cause : **6 tests d'intégration Spark sont ignorés en CI** — le jeu Parquet
+  est `gitignore`. `bigdata/query_spark.py` tombait de 77 % à 38 %, `session_spark.py` de 96 %
+  à 59 %.
+- **La vraie faute était une incohérence de ma part** : j'avais exclu **3 des 5** fichiers de
+  `bigdata/` en invoquant `.dockerignore`… qui exclut **le dossier entier**. Le même argument
+  valait pour les cinq.
+- **Corrigé** : `bigdata/*` exclu en entier. Nouvelle mesure : **81 %** (934 instructions),
+  **identique en local et en CI** — vérifié en rejouant la suite sans les tests Spark.
+  Seuil maintenu à **80 %**, désormais un point sous une mesure stable.
+- 🔑 **Une couverture qui change selon la machine ne peut pas servir de garde-fou** : le
+  chiffre doit être le même partout, sinon il ne mesure pas le code mais la configuration de
+  celui qui le lance.
+- *Le seuil avait été fixé sur une mesure locale sans vérifier qu'elle était reproductible.
+  L'échec de la CI a coûté dix minutes ; ne pas l'avoir vu aurait coûté un seuil auquel
+  personne ne se serait fié.*
+
 ## 2026-08-19 — C12 : la couverture mesurée, et deux trous qu'elle révèle
 
 - **Livré** la mesure de couverture : `.coveragerc`, seuil en CI, procédure documentée.
@@ -24,8 +43,8 @@
 - **Décidé** : `db/importer.py` **n'est pas exclu**, bien qu'il soit aussi lancé à la main. Un
   critère de C4 exige qu'il soit **fonctionnel**. *Son 0 % est un vrai manque, déclaré — pas
   quelque chose qu'on fait disparaître par une ligne de configuration.*
-- **Mesure finale : 82 %** (1 000 instructions, 183 non couvertes). **Seuil fixé à 80 %**,
-  deux points sous la mesure. *Ce n'est pas le « 80 % qu'on voit partout » : un seuil recopié
+- **Mesure finale : 81 %** (934 instructions, 173 non couvertes), **identique en local et en
+  CI**. **Seuil fixé à 80 %**, un point sous la mesure. *Ce n'est pas le « 80 % qu'on voit partout » : un seuil recopié
   d'un article de blog est aussi arbitraire que 50 %.*
 - 🔴 **Deux manques révélés par la mesure — et c'était le but de l'exercice** :
   `db/importer.py` (**85 instructions, 0 %**) — il fonctionne, on le lance, mais **rien ne le
