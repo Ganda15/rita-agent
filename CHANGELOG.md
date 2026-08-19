@@ -9,6 +9,23 @@
 
 ---
 
+## 2026-08-19 — Second manque fermé : seuil de couverture relevé à 90 %
+
+- **Livré** 5 tests dans `tests/test_evals.py` pour `evals/mesurer_sortie.py` — en miroir
+  exact de ceux qui existaient déjà pour `evals/mesurer_gardefou.py` (garde-fou d'entrée).
+  Aucun mock : ce sont des fonctions pures (regex sur une liste de textes), le même style
+  d'appel direct déjà accepté pour le garde-fou d'entrée.
+- 🐛/🆕 **Le garde-fou de SORTIE souffre de la même limitation S34 que celui d'entrée** :
+  taux de blocage réel **70 %**, sous le seuil de 85 % (0 % de faux positifs). Un **2ᵉ test
+  `xfail(strict=True)`** rejoint le premier — même discipline, même raison documentée dans
+  le code : le seuil reste à 85 %, on déclare ne pas l'atteindre plutôt que de le baisser.
+- `evals/mesurer_sortie.py` : **0 % → 100 %** (10 instructions).
+- **Conséquence** : couverture totale **83 % → 92 %**. Les **deux** manques identifiés à la
+  mesure initiale du 19/08 sont désormais fermés (`db/importer.py` la veille dans la même
+  journée, `evals/mesurer_sortie.py` maintenant) — **le seuil CI est relevé de 80 % à 90 %**
+  dans `.coveragerc`, exactement comme le plan écrit la veille le prévoyait : *« le seuil
+  suit la mesure, jamais l'inverse »*. Suite complète : **319 passed, 2 xfailed**.
+
 ## 2026-08-19 — `db/importer.py` couvert : 0 % → 100 %, sans toucher une vraie base
 
 - **Livré** `tests/test_importer.py` — **13 tests**, curseur simulé (`MagicMock`),

@@ -171,21 +171,24 @@ la spécification sont désormais codés, exposés et affichés.** `GET /donnees
   acheter » a échoué les deux fois — les deux étaient des sous-chaînes de la phrase qui
   **explique** l'interdit. Corrigé en cherchant des formes impératives.
 
-✅ **`db/importer.py` couvert — 19/08.** Il passe de **0 % à 100 %** (85 instructions), sans
-toucher une vraie base : curseur simulé, `execute_values` remplacé par un double inspecté
-(même remède que `pipelines/ingest.py`). **13 tests nouveaux**, dont le cas CGG (deux
-libellés, une valeur, deux alias) et le filtrage des tickers hors univers (contrainte de clé
-étrangère). Conséquence directe : **couverture totale 83 % → 91 %** en fermant ce seul manque
-— au-dessus de la prévision écrite la veille. Le **seuil CI reste à 80 %** : le relever à 90 %
-n'est prévu qu'une fois les **deux** manques fermés (voir point 1 ci-dessous), pas un seul.
+✅ **Les deux manques de couverture sont fermés — 19/08.**
+- `db/importer.py` : **0 % → 100 %** (85 instructions), 13 tests. Verrouille le cas CGG (deux
+  libellés, une valeur, deux alias) et le filtrage des tickers hors univers.
+- `evals/mesurer_sortie.py` : **0 % → 100 %** (10 instructions), 5 tests dans
+  `tests/test_evals.py`, en miroir exact de ceux du garde-fou d'entrée — **même limitation
+  S34, même `xfail` strict** : le garde-fou de sortie mesure lui aussi **70 %** de blocage,
+  sous le seuil de 85 % (0 % de faux positifs). Un **2ᵉ `xfail`** rejoint donc le premier.
+- Aucun test ne touche une vraie base ni un vrai modèle — curseur/`execute_values` simulés
+  pour l'un, appel direct à une fonction pure pour l'autre.
+- **Conséquence** : couverture totale **83 % → 92 %**. Le **seuil CI est relevé de 80 % à
+  90 %** (`.coveragerc`) — seulement maintenant que les deux manques sont réellement fermés
+  et le nouveau chiffre confirmé, pas anticipé. Suite complète : **319 passed, 2 xfailed**.
 
 **Prochaines actions, dans l'ordre :**
 
-1. 🟠 `evals/mesurer_sortie.py` à 0 % — l'outil qui produit le chiffre de 70 % du garde-fou de
-   sortie. *Seul manque restant avant de relever le seuil CI à 90 %.*
-2. ✅ **C13 volet LIVRAISON — fait le 19/08** (`7570bc9`). Reste : le **déploiement** lui-même
+1. ✅ **C13 volet LIVRAISON — fait le 19/08** (`7570bc9`). Reste : le **déploiement** lui-même
    (aucun hébergeur choisi) et le test des données.
-3. 🟡 Importer les données dans la base de pré-production :
+2. 🟡 Importer les données dans la base de pré-production :
    `docker compose exec api python -m db.importer`.
 
 *Référence : `docs/indicateurs/CONCEPTION.md` (bandeau réécrit le 19/08).*
@@ -258,7 +261,7 @@ IA serait une preuve fabriquée).
 | **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection | revue OWASP · doc d'architecture · invitation en attente |
 | **C10** | 🔨 **19/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **9 points de terminaison** intégrés. **46 tests** front | tri/recherche · audit RGAA outillé · doc d'architecture |
 | **C11** | **rien** | tout |
-| **C12** | **315 tests** (1 xfailed volontaire), 15 cas d'éval, seuils non compensables en CI · **couverture 91 %** mesurée (`db/importer.py` 0→100 %, 19/08) et seuil **80 %** verrouillé en CI · procédure documentée | 🟠 `evals/mesurer_sortie.py` à 0 % — l'outil qui produit le chiffre du garde-fou · DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
+| **C12** | **319 tests** (2 xfailed volontaires — entrée et sortie), 15 cas d'éval, seuils non compensables en CI · **couverture 92 %**, seuil **90 %** verrouillé en CI (19/08, `db/importer.py` et `evals/mesurer_sortie.py` fermés 0→100 %) · procédure documentée | DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
 | **C13** | GitHub Actions (2 jobs, porte garde-fous) · **empaquetage Docker fait le 18/08** — image 595 Mo, non-root, lecture seule | 🔴 **livraison** : construire/publier l'image **par la CI** · déploiement · test des données |
 | **C14** | 🔨 **18/08** — wireframes des 4 états (`evidence/C14/`), spécification US-1 : contexte, 5 scénarios, 11 critères d'acceptation dont 6 avec numéro de règle RGAA. Modélisation des données déjà couverte par le MCD Merise de C4 | US de l'**écran 2** non spécifiées · aucun audit RGAA outillé · aucun test avec un vrai lecteur d'écran |
 | **C15** | ✅ **18/08 — les 5 critères couverts** : diagramme de flux 6 zones, spécifications techniques, **pré-production Docker Compose** (2 conteneurs `healthy` < 20 s) et **conclusion de la preuve de concept** | pré-production **locale**, aucun hébergeur choisi · base de préprod sans données · `requirements.txt` toujours non épinglé |

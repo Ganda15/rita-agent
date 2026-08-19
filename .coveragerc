@@ -62,23 +62,34 @@ precision = 0
 # =============================================================================
 # LE SEUIL — « la couverture souhaitée ÉTABLIE » (C12)
 #
-# Fixé à **80 %**, et voici d'où vient ce nombre.
+# Fixé à **90 %**, et voici d'où vient ce nombre.
 #
-# Mesure réelle du 19/08/2026 : **81 %** (934 instructions, 173 non couvertes).
-# Le seuil est donc posé **1 point sous la mesure** : assez serré pour qu'une
-# régression le déclenche, assez lâche pour qu'un refactoring légitime ne casse
-# pas la CI sur une ligne.
+# Historique :
+#   19/08/2026 (mesure initiale)  81 %  — seuil posé à 80 %
+#   19/08/2026 (lot 3 indicateurs) 83 %  — seuil inchangé, la marge s'élargit
+#   19/08/2026 (les deux manques comblés) 92 % — seuil relevé à 90 %
+#
+# Les deux manques identifiés à la mesure initiale sont désormais couverts :
+#   db/importer.py           85 instructions, 0 % → 100 %  (tests/test_importer.py)
+#   evals/mesurer_sortie.py  10 instructions, 0 % → 100 %  (tests/test_evals.py)
+# Mesure réelle après fermeture : **92 %** (1016 instructions, 79 non couvertes).
+# Le seuil est posé **2 points sous la mesure** — même marge relative que le
+# premier seuil (80 sous 81/83) : assez serré pour qu'une régression le
+# déclenche, assez lâche pour qu'un refactoring légitime ne casse pas la CI
+# sur une ligne.
+#
+# 🔑 **Le seuil suit la mesure, jamais l'inverse.** Il n'a été relevé qu'une
+#    fois les deux manques réellement fermés et le nouveau chiffre confirmé —
+#    pas anticipé sur une promesse.
 #
 # ⚠️ Ce chiffre est **identique en local et en intégration continue** — c'est la
 #    condition pour qu'il serve de garde-fou. La première version donnait 82 %
-#    en local et 79 % en CI, et la CI est tombée au premier passage.
+#    en local et 79 % en CI, et la CI est tombée au premier passage (voir
+#    l'exclusion de `bigdata/*` ci-dessus).
 #
-# ⚠️ Ce n'est PAS le « 80 % qu'on voit partout ». Un seuil recopié d'un article
-#    de blog est aussi arbitraire que 50 %. Celui-ci vient de la mesure.
-#
-# **À relever à 90 % quand les deux manques connus seront comblés** :
-#   db/importer.py        85 instructions, 0 %  — exigé FONCTIONNEL par un critère C4
-#   evals/mesurer_sortie.py  10 instructions, 0 %  — produit le chiffre de 70 % du garde-fou
-# Les couvrir ferait passer le total à **91 %**. Le seuil suivra, pas l'inverse.
+# Manques restants, aucun ne justifie d'exclusion :
+#   db/rgpd_purge.py   73 %  — 9 lignes non couvertes, purge RGPD peu exercée
+#   pipelines/ingest.py 78 % — 31 lignes, chemins d'erreur peu exercés
+#   src/llm.py         72 %  — 11 lignes, cascade de fournisseurs peu exercée
 # =============================================================================
-fail_under = 80
+fail_under = 90
