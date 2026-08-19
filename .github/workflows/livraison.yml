@@ -1,0 +1,172 @@
+# =============================================================================
+# CHAÎNE DE LIVRAISON CONTINUE — compétence C13
+#
+# C13 : « Créer une chaîne de livraison continue d'un modèle d'intelligence
+#         artificielle afin d'automatiser les étapes de livraison. »
+#
+# Ce fichier est le complément de `test.yml` :
+#
+#   test.yml       INTÉGRATION continue  — les tests tournent à chaque envoi
+#   livraison.yml  LIVRAISON continue    — l'image se construit et se publie
+#
+# ⚠️ LE CHOIX QUI STRUCTURE TOUT : on ne publie **que sur un tag**.
+#
+#    Un tag = un livrable. C'est déjà la discipline du projet : le formateur
+#    reçoit `.../tree/livrable-E1-v1`, pas la branche par défaut. La même
+#    règle vaut pour l'image : `ghcr.io/ganda15/rita-api:livrable-E1-v1`
+#    montre le code **exactement tel qu'il était le jour de l'envoi**.
+#
+#    Publier à chaque envoi sur `develop` produirait des dizaines d'images
+#    dont aucune ne correspondrait à quoi que ce soit d'identifiable.
+# =============================================================================
+
+name: Livraison
+
+on:
+  push:
+    # Sur ces branches : on CONSTRUIT seulement, pour détecter tout de suite
+    # qu'un Dockerfile ne compile plus. Aucune publication.
+    branches: [main, develop]
+    # Sur un tag de livrable : on construit ET on publie.
+    tags: ["livrable-*"]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  REGISTRE: ghcr.io
+  IMAGE: ${{ github.repository_owner }}/rita-api
+
+jobs:
+
+  construire-et-publier:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      # Nécessaire pour pousser sur le registre de conteneurs de GitHub.
+      # Aucun secret à gérer : le jeton est fourni par la plateforme et expire
+      # à la fin du job. Un mot de passe de registre stocké en secret serait
+      # une clé de plus à faire tourner — et à oublier de faire tourner.
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # --- La porte de qualité ------------------------------------------
+      # ⚠️ Les tests tournent AVANT la construction, dans ce job, et pas
+      # seulement dans test.yml. Deux workflows séparés peuvent passer l'un
+      # sans l'autre : livrer une image dont les tests n'ont pas été rejoués
+      # sur CE commit, c'est livrer sans filet.
+      #
+      # `requirements.txt` (et non `-api`) : les tests ont besoin de pytest
+      # et du reste de l'outillage, que l'image n'embarque pas.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Installer les dépendances de test
+        run: pip install -r requirements.txt
+
+      - name: Tests — porte de livraison
+        env:
+          # L'API refuse de démarrer sans clé (OWASP API2). Celle-ci n'est
+          # utilisée que par la suite de tests, et n'entre jamais dans l'image.
+          RITA_API_KEY: cle-de-test-integration-continue-32c
+        run: pytest -q
+
+      # --- La construction ----------------------------------------------
+      - name: Préparer Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: S'authentifier sur le registre
+        # Seulement quand on publie : une connexion inutile est une
+        # permission accordée pour rien.
+        if: startsWith(github.ref, 'refs/tags/livrable-')
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRE }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Calculer les étiquettes de l'image
+        id: etiquettes
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRE }}/${{ env.IMAGE }}
+          # `type=ref,event=tag` produit `:livrable-E1-v1`
+          # `type=sha` produit `:sha-83b462c` — traçable au commit près
+          tags: |
+            type=ref,event=tag
+            type=sha,format=short
+
+      - name: Construire (et publier si c'est un tag)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: ${{ startsWith(github.ref, 'refs/tags/livrable-') }}
+          tags: ${{ steps.etiquettes.outputs.tags }}
+          labels: ${{ steps.etiquettes.outputs.labels }}
+          # Le cache évite de retélécharger et recompiler les dépendances à
+          # chaque exécution : quelques minutes, et autant d'énergie, en moins.
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # --- La vérification ------------------------------------------------
+      # ⚠️ Une image qui se construit n'est pas une image qui démarre. Sans
+      # cette étape, on publierait une image cassée avec un workflow au vert.
+      - name: Vérifier que l'image démarre et répond
+        run: |
+          docker build -t rita-api:verification .
+          docker run -d --name verification -p 8000:8000 \
+            -e RITA_API_KEY=cle-de-verification-au-demarrage-32c \
+            rita-api:verification
+          for i in $(seq 1 20); do
+            if curl -sf http://localhost:8000/health > /dev/null; then
+              echo "L'API repond au bout de ${i}s"
+              curl -s http://localhost:8000/health
+              echo
+              break
+            fi
+            if [ "$i" = "20" ]; then
+              echo "::error::L'API n'a pas repondu en 20 secondes"
+              docker logs verification
+              exit 1
+            fi
+            sleep 1
+          done
+
+      - name: Vérifier que l'accès est bien restreint
+        # Une image qui démarre mais qui laisse entrer sans clé serait pire
+        # qu'une image cassée : elle passerait inaperçue.
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/donnees/valeurs)
+          echo "sans cle -> HTTP $code"
+          if [ "$code" != "403" ]; then
+            echo "::error::L'API repond $code sans cle d'API, 403 attendu"
+            exit 1
+          fi
+
+      - name: Arrêter le conteneur de vérification
+        if: always()
+        run: docker rm -f verification || true
+
+      - name: Résumé
+        run: |
+          {
+            echo "### Livraison"
+            echo ""
+            if [ "${{ startsWith(github.ref, 'refs/tags/livrable-') }}" = "true" ]; then
+              echo "**Image publiee** sur \`${{ env.REGISTRE }}/${{ env.IMAGE }}\`"
+              echo ""
+              echo '```'
+              echo "${{ steps.etiquettes.outputs.tags }}"
+              echo '```'
+            else
+              echo "**Construction verifiee**, sans publication."
+              echo ""
+              echo "La publication n'a lieu que sur un tag \`livrable-*\`."
+            fi
+            echo ""
+            echo "- L'API demarre et repond sur \`/health\`"
+            echo "- L'acces sans cle est refuse (403)"
+          } >> "$GITHUB_STEP_SUMMARY"
