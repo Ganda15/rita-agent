@@ -9,6 +9,22 @@
 
 ---
 
+## 2026-08-19 — Doc d'exploitation (C8)
+
+- **Livré** `docs/EXPLOITATION.md` — le 4ᵉ critère de C8 : *« la documentation couvre la
+  gestion des accès, les procédures d'installation et de test, les dépendances et
+  interconnexions, les données impliquées »*. Dix sections : prérequis, clés d'accès,
+  installation **avec et sans Docker**, vérifications, les **7 services externes** et ce qui
+  se passe quand chacun tombe, les **8 tables** et lesquelles portent des données
+  personnelles, l'exploitation quotidienne, et un tableau de dépannage.
+- **Écrit pour quelqu'un qui n'a jamais fait tourner RITA** : chaque commande a été exécutée,
+  aucune recopiée de mémoire. Les 9 fichiers cités ont été vérifiés présents.
+- Le tableau de dépannage rassemble les **pièges réellement rencontrés** : port 5433 et non
+  5432, `DATABASE_URL` et non `POSTGRES_URL`, `&&` inconnu de PowerShell 5.1, tests Spark
+  ignorés sans JDK, `xfailed` normal, valeur radiée aux performances aberrantes.
+- 🔴 **Reste pour C8** : le **monitorage du service**, et la **communication** de cette
+  documentation aux parties prenantes (5ᵉ critère) — écrire ne suffit pas, il faut transmettre.
+
 ## 2026-08-19 — La chaîne de livraison, et les indicateurs du portefeuille
 
 ### La suite repasse au vert, sans rien effacer
