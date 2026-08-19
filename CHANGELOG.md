@@ -9,91 +9,6 @@
 
 ---
 
-## 2026-08-16 — Le plan des 12 semaines, et comment travailler sans le relecteur
-
-- **Décision structurante — on n'attend plus la validation pour avancer.** Le formateur est
-  en congé. Sa règle (*une compétence prouvée → envoyée → puis la suivante*) existe pour
-  empêcher d'empiler du travail non relu ; **elle ne dit pas d'attendre un absent**. Règle
-  appliquée désormais : **produire → geler → mettre en file → continuer**, avec envoi **un
-  par un** à son retour. *Ce qui se reproche, c'est de n'avoir jamais cherché la validation.*
-- **Ajouté** `docs/FILE-DE-VALIDATION.md` — la file des livrables gelés en attente de revue.
-  **3 en file au 16/08, 0 envoyé** : E1, le protocole C6, la conception des indicateurs.
-- **Ajouté** `docs/PLAN-12-SEMAINES.md` — le calendrier S34 → S45. Deux décisions le
-  structurent :
-  - **Les 13 compétences restantes sont 4 chantiers, pas 13 tâches.** L'application porte à
-    elle seule **7 compétences** (C10 + C14–C19) : `frontend/` est vide, et un seul artefact
-    prouve l'interface *et* tout E4. **C'est le pari du plan** — s'il échoue, le plan échoue.
-  - **Le temps d'Era n'est pas homogène.** La semaine de vacances (S34) va au chantier long ;
-    les créneaux courts des semaines de cours vont aux tâches fragmentables (couverture,
-    revue OWASP, doc d'exploitation). *La couverture de tests se fait un mardi soir ; le
-    squelette de l'application, non.*
-- **Constat qui change le calendrier** : entre le 05/11 (livrables) et le 30/11 (jury) il y a
-  **25 jours**. Le guide d'étude et la préparation d'oral s'y logent — **ils ne sont pas dans
-  les 12 semaines**. Les mélanger, c'est ne finir ni l'un ni l'autre.
-- **Risque n° 1 nommé** : **Docker ne démarre pas sur cette machine** et C13 en dépend. Si le
-  blocage tient, on livre un packaging sans Docker, documenté — un obstacle mesuré et
-  expliqué vaut mieux qu'une case vide.
-- **Fusionné `develop` dans `main`** (`7b68252`). `main` accusait 12 commits de retard : un
-  collaborateur invité en lecture y atterrit et ne voyait rien du travail depuis le 13/08,
-  alors que trois critères exigent que le travail soit accessible depuis un dépôt Git.
-  186 tests verts après fusion.
-
-## 2026-08-15 — C6 : le partage tranché, et le second outil de veille sorti de l'ombre
-
-Les deux trous repérés le 14/08 en relisant JOURNAL-005 sont comblés dans
-`docs/veille/README.md`.
-
-- **Trou 1 — le partage (§5).** Le protocole décrivait le *format* des synthèses mais jamais
-  leur *destinataire*. Or **deux critères sur huit** portent là-dessus. **Décision** :
-  formateur référent en destinataire principal (mail, PDF, **mensuel** — un envoi
-  hebdomadaire devient du bruit et cesse d'être lu), canal de la promo en second cercle
-  (**à chaque note**, terminée par une question ouverte). *« Animer le travail collectif »
-  n'est pas « publier » : la preuve, ce sont les **réponses**, pas les envois.*
-- **Ajouté** `docs/veille/_JOURNAL-DES-ENVOIS.md` — registre des envois, rempli **le jour de
-  l'envoi**, jamais reconstitué.
-- **Manque déclaré, non résolu** : **aucun envoi n'a eu lieu**. Le registre est vide. Tant
-  qu'il l'est, ces deux critères valent **zéro**, quelle que soit la qualité des notes.
-  Écrit noir sur blanc dans le registre et dans `ETAT.md` plutôt que laissé implicite.
-- **Trou 2 — les deux outils (§4).** `C:\Users\kanda\Desktop\Veille-IA\` existait sans être
-  mentionné nulle part. **Décision** : `sources/rss.py` est **l'outil de C6** ; `Veille-IA`
-  est une veille **personnelle, hors C6**. Raison rédhibitoire : **sa sortie est rédigée par
-  un LLM**, ce qui en ferait une preuve fabriquée — la règle était déjà posée au §2 du
-  protocole. S'y ajoutent une thématique différente (IA/finance/agentique) et l'absence de
-  versionnement.
-- **Mesure, pas supposition** : `Veille-IA/data/latest.json` date du **27/07** et `output/`
-  ne contient **qu'un** dossier, du **19/07**. L'outil est à l'arrêt depuis trois semaines —
-  il ne pourrait pas non plus revendiquer une récurrence.
-
-## 2026-08-15 — Décision : les indicateurs de marché, triés et datés
-
-- **Décision structurante** : 19 indicateurs proposés, ramenés à **13 réellement à coder**,
-  répartis en 4 lots par **coût de données** — le seul critère qui commande l'ordre.
-  Spécification : `docs/indicateurs/CONCEPTION.md` — **conception seule, aucun code écrit**.
-- **Le mot « stratégie » est abandonné dans tout le projet.** Un indicateur est un *fait*
-  (« le RSI vaut 71 »), une stratégie est un *conseil* (« RSI > 70 → vendre »). Le second
-  contredirait le garde-fou AMF inscrit dans `CLAUDE.md`. *Un livrable dont le titre
-  contredit son propre garde-fou ne tient pas cinq minutes devant un jury.*
-- **Vérification avant rédaction — 3 des 19 existaient déjà** : dernier cours et performance
-  1 jour (R2 de `db/requetes.sql`), volume relatif 20 séances (R3), volatilité intraséance
-  (S2 de `bigdata/query_spark.py`). **Et le portefeuille est déjà valorisé** par la vue
-  `v_portefeuille_valorise`, conversion des devises comprise : le lot portefeuille tombe de
-  3 ajouts à **2** (poids par ligne, exposition par devise).
-- **Manque découvert** : `sources/cotations.py` collecte avec `auto_adjust=True`. C'est le
-  bon choix — une performance sur cours bruts serait fausse — mais **les cours passés sont
-  réécrits à chaque dividende**. Une performance 1 an n'est donc pas strictement reproductible
-  dans le temps. Inscrit comme piège, pas dissimulé.
-- **Écarté : le ratio de Sharpe.** `sources/fred.py` ne collecte que `DGS10`, le Trésor
-  **américain**, pour un portefeuille en euros ; très bruité sur un an de données
-  quotidiennes ; et c'est le seul indicateur de la liste qui **classe** — donc le plus proche
-  du conseil. Écart **assumé et présenté à l'oral**, pas un oubli.
-- **Erreur corrigée** : la proposition parlait des « 135 instruments ». RITA en compte **111**.
-  Le 135 venait du suivi des 135 critères RNCP — deux objets sans rapport.
-- **Rattachement** : livrable **E4** (C14–C19). Ces indicateurs ne rapportent **rien** en C2,
-  déjà livré avec R1–R3 et S1–S3 : ajouter des requêtes ne re-prouve pas une compétence
-  prouvée. Ils sont le contenu de `frontend/`, vide à ce jour.
-- **Rien n'est codé, et rien ne doit l'être avant l'ouverture d'E4** : au 15/08 il reste
-  12 semaines et C6 est le seul chantier qui ne se rattrape pas.
-
 ## 2026-08-19 — La chaîne de livraison, et les indicateurs du portefeuille
 
 ### La suite repasse au vert, sans rien effacer
@@ -339,6 +254,91 @@ Les deux trous repérés le 14/08 en relisant JOURNAL-005 sont comblés dans
 - **Suite de tests rejouée après les deux réimports** : `200 passed, 1 failed`, l'unique échec
   restant volontairement en place depuis la veille S34 (seuil du garde-fou, question ouverte
   S35). Rien de nouveau cassé par les réimports.
+
+## 2026-08-16 — Le plan des 12 semaines, et comment travailler sans le relecteur
+
+- **Décision structurante — on n'attend plus la validation pour avancer.** Le formateur est
+  en congé. Sa règle (*une compétence prouvée → envoyée → puis la suivante*) existe pour
+  empêcher d'empiler du travail non relu ; **elle ne dit pas d'attendre un absent**. Règle
+  appliquée désormais : **produire → geler → mettre en file → continuer**, avec envoi **un
+  par un** à son retour. *Ce qui se reproche, c'est de n'avoir jamais cherché la validation.*
+- **Ajouté** `docs/FILE-DE-VALIDATION.md` — la file des livrables gelés en attente de revue.
+  **3 en file au 16/08, 0 envoyé** : E1, le protocole C6, la conception des indicateurs.
+- **Ajouté** `docs/PLAN-12-SEMAINES.md` — le calendrier S34 → S45. Deux décisions le
+  structurent :
+  - **Les 13 compétences restantes sont 4 chantiers, pas 13 tâches.** L'application porte à
+    elle seule **7 compétences** (C10 + C14–C19) : `frontend/` est vide, et un seul artefact
+    prouve l'interface *et* tout E4. **C'est le pari du plan** — s'il échoue, le plan échoue.
+  - **Le temps d'Era n'est pas homogène.** La semaine de vacances (S34) va au chantier long ;
+    les créneaux courts des semaines de cours vont aux tâches fragmentables (couverture,
+    revue OWASP, doc d'exploitation). *La couverture de tests se fait un mardi soir ; le
+    squelette de l'application, non.*
+- **Constat qui change le calendrier** : entre le 05/11 (livrables) et le 30/11 (jury) il y a
+  **25 jours**. Le guide d'étude et la préparation d'oral s'y logent — **ils ne sont pas dans
+  les 12 semaines**. Les mélanger, c'est ne finir ni l'un ni l'autre.
+- **Risque n° 1 nommé** : **Docker ne démarre pas sur cette machine** et C13 en dépend. Si le
+  blocage tient, on livre un packaging sans Docker, documenté — un obstacle mesuré et
+  expliqué vaut mieux qu'une case vide.
+- **Fusionné `develop` dans `main`** (`7b68252`). `main` accusait 12 commits de retard : un
+  collaborateur invité en lecture y atterrit et ne voyait rien du travail depuis le 13/08,
+  alors que trois critères exigent que le travail soit accessible depuis un dépôt Git.
+  186 tests verts après fusion.
+
+## 2026-08-15 — C6 : le partage tranché, et le second outil de veille sorti de l'ombre
+
+Les deux trous repérés le 14/08 en relisant JOURNAL-005 sont comblés dans
+`docs/veille/README.md`.
+
+- **Trou 1 — le partage (§5).** Le protocole décrivait le *format* des synthèses mais jamais
+  leur *destinataire*. Or **deux critères sur huit** portent là-dessus. **Décision** :
+  formateur référent en destinataire principal (mail, PDF, **mensuel** — un envoi
+  hebdomadaire devient du bruit et cesse d'être lu), canal de la promo en second cercle
+  (**à chaque note**, terminée par une question ouverte). *« Animer le travail collectif »
+  n'est pas « publier » : la preuve, ce sont les **réponses**, pas les envois.*
+- **Ajouté** `docs/veille/_JOURNAL-DES-ENVOIS.md` — registre des envois, rempli **le jour de
+  l'envoi**, jamais reconstitué.
+- **Manque déclaré, non résolu** : **aucun envoi n'a eu lieu**. Le registre est vide. Tant
+  qu'il l'est, ces deux critères valent **zéro**, quelle que soit la qualité des notes.
+  Écrit noir sur blanc dans le registre et dans `ETAT.md` plutôt que laissé implicite.
+- **Trou 2 — les deux outils (§4).** `C:\Users\kanda\Desktop\Veille-IA\` existait sans être
+  mentionné nulle part. **Décision** : `sources/rss.py` est **l'outil de C6** ; `Veille-IA`
+  est une veille **personnelle, hors C6**. Raison rédhibitoire : **sa sortie est rédigée par
+  un LLM**, ce qui en ferait une preuve fabriquée — la règle était déjà posée au §2 du
+  protocole. S'y ajoutent une thématique différente (IA/finance/agentique) et l'absence de
+  versionnement.
+- **Mesure, pas supposition** : `Veille-IA/data/latest.json` date du **27/07** et `output/`
+  ne contient **qu'un** dossier, du **19/07**. L'outil est à l'arrêt depuis trois semaines —
+  il ne pourrait pas non plus revendiquer une récurrence.
+
+## 2026-08-15 — Décision : les indicateurs de marché, triés et datés
+
+- **Décision structurante** : 19 indicateurs proposés, ramenés à **13 réellement à coder**,
+  répartis en 4 lots par **coût de données** — le seul critère qui commande l'ordre.
+  Spécification : `docs/indicateurs/CONCEPTION.md` — **conception seule, aucun code écrit**.
+- **Le mot « stratégie » est abandonné dans tout le projet.** Un indicateur est un *fait*
+  (« le RSI vaut 71 »), une stratégie est un *conseil* (« RSI > 70 → vendre »). Le second
+  contredirait le garde-fou AMF inscrit dans `CLAUDE.md`. *Un livrable dont le titre
+  contredit son propre garde-fou ne tient pas cinq minutes devant un jury.*
+- **Vérification avant rédaction — 3 des 19 existaient déjà** : dernier cours et performance
+  1 jour (R2 de `db/requetes.sql`), volume relatif 20 séances (R3), volatilité intraséance
+  (S2 de `bigdata/query_spark.py`). **Et le portefeuille est déjà valorisé** par la vue
+  `v_portefeuille_valorise`, conversion des devises comprise : le lot portefeuille tombe de
+  3 ajouts à **2** (poids par ligne, exposition par devise).
+- **Manque découvert** : `sources/cotations.py` collecte avec `auto_adjust=True`. C'est le
+  bon choix — une performance sur cours bruts serait fausse — mais **les cours passés sont
+  réécrits à chaque dividende**. Une performance 1 an n'est donc pas strictement reproductible
+  dans le temps. Inscrit comme piège, pas dissimulé.
+- **Écarté : le ratio de Sharpe.** `sources/fred.py` ne collecte que `DGS10`, le Trésor
+  **américain**, pour un portefeuille en euros ; très bruité sur un an de données
+  quotidiennes ; et c'est le seul indicateur de la liste qui **classe** — donc le plus proche
+  du conseil. Écart **assumé et présenté à l'oral**, pas un oubli.
+- **Erreur corrigée** : la proposition parlait des « 135 instruments ». RITA en compte **111**.
+  Le 135 venait du suivi des 135 critères RNCP — deux objets sans rapport.
+- **Rattachement** : livrable **E4** (C14–C19). Ces indicateurs ne rapportent **rien** en C2,
+  déjà livré avec R1–R3 et S1–S3 : ajouter des requêtes ne re-prouve pas une compétence
+  prouvée. Ils sont le contenu de `frontend/`, vide à ce jour.
+- **Rien n'est codé, et rien ne doit l'être avant l'ouverture d'E4** : au 15/08 il reste
+  12 semaines et C6 est le seul chantier qui ne se rattrape pas.
 
 ## 2026-08-14 — RGPD : un traitement déclaré qui n'existait pas
 
