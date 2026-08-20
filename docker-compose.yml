@@ -18,7 +18,15 @@
 services:
 
   postgres:
-    image: postgres:17-alpine
+    # ⚠️ **18**, et non 17 — la version doit être celle du poste de développement.
+    #    Constaté le 19/08/2026 en déployant : le poste tourne en PostgreSQL **18.4**, ce
+    #    fichier fixait **17**. Un `pg_dump` du poste refusait donc de se restaurer dans le
+    #    conteneur (PostgreSQL ne garantit pas la restauration d'un dump vers une version
+    #    ANTÉRIEURE). Contourné sur le moment par un transfert `--data-only`, aligné ici.
+    #
+    # 🔑 Un écart de version entre développement et production, c'est un « ça marche chez
+    #    moi » qui attend son heure : il ne se voit pas tant qu'on ne transporte rien.
+    image: postgres:18-alpine
     container_name: rita-postgres-preprod
     restart: unless-stopped
     environment:
@@ -29,7 +37,13 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rita_preprod_local}
       LANG: fr_FR.utf8
     volumes:
-      - rita_pgdata_preprod:/var/lib/postgresql/data
+      # ⚠️ `/var/lib/postgresql` — SANS `/data`, et c'est imposé par PostgreSQL 18.
+      #    À partir de la 18, l'image officielle range les données dans un sous-dossier
+      #    portant le numéro de version majeure, pour rendre possible un `pg_upgrade`
+      #    sans franchir une frontière de montage. Monter sur `/var/lib/postgresql/data`
+      #    — la convention d'avant — fait refuser le démarrage avec un message explicite.
+      #    Constaté le 20/08/2026 en passant de 17 à 18, en local avant le serveur.
+      - rita_pgdata_preprod:/var/lib/postgresql
       - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
     # ⚠️ AUCUN port publié vers l'hôte, et c'est délibéré :
     #   1. la base n'a pas à être joignable depuis l'extérieur — seule l'API lui parle,

@@ -102,7 +102,7 @@ Elle produit néanmoins exactement l'effet que le Top 10 agentique d'OWASP recom
 |---|---|
 | **Développement** | Windows 11 · Python 3.14.6 · PostgreSQL local sur 5433 |
 | **Intégration continue** | GitHub Actions · `ubuntu-latest` · Python 3.13 · 2 jobs (tests, évaluations) |
-| **Pré-production** | ✅ **Docker Compose** — `postgres:17-alpine` + image `rita-api:local` (595 Mo), non-root, lecture seule. Voir [`preuve-preproduction-docker.md`](preuve-preproduction-docker.md) |
+| **Pré-production** | ✅ **Docker Compose** — `postgres:18-alpine` (aligné sur le poste le 20/08) + image `rita-api:local` (595 Mo), non-root, lecture seule. Voir [`preuve-preproduction-docker.md`](preuve-preproduction-docker.md) |
 | **Secrets** | variables d'environnement lues dans `.env`, jamais versionné (`.gitignore`) |
 | **Front** | servi par FastAPI (`StaticFiles`), pas de serveur séparé |
 

@@ -35,8 +35,21 @@ docker compose up -d --build
 
 | Service | Image | Rôle |
 |---|---|---|
-| `postgres` | `postgres:17-alpine` | la base, schéma joué automatiquement |
+| `postgres` | `postgres:18-alpine` | la base, schéma joué automatiquement |
 | `api` | `rita-api:local` | l'API et l'interface, construites depuis le `Dockerfile` |
+
+> ⚠️ **Corrigé le 20/08/2026** — c'était `postgres:17-alpine` lors de la mesure du 18/08.
+> Le poste de développement tourne en **PostgreSQL 18.4** : un `pg_dump` du poste refusait
+> de se restaurer dans un conteneur en 17, PostgreSQL ne garantissant pas la restauration
+> vers une version **antérieure**. Défaut découvert en déployant réellement, pas en relisant
+> le fichier. Aligné sur 18 dans les deux `docker-compose.yml`, testé en local avant le
+> serveur.
+>
+> 🐛 **Le passage à 18 a révélé un second changement** : depuis la 18, l'image officielle
+> range les données dans un **sous-dossier portant la version majeure** (pour permettre
+> `pg_upgrade` sans franchir une frontière de montage). Le montage doit donc viser
+> `/var/lib/postgresql` **sans** `/data` — sinon le conteneur refuse de démarrer, avec un
+> message d'erreur qui explique précisément quoi faire.
 
 ### Sortie réelle
 

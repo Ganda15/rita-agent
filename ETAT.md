@@ -210,10 +210,13 @@ la spécification sont désormais codés, exposés et affichés.** `GET /donnees
   **le trou de conception reste ouvert** : soit ajouter `pyarrow`, soit assumer une image
   d'outillage séparée. *(Même fichier que le 0 % de couverture d'aujourd'hui : deux angles
   morts sur `db/importer.py`.)*
-- ⚠️ **Écart d'environnement à traiter** : poste local en **PostgreSQL 18.4**,
-  `docker-compose.yml` fixe **postgres:17-alpine**. Contourné ici (transfert *données
-  seules*, le schéma existant déjà côté serveur), mais c'est un « ça marche chez moi » en
-  puissance — à aligner.
+- ✅ **Écart d'environnement aligné le 20/08** : poste en **PostgreSQL 18.4**, les **deux**
+  `docker-compose.yml` (racine et `db/`) passent de **17** à **18-alpine**. Testé en local
+  d'abord : conteneur en **18.6**, 8 tables créées, dump du poste restauré sans erreur.
+  🐛 **Le passage a révélé un changement de convention** : depuis la 18, l'image officielle
+  range les données dans un **sous-dossier portant la version majeure** (pour `pg_upgrade`).
+  Le montage doit viser `/var/lib/postgresql` **sans** `/data`, sinon le conteneur refuse de
+  démarrer. Corrigé dans les deux fichiers.
 - ✅ **Pare-feu actif le 19/08** — `ufw` **sur le serveur**, pas celui de Hetzner : la console
   web faisait tourner en rond, et le terminal donne le même résultat, vérifiable.
   `Default: deny (incoming)`, seuls **22/tcp** et **8001/tcp** autorisés (IPv4 + IPv6).
@@ -240,8 +243,8 @@ la spécification sont désormais codés, exposés et affichés.** `GET /donnees
      `rita-api-preprod` *healthy* peut être **celui du PC**, pas du serveur. Toujours
      regarder l'invite : `PS C:\Users\kanda>` = machine locale · `root@…:~#` = serveur.
      Erreur commise le 19/08, qui a fait croire à tort à un déploiement déjà existant.
-2. 🟡 Aligner `docker-compose.yml` sur PostgreSQL 18 (ou l'inverse) — voir l'écart
-   d'environnement signalé ci-dessus.
+2. 🟠 **HTTPS + nom de domaine** — l'API répond en clair sur une IP, donc **la clé d'API
+   circule en clair sur le réseau**. C'est le manque le plus visible sur un service public.
 
 *Référence : `docs/indicateurs/CONCEPTION.md` (bandeau réécrit le 19/08).*
 

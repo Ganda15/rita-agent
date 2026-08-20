@@ -10,7 +10,10 @@
 
 services:
   postgres:
-    image: postgres:17-alpine
+    # ⚠️ **18**, aligné sur le poste de développement (PostgreSQL 18.4) et sur
+    #    `docker-compose.yml` à la racine. Voir le commentaire détaillé là-bas :
+    #    un écart de version rend un `pg_dump` du poste irrestaurable dans le conteneur.
+    image: postgres:18-alpine
     container_name: rita-postgres
     restart: unless-stopped
     environment:
@@ -25,7 +28,10 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - rita_pgdata:/var/lib/postgresql/data
+      # ⚠️ `/var/lib/postgresql` SANS `/data` — imposé par PostgreSQL 18, qui range les
+      #    données dans un sous-dossier portant la version majeure (pour `pg_upgrade`).
+      #    L'ancien chemin fait refuser le démarrage. Constaté le 20/08/2026.
+      - rita_pgdata:/var/lib/postgresql
       - ./schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
     healthcheck:
       # Sans healthcheck, un script d'import lancé trop tôt échoue sur « connection
