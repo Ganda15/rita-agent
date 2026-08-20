@@ -9,6 +9,27 @@
 
 ---
 
+## 2026-08-20 — PostgreSQL aligné sur 18 : l'écart poste/conteneur est fermé
+
+- **Corrigé** les **deux** `docker-compose.yml` (racine et `db/`) : `postgres:17-alpine` →
+  **`postgres:18-alpine`**. Le poste tourne en **18.4** ; un `pg_dump` du poste refusait de
+  se restaurer dans un conteneur en 17, PostgreSQL ne garantissant pas la restauration vers
+  une version **antérieure**. Contourné la veille par `--data-only`, réglé pour de bon ici.
+- 🐛 **Le passage à 18 a révélé un second changement, trouvé en local avant le serveur** :
+  depuis la 18, l'image officielle range les données dans un **sous-dossier portant la
+  version majeure** (pour permettre `pg_upgrade` sans franchir une frontière de montage).
+  Le volume doit viser `/var/lib/postgresql` **sans** `/data` — sinon le conteneur refuse de
+  démarrer, avec un message d'erreur qui explique précisément quoi faire.
+  *Tester en local avant le serveur a évité une coupure à l'aveugle.*
+- **Serveur migré** : `git pull` → `down -v` → `up -d` → rechargement du dump. Volume détruit
+  à dessein (formats 17 et 18 incompatibles), **275 118 cotations · 111 valeurs · 7 positions**
+  rechargées, `ANALYZE` refait. **Vérifié depuis l'extérieur** : `/health` → **200 en
+  0,066 s**, 403 sans clé, pare-feu intact (5432 fermé, 22 ouvert).
+- **Poste, pré-production locale et serveur tournent désormais tous les trois en
+  PostgreSQL 18.** Suite complète inchangée : **319 passed, 2 xfailed, couverture 92 %**.
+- `evidence/C15/` mis à jour — la mesure du 18/08 disait bien `17-alpine`, ce qui était exact
+  ce jour-là : la correction est **datée**, l'historique n'est pas réécrit.
+
 ## 2026-08-19 — RITA est en ligne : déploiement réel, et deux vérités rétablies
 
 - 🚀 **Déployée sur Hetzner Cloud** — CX23, Falkenstein, Ubuntu 26.04, **7,19 €/mo TTC**.

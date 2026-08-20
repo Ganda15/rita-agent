@@ -217,6 +217,12 @@ la spécification sont désormais codés, exposés et affichés.** `GET /donnees
   range les données dans un **sous-dossier portant la version majeure** (pour `pg_upgrade`).
   Le montage doit viser `/var/lib/postgresql` **sans** `/data`, sinon le conteneur refuse de
   démarrer. Corrigé dans les deux fichiers.
+  **Serveur migré dans la foulée** : `git pull` → `down -v` → `up -d` → rechargement du dump.
+  Volume détruit à dessein (les formats 17 et 18 sont incompatibles), données rechargées
+  depuis `/root/rita-donnees.sql` : **275 118 cotations, 111 valeurs, 7 positions**, `ANALYZE`
+  refait. **Vérifié depuis l'extérieur après migration** : `/health` → 200 en 0,066 s · 403
+  sans clé · pare-feu intact (5432 fermé, 22 ouvert). **Poste, préprod locale et serveur
+  tournent désormais tous les trois en PostgreSQL 18.**
 - ✅ **Pare-feu actif le 19/08** — `ufw` **sur le serveur**, pas celui de Hetzner : la console
   web faisait tourner en rond, et le terminal donne le même résultat, vérifiable.
   `Default: deny (incoming)`, seuls **22/tcp** et **8001/tcp** autorisés (IPv4 + IPv6).
