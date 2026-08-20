@@ -249,8 +249,16 @@ la spécification sont désormais codés, exposés et affichés.** `GET /donnees
      `rita-api-preprod` *healthy* peut être **celui du PC**, pas du serveur. Toujours
      regarder l'invite : `PS C:\Users\kanda>` = machine locale · `root@…:~#` = serveur.
      Erreur commise le 19/08, qui a fait croire à tort à un déploiement déjà existant.
-2. 🟠 **HTTPS + nom de domaine** — l'API répond en clair sur une IP, donc **la clé d'API
-   circule en clair sur le réseau**. C'est le manque le plus visible sur un service public.
+2. ✅ **HTTPS actif — 20/08.** `https://178-104-184-125.sslip.io/` — certificat **Let's
+   Encrypt réel**, obtenu via **Caddy** en reverse proxy devant l'API (port 8001 en interne).
+   Aucun nom de domaine acheté : **sslip.io** traduit `X-X-X-X.sslip.io` vers l'IP `X.X.X.X`,
+   ce qui reste un vrai nom DNS, éligible à un vrai certificat.
+   **Vérifié depuis l'extérieur** : 200 en HTTPS · 403 sans clé (le garde-fou survit) ·
+   HTTP (80) redirige en **308** vers HTTPS · l'ancienne adresse `IP:8001` fonctionne encore.
+   ⚠️ **Certificat valide jusqu'au 18/11/2026** — Caddy le renouvelle seul ~30 jours avant,
+   donc avant le rendu du 05/11 ; **à vérifier fin octobre** que le renouvellement a bien eu
+   lieu, avant le jury du 30/11.
+   Raccourcis Bureau mis à jour vers l'adresse HTTPS.
 
 *Référence : `docs/indicateurs/CONCEPTION.md` (bandeau réécrit le 19/08).*
 
@@ -323,7 +331,7 @@ IA serait une preuve fabriquée).
 | **C10** | 🔨 **19/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **9 points de terminaison** intégrés. **46 tests** front | tri/recherche · audit RGAA outillé · doc d'architecture |
 | **C11** | **rien** | tout |
 | **C12** | **319 tests** (2 xfailed volontaires — entrée et sortie), 15 cas d'éval, seuils non compensables en CI · **couverture 92 %**, seuil **90 %** verrouillé en CI (19/08, `db/importer.py` et `evals/mesurer_sortie.py` fermés 0→100 %) · procédure documentée | DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
-| **C13** | GitHub Actions (2 jobs, porte garde-fous) · **empaquetage Docker 18/08** — image 595 Mo, non-root, lecture seule · **volet LIVRAISON 19/08** (`7570bc9`) : publie sur GHCR uniquement sur tag `livrable-*`, démarre l'image et vérifie `/health` + 403 · ✅ **DÉPLOYÉ 19/08** sur Hetzner CX23 (`178.104.184.125:8001`), vérifié depuis l'extérieur, 275 118 cotations chargées, **pare-feu `ufw` actif** (22 + 8001 seuls, 5432 et 80 fermés — vérifié de l'extérieur) | 🔴 `db/importer.py` **ne tourne pas dans l'image** (pyarrow exclu) · écart PostgreSQL 18 local / 17 conteneur · pas de HTTPS ni de nom de domaine |
+| **C13** | GitHub Actions (2 jobs, porte garde-fous) · **empaquetage Docker 18/08** — image 595 Mo, non-root, lecture seule · **volet LIVRAISON 19/08** (`7570bc9`) : publie sur GHCR uniquement sur tag `livrable-*`, démarre l'image et vérifie `/health` + 403 · ✅ **DÉPLOYÉ 19/08** sur Hetzner CX23, **HTTPS 20/08** (Caddy + Let's Encrypt via sslip.io) — `https://178-104-184-125.sslip.io/`, vérifié depuis l'extérieur, PostgreSQL 18 aligné partout, pare-feu `ufw` actif (22/80/443/8001) | 🔴 `db/importer.py` **ne tourne pas dans l'image** (pyarrow exclu) · certificat à surveiller fin octobre (renouvellement auto avant le 18/11) |
 | **C14** | 🔨 **18/08** — wireframes des 4 états (`evidence/C14/`), spécification US-1 : contexte, 5 scénarios, 11 critères d'acceptation dont 6 avec numéro de règle RGAA. Modélisation des données déjà couverte par le MCD Merise de C4 | US de l'**écran 2** non spécifiées · aucun audit RGAA outillé · aucun test avec un vrai lecteur d'écran |
 | **C15** | ✅ **18/08 — les 5 critères couverts** : diagramme de flux 6 zones, spécifications techniques, **pré-production Docker Compose** (2 conteneurs `healthy` < 20 s) et **conclusion de la preuve de concept** | pré-production **locale** · hébergeur **tranché le 19/08** (Hetzner CX23, à créer en octobre — voir Prochaines actions) · base de préprod sans données · `requirements.txt` toujours non épinglé |
 | **C16** | **rien** — aucune méthode agile outillée | tout (kanban, backlog, rituels) |

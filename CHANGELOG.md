@@ -9,6 +9,23 @@
 
 ---
 
+## 2026-08-20 — HTTPS actif : Caddy + Let's Encrypt, sans acheter de domaine
+
+- **Livré** un reverse proxy **Caddy** devant l'API (port 8001 en interne), avec un
+  **certificat Let's Encrypt réel** — `https://178-104-184-125.sslip.io/`.
+- **Aucun nom de domaine acheté** : `sslip.io` traduit `X-X-X-X.sslip.io` vers l'IP
+  `X.X.X.X` — un vrai nom DNS, donc éligible à un vrai certificat, gratuit et immédiat.
+- **Vérifié depuis l'extérieur** : `/health` → **200** en HTTPS · `/donnees/valeurs` sans
+  clé → **403** (le garde-fou survit au reverse proxy) · `http://` (port 80) → **308**,
+  redirection automatique vers HTTPS · l'ancienne adresse `IP:8001` reste fonctionnelle.
+- ⚠️ **Certificat valide jusqu'au 18/11/2026.** Caddy le renouvelle seul ~30 jours avant —
+  donc avant le rendu du 05/11 — mais **à vérifier fin octobre** que le renouvellement a
+  bien eu lieu, avant le jury du 30/11.
+- Pare-feu étendu : 80 et 443 ajoutés aux règles `ufw` déjà en place (22, 8001).
+- Raccourcis Bureau mis à jour vers l'adresse HTTPS.
+- **La clé d'API ne circule plus en clair sur le réseau.** Dernier point rouge de C13
+  visible sur un service public, fermé.
+
 ## 2026-08-20 — PostgreSQL aligné sur 18 : l'écart poste/conteneur est fermé
 
 - **Corrigé** les **deux** `docker-compose.yml` (racine et `db/`) : `postgres:17-alpine` →
