@@ -231,6 +231,23 @@ la spécification sont désormais codés, exposés et affichés.** `GET /donnees
 - Le déploiement n'utilise **que** le jeu de démonstration : aucune donnée personnelle
   d'Era n'est sur cette machine (`--exclude-table-data=position` à l'export).
 
+🔴 **AUCUN RAFRAÎCHISSEMENT DES DONNÉES — constaté le 20/08, à traiter avant le jury.**
+L'écran affiche des cours du **18/08** parce que c'est la dernière fois qu'un
+`pipelines.ingest --etapes cotations` a tourné (sur le poste). La base copiée sur le serveur
+est une **photographie figée** de ce jour-là.
+- **Le retard grandit tout seul** : 2 jours le 20/08 · ~2 semaines à la rentrée ·
+  **~3 mois au jury du 30/11** si rien n'est relancé. Un évaluateur qui ouvre l'application
+  le 30/11 et voit des cours du 18/08 posera la question.
+- 💡 **C'est automatisable, contrairement à l'import initial** : l'image contient déjà
+  `yfinance` (`requirements-api.txt`), donc `pipelines.ingest` peut tourner **directement
+  sur le serveur** — pas besoin de `pyarrow` ni de montage de Parquet.
+- **Piste** : une tâche planifiée (`cron` ou minuterie `systemd`) lançant
+  `docker compose exec api python -m pipelines.ingest --etapes cotations,ecb,rss`
+  chaque jour de semaine, puis `ANALYZE`.
+- ⚠️ **Ce serait aussi un vrai point pour C20-C21** (monitorage, exploitation), aujourd'hui
+  à 0 % : un service qui se met à jour seul et qu'on surveille, c'est exactement ce que ces
+  compétences demandent.
+
 **Prochaines actions, dans l'ordre :**
 
 1. ✅ **C13 volet LIVRAISON — fait le 19/08** (`7570bc9`). Reste : le **test des données**
