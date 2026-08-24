@@ -71,6 +71,18 @@ chemins absolus, code de sortie propre) : **il n'a jamais été installé**.
   **trace** : un fichier de journal daté par jour + la **courbe des cotations**. Seules
   `cotation`, `article` et `taux_change` grandissent ; `valeur` (111) et `position` (7) sont
   fixes et ne prouvent aucune durée.
+- ✅ **RÉSOLU LE JOUR MÊME — 24/08.** Tâche installée et **prouvée par son journal** :
+  `schtasks /create ... /sc daily /st 19:00` → prochaine exécution automatique **25/08 19h00**.
+  Lancée immédiatement pour vérifier : `logs/collecte-2026-08-24.log` (2 039 o) —
+  **4/4 étapes, 11,6 s, `Code de sortie : 0`** · taux 5 · cotations 108 (séance du 24/08) ·
+  articles 30 · scraping 3, avec **3 ISIN ajoutés** (MC.PA, OR.PA, AI.PA).
+  *La création d'une tâche ne prouve rien ; c'est le journal qui prouve.*
+- ⚠️ **Point à traiter, découvert dans la foulée** : `logs/` est **exclu de Git**
+  (`.gitignore:16` → `*.log`) — à raison, un journal peut contenir des valeurs détenues.
+  **Conséquence** : la preuve de pérennisation s'accumule **en local seulement** et n'est pas
+  visible dans le dépôt. Pour le jury il faudra un **extrait anonymisé périodique** déposé dans
+  `evidence/C1/` (ex. une fois par mois), sinon le critère repose sur une démonstration en
+  direct — ce qu'on veut justement éviter.
 - 🔴 **Manque associé, écrit dès le 11/08 et jamais fait** (`README-planification.md` §7) : il
   n'existe **aucune fraîcheur globale**. `/health` répond `{"status":"ok"}` sans rien dire des
   données ; `fraicheur_jours` n'existe qu'**par valeur** (seuil 40 j). Un évaluateur qui demande
