@@ -43,9 +43,17 @@ Le message rédigé le 02/08 (vault : `Projets/RITA/00-Pilotage/MESSAGE — envo
 du big data »*. Levée par le formateur. Le cadrage du rapport E1 tient.
 ⚠️ **Preuve à capturer** : la formulation exacte et la date sont **dans le fil Discord** —
 rien ne doit être reconstitué de mémoire. `evidence/C1/` et `evidence/C6/`.
-📌 **Restent sans réponse** : dépôt public ou privé · **PySpark étapes 2-4 (en pause depuis le
-29/07, 26 jours)** · et surtout la **question 6, jamais posée** : *E2 et E5 sont-ils portables
-par RITA seul ?* — alors que C7, C20 et C21 valent « rien » dans le tableau plus bas.
+📌 **Restent sans réponse** : **PySpark étapes 2-4** (en pause depuis le 29/07) · et surtout
+*E2 et E5 sont-ils portables par RITA seul ?* — alors que C7, C20 et C21 valent « rien » plus bas.
+⏸️ **Décision d'Era du 24/08 : on ne les envoie PAS maintenant.** Le formateur n'a que le
+périmètre **C1–C5** ouvert ; poser un arbitrage sur E2/E5 avant qu'il les suive donnerait une
+réponse vague ou pas de réponse. **Le message est rédigé et gelé**, prêt à partir :
+`Projets/RITA/00-Pilotage/MESSAGE — 2 questions bloquantes E2-E5 et PySpark (2026-08-24).md`.
+**Déclencheur d'envoi** : dès qu'Elbby ouvre E2/E3/E4/E5, ou **fin septembre au plus tard**.
+**Conséquence assumée** : d'ici là on avance sur E2 et E5 **avec l'hypothèse que RITA seul les
+porte** — raisonnable (5 incidents réels documentés pour C21, 3 fournisseurs comparables pour
+C7), mais **non validée**. Si la réponse tarde et qu'elle est négative, le contenu produit reste
+réutilisable ; c'est le calendrier qui souffrirait.
 
 🔴 **24/08 — 4ᵉ occurrence du défaut, et la plus coûteuse : la collecte quotidienne n'a JAMAIS
 tourné.** `scripts/README-planification.md` (11/08) décrit sur 138 lignes une tâche
