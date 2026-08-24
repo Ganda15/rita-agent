@@ -103,12 +103,37 @@ git push origin refs/tags/livrable-E1-v1:refs/tags/livrable-E1-v1
 
 | # | Gelé le | Livrable | Compétences | Tag / commit | Envoyé le | Retour reçu | Ce que le retour change |
 |---|---|---|---|---|---|---|---|
-| 1 | 2026-08-13 | **E1 — Données** | C1–C5 | `livrable-E1-v1` | ⬜ | ⬜ | — |
+| 1 | 2026-08-13 | **E1 — Données** | C1–C5 | `livrable-E1-v1` | ✅ **relu avant le gel** (message « Bloc 1 », début août) | ✅ **3 réponses reçues** — voir ci-dessous | Le cadrage big data d'E1 est **validé** |
 | 2 | 2026-08-15 | Protocole de veille C6 (complet) | C6 | `27ff359` | ⬜ | ⬜ | — |
 | 3 | 2026-08-15 | Conception des indicateurs (E4) | — *(conception)* | `81780cb` | ⬜ | ⬜ | — |
 | 4 | 2026-08-14 | **Note de veille S33** — injection de prompt | C6 | `1da976f` | ⬜ **prête, non partie** | ⬜ | — |
 
 **Légende** : ⬜ = pas encore fait · ✅ = fait, avec la date.
+
+### 🔴 Correction du 24/08 — ce registre sous-estimait le travail réel
+
+Ce fichier, créé le 16/08, affirmait **« 4 éléments en file, 0 envoyé »**. **C'est faux, et à
+la défaveur d'Era** : le **message « Bloc 1 »** (rédigé le 02/08, ajusté le 07/08, conservé dans
+le vault Obsidian `Projets/RITA/00-Pilotage/`) **est bien parti**, et le formateur **y a répondu
+sur les trois questions** :
+
+| # | Question posée | Réponse |
+|---|---|---|
+| 1 | La preuve big data couvre-t-elle **C1 seul ou C2 aussi** ? | ✅ accepté |
+| 2 | « 276 168 lignes, ce n'est pas du big data — je démontre la **méthode qui scale** » | ✅ accepté — **le cadrage du rapport E1 tient** |
+| 3 | LangSmith → sous-traitant **américain**, quel niveau de détail RGPD ? | ✅ OK |
+
+**Nuance de date à ne pas gommer** : cette relecture portait sur l'état d'**avant le gel** ; le
+tag `livrable-E1-v1` a été posé le **13/08**, après. Le fond validé est le même, la version
+figée est postérieure.
+
+⚠️ **Date exacte et formulation du retour : à reprendre de la capture Discord**, pas d'ici.
+Le canal était **GitHub** (accès au dépôt) + **Discord** (le retour lui-même).
+
+> **Leçon, et c'est la 5ᵉ du même genre** : un registre qui n'est pas tenu au fil de l'eau finit
+> par **mentir dans les deux sens** — ici il effaçait une validation obtenue. Les quatre autres
+> (garde-fou de sortie, `tabindex`, récurrence veille, collecte quotidienne) faisaient l'inverse :
+> ils affirmaient un contrôle inexistant.
 
 > **État au 2026-08-16 : 4 éléments en file, 0 envoyé.** Le formateur est en congé.
 > **La note de veille S33 est écrite et prête, mais n'est pas partie** — voir la ligne 4

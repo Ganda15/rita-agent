@@ -28,6 +28,48 @@
   photographie du 19/08. `/health` répond **200** (vérifié depuis le poste le 24/08), mais les
   données affichées en ligne ont **5 jours de retard**. → tâche planifiée serveur, ci-dessous.
 
+🟢 **24/08 — LE FORMATEUR A RÉPONDU. Les 3 questions du « Bloc 1 » sont tranchées.**
+Le message rédigé le 02/08 (vault : `Projets/RITA/00-Pilotage/MESSAGE — envoi Bloc 1 à Elbby`)
+était noté « à envoyer » : **il était parti**, et le retour est arrivé. Canal : **GitHub**
+(acceptation de l'invitation, vérifiée : `bybysker (read)`) + **Discord** (le retour lui-même).
+
+| # | Question | Réponse |
+|---|---|---|
+| 1 | Big data : la preuve couvre **C1 seul ou C2 aussi** ? | ✅ accepté |
+| 2 | « 276 168 lignes, ce n'est pas du big data — je démontre la **méthode qui scale** » | ✅ accepté |
+| 3 | LangSmith → sous-traitant **américain**, niveau de détail RGPD | ✅ OK |
+
+**La n°2 était le risque majeur d'E1** : s'entendre dire au jury *« 276 000 lignes, ce n'est pas
+du big data »*. Levée par le formateur. Le cadrage du rapport E1 tient.
+⚠️ **Preuve à capturer** : la formulation exacte et la date sont **dans le fil Discord** —
+rien ne doit être reconstitué de mémoire. `evidence/C1/` et `evidence/C6/`.
+📌 **Restent sans réponse** : dépôt public ou privé · **PySpark étapes 2-4 (en pause depuis le
+29/07, 26 jours)** · et surtout la **question 6, jamais posée** : *E2 et E5 sont-ils portables
+par RITA seul ?* — alors que C7, C20 et C21 valent « rien » dans le tableau plus bas.
+
+🔴 **24/08 — 4ᵉ occurrence du défaut, et la plus coûteuse : la collecte quotidienne n'a JAMAIS
+tourné.** `scripts/README-planification.md` (11/08) décrit sur 138 lignes une tâche
+`RITA - collecte quotidienne` lancée chaque soir à 19h00, journaux à l'appui. Vérifié le 24/08 :
+- `schtasks /query` → **aucune tâche de ce nom** (ni `veille-hebdo-securite-llm`) ;
+- **le dossier `logs/` n'existe pas du tout** — donc pas « elle a cessé », mais **jamais lancée**.
+Le script `scripts/collecte-quotidienne.cmd` est pourtant sain (il crée `logs/` lui-même,
+chemins absolus, code de sortie propre) : **il n'a jamais été installé**.
+- **Conséquence directe** : c'est la vraie cause du retard de données du 20/08 — rien n'était
+  automatisé **nulle part**, ni sur le poste ni sur le serveur.
+- **Conséquence certification** : C1 demande de **« pérenniser la collecte »**. Un document qui
+  décrit une tâche inexistante ne pérennise rien. **À installer, puis prouver par `logs/`.**
+- 💡 **Ce que ça révèle pour la démo** : la preuve des 12 semaines n'est pas une collecte lancée
+  devant le jury (réseau, Bourse fermée, API muette — trop de façons d'échouer), c'est la
+  **trace** : un fichier de journal daté par jour + la **courbe des cotations**. Seules
+  `cotation`, `article` et `taux_change` grandissent ; `valeur` (111) et `position` (7) sont
+  fixes et ne prouvent aucune durée.
+- 🔴 **Manque associé, écrit dès le 11/08 et jamais fait** (`README-planification.md` §7) : il
+  n'existe **aucune fraîcheur globale**. `/health` répond `{"status":"ok"}` sans rien dire des
+  données ; `fraicheur_jours` n'existe qu'**par valeur** (seuil 40 j). Un évaluateur qui demande
+  *« vos données sont-elles à jour ? »* n'obtient pas de réponse de l'application.
+  → petit chantier, triple rendement : **C1** (pérennisation démontrable), **C20** (monitorage,
+  à 0 %), et une démo qui ne dépend plus du réseau.
+
 🆕 **Séance de veille S34 du 17/08 — ce qu'elle a changé dans le code.** Commit `c7c8811`.
 - Le **garde-fou de sortie** (interdit AMF) était invoqué par `guardrails/injection.py:9`
   et **n'existait pas** ; `api/main.py` diffusait le texte du modèle sans contrôle. Écrit
