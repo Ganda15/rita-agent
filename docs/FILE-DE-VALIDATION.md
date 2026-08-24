@@ -114,6 +114,31 @@ git push origin refs/tags/livrable-E1-v1:refs/tags/livrable-E1-v1
 > **La note de veille S33 est écrite et prête, mais n'est pas partie** — voir la ligne 4
 > ci-dessus et `docs/veille/_JOURNAL-DES-ENVOIS.md`, qui reste vide et le dit.
 
+### 🟢 2026-08-24 — LE VERROU SAUTE : la file peut s'ouvrir
+
+Le formateur est de nouveau joignable : **l'invitation du 13/08 a été acceptée**, et il a validé
+les points *big data* sans aucune remarque négative à ce jour.
+
+**Les trois vérifications d'avant-envoi ont été passées le 24/08, dans l'ordre du protocole
+ci-dessus — les trois sont vertes :**
+
+| # | Vérification | Résultat du 24/08 |
+|---|---|---|
+| 1 | Le tag existe sur GitHub et pointe où on croit | ✅ `livrable-E1-v1` → objet-tag `85e2adf` → commit **`659c047`**, tagué le **13/08 14h40**. **Local et GitHub identiques** |
+| 2 | Le destinataire est bien collaborateur | ✅ `bybysker (read)` dans `/collaborators` · **aucune invitation en attente** |
+| 3 | Zéro lien cassé dans le dépôt | ✅ `verifier_liens.py` : 52 fichiers, **74 liens internes + 32 externes, 0 cassé** |
+
+⚠️ **Piège de lecture écarté au passage** : la commande du protocole
+(`git/ref/tags/... --jq .object.sha`) renvoie le SHA de l'**objet-tag**, pas celui du **commit** —
+il diffère donc de `git rev-parse livrable-E1-v1^{}` en local **sans que rien ne soit anormal**.
+Vérifié en déréférençant l'objet-tag côté GitHub : il vise bien `659c047`.
+*Ajouter `^{}` pour comparer des commits, sinon on compare une étiquette à une page.*
+
+Le rapport est à `docs/rapports/E1/rapport-E1.pdf`.
+
+**➡️ E1 est prêt à partir. Un seul envoi aujourd'hui** — la règle §3 tient : trois livrables
+envoyés le même jour reçoivent un seul retour, superficiel.
+
 ---
 
 ## Ce qui reste à mettre en file, dans l'ordre du plan

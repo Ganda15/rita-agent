@@ -370,15 +370,15 @@ fabriquée, donc irrecevable pour C6.
 
 | C | Fait | Manque |
 |---|---|---|
-| **C1** | 7 sources, les 5 types, script en 6 points | invitation `bybysker` en attente d'acceptation |
+| **C1** | 7 sources, les 5 types, script en 6 points · ✅ **dépôt accessible au relecteur (24/08)** · *big data validé par le formateur, sans remarque négative* | — |
 | **C2** | 3 requêtes SQL, optimisation LATERAL mesurée ×2000 | — |
-| **C3** | `pipelines/ingest.py`, 15 tests, règles justifiées par mesure | invitation en attente d'acceptation |
+| **C3** | `pipelines/ingest.py`, 15 tests, règles justifiées par mesure · ✅ **dépôt accessible (24/08)** | — |
 | **C4** | MCD Merise 6 entités, MPD 8 tables, registre RGPD, purge testée | — |
 | **C5** | **9 endpoints** authentifiés + `/health` public, OpenAPI 3.1.0, auth **au niveau routeur** (une route ajoutée est protégée par défaut), **45 tests** | — |
 | **C6** | protocole **complet** (15/08), gabarit, récurrence, registre, note S33 (14/08), **partage promo lancé le 16/08 sur Discord** | ⚠️ ~11 notes à venir · 🟠 réponses Discord à capturer · 🔴 envoi **formateur** non fait (congé) |
 | **C7** | **rien** — aucun benchmark de services IA | tout |
 | **C8** | cascade 3 fournisseurs testée, clé en `.env` · **doc d'exploitation écrite le 19/08** (`docs/EXPLOITATION.md`) : accès, installation avec et sans Docker, dépendances, données, dépannage | 🔴 **monitorage du service** · la doc reste à **communiquer** aux parties prenantes (5ᵉ critère) |
-| **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection | revue OWASP · doc d'architecture · invitation en attente |
+| **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection · ✅ **dépôt accessible (24/08)** | revue OWASP · doc d'architecture |
 | **C10** | 🔨 **19/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **9 points de terminaison** intégrés. **46 tests** front | tri/recherche · audit RGAA outillé · doc d'architecture |
 | **C11** | **rien** | tout |
 | **C12** | **319 tests** (2 xfailed volontaires — entrée et sortie), 15 cas d'éval, seuils non compensables en CI · **couverture 92 %**, seuil **90 %** verrouillé en CI (19/08, `db/importer.py` et `evals/mesurer_sortie.py` fermés 0→100 %) · procédure documentée | DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
@@ -407,13 +407,16 @@ fabriquée, donc irrecevable pour C6.
    restantes au 14/08, une semaine perdue = une preuve perdue définitivement. Depuis le
    15/08 le protocole est complet ; **1 partage sur 2 fait** (promo Discord le 16/08,
    formateur toujours bloqué par son congé).
-2. 🟠 **Accès au dépôt — invitation envoyée, pas encore acceptée.** Vérifié sur GitHub le
-   14/08 : `bybysker` a été invité le **13/08 à 15h16** en droit `read`. Il est dans
-   `/invitations`, **pas encore dans `/collaborators`** — donc le critère *« accessible
-   depuis un dépôt Git »* (C1#6, C3#2, C9) n'est **pas encore satisfait**.
-   **Reste à faire** : relancer si l'invitation n'est pas acceptée · inviter le **jury**
-   le moment venu. Commande de vérification :
-   `gh api repos/Ganda15/rita-agent/collaborators --jq '.[].login'`
+2. ✅ **Accès au dépôt — RÉGLÉ le 24/08.** L'invitation du 13/08 a été **acceptée**.
+   Vérifié à la source : `bybysker (read)` figure dans `/collaborators`, et
+   `/invitations` renvoie **aucune invitation en attente**. Le critère *« accessible
+   depuis un dépôt Git »* (**C1#6, C3#2, C9**) est **satisfait**.
+   **Reste** : inviter le **jury** le moment venu. Commande de vérification :
+   `gh api repos/Ganda15/rita-agent/collaborators --jq ".[].login"`
+   🟢 **Conséquence plus importante que le critère lui-même** : le formateur est de nouveau
+   joignable (retour positif sur les points *big data*, aucune remarque négative à ce jour).
+   **La file de validation, gelée depuis le 13/08 avec 4 éléments et 0 envoi, peut être
+   ouverte** — voir `docs/FILE-DE-VALIDATION.md`.
 3. ✅ **Couverture mesurée le 19/08** — **81 %**, seuil **80 %** en CI. Restent 2 fichiers à 0 % (voir ci-dessus).
 4. 🟠 **Chaîne de LIVRAISON absente** (C13) — aujourd'hui c'est de l'intégration continue.
 5. 🟡 **Revue OWASP API Top 10** (C9) non écrite — mais **2 entrées sur 10 déjà traitées** :
