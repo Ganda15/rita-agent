@@ -481,6 +481,13 @@ fabriquée, donc irrecevable pour C6.
 ## Décisions prises, à ne pas re-débattre
 
 - Dépôt **privé** avec accès collaborateur — décision assumée, pas un oubli.
+  ✅ **Reconfirmée par Era le 24/08 : le dépôt reste privé, définitivement.** La question
+  « le passer en public avant l'oral ? » est **retirée** de la liste au formateur.
+  🔴 **Contrepartie non négociable, à ne pas oublier** : **inviter le JURY** avant l'oral.
+  Dépôt privé + jury non invité = **page 404 le jour J** = le critère *« accessible depuis un
+  dépôt Git »* (C1#6, C3#2, C9) tombe, alors qu'il est acquis aujourd'hui.
+  À faire au plus tard **avec l'envoi des livrables du 05/11**. Vérification :
+  `gh api repos/Ganda15/rita-agent/collaborators --jq ".[].login"`
 - Une seule clé d'API (mono-utilisateur, décision D10) — pas de système de comptes.
 - `article` et `memory_audit` hors du MCD : collecte brute et journal technique ne sont pas
   des entités métier. 6 entités + 2 tables techniques = 8 tables.
