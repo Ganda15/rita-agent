@@ -3,7 +3,30 @@
 > **Ce fichier se périme.** Il porte l'état du jour ; `CLAUDE.md` porte ce qui ne change pas.
 > À relire au démarrage de chaque session, à mettre à jour à la fin.
 
-**Dernière mise à jour : 2026-08-19** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+**Dernière mise à jour : 2026-08-24** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+
+🗓️ **Lundi 24/08 — rituel du lundi fait (poste local).**
+- ✅ **PREMIÈRE SAUVEGARDE RÉELLE** — le manque n°0 avait 8 jours. `pg_dump -F c` →
+  `D:\KandaWork\RITA_PROJECT\sauvegardes\rita-2026-08-24.dump` (**4,7 Mo**).
+  **Vérifiée par `pg_restore --list`** : 55 entrées, les **8 tables** présentes.
+  *Un fichier qui existe n'est pas une sauvegarde qui restaure — même exigence que
+  « une image qui se construit n'est pas une image qui démarre ».*
+- ✅ **Données rafraîchies** — simulation d'abord (3/3, 0 rejetée), puis réel :
+  **544 cotations** (séances du 14/08 au 24/08), 5 taux, 30 articles. `ANALYZE` refait.
+  Base : **275 554 cotations · retard 0 jour** · 111 valeurs · 7 positions · 60 articles · 10 taux.
+- ✅ **Vérifié qu'il n'y a pas de doublon d'articles** avant d'envisager une tâche quotidienne :
+  60 lignes, **60 liens distincts, 0 doublon**. La collecte est ré-exécutable sans polluer la base.
+- 🔴 **Correction d'une affirmation fausse de ce fichier** : la récurrence « tâche planifiée
+  `veille-hebdo-securite-llm`, tous les lundis 09h00 » était annoncée **en place** — elle
+  **n'existe pas** sur le poste (`Get-ScheduledTask` : aucune tâche de ce nom). La seule tâche
+  de veille est `VeilleIA_Morning` (08h07 ce matin), que ce fichier classe lui-même **hors C6**.
+  Donc **aucun candidat S35 n'a été préparé**. Voir §veille plus bas.
+  ⚠️ **Troisième occurrence du même défaut** : garde-fou de sortie « invoqué mais inexistant »
+  (17/08) · `tabindex` « annoncé en commentaire, absent du HTML » (18/08) · cette récurrence
+  (24/08). *Un contrôle documenté mais absent est pire qu'un contrôle absent.*
+- 🟠 **Le serveur n'est PAS rafraîchi** : seul le poste l'est. La base de Hetzner reste la
+  photographie du 19/08. `/health` répond **200** (vérifié depuis le poste le 24/08), mais les
+  données affichées en ligne ont **5 jours de retard**. → tâche planifiée serveur, ci-dessous.
 
 🆕 **Séance de veille S34 du 17/08 — ce qu'elle a changé dans le code.** Commit `c7c8811`.
 - Le **garde-fou de sortie** (interdit AMF) était invoqué par `guardrails/injection.py:9`
@@ -231,7 +254,12 @@ la spécification sont désormais codés, exposés et affichés.** `GET /donnees
 - Le déploiement n'utilise **que** le jeu de démonstration : aucune donnée personnelle
   d'Era n'est sur cette machine (`--exclude-table-data=position` à l'export).
 
-🔴 **AUCUN RAFRAÎCHISSEMENT DES DONNÉES — constaté le 20/08, à traiter avant le jury.**
+🟠 **RAFRAÎCHISSEMENT DES DONNÉES — poste traité le 24/08, SERVEUR TOUJOURS FIGÉ.**
+> Mise à jour 24/08 : le **poste** est à jour (retard 0 jour, 275 554 cotations). Le **serveur
+> Hetzner** reste sur la photographie du 19/08 — c'est lui que verra le jury. Le paragraphe
+> ci-dessous reste donc valable **pour le serveur**, et c'est la prochaine action technique.
+
+**Constat d'origine du 20/08 :**
 L'écran affiche des cours du **18/08** parce que c'est la dernière fois qu'un
 `pipelines.ingest --etapes cotations` a tourné (sur le poste). La base copiée sur le serveur
 est une **photographie figée** de ce jour-là.
@@ -316,9 +344,15 @@ parce qu'elle est déjà branchée sur `guardrails/injection.py` et `evals/cas.p
 finit par « ce que ça change dans RITA », ce qui satisfait le *« formuler des recommandations
 pour le projet »* du référentiel sans travail supplémentaire.
 
-⏰ Récurrence en place : tâche planifiée `veille-hebdo-securite-llm`, **tous les lundis 09h00**.
-Elle prépare une liste de candidats — **elle n'écrit pas la note** (une note produite par une
-IA serait une preuve fabriquée).
+⏰ **Récurrence : À RECRÉER — constaté le 24/08.** Ce paragraphe affirmait « en place :
+tâche planifiée `veille-hebdo-securite-llm`, tous les lundis 09h00 ». **Vérification du 24/08 :
+la tâche n'existe pas sur le poste.** Les fichiers `_candidats-2026-S33/S34.md` ont donc été
+produits autrement (à la main, ou par une tâche supprimée depuis).
+**Deux options, à trancher — ne pas laisser ce fichier réaffirmer du faux :**
+(a) recréer réellement la tâche du lundi 09h00, ou (b) assumer une préparation **manuelle**
+et l'écrire ici. Dans les deux cas, la règle ne change pas : la tâche **prépare une liste de
+candidats**, elle **n'écrit pas la note** — une note produite par une IA serait une preuve
+fabriquée, donc irrecevable pour C6.
 
 ---
 
@@ -363,6 +397,12 @@ IA serait une preuve fabriquée).
    (111 valeurs · 112 alias · 2 560 dédoublonnées · 273 608 insérées · 7 positions).
    *Rien n'a été perdu parce que les sources étaient versionnées — pas parce qu'il y avait
    une sauvegarde.* → **`pg_dump` hebdomadaire, le lundi après la note de veille.**
+   🟠 **Ramené à ORANGE le 24/08** : la **première sauvegarde existe et a été vérifiée**
+   (`sauvegardes/rita-2026-08-24.dump`, 4,7 Mo, 8 tables listées par `pg_restore --list`).
+   **Reste rouge sur deux points** : la récurrence hebdomadaire n'est **pas automatisée**
+   (faite à la main aujourd'hui), et **aucune restauration n'a été testée** — une sauvegarde
+   jamais restaurée n'est qu'un fichier. Prochain lundi : refaire le dump **et** le restaurer
+   une fois dans une base jetable.
 1. 🔴 **C6 — la récurrence ET le partage.** Le seul qui **ne se rattrape pas** : 12 semaines
    restantes au 14/08, une semaine perdue = une preuve perdue définitivement. Depuis le
    15/08 le protocole est complet ; **1 partage sur 2 fait** (promo Discord le 16/08,
