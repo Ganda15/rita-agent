@@ -17,6 +17,9 @@ const ENDPOINT = "/donnees/portefeuille";
 // Les deux appels partent EN PARALLÈLE (`Promise.all`) — le temps d'attente est
 // celui du plus lent, pas la somme des deux.
 const ENDPOINT_INDICATEURS = "/donnees/indicateurs-portefeuille";
+// Fraîcheur du jeu de données (C20) : répond à « ces chiffres datent de quand ? »
+// sans que l'utilisateur ait à le demander, et sans relancer quoi que ce soit.
+const ENDPOINT_FRAICHEUR = "/donnees/fraicheur";
 const CLE_STOCKAGE = "rita_api_key";
 
 // --- Formatage : une seule source de vérité pour les nombres -----------------
@@ -65,13 +68,14 @@ async function chargerPortefeuille(cle) {
 
   const entetes = { headers: { "X-API-Key": cle } };
 
-  let reponse, reponseIndicateurs;
+  let reponse, reponseIndicateurs, reponseFraicheur;
   try {
-    // Les deux appels partent ensemble : l'attente est celle du plus lent, pas
-    // la somme des deux. Les enchaîner doublerait le temps perçu pour rien.
-    [reponse, reponseIndicateurs] = await Promise.all([
+    // Les trois appels partent ensemble : l'attente est celle du plus lent, pas
+    // la somme des trois. Les enchaîner triplerait le temps perçu pour rien.
+    [reponse, reponseIndicateurs, reponseFraicheur] = await Promise.all([
       fetch(ENDPOINT, entetes),
       fetch(ENDPOINT_INDICATEURS, entetes),
+      fetch(ENDPOINT_FRAICHEUR, entetes),
     ]);
   } catch (erreurReseau) {
     // Le serveur n'a pas répondu DU TOUT : il n'y a aucun statut HTTP à lire.
@@ -102,9 +106,51 @@ async function chargerPortefeuille(cle) {
     ? await reponseIndicateurs.json()
     : null;
 
+  // Même raisonnement pour la fraîcheur, et il compte double ici : une jauge de
+  // santé qui casse l'écran qu'elle surveille serait un comble. Si l'appel
+  // échoue, le bandeau ne s'affiche pas — le portefeuille, si.
+  const fraicheur = reponseFraicheur.ok
+    ? await reponseFraicheur.json()
+    : null;
+
   // On ne mémorise la clé qu'APRÈS l'avoir vue fonctionner.
   sessionStorage.setItem(CLE_STOCKAGE, cle);
+  afficherFraicheur(fraicheur);
   afficher(donnees, indicateurs);
+}
+
+// --- LE BANDEAU DE FRAÎCHEUR (C20) -------------------------------------------
+// Trois statuts et trois seulement. `statut` vient de l'API : on ne le colle pas
+// tel quel dans un nom de classe sans le vérifier. Une liste blanche coûte une
+// ligne et ferme la question — le jour où l'API rendrait autre chose, on affiche
+// le message sans couleur plutôt que de fabriquer une classe inconnue.
+const STATUTS_FRAICHEUR = ["vert", "orange", "rouge"];
+
+function afficherFraicheur(fraicheur) {
+  const bloc = document.getElementById("fraicheur");
+
+  if (!fraicheur || !fraicheur.message) {
+    bloc.hidden = true;
+    return;
+  }
+
+  // textContent = "" vide le bloc sans innerHTML. Tout le front s'interdit
+  // innerHTML : c'est la mesure prise contre A03 (injection) de l'OWASP Top 10.
+  bloc.textContent = "";
+
+  const statut = STATUTS_FRAICHEUR.includes(fraicheur.statut) ? fraicheur.statut : "";
+  bloc.className = statut ? `fraicheur fraicheur-${statut}` : "fraicheur";
+
+  // La pastille est décorative : aria-hidden la retire de l'arbre d'accessibilité.
+  // Un lecteur d'écran lit le message, pas « puce ». L'information est dans le
+  // texte — la couleur ne fait que la répéter pour ceux qui la voient.
+  const pastille = document.createElement("span");
+  pastille.className = "pastille";
+  pastille.setAttribute("aria-hidden", "true");
+  bloc.appendChild(pastille);
+
+  bloc.appendChild(document.createTextNode(fraicheur.message));
+  bloc.hidden = false;
 }
 
 // --- LE RENDU ----------------------------------------------------------------

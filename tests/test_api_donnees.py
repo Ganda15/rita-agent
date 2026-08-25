@@ -28,6 +28,7 @@ ROUTES_PROTEGEES = [
     "/donnees/indicateurs",
     "/donnees/indicateurs-portefeuille",
     "/donnees/indicateurs-risque",
+    "/donnees/fraicheur",
 ]
 
 
@@ -136,6 +137,7 @@ def test_openapi_est_genere_et_complet(client):
                   "/donnees/mouvements", "/donnees/volumes-anormaux",
                   "/donnees/articles", "/donnees/indicateurs",
                   "/donnees/indicateurs-portefeuille", "/donnees/indicateurs-risque",
+                  "/donnees/fraicheur",
                   "/briefing", "/health"):
         assert route in o["paths"], f"{route} absent du contrat OpenAPI"
 
@@ -389,3 +391,55 @@ def test_indicateurs_risque_aucun_conseil_dans_la_reponse(client, risque_simule)
     interdits = {"alerte", "risque_niveau", "recommandation", "conseil", "seuil", "action", "signal"}
     for ligne in d["indicateurs"]:
         assert not (interdits & set(ligne)), f"champ de conseil : {ligne}"
+
+
+# --- fraîcheur du jeu de données (C20) ----------------------------------------
+
+def test_fraicheur_expose_le_statut_et_le_retard(client):
+    """C20 — l'API doit savoir répondre à « ces données datent de quand ? ».
+
+    La date du jour vient du SERVEUR (`aujourdhui`, issu de CURRENT_DATE), pas de
+    la machine qui interroge : sans ça le test virerait au rouge tout seul demain.
+    """
+    ligne = {
+        "derniere_seance": date(2026, 8, 24),
+        "nb_cotations": 275554,
+        "nb_valeurs": 111,
+        "nb_positions": 7,
+        "nb_articles": 73,
+        "nb_taux": 10,
+        "derniere_collecte_article": None,
+        "dernier_taux": date(2026, 8, 24),
+        "aujourdhui": date(2026, 8, 25),
+    }
+
+    def faux(sql, nom, dsn=None, **params):
+        return Extraction(nom=nom, lignes=[ligne], nb=1)
+
+    with patch("sources.database._executer", side_effect=faux):
+        reponse = client.get("/donnees/fraicheur", headers=CLE)
+
+    assert reponse.status_code == 200
+    corps = reponse.json()
+    assert corps["statut"] == "vert"
+    assert corps["retard_jours_ouvres"] == 1
+    assert corps["nb_cotations"] == 275554
+    assert "24/08/2026" in corps["message"]
+
+
+def test_fraicheur_signale_une_base_vide_en_rouge(client):
+    """Le 16/08 la base avait disparu. Une base vide ne doit pas être annoncée
+    « à jour » : l'absence de donnée n'est pas de la donnée fraîche."""
+    ligne = {"derniere_seance": None, "nb_cotations": 0, "nb_valeurs": 0,
+             "nb_positions": 0, "nb_articles": 0, "nb_taux": 0,
+             "derniere_collecte_article": None, "dernier_taux": None,
+             "aujourdhui": date(2026, 8, 25)}
+
+    def faux(sql, nom, dsn=None, **params):
+        return Extraction(nom=nom, lignes=[ligne], nb=1)
+
+    with patch("sources.database._executer", side_effect=faux):
+        reponse = client.get("/donnees/fraicheur", headers=CLE)
+
+    assert reponse.status_code == 200
+    assert reponse.json()["statut"] == "rouge"

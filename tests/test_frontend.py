@@ -353,3 +353,57 @@ def test_aucun_conseil_sur_le_rsi_dans_la_page_ou_le_code():
 
     # Contrôle inverse : le disclaimer qui NIE le conseil doit, lui, être présent.
     assert "n'indique jamais" in html
+
+
+# --- Le bandeau de fraîcheur des données (C20) -------------------------------
+
+def test_le_bandeau_de_fraicheur_existe_dans_la_page():
+    """Le bandeau doit être dans le HTML, pas seulement dans le JavaScript :
+    un utilisateur ne lit pas le code, et un évaluateur regarde l'écran."""
+    html = (FRONTEND / "index.html").read_text(encoding="utf-8")
+    assert 'id="fraicheur"' in html
+
+
+def test_le_point_de_terminaison_de_fraicheur_est_appele():
+    code = code_sans_commentaires("app.js")
+    assert "/donnees/fraicheur" in code
+
+
+def test_les_trois_appels_partent_en_parallele():
+    """Trois appels enchaînés tripleraient le temps perçu. Promise.all les
+    lance ensemble : l'attente est celle du plus lent."""
+    code = code_sans_commentaires("app.js")
+    assert "reponseFraicheur" in code
+    assert "Promise.all" in code
+
+
+def test_une_panne_de_la_fraicheur_ne_fait_pas_tomber_le_portefeuille():
+    """Une jauge de santé qui casse l'écran qu'elle surveille serait un comble.
+    Même principe que pour les indicateurs, et il compte double ici."""
+    code = code_sans_commentaires("app.js")
+    assert "reponseFraicheur.ok" in code
+    assert "? await reponseFraicheur.json()" in code
+
+
+def test_le_statut_n_est_pas_porte_par_la_seule_couleur():
+    """RGAA 3.1 / WCAG 1.4.1. La pastille est décorative (aria-hidden) et c'est
+    le TEXTE du message qui porte l'information. Une personne daltonienne, ou un
+    navigateur sans CSS, doit lire exactement la même chose."""
+    code = code_sans_commentaires("app.js")
+    assert 'setAttribute("aria-hidden", "true")' in code
+    assert "createTextNode(fraicheur.message)" in code
+
+
+def test_le_statut_venu_de_l_api_est_filtre_par_liste_blanche():
+    """`statut` vient du réseau : on ne le concatène pas tel quel dans un nom de
+    classe sans le vérifier."""
+    code = code_sans_commentaires("app.js")
+    assert "STATUTS_FRAICHEUR" in code
+    assert "STATUTS_FRAICHEUR.includes(fraicheur.statut)" in code
+
+
+def test_le_bandeau_n_utilise_pas_innerHTML():
+    """Le front entier s'interdit innerHTML — mesure prise contre A03 (injection)
+    de l'OWASP Top 10. Le bandeau ne fait pas exception."""
+    code = code_sans_commentaires("app.js")
+    assert "innerHTML" not in code

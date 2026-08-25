@@ -38,6 +38,20 @@
 
     <!-- ÉTAT 4 — les données -->
     <section id="resultat" hidden>
+
+      <!-- FRAÎCHEUR DES DONNÉES (C20) — répond à « vos données sont-elles à jour ? »
+           sans rien relancer, donc sans dépendre du réseau au moment de la démo.
+
+           ⚠️ Le statut n'est JAMAIS porté par la seule couleur : la pastille est
+           décorative (aria-hidden) et c'est le TEXTE qui dit tout. RGAA 3.1 /
+           WCAG 1.4.1 — « l'information ne doit pas être véhiculée uniquement par
+           la couleur ». Une personne daltonienne lit la même chose que les autres.
+
+           Pas de role="status" ici : l'annonce de chargement est déjà portée par
+           #statut plus haut. Deux régions live qui parlent en même temps se
+           coupent la parole chez un lecteur d'écran. -->
+      <p id="fraicheur" class="fraicheur" hidden></p>
+
       <p class="total">
         Total du portefeuille&nbsp;: <strong id="total">—</strong><span id="nb-lignes"></span>
       </p>

@@ -83,12 +83,31 @@ chemins absolus, code de sortie propre) : **il n'a jamais été installé**.
   visible dans le dépôt. Pour le jury il faudra un **extrait anonymisé périodique** déposé dans
   `evidence/C1/` (ex. une fois par mois), sinon le critère repose sur une démonstration en
   direct — ce qu'on veut justement éviter.
-- 🔴 **Manque associé, écrit dès le 11/08 et jamais fait** (`README-planification.md` §7) : il
-  n'existe **aucune fraîcheur globale**. `/health` répond `{"status":"ok"}` sans rien dire des
-  données ; `fraicheur_jours` n'existe qu'**par valeur** (seuil 40 j). Un évaluateur qui demande
-  *« vos données sont-elles à jour ? »* n'obtient pas de réponse de l'application.
-  → petit chantier, triple rendement : **C1** (pérennisation démontrable), **C20** (monitorage,
-  à 0 %), et une démo qui ne dépend plus du réseau.
+- ✅ **FAIT LE 25/08 — la fraîcheur globale existe, et C20 quitte le zéro.** Le manque était
+  écrit dès le 11/08 (`README-planification.md` §7) et attendait depuis 14 jours.
+  `db/fraicheur.sql` (faits bruts) + `monitorage/fraicheur.py` (décision, **fonction pure**) +
+  **`GET /donnees/fraicheur`** (10ᵉ point de terminaison) + **bandeau** en haut de l'écran 1.
+  Preuve : `evidence/C20/preuve-fraicheur.md`.
+  - **Le retard se compte en jours OUVRÉS, pas calendaires.** La Bourse ne cote pas le
+    week-end : compter en jours calendaires ferait passer la jauge à l'orange **chaque
+    samedi**, et *une alerte qui crie tous les samedis est une alerte qu'on cesse de
+    regarder*. Vert ≤ 1 jour ouvré (la séance du jour n'entre qu'après la collecte de 19h00),
+    orange ≤ 3, rouge au-delà. ⚠️ Limite assumée : les **jours fériés boursiers** ne sont pas
+    connus du module — le seuil vert absorbe un férié isolé.
+  - **Accessibilité** : la pastille est décorative (`aria-hidden`), l'information est dans le
+    **texte** — RGAA 3.1 / WCAG 1.4.1, « jamais la couleur seule ». Ratios calculés :
+    vert 8,3:1 · orange 7,1:1 · rouge 8,2:1.
+  - 🐛 **Défaut trouvé par l'exécution réelle, invisible aux tests** : les 14 premiers tests
+    étaient **verts** alors que le module était **inutilisable** — `psycopg2` tentait le port
+    **5432** au lieu de **5433**, faute de `load_dotenv`. Il ne marchait que derrière
+    `api/main.py`. **3ᵉ occurrence dans le dépôt** après `db/importer.py` (17/08, `a7a3dba`)
+    et `indicateurs/socle.py`. ***Un test vert ne prouve pas qu'on sait se connecter.***
+  - **Vérifié en HTTP réel** (pas seulement en test) : 403 sans clé — *le garde-fou OWASP
+    survit* — - 200 avec la clé et des données réelles · route présente au contrat OpenAPI.
+    Suite : **344 passed, 2 xfailed** · couverture **92,25 %** (seuil CI 90 %).
+- ⬜ **Reste ouvert** : `logs/` est exclu de Git (`*.log`), à raison — un journal peut contenir
+  des valeurs détenues. La preuve de pérennisation s'accumule donc **en local seulement** :
+  déposer un **extrait anonymisé mensuel** dans `evidence/C1/`.
 
 🆕 **Séance de veille S34 du 17/08 — ce qu'elle a changé dans le code.** Commit `c7c8811`.
 - Le **garde-fou de sortie** (interdit AMF) était invoqué par `guardrails/injection.py:9`
@@ -426,7 +445,7 @@ fabriquée, donc irrecevable pour C6.
 | **E2** — Veille & services IA | C6–C8 | 🔴 C6 et C7 **non commencés** · C8 partiel | — |
 | **E3** — API modèle & MLOps | C9–C13 | 🔨 C9/C12/C13 partiels · C10 et C11 **non commencés** | — |
 | **E4** — Application | C14–C19 | 🔨 **démarré le 16/08** — 1er écran livré | — |
-| **E5** — Monitorage | C20–C21 | ⬜ non commencé | — |
+| **E5** — Monitorage | C20–C21 | 🔨 **démarré le 25/08** — fraîcheur des données livrée (C20) · C21 : 5 incidents réels vécus, **à formaliser en post-mortems** | — |
 
 ## Ce qui existe vraiment, compétence par compétence
 
@@ -443,6 +462,8 @@ fabriquée, donc irrecevable pour C6.
 | **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection · ✅ **dépôt accessible (24/08)** | revue OWASP · doc d'architecture |
 | **C10** | 🔨 **19/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **9 points de terminaison** intégrés. **46 tests** front | tri/recherche · audit RGAA outillé · doc d'architecture |
 | **C11** | **rien** | tout |
+| **C20** | 🔨 **25/08** — `GET /donnees/fraicheur` + bandeau : l'application sait dire de quand datent ses données (retard en **jours ouvrés**, statut vert/orange/rouge, accessible sans la couleur). 23 tests. Preuve : `evidence/C20/preuve-fraicheur.md` | métriques applicatives (Prometheus) · journaux structurés · alertes · dashboard |
+| **C21** | 5 incidents **réels** vécus et corrigés avec cause racine + test de non-régression (base perdue 16/08 · `None` ≠ `NaN` sur radiées · volatilité `NULL` · `tabindex` absent · `dev-key` acceptée) | **aucun n'est rédigé en post-mortem** — la matière existe, le livrable non |
 | **C12** | **319 tests** (2 xfailed volontaires — entrée et sortie), 15 cas d'éval, seuils non compensables en CI · **couverture 92 %**, seuil **90 %** verrouillé en CI (19/08, `db/importer.py` et `evals/mesurer_sortie.py` fermés 0→100 %) · procédure documentée | DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
 | **C13** | GitHub Actions (2 jobs, porte garde-fous) · **empaquetage Docker 18/08** — image 595 Mo, non-root, lecture seule · **volet LIVRAISON 19/08** (`7570bc9`) : publie sur GHCR uniquement sur tag `livrable-*`, démarre l'image et vérifie `/health` + 403 · ✅ **DÉPLOYÉ 19/08** sur Hetzner CX23, **HTTPS 20/08** (Caddy + Let's Encrypt via sslip.io) — `https://178-104-184-125.sslip.io/`, vérifié depuis l'extérieur, PostgreSQL 18 aligné partout, pare-feu `ufw` actif (22/80/443/8001) | 🔴 `db/importer.py` **ne tourne pas dans l'image** (pyarrow exclu) · certificat à surveiller fin octobre (renouvellement auto avant le 18/11) |
 | **C14** | 🔨 **18/08** — wireframes des 4 états (`evidence/C14/`), spécification US-1 : contexte, 5 scénarios, 11 critères d'acceptation dont 6 avec numéro de règle RGAA. Modélisation des données déjà couverte par le MCD Merise de C4 | US de l'**écran 2** non spécifiées · aucun audit RGAA outillé · aucun test avec un vrai lecteur d'écran |

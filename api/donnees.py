@@ -43,6 +43,10 @@ from fastapi import APIRouter, HTTPException, Query
 from indicateurs import portefeuille as indicateurs_portefeuille_module
 from indicateurs import risque as indicateurs_risque_module
 from indicateurs import socle
+
+# Même piège que ci-dessus : la route `/donnees/fraicheur` définit une FONCTION
+# `fraicheur()`. Sans alias, elle écraserait le module au chargement.
+from monitorage import fraicheur as monitorage_fraicheur
 from sources import database
 
 routeur = APIRouter(prefix="/donnees", tags=["jeu de données"])
@@ -256,3 +260,22 @@ def articles(limite: int = Query(20, ge=1, le=200)) -> dict:
     """
     e = database._executer(sql, "articles", None, limite=limite)
     return {"nb": e.nb, "articles": e.lignes}
+
+
+@routeur.get("/fraicheur", summary="Fraîcheur du jeu de données (C20)")
+def fraicheur() -> dict:
+    """Répond à « vos données sont-elles à jour ? » — sans rien relancer.
+
+    `/health` dit que le **service** tourne. Ce point de terminaison dit que
+    la **donnée** vaut quelque chose : un service en ligne qui sert des cours
+    vieux de trois mois est en panne, silencieusement.
+
+    `retard_jours_ouvres` ne compte ni le samedi ni le dimanche : la Bourse de
+    Paris ne cote pas le week-end, et une jauge qui passe au rouge chaque
+    samedi est une jauge qu'on cesse de regarder. `statut` vaut `vert`
+    (≤ 1 jour ouvré), `orange` (≤ 3) ou `rouge` au-delà.
+
+    Le seuil vert tolère 1 jour parce que la séance du jour n'entre en base
+    qu'après la collecte de 19h00 — la Bourse clôture à 17h35.
+    """
+    return monitorage_fraicheur.lire().en_dict()
