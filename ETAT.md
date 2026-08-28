@@ -3,7 +3,19 @@
 > **Ce fichier se périme.** Il porte l'état du jour ; `CLAUDE.md` porte ce qui ne change pas.
 > À relire au démarrage de chaque session, à mettre à jour à la fin.
 
-**Dernière mise à jour : 2026-08-24** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+## 📊 Tableau de bord — la vue d'ensemble en un coup d'œil
+
+**https://claude.ai/code/artifact/736033e3-9ea8-495c-a4f7-0d47de56c303**
+
+Chronologie datée · les 5 livrables · **table filtrable des 21 compétences** (bouton
+« À zéro » → C7, C11, C16) · inventaire du code, des schémas et des preuves.
+
+> Dans le terminal Claude Code : **`/artifacts`** liste tes tableaux de bord (`o` pour ouvrir,
+> `c` pour copier le lien) · **`Ctrl+]`** rouvre le dernier. Sur le web :
+> `claude.ai/code/artifacts`.
+> ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
+
+**Dernière mise à jour : 2026-08-28** · deadline livrables **05/11/2026** · jury **30/11–01/12**
 
 🗓️ **Lundi 24/08 — rituel du lundi fait (poste local).**
 - ✅ **PREMIÈRE SAUVEGARDE RÉELLE** — le manque n°0 avait 8 jours. `pg_dump -F c` →
