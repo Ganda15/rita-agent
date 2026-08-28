@@ -28,6 +28,32 @@
   photographie du 19/08. `/health` répond **200** (vérifié depuis le poste le 24/08), mais les
   données affichées en ligne ont **5 jours de retard**. → tâche planifiée serveur, ci-dessous.
 
+✅ **28/08 — ÉTAPE E2 FAITE : les actualités sont indexées.** `rag/indexation.py`,
+ChromaDB persistant + embeddings `all-MiniLM-L6-v2` (384 dim) en **ONNX, sans PyTorch**
+(l'image Docker fait déjà 595 Mo). **15 tests.** Suite : **370 passed, 2 xfailed** ·
+couverture **92,28 %**. Preuve : `evidence/C17/preuve-rag-indexation.md`.
+- **Exécution réelle** : `163 lus | 163 indexes | 0 bloques | 22 citant une valeur suivie`.
+- 🔴 **Le chiffre à retenir : 22 sur 163.** Seuls **13 %** des articles citent une des 111
+  valeurs suivies — les trois flux sont des flux d'**économie générale** (BFM éco, Le Monde
+  éco, La Tribune), pas d'actualité d'entreprise. **À trancher** : assumer un corpus macro
+  (contexte économique du briefing), ou ajouter un flux Google News **par ticker**
+  (`sources/rss.py` sait déjà lire un flux — coût faible, volume multiplié).
+- 🔴 **Mesure qui justifie l'étape E3** : la requête *« résultats d'une entreprise du luxe »*
+  rend un article sur une **péniche** à 0,489 — il n'existe aucun article sur le luxe dans le
+  corpus, donc la recherche dense rend le *moins mauvais*, pas un bon. Sans seuil de refus,
+  cet article partirait enrichir un briefing LVMH. **`OUT_OF_CORPUS` n'est pas un raffinement,
+  c'est une sécurité.** ⚠️ Écart faible entre pertinent (0,435) et hors-sujet (0,489) : le
+  seuil devra être **calibré sur des cas annotés**, pas choisi à vue — question ouverte S35.
+- **Un article bloqué par le garde-fou n'entre jamais dans l'index** (règle Sorabel : filtrer
+  AVANT la recherche). 0 bloqué sur 163 aujourd'hui — le filtre est en place pour le jour où.
+- 🐛 **Test vert qui ne testait rien**, trouvé pendant l'écriture : le simulacre cherchait
+  `"FROM article"` alors que le SQL écrit `FROM   article` (espaces d'alignement). Le test
+  passait sur un corpus **vide**. *Même famille que le « 100 % circulaire » de la veille S34.*
+- ✅ **Correction de cause racine** : `sources/database.py` charge désormais le `.env`
+  **lui-même**. C'était la 4ᵉ occurrence du défaut port 5432/5433 — six modules chargeaient
+  la configuration **à la place** de celui qui en avait besoin. *Corriger le 4ᵉ symptôme
+  aurait garanti un 5ᵉ.*
+
 ✅ **28/08 — ÉTAPE E1 FAITE : la passerelle MCP tourne.** `passerelle_mcp/serveur.py`,
 transport **stdio**, **3 outils** (`rita_fraicheur`, `rita_portefeuille`, `rita_indicateurs`),
 **11 tests**. Suite : **355 passed, 2 xfailed** · couverture **92,25 %**.

@@ -38,3 +38,4 @@ data/positions-reelles*.csv
 .coverage.*
 htmlcov/
 coverage.xml
+data/chroma/
