@@ -28,6 +28,28 @@
   photographie du 19/08. `/health` répond **200** (vérifié depuis le poste le 24/08), mais les
   données affichées en ligne ont **5 jours de retard**. → tâche planifiée serveur, ci-dessous.
 
+✅ **28/08 — ÉTAPE E1 FAITE : la passerelle MCP tourne.** `passerelle_mcp/serveur.py`,
+transport **stdio**, **3 outils** (`rita_fraicheur`, `rita_portefeuille`, `rita_indicateurs`),
+**11 tests**. Suite : **355 passed, 2 xfailed** · couverture **92,25 %**.
+Preuve : `evidence/C10/preuve-passerelle-mcp.md`.
+- **Décision d'architecture** : la passerelle appelle l'**API REST en HTTP**, pas les modules
+  Python en direct. C'est plus long d'un aller-retour local, mais c'est ce que **C10** demande
+  (*« la communication avec l'API depuis l'application »*, *« authentification intégrée
+  correctement »*) — et **le 403 reste en vigueur**. Vérifié : mauvaise clé → `NOT_AUTHORIZED`.
+  *Une passerelle qui contourne l'authentification annulerait la correction OWASP API2 du
+  18/08 sans qu'aucun autre test ne le signale.*
+- 🐛 **Piège évité en vérifiant plutôt qu'en se souvenant** : le SDK installé est le **v2**,
+  où `FastMCP` a été renommé **`MCPServer`** et les annotations passent en `snake_case`.
+  Écrire du code v1 de mémoire aurait échoué à l'import.
+- Les descriptions d'outils portent les **garde-fous métier** : *« appeler la fraîcheur EN
+  PREMIER »*, *« RITA rend des FAITS, jamais un conseil d'achat ou de vente »* — la contrainte
+  AMF est transmise au modèle client, pas seulement appliquée en sortie.
+- `requirements.txt` : `mcp>=2.1.1` ajouté · `.env.example` : `RITA_API_URL` documentée.
+- ⬜ **Reste** : l'**audit** des appels (prévu au design Sorabel) · le 4ᵉ outil
+  `search_articles` viendra avec le RAG (étapes E2-E4).
+- ⚠️ **Non confirmé** : un client MCP compte-t-il comme « une application » au sens de C10 ?
+  À poser au formateur. Sinon la passerelle reste obligatoire mais c'est C15/C17 qui la portent.
+
 🔴 **28/08 — RETOUR FORMATEUR : RAG et MCP deviennent OBLIGATOIRES.**
 Rapporté par Era après échange direct avec Elbby le 28/08 :
 
@@ -490,7 +512,7 @@ fabriquée, donc irrecevable pour C6.
 | **C7** | **rien** — aucun benchmark de services IA | tout |
 | **C8** | cascade 3 fournisseurs testée, clé en `.env` · **doc d'exploitation écrite le 19/08** (`docs/EXPLOITATION.md`) : accès, installation avec et sans Docker, dépendances, données, dépannage | 🔴 **monitorage du service** · la doc reste à **communiquer** aux parties prenantes (5ᵉ critère) |
 | **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection · ✅ **dépôt accessible (24/08)** | revue OWASP · doc d'architecture |
-| **C10** | 🔨 **19/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **9 points de terminaison** intégrés. **46 tests** front | tri/recherche · audit RGAA outillé · doc d'architecture |
+| **C10** | 🔨 **19/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **10 points de terminaison** intégrés. **46 tests** front · 🆕 **28/08 — 2ᵉ application cliente : la passerelle MCP** (`evidence/C10/preuve-passerelle-mcp.md`), qui consomme l'API en HTTP avec la même authentification | tri/recherche · audit RGAA outillé · doc d'architecture · ⚠️ confirmer qu'un client MCP compte comme « une application » |
 | **C11** | **rien** | tout |
 | **C20** | 🔨 **25/08** — `GET /donnees/fraicheur` + bandeau : l'application sait dire de quand datent ses données (retard en **jours ouvrés**, statut vert/orange/rouge, accessible sans la couleur). 23 tests. Preuve : `evidence/C20/preuve-fraicheur.md` | métriques applicatives (Prometheus) · journaux structurés · alertes · dashboard |
 | **C21** | 🔨 **25/08 — 4 post-mortems rédigés** dans `evidence/C21/` + gabarit aligné sur les 5 critères officiels. Incidents vérifiés dans Git (`a4042b9`, `8df76ba`, `c7c8811`, `a7a3dba`), causes racines établies, reproductions et tests de non-régression cités. **3 critères sur 5 satisfaits** | 🔴 **critère 3** (procédure documentée *depuis l'outil de suivi*) et **critère 5** (correctif en *merge request*) : **0 issue et 0 PR** sur le dépôt. On ne fabrique pas la trace après coup → **installer la chaîne issue → branche → PR dès le prochain incident** |
