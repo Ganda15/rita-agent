@@ -64,6 +64,18 @@ NOM_COLLECTION = "articles"
 # d'en inventer — un article rattaché à tort à une valeur fausserait un briefing.
 LONGUEUR_MINIMALE_ALIAS = 5
 
+# Premiers mots de raison sociale trop courants pour identifier une entreprise.
+# « CREDIT AGRICOLE » commence par un mot qui apparaît dans tout article parlant de
+# crédit ; « COMPAGNIE GENERALE », « SOCIETE GENERALE », « BANQUE… » de même. Les
+# retenir étiquetterait des dizaines d'articles avec une valeur qu'ils ne citent pas —
+# et un article rattaché à tort fausserait le briefing de cette valeur.
+MOTS_TROP_GENERIQUES = {
+    "CREDIT", "BANQUE", "SOCIETE", "COMPAGNIE", "GROUPE", "GENERALE", "GENERAL",
+    "FRANCE", "EUROPE", "EURO", "NATIONAL", "NATIONALE", "UNION", "ASSURANCE",
+    "ASSURANCES", "FINANCIERE", "INDUSTRIES", "INDUSTRIE", "INTERNATIONAL",
+    "SERVICES", "SERVICE", "TECHNOLOGIES", "SYSTEMS", "HOLDING", "PARIS",
+}
+
 
 @dataclass(frozen=True)
 class Resultat:
@@ -104,6 +116,22 @@ def construire_lexique(dsn: str | None = None) -> dict[str, str]:
         nom = _normaliser(ligne["nom_officiel"] or "")
         if len(nom) >= LONGUEUR_MINIMALE_ALIAS:
             lexique[nom] = ligne["ticker"]
+
+        # ⚠️ Le nom LÉGAL n'est presque jamais celui de la presse. Mesuré le 28/08 :
+        # `valeur.nom_officiel` vaut « LVMH MOET VUITTON », alors que les 10 articles
+        # du corpus écrivent simplement « LVMH ». Résultat : le filtre par ticker
+        # `MC.PA` ne trouvait **aucun** article, sur un corpus qui en contenait dix.
+        #
+        # On ajoute donc le premier mot du nom légal quand il est **distinctif**.
+        #
+        # ⚠️ Un critère de longueur ne suffit pas, et une première version s'y est
+        # cassé les dents : à 6 caractères minimum, « LVMH » (4) était rejeté ; à 4,
+        # « CREDIT » de « CREDIT AGRICOLE » aurait étiqueté ACA.PA tout article parlant
+        # de crédit. **C'est le sens du mot qui compte, pas sa taille.**
+        premier = nom.split(" ")[0] if nom else ""
+        if (len(premier) >= 4 and premier not in MOTS_TROP_GENERIQUES
+                and premier not in lexique):
+            lexique[premier] = ligne["ticker"]
 
     for ligne in database._executer(
         "SELECT alias, ticker FROM alias_valeur", "lexique_alias", dsn

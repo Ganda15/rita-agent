@@ -182,14 +182,38 @@ def etape_articles(cur, simulation: bool) -> Bilan:
     la colonne `bloque_injection` permet de les auditer, l'index partiel les exclut
     des lectures destinées au LLM.
     """
-    from sources.rss import collecter
+    from sources.rss import collecter, flux_par_entreprise
 
     b = Bilan("articles (RSS)")
-    r = collecter()
+
+    # Un flux Google News par entreprise DÉTENUE, en plus des trois flux d'économie
+    # générale. Mesuré le 28/08 : sur 163 articles, 22 seulement citaient une valeur
+    # suivie — le RAG interrogé sur « les résultats de LVMH » ne trouvait donc rien.
+    #
+    # Les positions, pas les 111 valeurs suivies : 111 flux, ce seraient 111 requêtes
+    # chaque soir pour des titres sur lesquels RITA ne rédige jamais.
+    #
+    # ⚠️ Si la lecture des positions échoue, la collecte générale continue. Une source
+    # d'enrichissement ne doit pas faire tomber la collecte qu'elle enrichit — même
+    # principe que le front, où une panne des indicateurs n'emporte pas le portefeuille.
+    flux_entreprises: dict[str, str] = {}
+    try:
+        cur.execute("""
+            SELECT DISTINCT v.nom_officiel
+            FROM   position p
+            JOIN   valeur   v ON v.ticker = p.ticker
+            WHERE  v.nom_officiel IS NOT NULL
+        """)
+        flux_entreprises = flux_par_entreprise([l[0] for l in cur.fetchall()])
+    except Exception as erreur:              # noqa: BLE001 — dégradation volontaire
+        b.details.append(f"flux entreprises indisponibles ({type(erreur).__name__})")
+
+    r = collecter(flux_supplementaires=flux_entreprises)
     retenus, bloques = r["articles"], r["articles_bloques"]
     b.lues = r["total"]
     total_flux = len(r["flux_ok"]) + len(r["flux_echec"])
-    b.details.append(f"flux OK {len(r['flux_ok'])}/{total_flux}")
+    b.details.append(f"flux OK {len(r['flux_ok'])}/{total_flux}"
+                     f" (dont {len(flux_entreprises)} par entreprise)")
 
     lignes = [(a.source, a.titre, a.lien, a.publie_le or None, a.resume,
                a.bloque, a.motifs_injection or None)

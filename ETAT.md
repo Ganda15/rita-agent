@@ -28,6 +28,38 @@
   photographie du 19/08. `/health` répond **200** (vérifié depuis le poste le 24/08), mais les
   données affichées en ligne ont **5 jours de retard**. → tâche planifiée serveur, ci-dessous.
 
+✅ **28/08 — ÉTAPE E3 FAITE : recherche hybride dense + BM25, fusion RRF, refus motivé.**
+`rag/recherche.py` · **13 tests** · suite **383 passed, 2 xfailed** · couverture **92,17 %**.
+Preuve : `evidence/C17/preuve-rag-indexation.md` (partie E3).
+- 🔴 **La mesure qui a décidé de l'hybride** : interrogé sur le mot exact
+  « TotalEnergies », le moteur **dense seul** classait un article **Sanofi (0,767) DEVANT
+  un article TotalEnergies (0,777)**. `all-MiniLM-L6-v2` est entraîné majoritairement sur
+  de l'anglais ; le français financier n'est pas son terrain. **BM25 règle ce cas
+  trivialement** — après fusion, les deux bons articles remontent.
+- 🔴 **Pourquoi RRF et pas une moyenne de scores** : un **hors-sujet** obtenait 0,489 quand
+  un **pertinent** obtenait 0,648 sur une autre requête. **Les distances ne sont pas
+  comparables d'une requête à l'autre.** RRF fusionne les **rangs** : le problème disparaît
+  par construction. ⚠️ Ça confirme *sur nos propres données* ce que dit l'article
+  *Confidently Wrong* relevé pour la veille S35.
+- **Le refus, deux versions** : « score BM25 > 0 » acceptait *« recette de la tarte aux
+  pommes »* (« recette » = *recettes fiscales*). Règle retenue : **la moitié des mots
+  significatifs** de la question doit figurer dans le document — une **proportion**, donc
+  comparable d'une question à l'autre, contrairement aux distances.
+  ⚠️ **Faux négatif assumé et mesuré** : « résultats d'une entreprise du luxe » est refusée
+  alors qu'un article LVMH pertinent existe. **L'arbitrage précision/rappel ne se tranche
+  pas à vue** — c'est l'objet de l'étape E5.
+- 📈 **Corpus enrichi** : flux **Google News par entreprise détenue** ajouté à la collecte
+  quotidienne → **163 → 263 articles**, et **22 → 109 citant une valeur suivie (13 % → 41 %)**.
+  Les articles viennent de **Boursorama, Boursier.com, Zonebourse** — les sources qui
+  renvoient un 403 en direct depuis le 31/07. Google News les agrège : on passe par une
+  porte ouverte, sans rien contourner.
+- 🐛 **Deux défauts trouvés par les tests** : (a) la détection ratait **LVMH**, parce
+  qu'elle comparait au nom légal « LVMH MOET VUITTON » que la presse n'écrit jamais — un
+  critère de **longueur** ne suffisait pas (« LVMH » fait 4 lettres, « CREDIT » 6 et
+  étiquetterait tout article parlant de crédit), d'où une liste de mots trop génériques ;
+  (b) **plantage** quand le filtre par ticker était actif — la recherche dense interroge
+  toute la collection et rendait des documents écartés par le filtre.
+
 ✅ **28/08 — ÉTAPE E2 FAITE : les actualités sont indexées.** `rag/indexation.py`,
 ChromaDB persistant + embeddings `all-MiniLM-L6-v2` (384 dim) en **ONNX, sans PyTorch**
 (l'image Docker fait déjà 595 Mo). **15 tests.** Suite : **370 passed, 2 xfailed** ·

@@ -151,3 +151,107 @@ donc l'environnement du conteneur Docker garde la priorité).
 ⬜ **E3** — recherche hybride dense + BM25, fusion RRF, et le **seuil de refus**
 (`rank_bm25` est déjà installé) · ⬜ **E4** — branchement au briefing ·
 ⬜ **E5** — évaluation par ablation · ⬜ le 5ᵉ outil MCP `search_articles`.
+
+---
+
+# Étape E3 — recherche hybride, ajoutée le 28/08/2026
+
+`rag/recherche.py` · **13 tests** · suite complète **383 passed, 2 xfailed** ·
+couverture **92,17 %**.
+
+## 1. La mesure qui a décidé de l'hybride
+
+L'index contenait **2 articles citant « TotalEnergies »**. Interrogé sur ce mot exact,
+le moteur **dense seul** a rendu :
+
+```
+0.648  TotalEnergies reduit son exposition au gaz russe   <- bon, score mediocre
+0.767  Sanofi penalise en Bourse...                       <- FAUX, classe 2e
+0.777  ...le PDG de TotalEnergies                         <- bon, classe 3e DERRIERE Sanofi
+```
+
+**Un moteur qui place Sanofi devant TotalEnergies quand on cherche « TotalEnergies »
+n'est pas utilisable pour un briefing financier.** `all-MiniLM-L6-v2` est entraîné
+majoritairement sur de l'anglais ; le français financier n'est pas son terrain.
+
+BM25 règle ce cas trivialement : « TotalEnergies » est un mot rare, donc lourdement
+pondéré. **Après fusion**, les deux articles remontent — le second était `dense#2`
+mais `lex#0`.
+
+## 2. Pourquoi RRF et pas une moyenne de scores
+
+| Requête | Résultat | Distance |
+|---|---|---|
+| « résultats d'une entreprise du luxe » | **hors sujet** (une péniche) | **0,489** |
+| « TotalEnergies » | **pertinent** | **0,648** |
+
+**Un hors-sujet obtient une meilleure distance qu'un bon résultat sur une autre
+requête.** Les distances ne sont donc pas comparables d'une requête à l'autre, et toute
+moyenne pondérée mélangerait deux échelles sans commune mesure. **RRF fusionne les
+rangs**, pas les scores : le problème disparaît par construction.
+
+⚠️ **Conséquence directe pour la veille S35** : cette mesure confirme sur nos propres
+données ce que dit *Confidently Wrong* (arXiv 2606.22659) — un seuil de distance
+calibré sur un jeu figé ne se transporte pas.
+
+## 3. Le refus — deux versions, et pourquoi la première était fausse
+
+| Version | Règle | Résultat mesuré |
+|---|---|---|
+| 1 | score BM25 > 0 | ❌ « **recette** de la tarte aux pommes » acceptée (score 4,94) — *« recette »* veut aussi dire *recettes fiscales* |
+| 2 | **la moitié des mots significatifs** de la question doit figurer dans le document | ✅ refusée |
+
+**Un seul mot commun ne fait pas une réponse.** La couverture est une proportion, donc
+**comparable d'une question à l'autre** — contrairement aux distances.
+
+⚠️ **Faux négatif mesuré et assumé** : « résultats d'une entreprise du luxe » (3 mots
+significatifs, 2 exigés) est **refusée** alors qu'un article LVMH pertinent existe.
+Reformulée en « actualité du luxe LVMH », elle passe. **C'est l'arbitrage
+précision/rappel, et il ne se tranche pas à vue** — c'est l'objet de l'étape E5
+(ablation sur cas annotés).
+
+## 4. Corpus enrichi — flux par entreprise
+
+Le corpus ne parlait pas des valeurs suivies (22 articles sur 163). Ajout d'un **flux
+Google News par entreprise détenue**, construit depuis la table `position` :
+
+```
+163 -> 263 articles      22 -> 109 citant une valeur suivie  (13 % -> 41 %)
+```
+
+**Pourquoi Google News** : Boursorama, Les Échos et Zonebourse renvoient un **403** en
+accès direct (documenté dans `sources/rss.py` depuis le 31/07). Google News les agrège —
+on obtient leur contenu **par une porte ouverte**, sans rien contourner. Vérifié : les
+articles rendus viennent de Boursier.com, Boursorama et Zonebourse.
+
+**Un flux par valeur détenue, pas par valeur suivie** : 111 flux, ce seraient 111
+requêtes chaque soir pour des titres sur lesquels RITA ne rédige jamais.
+
+⚠️ Un flux échoue : `ent_cgg_bs`. La raison sociale en base vaut **« CGG BS »**, une
+dénomination tronquée qui ne correspond à aucune recherche. La dégradation est propre —
+ce flux est ignoré, les 9 autres continuent.
+
+## 5. Deux défauts trouvés par les tests, et corrigés
+
+**a) La détection de valeurs ratait LVMH.** Elle comparait au nom **légal**
+« LVMH MOET VUITTON », que la presse n'écrit jamais. Le filtre `MC.PA` ne trouvait
+**aucun** article sur un corpus qui en contenait dix.
+
+Correctif : ajouter le **premier mot** du nom légal quand il est distinctif.
+⚠️ Un critère de longueur ne suffit pas — à 6 caractères minimum, « LVMH » (4) était
+rejeté ; à 4, « CREDIT » de « CREDIT AGRICOLE » aurait étiqueté ACA.PA tout article
+parlant de crédit. **C'est le sens du mot qui compte, pas sa taille** : d'où une liste
+de mots trop génériques (CREDIT, BANQUE, SOCIETE, GROUPE, FRANCE…).
+
+**b) Plantage quand le filtre par ticker est actif.** La recherche dense interroge
+**toute** la collection — ChromaDB ne sait pas la restreindre à une sous-liste
+d'identifiants. Elle rendait donc des documents écartés par le filtre, et la suite
+plantait sur `list.index(x): x not in list`. Correctif : intersection explicite, et
+un test dédié.
+
+## 6. Ce qui reste
+
+⬜ **E4** — brancher la recherche au briefing · ⬜ **E5** — ablation D0 → H1 sur cas
+annotés, qui tranchera le seuil · ⬜ 4ᵉ outil MCP `search_articles` ·
+⬜ le **reranker**, non implémenté : à décider après l'ablation, quand on saura ce
+qu'il apporterait.
