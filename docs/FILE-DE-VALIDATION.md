@@ -110,6 +110,20 @@ git push origin refs/tags/livrable-E1-v1:refs/tags/livrable-E1-v1
 
 **Légende** : ⬜ = pas encore fait · ✅ = fait, avec la date.
 
+### 🔴 28/08 — Retour formateur reçu, noté LE JOUR MÊME
+
+**RAG et MCP sont obligatoires. Text-to-SQL : « pas vraiment ».** Et le RAG doit être
+**avancé**. Échange direct avec Elbby, rapporté par Era le 28/08.
+
+*Noté ici le jour même, contrairement aux trois réponses du Bloc 1 qui sont restées non
+tracées pendant trois semaines — c'est précisément la faute que ce registre existe pour
+éviter.*
+
+⚠️ **Reste à préciser** : pour quel livrable (E3/E4 ?), et ce que « avancé » recouvre
+exactement. À poser au prochain échange plutôt qu'à supposer.
+
+---
+
 ### 🔴 Correction du 24/08 — ce registre sous-estimait le travail réel
 
 Ce fichier, créé le 16/08, affirmait **« 4 éléments en file, 0 envoyé »**. **C'est faux, et à

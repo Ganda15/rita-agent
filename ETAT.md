@@ -28,6 +28,36 @@
   photographie du 19/08. `/health` répond **200** (vérifié depuis le poste le 24/08), mais les
   données affichées en ligne ont **5 jours de retard**. → tâche planifiée serveur, ci-dessous.
 
+🔴 **28/08 — RETOUR FORMATEUR : RAG et MCP deviennent OBLIGATOIRES.**
+Rapporté par Era après échange direct avec Elbby le 28/08 :
+
+| Technique | Statut donné par le formateur |
+|---|---|
+| **RAG** | **obligatoire** — et il faut du **RAG avancé**, pas un simple `question → embeddings → top-5` |
+| **MCP** (Model Context Protocol) | **obligatoire** |
+| **Text-to-SQL** | *« pas vraiment »* — **non obligatoire**, à ne pas prioriser |
+
+**Ce que ça change, immédiatement :**
+- La recommandation « RAG en octobre quand le volume le justifie » **tombe**. Le formateur
+  évalue : sa consigne prime sur l'arbitrage volume. **On construit maintenant**, sur les
+  articles existants ; le corpus grossit tout seul (~30 articles/jour depuis le 24/08).
+- La **contradiction du nom est résolue par le haut** : RITA = *Retrieval* Intelligence, et
+  `RITA-V2-ARCHITECTURE.md` décrit un RAG. Il ne faut donc **plus corriger le document** —
+  il faut **rattraper le code**.
+- **Text-to-SQL reste écarté** — et ça reste cohérent avec **C2**, qui exige que ce soit
+  Era qui écrive les requêtes SQL, pas un modèle.
+
+⚠️ **Information manquante — à préciser au prochain échange** : pour quel(s) livrable(s)
+exactement (E3 ? E4 ?), et ce qu'il entend précisément par « avancé » (hybride dense+BM25 ?
+reranker ? évaluation par ablation ?). Ne pas supposer : demander.
+
+🟢 **Passerelle directe : le brief Sorabel.** Era conçoit en ce moment (`Desktop\Sorabel-Day-1`,
+211 fichiers, daté du 28/08) un **RAG avancé + une passerelle MCP + du text-to-SQL sécurisé**.
+La méthode est donc déjà écrite : hybride dense + BM25 + fusion RRF, reranker sur un petit
+ensemble, RBAC avant la recherche, refus `OUT_OF_CORPUS` sans preuve suffisante, et un
+protocole d'évaluation par **ablation** (D0 → D1 → H0 → H1). **Transporter la méthode, pas
+le code** : les deux projets gardent leurs rendus séparés.
+
 🟢 **24/08 — LE FORMATEUR A RÉPONDU. Les 3 questions du « Bloc 1 » sont tranchées.**
 Le message rédigé le 02/08 (vault : `Projets/RITA/00-Pilotage/MESSAGE — envoi Bloc 1 à Elbby`)
 était noté « à envoyer » : **il était parti**, et le retour est arrivé. Canal : **GitHub**
