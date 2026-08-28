@@ -3,11 +3,19 @@
 > ## 🚦 À FAIRE AU DÉBUT DE CHAQUE SESSION — avant toute autre chose
 >
 > 1. **Lire `ETAT.md`** (à la racine, à côté de ce fichier).
-> 2. **Annoncer à Era, en 3 lignes** : où on s'est arrêté · la prochaine action · les verrous.
-> 3. **Ne rien commencer d'autre** tant que ces 3 lignes ne sont pas dites.
+> 2. **Vérifier le réel** : `git log --oneline -5` · `git status` · `ls logs/`.
+>    Ne jamais réciter `ETAT.md` sans le confronter aux faits.
+> 3. **Invoquer la skill `boussole`** — et poser LA tâche principale de la session.
+> 4. **Annoncer à Era, en 3 lignes** : où on s'est arrêté · la prochaine action · les verrous.
+> 5. **Ne rien commencer d'autre** tant que ces lignes ne sont pas dites.
 >
 > Era peut avoir laissé passer un jour ou trois semaines. Il ne doit **jamais** avoir à
 > réexpliquer où on en était : c'est le travail de ce dépôt, pas le sien.
+>
+> 🧰 **Quelle skill pour quoi** → `C:\Users\kanda\.claude\CLAUDE.md`, section « Les skills ».
+> Pour ce dépôt : `langgraph-agents` · `fastapi-templates` · `rag-implementation` ·
+> `mcp-builder` · `agent-standard` · `test-driven-development` · `projet-rncp` ·
+> **`superpowers:verification-before-completion`** avant tout « c'est fini ».
 >
 > ## 🏁 À FAIRE À LA FIN DE CHAQUE SESSION
 >
