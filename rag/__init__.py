@@ -5,7 +5,7 @@ Aller **chercher** des passages pertinents dans les actualités collectées avan
 plutôt que sur la seule mémoire du modèle.
 
 Consigne formateur du 28/08/2026 : le RAG est **obligatoire**, et il doit être avancé.
-Plan : `docs/PLAN-RAG-MCP.md`, étapes E2 à E5.
+Plan : `docs/PLAN-RAG-MCP.md`, étapes 2 à 5.
 
 | Module | Étape | Rôle |
 |---|---|---|

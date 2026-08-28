@@ -1,4 +1,4 @@
-"""Recherche hybride dans les actualités — étape E3.
+"""Recherche hybride dans les actualités — étape 3.
 
 Livrable : **E4** (C15, C17) · Plan : `docs/PLAN-RAG-MCP.md`.
 
@@ -51,7 +51,7 @@ question doit apparaître dans le document (score BM25 > 0). Sans aucune preuve 
 ni proximité sémantique forte, on rend `OUT_OF_CORPUS` — la règle du brief Sorabel :
 *« sans preuve suffisamment pertinente, le système refuse »*.
 
-⚠️ **Ce seuil reste à calibrer sur des cas annotés** (étape E5). L'article
+⚠️ **Ce seuil reste à calibrer sur des cas annotés** (étape 5). L'article
 *Confidently Wrong* (arXiv 2606.22659), relevé pour la veille S35, montre qu'un seuil
 calibré sur un jeu figé puis transporté ailleurs voit son taux d'échec passer de 0,01 à
 0,97. **La valeur ci-dessous est un point de départ mesuré, pas une vérité.**

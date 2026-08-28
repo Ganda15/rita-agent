@@ -2,7 +2,7 @@
 
 Livrable visé : **E4** (C10, C15, C17) — *« intégrer l'API dans une application »*.
 Consigne formateur du 28/08/2026 : le MCP est **obligatoire**.
-Plan : `docs/PLAN-RAG-MCP.md`, étape E1.
+Plan : `docs/PLAN-RAG-MCP.md`, étape 1.
 
 ## La décision qui structure tout ce fichier : on passe par HTTP
 

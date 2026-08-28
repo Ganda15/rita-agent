@@ -1,4 +1,4 @@
-"""Indexation des actualités pour le RAG — étape E2.
+"""Indexation des actualités pour le RAG — étape 2.
 
 Livrable : **E4** (C15, C17) · Plan : `docs/PLAN-RAG-MCP.md`.
 

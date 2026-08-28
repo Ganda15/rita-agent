@@ -2,7 +2,7 @@
 
 **Date : 28/08/2026** · Compétences visées : **C10** (intégrer l'API dans une application),
 **C15** (cadre technique), **C17** (composants).
-Consigne formateur du 28/08 : le **MCP est obligatoire**. Plan : `docs/PLAN-RAG-MCP.md`, étape E1.
+Consigne formateur du 28/08 : le **MCP est obligatoire**. Plan : `docs/PLAN-RAG-MCP.md`, étape 1.
 
 ---
 
@@ -132,4 +132,4 @@ critère — et c'est **C15/C17** qui la portent.
 
 ⬜ **Reste à faire** : l'**audit** des appels (journal : identité, outil, décision, durée),
 prévu au design Sorabel et pas encore implémenté ici. Et le **4ᵉ outil**, `search_articles`,
-qui viendra avec le RAG — étapes E2 à E4 du plan.
+qui viendra avec le RAG — étapes 2 à 4 du plan.

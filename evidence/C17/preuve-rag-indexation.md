@@ -1,4 +1,4 @@
-# Preuve C17 — indexation RAG des actualités (étape E2)
+# Preuve C17 — indexation RAG des actualités (étape 2)
 
 **Date : 28/08/2026** · Compétences : **C17** (composants métier), **C15** (cadre technique).
 Consigne formateur du 28/08 : le **RAG est obligatoire**. Plan : `docs/PLAN-RAG-MCP.md`.
@@ -85,7 +85,7 @@ Il n'existe aucun article sur le luxe dans le corpus. La recherche dense rend al
 **moins mauvais** résultat, pas un bon — et sans seuil de refus, cet article partirait
 enrichir un briefing sur LVMH.
 
-👉 **Cela démontre que le refus `OUT_OF_CORPUS` de l'étape E3 n'est pas un raffinement,
+👉 **Cela démontre que le refus `OUT_OF_CORPUS` de l'étape 3 n'est pas un raffinement,
 c'est une sécurité.** À comparer avec une requête couverte par le corpus :
 
 ```
@@ -154,7 +154,7 @@ donc l'environnement du conteneur Docker garde la priorité).
 
 ---
 
-# Étape E3 — recherche hybride, ajoutée le 28/08/2026
+# Étape 3 — recherche hybride, ajoutée le 28/08/2026
 
 `rag/recherche.py` · **13 tests** · suite complète **383 passed, 2 xfailed** ·
 couverture **92,17 %**.
@@ -207,7 +207,7 @@ calibré sur un jeu figé ne se transporte pas.
 ⚠️ **Faux négatif mesuré et assumé** : « résultats d'une entreprise du luxe » (3 mots
 significatifs, 2 exigés) est **refusée** alors qu'un article LVMH pertinent existe.
 Reformulée en « actualité du luxe LVMH », elle passe. **C'est l'arbitrage
-précision/rappel, et il ne se tranche pas à vue** — c'est l'objet de l'étape E5
+précision/rappel, et il ne se tranche pas à vue** — c'est l'objet de l'étape 5
 (ablation sur cas annotés).
 
 ## 4. Corpus enrichi — flux par entreprise

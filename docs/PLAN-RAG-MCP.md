@@ -1,3 +1,9 @@
+> ⚠️ **Ne pas confondre.** Les **étapes 1 à 5** de ce plan appartiennent au *chantier E*
+> (RAG et MCP). Elles n'ont **aucun rapport** avec les **livrables E1 à E5** de la
+> certification (E1 Données · E2 Veille · E3 API/MLOps · E4 Application · E5 Monitorage).
+> Nommées « E1 » à « E5 » dans une première version, elles ont été renommées le 28/08 pour
+> lever l'ambiguïté — un jury qui lit « E3 » doit savoir de quoi on parle.
+
 # Plan — chantier E : RAG avancé et passerelle MCP
 
 > **Établi le 2026-08-28**, après consigne du formateur. Complète `docs/PLAN-12-SEMAINES.md`,
@@ -107,7 +113,7 @@ dérobée qui contourne le 403.
 
 ## 5. Les étapes, dans l'ordre
 
-### E1 — Serveur MCP sur l'existant · ½ journée · S36
+### Étape 1 — Serveur MCP sur l'existant · ½ journée · S36
 
 | | |
 |---|---|
@@ -116,7 +122,7 @@ dérobée qui contourne le 403.
 | **Compétences** | **C10** (intégrer l'API dans une application — *à confirmer avec le formateur*) · C15 · C17 |
 | **Piège** | ne pas contourner l'authentification pour « simplifier ». Un tool qui répond sans clé annule OWASP API2, corrigé le 18/08 (`evidence/C21/INC-001`) |
 
-### E2 — Corpus et indexation · 1 journée · S36
+### Étape 2 — Corpus et indexation · 1 journée · S36
 
 | | |
 |---|---|
@@ -125,7 +131,7 @@ dérobée qui contourne le 403.
 | **Décision à prendre** | quelle base vectorielle. ChromaDB (déjà pratiqué en Veille-Tech) reste le choix par défaut — **à trancher avec Era avant de coder** |
 | **Piège** | un article court se garde **entier** ; on ne découpe que ce qui est long. Découper 4 phrases en 3 morceaux détruit le sens |
 
-### E3 — Recherche hybride + refus · 1 journée · S37
+### Étape 3 — Recherche hybride + refus · 1 journée · S37
 
 | | |
 |---|---|
@@ -133,7 +139,7 @@ dérobée qui contourne le 403.
 | **Preuve** | une question sur LVMH ne doit pas remonter un article qui ne fait que **mentionner** LVMH en passant |
 | **Piège** | le seuil. ⚠️ Voir §7 — c'est le sujet de la veille S35 |
 
-### E4 — Branchement au briefing · ½ journée · S37
+### Étape 4 — Branchement au briefing · ½ journée · S37
 
 | | |
 |---|---|
@@ -141,7 +147,7 @@ dérobée qui contourne le 403.
 | **Pourquoi c'est le cœur** | aujourd'hui le briefing **n'utilise ni la base ni les articles**. Le graphe fait `scout → redacteur`, sans aucune lecture. **C'est le vrai trou, plus grand que l'absence de RAG** |
 | **Compétences** | C9 · C17 · et le nom « **Retrieval** » redevient exact |
 
-### E5 — Évaluation par ablation · 1 journée · S37
+### Étape 5 — Évaluation par ablation · 1 journée · S37
 
 | | |
 |---|---|
@@ -192,7 +198,7 @@ dérobée qui contourne le 403.
 
 - **Il suppose que « avancé » signifie hybride + reranker + ablation.** C'est une
   interprétation, tirée du brief Sorabel — **pas une réponse du formateur**. Si sa définition
-  diffère, les étapes E3 et E5 changent.
+  diffère, les étapes 3 et 5 changent.
 - **Il suppose que le MCP compte pour C10.** Non confirmé. Si ce n'est pas le cas, le MCP
   reste obligatoire par consigne mais ne coche aucun critère — et passe donc après le RAG.
 - **Il consomme toute l'avance.** Après S37, il n'y a plus de marge : le moindre retard sur
