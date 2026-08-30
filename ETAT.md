@@ -40,6 +40,41 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
   photographie du 19/08. `/health` répond **200** (vérifié depuis le poste le 24/08), mais les
   données affichées en ligne ont **5 jours de retard**. → tâche planifiée serveur, ci-dessous.
 
+✅ **30/08 — ÉTAPES 4c ET 4d FAITES : le RAG est dans le graphe.** Commit `3e6cd82`.
+`scout → rag → redacteur`. Le briefing reçoit les articles **avec source, date et lien**.
+Suite **401 passed, 2 xfailed** · couverture **92,52 %** · 0 lien cassé.
+- **Deux règles du nœud RAG** : le **filtre par ticker s'applique AVANT** la recherche (règle
+  Sorabel — un filtre exact vaut mieux qu'une similarité quand l'information exacte existe) ·
+  le RAG **ne s'exécute pas** si le Scout a échoué (`motif_rag = NON_APPELE`).
+- ✅ **La question ouverte « article pertinent sur une valeur hors univers » est résolue** :
+  elle ne se pose pas tant que l'entrée est un ticker — le Scout refuse avant la recherche.
+  Elle reviendra le jour d'une question libre. *Une inquiétude n'est pas une question de
+  conception.*
+- 🔴 **RÉCIDIVE du défaut LVMH (28/08), par une autre porte.** Premier essai réel :
+  `OUT_OF_CORPUS`, **0 passage sur 10 candidats**. Cause : la question était bâtie sur
+  `nom_officiel` = « LVMH MOET VUITTON », que la presse n'écrit jamais.
+  ```
+  'actualite LVMH MOET VUITTON' -> OUT_OF_CORPUS  0 passage  / 10 candidats
+  'actualite LVMH'              -> OK             3 passages / 10 candidats
+  ```
+  **Vérifié sur les 7 valeurs détenues avant de corriger** : seul `MC.PA` cassait, le premier
+  mot n'en dégrade aucune. ⚠️ Le premier mot est acceptable **ici et seulement ici** — le
+  filtre par ticker a déjà prouvé la pertinence, la question ne fait que **classer**. Pour
+  *étiqueter* un article, « CREDIT » resterait dangereux (§10a du guide d'étude).
+- 🔴 **Le prompt annonçait « Articles récents » au-dessus d'une dépêche de 2023.** Le RAG
+  classe par **pertinence**, jamais par date. C'était **une affirmation fausse produite par le
+  code lui-même** — la pire espèce, elle ne vient d'aucune source à mettre en doute.
+  Remplacé par une consigne de vérification de la date, et un test **interdit** l'ancien mot.
+- ✅ **Sans article, le prompt interdit explicitement d'en inventer.** Le silence ne suffit
+  pas : un modèle privé de sources en fabrique. Et un corpus vide **n'est pas une erreur** —
+  le briefing chiffré se rédige quand même.
+- ⬜ **Deux défauts nommés, non corrigés** (ils appartiennent à l'indexation, pas au graphe) :
+  (a) `source` vaut `ent_lvmh_moet_vuitton`, l'identifiant du flux, pas « Zonebourse » — or le
+  prompt demande de **citer la source** ; (b) le texte des passages duplique titre et résumé.
+- ▶️ **Prochaine action : étape 5 — l'évaluation par ablation** (D0 → D1 → H0 → H1), qui
+  tranchera le seuil. ⚠️ **Elle dépend d'une question non posée au formateur** : ce qu'il
+  entend par « RAG avancé ». À poser avant de la construire.
+
 ✅ **30/08 — ÉTAPE 4a FAITE : le briefing lit la BASE, plus yfinance.** Commit `61b5d98`,
 poussé sur `develop`. Suite **390 passed, 2 xfailed** · couverture **92,41 %** (seuil CI 90 %).
 - 🔴 **Le trou était deux fois plus large que « il manque le RAG ».** `agents/scout.py`
