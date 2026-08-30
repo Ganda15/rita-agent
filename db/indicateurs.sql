@@ -123,6 +123,7 @@ fenetre AS (
 
 SELECT  r.ticker,
         v.nom_officiel,
+        v.devise,
         v.statut_qualite,
         r.date_cours,
         r.cours,

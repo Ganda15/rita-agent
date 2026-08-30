@@ -162,7 +162,8 @@ def test_le_schema_de_securite_est_declare(client):
 def _ligne_indicateur(**surcharges):
     """Une ligne telle que `db/indicateurs.sql` la rend."""
     base = {
-        "ticker": "MC.PA", "nom_officiel": "LVMH", "statut_qualite": "OK",
+        "ticker": "MC.PA", "nom_officiel": "LVMH", "devise": "EUR",
+        "statut_qualite": "OK",
         "date_cours": date(2026, 8, 18), "cours": Decimal("545.2000"),
         "fraicheur_jours": 0,
         "perf_1j_pct": Decimal("-1.10"), "perf_1s_pct": Decimal("2.40"),

@@ -54,6 +54,7 @@ class IndicateursValeur:
 
     ticker: str
     nom_officiel: str
+    devise: str
     statut_qualite: str
     date_cours: date
     cours: float | None
@@ -107,6 +108,7 @@ def construire(ligne: dict[str, Any]) -> IndicateursValeur:
     return IndicateursValeur(
         ticker=ligne["ticker"],
         nom_officiel=ligne["nom_officiel"],
+        devise=ligne["devise"],
         statut_qualite=ligne["statut_qualite"],
         date_cours=ligne["date_cours"],
         cours=_nombre(ligne["cours"]),

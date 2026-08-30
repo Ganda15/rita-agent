@@ -29,6 +29,7 @@ def ligne(**surcharges):
     base = {
         "ticker": "MC.PA",
         "nom_officiel": "LVMH",
+        "devise": "EUR",
         "statut_qualite": "OK",
         "date_cours": date(2026, 7, 28),
         "cours": Decimal("545.2000"),
