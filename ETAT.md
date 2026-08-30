@@ -40,6 +40,25 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
   photographie du 19/08. `/health` répond **200** (vérifié depuis le poste le 24/08), mais les
   données affichées en ligne ont **5 jours de retard**. → tâche planifiée serveur, ci-dessous.
 
+✅ **30/08 — LES 2 DÉFAUTS D'INDEXATION CORRIGÉS.** Commit `2040bb6`. **407 passed** ·
+couverture **92,52 %** · 0 lien cassé. Corpus **réindexé** (309 lus, 309 indexés, 125 citant
+une valeur suivie) — sans quoi le changement de métadonnée n'aurait rien changé.
+- **La source citée était un identifiant de flux** (`ent_lvmh_moet_vuitton`). Mesuré :
+  **75 articles Google News, 75 portent le suffixe « - Éditeur »** dans le titre — **100 %**.
+  `editeur()` prend le **dernier** séparateur (un titre peut contenir « - » ailleurs). Flux
+  généralistes → table de noms lisibles ; flux inconnu → **garde son identifiant**, car *une
+  source technique reste traçable, une source vide ne l'est pas*. La métadonnée `flux`
+  conserve l'origine : `source` sert le lecteur, `flux` sert le diagnostic.
+- **Résumé redondant recopié** : **77 articles sur 309 = 24 % du corpus**. ⚠️ Le vrai problème
+  n'est pas le contexte gaspillé : doubler le texte **double la fréquence de chaque mot et
+  fausse BM25** — un article redondant serait mieux classé qu'un article riche *parce qu'il se
+  répète*. Test de non-régression : dès que le résumé apporte un mot absent du titre, il reste.
+- ✅ **Vérifié dans le prompt réel** : `[Zonebourse, …]`, `[Cafédelabourse, …]`,
+  `[BFM Bourse, …]`, sans texte dupliqué.
+- 📓 `JOURNAL-011` écrit · ✉️ **message au formateur rédigé** (2 questions : « RAG avancé » et
+  MCP↔C10) — `Projets/RITA/00-Pilotage/MESSAGE — 2 questions RAG avancé et MCP-C10 (2026-08-30)`.
+  🔴 **PAS ENVOYÉ — action d'Era.**
+
 ✅ **30/08 — ÉTAPES 4c ET 4d FAITES : le RAG est dans le graphe.** Commit `3e6cd82`.
 `scout → rag → redacteur`. Le briefing reçoit les articles **avec source, date et lien**.
 Suite **401 passed, 2 xfailed** · couverture **92,52 %** · 0 lien cassé.
