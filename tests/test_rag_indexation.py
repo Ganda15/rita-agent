@@ -178,3 +178,60 @@ def test_le_resultat_dit_des_faits_pas_un_ok():
     r = Resultat(lus=163, indexes=163, ignores_bloques=0, avec_ticker=22)
     texte = str(r)
     assert "163 lus" in texte and "22 citant" in texte
+
+
+# --- 30/08 : deux défauts vus dans le prompt réel ------------------------------
+
+def test_lediteur_est_extrait_du_titre_pour_les_flux_google_news():
+    """`article.source` vaut `ent_lvmh_moet_vuitton` — l'identifiant du FLUX.
+
+    Le prompt du rédacteur demande de « citer la source » : un briefing citant
+    « ent_lvmh_moet_vuitton » serait illisible. Le vrai éditeur est dans le titre,
+    convention Google News « Titre - Éditeur ».
+    Mesuré le 30/08 : 75 articles `ent_*`, **75** portent ce suffixe (100 %).
+    """
+    from rag.indexation import editeur
+    assert editeur("ent_lvmh_moet_vuitton",
+                   "Action LVMH | Cours MC Bourse Euronext Paris - Zonebourse") == "Zonebourse"
+    assert editeur("ent_sanofi", "Sanofi recule - BFM Bourse") == "BFM Bourse"
+
+
+def test_lediteur_prend_le_dernier_tiret_pas_le_premier():
+    """Un titre peut contenir « - » ailleurs. Seul le dernier sépare l'éditeur."""
+    from rag.indexation import editeur
+    titre = "Sanofi - resultats du T3 - Boursorama"
+    assert editeur("ent_sanofi", titre) == "Boursorama"
+
+
+def test_les_flux_generalistes_ont_un_nom_lisible():
+    from rag.indexation import editeur
+    assert editeur("bfm_eco", "Un titre sans tiret") == "BFM Éco"
+    assert editeur("latribune", "Un titre sans tiret") == "La Tribune"
+    assert editeur("lemonde_eco", "Un titre sans tiret") == "Le Monde Éco"
+
+
+def test_un_flux_inconnu_garde_son_identifiant_plutot_que_de_disparaitre():
+    """Dégradation propre : un identifiant brut vaut mieux qu'une source vide."""
+    from rag.indexation import editeur
+    assert editeur("flux_jamais_vu", "Un titre") == "flux_jamais_vu"
+
+
+def test_un_resume_redondant_avec_le_titre_nest_pas_recopie():
+    """Mesuré le 30/08 : 77 articles sur 309 (24 %) répètent le titre en résumé.
+
+    Google News renvoie souvent un résumé identique au titre, à la ponctuation
+    près. Le concaténer double le texte vectorisé sans ajouter d'information, et
+    fausse le score BM25 en doublant la fréquence de chaque mot.
+    """
+    from rag.indexation import texte_indexable
+    titre = "Action LVMH | Cours MC Bourse Euronext Paris - Zonebourse"
+    resume = "Action LVMH | Cours MC Bourse Euronext Paris Zonebourse"
+    assert texte_indexable(titre, resume) == titre
+
+
+def test_un_resume_qui_apporte_vraiment_quelque_chose_est_conserve():
+    """Non-régression : on ne jette que la redondance, jamais l'information."""
+    from rag.indexation import texte_indexable
+    titre = "LVMH publie ses resultats"
+    resume = "Le groupe annonce un recul de 3 % de son chiffre d'affaires en Asie."
+    assert texte_indexable(titre, resume) == f"{titre}. {resume}"

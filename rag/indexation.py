@@ -159,10 +159,67 @@ def detecter_tickers(texte: str, lexique: dict[str, str]) -> list[str]:
     return sorted(trouves)
 
 
+# Noms lisibles des flux généralistes. Les flux d'entreprise (`ent_*`) n'y figurent
+# pas : leur éditeur réel se lit dans le titre, voir `editeur()`.
+FLUX_LISIBLES = {
+    "bfm_eco": "BFM Éco",
+    "lemonde_eco": "Le Monde Éco",
+    "latribune": "La Tribune",
+}
+
+
+def editeur(source: str, titre: str | None) -> str:
+    """Le nom d'éditeur à CITER, à partir de l'identifiant de flux et du titre.
+
+    `article.source` porte l'identifiant du **flux**, pas l'éditeur : les articles
+    d'entreprise viennent tous de `ent_<raison_sociale>` alors qu'ils sont publiés
+    par Boursorama, Zonebourse ou BFM Bourse. Or le prompt du rédacteur demande de
+    **citer la source** — un briefing citant « ent_lvmh_moet_vuitton » serait
+    illisible, et une citation illisible ne vaut pas mieux qu'une absence de source.
+
+    Google News formate ses titres « Titre - Éditeur ». Mesuré sur le corpus le
+    30/08/2026 : **75 articles `ent_*`, 75 portent ce suffixe — 100 %.**
+
+    ⚠️ Le **dernier** séparateur, jamais le premier : un titre peut contenir
+    « - » ailleurs (« Sanofi - resultats du T3 - Boursorama »).
+
+    Dégradation propre : un flux inconnu garde son identifiant brut. *Une source
+    technique reste traçable ; une source vide ne l'est pas.*
+    """
+    if source.startswith("ent_") and " - " in (titre or ""):
+        return titre.rsplit(" - ", 1)[1].strip()
+    return FLUX_LISIBLES.get(source, source)
+
+
+def _memes_mots(a: str, b: str) -> bool:
+    """Les deux textes portent-ils la même information, à la ponctuation près ?"""
+    mots_a = set(re.findall("[a-z0-9]+", a.lower()))
+    mots_b = set(re.findall("[a-z0-9]+", b.lower()))
+    if not mots_a or not mots_b:
+        return False
+    return mots_a <= mots_b or mots_b <= mots_a
+
+
 def texte_indexable(titre: str | None, resume: str | None) -> str:
-    """Le texte réellement vectorisé : titre puis résumé, séparés par un point."""
-    morceaux = [(titre or "").strip(), (resume or "").strip()]
-    return ". ".join(m for m in morceaux if m)
+    """Le texte réellement vectorisé : titre puis résumé, séparés par un point.
+
+    ⚠️ **Un résumé redondant n'est pas recopié.** Google News rend très souvent un
+    résumé identique au titre à la ponctuation près. Mesuré le 30/08/2026 :
+    **77 articles sur 309 — 24 % du corpus.** Concaténer double le texte sans
+    ajouter d'information, et **fausse BM25** en doublant la fréquence de chaque
+    mot : un article redondant serait mécaniquement mieux classé qu'un article
+    riche, pour la seule raison qu'il se répète.
+
+    On ne jette que la **redondance**, jamais l'information : dès que le résumé
+    apporte un mot que le titre n'a pas, il est conservé.
+    """
+    titre = (titre or "").strip()
+    resume = (resume or "").strip()
+
+    if titre and resume and _memes_mots(titre, resume):
+        return titre if len(titre) >= len(resume) else resume
+
+    return ". ".join(m for m in (titre, resume) if m)
 
 
 def _collection(chemin: Path | None = None):
@@ -218,7 +275,10 @@ def indexer(dsn: str | None = None, chemin: Path | None = None) -> Resultat:
         ids.append(str(article["id"]))
         textes.append(texte)
         metadonnees.append({
-            "source": article["source"] or "",
+            # `source` est ce qu'on CITE, `flux` est d'où ça vient. Garder les deux :
+            # l'un sert le lecteur du briefing, l'autre sert le diagnostic.
+            "source": editeur(article["source"] or "", article["titre"]),
+            "flux": article["source"] or "",
             "lien": article["lien"] or "",
             "publie_le": article["publie_le"].isoformat() if article["publie_le"] else "",
             # ChromaDB n'accepte pas de liste en métadonnée : on stocke une chaîne
