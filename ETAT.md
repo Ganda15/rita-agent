@@ -15,7 +15,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-08-28** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+**Dernière mise à jour : 2026-08-30** · deadline livrables **05/11/2026** · jury **30/11–01/12**
 
 🗓️ **Lundi 24/08 — rituel du lundi fait (poste local).**
 - ✅ **PREMIÈRE SAUVEGARDE RÉELLE** — le manque n°0 avait 8 jours. `pg_dump -F c` →
@@ -40,7 +40,43 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
   photographie du 19/08. `/health` répond **200** (vérifié depuis le poste le 24/08), mais les
   données affichées en ligne ont **5 jours de retard**. → tâche planifiée serveur, ci-dessous.
 
-✅ **28/08 — ÉTAPE E3 FAITE : recherche hybride dense + BM25, fusion RRF, refus motivé.**
+✅ **30/08 — ÉTAPE 4a FAITE : le briefing lit la BASE, plus yfinance.** Commit `61b5d98`,
+poussé sur `develop`. Suite **390 passed, 2 xfailed** · couverture **92,41 %** (seuil CI 90 %).
+- 🔴 **Le trou était deux fois plus large que « il manque le RAG ».** `agents/scout.py`
+  appelait **yfinance sur le réseau**, avec **10 tickers en dur**, et ne touchait jamais
+  PostgreSQL. Le briefing ignorait donc **les deux** : les 275 000 cotations *et* les articles.
+  Les modules `indicateurs/socle.py`, `risque.py`, `portefeuille.py` — codés les 18-19/08 —
+  n'étaient appelés par **aucun** briefing.
+- 🔴 **`volume` était en train de devenir une étiquette fausse** : la base rend `adtv20`, une
+  **moyenne sur 20 séances**. Champ renommé, et un test **interdit** l'ancien nom
+  (`assert "volume" not in etat`) — un test qui interdit vaut mieux qu'un commentaire qui
+  déconseille.
+- 🔴 **La devise n'existait pas dans le lot 1.** `valeur.devise` est en base depuis le premier
+  schéma, la requête ne la remontait pas. Ajoutée à `db/indicateurs.sql`, au dataclass et à
+  `construire()`. ⚠️ **À ne pas survendre** : les **111 valeurs sont EUR**, donc écrire « EUR »
+  en dur aurait été *observablement indiscernable* aujourd'hui. Ça cesse d'être vrai à la
+  première valeur étrangère, et rien ne le signalerait.
+- 🔴 **TotalEnergies n'est pas dans la base** (`ILIKE '%TOTAL%'` → 0 ligne), alors que `TTE.PA`
+  figurait dans les 10 tickers en dur. L'ancien Scout produisait donc un briefing **hors de
+  l'univers du projet**, via Yahoo, sans que rien ne le dise. Le nouveau **refuse**.
+  ⚠️ **Mais le corpus d'articles, lui, contient des dépêches TotalEnergies** (§6 du guide
+  d'étude — c'est la mesure qui a décidé de BM25). **Articles et valeurs suivies ne couvrent
+  pas le même ensemble** → à trancher à l'étape 4c.
+- 🐛 **3ᵉ occurrence du simulacre qui diverge du code** : après le passage au vert du Scout, la
+  suite **restait verte** alors que `graph/workflow.py` lisait encore `state["volume"]`. En
+  production le briefing aurait affiché **« volume : 0 »**. La cause : le faux Scout de
+  `tests/test_workflow.py` portait encore la clé. *(28/08 : `"FROM article"` vs `FROM   article`,
+  test vert sur corpus vide.)* Fichier réécrit, règle inscrite en en-tête.
+- ✅ **La fraîcheur est enfin DITE au modèle** : au-delà de 40 jours, le prompt **exige** que le
+  briefing signale la donnée ancienne. Le défaut du 19/08 était que `fraicheur_jours` était
+  calculé et jamais transmis.
+- 🗑️ `tests/test_scout.py` **supprimé** : il testait la collecte yfinance, comportement retiré.
+  *Un test d'un comportement qui n'existe plus est un mensonge vert.*
+- ⬜ **Reste ouvert** : `yfinance` n'est plus importé par aucun module mais reste dans
+  `requirements.txt` — à retirer, en mesurant le gain sur l'image Docker (595 Mo).
+- ▶️ **Prochaine action : étape 4c** — le nœud RAG dans le graphe, puis 4d le prompt enrichi.
+
+✅ **28/08 — ÉTAPE 3 FAITE : recherche hybride dense + BM25, fusion RRF, refus motivé.**
 `rag/recherche.py` · **13 tests** · suite **383 passed, 2 xfailed** · couverture **92,17 %**.
 Preuve : `evidence/C17/preuve-rag-indexation.md` (partie E3).
 - 🔴 **La mesure qui a décidé de l'hybride** : interrogé sur le mot exact
@@ -59,7 +95,7 @@ Preuve : `evidence/C17/preuve-rag-indexation.md` (partie E3).
   comparable d'une question à l'autre, contrairement aux distances.
   ⚠️ **Faux négatif assumé et mesuré** : « résultats d'une entreprise du luxe » est refusée
   alors qu'un article LVMH pertinent existe. **L'arbitrage précision/rappel ne se tranche
-  pas à vue** — c'est l'objet de l'étape E5.
+  pas à vue** — c'est l'objet de l'étape 5.
 - 📈 **Corpus enrichi** : flux **Google News par entreprise détenue** ajouté à la collecte
   quotidienne → **163 → 263 articles**, et **22 → 109 citant une valeur suivie (13 % → 41 %)**.
   Les articles viennent de **Boursorama, Boursier.com, Zonebourse** — les sources qui
@@ -72,7 +108,7 @@ Preuve : `evidence/C17/preuve-rag-indexation.md` (partie E3).
   (b) **plantage** quand le filtre par ticker était actif — la recherche dense interroge
   toute la collection et rendait des documents écartés par le filtre.
 
-✅ **28/08 — ÉTAPE E2 FAITE : les actualités sont indexées.** `rag/indexation.py`,
+✅ **28/08 — ÉTAPE 2 FAITE : les actualités sont indexées.** `rag/indexation.py`,
 ChromaDB persistant + embeddings `all-MiniLM-L6-v2` (384 dim) en **ONNX, sans PyTorch**
 (l'image Docker fait déjà 595 Mo). **15 tests.** Suite : **370 passed, 2 xfailed** ·
 couverture **92,28 %**. Preuve : `evidence/C17/preuve-rag-indexation.md`.
@@ -82,7 +118,7 @@ couverture **92,28 %**. Preuve : `evidence/C17/preuve-rag-indexation.md`.
   éco, La Tribune), pas d'actualité d'entreprise. **À trancher** : assumer un corpus macro
   (contexte économique du briefing), ou ajouter un flux Google News **par ticker**
   (`sources/rss.py` sait déjà lire un flux — coût faible, volume multiplié).
-- 🔴 **Mesure qui justifie l'étape E3** : la requête *« résultats d'une entreprise du luxe »*
+- 🔴 **Mesure qui justifie l'étape 3** : la requête *« résultats d'une entreprise du luxe »*
   rend un article sur une **péniche** à 0,489 — il n'existe aucun article sur le luxe dans le
   corpus, donc la recherche dense rend le *moins mauvais*, pas un bon. Sans seuil de refus,
   cet article partirait enrichir un briefing LVMH. **`OUT_OF_CORPUS` n'est pas un raffinement,
@@ -98,7 +134,7 @@ couverture **92,28 %**. Preuve : `evidence/C17/preuve-rag-indexation.md`.
   la configuration **à la place** de celui qui en avait besoin. *Corriger le 4ᵉ symptôme
   aurait garanti un 5ᵉ.*
 
-✅ **28/08 — ÉTAPE E1 FAITE : la passerelle MCP tourne.** `passerelle_mcp/serveur.py`,
+✅ **28/08 — ÉTAPE 1 FAITE : la passerelle MCP tourne.** `passerelle_mcp/serveur.py`,
 transport **stdio**, **3 outils** (`rita_fraicheur`, `rita_portefeuille`, `rita_indicateurs`),
 **11 tests**. Suite : **355 passed, 2 xfailed** · couverture **92,25 %**.
 Preuve : `evidence/C10/preuve-passerelle-mcp.md`.
