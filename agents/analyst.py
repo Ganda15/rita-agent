@@ -2,11 +2,37 @@
 from src.llm import generer_texte
 
 
+def _bloc_articles(passages: list[dict] | None) -> str:
+    """Les articles retrouvés, ou l'interdiction explicite d'en inventer.
+
+    ⚠️ Le silence ne suffit pas. Un modèle privé de sources **en invente** : c'est le
+    risque central d'un RAG, et il ne se traite pas en omettant la section, mais en
+    écrivant la consigne. *Un briefing qui cite une actualité fausse est pire qu'un
+    briefing sans actualité.*
+
+    ⚠️ **Jamais le mot « récents ».** Le RAG classe par PERTINENCE, pas par date :
+    mesuré le 30/08, MC.PA remonte une dépêche de **2023**. L'en-tête doit demander
+    au modèle de vérifier la date, pas lui affirmer une fraîcheur que rien ne garantit.
+    """
+    if not passages:
+        return (
+            "\n\nArticles : aucun article pertinent n'a été trouvé dans le corpus."
+            "\n- N'invente AUCUNE actualité, AUCUN événement, AUCUNE déclaration."
+            "\n- Rédige uniquement à partir des chiffres ci-dessus."
+        )
+
+    lignes = [f"{i}. [{p['source']}, {p['publie_le']}] {p['texte']}"
+              for i, p in enumerate(passages, 1)]
+    return (f"\n\nArticles retrouvés ({len(passages)}) — classés par PERTINENCE, pas par date : vérifie leur date avant de t'en servir, et ne présente jamais une dépêche ancienne comme une actualité du jour. Quand tu t'appuies sur l'un d'eux, "
+            f"cite la source et la date :\n" + "\n".join(lignes))
+
+
 def generate_briefing(ticker: str, price: float, change_pct: float,
                       adtv20: float | None, currency: str,
                       fraicheur_jours: int = 0,
-                      cotation_perimee: bool = False) -> str:
-    """Rédige un briefing français à partir des données lues en base.
+                      cotation_perimee: bool = False,
+                      passages: list[dict] | None = None) -> str:
+    """Rédige un briefing français à partir des données lues en base et des articles.
 
     Args:
         ticker: code boursier, ex. 'MC.PA'.
@@ -16,6 +42,8 @@ def generate_briefing(ticker: str, price: float, change_pct: float,
         currency: devise de la valeur, lue dans `valeur.devise`.
         fraicheur_jours: âge de la cotation, en jours.
         cotation_perimee: vrai au-delà de 40 jours — la valeur est probablement radiée.
+        passages: articles retrouvés par le RAG. Liste vide ou `None` = aucun article,
+            et le prompt interdit alors explicitement d'en inventer.
 
     Returns:
         Briefing en français, 3 à 5 phrases.
@@ -35,13 +63,15 @@ def generate_briefing(ticker: str, price: float, change_pct: float,
     else:
         avertissement = f"\n- Fraîcheur de la donnée : {fraicheur_jours} jour(s)"
 
+    articles = _bloc_articles(passages)
+
     prompt = f"""Tu es un analyste financier français qui rédige des briefings courts pour des investisseurs particuliers.
 
 Données de la dernière séance collectée :
 - Action : {ticker}
 - Cours de clôture : {price} {currency}
 - Variation sur 1 jour : {change_pct}% ({direction})
-- Volume moyen sur 20 séances : {volume_moyen}{avertissement}
+- Volume moyen sur 20 séances : {volume_moyen}{avertissement}{articles}
 
 Rédige un briefing de 3 à 5 phrases en français qui :
 1. Résume la performance du jour avec un ton factuel
