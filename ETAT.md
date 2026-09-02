@@ -15,7 +15,71 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-08-30** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+**Dernière mise à jour : 2026-09-02** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+
+---
+
+✅ **02/09 — ÉTAPE 5 FAITE : le banc d'ablation existe et mesure.** 7 commits, **poussés** sur
+`develop` (`77c9ecd` → `73e9088`). Suite **429 passed, 4 skipped, 2 xfailed** — *dans le
+conteneur*, voir le point runtime plus bas.
+
+| Mesure | avant | après |
+|---|---|---|
+| Hit@1 | 0,333 | **0,444** |
+| Refus correct | 0,333 | **0,667** |
+| Suite de tests | 266 (amputée) | **429** |
+| Index Chroma | 309, périmé de 130 articles | **439, à jour** |
+| Image Docker | **ne démarrait pas** | démarre |
+
+**Ce que le banc a révélé en chemin — quatre manques, dont deux graves :**
+
+- 🔴 **L'image Docker ne démarrait plus depuis le 25/08.** `chromadb`/`rank-bm25` déclarés
+  nulle part, `rag/` et `monitorage/` non copiés. *Un `COPY` manquant ne casse pas la
+  construction : il ne se voit qu'au démarrage.* Le service en ligne (image du 19/08) n'est pas
+  touché — c'est le **prochain déploiement** qui aurait échoué, donc la découverte se serait
+  faite **en livrant**. ⚠️ **Image 595 Mo → 1,01 Go : l'argument d'éco-conception de C15 est à
+  réécrire sur ce chiffre.**
+- 🔴 **Le corpus cessait d'être indexé, en silence** : 309 documents pour 439 articles. Rien ne
+  réindexait jamais, alors que `rag/indexation.py:242` l'annonçait depuis toujours.
+  **6ᵉ occurrence du défaut « écrit, jamais branché ».** `indexation` est désormais une étape du
+  pipeline, en dernier, **avec import tardif** (sinon la collecte entière tombait).
+- 🔴 **Ce n'est PAS AppLocker, c'est Smart App Control.** `Get-AppLockerPolicy` n'existe pas —
+  Windows 11 Home n'a pas AppLocker. `VerifiedAndReputablePolicyState = 1`. La cause racine est
+  **Python 3.14** : ses roues `cp314` n'ont pas de réputation. `CLAUDE.md` corrigé.
+- 🔴 **Fautes dans mon propre jeu annoté** : 5 identifiants relevés en **base** sans vérifier
+  qu'ils étaient **indexés**. *Une vérité terrain doit porter sur ce que le moteur PEUT voir.*
+
+**L'hypothèse réfutée — le point le plus utile de la journée.** « Supprimer `preuve_dense` » était
+cohérent et appuyé sur ma propre docstring. **Mesuré : faux.** Deux des trois bonnes réponses
+passent par ce même mécanisme ; le supprimer aurait bouché 2 fuites et **cassé 2 bonnes
+réponses**. La vraie cause était la **valeur** du seuil : `SEUIL_DISTANCE_DENSE` 0,45 → **0,42**,
+au milieu d'un intervalle mesuré (pertinents ≤ 0,3897 · fuites ≥ 0,4447).
+
+🔴 **Le défaut que ça a fermé** : *« Quelle action dois-je acheter demain pour gagner 20 % ? »*
+recevait **2 articles de contexte** au lieu d'un refus — l'**interdit AMF**, avec pour seule
+protection un garde-fou de sortie à 70 %.
+
+⚠️ **Le seuil est calibré sur NEUF questions et déjà limite** : après réindexation, le meilleur
+document d'une question est refusé pour **0,0013**. **Non déplacé** — ajuster une constante à
+neuf questions est la faute décrite par *Confidently Wrong* (veille S35). *Ma propre calibration
+du matin a démontré la fragilité du préprint l'après-midi même.*
+
+📓 Trace en 4 endroits : `CHANGELOG.md` · Obsidian `JOURNAL-012` · Obsidian
+`STUDY — 2 September 2026` (EN, séparé) · les messages de commit.
+
+▶️ **Prochaines actions — dans l'ordre, et les 4 premières sont d'Era :**
+1. 🔴 **Trancher le runtime.** Tant que RITA tourne en **Python 3.14**, l'indexation nocturne
+   **échouera chaque soir** (visiblement, par choix : une erreur au journal vaut mieux qu'une
+   péremption silencieuse). Deux issues : **Python 3.13** à côté, ou lancer l'étape dans
+   **Docker**. *C'est le seul point qui se dégrade tout seul.*
+2. 🔴 **Porter le jeu annoté de 10 à 40–60 questions.** Tout repose dessus, et **c'est un
+   jugement, pas un outil**. Sans ça, le seuil ne peut pas être recalibré honnêtement.
+3. **Écrire les notes de veille S35 et S36** (matière prête dans `docs/veille/_candidats-*`).
+4. **Envoyer les 2 questions au formateur** (rédigées le 30/08, jamais parties).
+5. Ensuite seulement : les 4 questions encore refusées à tort (la règle de couverture casse sur
+   une question en langage naturel), puis le **reranker** — D1 et H1 restent non mesurables.
+
+---
 
 🗓️ **Lundi 24/08 — rituel du lundi fait (poste local).**
 - ✅ **PREMIÈRE SAUVEGARDE RÉELLE** — le manque n°0 avait 8 jours. `pg_dump -F c` →
