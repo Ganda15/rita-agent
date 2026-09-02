@@ -17,6 +17,15 @@ feedparser==6.0.14
 # passerelle tourne en local a cote du client LLM, pas dans l'image de l'API.
 mcp>=2.1.1
 
+# RAG (C17) - ajoutes le 02/09/2026.
+# 🔴 Ils etaient IMPORTES par rag/indexation.py et rag/recherche.py depuis le 28/08
+# sans etre declares nulle part : ni ici, ni dans requirements-api.txt. Conséquence
+# mesurée, pas supposee : un clone neuf du depot - et l'image Docker elle-meme -
+# ne pouvaient pas faire tourner le RAG. Versions relevees par importlib.metadata
+# sur l'environnement qui fait tourner la suite, jamais choisies au juge.
+chromadb==1.5.9
+rank-bm25==0.2.2
+
 # Big data (C1 connexion + C2 requetes). Necessite un JDK 21 dans JAVA_HOME.
 # Sans JDK, les tests d'integration de tests/test_spark.py sont ignores, pas en echec.
 pyspark==4.2.0

@@ -59,7 +59,15 @@ COPY --chown=rita:rita db/      ./db/
 COPY --chown=rita:rita graph/   ./graph/
 COPY --chown=rita:rita guardrails/ ./guardrails/
 COPY --chown=rita:rita indicateurs/ ./indicateurs/
+# 🔴 Oublié depuis le 25/08, jour de sa création : `api/donnees.py` importe
+# `monitorage.fraicheur` en haut de fichier pour le bandeau de fraîcheur (C20).
+COPY --chown=rita:rita monitorage/ ./monitorage/
 COPY --chown=rita:rita pipelines/ ./pipelines/
+# 🔴 Oublié jusqu'au 02/09/2026, alors que `graph/workflow.py` importe
+# `rag.recherche` en haut de fichier depuis le 30/08 : l'image se construisait
+# sans erreur puis s'arrêtait à l'import au démarrage. Un `COPY` manquant ne se
+# voit pas à la construction — seulement à l'exécution.
+COPY --chown=rita:rita rag/     ./rag/
 COPY --chown=rita:rita sources/ ./sources/
 COPY --chown=rita:rita src/     ./src/
 COPY --chown=rita:rita frontend/ ./frontend/
