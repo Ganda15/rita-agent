@@ -16,6 +16,43 @@
 # machine avec elle-même, pas la pertinence du moteur.
 #
 # État au 2026-09-02 : 10 questions. Cible : 40 à 60 avant de conclure quoi que ce soit.
+#
+# =============================================================================
+# RELECTURE DU 02/09/2026, APRÈS RÉINDEXATION — ce que la mesure a appris
+# =============================================================================
+#
+# 1. 🔴 CINQ IDENTIFIANTS ÉTAIENT ABSENTS DE L'INDEX au moment de l'annotation
+#    (643, 459, 468, 406). Ils avaient été relevés dans la BASE, sans vérifier
+#    qu'ils étaient indexés — or l'index avait 130 articles de retard. Corrigé
+#    par la réindexation : les 15 identifiants sont désormais présents.
+#    *Annoter depuis la base ce qu'on ira chercher dans l'index était une faute
+#    de méthode : la vérité terrain doit porter sur ce que le moteur PEUT voir.*
+#
+# 2. 🔴 DEUX QUESTIONS SONT STRUCTURELLEMENT HORS DE PORTÉE d'un moteur de
+#    recherche, et il faut le dire plutôt que de compter leur échec comme une
+#    faiblesse du RAG :
+#
+#      « Quels événements macroéconomiques sont mentionnés ? »
+#          art 406 -> rang 304/439   art 193 -> rang 389/439
+#      « Quel événement DU CORPUS peut avoir un impact sur LVMH ? »
+#
+#    Ce sont des questions **sur** le corpus, pas des questions **auxquelles** le
+#    corpus répond. Leur vocabulaire — « événements », « éléments »,
+#    « mentionnés », « du corpus » — n'apparaît dans aucun article de presse, et
+#    elles désignent une catégorie, pas un sujet. Aucune recherche par
+#    similarité ne les traite ; il y faudrait une synthèse sur tout le corpus.
+#    **Conservées exprès** : elles délimitent ce que le RAG ne sait pas faire, et
+#    une limite mesurée vaut mieux qu'une limite tue.
+#
+# 3. ⚠️ LE SEUIL EST DÉJÀ LIMITE. `SEUIL_DISTANCE_DENSE` a été calibré à 0,42 le
+#    même jour, au milieu d'un intervalle propre. Après réindexation :
+#
+#      « Quelle actualité concerne LVMH ? »  art 643  rang 0  dist 0,4213
+#
+#    Le MEILLEUR document est refusé pour 0,0013. **Ne pas déplacer le seuil pour
+#    le rattraper** : ce serait ajuster une constante à neuf questions, exactement
+#    ce que le préprint « Confidently Wrong » (veille S35) décrit comme la faute.
+#    Le seuil se recalibrera quand le jeu aura 40 à 60 questions — pas avant.
 
 
 # =============================================================================
