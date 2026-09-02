@@ -295,11 +295,60 @@ def etape_cours_scrapes(cur, simulation: bool) -> Bilan:
     return b
 
 
+def etape_indexation(cur, simulation: bool) -> Bilan:
+    """Réindexe le corpus pour le RAG, après que les articles ont été écrits.
+
+    ## Le défaut que cette étape corrige
+
+    Mesuré le 02/09/2026 : **309 documents indexés pour 439 articles en base**. La
+    collecte de 19h00 écrivait des articles tous les soirs et **rien ne réindexait
+    jamais** — ni le pipeline, ni `scripts/collecte-quotidienne.cmd`. Le RAG cherchait
+    donc dans un corpus périmé d'un peu plus chaque jour, sans qu'aucun signal ne le
+    dise. `rag/indexation.py` annonçait pourtant, dans sa propre docstring, qu'elle est
+    *« idempotente, on peut donc la relancer après chaque collecte de 19h00 »*.
+
+    L'ordre compte : cette étape vient **après** `rss` et `scraping`, sinon elle
+    indexerait le corpus d'avant la collecte du soir.
+
+    ## Pourquoi l'import est tardif — ce n'est pas un détail de style
+
+    `rag.indexation` importe `chromadb`, qui tire `opentelemetry`, qui tire `grpc`. Sur
+    le poste d'Era, **Smart App Control refuse de charger `cygrpc`** (roue `cp314` sans
+    réputation). Un import en tête de module rendrait `pipelines/ingest.py` entièrement
+    inimportable, et la collecte quotidienne — taux, cotations, articles, scraping —
+    **s'arrêterait complètement**. Avec l'import ici, seule cette étape échoue ; le
+    pipeline attrape l'erreur, la journalise, et les autres étapes passent.
+
+    C'est la même convention que `bigdata/session_spark.py`, qui n'importe `pyspark`
+    qu'à l'intérieur d'une fonction pour la même raison.
+
+    Le curseur n'est pas utilisé : `indexer()` ouvre sa propre connexion, parce qu'elle
+    relit la table `article` entière et n'a rien à écrire en base.
+    """
+    del cur
+
+    if simulation:
+        return Bilan("indexation", details=["simulation : index laisse intact"])
+
+    from rag.indexation import indexer          # tardif — voir la docstring
+
+    resultat = indexer()
+    return Bilan(
+        "indexation",
+        lues=resultat.lus,
+        ecrites=resultat.indexes,
+        rejetees=resultat.ignores_bloques,
+        details=[f"{resultat.avec_ticker} citant une valeur suivie"],
+    )
+
+
 ETAPES = {
     "ecb": etape_taux_change,
     "cotations": etape_cotations,
     "rss": etape_articles,
     "scraping": etape_cours_scrapes,
+    # Après rss et scraping : on indexe ce qui vient d'être collecté, pas l'état d'avant.
+    "indexation": etape_indexation,
 }
 
 
