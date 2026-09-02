@@ -1,0 +1,48 @@
+# Exclusions propres à l'IMAGE DE TESTS (`Dockerfile.tests`).
+#
+# BuildKit lit `<nom-du-Dockerfile>.dockerignore` en priorité sur `.dockerignore`.
+# Sans ce fichier, la construction héritait de `.dockerignore`, qui écarte `tests/`,
+# `evals/` et `scripts/` — à raison pour l'image livrée, absurde ici : le conteneur
+# se lançait alors sur zéro test (« no tests ran in 0.02s », mesuré le 02/09/2026).
+#
+# ⚠️ Le bloc des secrets est RECOPIÉ à l'identique, jamais allégé. Une image de
+# tests se pousse aussi ; elle n'a pas plus le droit d'emporter le `.env`.
+
+# --- Secrets et données personnelles -----------------------------------------
+.env
+.env.*
+!.env.example
+data/positions.csv
+data/positions-reelles*.csv
+*bourse*.xlsm
+*bourse*.xlsx
+*portefeuille*.csv
+*portefeuille*.xlsx
+
+# --- Historique et outils de développement -----------------------------------
+.git
+.venv
+venv
+.claude
+
+# --- Ce qui ne sert pas aux tests --------------------------------------------
+# ⚠️ `bigdata/` est GARDÉ, contrairement à `.dockerignore`. pyspark n'est pas
+# installé ici, mais `tests/test_spark.py` fait `from bigdata import …` en haut de
+# fichier : sans le paquet, la collecte échoue au lieu de sauter les tests. Le
+# paquet lui-même n'importe pyspark qu'à l'intérieur d'une fonction — il se charge
+# donc sans lui, et les tests d'intégration se sautent proprement, comme sur le poste.
+evidence/
+docs/
+sauvegardes/
+
+# --- Fichiers volumineux ou reconstructibles ---------------------------------
+data/parquet/
+*.parquet
+*.log
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+node_modules/
