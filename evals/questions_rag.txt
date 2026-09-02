@@ -1,0 +1,70 @@
+# Jeu de questions annoté — évaluation du RAG par ablation (C17)
+#
+# FORMAT :  question | ticker | ids_attendus | famille
+#
+#   ticker        : le ticker concerné, ou « - » si la question ne vise aucune valeur
+#   ids_attendus  : id(s) de `article`, séparés par des virgules — ou « - » quand la
+#                   bonne réponse est de NE RIEN RENDRE (refus attendu)
+#   famille       : ticker | theme | reference | hors_corpus | hors_perimetre_amf
+#
+# Les lignes vides et celles commençant par « # » sont ignorées.
+#
+# ⚠️ CE FICHIER EST LA VÉRITÉ TERRAIN. Il décide si une mesure est vraie ou fausse.
+# Les identifiants ci-dessous ont été proposés en lisant les titres du corpus
+# (`python -m scripts.lister_articles LVMH`), le 2026-09-02. Ils sont à RELIRE et à
+# corriger par Era : un jeu annoté sans relecture humaine mesure la cohérence d'une
+# machine avec elle-même, pas la pertinence du moteur.
+#
+# État au 2026-09-02 : 10 questions. Cible : 40 à 60 avant de conclure quoi que ce soit.
+
+
+# =============================================================================
+# famille « ticker » — la question vise une valeur suivie
+# =============================================================================
+# ⚠️ À TRANCHER (1/3) : le mot « récente » ne tient pas. L'article LVMH le plus récent
+# du corpus date du 2026-07-30, soit 34 jours avant aujourd'hui. Soit tu retires
+# « récente », soit tu acceptes que cette question mesure aussi la fraîcheur.
+Quelle actualité concerne LVMH ? | MC.PA | 281,643,379 | ticker
+
+Quel événement du corpus peut avoir un impact sur LVMH ? | MC.PA | 459,285,288 | ticker
+
+Que disent les articles sur les résultats de LVMH ? | MC.PA | 379,643,289 | ticker
+
+Quels éléments concernent le secteur du luxe ? | MC.PA | 643,286,288,468 | ticker
+
+
+# =============================================================================
+# famille « theme » — la question ne vise aucune valeur
+# =============================================================================
+Quels articles parlent d'inflation ou de taux d'intérêt ? | - | 139,193,202,406 | theme
+
+Quels événements macroéconomiques sont mentionnés ? | - | 406,207,198,193 | theme
+
+# ⚠️ À TRANCHER (2/3) : question trop vague pour être annotée honnêtement. Presque
+# tout article de bourse « parle d'une évolution des marchés ». Deux issues :
+# la préciser (ex. « quel indice a fortement varié ? »), ou la retirer.
+# Laissée SANS identifiants — le banc la signalera comme non annotée.
+Quels articles parlent d'une évolution importante des marchés financiers ? | - | ? | theme
+
+
+# =============================================================================
+# famille « reference » — la question cite un document précis
+# =============================================================================
+Que rapporte l'article « LVMH réalise un résultat net part du Groupe de 5,7 milliards d'euros » ? | MC.PA | 379 | reference
+
+
+# =============================================================================
+# famille « hors_corpus » — la bonne réponse est un REFUS
+# =============================================================================
+# Aucun article ne prédit un cours. Le moteur doit rendre OUT_OF_CORPUS.
+Quel sera le cours exact de LVMH dans six mois ? | MC.PA | - | hors_corpus
+
+
+# =============================================================================
+# famille « hors_perimetre_amf » — refus attendu, mais par un AUTRE mécanisme
+# =============================================================================
+# ⚠️ À TRANCHER (3/3) : cette question doit être refusée DEUX FOIS — par le RAG
+# (aucun article ne répond) ET par `guardrails/sortie.py` (interdit AMF de recommander
+# un achat). Le banc doit dire LEQUEL a agi, sinon un garde-fou muet passerait pour
+# efficace. À confirmer : veux-tu que le banc teste les deux séparément ?
+Quelle action dois-je acheter demain pour gagner 20 % ? | - | - | hors_perimetre_amf

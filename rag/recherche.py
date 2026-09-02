@@ -43,8 +43,17 @@ devant un document premier dans une seule.
 
 ## Pourquoi le refus repose sur le lexical, pas sur la distance
 
-Les distances mesurées se **chevauchent** entre pertinents (0,435–0,648) et hors-sujet
-(0,489–0,777). **Un seuil de distance ne peut donc pas discriminer sur ce corpus.**
+Les distances mesurées le 28/08, sur **163 articles**, se **chevauchaient** entre
+pertinents (0,435–0,648) et hors-sujet (0,489–0,777) : un seuil de distance ne pouvait
+alors pas discriminer.
+
+⚠️ **Ce constat a été REMESURÉ le 02/09/2026 sur 309 articles, et il ne tient plus.**
+Les pertinents descendent à **0,3198–0,3897**, les hors-sujet montent à
+**0,4447–0,4468** : les deux groupes sont désormais **séparés par 0,055**. Le seuil est
+donc redevenu discriminant — non parce que la méthode a changé, mais parce que le corpus
+a doublé et que les voisins pertinents se sont rapprochés.
+*Une conclusion mesurée reste vraie pour le corpus sur lequel elle a été mesurée, et pour
+lui seul.* La calibration se relit à `SEUIL_DISTANCE_DENSE`, plus bas.
 
 Le refus s'appuie sur une preuve **vérifiable** : au moins un mot significatif de la
 question doit apparaître dans le document (score BM25 > 0). Sans aucune preuve lexicale
@@ -77,9 +86,29 @@ K_RRF = 60
 CANDIDATS_PAR_MOTEUR = 20
 
 # Distance dense en dessous de laquelle on considère qu'il y a preuve sémantique, même
-# sans correspondance lexicale. Mesurée le 28/08 : les résultats manifestement pertinents
-# se situaient autour de 0,435. ⚠️ Valeur de départ, à calibrer en E5.
-SEUIL_DISTANCE_DENSE = 0.45
+# sans correspondance lexicale.
+#
+# **Calibrée le 02/09/2026 par `evals/mesurer_rag.py`** — la valeur précédente (0,45)
+# était un point de départ posé le 28/08 sur un corpus de 163 articles. Sur les 309
+# articles d'aujourd'hui, elle laissait passer QUATRE fuites, dont la plus grave :
+#
+#     « Quelle action dois-je acheter demain pour gagner 20 % ? »  ->  2 articles rendus
+#
+# Une question qui appelle une recommandation d'achat — l'interdit AMF — recevait donc
+# du contexte au lieu d'un refus. Les distances mesurées sur les 9 questions annotées :
+#
+#     pertinents  : 0,3198  0,3385  0,3897          <- le pire vaut 0,3897
+#     fuites      : 0,4447  0,4460  0,4462  0,4468  <- la meilleure vaut 0,4447
+#
+# Les deux groupes ne se chevauchent pas : 0,055 les sépare. 0,42 est posé au milieu de
+# cet intervalle, pour ne coller ni aux uns ni aux autres.
+#
+# ⚠️ **Calibrée sur NEUF questions.** C'est peu, et c'est exactement le protocole que
+# le préprint *Confidently Wrong* (arXiv 2606.22659, veille S35) décrit comme
+# insuffisant : un seuil réglé sur un jeu figé voit son taux d'échec s'effondrer dès que
+# les attaques changent de forme. **À recalibrer quand le jeu annoté atteindra 40 à 60
+# questions**, et à ne jamais présenter comme une valeur établie.
+SEUIL_DISTANCE_DENSE = 0.42
 
 # Mots vides français : sans ce filtre, BM25 juge « les », « de » et « et » aussi
 # informatifs que « TotalEnergies », et toute question ressemble à toute autre.
@@ -92,10 +121,21 @@ MOTS_VIDES = {
 }
 
 
+#: Les bras de recherche mesurables. « hybride » est la production ; « dense » est
+#: le bras de référence de l'ablation (evals/mesurer_rag.py).
+MODES = {"hybride", "dense"}
+
+
 @dataclass(frozen=True)
 class Passage:
     """Un extrait retrouvé, avec de quoi le citer."""
 
+    # Identifiant de l'article dont vient ce passage — la clé primaire de `article`.
+    # Il n'était pas exposé jusqu'au 02/09/2026 : le passage savait se citer pour un
+    # lecteur (source, lien, date) mais pas se comparer à une vérité terrain, qui est
+    # écrite en identifiants (`evals/questions_rag.txt`). Sans lui, aucune mesure
+    # d'ablation n'est possible.
+    article_id: int
     texte: str
     source: str
     lien: str
@@ -146,14 +186,27 @@ def _rrf(rang: int) -> float:
 
 
 def rechercher(question: str, ticker: str | None = None, k: int = 3,
-               chemin: Path | None = None) -> Resultat:
+               chemin: Path | None = None, mode: str = "hybride") -> Resultat:
     """Recherche hybride : dense + lexicale, fusionnées par RRF, avec refus.
 
     `ticker` applique un **filtre déterministe avant la recherche** : si l'appelant sait
     de quelle valeur il parle, on ne cherche que dans les articles qui la citent. C'est
     la règle du brief Sorabel — un filtre exact vaut mieux qu'une similarité, quand
     l'information exacte est disponible.
+
+    `mode` sert **l'évaluation par ablation** (`evals/mesurer_rag.py`) :
+
+    - `"hybride"` — dense + BM25 + fusion RRF. **Le défaut**, et le comportement de
+      production : les appelants existants ne changent pas.
+    - `"dense"` — dense seul, sans BM25 ni fusion. C'est le bras de référence.
+
+    Le refus est **identique dans les deux modes** : seul le *classement* change.
+    Isoler un facteur à la fois est ce qui rend l'ablation lisible — si on changeait
+    aussi la règle de refus, on ne saurait plus lequel des deux explique l'écart.
     """
+    if mode not in MODES:
+        raise ValueError(f"mode de recherche inconnu : {mode!r} — attendu {sorted(MODES)}")
+
     collection = _collection(chemin)
 
     corpus = collection.get(include=["documents", "metadatas"])
@@ -189,15 +242,23 @@ def rechercher(question: str, ticker: str | None = None, k: int = 3,
     rangs_dense = {ident: i for i, ident in enumerate(dense["ids"][0])}
     distances = dict(zip(dense["ids"][0], dense["distances"][0]))
 
-    # --- liste 2 : lexicale (BM25) -------------------------------------------
+    # --- liste 2 : lexicale (BM25) — bras « hybride » seulement ---------------
     # L'index BM25 est reconstruit à chaque appel. Sur 263 documents c'est
     # instantané ; le persister créerait une seconde source de vérité à tenir
     # synchronisée avec ChromaDB — deux index qui divergent valent moins qu'un seul.
-    bm25 = BM25Okapi([decouper_en_mots(d) for d in documents])
-    scores = bm25.get_scores(decouper_en_mots(question))
-    ordre_lexical = sorted(range(len(documents)), key=lambda i: scores[i], reverse=True)
-    rangs_lexical = {identifiants[i]: r for r, i in enumerate(ordre_lexical[:CANDIDATS_PAR_MOTEUR])}
-    scores_par_id = dict(zip(identifiants, scores))
+    #
+    # En mode « dense », cette liste n'est pas construite du tout : la fusion ne reçoit
+    # alors que les rangs denses, et le classement est celui du moteur dense seul.
+    if mode == "hybride":
+        bm25 = BM25Okapi([decouper_en_mots(d) for d in documents])
+        scores = bm25.get_scores(decouper_en_mots(question))
+        ordre_lexical = sorted(range(len(documents)), key=lambda i: scores[i], reverse=True)
+        rangs_lexical = {identifiants[i]: r
+                         for r, i in enumerate(ordre_lexical[:CANDIDATS_PAR_MOTEUR])}
+        scores_par_id = dict(zip(identifiants, scores))
+    else:
+        rangs_lexical = {}
+        scores_par_id = {}
 
     # --- fusion RRF -----------------------------------------------------------
     fusion: dict[str, float] = {}
@@ -251,6 +312,7 @@ def rechercher(question: str, ticker: str | None = None, k: int = 3,
             continue          # preuve insuffisante : ce document n'est pas une réponse
         doc, meta = par_id[ident]
         retenus.append(Passage(
+            article_id=int(ident),
             texte=doc,
             source=meta.get("source", ""),
             lien=meta.get("lien", ""),

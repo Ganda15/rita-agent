@@ -157,3 +157,46 @@ def test_les_rangs_des_deux_moteurs_sont_rendus(monkeypatch, tmp_path):
     p = recherche.rechercher("resultats semestriels du luxe", chemin=tmp_path).passages[0]
     assert p.rang_dense is not None or p.rang_lexical is not None
     assert p.score_lexical >= 0
+
+
+# --- ce que l'ablation D0 → H1 exige du moteur (étape E5) ---------------------
+
+def test_un_passage_porte_l_identifiant_de_son_article(monkeypatch, tmp_path):
+    """Sans lui, impossible de comparer un résultat au jeu annoté : la vérité terrain
+    est écrite en identifiants d'articles (`evals/questions_rag.txt`), et un passage
+    qui ne dit pas d'où il vient ne peut être ni compté juste ni compté faux."""
+    _index_jetable(monkeypatch, tmp_path, CORPUS)
+    p = recherche.rechercher("resultats semestriels du luxe", chemin=tmp_path).passages[0]
+    assert p.article_id == 1          # LVMH est le 1ᵉʳ article du corpus de test
+
+
+def test_le_mode_dense_n_utilise_pas_le_classement_lexical(monkeypatch, tmp_path):
+    """Le bras **D0** de l'ablation : dense seul, sans BM25 ni fusion RRF.
+
+    Sans ce mode, on ne peut pas mesurer ce que l'hybride apporte — on ne pourrait
+    qu'affirmer qu'il apporte quelque chose. C'est exactement la différence entre
+    « avancé » et « annoncé »."""
+    _index_jetable(monkeypatch, tmp_path, CORPUS)
+    r = recherche.rechercher("resultats semestriels du luxe", chemin=tmp_path, mode="dense")
+    assert r.trouve is True
+    assert all(p.rang_lexical is None for p in r.passages)
+    assert all(p.rang_dense is not None for p in r.passages)
+
+
+def test_le_mode_hybride_reste_celui_par_defaut(monkeypatch, tmp_path):
+    """L'ajout du paramètre ne doit RIEN changer aux appelants existants :
+    `graph/workflow.py` appelle `rechercher()` sans mode."""
+    _index_jetable(monkeypatch, tmp_path, CORPUS)
+    defaut = recherche.rechercher("resultats semestriels du luxe", chemin=tmp_path)
+    explicite = recherche.rechercher("resultats semestriels du luxe", chemin=tmp_path,
+                                     mode="hybride")
+    assert [p.article_id for p in defaut.passages] == [p.article_id for p in explicite.passages]
+
+
+def test_un_mode_inconnu_est_refuse_bruyamment(monkeypatch, tmp_path):
+    """Une faute de frappe dans un nom de bras fausserait silencieusement toute une
+    campagne de mesure : « dense » écrit « dese » retomberait sur l'hybride et on
+    conclurait que les deux bras se valent."""
+    _index_jetable(monkeypatch, tmp_path, CORPUS)
+    with pytest.raises(ValueError, match="mode"):
+        recherche.rechercher("resultats", chemin=tmp_path, mode="dese")

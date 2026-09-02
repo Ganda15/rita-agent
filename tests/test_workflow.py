@@ -78,6 +78,7 @@ def passage_lvmh():
     """Un passage tel que `rag.recherche.rechercher` le rend."""
     from rag.recherche import Passage
     return Passage(
+        article_id=379,
         texte="LVMH publie des resultats en hausse",
         source="Boursorama", lien="https://exemple.test/lvmh",
         publie_le="2026-08-29", tickers=["MC.PA"],
