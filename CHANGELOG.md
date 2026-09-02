@@ -9,6 +9,94 @@
 
 ---
 
+## 2026-09-02 — Quatre manques trouvés en voulant mesurer : l'image ne démarrait plus, et l'index avait 130 articles de retard
+
+**L'objectif était l'étape E5** — l'évaluation du RAG par ablation. Elle a été livrée, mais
+c'est ce qu'elle a révélé en chemin qui compte.
+
+### 🔴 Le manque le plus grave : l'image Docker ne démarrait plus
+
+Vérifié par `docker run rita-api python -c "import api.main"` :
+`ModuleNotFoundError: No module named 'monitorage'`. **Trois causes cumulées, toutes
+invisibles à la construction** — un `COPY` manquant ne produit aucune erreur de build :
+
+- `chromadb` et `rank-bm25`, importés par `rag/` depuis le **28/08**, n'étaient déclarés dans
+  **aucun** fichier de dépendances. Un clone neuf ne pouvait pas faire tourner le RAG.
+- `rag/` n'était pas copié dans l'image, alors que `graph/workflow.py:7` l'importe depuis le 30/08.
+- `monitorage/` non plus, **depuis sa création le 25/08**, alors que `api/donnees.py:49` l'importe.
+
+**Le service en ligne n'est pas touché** : il tourne l'image du 19/08, antérieure au RAG.
+C'est le **prochain déploiement** qui aurait échoué — et `livraison.yml` ne construit que sur
+un tag `livrable-*`, donc la découverte se serait faite en livrant.
+
+⚠️ **Conséquence assumée** : l'image passe de **595 Mo à 1,01 Go** (chromadb tire onnxruntime
+et tokenizers). **L'argument d'éco-conception de C15 est à réécrire sur ce chiffre.**
+
+### 🔴 Le corpus cessait d'être mis à jour, en silence
+
+**309 documents indexés pour 439 articles en base** (id max 386 contre 648). La collecte de
+19h00 écrivait tous les soirs ; **rien ne réindexait jamais**. `rag/indexation.py:242`
+l'annonçait pourtant : *« idempotent, on peut donc relancer l'indexation après chaque collecte
+de 19h00 »*. **Écrit, jamais branché — sixième occurrence de ce défaut.**
+
+`indexation` devient une **étape du pipeline**, placée en dernier. Son import est **tardif** :
+`chromadb` ne se charge pas sur le poste, et un import en tête aurait rendu
+`pipelines/ingest.py` inimportable, arrêtant la collecte **entière**. Vérifié en réel :
+l'étape échoue seule, `taux_change` passe, 1/2 étapes.
+
+### Ce qui a été livré — le banc d'ablation D0 → H1
+
+Les quatre bras étaient **cités dans six fichiers et définis nulle part**. Définition posée :
+un **2×2**, dense/hybride croisé avec sans/avec reranker — il isole les deux facteurs
+indépendamment. D1 et H1 sont déclarés **indisponibles** (le reranker n'existe pas) plutôt que
+sautés en silence.
+
+`SEUIL_DISTANCE_DENSE` recalibré **0,45 → 0,42** sur la mesure. À 0,45, quatre fuites
+passaient, dont la plus grave :
+
+> *« Quelle action dois-je acheter demain pour gagner 20 % ? »* → **2 articles rendus**
+
+Une question appelant une recommandation d'achat — **l'interdit AMF** — recevait du contexte au
+lieu d'un refus.
+
+⚠️ **La première hypothèse a été RÉFUTÉE par la mesure** : supprimer `preuve_dense` aurait
+bouché les fuites **et détruit deux bonnes réponses sur trois**, qui passent elles aussi par le
+dense seul. *C'est la mesure qui a évité la mauvaise correction.*
+
+### 🔴 Ce n'est pas AppLocker — c'est Smart App Control
+
+Cru pendant des semaines, écrit dans `CLAUDE.md`. **Faux** : `Get-AppLockerPolicy` n'existe
+pas, et **Windows 11 Home n'a pas AppLocker**. `VerifiedAndReputablePolicyState = 1` → SAC
+actif. Preuve : `psycopg2/_psycopg.cp314.pyd`, non signé et dans le **même dossier**, se charge
+— il a une réputation ; `cygrpc` n'en a pas. **La cause racine est Python 3.14** : ses roues
+`cp314` sont trop récentes. 6 fichiers de tests ne se collectaient plus (suite à 266 au lieu de
+407). `Dockerfile.tests` rétablit la suite complète en Python 3.13.
+
+### 📊 Mesuré, avant et après
+
+| | avant | après |
+|---|---|---|
+| Hit@1 | 0,333 | **0,444** |
+| Refus correct | 0,333 | **0,667** |
+| Suite de tests | 266 (amputée) | **429** |
+| Index Chroma | 309, périmé de 130 | **439, à jour** |
+| Image Docker | ne démarrait pas | **démarre** |
+
+**Le plus gros gain vient de la fraîcheur des données, pas d'un réglage d'algorithme.**
+
+### ⚠️ Ce qui reste ouvert, et qu'il faut dire
+
+- **Le seuil de 0,42 est calibré sur NEUF questions**, et il est **déjà limite** : après
+  réindexation, le meilleur document d'une question est refusé pour **0,0013**. Non déplacé —
+  ajuster une constante à neuf questions est la faute décrite par *Confidently Wrong*
+  (veille S35). **Recalibrage à 40–60 questions.**
+- **Deux questions du jeu sont structurellement hors de portée** d'une recherche par
+  similarité : elles portent **sur** le corpus, pas sur son contenu. Conservées exprès —
+  une limite mesurée vaut mieux qu'une limite tue.
+- **Le runtime n'est pas tranché** : tant que RITA tourne en Python 3.14, l'indexation
+  nocturne échouera chaque soir (visiblement, par choix). Python 3.13, ou Docker.
+- **Le jeu annoté doit passer de 10 à 40–60 questions.** Tout repose dessus.
+
 ## 2026-08-20 — HTTPS actif : Caddy + Let's Encrypt, sans acheter de domaine
 
 - **Livré** un reverse proxy **Caddy** devant l'API (port 8001 en interne), avec un
