@@ -82,9 +82,12 @@ def test_ecb_simulation_n_ecrit_rien():
 # --- articles -----------------------------------------------------------------
 
 def test_articles_dedoublonne_sur_le_lien():
-    """Deux flux reprennent souvent la même dépêche — le lien est la clé métier."""
+    """Deux flux reprennent souvent la même dépêche — le lien est la première clé.
+
+    Depuis le 06/09/2026 il y en a une seconde, (titre, jour) : le troisième article
+    porte donc un titre distinct, sinon il serait — à raison — compté comme un jumeau."""
     articles = [_Article("https://a.fr/1"), _Article("https://a.fr/1"),
-                _Article("https://a.fr/2")]
+                _Article("https://a.fr/2", titre="Un autre article, le meme jour")]
     with patch("sources.rss.collecter",
                return_value={"articles": articles, "articles_bloques": [],
                              "flux_ok": ["bfm"], "flux_echec": [], "total": 3}):
@@ -113,6 +116,38 @@ def test_articles_sans_lien_sont_ignores():
                              "flux_ok": ["bfm"], "flux_echec": [], "total": 1}):
         b = ingest.etape_articles(_curseur(), simulation=False)
     assert b.ecrites == 0
+
+
+def test_articles_dedoublonne_sur_le_titre_et_la_date_dans_le_lot():
+    """Mesuré le 06/09/2026 : 26 lignes en trop sur 566 — même titre, lien différent
+    (Google News donne parfois deux adresses pour un même papier). Le lien ne suffit pas.
+    La clé est (titre normalisé, jour de publication) : 25 groupes sur 26 partagent le
+    jour ; le 26ᵉ (« BNP : la tendance baissière peut reprendre », 28/08 et 02/09) est
+    une vraie analyse récurrente et doit rester."""
+    a = _Article("https://a.fr/1", titre="L'Oréal bondit en Bourse")
+    b = _Article("https://b.fr/9", titre="L’Oreal bondit en bourse")      # apostrophe typographique, sans accent
+    c = _Article("https://c.fr/3", titre="L'Oréal bondit en Bourse")
+    c.publie_le = "2026-08-02T06:00:00+00:00"                              # même titre, autre jour : conservé
+    with patch("sources.rss.collecter",
+               return_value={"articles": [a, b, c], "articles_bloques": [],
+                             "flux_ok": ["bfm"], "flux_echec": [], "total": 3}):
+        bilan = ingest.etape_articles(_curseur(), simulation=False)
+
+    assert bilan.ecrites == 2
+    assert bilan.rejetees == 1
+
+
+def test_articles_deja_en_base_au_meme_titre_et_jour_sont_ignores():
+    """Deux jumeaux ne doivent pas non plus entrer à deux collectes différentes."""
+    cur = _curseur()
+    cur.fetchall.side_effect = [[], [("L'Oréal bondit en Bourse", "2026-08-01")]]
+    with patch("sources.rss.collecter",
+               return_value={"articles": [_Article("https://z.fr/1", titre="L'Oreal bondit en bourse")],
+                             "articles_bloques": [], "flux_ok": ["bfm"], "flux_echec": [], "total": 1}):
+        bilan = ingest.etape_articles(cur, simulation=False)
+
+    assert bilan.ecrites == 0
+    assert bilan.rejetees == 1
 
 
 # --- cours scrapés ------------------------------------------------------------

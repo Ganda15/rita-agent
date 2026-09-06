@@ -39,7 +39,9 @@ from __future__ import annotations
 import argparse
 import logging
 import os
+import re
 import time
+import unicodedata
 from dataclasses import dataclass, field
 
 import psycopg2
@@ -219,12 +221,29 @@ def etape_articles(cur, simulation: bool) -> Bilan:
                a.bloque, a.motifs_injection or None)
               for a in retenus + bloques if a.lien]
 
-    # Dédoublonnage AVANT insertion : deux flux reprennent souvent la même dépêche.
-    vus, uniques = set(), []
+    # Dédoublonnage AVANT insertion, sur DEUX clés :
+    #  - le lien (deux flux reprennent souvent la même dépêche) — depuis l'origine ;
+    #  - (titre normalisé, jour) — depuis le 06/09/2026, voir `cle_article`. Contre le lot
+    #    ET contre ce que la base contient déjà pour les mêmes jours : deux jumeaux
+    #    peuvent arriver à deux collectes différentes.
+    jours = sorted({l[3][:10] for l in lignes if l[3]})
+    deja_en_base: set[tuple[str, str]] = set()
+    if jours:
+        cur.execute("""
+            SELECT titre, publie_le::date
+            FROM   article
+            WHERE  publie_le::date = ANY(%s::date[])
+        """, (jours,))
+        deja_en_base = {cle_article(titre, str(jour)) for titre, jour in cur.fetchall()}
+
+    vus_liens, vus_cles, uniques = set(), set(), []
     for l in lignes:
-        if l[2] not in vus:
-            vus.add(l[2])
-            uniques.append(l)
+        cle = cle_article(l[1], l[3])
+        if l[2] in vus_liens or cle in vus_cles or cle in deja_en_base:
+            continue
+        vus_liens.add(l[2])
+        vus_cles.add(cle)
+        uniques.append(l)
     b.rejetees = len(lignes) - len(uniques)
 
     if uniques and not simulation:
@@ -237,6 +256,27 @@ def etape_articles(cur, simulation: bool) -> Bilan:
     if bloques:
         b.details.append(f"{len(bloques)} bloque(s) par le garde-fou d'injection")
     return b
+
+
+def cle_article(titre: str, publie_le: str | None) -> tuple[str, str]:
+    """La clé d'unicité MÉTIER d'un article : (titre normalisé, jour de publication).
+
+    Le lien ne suffit pas. Mesuré le 06/09/2026 sur 566 articles : **26 lignes en trop**
+    portaient le même titre sous deux liens (Google News fournit parfois deux adresses
+    pour un même papier). Deux jumeaux dans l'index occupent deux places du top-k et
+    doublent le poids BM25 d'un même texte.
+
+    Pourquoi le JOUR fait partie de la clé : 25 groupes de doublons sur 26 partagent le
+    jour de publication ; le 26ᵉ — « BNP PARIBAS : la tendance baissière peut reprendre »,
+    le 28/08 puis le 02/09 — est une analyse récurrente, deux papiers distincts. Sans le
+    jour, on l'aurait supprimé à tort.
+
+    Normalisation : majuscules, sans accents, tout ce qui n'est pas lettre ou chiffre
+    devient un espace — « L'Oréal » et « L’Oreal » donnent la même clé.
+    """
+    decompose = unicodedata.normalize("NFD", (titre or "").upper())
+    sans_accents = "".join(c for c in decompose if unicodedata.category(c) != "Mn")
+    return (re.sub(r"[^A-Z0-9]+", " ", sans_accents).strip(), (publie_le or "")[:10])
 
 
 def etape_cours_scrapes(cur, simulation: bool) -> Bilan:

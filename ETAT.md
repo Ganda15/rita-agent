@@ -120,6 +120,24 @@ tire une conclusion.** Fichier : `evals/questions_rag.txt`, section « EXTENSION
 - 🟡 `mesurer_rag.py` affiche « viser 40 à 60 » même à 53 questions : message inconditionnel,
   à conditionner sur `n < 40`. Non corrigé (hors périmètre du soir).
 
+✅ **06/09, plus tard — LE DÉDOUBLONNAGE PAR (TITRE, JOUR) EST À L'INGESTION, en TDD.**
+Mesuré d'abord : **26 lignes en trop sur 566** (titre normalisé identique), dont **25 groupes
+sur 26 partagent le jour** ; le 26ᵉ (*« BNP : la tendance baissière peut reprendre »*, 28/08 et
+02/09) est une analyse récurrente, deux papiers distincts → **le jour fait partie de la clé**.
+`pipelines/ingest.py` : `cle_article(titre, publie_le)` + contrôle **dans le lot et contre la base**
+(mêmes jours). 2 tests rouges → verts ; l'ancien test « dédoublonne sur le lien » a dû recevoir un
+titre distinct pour son 3ᵉ article (il supposait une seule clé). Suite **440 passed, 2 xfailed**.
+- Preuve en simulation sur la vraie base : `lues 90 | ecrites 0 | rejetees 72` — les 72 sont
+  déjà en base au même titre et jour (collectés à 19:00). ⚠️ *Avant, ils étaient comptés
+  « écrits » alors que `ON CONFLICT (lien) DO NOTHING` les ignorait en silence : le chiffre
+  `ecrites` des journaux de collecte était gonflé.*
+- 🟠 **Reste à faire : les 25 jumeaux déjà en base.** Non supprimés — une suppression est une
+  décision d'Era. Et ce n'est pas qu'un `DELETE` : **`indexation` n'enlève jamais de l'index un
+  article disparu de la base** (elle ne fait qu'`upsert`). Le nettoyage doit toucher PostgreSQL
+  **et** Chroma — à écrire comme un script, test d'abord.
+- 📋 **Fiche de relecture générée** : `evals/RELECTURE-2026-09-06.md` — 54 questions, chaque
+  identifiant avec son titre complet et sa date, une case par article. **C'est là qu'Era relit.**
+
 ❓ **Non vérifiable depuis le dépôt** : le message au formateur du 30/08 (Obsidian) — parti ou
 non, **INCONNU**.
 
@@ -181,8 +199,9 @@ du matin a démontré la fragilité du préprint l'après-midi même.*
    principale, et c'est un jugement). Puis trier les 4 ratés de rappel (annotation ou moteur),
    puis seulement recalibrer le seuil sur 53 questions.
    2 bis. 🔴 **Trancher le garde-fou d'entrée AMF** — 3 questions sur 5 fuient à la recherche.
-   2 ter. 🟠 **Dédoublonner le corpus** (même titre, lien différent) — à l'ingestion RSS,
-   test d'abord.
+   2 ter. ~~Dédoublonner à l'ingestion~~ **fait le 06/09** (clé titre + jour, 440 tests).
+   Reste : **script de nettoyage des 25 jumeaux existants, PostgreSQL + Chroma**, test d'abord —
+   suppression = décision d'Era.
 3. 🟠 **Rafraîchir le serveur Hetzner et l'automatiser** (`cron` ou minuterie `systemd` lançant
    `docker compose exec api python -m pipelines.ingest …` chaque soir, puis `ANALYZE`).
    *Réinséré le 06/09 — il avait glissé hors de cette liste.* C'est ce que verra le jury
