@@ -15,7 +15,42 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-09-02** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+**Dernière mise à jour : 2026-09-06** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+
+---
+
+🔎 **06/09 — REPRISE APRÈS 4 JOURS : le réel confronté à ce fichier.** Aucun commit entre le
+02/09 21:46 et cette session. Tout ce qui suit est **mesuré le 06/09**, pas relu.
+
+| Ce que ce fichier affirmait (02/09) | Mesuré le 06/09 | Verdict |
+|---|---|---|
+| L'indexation nocturne **échouera chaque soir** sous Python 3.14 | 04, 05 et 06/09 : `Etapes reussies : 5/5`, `Code de sortie : 0`, indexation **502**, **538**, puis **566** documents | ❌ **périmé** |
+| `chromadb` bloqué par Smart App Control | `import chromadb` → **OK, 1.5.9**, Python 3.14.6 | ❌ **périmé** |
+| Suite amputée à **266** tests en local | **433 passed, 2 xfailed** en 39,3 s, en local (Spark inclus — JDK présent) | ❌ **périmé** |
+| Index à jour au 02/09 (439) | base **538** articles = index **538** documents, `max(publie_le)` 05/09 18:29 · cotations **276 530**, dernière séance 05/09 | ✅ tenu — **l'étape `indexation` fait son travail** |
+| Serveur en ligne | `/health` → **200** en 0,22 s | ✅ |
+
+**Le verrou runtime est tombé tout seul** : la roue `cp314` de `grpc` a acquis sa réputation
+dans le cloud Microsoft — c'est ainsi que SAC fonctionne, et **ça peut redescendre**. Donc on
+n'écrit pas « réglé » : on écrit **« mesuré OK les 04, 05 et 06/09, repli Docker conservé »**.
+`scripts/collecte-quotidienne.cmd` corrigé dans le même sens. `CLAUDE.md` §SAC reste juste.
+
+**Deux dérives de continuité relevées** (skill `continuity`, appliquée pour la première fois) :
+- la doc affirmait un échec qui ne se produisait plus — 3 jours sans que personne ne regarde
+  le journal de collecte ;
+- 🟠 **le rafraîchissement du serveur Hetzner avait glissé hors de la liste de tête**. Le 24/08,
+  ce fichier le nommait « la prochaine action technique » ; la liste du 02/09 ne le contenait
+  plus, et rien ne dit qu'il a été fait. **Réinséré ci-dessous.** Retard des données en ligne :
+  **18 jours** au 06/09.
+
+📒 **`CONTINUITE.md` créé** à la racine — le registre des **décisions avec leur pourquoi** et des
+**alternatives rejetées**, pour qu'aucune ne soit re-proposée ni inversée en silence.
+
+✅ **Collecte du 06/09, tombée pendant la session (19:00)** : `Etapes reussies : 5/5`, code 0,
+**566 indexés** (+28 articles), 22,5 s. **Quatrième soir de suite.**
+
+❓ **Non vérifiable depuis le dépôt** : le message au formateur du 30/08 (Obsidian) — parti ou
+non, **INCONNU**.
 
 ---
 
@@ -67,16 +102,22 @@ du matin a démontré la fragilité du préprint l'après-midi même.*
 📓 Trace en 4 endroits : `CHANGELOG.md` · Obsidian `JOURNAL-012` · Obsidian
 `STUDY — 2 September 2026` (EN, séparé) · les messages de commit.
 
-▶️ **Prochaines actions — dans l'ordre, et les 4 premières sont d'Era :**
-1. 🔴 **Trancher le runtime.** Tant que RITA tourne en **Python 3.14**, l'indexation nocturne
-   **échouera chaque soir** (visiblement, par choix : une erreur au journal vaut mieux qu'une
-   péremption silencieuse). Deux issues : **Python 3.13** à côté, ou lancer l'étape dans
-   **Docker**. *C'est le seul point qui se dégrade tout seul.*
+▶️ **Prochaines actions — dans l'ordre, révisé le 06/09 :**
+1. ~~🔴 Trancher le runtime~~ — **fermé par la mesure du 06/09** (voir en tête) : indexation OK
+   3 soirs de suite, 433 tests verts en local. Repli Docker **conservé**, pas supprimé.
+   *Si `!! indexation ECHEC` réapparaît au journal, ce point revient en n°1.*
 2. 🔴 **Porter le jeu annoté de 10 à 40–60 questions.** Tout repose dessus, et **c'est un
    jugement, pas un outil**. Sans ça, le seuil ne peut pas être recalibré honnêtement.
-3. **Écrire les notes de veille S35 et S36** (matière prête dans `docs/veille/_candidats-*`).
-4. **Envoyer les 2 questions au formateur** (rédigées le 30/08, jamais parties).
-5. Ensuite seulement : les 4 questions encore refusées à tort (la règle de couverture casse sur
+   **C'est la tâche principale.**
+3. 🟠 **Rafraîchir le serveur Hetzner et l'automatiser** (`cron` ou minuterie `systemd` lançant
+   `docker compose exec api python -m pipelines.ingest …` chaque soir, puis `ANALYZE`).
+   *Réinséré le 06/09 — il avait glissé hors de cette liste.* C'est ce que verra le jury
+   (18 jours de retard au 06/09, ~3 mois le 30/11 si rien n'est fait), et le seul point
+   concret pour **C20–C21**, à 0 %. Rang **à confirmer par Era** : il se dégrade tout seul,
+   ce qui plaide pour l'intercaler avant la fin du jeu annoté (≈ 1 h de travail).
+4. **Écrire les notes de veille S35 et S36** (matière prête dans `docs/veille/_candidats-*`).
+5. **Envoyer les 2 questions au formateur** (rédigées le 30/08 — **statut INCONNU** au 06/09).
+6. Ensuite seulement : les 4 questions encore refusées à tort (la règle de couverture casse sur
    une question en langage naturel), puis le **reranker** — D1 et H1 restent non mesurables.
 
 ---
