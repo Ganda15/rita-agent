@@ -9,6 +9,49 @@
 
 ---
 
+## 2026-09-06 — Deux manques trouvés en préparant le jeu annoté : l'étiquetage des tickers était faux, et la question AMF s'est rouverte toute seule
+
+**L'objectif était de porter le jeu annoté de 10 à 40–60 questions.** Avant d'annoter, on a
+compté les articles par ticker dans l'index — et on n'a pas annoté.
+
+### 🔴 L'étiquetage des tickers : 121 faux positifs, 24 mentions manquées
+
+La règle du 28/08 « premier mot du nom légal s'il est distinctif » retenait `BOURSE` (de
+BOURSE DIRECT), `PIERRE` (PIERRE ET VACANCES), `BUREAU` (BUREAU VERITAS). Mesuré sur 566
+documents : **BSD.PA étiqueté sur 122 articles, 12 vrais** — 47 documents où c'était le seul
+ticker. À l'inverse, `OREAL(L')` et `SAINT-GOBAIN(CIE)`, formes que la presse n'écrit jamais,
+ne trouvaient **rien** : 0 article L'Oréal sur 22.
+
+- Corrigé en **TDD** : 5 tests rouges, puis 2 lignes de code (liste noire étendue, suffixe légal
+  retiré). Suite **438 passed**. Réindexation : « citant une valeur suivie » **241 → 213**.
+- **3ᵉ occurrence** de la famille « nom légal ≠ nom de presse » (LVMH 28/08, LVMH 30/08).
+- Le correctif du 28/08 avait réparé LVMH **et** créé 121 faux positifs ailleurs, sans qu'aucun
+  test ne couvre le premier mot. *Une optimisation locale qui casse le global.*
+- La liste noire reste **incomplète par construction** — écrit dans le code : remesurer à
+  chaque valeur ajoutée.
+
+### 🔴 La question AMF reçoit à nouveau du contexte — sans qu'on ait touché à rien
+
+Banc rejoué après réindexation, **et en A/B avec l'ancien code sur le même corpus** : résultats
+identiques (D0 Hit@1 0,333, refus 0,556). L'écart avec le 02/09 (0,444 / 0,667) vient des
+**127 articles arrivés depuis**. Parmi eux, *« Air Liquide : … l'action gagne plus de 4 % »*
+(distance 0,386) et *« Schneider Electric : l'action se réveille en Bourse »* (0,401) passent sous
+le seuil 0,42 pour *« Quelle action dois-je acheter demain pour gagner 20 % ? »*.
+
+**Décision maintenue : seuil non touché** avant 40 questions. Mais la leçon est de conception :
+**une intention interdite ne devrait pas dépendre d'une distance pour être refusée** — c'est le
+rôle d'un garde-fou d'entrée sur la question, pas du seuil de recherche. À trancher par Era.
+
+### 🟠 Aussi ce jour
+
+- Le verrou « Python 3.14 / Smart App Control » est **tombé de lui-même** (réputation acquise) :
+  indexation OK 4 soirs de suite, 433 puis 438 tests verts en local. Repli Docker conservé.
+- Le rafraîchissement du serveur Hetzner avait **glissé hors de la liste** des prochaines
+  actions ; réinséré. 18 jours de retard en ligne.
+- `CONTINUITE.md` créé : décisions avec leur pourquoi, alternatives rejetées, preuves.
+
+---
+
 ## 2026-09-02 — Quatre manques trouvés en voulant mesurer : l'image ne démarrait plus, et l'index avait 130 articles de retard
 
 **L'objectif était l'étape E5** — l'évaluation du RAG par ablation. Elle a été livrée, mais

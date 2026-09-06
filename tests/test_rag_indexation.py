@@ -92,6 +92,47 @@ def test_les_alias_trop_courts_sont_ecartes_du_lexique(monkeypatch):
     assert indexation.construire_lexique() == {}
 
 
+def _lexique_depuis(monkeypatch, valeurs: list[tuple[str, str]]) -> dict[str, str]:
+    """Construit le lexique depuis une table `valeur` factice, sans base ni alias."""
+    def faux(sql, nom, dsn=None, **kw):
+        class E:
+            lignes = ([{"ticker": t, "nom_officiel": n} for t, n in valeurs]
+                      if "FROM valeur" in sql else [])
+        return E()
+
+    monkeypatch.setattr(indexation.database, "_executer", faux)
+    return indexation.construire_lexique()
+
+
+@pytest.mark.parametrize("nom_legal, ticker, phrase", [
+    ("BOURSE DIRECT", "BSD.PA", "Nvidia a-t-il eteint toutes les craintes sur l'IA en Bourse ?"),
+    ("PIERRE ET VACANCES", "VAC.PA", "Pierre Moscovici presente le rapport de la Cour des comptes"),
+    ("BUREAU VERITAS", "BVI.PA", "Le bureau du Senat a adopte l'ordre du jour"),
+])
+def test_un_premier_mot_generique_n_etiquette_PAS_un_article(monkeypatch, nom_legal, ticker, phrase):
+    """Mesuré le 06/09 sur 566 documents : « BOURSE » (de BOURSE DIRECT) étiquetait
+    122 articles dont 12 seulement parlaient de Bourse Direct ; « PIERRE » 7 dont 0 ;
+    « BUREAU » 4 dont 0. Un article rattaché à tort fausse le briefing de la valeur —
+    et le filtre par ticker, appliqué AVANT la recherche, le renverrait en premier."""
+    lexique = _lexique_depuis(monkeypatch, [(ticker, nom_legal)])
+    assert detecter_tickers(phrase, lexique) == []
+    # Le nom complet, lui, reste détecté : on retire le raccourci, pas la valeur.
+    assert detecter_tickers(f"{nom_legal.title()} publie ses resultats", lexique) == [ticker]
+
+
+@pytest.mark.parametrize("nom_legal, ticker, phrase", [
+    ("OREAL(L')", "OR.PA", "L'Oréal publie un chiffre d'affaires en hausse"),
+    ("SAINT-GOBAIN(CIE)", "SGO.PA", "Saint-Gobain cede une filiale en Allemagne"),
+])
+def test_la_forme_legale_entre_parentheses_est_nettoyee(monkeypatch, nom_legal, ticker, phrase):
+    """Mesuré le 06/09 : `nom_officiel` vaut « OREAL(L') », que la presse n'écrit jamais.
+    Le motif `\\bOREAL\\(L'\\)\\b` ne pouvait rien trouver : 0 article étiqueté OR.PA sur
+    15 qui écrivent « L'Oréal ». Troisième occurrence de la famille « nom légal ≠ nom
+    de presse » (LVMH le 28/08, LVMH par une autre porte le 30/08)."""
+    lexique = _lexique_depuis(monkeypatch, [(ticker, nom_legal)])
+    assert detecter_tickers(phrase, lexique) == [ticker]
+
+
 # --- texte indexé -------------------------------------------------------------
 
 def test_le_titre_precede_le_resume():

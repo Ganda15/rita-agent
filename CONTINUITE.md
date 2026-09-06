@@ -55,6 +55,7 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | `fraicheur_jours` séparé de `statut_qualite` | `statut_qualite` décrit la qualité de l'historique, pas sa fraîcheur ; 3 valeurs radiées auraient affiché une « perf 1 j » sur des cours de 8 ans | 18/08 | `db/indicateurs.sql` | commit `a047b58`, `evidence/C14/preuve-indicateurs-lot1.md` | Non |
 | État vivant dans **`ETAT.md` du dépôt**, `BOUSSOLE-RITA.md` archivé | La boussole du Bureau était fausse sur 3 points le 13/08 ; un fichier à côté du code se charge seul | 14/08 | pilotage | en-tête de `BOUSSOLE-RITA.md` | Non |
 | **Tâche principale = E3 (C9→C13)**, on n'attend pas le formateur | Décision d'Era : finir bloc par bloc ; le retour du formateur sera un détour | 13/08 | pilotage | `BOUSSOLE-RITA.md` (archive) | Par Era seulement |
+| Premier mot du nom légal : liste noire **étendue** (`BOURSE`, `PIERRE`, `BUREAU`) + suffixe légal `(L')`/`(CIE)` **retiré** | Mesuré 06/09 : 121 faux positifs (BSD.PA 110/122) et 24 mentions manquées (OR.PA, SGO.PA) ; la liste noire est incomplète par construction, donc **remesurer à chaque valeur ajoutée** | 06/09 | `rag/indexation.py` l.72–90 | 5 tests `test_rag_indexation.py`, réindexation 241→213, A/B banc identique | Oui — si une approche sans liste noire est trouvée |
 | Tester **en local avant le serveur** | Le passage à PG 18 a révélé un 2ᵉ changement, trouvé en local — a évité une coupure à l'aveugle | 19/08 | déploiement | `CHANGELOG.md` l.123–128 | Non |
 
 ## E. Alternatives rejetées
@@ -82,6 +83,9 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 
 ## G. Questions ouvertes
 
+- **Garde-fou d'entrée sur l'intention (AMF)** — posé le 06/09 : refuser *« quelle action acheter
+  pour gagner X % »* **avant** la recherche, au lieu de compter sur une distance. **Era tranche**
+  (c'est un choix d'architecture, et il touche C10/C17).
 - **Rang du rafraîchissement serveur** dans la liste d'`ETAT.md` (n°3 posé le 06/09) — **Era tranche**.
 - **Le message au formateur du 30/08** (2 questions : « RAG avancé », MCP↔C10) est-il parti ? — **Era**.
 - Les **4 questions du jeu annoté encore refusées à tort** : la règle de couverture casse sur une
@@ -131,7 +135,13 @@ réponse. Rien d'entamé au 06/09. Tout le reste est détour (voir `boussole`).
 
 ## L. Risques et bloqueurs
 
-- **Le seuil 0,42 est calibré sur 9 questions** : toute conclusion du banc est fragile jusqu'au jeu étendu.
+- 🔴 **La question AMF reçoit à nouveau 2 articles (06/09)** : deux titres arrivés les 01 et 04/09
+  passent sous le seuil 0,42 (0,386 · 0,401). Le seuil n'a pas bougé, le corpus si. Seule la sortie
+  (70 %) protège. Réponse de conception à trancher par Era : **garde-fou d'entrée** sur l'intention.
+- **Le seuil 0,42 est calibré sur 9 questions** : toute conclusion du banc est fragile jusqu'au jeu
+  étendu — **démontré le 06/09** : 127 articles de plus ont suffi à rouvrir une fuite.
+- **Le jeu annoté vieillit avec le corpus** : l'article 825 (LVMH, secteur du luxe) est pertinent
+  et non annoté. À relire par Era à chaque extension.
 - **Données en ligne périmées** : 18 jours au 06/09, ~3 mois le 30/11 si rien n'est fait. Le jury verra ça.
 - **SAC peut re-bloquer `cygrpc`** : l'indexation retomberait en échec visible ; repli Docker à jour.
 - **Certificat Let's Encrypt** valide jusqu'au 18/11/2026 — Caddy renouvelle seul ~30 j avant ; à vérifier vers le 20/10.

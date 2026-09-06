@@ -69,12 +69,29 @@ LONGUEUR_MINIMALE_ALIAS = 5
 # crédit ; « COMPAGNIE GENERALE », « SOCIETE GENERALE », « BANQUE… » de même. Les
 # retenir étiquetterait des dizaines d'articles avec une valeur qu'ils ne citent pas —
 # et un article rattaché à tort fausserait le briefing de cette valeur.
+#
+# ⚠️ Cette liste est INCOMPLÈTE PAR CONSTRUCTION : c'est une liste noire, et chaque
+# valeur ajoutée au portefeuille peut révéler un nouveau mot courant. Mesuré le
+# 06/09/2026 sur 566 documents indexés : « BOURSE » (de BOURSE DIRECT) étiquetait
+# 122 articles dont 12 seulement citaient la société — 90 % de faux positifs, et
+# 47 documents où BSD.PA était le SEUL ticker. « PIERRE » (PIERRE ET VACANCES) 7/7 faux,
+# « BUREAU » (BUREAU VERITAS) 4/4 faux. Aucun test ne couvrait le premier mot.
+# Règle de tenue : à chaque valeur ajoutée, relancer la mesure
+# (`evals/mesurer_rag.py`, ou le comptage par ticker de l'index) — pas la supposer.
 MOTS_TROP_GENERIQUES = {
     "CREDIT", "BANQUE", "SOCIETE", "COMPAGNIE", "GROUPE", "GENERALE", "GENERAL",
     "FRANCE", "EUROPE", "EURO", "NATIONAL", "NATIONALE", "UNION", "ASSURANCE",
     "ASSURANCES", "FINANCIERE", "INDUSTRIES", "INDUSTRIE", "INTERNATIONAL",
     "SERVICES", "SERVICE", "TECHNOLOGIES", "SYSTEMS", "HOLDING", "PARIS",
+    "BOURSE", "PIERRE", "BUREAU",  # ajoutés le 06/09/2026, sur mesure
 }
+
+# Suffixe légal entre parenthèses, en fin de raison sociale : « OREAL(L') »,
+# « SAINT-GOBAIN(CIE) ». La presse n'écrit jamais cette forme, et le motif
+# `\bOREAL\(L'\)\b` ne peut rien trouver dans « L'Oréal ». Mesuré le 06/09/2026 :
+# 0 article étiqueté OR.PA sur 15 qui écrivent « L'Oréal ». Le suffixe est retiré ;
+# « OREAL » seul suffit, car `\b` sépare l'apostrophe de la lettre dans « L'OREAL ».
+_SUFFIXE_LEGAL = re.compile(r"\s*\([^)]*\)\s*$")
 
 
 @dataclass(frozen=True)
@@ -113,7 +130,7 @@ def construire_lexique(dsn: str | None = None) -> dict[str, str]:
     for ligne in database._executer(
         "SELECT ticker, nom_officiel FROM valeur", "lexique_valeurs", dsn
     ).lignes:
-        nom = _normaliser(ligne["nom_officiel"] or "")
+        nom = _SUFFIXE_LEGAL.sub("", _normaliser(ligne["nom_officiel"] or ""))
         if len(nom) >= LONGUEUR_MINIMALE_ALIAS:
             lexique[nom] = ligne["ticker"]
 

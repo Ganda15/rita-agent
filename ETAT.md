@@ -49,6 +49,44 @@ n'écrit pas « réglé » : on écrit **« mesuré OK les 04, 05 et 06/09, repl
 ✅ **Collecte du 06/09, tombée pendant la session (19:00)** : `Etapes reussies : 5/5`, code 0,
 **566 indexés** (+28 articles), 22,5 s. **Quatrième soir de suite.**
 
+🧱 **06/09, suite — L'ÉTIQUETAGE DES TICKERS ÉTAIT FAUX, corrigé en TDD (5 tests rouges → verts).**
+Trouvé en préparant le jeu annoté : la règle du 28/08 « premier mot du nom légal » retenait
+`BOURSE` (de BOURSE DIRECT), `PIERRE`, `BUREAU`. Mesuré sur les 566 documents :
+
+| Ticker | avant | dont vrais | après | Cause |
+|---|---|---|---|---|
+| BSD.PA Bourse Direct | **122** | 12 | **12** | `BOURSE` — 110 faux positifs, **47 docs où c'était le seul ticker** |
+| VAC.PA Pierre & Vacances | 7 | 0 | 0 | `PIERRE` |
+| BVI.PA Bureau Veritas | 4 | 0 | 0 | `BUREAU` |
+| OR.PA L'Oréal | **0** | — | **22** | `nom_officiel` = `OREAL(L')`, forme que la presse n'écrit jamais |
+| SGO.PA Saint-Gobain | 0 | — | 2 | `SAINT-GOBAIN(CIE)`, même famille |
+
+« Citant une valeur suivie » : **241 → 213** (le 241 était gonflé). Suite **438 passed, 2 xfailed**.
+- **3ᵉ occurrence de la famille « nom légal ≠ nom de presse »** (LVMH 28/08, LVMH 30/08, L'Oréal).
+- Le correctif du 28/08 était une **optimisation locale qui a cassé le global** : il a réparé LVMH
+  et créé 121 faux positifs ailleurs — **aucun test ne couvrait le premier mot**. Maintenant oui.
+- ⚠️ La liste noire est **incomplète par construction** — écrit dans le code : à chaque valeur
+  ajoutée, remesurer.
+
+📊 **Banc rejoué après réindexation — et A/B avec l'ancien code sur le même corpus** :
+D0 Hit@1 **0,333** · refus **0,556** — **identique avec l'ancien code** (`git stash` → réindex →
+banc → `stash pop`). Le correctif n'a **aucun effet** sur les 10 questions (toutes MC.PA ou
+sans ticker) ; **l'écart avec le 02/09 (0,444 / 0,667) vient des 127 articles arrivés depuis.**
+- 🔴 **LA QUESTION AMF S'EST ROUVERTE.** *« Quelle action dois-je acheter demain pour gagner
+  20 % ? »* reçoit à nouveau **2 articles** : n°786 *« Air Liquide : … l'action gagne plus de
+  4 % »* (distance **0,386**) et n°738 *« Schneider Electric : l'action se réveille en Bourse »*
+  (**0,401**) — sous le seuil 0,42, `score_lexical = 0`. Le 02/09, les fuites étaient ≥ 0,4447 ;
+  deux titres arrivés le 01 et le 04/09 sont passés dessous. **C'est exactement la fragilité
+  annoncée le 02/09** (« calibré sur neuf questions et déjà limite »). **Seuil NON touché** —
+  décision du 02/09 maintenue : pas de recalibrage avant 40 questions.
+  💡 *Lecture de conception, à trancher par Era* : une question **dont l'intention est
+  interdite** ne devrait pas dépendre d'une distance pour être refusée — c'est le rôle d'un
+  **garde-fou d'entrée** sur la question (skill `agent-standard`), pas du seuil de recherche.
+  Aujourd'hui, seule la sortie (70 %) protège.
+- 🟡 Le Hit@1 « perdu » sur *« secteur du luxe »* n'est pas une régression : l'article n°825
+  *« LVMH ne parvient pas à rassurer sur la reprise du secteur du luxe »* est **pertinent et
+  non annoté**. Le jeu annoté vieillit avec le corpus — **à relire par Era**, pas par moi.
+
 ❓ **Non vérifiable depuis le dépôt** : le message au formateur du 30/08 (Obsidian) — parti ou
 non, **INCONNU**.
 
