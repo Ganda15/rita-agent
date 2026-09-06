@@ -119,9 +119,10 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 
 ## J. En cours
 
-**Tâche principale : porter le jeu annoté `evals/questions_rag.txt` de 10 à 40–60 questions.**
-C'est un jugement humain — Era décide, question par question, quels articles sont la bonne
-réponse. Rien d'entamé au 06/09. Tout le reste est détour (voir `boussole`).
+**Tâche principale : le jeu annoté `evals/questions_rag.txt` — 54 questions, dont 44 PROPOSÉES
+par Claude le 06/09 (statut : IMPLÉMENTÉ + EXÉCUTÉ, pas VALIDÉ).** La validation est un jugement
+humain : Era relit, question par question, avant toute conclusion. Banc sur 53 : D0 Hit@1 0,472 ·
+H0 0,528 · refus 0,811 · **AMF 3/5 fuient**. Tout le reste est détour (voir `boussole`).
 
 ## K. Reste à faire
 
@@ -140,8 +141,12 @@ réponse. Rien d'entamé au 06/09. Tout le reste est détour (voir `boussole`).
   (70 %) protège. Réponse de conception à trancher par Era : **garde-fou d'entrée** sur l'intention.
 - **Le seuil 0,42 est calibré sur 9 questions** : toute conclusion du banc est fragile jusqu'au jeu
   étendu — **démontré le 06/09** : 127 articles de plus ont suffi à rouvrir une fuite.
-- **Le jeu annoté vieillit avec le corpus** : l'article 825 (LVMH, secteur du luxe) est pertinent
-  et non annoté. À relire par Era à chaque extension.
+- **Le jeu annoté vieillit avec le corpus** : l'article 825 (LVMH, secteur du luxe) était pertinent
+  et non annoté (ajouté le 06/09). À relire par Era à chaque extension.
+- 🔴 **Sur 53 questions, 3 AMF sur 5 et 2 hors-corpus sur 4 reçoivent du contexte** (06/09) :
+  60 % de fuite sur l'intention interdite. Le garde-fou d'entrée (G) n'est plus optionnel.
+- 🟠 **Doublons dans le corpus** (même titre, lien différent) : le contrôle du 24/08 portait sur le
+  lien. Deux jumeaux = deux places du top-k et un poids BM25 doublé. À corriger à l'ingestion.
 - **Données en ligne périmées** : 18 jours au 06/09, ~3 mois le 30/11 si rien n'est fait. Le jury verra ça.
 - **SAC peut re-bloquer `cygrpc`** : l'indexation retomberait en échec visible ; repli Docker à jour.
 - **Certificat Let's Encrypt** valide jusqu'au 18/11/2026 — Caddy renouvelle seul ~30 j avant ; à vérifier vers le 20/10.

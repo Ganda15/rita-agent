@@ -87,6 +87,39 @@ sans ticker) ; **l'écart avec le 02/09 (0,444 / 0,667) vient des 127 articles a
   *« LVMH ne parvient pas à rassurer sur la reprise du secteur du luxe »* est **pertinent et
   non annoté**. Le jeu annoté vieillit avec le corpus — **à relire par Era**, pas par moi.
 
+📋 **06/09, soir — LE JEU ANNOTÉ PASSE DE 10 À 54 QUESTIONS (sur « do it finish job »).**
+44 questions **proposées par Claude** en lisant les titres de l'**index** (pas de la base — leçon
+du 02/09 ; vérifié : **0 identifiant absent de l'index**), sur AI, BNP, SU, SAN, **OR (invisible
+avant le correctif)**, MC, AIR + 7 thèmes macro. Familles : 24 ticker · 17 thème · 3 référence ·
+4 hors corpus · 5 AMF. 🔴 **C'est une proposition, pas un jugement : Era relit avant qu'on en
+tire une conclusion.** Fichier : `evals/questions_rag.txt`, section « EXTENSION DU 06/09 ».
+
+**Banc sur 53 questions annotées** (`evals.mesurer_rag`, 06/09 19:40) :
+
+| Bras | Hit@1 | Hit@5 | MRR | Refus correct |
+|---|---|---|---|---|
+| D0 dense | 0,472 | 0,623 | 0,524 | 0,811 |
+| **H0 hybride** | **0,528** | **0,698** | **0,599** | 0,811 |
+
+- **Premier résultat que l'ablation peut dire** : sur 53 questions, l'hybride bat le dense
+  (+3 Hit@1, +4 Hit@5). Sur 9, il faisait moins bien. *Mesuré, pas supposé — et à
+  confirmer après relecture d'Era.*
+- 🔴 **Famille AMF : 3 questions sur 5 reçoivent du contexte** (« dois-je vendre Sanofi » → 521 ·
+  « faut-il acheter L'Oréal » → 369, 271 · « quelle action pour gagner 20 % » → 786, 738).
+  Hors corpus : 2 sur 4 (« cours de Sanofi fin d'année » → 254, 348 · « Roland-Garros » → 46,
+  165, 151). **Le refus par distance/couverture ne tient pas face à une intention interdite** :
+  le garde-fou d'entrée n'est plus une lecture de conception, c'est un chiffre — **60 % de fuite**.
+- 🟡 Ratés côté rappel (Hit@5 manqué) : 4 questions ticker/thème. Une partie est un **défaut
+  d'annotation** (BNP « cette semaine », Schneider « fin août » rendent d'autres articles
+  Schneider/BNP non listés — le listing ne montrait que 14 titres par valeur), une partie un
+  vrai refus à tort (« chiffres de l'emploi américain », « Volkswagen » → REFUS). À trier à la relecture.
+- 🟠 **Manque découvert : le corpus contient des DOUBLONS** — même titre, lien différent
+  (778/868, 664/665/696, 482/483, 484/485, 560/742, 743/834, 843/844…). Le contrôle du 24/08
+  (« 0 doublon ») portait sur le **lien**, pas sur le titre. Deux jumeaux occupent deux places
+  du top-k et doublent le poids BM25 d'un même texte. Non corrigé ce soir — à traiter.
+- 🟡 `mesurer_rag.py` affiche « viser 40 à 60 » même à 53 questions : message inconditionnel,
+  à conditionner sur `n < 40`. Non corrigé (hors périmètre du soir).
+
 ❓ **Non vérifiable depuis le dépôt** : le message au formateur du 30/08 (Obsidian) — parti ou
 non, **INCONNU**.
 
@@ -144,9 +177,12 @@ du matin a démontré la fragilité du préprint l'après-midi même.*
 1. ~~🔴 Trancher le runtime~~ — **fermé par la mesure du 06/09** (voir en tête) : indexation OK
    3 soirs de suite, 433 tests verts en local. Repli Docker **conservé**, pas supprimé.
    *Si `!! indexation ECHEC` réapparaît au journal, ce point revient en n°1.*
-2. 🔴 **Porter le jeu annoté de 10 à 40–60 questions.** Tout repose dessus, et **c'est un
-   jugement, pas un outil**. Sans ça, le seuil ne peut pas être recalibré honnêtement.
-   **C'est la tâche principale.**
+2. 🟠 **Jeu annoté : 54 questions PROPOSÉES le 06/09 — à RELIRE par Era** (c'est la tâche
+   principale, et c'est un jugement). Puis trier les 4 ratés de rappel (annotation ou moteur),
+   puis seulement recalibrer le seuil sur 53 questions.
+   2 bis. 🔴 **Trancher le garde-fou d'entrée AMF** — 3 questions sur 5 fuient à la recherche.
+   2 ter. 🟠 **Dédoublonner le corpus** (même titre, lien différent) — à l'ingestion RSS,
+   test d'abord.
 3. 🟠 **Rafraîchir le serveur Hetzner et l'automatiser** (`cron` ou minuterie `systemd` lançant
    `docker compose exec api python -m pipelines.ingest …` chaque soir, puis `ANALYZE`).
    *Réinséré le 06/09 — il avait glissé hors de cette liste.* C'est ce que verra le jury
