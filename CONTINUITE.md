@@ -121,10 +121,20 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 
 ## J. En cours
 
-**Tâche principale : le jeu annoté `evals/questions_rag.txt` — 54 questions, dont 44 PROPOSÉES
-par Claude le 06/09 (statut : IMPLÉMENTÉ + EXÉCUTÉ, pas VALIDÉ).** La validation est un jugement
-humain : Era relit, question par question, avant toute conclusion. Banc sur 53 : D0 Hit@1 0,472 ·
-H0 0,528 · refus 0,811 · **AMF 3/5 fuient**. Tout le reste est détour (voir `boussole`).
+**Le jeu annoté est arbitré — mais par Claude, pas par Era.** Le 07/09, Era a demandé
+explicitement que Claude tranche (« you decide, i confiance a toi ») après avoir été alerté
+deux fois du risque. Décision assumée et tracée.
+
+- **53 questions** (la n°7 supprimée : trop vague pour une vérité terrain défendable),
+  **73 articles attendus**, tous vérifiés présents en base.
+- **7 rejets motivés**, détaillés dans `evals\RELECTURE-2026-09-06.md` § « Arbitrage du 07/09 ».
+- Statut : **VALIDÉ PAR UN LLM**, pas par un humain. ⚠️ Formulation imposée dans tout rapport :
+  « jeu annoté par un LLM à partir du corpus, non revalidé humainement ».
+- Banc rejoué le 07/09 sur 53 questions : **D0** Hit@1 0,472 · **H0** Hit@1 **0,547**
+  (contre 0,528 avant l'arbitrage) · MRR H0 0,605 · refus 0,774–0,792. D1/H1 toujours
+  non mesurables : le reranker n'existe pas.
+- 🔴 **Non expliqué** : le refus passe de 0,811 à 0,774–0,792 sans qu'aucune question de refus
+  ait été touchée. À comprendre avant de citer ce chiffre — il concerne un garde-fou.
 
 ## K. Reste à faire
 

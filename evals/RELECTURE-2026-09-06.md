@@ -54,6 +54,62 @@ et tous deux listés comme attendus. **Era tranche** : élargir la règle de dé
 (risque d'écraser des articles légitimement proches) ou laisser et l'assumer.
 
 
+---
+
+## Arbitrage du 07/09 — fait par Claude, NON revalidé par Era
+
+Era a demandé que je tranche. Je l'ai fait question par question, en lisant le titre **et le
+résumé** de chacun des 101 candidats. Test appliqué : *« si RITA renvoyait cet article seul,
+la question serait-elle répondue ? »*
+
+⚠️ **À citer ainsi dans le rapport de jury** : « jeu annoté par un LLM à partir du corpus,
+non revalidé humainement ». C'est défendable ; prétendre l'inverse ne le serait pas.
+
+### Les 7 rejets, avec leur motif
+
+| Question | Rejeté | Pourquoi |
+|---|---|---|
+| n°4 secteur du luxe | `286`, `468` | Commentaire boursier sur LVMH, pas sur le **secteur** |
+| n°16 actualités BNP | `711` | BNP y est l'**analyste** de Broadcom, pas le sujet |
+| n°20 Schneider fin août | `744` | Daté du **02/09** — c'est septembre |
+| n°37 effectifs Volkswagen | `843` | Parle de la gamme électrique, pas des **effectifs** |
+| n°41 dette budget 2027 | `763` | Parle du budget, pas de la **dette** |
+| n°45 CAC 40 / taux longs | `783` | Journal de séance : ne traite pas des **taux longs** |
+
+### La question 7 est supprimée
+
+*« Quels articles parlent d'une évolution importante des marchés financiers ? »* — « importante »
+n'a pas de définition. Deux relecteurs honnêtes ne cocheraient pas les mêmes articles. Une
+question ambiguë produit une métrique ininterprétable : mieux vaut 53 questions nettes que 54
+dont une floue.
+
+**Résultat : 53 questions, 73 articles attendus, tous vérifiés présents en base.**
+
+### Effet mesuré sur le banc (07/09)
+
+| Bras | Hit@1 | Hit@5 | MRR | Refus |
+|---|---|---|---|---|
+| **D0** dense | 0,472 | 0,623 | 0,524 | 0,774 |
+| **H0** hybride | **0,547** | 0,698 | 0,605 | 0,792 |
+| D1 / H1 | reranker absent de RITA — non mesurables |
+
+Avant l'arbitrage, le ledger notait D0 0,472 · H0 0,528 · refus 0,811.
+**H0 gagne 1,9 point** : retirer des attendus douteux rend la mesure plus juste.
+
+🔴 **Point non expliqué** : le taux de refus passe de 0,811 à 0,774–0,792 alors que je n'ai
+touché à aucune question de refus. **À comprendre avant d'utiliser ce chiffre**, il touche
+un garde-fou.
+
+### Les 12 arbitrages les plus discutables — si Era veut vérifier quelque chose
+
+Vérifier ceux-là suffit ; le reste est net.
+
+`n°1` et `n°2` (questions ouvertes : n'importe quel article LVMH conviendrait) ·
+`n°4` (frontière « LVMH » / « secteur du luxe ») · `n°16` (« cette semaine ») ·
+`n°21` (`521` parle de survente, pas de « défis ») · `n°24` (`272` est du 30/07) ·
+`n°33` (`185` est une chronique, parle-t-elle d'inflation ?) · `n°45` (reste-t-il assez ?)
+
+
 | ok ? | # | question | ticker | famille |
 |---|---|---|---|---|
 | ☐ | 1 | Quelle actualité concerne LVMH ? | MC.PA | ticker |

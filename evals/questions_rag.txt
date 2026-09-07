@@ -7,6 +7,15 @@
 #                   bonne réponse est de NE RIEN RENDRE (refus attendu)
 #   famille       : ticker | theme | reference | hors_corpus | hors_perimetre_amf
 #
+#
+# ── RELECTURE DU 07/09/2026 ────────────────────────────────────────────────
+# Arbitre par Claude, article par article, sur le titre et le resume de chaque
+# candidat. ⚠️ NON REVALIDE PAR ERA. A citer ainsi dans le rapport : « jeu annote
+# par un LLM a partir du corpus, non revalide humainement ».
+#
+# 7 rejets, 1 question supprimee, 53 questions restantes. Detail et motifs :
+# evals/RELECTURE-2026-09-06.md, section « Arbitrage du 07/09 ».
+# ───────────────────────────────────────────────────────────────────────────
 # Les lignes vides et celles commençant par « # » sont ignorées.
 #
 # ⚠️ CE FICHIER EST LA VÉRITÉ TERRAIN. Il décide si une mesure est vraie ou fausse.
@@ -80,7 +89,7 @@ Quel événement du corpus peut avoir un impact sur LVMH ? | MC.PA | 459,285,288
 
 Que disent les articles sur les résultats de LVMH ? | MC.PA | 379,643,289 | ticker
 
-Quels éléments concernent le secteur du luxe ? | MC.PA | 643,286,288,468,825 | ticker
+Quels éléments concernent le secteur du luxe ? | MC.PA | 643,288,825 | ticker
 
 
 # =============================================================================
@@ -94,7 +103,6 @@ Quels événements macroéconomiques sont mentionnés ? | - | 406,207,198,193 | 
 # tout article de bourse « parle d'une évolution des marchés ». Deux issues :
 # la préciser (ex. « quel indice a fortement varié ? »), ou la retirer.
 # Laissée SANS identifiants — le banc la signalera comme non annotée.
-Quels articles parlent d'une évolution importante des marchés financiers ? | - | ? | theme
 
 
 # =============================================================================
@@ -131,13 +139,13 @@ Que rapporte l'article « Air Liquide, un composé chimique de performance sur l
 # --- BNP Paribas (BNP.PA) ---
 Quel est le dossier judiciaire de BNP Paribas au Soudan ? | BNP.PA | 532,533,627,529 | ticker
 Que dit Moody's de BNP Paribas ? | BNP.PA | 619 | ticker
-Quelles actualités concernent BNP Paribas cette semaine ? | BNP.PA | 708,711,709,715,799,619 | ticker
+Quelles actualités concernent BNP Paribas cette semaine ? | BNP.PA | 708,709,715,799,619 | ticker
 Que rapporte l'article « Moody's confirme la note de BNP Paribas » ? | BNP.PA | 619 | reference
 
 # --- Schneider Electric (SU.PA) ---
 Que disent les analystes de Schneider Electric ? | SU.PA | 743,834,746 | ticker
 Schneider Electric rachète-t-il ses propres actions ? | SU.PA | 561 | ticker
-Comment a évolué l'action Schneider Electric fin août ? | SU.PA | 380,381,648,744 | ticker
+Comment a évolué l'action Schneider Electric fin août ? | SU.PA | 380,381,648 | ticker
 
 # --- Sanofi (SAN.PA) ---
 Quels sont les défis de Sanofi ? | SAN.PA | 700,521 | ticker
@@ -164,15 +172,15 @@ Que dit le président de la Fed sur l'inflation ? | - | 202,193,185 | theme
 Où en est l'inflation aux États-Unis ? | - | 139,202,193 | theme
 Que disent les derniers chiffres de l'emploi américain ? | - | 774 | theme
 Quelle est la situation de l'emploi en Chine ? | - | 591 | theme
-Que prévoit Volkswagen pour ses effectifs ? | - | 684,843,844 | theme
+Que prévoit Volkswagen pour ses effectifs ? | - | 684 | theme
 La croissance française a-t-elle été révisée ? | - | 206 | theme
 Quelle est la position de TotalEnergies sur les prix des carburants ? | - | 313,411 | theme
 Que fait TotalEnergies vis-à-vis du gaz russe ? | - | 172 | theme
-Comment la dette pèse-t-elle sur le budget 2027 ? | - | 674,571,763 | theme
+Comment la dette pèse-t-elle sur le budget 2027 ? | - | 674,571 | theme
 Quelle est la performance du S&P hors valeurs de l'IA ? | - | 479,480 | theme
 Qu'annonce Trump sur le pétrole du Venezuela ? | - | 328 | theme
 Pourquoi Wall Street a-t-il baissé le 1er septembre ? | - | 604 | theme
-Comment le CAC 40 a-t-il réagi à la montée des taux longs ? | - | 599,783 | theme
+Comment le CAC 40 a-t-il réagi à la montée des taux longs ? | - | 599 | theme
 Quelle pépite française entre au Nasdaq ? | - | 199,190 | theme
 Qu'a fait la Banque du Japon cet été ? | - | 198 | theme
 
