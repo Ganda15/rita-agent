@@ -146,11 +146,12 @@ deux fois du risque. Décision assumée et tracée.
 
 - **Relire les 54 questions du jeu annoté** (écrites le 06/09, statut *proposées*) — fiche : `evals\RELECTURE-2026-09-06.md`. Jugement d'Era, non délégable : un jeu annoté non relu rend la mesure circulaire. → puis recalibrer le seuil → mesurer D1/H1 → reranker.
 - **Valider le format de la sortie du modèle** (C12, consigne du 07/09). Mesuré absent le 07/09 : aucune occurrence de `pydantic`/`BaseModel`/`json.loads` hors `.venv` et `tests` ; `pydantic` n'existe que dans `requirements-future.txt`.
-- **Écrire le descriptif des pratiques LLMOps/AgentOps** (C12–C13, consigne du 07/09). Les pratiques existent (seuils bloquants en CI, `python -m evals.mesurer_gardefou`, gates non compensables) ; aucun document ne les décrit — mesuré le 07/09 : `grep -rli "llmops|agentops" --include=*.md` → 0 fichier.
+- ✅ **Descriptif LLMOps/AgentOps ÉCRIT le 07/09** : `docs\LLMOPS.md`. Couvre les 4 harnais de mesure avec leurs sorties réelles, les portes bloquantes de la CI, l'établissement du seuil de couverture (C12), le statut exact du jeu annoté, et 5 manques déclarés. Reste à l'intégrer au rapport E3.
 - Rafraîchir et automatiser le serveur Hetzner (cron/systemd) — C20–C21.
 - Notes de veille S35 et S36 (matière : `docs\veille\_candidats-2026-S35.md`, `-S36.md`).
 - Message au formateur (si non parti).
 - Réécrire l'argument d'éco-conception C15 sur 1,01 Go.
+- Corriger l'en-tête de `.coveragerc` : il affirme que le seuil vit dans `pyproject.toml`, alors que `fail_under = 90` est dans `.coveragerc` ligne 95 et que `pyproject.toml` n'en contient aucun (relevé le 07/09).
 - Épingler `requirements.txt`.
 - C7, C11, C16 à zéro (tableau de bord) — à planifier dans `docs\PLAN-12-SEMAINES.md`.
 
