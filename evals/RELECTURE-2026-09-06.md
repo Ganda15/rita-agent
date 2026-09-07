@@ -5,6 +5,38 @@
 > Les 10 premières viennent du 02/09, les 44 suivantes ont été PROPOSÉES par Claude le 06/09.
 > Rendre ce fichier à Claude : il reporte dans `questions_rag.txt`. **Le jugement est le tien.**
 
+---
+
+## Vérification factuelle du 07/09 (Claude) — ce qui a été contrôlé SANS juger la pertinence
+
+| Contrôle | Résultat |
+|---|---|
+| Les 102 ids proposés existent-ils en base ? | ✅ **102/102** |
+| Les dates affichées correspondent-elles à la base ? | ✅ **aucun écart** |
+| Un id répété deux fois dans la même question ? | ✅ **aucun** |
+| Les 67 candidats `ticker`/`reference` citent-ils bien leur valeur ? | ✅ **67/67**, vérifié avec `rag.indexation.detecter_tickers` (le code de production, pas une approximation) |
+| Questions sans candidat | 🔴 **1** — la n°7 (traitée ci-dessous) |
+| Candidats touchés par un doublon en base | 🔴 **3** (voir ci-dessous) |
+
+### 🔴 Doublons en base — 11 articles en trop sur 566
+
+Le dédoublonnage `(titre, jour)` a été ajouté **à l'ingestion** le 06/09 ; les doublons
+**déjà présents** n'ont pas été purgés. Trois touchent ce jeu annoté :
+
+| Question | Situation | Conséquence si on ne fait rien |
+|---|---|---|
+| **n°14** (BNP Soudan) | `627` est listé, son jumeau **`716`** ne l'est pas | Si le RAG renvoie `716`, la mesure compte un **échec** alors que la réponse est bonne |
+| **n°37** (Volkswagen) | `843` **et** `844` listés — c'est deux fois le même article | Gonfle artificiellement le nombre d'attendus |
+| **n°42** (S&P ex IA) | `479` **et** `480` listés — même cas | Idem |
+
+**Règle à trancher par Era** : soit on purge les doublons en base et on ne garde qu'un id,
+soit on liste systématiquement les deux jumeaux. **Aujourd'hui c'est incohérent d'une
+question à l'autre**, et c'est ça qui fausse la mesure.
+
+⚠️ Observé aussi : des quasi-doublons que la règle `(titre, jour)` **ne voit pas** —
+`666`/`667` diffèrent par un tiret (`-` contre `–`), `573`/`574` par le préfixe
+« Alerte trader : ». Non quantifié.
+
 | ok ? | # | question | ticker | famille |
 |---|---|---|---|---|
 | ☐ | 1 | Quelle actualité concerne LVMH ? | MC.PA | ticker |
@@ -101,7 +133,15 @@
 - ☐ `193` · 2026-08-28 · *La Tribune* — Taux directeurs : l'inflation est « préoccupante » aux États-Unis, selon le patron de la Fed. À l'occasion du symposium 
 
 ### 7. Quels articles parlent d'une évolution importante des marchés financiers ?  ·  `-` · theme
-- attendu : **NON ANNOTÉE**
+- ⚠️ **Question trop vague pour avoir une vérité terrain défendable.** « Évolution
+  importante » n'a pas de définition : deux relecteurs honnêtes ne cocheront pas les
+  mêmes articles. **Recommandation : la reformuler ou la retirer** plutôt que de
+  l'annoter au jugé — une question ambiguë produit une métrique ininterprétable.
+- Si tu la gardes, candidats plausibles (proposés le 07/09, à trancher) :
+  - ☐ `599` · 2026-09-01 · *Capital.fr* — CAC 40 : la Bourse souffre de la montée des taux à long terme  ⚠️ déjà attendu en n°45
+  - ☐ `667` · 2026-09-04 · *BFM Éco* — Les seuils techniques incontournables sur les marchés et les valeurs  ⚠️ jumeau `666`
+  - ☐ `660` · 2026-09-04 · *BFM Éco* — Bourse : les valeurs à suivre à la rentrée
+- Reformulation proposée : « Quels articles décrivent la séance boursière du 1er septembre 2026 ? » — vérifiable, datée, non ambiguë.
 
 ### 8. Que rapporte l'article « LVMH réalise un résultat net part du Groupe de 5,7 milliards d'euros » ?  ·  `MC.PA` · reference
 - ☐ `379` · 2026-07-27 · *Boursorama* — LVMH réalise un résultat net part du Groupe de 5,7 milliards d'euros au 1er semestre - Boursorama
@@ -135,6 +175,7 @@
 - ☐ `532` · 2026-08-31 · *Zonebourse Suisse* — BNP Paribas brandit le droit suisse dans le dossier du Soudan - Zonebourse Suisse
 - ☐ `533` · 2026-08-31 · *Le Revenu* — Soudan : BNP Paribas conteste sa condamnation de 20,5 milliards de dollars - Le Revenu
 - ☐ `627` · 2026-08-31 · *Fortuneo* — BNP Paribas brandit le droit suisse dans le dossier du Soudan... - Fortuneo
+- ☐ `716` · **jumeau exact de `627`** (même titre, même jour) — ajouté le 07/09 : à garder ou à purger, mais pas à ignorer
 - ☐ `529` · 2026-08-31 · *BDOR* — Bourse : BNP Paribas face à la justice suisse dans l'affaire du Soudan, CAC 40 sous tension - BDOR
 
 ### 15. Que dit Moody's de BNP Paribas ?  ·  `BNP.PA` · ticker
