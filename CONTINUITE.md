@@ -133,8 +133,14 @@ deux fois du risque. Décision assumée et tracée.
 - Banc rejoué le 07/09 sur 53 questions : **D0** Hit@1 0,472 · **H0** Hit@1 **0,547**
   (contre 0,528 avant l'arbitrage) · MRR H0 0,605 · refus 0,774–0,792. D1/H1 toujours
   non mesurables : le reranker n'existe pas.
-- 🔴 **Non expliqué** : le refus passe de 0,811 à 0,774–0,792 sans qu'aucune question de refus
-  ait été touchée. À comprendre avant de citer ce chiffre — il concerne un garde-fou.
+- ✅ **Le refus 0,811 → 0,774 est expliqué (07/09)** : ce n'est pas l'arbitrage, c'est le
+  **corpus qui a bougé** — 566 articles le 06/09, 594 le 07/09 (+28 arrivés, −11 doublons
+  purgés). `refus_correct` se mesure sur les **53** questions, pas sur les 9 de refus.
+  Décompte réel du 07/09, bras D0 : **12 échecs sur 53** → 41/53 = 0,774.
+  **6 fuites** (il parle quand il devrait se taire) : les 4 questions AMF, plus
+  « cours de Sanofi fin d'année » et « Roland-Garros ». Deux sont alimentées par des articles
+  **arrivés le 07/09** (`1054`, `1055`) — le seuil n'a pas bougé, le corpus si.
+  **6 silences** (il se tait quand il devrait répondre) : n°1, n°2, n°6, n°35, n°37, n°42.
 
 ## K. Reste à faire
 
@@ -166,6 +172,16 @@ deux fois du risque. Décision assumée et tracée.
   Restent **14 quasi-doublons** que la règle `(titre, jour)` ne voit pas — les titres ne diffèrent
   que par un tiret (`–` contre `-`) ou un préfixe : `[479,480]`, `[666,667]`, `[573,574]`, `[36,38]`…
   Élargir la règle **risque d'écraser des articles légitimement proches** : décision d'Era.
+- 🔴 **Le seuil dur de 0,42 rejette une bonne réponse à 0,0009 près — mesuré le 07/09.**
+  Question *« Quelle actualité concerne LVMH ? »* : le meilleur article du corpus (`734`) sort
+  à une distance de **0,4209**, le suivant (`643`) à **0,4213**. `SEUIL_DISTANCE_DENSE = 0.42`
+  les rejette **tous les deux**. Résultat : RITA reste **muet** sur la question la plus naturelle
+  qu'un utilisateur puisse poser sur une valeur, alors qu'il répond correctement à
+  *« Que disent les articles sur les résultats de LVMH ? »* (`379` à 0,3385).
+  ⚠️ **Ce n'est pas un réglage à monter à la hâte** : relever le seuil rouvrirait les fuites AMF.
+  C'est l'argument même en faveur d'un **garde-fou d'entrée sur l'intention** (question ouverte G)
+  plutôt que d'un seuil de distance unique. **Excellent matériau d'oral : une limite mesurée,
+  chiffrée, et dont on sait pourquoi on ne la corrige pas n'importe comment.**
 - 🔴 **`indexation` ne supprime toujours pas les orphelins** — confirmé par la mesure du 07/09 :
   après la purge, la réindexation a écrit 594 vecteurs mais Chroma en comptait encore **605**, les
   11 articles supprimés restant **interrogeables par le RAG**. Nettoyage manuel cette fois.
