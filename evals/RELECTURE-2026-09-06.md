@@ -18,24 +18,41 @@
 | Questions sans candidat | 🔴 **1** — la n°7 (traitée ci-dessous) |
 | Candidats touchés par un doublon en base | 🔴 **3** (voir ci-dessous) |
 
-### 🔴 Doublons en base — 11 articles en trop sur 566
+### ✅ Doublons exacts — purgés le 07/09
 
-Le dédoublonnage `(titre, jour)` a été ajouté **à l'ingestion** le 06/09 ; les doublons
-**déjà présents** n'ont pas été purgés. Trois touchent ce jeu annoté :
+11 articles en double `(titre, jour, source)` ont été **supprimés** de la base
+(`5, 6, 8, 37, 189, 302, 485, 716, 751, 829, 844` — le plus petit id de chaque paire est
+conservé). Sauvegarde : `logs\doublons-a-purger-2026-09-07.json`.
 
-| Question | Situation | Conséquence si on ne fait rien |
-|---|---|---|
-| **n°14** (BNP Soudan) | `627` est listé, son jumeau **`716`** ne l'est pas | Si le RAG renvoie `716`, la mesure compte un **échec** alors que la réponse est bonne |
-| **n°37** (Volkswagen) | `843` **et** `844` listés — c'est deux fois le même article | Gonfle artificiellement le nombre d'attendus |
-| **n°42** (S&P ex IA) | `479` **et** `480` listés — même cas | Idem |
+**Deux conséquences pour ce jeu annoté :**
 
-**Règle à trancher par Era** : soit on purge les doublons en base et on ne garde qu'un id,
-soit on liste systématiquement les deux jumeaux. **Aujourd'hui c'est incohérent d'une
-question à l'autre**, et c'est ça qui fausse la mesure.
+| Question | Correction appliquée le 07/09 |
+|---|---|
+| **n°14** (BNP Soudan) | `716` supprimé de la base → la ligne a été retirée ci-dessous. `627` reste le seul attendu. |
+| **n°37** (Volkswagen) | `844` supprimé de la base → la ligne a été retirée. `843` reste le seul attendu. |
 
-⚠️ Observé aussi : des quasi-doublons que la règle `(titre, jour)` **ne voit pas** —
-`666`/`667` diffèrent par un tiret (`-` contre `–`), `573`/`574` par le préfixe
-« Alerte trader : ». Non quantifié.
+### 🔴 Défaut trouvé le 07/09 : la réindexation ne supprime jamais
+
+Après la purge, `python -m pipelines.ingest --etapes indexation` a écrit **594** vecteurs —
+mais Chroma en comptait toujours **605**. Les 11 articles supprimés restaient **interrogeables
+par le RAG**. Vérifié : les 11 ids étaient bien encore dans l'index.
+
+`rag/indexation.py` fait un *upsert* et ne retire jamais ce qui a disparu de la base.
+Nettoyé à la main le 07/09 (`collection.delete`) → **594 articles = 594 vecteurs, écart 0**.
+**Le correctif durable reste à écrire** (en TDD : le test doit d'abord échouer).
+
+### 🔴 Quasi-doublons — 14 articles, toujours en base
+
+La règle `(titre, jour)` ne voit pas deux titres qui ne diffèrent que par un tiret
+(`–` contre `-`) ou un préfixe. Mesuré le 07/09 en normalisant la ponctuation :
+**14 groupes, 14 articles en trop.**
+
+Exemples : `[479, 480]` · `[666, 667]` · `[573, 574]` · `[36, 38]` · `[64, 65]`
+
+⚠️ **La n°42 est concernée** : `479` et `480` sont le même article, tous deux encore en base
+et tous deux listés comme attendus. **Era tranche** : élargir la règle de dédoublonnage
+(risque d'écraser des articles légitimement proches) ou laisser et l'assumer.
+
 
 | ok ? | # | question | ticker | famille |
 |---|---|---|---|---|
@@ -175,7 +192,6 @@ question à l'autre**, et c'est ça qui fausse la mesure.
 - ☐ `532` · 2026-08-31 · *Zonebourse Suisse* — BNP Paribas brandit le droit suisse dans le dossier du Soudan - Zonebourse Suisse
 - ☐ `533` · 2026-08-31 · *Le Revenu* — Soudan : BNP Paribas conteste sa condamnation de 20,5 milliards de dollars - Le Revenu
 - ☐ `627` · 2026-08-31 · *Fortuneo* — BNP Paribas brandit le droit suisse dans le dossier du Soudan... - Fortuneo
-- ☐ `716` · **jumeau exact de `627`** (même titre, même jour) — ajouté le 07/09 : à garder ou à purger, mais pas à ignorer
 - ☐ `529` · 2026-08-31 · *BDOR* — Bourse : BNP Paribas face à la justice suisse dans l'affaire du Soudan, CAC 40 sous tension - BDOR
 
 ### 15. Que dit Moody's de BNP Paribas ?  ·  `BNP.PA` · ticker
@@ -268,7 +284,6 @@ question à l'autre**, et c'est ça qui fausse la mesure.
 ### 37. Que prévoit Volkswagen pour ses effectifs ?  ·  `-` · theme
 - ☐ `684` · 2026-09-04 · *Le Monde Éco* — Volkswagen signe un accord pour la suppression de 50 000 emplois supplémentaires mais laisse de nombreuses questions en 
 - ☐ `843` · 2026-09-06 · *BFM Éco* — Volskwagen en crise ? Une gamme électrique en net progrès pour remonter la pente. Bénéfices en chute libre, menaces sur 
-- ☐ `844` · 2026-09-06 · *BFM Éco* — Volskwagen en crise ? Une gamme électrique en net progrès pour remonter la pente. Bénéfices en chute libre, menaces sur 
 
 ### 38. La croissance française a-t-elle été révisée ?  ·  `-` · theme
 - ☐ `206` · 2026-08-28 · *Le Monde Éco* — La croissance de la France révisée à la baisse au premier trimestre : « le premier impact concret de l’été horrible qu’o

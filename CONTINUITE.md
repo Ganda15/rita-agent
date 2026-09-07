@@ -149,9 +149,17 @@ H0 0,528 · refus 0,811 · **AMF 3/5 fuient**. Tout le reste est détour (voir `
   et non annoté (ajouté le 06/09). À relire par Era à chaque extension.
 - 🔴 **Sur 53 questions, 3 AMF sur 5 et 2 hors-corpus sur 4 reçoivent du contexte** (06/09) :
   60 % de fuite sur l'intention interdite. Le garde-fou d'entrée (G) n'est plus optionnel.
-- 🟠 **Doublons** : l'ingestion les refuse depuis le 06/09, mais **25 jumeaux sont déjà en base et
-  dans l'index**. Et `indexation` ne retire jamais un document disparu de la base (upsert seul) :
-  le nettoyage doit toucher PostgreSQL **et** Chroma. Suppression = décision d'Era.
+- 🟠 **Doublons — 11 traités le 07/09, 14 restent.** Sur les 25 jumeaux annoncés le 06/09 :
+  les **11 doublons exacts** `(titre, jour, source)` ont été supprimés de PostgreSQL par Era
+  (sauvegarde `logs\doublons-a-purger-2026-09-07.json`), puis leurs vecteurs retirés de Chroma
+  à la main. **Vérifié : 594 articles = 594 vecteurs, écart 0.**
+  Restent **14 quasi-doublons** que la règle `(titre, jour)` ne voit pas — les titres ne diffèrent
+  que par un tiret (`–` contre `-`) ou un préfixe : `[479,480]`, `[666,667]`, `[573,574]`, `[36,38]`…
+  Élargir la règle **risque d'écraser des articles légitimement proches** : décision d'Era.
+- 🔴 **`indexation` ne supprime toujours pas les orphelins** — confirmé par la mesure du 07/09 :
+  après la purge, la réindexation a écrit 594 vecteurs mais Chroma en comptait encore **605**, les
+  11 articles supprimés restant **interrogeables par le RAG**. Nettoyage manuel cette fois.
+  **Le correctif dans `rag/indexation.py` reste à écrire, en TDD.**
 - 🟡 **Le chiffre `ecrites` des journaux de collecte était gonflé** : il comptait les lignes envoyées
   à l'INSERT, pas celles réellement insérées (`ON CONFLICT DO NOTHING` silencieux). Depuis le 06/09,
   les jumeaux par titre sont comptés en `rejetees` ; les jumeaux par lien contre la base ne le sont
