@@ -2,7 +2,13 @@
 #
 # C12 exige que « les tests soient intégrés et respectent la couverture souhaitée
 # ÉTABLIE ». Le mot « établie » impose de fixer un objectif ET de le justifier.
-# Ce fichier porte le périmètre ; le seuil est dans `pyproject.toml`.
+# Ce fichier porte le périmètre ET le seuil : `fail_under = 90`, tout en bas, avec
+# l'historique qui le justifie.
+#
+# ⚠️ Corrigé le 07/09/2026. Cette ligne annonçait le seuil dans `pyproject.toml` — c'était
+#    faux, `pyproject.toml` ne contient aucun `fail_under`. Un commentaire qui envoie
+#    chercher une valeur là où elle n'est pas coûte plus cher qu'une absence de commentaire :
+#    le lecteur conclut que le seuil n'existe pas.
 
 [run]
 source = agents, api, bigdata, db, evals, graph, guardrails, indicateurs, pipelines, sources, src

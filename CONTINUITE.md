@@ -151,7 +151,6 @@ deux fois du risque. Décision assumée et tracée.
 - Notes de veille S35 et S36 (matière : `docs\veille\_candidats-2026-S35.md`, `-S36.md`).
 - Message au formateur (si non parti).
 - Réécrire l'argument d'éco-conception C15 sur 1,01 Go.
-- Corriger l'en-tête de `.coveragerc` : il affirme que le seuil vit dans `pyproject.toml`, alors que `fail_under = 90` est dans `.coveragerc` ligne 95 et que `pyproject.toml` n'en contient aucun (relevé le 07/09).
 - Épingler `requirements.txt`.
 - C7, C11, C16 à zéro (tableau de bord) — à planifier dans `docs\PLAN-12-SEMAINES.md`.
 

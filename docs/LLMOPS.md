@@ -131,15 +131,15 @@ Deux workflows GitHub Actions, dans `.github/workflows/`.
 | `python -m evals.mesurer_gardefou` | La mesure des garde-fous |
 | `pytest tests/test_evals.py -v` | Les portes non compensables |
 
-Le seuil de couverture vit dans `.coveragerc` (`fail_under = 90`, ligne 95), **pas dans le
+Le seuil de couverture vit dans `.coveragerc` (`fail_under = 90`, ligne 101), **pas dans le
 workflow**. Raison écrite au même endroit : *un seuil écrit dans le workflow serait
 invisible depuis la machine de développement, et on découvrirait la régression en CI plutôt
 qu'avant de pousser.*
 
-> 🔴 **Erreur relevée le 07/09** : l'en-tête de `.coveragerc` affirme *« Ce fichier porte le
-> périmètre ; le seuil est dans `pyproject.toml` »*. C'est faux — `pyproject.toml` ne
-> contient aucun `fail_under`. Le commentaire est à corriger dans le fichier ; il est
-> conservé ici pour que la contradiction ne se perde pas.
+> ✅ **Erreur relevée et corrigée le 07/09** : l'en-tête de `.coveragerc` annonçait le seuil
+> dans `pyproject.toml`, qui n'en contient aucun. Un commentaire qui envoie chercher une
+> valeur là où elle n'est pas coûte plus cher qu'une absence de commentaire : le lecteur
+> conclut que le seuil n'existe pas.
 
 ### `livraison.yml` — construction et vérification de l'image
 
