@@ -81,6 +81,7 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | 19/08 | rendu obligatoire | Toute commande commence par `cd <chemin absolu>` dans son propre bloc ; jamais `&&` | façon de travailler |
 | 28/08 | corrigé | « you do not use claude md many other skills » → invoquer les skills, pas les citer de mémoire | façon de travailler |
 | 06/09 | ajouté | Skill `continuity` appliquée en plus de `boussole` ; ce ledger créé | pilotage |
+| 07/09 | allégé | **C12/C13 sans modèle entraîné.** Consigne écrite de la chef de projet (réponse à un camarade, non spécifique à RITA) : tests automatisés sur l'évaluation des réponses et la validation des formats, plus les descriptifs des pratiques LLMOps/AgentOps **mises en place**, suffisent. **Pas de modèle sklearn d'appoint.** La CI/CD reste exigée — elle figurait dans la question approuvée. | C12, C13 (E3) |
 
 ## G. Questions ouvertes
 
@@ -127,7 +128,9 @@ H0 0,528 · refus 0,811 · **AMF 3/5 fuient**. Tout le reste est détour (voir `
 
 ## K. Reste à faire
 
-- Jeu annoté 40–60 questions → recalibrer le seuil honnêtement → mesurer D1/H1 → reranker.
+- **Relire les 54 questions du jeu annoté** (écrites le 06/09, statut *proposées*) — fiche : `evals\RELECTURE-2026-09-06.md`. Jugement d'Era, non délégable : un jeu annoté non relu rend la mesure circulaire. → puis recalibrer le seuil → mesurer D1/H1 → reranker.
+- **Valider le format de la sortie du modèle** (C12, consigne du 07/09). Mesuré absent le 07/09 : aucune occurrence de `pydantic`/`BaseModel`/`json.loads` hors `.venv` et `tests` ; `pydantic` n'existe que dans `requirements-future.txt`.
+- **Écrire le descriptif des pratiques LLMOps/AgentOps** (C12–C13, consigne du 07/09). Les pratiques existent (seuils bloquants en CI, `python -m evals.mesurer_gardefou`, gates non compensables) ; aucun document ne les décrit — mesuré le 07/09 : `grep -rli "llmops|agentops" --include=*.md` → 0 fichier.
 - Rafraîchir et automatiser le serveur Hetzner (cron/systemd) — C20–C21.
 - Notes de veille S35 et S36 (matière : `docs\veille\_candidats-2026-S35.md`, `-S36.md`).
 - Message au formateur (si non parti).
