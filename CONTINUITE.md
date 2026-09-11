@@ -218,3 +218,18 @@ un binaire sans réputation. **Hit@1** : part des questions dont le 1ᵉʳ docum
 document attendu. **BM25** : score de recherche lexicale fondé sur la fréquence des mots.
 **Reranker** : modèle qui reclasse les candidats après la première recherche. **D0/D1/H0/H1** :
 les 4 configurations du banc d'ablation (dense seul / + reranker / hybride / hybride + reranker).
+
+---
+
+## 🔗 Passerelle depuis le brief Sorabel Data Gateway — 10/09/2026
+
+Brief terminé et envoyé le 10/09 (Simplon × WCS, RNCP 37827). Ce qu'il ramène dans le fil rouge :
+
+| Quoi | Où le retrouver | Pour RITA |
+|---|---|---|
+| **Serveur MCP à transport choisi par l'environnement** — `stdio` pour un hôte local, `streamable-http` sans état derrière un reverse-proxy, hôte/port/chemin par variables, 6 tests écrits avant le code | `Ganda15/sorabel-gateway` → `mcp_server/server.py` (`transport_depuis_env`, `parametres_reseau`), `tests/unit/test_mcp_transport.py` | le serveur MCP de RITA (C-outils) peut être exposé de la même façon, sans dupliquer le code |
+| **« Le jeton est le profil »** — une route et un secret par profil dans Caddy, `401` sans jeton ou avec celui d'un autre profil | `deploy/caddy-site.conf`, `deploy/compose.prod.yml` (3 conteneurs, même image) | une identité minimale sans fournisseur d'identité, à défendre honnêtement comme limite |
+| **Confronter ce que le code déclare à ce qu'un client tiers voit** — le MCP Inspector interrogé par script, comparé à la matrice déclarée, prouvé en falsifiant un lanceur | `scripts/verifier_client_officiel.py`, preuve `docs/livrable/evidence/client-officiel-mcp.json` | modèle pour toute preuve « vue de l'extérieur » (E4/E5 : mesurer, pas affirmer) |
+| **Générateurs avec `--verifier`** — cinq, chacun mis en défaut volontairement ; les chiffres du dépôt eux-mêmes sont générés (`tools/generer_chiffres_depot.py`) | `scripts/generer_*.py`, `tools/` | à reprendre pour ETAT.md / les tableaux de critères C1–C21 : rien de mesuré ne se recopie |
+| **Argument d'oral** — une matrice à trois axes n'est pas une échelle de privilèges ; un dossier qui n'annonce aucune limite n'est pas crédible | PDF `01-dossier-de-conception` § matrice et § « Ce qui n'est pas fait » | trame réutilisable pour la soutenance E1–E5 |
+| **Déploiement reproductible** — Dockerfile léger (pas de torch : embedder local), pile compose, Caddy hôte déjà présent sur `178.104.184.125`, procédure 💻/🖧, trois niveaux d'arrêt | `deploy/README.md` | le même serveur héberge RITA preprod (`:8001`) : même Caddy, même méthode d'ajout de site |
