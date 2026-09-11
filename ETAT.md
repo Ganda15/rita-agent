@@ -15,7 +15,41 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-09-06** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+**Dernière mise à jour : 2026-09-11** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+
+---
+
+🔎 **11/09 — RATTRAPAGE : quatre jours de travail (07 → 10/09) étaient absents de ce fichier.**
+Reconstitué depuis `git log`, `logs/` et la préparation de démo du 09/09 — pas relu, mesuré.
+
+| Date | Fait | Preuve |
+|---|---|---|
+| 07/09 | Jeu annoté **arbitré** : 53 questions nettes, 7 rejets motivés. Statut assumé : *annoté par un LLM à partir du corpus, non revalidé humainement* — formulation obligatoire dans tout rapport | `1f07dbe` |
+| 07/09 | **11 doublons exacts purgés** (PostgreSQL + Chroma, 594 = 594). **14 quasi-doublons restent** (titres qui diffèrent d'un tiret) — décision d'Era. `rag/indexation.py` ne retire toujours pas un article supprimé : correctif TDD à écrire | `adbd004` |
+| 07/09 | Refus 0,811 → 0,774 expliqué : le corpus a bougé, pas l'arbitrage. Seuil 0,42 rejette la meilleure réponse LVMH à **0,0009** près | `b6c989f` |
+| 07/09 | `docs/LLMOPS.md` écrit (consigne chef de projet : pas de sklearn d'appoint). 440 tests · couverture 92,23 % · seuil 90 dans `.coveragerc` | `fce9025`, `37ef14a` |
+| 08/09 | Notes de veille **S35 et S36** + candidats S37 | `23318a6` |
+| 09/09 | Démo locale validée (API 8000, `/donnees/fraicheur` 403 sans clé, 634 articles / 594 vecteurs / 40 non indexés). **Aucun commit** ; `demo_comptes.py` et `demo_seuil.py` dans un scratchpad éphémère | mémoire 09/09 |
+| 10/09 | Brief Sorabel envoyé ; passerelle Sorabel → RITA ajoutée à `CONTINUITE.md` | `624de79` (11/09) |
+
+**Collecte** : 5/5 chaque soir du 04 au 10/09. Le 10/09 : 712 documents indexés, 47 articles écrits,
+43 rejetés par la clé (titre, jour). Base : ~680 articles, 276 745 cotations au 09/09.
+
+⚠️ **Constaté en démo le 09/09** : l'onglet « Mon portefeuille » affiche le vrai portefeuille — ne pas
+le projeter (rester sur Indicateurs). Ligne VIRI.PA aberrante (~×50) : PRU et cours sur des bases
+différentes, c'est le cas D07 en vrai — à corriger dans le CSV, pas dans le code.
+
+▶️ **Prochaines actions — révisé le 11/09 :**
+1. 🔴 **Trancher le garde-fou d'entrée AMF** (skill `agent-standard`) : 3 questions sur 5 fuient,
+   et relever le seuil 0,42 rouvrirait les fuites. Un refus par distance ne tient pas face à une
+   intention interdite.
+2. 🟠 Quasi-doublons : décision sur les 14 restants + correctif durable de l'indexation
+   (retirer de Chroma un article disparu de la base), test d'abord.
+3. 🟠 **Hetzner : statut INCONNU** — aucune trace de rafraîchissement dans le dépôt depuis le 19/08.
+   ~22 jours de retard au 10/09. Vérifier, puis automatiser (`cron` serveur).
+4. Copier `demo_comptes.py` et `demo_seuil.py` dans `scripts/` s'ils existent encore.
+5. Message au formateur du 30/08 — statut toujours INCONNU.
+6. Ensuite : les 4 refus à tort, puis le reranker (D1/H1 non mesurables).
 
 ---
 
