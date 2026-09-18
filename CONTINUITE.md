@@ -58,6 +58,7 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | Premier mot du nom légal : liste noire **étendue** (`BOURSE`, `PIERRE`, `BUREAU`) + suffixe légal `(L')`/`(CIE)` **retiré** | Mesuré 06/09 : 121 faux positifs (BSD.PA 110/122) et 24 mentions manquées (OR.PA, SGO.PA) ; la liste noire est incomplète par construction, donc **remesurer à chaque valeur ajoutée** | 06/09 | `rag/indexation.py` l.72–90 | 5 tests `test_rag_indexation.py`, réindexation 241→213, A/B banc identique | Oui — si une approche sans liste noire est trouvée |
 | Unicité d'un article = lien **ET** (titre normalisé, **jour**) | 26 lignes en trop sur 566 au même titre ; 25 groupes sur 26 partagent le jour, le 26ᵉ est une analyse récurrente légitime — sans le jour on l'aurait supprimée à tort | 06/09 | `pipelines/ingest.py` `cle_article` | 2 tests `test_ingest.py`, simulation réelle `rejetees 72`, suite 440 | Oui si une mesure montre des faux jumeaux |
 | Tester **en local avant le serveur** | Le passage à PG 18 a révélé un 2ᵉ changement, trouvé en local — a évité une coupure à l'aveugle | 19/08 | déploiement | `CHANGELOG.md` l.123–128 | Non |
+| **Collecte lancée sans fenêtre** : l'action de la tâche = `powershell.exe -NoProfile -WindowStyle Hidden -Command "$p = Start-Process -FilePath '…\collecte-quotidienne.cmd' -WindowStyle Hidden -PassThru -Wait; exit $p.ExitCode"` | 4 soirs sur 7 coupés par un `^C` : la console noire de 19 h invitait à la fermer. Cacher la fenêtre retire la cause ; `exit $p.ExitCode` garde le « Dernier résultat » du Planificateur significatif. Le `.cmd` lui-même n'est pas modifié | 18/09 | tâche `RITA - collecte quotidienne` (hors dépôt) ; `scripts/README-planification.md` §2 bis | `schtasks /run` 21:11 → 5/5, code 0, `LastTaskResult 0` ; wrapper testé sur un `.cmd` factice : code 3 remonté | Oui — si un jour le compte devient local, S4U est plus propre |
 | **Garde-fou d'entrée AMF = regex seul**, câblé dans `rechercher()` **avant tout accès à la base** | Un seuil de distance mesure une pertinence, pas une intention : relever 0,42 pour LVMH rouvrait la fuite AMF, la baisser rejetait de bonnes réponses. Regex : même coût (µs) et même style que `injection.py`/`sortie.py` ; un juge LLM aurait coûté un appel par question pour un projet de certification (skill `agent-standard`, point 5). Placé avant `_collection()` : un refus ne charge ni corpus ni embedder | 18/09 | `guardrails/entree.py`, `rag/recherche.py` l.211–223, `motif = INTENTION_INTERDITE` | commit `6cf48fd` ; `evals/mesurer_entree.py` → 100 % blocage (5/5), 0 % faux positif (0/5), 0,003 ms ; suite 450 passed | Oui — passer au juge LLM en zone grise si des paraphrases mesurées passent (cf. action 9 d'`ETAT.md`) |
 
 ## E. Alternatives rejetées
@@ -72,6 +73,7 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | Désactiver Smart App Control | Irréversible sans réinstaller Windows ; décision d'Era seule, jamais de Claude | 02/09 |
 | Attribuer le blocage des roues `cp314` à AppLocker | Faux : Windows 11 Home n'a pas AppLocker ; c'est SAC (`VerifiedAndReputablePolicyState = 1`) | 02/09 |
 | Garde-fou d'entrée par **juge LLM** (regex + escalade en zone grise) | Plus robuste aux paraphrases, mais un appel modèle de plus par question, une latence en centaines de ms, et un éval de cohérence du juge à construire — disproportionné tant que la limite du regex n'est pas **mesurée** (action 9 d'`ETAT.md`). Choix d'Era, réversible | 18/09 |
+| Tâche planifiée en mode **S4U** (« exécuter même si l'utilisateur n'est pas connecté », sans mot de passe) | `Accès refusé` même en admin : **`kanda` est un compte Microsoft** (`PrincipalSource: MicrosoftAccount`), et Windows n'accorde pas S4U à ces comptes. Le mode « avec mot de passe » stockerait le mot de passe Microsoft dans la tâche et casserait à chaque changement — écarté | 18/09 |
 | Relever `SEUIL_DISTANCE_DENSE` pour arrêter de rejeter la question LVMH à 0,0009 près | Rouvrait les fuites AMF ; le vrai problème était de demander à une distance de juger une intention | 18/09 |
 
 ## F. Modifications d'Era (après la baseline)
@@ -91,8 +93,10 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 - ~~**Garde-fou d'entrée sur l'intention (AMF)** — posé le 06/09~~ → **tranché le 18/09 : regex seul**,
   construit, câblé, mesuré (D, I, commit `6cf48fd`). Reste ouvert, en dessous : **la limite est-elle
   acceptable ?** Écrire 3 paraphrases contre les 6 motifs (action 9 d'`ETAT.md`) avant de conclure.
-- 🆕 **Pourquoi la collecte a été coupée 4 soirs sur 7** (13, 14, 16, 17/09 : `^C` dans le journal)
-  — Era seul le sait (fenêtre fermée ? session ?). À comprendre **avant** d'automatiser.
+- ~~**Pourquoi la collecte a été coupée 4 soirs sur 7**~~ → **répondu le 18/09, au plus probable** : poste
+  fixe, aucun événement système à 19 h, tâche interactive non cachée → console fermée à la main (`^C`).
+  Non prouvable : l'historique du Planificateur était désactivé. Parade posée (D). **Reste** : activer
+  cet historique (`wevtutil`, fenêtre admin) — refusé hors admin le 18/09, à refaire.
 - **Rang du rafraîchissement serveur** dans la liste d'`ETAT.md` (n°3 posé le 06/09) — **Era tranche**.
 - **Le message au formateur du 30/08** (2 questions : « RAG avancé », MCP↔C10) est-il parti ? — **Era**.
 - Les **4 questions du jeu annoté encore refusées à tort** : la règle de couverture casse sur une
@@ -169,9 +173,11 @@ deux fois du risque. Décision assumée et tracée.
   0,42 n'a **pas** été touché. ⚠️ Constat de cadrage : `POST /briefing` ne prend qu'un `ticker`, aucun
   texte libre — la faille était **latente** (banc d'éval), pas exploitable ; elle le serait devenue avec
   l'interface C10. À présenter ainsi, ni plus ni moins.
-- 🟠 **Collecte coupée 4 soirs sur 7** (13, 14, 16, 17/09 : `^C` dans le journal, aucune indexation ces
-  soirs-là). Les 12, 15 et 18/09 sont complets. Une collecte qui tourne sur le PC dépend de ce que
-  fait Era à 19 h — cause à comprendre avant d'automatiser.
+- 🟡 **Collecte coupée 4 soirs sur 7** (13, 14, 16, 17/09 : `^C`) → parade posée le 18/09 (fenêtre cachée,
+  voir D). Le risque de fond demeure : **la collecte tourne sur le PC d'Era**, donc PC éteint à 19 h =
+  pas de collecte (`StartWhenAvailable` est à `False` : une exécution manquée n'est pas rattrapée).
+  À surveiller sur les journaux des 19–25/09 ; si un `^C` réapparaît, l'hypothèse « fermée à la main »
+  est fausse et l'historique du Planificateur (à activer) dira quoi.
 - 🟡 yfinance le 16/09 : `GTO.PA`, `ZC.PA`, `ELE.PA` « possibly delisted » — 3 valeurs sur 111 à vérifier.
 - **Le seuil 0,42 est calibré sur 9 questions** : toute conclusion du banc est fragile jusqu'au jeu
   étendu — **démontré le 06/09** : 127 articles de plus ont suffi à rouvrir une fuite.
