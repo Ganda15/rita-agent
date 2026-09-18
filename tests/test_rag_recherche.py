@@ -114,6 +114,17 @@ def test_une_question_hors_corpus_est_REFUSEE(monkeypatch, tmp_path):
     assert r.passages == []
 
 
+def test_une_question_a_intention_interdite_est_refusee_avant_la_base(monkeypatch, tmp_path):
+    """Garde-fou d'ENTREE (18/09, question G de CONTINUITE.md) : une intention interdite
+    se refuse sur la question elle-même. AUCUN _index_jetable ici — le refus doit
+    intervenir avant tout accès au corpus, sinon ce n'est pas un garde-fou d'entrée."""
+    r = recherche.rechercher("Quelle action dois-je acheter demain pour gagner 20 % ?",
+                              chemin=tmp_path)
+    assert r.trouve is False
+    assert r.motif == "INTENTION_INTERDITE"
+    assert r.passages == []
+
+
 def test_un_seul_mot_commun_ne_suffit_PAS_a_repondre(monkeypatch, tmp_path):
     """Première version du refus : « score BM25 > 0 ». Elle acceptait « recette de la
     tarte aux pommes » parce que « recette » veut aussi dire *recettes fiscales*.

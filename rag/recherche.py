@@ -75,6 +75,7 @@ from typing import Any
 
 from rank_bm25 import BM25Okapi
 
+from guardrails.entree import verifier_intention
 from rag.indexation import _collection
 
 # Constante usuelle de la fusion RRF. Voir la docstring du module.
@@ -206,6 +207,19 @@ def rechercher(question: str, ticker: str | None = None, k: int = 3,
     """
     if mode not in MODES:
         raise ValueError(f"mode de recherche inconnu : {mode!r} — attendu {sorted(MODES)}")
+
+    # --- garde-fou d'ENTREE, avant tout accès à la base -----------------------
+    # Décision d'Era (18/09, skill agent-standard, question G de CONTINUITE.md) :
+    # une intention interdite (« dois-je acheter », « quelle action ... acheter »)
+    # se refuse sur la QUESTION elle-même, indépendamment de ce que le corpus
+    # contiendrait. Voir guardrails/entree.py pour le pourquoi complet.
+    #
+    # Placé ICI, avant `_collection()` : un refus ne coûte ni chargement du corpus
+    # ni appel à l'embedder — la question la plus chère à ignorer est ignorée au
+    # prix le plus bas.
+    verification = verifier_intention(question)
+    if verification["bloque"]:
+        return Resultat(False, "INTENTION_INTERDITE", [], 0)
 
     collection = _collection(chemin)
 
