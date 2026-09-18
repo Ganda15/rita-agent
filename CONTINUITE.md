@@ -223,7 +223,26 @@ les 4 configurations du banc d'ablation (dense seul / + reranker / hybride / hyb
 
 ## 🔗 Passerelle depuis le brief Sorabel Data Gateway — 10/09/2026
 
-Brief terminé et envoyé le 10/09 (Simplon × WCS, RNCP 37827). Ce qu'il ramène dans le fil rouge :
+Brief terminé et envoyé le 10/09 (Simplon × WCS, RNCP 37827).
+
+**Liens et livrables (relevés le 18/09/2026, chaque lien testé — code HTTP entre parenthèses)**
+
+| Quoi | Adresse | Réponse |
+|---|---|---|
+| Application déployée (Hetzner, `178.104.184.125`, Caddy) | `https://sorabel.178-104-184-125.sslip.io` | 401 sans jeton — attendu : « le jeton est le profil » |
+| Serveur MCP — profil *support* | `https://sorabel.178-104-184-125.sslip.io/mcp/support` | 401 sans jeton (attendu) |
+| Serveur MCP — profil *commercial* | `https://sorabel.178-104-184-125.sslip.io/mcp/commercial` | 401 sans jeton (attendu) |
+| Serveur MCP — profil *developer* | `https://sorabel.178-104-184-125.sslip.io/mcp/developer` | 401 sans jeton (attendu) |
+| Page rejouée / guide de test en ligne (artefact claude.ai) | `https://claude.ai/code/artifact/0b655cbb-e50a-4bfd-a878-602f4a016cce` | 200 |
+| Dépôt public | `https://github.com/Ganda15/sorabel-gateway` | 200 |
+
+Un serveur MCP par profil, à utiliser avec un client MCP (Inspector, `curl`), **le jeton du profil envoyé à part** — jamais
+dans un lien, jamais dans un document (`Authorization: Bearer <jeton>` ; les jetons sont dans `/root/sorabel-acces.txt` sur le
+serveur, hors dépôt). Trois PDF rendus : `01-dossier-de-conception.pdf` (737,95 ko), `02-serveur-mcp.pdf` (938,48 ko),
+`03-interface-et-preuves.pdf` (1,38 Mo) — dans `docs/livrable/` du dépôt ; un quatrième, le **guide de test en ligne** (4 p.),
+a été envoyé au formateur le 10/09 avec les liens (message 1) et les secrets par un autre canal (message 2).
+
+Ce qu'il ramène dans le fil rouge :
 
 | Quoi | Où le retrouver | Pour RITA |
 |---|---|---|
@@ -233,3 +252,55 @@ Brief terminé et envoyé le 10/09 (Simplon × WCS, RNCP 37827). Ce qu'il ramèn
 | **Générateurs avec `--verifier`** — cinq, chacun mis en défaut volontairement ; les chiffres du dépôt eux-mêmes sont générés (`tools/generer_chiffres_depot.py`) | `scripts/generer_*.py`, `tools/` | à reprendre pour ETAT.md / les tableaux de critères C1–C21 : rien de mesuré ne se recopie |
 | **Argument d'oral** — une matrice à trois axes n'est pas une échelle de privilèges ; un dossier qui n'annonce aucune limite n'est pas crédible | PDF `01-dossier-de-conception` § matrice et § « Ce qui n'est pas fait » | trame réutilisable pour la soutenance E1–E5 |
 | **Déploiement reproductible** — Dockerfile léger (pas de torch : embedder local), pile compose, Caddy hôte déjà présent sur `178.104.184.125`, procédure 💻/🖧, trois niveaux d'arrêt | `deploy/README.md` | le même serveur héberge RITA preprod (`:8001`) : même Caddy, même méthode d'ajout de site |
+
+---
+
+## 🔗 Passerelle depuis le brief Mardik ③ « La nouvelle version » — conception livrée le 18/09/2026
+
+Brief de conception (Chantiers 1 et 2) terminé le 18/09, relu par le formateur (schémas acceptés), envoi du dossier par Era.
+Dossier : `C:\Users\kanda\Desktop\Mardik_La nouvelle version\livrables\` (2 PDF, 4 schémas). Ce qu'il ramène dans le fil rouge :
+
+| Quoi | Où le retrouver | Pour RITA |
+|---|---|---|
+| **La chaîne avant la fusion** — branche courte, PR, job gratuit à chaque push, gate d'évaluation payant déclenché par **filtre de chemin** (prompt, config du modèle, code d'analyse, jeu de référence, seuils), les deux rejoués à la fusion | `Mardik-Conception-Chantier1.pdf` §3.0, schéma de la chaîne (région violette) | RITA n'a **aucun gate d'évaluation** : `test.yml` ne joue que des tests, et `fail_under` y est commenté. Un gate à seuil versionné sur PR, puis à la fusion, est la première chose à porter |
+| **Prompts en fichiers versionnés** (`prompts/…`, `prompt_version` dans le manifeste) | Ch1 §4.1 (Bundle + manifeste) | les prompts RITA vivent dans `agents/analyst.py` : tant qu'ils y restent, un filtre de chemin n'a rien à surveiller et une version de prompt n'existe pas |
+| **« Quand un gate échoue, on rejoue le niveau qui a échoué »** — local → relancer ; PR → même branche ; fusion → nouvelle PR, rien en production, tag précédent servi | Ch1 §3.0 (tableau), sorties des boîtes rouges du schéma | réponse toute faite à la question du formateur (« refait-on tout ? ») pour E3/E5 ; à écrire dans le runbook RITA |
+| **Manifeste de version** (commit, `model_id` daté, `prompt_version`, `config_hash`, `calibration_version`, `eval_score`, `golden_dataset_version`) exposé par `GET /version` et un en-tête par réponse | Ch1 §4 | RITA n'a pas de `config.yaml` ni de manifeste : la « version qui a répondu » n'est pas prouvable requête par requête |
+| **Score calibré** (régression isotonique sur le jeu de référence) et la distinction **note d'évaluation ≠ score de confiance** | Ch1 §2.5 | si RITA affiche une confiance, elle doit être calibrée, ou dite non calibrée |
+| **`thresholds.yml` en git, ajusté par PR ; baseline = la version promue** ; fenêtre « N requêtes ou D jours », minimum 30, fail-closed ; rollback humain, promotion automatique non compensable | `Mardik-Conception-Chantier2.pdf` §3, §4, §9, §11 | trame de la surveillance E5 (C20/C21) : signal × seuil × rétroaction × trace |
+| **Présentation « Question → Réponse courte »** en tête de chaque section technique et de chaque temps d'oral | les deux dossiers, les 6 oraux | consigne du formateur (18/09) à appliquer aux oraux E1–E5 : dire où l'on va avant le détail |
+| **Section « Choix d'outils non triviaux »** (retenu / alternative écartée / pourquoi / section) | Ch1 §4.6, Ch2 §12 bis | section standard à ajouter au dossier RITA |
+| **Idées de camarades, citées** — deux pipelines (Steve, endossé par le formateur ; écarté ici faute de second composant), revue automatisée de PR (David ; adoptée : Claude Code GitHub Action avec le jeton d'abonnement) | Ch1 §3.0, §4.6 | une revue automatisée sur chaque PR de RITA coûte un workflow ; l'attribution reste obligatoire à l'oral |
+
+---
+
+## 🔗 Passerelle depuis le brief Mardik ① « L'application qui ment sur sa santé » — remédiation, dépôt de groupe lu le 16/09/2026
+
+Brief de remédiation (tests d'intégration + tracing, groupe de 3, dépôt `Ganda15/mardik-prod-aveugle`, public depuis le 16/09).
+Source : `Projets/Mardik/Brief1-Remediation-Groupe-mardik-prod-aveugle.md` (Obsidian). ⚠️ Rapprochements faits **depuis les notes**,
+pas depuis une relecture du code RITA à jour — vérifier fichier par fichier avant d'appliquer.
+
+| Quoi | Où le retrouver | Pour RITA |
+|---|---|---|
+| **Rejeu avec un LLM factice** — sessions JSON enregistrées (`sessions/incident_timeout.json`), `runner.py` qui rejoue, `conftest.py` avec un double scripté ; **une** des 5 pannes de l'article llmnet (timeout) couverte pour de vrai | dépôt `mardik-prod-aveugle` : `runner.py`, `sessions/`, `tests/conftest.py` | RITA n'a **aucun test à LLM simulé** (`grep timeout\|429\|monkeypatch\|fake_llm tests/*.py` vide au 15/09) : patron directement transposable pour les 5 pannes — timeout, 429, JSON tronqué, stream coupé, réponse vide |
+| **Bundle télémétrie injectable** — `Telemetry`, variantes `NoOpTelemetry` et mémoire pour les tests ; l'agent ne dépend d'aucun exportateur concret | `src/mardik/telemetry.py` | si RITA ajoute des spans (OTLP imposé par le formateur le 16/09), les injecter ainsi plutôt que coupler les agents à LangSmith/Jaeger |
+| **Règle de cardinalité des métriques** — jamais d'identifiant de session en attribut de métrique | même fichier | point de vigilance le jour où RITA expose des métriques |
+| **Tour atomique / écriture différée** (`commit_turn`) — un échec en cours de tour ne laisse pas d'état partiel | incident 2/4 du dépôt | à vérifier sur tout état RITA modifié en plusieurs étapes (portefeuille, mémoire de session) |
+| **Preuve par mutation** — réintroduire le bug corrigé et montrer que la suite le détecte, au lieu de dire « le test passe » | méthode du dépôt (75 tests annoncés, non relancés par nous) | méthode pour le rapport d'incident E5 (C20–C21) : chaque correctif RITA prouvé en falsifiant |
+| **Le brief ① est mot pour mot l'épreuve E5** (monitorage → incident → diagnostic → résolution + tests → documentation) | référentiel p. 13 ; `PLAN-Mardik-3-jours.md` | le journal des incidents Mardik = brouillon du Rapport pro 5 de RITA |
+
+---
+
+## 🔗 Passerelle depuis le brief Mardik ② « Du prototype au produit » — fiche + schéma, livrés le 15/09/2026, corrigés avec le retour du formateur
+
+Sources : `Projets/Mardik/Fiche-1-API-modele-chaine-LLMOps.md` (partie D, **mesurée sur le dépôt RITA le 15/09**),
+`Schema-2-chaine-LLMOps-cas-Salesforce.md`, `Mardik-FINAL1-CORRIGE.md` (8 points du formateur intégrés).
+
+| Quoi | Où le retrouver | Pour RITA |
+|---|---|---|
+| **État mesuré de RITA le 15/09** — API : `X-API-Key`, 403, `/health`, `/docs`, version 1.1.0 · Build : Dockerfile multi-étapes non-root, `requirements-api.txt` épinglé · Test : 440 tests, 92,23 % de couverture, 3 harnais d'éval, `xfail` strict à 85 % · Livraison : `test.yml` + `livraison.yml` (tag `livrable-*` → ghcr.io, smoke test) | fiche 1, partie D (tableau « déjà là / preuve / manque ») | **manques relevés, tous encore ouverts** : version dans l'URL (`/v1/`), `request_id`, limite de débit ; aucun test à LLM simulé ; `test.yml:20` commente `fail_under = 80` alors que `.coveragerc` dit 90 ; prompts dans `agents/analyst.py` ; pas de `config.yaml` (modèle, température, `k`) ; pas de contrôle de vulnérabilités des dépendances |
+| **Les 6 objets à versionner + ID daté du modèle** ; un prompt changé = nouvelle version de l'application, pas du modèle ; **deux horloges** (contrat dans l'URL, comportement dans la release) | `Mardik-FINAL1-CORRIGE.md` (pages « Pipeline, mise en service et signature » et « Évaluation, observabilité et boucle de retour ») | le manifeste de version de RITA, à créer, doit porter ces 6 objets ; `ANTHROPIC_MODEL` en variable d'env ne suffit pas (pas daté, pas dans une réponse) |
+| **Golden dataset + seuil jamais abaissé / `xfail` strict** ; HTTP 200 ≠ réponse juste ; tests logiciels ≠ évaluation des réponses ; **le canary est aveugle sur un LLM** (une hallucination est un 200 bien formé) → signal de qualité en ligne obligatoire | FINAL1-CORRIGE, points du formateur ; oral `Mardik-ORAL-10min-EN-v3.md` | RITA a les harnais d'éval (`evals/questions_rag.txt`, `tests/test_evals.py`) mais pas de signal de qualité **en production** : à concevoir avec la surveillance E5 |
+| **Retry = appel LLM payant** → idempotence par identifiant de requête ; erreurs d'authentification cohérentes ; codes 401/403/422/429/502/504/503 | FINAL1-CORRIGE, contrat proposé `POST /v1/summarize` | le contrat RITA (`api/main.py`) n'a ni `request_id` ni idempotence : à ajouter avec la version dans l'URL |
+| **Approbation humaine avant prod compatible avec l'automatisation** ; shadow → canary → rollback ; manifeste signé (cosign) ; boucle incident → dataset | FINAL1-CORRIGE p. 6–7 ; `Schema-2…` (le cas Salesforce : « Salesforce gère les poids ; Mardik gère l'enveloppe ») | à l'échelle de RITA (un serveur) : le smoke test de `livraison.yml` tient lieu de canary — le dire, pas le maquiller ; cosign reste différé |
+| **Retour du formateur sur ma façon de présenter** (15/09) : partir du 🔴 avancé, ne redescendre qu'à la question ; puis (18/09) : la question et la réponse courte d'abord | `Mardik-STUDY-EN.md` (3 niveaux), oraux Mardik | consigne d'oral pour E1–E5 |
