@@ -156,6 +156,40 @@ pas encore fait.
 
 ---
 
+## 7 bis. Rattraper une période manquée (ajouté le 18/09/2026)
+
+Quand des soirs ont sauté, le pipeline sait remonter dans le temps pour **deux** de ses
+sources — pas pour les autres :
+
+| Étape | Rattrapable ? | Comment |
+|---|---|---|
+| `ecb` | oui | l'API BCE accepte une plage de dates (`startPeriod`/`endPeriod`) |
+| `rss` | **entreprises seulement** | Google News accepte `after:`/`before:` dans la requête ; les trois flux généraux n'ont que 20–30 items du jour |
+| `cotations` | inutile | déjà incrémentale : elle comble seule l'écart depuis la dernière séance |
+| `scraping` | non, et sans intérêt | cours intraday éphémères |
+
+D'abord en simulation (rien n'est écrit), une fenêtre **un jour plus large** de chaque côté
+que le trou (les bornes de Google News sont floues d'un jour ; le dédoublonnage absorbe) :
+
+```powershell
+cd D:\KandaWork\RITA_PROJECT\rita-agent
+```
+
+```powershell
+C:\Python314\python.exe -X utf8 -m pipelines.ingest --etapes ecb,rss --du 2026-09-12 --au 2026-09-18 --simulation
+```
+
+Puis pour de vrai, avec l'indexation en dernier pour que le RAG voie les nouveaux articles :
+
+```powershell
+C:\Python314\python.exe -X utf8 -m pipelines.ingest --etapes ecb,rss,indexation --du 2026-09-12 --au 2026-09-18
+```
+
+Rejouable sans risque : taux et cotations en `ON CONFLICT DO UPDATE`, articles dédoublonnés
+par lien **et** par (titre, jour). Exécuté le 18/09/2026 : 25 taux, 156 articles, index 1 038.
+
+---
+
 ## 8. Tester avant d'installer
 
 Lance-le une fois en **simulation** — rien n'est écrit en base :

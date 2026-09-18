@@ -32,6 +32,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 | 18/09 | `CONTINUITE.md` : passerelles Mardik ①②③ (15–18/09) et liens Sorabel testés (codes HTTP) — 72 lignes qui attendaient depuis le 15/09, non commitées | `9cc7fbc` |
 | 18/09 | **Garde-fou d'entrée AMF** (question G de `CONTINUITE.md`, décision d'Era : **regex seul**, pas de juge LLM — même coût et même style que `injection.py` / `sortie.py`). TDD : rouge (`ModuleNotFoundError`) → vert. `guardrails/entree.py` (6 motifs en configuration) · `tests/test_entree.py` (9 cas) · câblé dans `rag/recherche.py:rechercher()` **avant tout accès à la base** (`motif = INTENTION_INTERDITE`) · `evals/cas.py` + `evals/mesurer_entree.py` | `6cf48fd` |
 | 18/09 | **Mesure** : `python -m evals.mesurer_entree` → blocage **100 %** (5/5 questions `hors_perimetre_amf`), faux positifs **0 %** (5 questions légitimes), **0,003 ms**. Remplace le « 3 fuites sur 5 » du 06/09. Suite complète : **450 passed, 2 xfailed** | sortie collée dans la session du 18/09 |
+| 18/09 | **Rattrapage des 4 soirs coupés** (option `--du/--au` du pipeline, TDD : 6 tests rouges → verts, 39 passed sur les 4 fichiers touchés). Mesuré AVANT : articles 13/09 **0** · 14/09 19 · 16/09 **1** · 17/09 **5** ; taux BCE absents le 14, incomplets le 17. Exécuté (`--etapes ecb,rss,indexation --du 2026-09-12 --au 2026-09-18`) : taux **25 écrits** (4 devises × 5 jours + EUR), articles **164 envoyés / 156 en base** (8 liens déjà connus — le « `ecrites` gonflé » du 06/09, revu), index **1 038** docs (403 citant une valeur). APRÈS : 13/09 **5** · 14/09 **41** · 16/09 **30** · 17/09 **51**, taux 14 et 17 complets. **Non rattrapable, assumé** : la presse générale de ces 4 jours (flux de 20–30 items, tous du jour) et la séance du **17/09 pour les valeurs de Paris** — yfinance ne l'a pour aucune (CAC 40 et hors-Paris oui) ; l'incrémental ne la redemandera jamais seul | `pipelines/ingest.py --du/--au`, `tests/test_rattrapage.py`, comptes SQL par jour collés dans la session |
 | 18/09 | **Collecte sans fenêtre.** Diagnostic : poste fixe (pas de batterie), aucun arrêt/veille dans le journal Système à 19 h, tâche `Interactive` non cachée → une console noire s'affichait 1 min ; `^C` = fermée à la main. Parade : l'action de la tâche lance `powershell -WindowStyle Hidden` qui démarre le `.cmd` caché et **remonte son code de sortie**. S4U (« sans mot de passe, session fermée ») **refusé par Windows : compte Microsoft**. Test : `schtasks /run` à 21:11 → 5/5, code 0, 104,7 s, `LastTaskResult 0`, aucune fenêtre | `scripts/README-planification.md` §2 bis ; `Get-ScheduledTask … Actions` |
 
 🔎 **Constat qui change le cadrage** — lu dans le code, pas dans les notes : `POST /briefing` (`api/main.py:116`)
@@ -75,6 +76,13 @@ différentes, c'est le cas D07 en vrai — à corriger dans le CSV, pas dans le 
    vérifié 5/5 à 21:11). Reste : activer l'historique du Planificateur (fenêtre admin, `wevtutil`)
    pour que la prochaine coupure laisse une trace — **pas encore fait**, refusé hors admin.
 5. 🟡 Vérifier `GTO.PA`, `ZC.PA`, `ELE.PA` (yfinance : « possibly delisted » le 16/09).
+5 bis. 🟡 **Séance du 17/09 absente pour les valeurs de Paris** (yfinance, constaté le 18/09 ; CAC 40
+   et hors-Paris présents). Re-tester dans quelques jours ; si Yahoo l'a publiée, la récupérer
+   avec un `fetch_cotations(tickers, date(2026,9,17))` explicite — l'incrémental part de la
+   dernière séance connue et ne reviendra pas dessus.
+5 ter. 🟡 **Le scraping écrit dans `cotation` sous la date du jour, même un samedi** : 3 lignes
+   `AI.PA, MC.PA, OR.PA` datées du 12/09 (clôture du vendredi rangée sous un jour sans séance).
+   À corriger (date de séance = dernier jour ouvré), test d'abord.
 6. Copier `demo_comptes.py` et `demo_seuil.py` dans `scripts/` s'ils existent encore.
 7. Message au formateur du 30/08 — statut toujours INCONNU.
 8. Ensuite : les 4 refus à tort, puis le reranker (D1/H1 non mesurables).

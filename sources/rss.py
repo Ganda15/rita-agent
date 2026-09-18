@@ -67,7 +67,8 @@ MODELE_GOOGLE_NEWS = (
 )
 
 
-def flux_par_entreprise(noms: list[str]) -> dict[str, str]:
+def flux_par_entreprise(noms: list[str],
+                        periode: tuple[str, str] | None = None) -> dict[str, str]:
     """Construit un flux Google News par entreprise, `{nom du flux: URL}`.
 
     Le nom du flux est préfixé `ent_` pour rester distinguable en base : on peut ainsi
@@ -78,9 +79,14 @@ def flux_par_entreprise(noms: list[str]) -> dict[str, str]:
     """
     from urllib.parse import quote_plus
 
+    # Rattrapage : Google News accepte `after:` et `before:` dans la requête (vérifié le
+    # 18/09/2026 — 11 items Sanofi pour after:2026-09-16 before:2026-09-18). Les bornes
+    # sont floues d'un jour (fuseaux) : prendre large, le dédoublonnage fait le reste.
+    fenetre = f" after:{periode[0]} before:{periode[1]}" if periode else ""
+
     return {
         f"ent_{nom.lower().replace(' ', '_')[:24]}":
-            MODELE_GOOGLE_NEWS.format(requete=quote_plus(f"{nom} bourse"))
+            MODELE_GOOGLE_NEWS.format(requete=quote_plus(f"{nom} bourse{fenetre}"))
         for nom in noms
         if nom and nom.strip()
     }

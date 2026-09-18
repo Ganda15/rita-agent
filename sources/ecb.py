@@ -42,3 +42,34 @@ def fetch_taux_change(devise: str = "USD") -> dict:
         "date": dates[int(index_str)]["id"],
         "valeur": float(valeurs[0]),
     }
+
+
+def fetch_taux_change_periode(devise: str, debut: str, fin: str) -> list[dict]:
+    """Récupère tous les taux <devise>/EUR publiés entre `debut` et `fin` (bornes incluses).
+
+    Sert au rattrapage d'une période de collecte manquée : `fetch_taux_change` ne rend que
+    la dernière observation, et une collecte coupée un lundi laisse ce lundi vide pour
+    toujours — mesuré les 14 et 17/09/2026 (ETAT.md). Les jours sans publication
+    (week-ends, fériés BCE) sont simplement absents de la réponse.
+
+    Args:
+        devise: code ISO, ex. 'USD'.
+        debut, fin: dates ISO 'AAAA-MM-JJ'.
+
+    Returns:
+        [{devise, date, valeur}, ...] dans l'ordre des dates.
+    """
+    reponse = httpx.get(
+        ECB_URL.format(devise=devise),
+        params={"format": "jsondata", "startPeriod": debut, "endPeriod": fin},
+        timeout=30.0,
+    )
+    reponse.raise_for_status()
+    donnees = reponse.json()
+
+    serie = donnees["dataSets"][0]["series"]["0:0:0:0:0"]["observations"]
+    dates = donnees["structure"]["dimensions"]["observation"][0]["values"]
+    return [
+        {"devise": devise, "date": dates[int(i)]["id"], "valeur": float(v[0])}
+        for i, v in sorted(serie.items(), key=lambda kv: int(kv[0]))
+    ]

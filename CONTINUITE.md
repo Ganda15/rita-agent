@@ -58,6 +58,7 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | Premier mot du nom légal : liste noire **étendue** (`BOURSE`, `PIERRE`, `BUREAU`) + suffixe légal `(L')`/`(CIE)` **retiré** | Mesuré 06/09 : 121 faux positifs (BSD.PA 110/122) et 24 mentions manquées (OR.PA, SGO.PA) ; la liste noire est incomplète par construction, donc **remesurer à chaque valeur ajoutée** | 06/09 | `rag/indexation.py` l.72–90 | 5 tests `test_rag_indexation.py`, réindexation 241→213, A/B banc identique | Oui — si une approche sans liste noire est trouvée |
 | Unicité d'un article = lien **ET** (titre normalisé, **jour**) | 26 lignes en trop sur 566 au même titre ; 25 groupes sur 26 partagent le jour, le 26ᵉ est une analyse récurrente légitime — sans le jour on l'aurait supprimée à tort | 06/09 | `pipelines/ingest.py` `cle_article` | 2 tests `test_ingest.py`, simulation réelle `rejetees 72`, suite 440 | Oui si une mesure montre des faux jumeaux |
 | Tester **en local avant le serveur** | Le passage à PG 18 a révélé un 2ᵉ changement, trouvé en local — a évité une coupure à l'aveugle | 19/08 | déploiement | `CHANGELOG.md` l.123–128 | Non |
+| **Rattrapage d'une période = les étapes existantes + `periode`**, jamais un script à part | Un second chemin d'écriture aurait dupliqué le dédoublonnage et l'`ON CONFLICT` ; ici `ecb` et `rss` reçoivent `periode=(debut, fin)` via `functools.partial`, `cotations` reste incrémentale. BCE : `startPeriod/endPeriod` ; Google News : `after:/before:` (bornes floues d'un jour → fenêtre large, le dédoublonnage trie) ; 100 items par flux au lieu de 10 | 18/09 | `pipelines/ingest.py` (`--du/--au`, `ETAPES_AVEC_PERIODE`), `sources/ecb.py`, `sources/rss.py` | 6 tests `tests/test_rattrapage.py` ; exécution réelle : 25 taux, 156 articles, index 1 038 | Oui |
 | **Collecte lancée sans fenêtre** : l'action de la tâche = `powershell.exe -NoProfile -WindowStyle Hidden -Command "$p = Start-Process -FilePath '…\collecte-quotidienne.cmd' -WindowStyle Hidden -PassThru -Wait; exit $p.ExitCode"` | 4 soirs sur 7 coupés par un `^C` : la console noire de 19 h invitait à la fermer. Cacher la fenêtre retire la cause ; `exit $p.ExitCode` garde le « Dernier résultat » du Planificateur significatif. Le `.cmd` lui-même n'est pas modifié | 18/09 | tâche `RITA - collecte quotidienne` (hors dépôt) ; `scripts/README-planification.md` §2 bis | `schtasks /run` 21:11 → 5/5, code 0, `LastTaskResult 0` ; wrapper testé sur un `.cmd` factice : code 3 remonté | Oui — si un jour le compte devient local, S4U est plus propre |
 | **Garde-fou d'entrée AMF = regex seul**, câblé dans `rechercher()` **avant tout accès à la base** | Un seuil de distance mesure une pertinence, pas une intention : relever 0,42 pour LVMH rouvrait la fuite AMF, la baisser rejetait de bonnes réponses. Regex : même coût (µs) et même style que `injection.py`/`sortie.py` ; un juge LLM aurait coûté un appel par question pour un projet de certification (skill `agent-standard`, point 5). Placé avant `_collection()` : un refus ne charge ni corpus ni embedder | 18/09 | `guardrails/entree.py`, `rag/recherche.py` l.211–223, `motif = INTENTION_INTERDITE` | commit `6cf48fd` ; `evals/mesurer_entree.py` → 100 % blocage (5/5), 0 % faux positif (0/5), 0,003 ms ; suite 450 passed | Oui — passer au juge LLM en zone grise si des paraphrases mesurées passent (cf. action 9 d'`ETAT.md`) |
 
@@ -129,6 +130,7 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | Déploiement HTTPS + pare-feu | **VALIDÉ** | vérifié de l'extérieur : 200 HTTPS, 403 sans clé, 308 depuis HTTP, 5432/80 fermés (20/08) |
 | Garde-fou d'entrée AMF | **TESTÉ + MESURÉ** | TDD : `ModuleNotFoundError` → `9 passed` · `python -m evals.mesurer_entree` → blocage **100 %** (5/5 `hors_perimetre_amf`), faux positifs **0 %** (0/5), **0,003 ms** · les 5 questions renvoient `INTENTION_INTERDITE` sans toucher Chroma · suite **450 passed, 2 xfailed** (18/09, commit `6cf48fd`) |
 | Suite de tests locale après le garde-fou | **TESTÉ** | `C:\Python314\python.exe -m pytest -q` → `450 passed, 2 xfailed, 2 warnings in 28.70s` (18/09) |
+| Rattrapage 12–18/09 | **EXÉCUTÉ + MESURÉ** | simulation d'abord (0 écrit), puis `--etapes ecb,rss,indexation --du 2026-09-12 --au 2026-09-18` : taux 25, articles 164 envoyés / **156 en base**, index 1 038 · comptes par jour avant/après : 13/09 0→5, 14/09 19→41, 16/09 1→30, 17/09 5→51 (18/09) |
 | Collecte du 18/09 | **EXÉCUTÉ** | `logs\collecte-2026-09-18.log` : 5/5, 871 indexés, 48 articles écrits, 42 rejetés, 66,9 s, code 0 |
 
 ## J. En cours
@@ -179,6 +181,13 @@ deux fois du risque. Décision assumée et tracée.
   À surveiller sur les journaux des 19–25/09 ; si un `^C` réapparaît, l'hypothèse « fermée à la main »
   est fausse et l'historique du Planificateur (à activer) dira quoi.
 - 🟡 yfinance le 16/09 : `GTO.PA`, `ZC.PA`, `ELE.PA` « possibly delisted » — 3 valeurs sur 111 à vérifier.
+- 🟡 **Séance du 17/09 absente chez yfinance pour toutes les valeurs de Paris** (présente pour `^FCHI`,
+  `HAVAS.AS`, `SLB`) — trou fournisseur, pas RITA. ⚠️ **Ne se répare pas seul** : l'incrémental part
+  de la dernière séance connue (18/09). Si Yahoo la publie, la récupérer explicitement.
+- 🟡 **Le scraping date la cotation du jour courant, même sans séance** : 3 lignes du samedi 12/09.
+  Bug de qualité de donnée, à corriger en TDD.
+- 🟡 **Presse générale des 13, 14, 16, 17/09 : perdue** (flux sans profondeur). À dire tel quel dans
+  tout rapport : quatre jours de couverture générale plus mince, couverture d'entreprise restaurée.
 - **Le seuil 0,42 est calibré sur 9 questions** : toute conclusion du banc est fragile jusqu'au jeu
   étendu — **démontré le 06/09** : 127 articles de plus ont suffi à rouvrir une fuite.
 - **Le jeu annoté vieillit avec le corpus** : l'article 825 (LVMH, secteur du luxe) était pertinent

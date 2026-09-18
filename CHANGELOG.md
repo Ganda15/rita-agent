@@ -9,6 +9,23 @@
 
 ---
 
+## 2026-09-18, soir — Les 4 collectes coupées sont rattrapées là où c'était possible, et la cause est traitée
+
+**Cause** : une console noire s'affichait à 19 h (tâche interactive, non cachée) ; quatre journaux
+sur sept se terminent par `^C`. Parade : la tâche lance le `.cmd` par un PowerShell caché qui
+remonte le code de sortie (S4U refusé : compte Microsoft). Vérifié à 21:11, 5/5, `LastTaskResult 0`.
+
+**Rattrapage** (option `--du/--au` du pipeline, TDD, 6 tests) : taux BCE 14 et 17/09 complétés ;
+**156 articles** d'entreprise ajoutés sur 13–17/09 (13/09 0→5, 14/09 19→41, 16/09 1→30,
+17/09 5→51) ; index 1 038 documents. **Non rattrapable, assumé** : la presse générale de ces
+quatre jours, et la séance de Paris du 17/09 (absente chez yfinance pour toutes les valeurs).
+
+**Manques découverts** : l'historique du Planificateur est toujours désactivé (admin requis) ;
+le scraping date une cotation du jour courant même un samedi ; `ecrites` compte l'envoyé, pas
+l'inséré (164 annoncés, 156 en base — déjà noté le 06/09, revu).
+
+---
+
 ## 2026-09-18 — Le garde-fou d'entrée AMF est tranché, construit et mesuré : 5 fuites sur 5 fermées, sans toucher au seuil
 
 Décision d'Era (skill `agent-standard`, question ouverte G depuis le 06/09) : **regex seul**, pas de

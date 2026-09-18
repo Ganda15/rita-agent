@@ -37,6 +37,7 @@ Usage :
 from __future__ import annotations
 
 import argparse
+import functools
 import logging
 import os
 import re
@@ -72,25 +73,32 @@ class Bilan:
 # [3] RÈGLES LOGIQUES DE TRAITEMENT — une fonction par source
 # =============================================================================
 
-def etape_taux_change(cur, simulation: bool) -> Bilan:
-    """BCE -> table `taux_change`. Homogénéisation : 1 EUR = N unités de devise."""
-    from sources.ecb import fetch_taux_change
+def etape_taux_change(cur, simulation: bool,
+                      periode: tuple[str, str] | None = None) -> Bilan:
+    """BCE -> table `taux_change`. Homogénéisation : 1 EUR = N unités de devise.
+
+    `periode=(debut, fin)` : rattrapage d'une plage de jours, une ligne par jour publié.
+    Sans période : la dernière observation, comportement nocturne inchangé.
+    """
+    from sources.ecb import fetch_taux_change, fetch_taux_change_periode
 
     b = Bilan("taux_change (BCE)")
     lignes = []
     for devise in DEVISES_SUIVIES:
         try:
-            t = fetch_taux_change(devise)
-            lignes.append((t["devise"], t["date"], t["valeur"]))
-            b.lues += 1
+            recus = (fetch_taux_change_periode(devise, *periode) if periode
+                     else [fetch_taux_change(devise)])
+            lignes.extend((t["devise"], t["date"], t["valeur"]) for t in recus)
+            b.lues += len(recus)
         except Exception as erreur:                       # noqa: BLE001
             b.rejetees += 1
             b.details.append(f"{devise} : {type(erreur).__name__}")
 
     # L'euro vaut 1 euro. Évident — mais sans cette ligne, la jointure de valorisation
     # ne trouve aucun taux pour les positions en EUR et retombe sur le COALESCE.
-    if lignes:
-        lignes.append(("EUR", lignes[0][1], 1.0))
+    # Une ligne PAR jour présent : la jointure cherche le taux du jour, pas « un » taux.
+    for jour in sorted({l[1] for l in lignes}):
+        lignes.append(("EUR", jour, 1.0))
 
     if lignes and not simulation:
         execute_values(cur, """
@@ -177,12 +185,17 @@ def etape_cotations(cur, simulation: bool) -> Bilan:
     return b
 
 
-def etape_articles(cur, simulation: bool) -> Bilan:
+def etape_articles(cur, simulation: bool, periode: tuple[str, str] | None = None,
+                   limite_par_flux: int | None = None) -> Bilan:
     """RSS -> table `article`.
 
     Les articles porteurs d'injection sont **conservés et marqués**, pas supprimés :
     la colonne `bloque_injection` permet de les auditer, l'index partiel les exclut
     des lectures destinées au LLM.
+
+    `periode=(debut, fin)` : rattrapage — les flux Google News par entreprise reçoivent
+    une fenêtre `after:`/`before:` (voir `flux_par_entreprise`). Les trois flux généraux
+    ne savent pas remonter dans le temps : ils rendent ce qu'ils rendent ce jour-là.
     """
     from sources.rss import collecter, flux_par_entreprise
 
@@ -206,11 +219,15 @@ def etape_articles(cur, simulation: bool) -> Bilan:
             JOIN   valeur   v ON v.ticker = p.ticker
             WHERE  v.nom_officiel IS NOT NULL
         """)
-        flux_entreprises = flux_par_entreprise([l[0] for l in cur.fetchall()])
+        flux_entreprises = flux_par_entreprise([l[0] for l in cur.fetchall()], periode=periode)
     except Exception as erreur:              # noqa: BLE001 — dégradation volontaire
         b.details.append(f"flux entreprises indisponibles ({type(erreur).__name__})")
 
-    r = collecter(flux_supplementaires=flux_entreprises)
+    # 10 items par flux suffisent chaque soir ; sur une période de plusieurs jours,
+    # Google News en rend jusqu'à 100 — on les prend tous, le dédoublonnage trie.
+    if limite_par_flux is None:
+        limite_par_flux = 100 if periode else 10
+    r = collecter(flux_supplementaires=flux_entreprises, limite_par_flux=limite_par_flux)
     retenus, bloques = r["articles"], r["articles_bloques"]
     b.lues = r["total"]
     total_flux = len(r["flux_ok"]) + len(r["flux_echec"])
@@ -382,6 +399,10 @@ def etape_indexation(cur, simulation: bool) -> Bilan:
     )
 
 
+# Les étapes qui savent rattraper une période (argument `periode=(debut, fin)`).
+# `cotations` n'en a pas besoin : elle est déjà incrémentale depuis la dernière séance.
+ETAPES_AVEC_PERIODE = ("ecb", "rss")
+
 ETAPES = {
     "ecb": etape_taux_change,
     "cotations": etape_cotations,
@@ -397,12 +418,15 @@ ETAPES = {
 # =============================================================================
 
 def executer(dsn: str | None = None, etapes: list[str] | None = None,
-             simulation: bool = False) -> dict:
+             simulation: bool = False, periode: tuple[str, str] | None = None) -> dict:
     """Lance le pipeline d'agrégation.
 
     Une étape qui échoue **n'interrompt pas** les autres : une panne de la BCE ne doit pas
     priver le briefing des actualités. Chaque étape a sa transaction — un échec en fin de
     parcours n'annule pas ce qui a réussi avant.
+
+    `periode=(debut, fin)` : rattrapage d'une plage de jours, transmis aux seules étapes
+    de `ETAPES_AVEC_PERIODE` ; les autres sont appelées exactement comme chaque soir.
     """
     choisies = etapes or list(ETAPES)
     inconnues = [e for e in choisies if e not in ETAPES]
@@ -417,8 +441,11 @@ def executer(dsn: str | None = None, etapes: list[str] | None = None,
     try:
         for nom in choisies:
             try:
+                fonction = ETAPES[nom]
+                if periode and nom in ETAPES_AVEC_PERIODE:
+                    fonction = functools.partial(fonction, periode=periode)
                 with conn.cursor() as cur:
-                    bilans.append(ETAPES[nom](cur, simulation))
+                    bilans.append(fonction(cur, simulation))
                 # [6] sauvegarde : un commit PAR étape
                 conn.rollback() if simulation else conn.commit()
             except Exception as erreur:                   # noqa: BLE001
@@ -454,13 +481,20 @@ if __name__ == "__main__":                                # [1] point de lanceme
     parseur.add_argument("--etapes", default=None,
                          help="liste separee par des virgules : " + ",".join(ETAPES))
     parseur.add_argument("--simulation", action="store_true", help="n'ecrit rien en base")
+    parseur.add_argument("--du", default=None, help="rattrapage : premier jour, AAAA-MM-JJ")
+    parseur.add_argument("--au", default=None, help="rattrapage : dernier jour, AAAA-MM-JJ")
     args = parseur.parse_args()
+    if bool(args.du) != bool(args.au):
+        parseur.error("--du et --au vont ensemble")
 
     r = executer(args.dsn,
                  args.etapes.split(",") if args.etapes else None,
-                 args.simulation)
+                 args.simulation,
+                 periode=(args.du, args.au) if args.du else None)
 
     mode = "SIMULATION (rien n'est ecrit)" if r["simulation"] else "EXECUTION"
+    if args.du:
+        mode += f"  --  RATTRAPAGE du {args.du} au {args.au}"
     print("\n" + "=" * 68)
     print(f"PIPELINE D'AGREGATION  --  {mode}")
     print("=" * 68)
