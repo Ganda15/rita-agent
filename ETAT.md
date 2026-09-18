@@ -15,7 +15,31 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-09-11** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+**Dernière mise à jour : 2026-09-18** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+
+---
+
+🔎 **18/09 — REPRISE APRÈS 7 JOURS (Mardik ①②③ et Sorabel entre-temps). Le réel confronté à ce fichier, puis l'action n°1 tranchée et livrée.**
+
+| Ce que ce fichier affirmait (11/09) | Mesuré le 18/09 | Verdict |
+|---|---|---|
+| Collecte 5/5 chaque soir | **4 soirs sur 7 coupés** : `collecte-2026-09-13/14/16/17.log` se terminent par `^C` (Ctrl+C ou fenêtre fermée pendant l'exécution). Les 12, 15 et 18/09 sont complets : 5/5, code 0. Le 18/09 : **871** documents indexés, 48 articles écrits, 42 rejetés | ⚠️ **la collecte n'est pas fiable si le PC est utilisé à 19 h** |
+| — | Le 16/09, yfinance signale 3 valeurs peut-être radiées : `GTO.PA`, `ZC.PA`, `ELE.PA` — à vérifier dans la liste des 111 | 🟡 nouveau |
+| Action n°1 : garde-fou d'entrée AMF **à trancher** | **Tranché, construit, mesuré, commité** — voir ci-dessous | ✅ |
+
+| Date | Fait | Preuve |
+|---|---|---|
+| 18/09 | `CONTINUITE.md` : passerelles Mardik ①②③ (15–18/09) et liens Sorabel testés (codes HTTP) — 72 lignes qui attendaient depuis le 15/09, non commitées | `9cc7fbc` |
+| 18/09 | **Garde-fou d'entrée AMF** (question G de `CONTINUITE.md`, décision d'Era : **regex seul**, pas de juge LLM — même coût et même style que `injection.py` / `sortie.py`). TDD : rouge (`ModuleNotFoundError`) → vert. `guardrails/entree.py` (6 motifs en configuration) · `tests/test_entree.py` (9 cas) · câblé dans `rag/recherche.py:rechercher()` **avant tout accès à la base** (`motif = INTENTION_INTERDITE`) · `evals/cas.py` + `evals/mesurer_entree.py` | `6cf48fd` |
+| 18/09 | **Mesure** : `python -m evals.mesurer_entree` → blocage **100 %** (5/5 questions `hors_perimetre_amf`), faux positifs **0 %** (5 questions légitimes), **0,003 ms**. Remplace le « 3 fuites sur 5 » du 06/09. Suite complète : **450 passed, 2 xfailed** | sortie collée dans la session du 18/09 |
+
+🔎 **Constat qui change le cadrage** — lu dans le code, pas dans les notes : `POST /briefing` (`api/main.py:116`)
+ne prend qu'un `ticker`, **aucun texte libre**. Les questions à intention interdite n'existent aujourd'hui que dans
+le banc d'évaluation. La faille était **latente**, pas exploitable : elle le serait devenue avec l'interface C10
+(texte libre). Elle est fermée avant d'avoir pu être ouverte — à dire ainsi au jury, ni plus ni moins.
+
+⚠️ **Limite assumée** (même que pour `sortie.py`) : une paraphrase hors des 6 motifs passe. Choix d'Era, coût
+connu, écrit dans le docstring du module.
 
 ---
 
@@ -39,17 +63,21 @@ Reconstitué depuis `git log`, `logs/` et la préparation de démo du 09/09 — 
 le projeter (rester sur Indicateurs). Ligne VIRI.PA aberrante (~×50) : PRU et cours sur des bases
 différentes, c'est le cas D07 en vrai — à corriger dans le CSV, pas dans le code.
 
-▶️ **Prochaines actions — révisé le 11/09 :**
-1. 🔴 **Trancher le garde-fou d'entrée AMF** (skill `agent-standard`) : 3 questions sur 5 fuient,
-   et relever le seuil 0,42 rouvrirait les fuites. Un refus par distance ne tient pas face à une
-   intention interdite.
-2. 🟠 Quasi-doublons : décision sur les 14 restants + correctif durable de l'indexation
+▶️ **Prochaines actions — révisé le 18/09 :**
+1. ~~🔴 Trancher le garde-fou d'entrée AMF~~ — **fait le 18/09** (`6cf48fd`, 100 % / 0 %).
+2. 🟠 **Quasi-doublons** : décision sur les 14 restants + correctif durable de l'indexation
    (retirer de Chroma un article disparu de la base), test d'abord.
 3. 🟠 **Hetzner : statut INCONNU** — aucune trace de rafraîchissement dans le dépôt depuis le 19/08.
-   ~22 jours de retard au 10/09. Vérifier, puis automatiser (`cron` serveur).
-4. Copier `demo_comptes.py` et `demo_seuil.py` dans `scripts/` s'ils existent encore.
-5. Message au formateur du 30/08 — statut toujours INCONNU.
-6. Ensuite : les 4 refus à tort, puis le reranker (D1/H1 non mesurables).
+   ~30 jours de retard au 18/09. Vérifier, puis automatiser (`cron` serveur).
+4. 🟠 **Collecte coupée 4 soirs sur 7** (13, 14, 16, 17/09 : `^C`). Comprendre pourquoi (fenêtre
+   fermée ? session Windows ?) avant d'automatiser quoi que ce soit — un cron serveur ne réglera
+   pas une collecte qui tourne sur le PC.
+5. 🟡 Vérifier `GTO.PA`, `ZC.PA`, `ELE.PA` (yfinance : « possibly delisted » le 16/09).
+6. Copier `demo_comptes.py` et `demo_seuil.py` dans `scripts/` s'ils existent encore.
+7. Message au formateur du 30/08 — statut toujours INCONNU.
+8. Ensuite : les 4 refus à tort, puis le reranker (D1/H1 non mesurables).
+9. 🟢 Optionnel, bon matériau d'oral : écrire 3 paraphrases **contre** les 6 motifs de `entree.py`
+   (comme les 3 cas adverses de `sortie.py`) pour mesurer la limite au lieu de seulement l'annoncer.
 
 ---
 

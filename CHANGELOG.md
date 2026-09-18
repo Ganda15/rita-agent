@@ -9,6 +9,28 @@
 
 ---
 
+## 2026-09-18 — Le garde-fou d'entrée AMF est tranché, construit et mesuré : 5 fuites sur 5 fermées, sans toucher au seuil
+
+Décision d'Era (skill `agent-standard`, question ouverte G depuis le 06/09) : **regex seul**, pas de
+juge LLM — même coût (µs) et même style que `injection.py` et `sortie.py`. TDD : rouge
+(`ModuleNotFoundError`) → vert. `guardrails/entree.py` (6 motifs en configuration), câblé dans
+`rag/recherche.py:rechercher()` **avant tout accès à la base** — un refus ne charge ni corpus ni
+embedder. `evals/mesurer_entree.py` : blocage **100 %** (5/5 `hors_perimetre_amf`), faux positifs
+**0 %** (0/5), **0,003 ms**. Suite **450 passed**. Commit `6cf48fd`. Le seuil 0,42 n'a pas bougé :
+c'est la réponse à la contradiction du 07/09 (relever le seuil pour LVMH rouvrait la fuite AMF).
+
+**Cadrage, lu dans le code** : `POST /briefing` ne prend qu'un `ticker`, aucun texte libre. La faille
+était **latente** (banc d'éval), pas exploitable ; fermée avant l'interface C10 qui l'aurait ouverte.
+
+**Limite assumée** : une paraphrase hors des 6 motifs passe. À mesurer avec 3 cas adverses (action 9
+d'`ETAT.md`) avant de dire si le regex suffit.
+
+**Manque découvert** : la collecte de 19 h a été **coupée 4 soirs sur 7** (13, 14, 16, 17/09 : `^C`
+dans le journal). Cause inconnue, à comprendre avant d'automatiser. Le 16/09, yfinance signale
+`GTO.PA`, `ZC.PA`, `ELE.PA` « possibly delisted ».
+
+---
+
 ## 2026-09-06, soir — Le jeu annoté passe à 54 questions, et le chiffre qui en sort : 3 questions AMF sur 5 reçoivent du contexte
 
 Sur « do it finish job », 44 questions ont été **proposées** (pas validées : c'est un jugement

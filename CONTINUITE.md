@@ -1,6 +1,6 @@
 # CONTINUITE — RITA (fil rouge RNCP 37827)
 
-> Dernière mise à jour : 2026-09-06 · par : Claude (skill `continuity`), sur « do it » d'Era
+> Dernière mise à jour : 2026-09-18 · par : Claude (skill `agent-standard`), sur « update » d'Era
 > Fichiers qui font foi (lus AVANT ce ledger) :
 > `D:\KandaWork\RITA_PROJECT\rita-agent\CLAUDE.md` · `D:\KandaWork\RITA_PROJECT\rita-agent\ETAT.md` ·
 > `D:\KandaWork\RITA_PROJECT\rita-agent\docs\` · référentiel C1–C21.
@@ -58,6 +58,7 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | Premier mot du nom légal : liste noire **étendue** (`BOURSE`, `PIERRE`, `BUREAU`) + suffixe légal `(L')`/`(CIE)` **retiré** | Mesuré 06/09 : 121 faux positifs (BSD.PA 110/122) et 24 mentions manquées (OR.PA, SGO.PA) ; la liste noire est incomplète par construction, donc **remesurer à chaque valeur ajoutée** | 06/09 | `rag/indexation.py` l.72–90 | 5 tests `test_rag_indexation.py`, réindexation 241→213, A/B banc identique | Oui — si une approche sans liste noire est trouvée |
 | Unicité d'un article = lien **ET** (titre normalisé, **jour**) | 26 lignes en trop sur 566 au même titre ; 25 groupes sur 26 partagent le jour, le 26ᵉ est une analyse récurrente légitime — sans le jour on l'aurait supprimée à tort | 06/09 | `pipelines/ingest.py` `cle_article` | 2 tests `test_ingest.py`, simulation réelle `rejetees 72`, suite 440 | Oui si une mesure montre des faux jumeaux |
 | Tester **en local avant le serveur** | Le passage à PG 18 a révélé un 2ᵉ changement, trouvé en local — a évité une coupure à l'aveugle | 19/08 | déploiement | `CHANGELOG.md` l.123–128 | Non |
+| **Garde-fou d'entrée AMF = regex seul**, câblé dans `rechercher()` **avant tout accès à la base** | Un seuil de distance mesure une pertinence, pas une intention : relever 0,42 pour LVMH rouvrait la fuite AMF, la baisser rejetait de bonnes réponses. Regex : même coût (µs) et même style que `injection.py`/`sortie.py` ; un juge LLM aurait coûté un appel par question pour un projet de certification (skill `agent-standard`, point 5). Placé avant `_collection()` : un refus ne charge ni corpus ni embedder | 18/09 | `guardrails/entree.py`, `rag/recherche.py` l.211–223, `motif = INTENTION_INTERDITE` | commit `6cf48fd` ; `evals/mesurer_entree.py` → 100 % blocage (5/5), 0 % faux positif (0/5), 0,003 ms ; suite 450 passed | Oui — passer au juge LLM en zone grise si des paraphrases mesurées passent (cf. action 9 d'`ETAT.md`) |
 
 ## E. Alternatives rejetées
 
@@ -70,6 +71,8 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | Refaire un MCD pour C14 | Le MCD Merise de C4 satisfait déjà le critère ; un doublon deviendrait une contradiction | 18/08 |
 | Désactiver Smart App Control | Irréversible sans réinstaller Windows ; décision d'Era seule, jamais de Claude | 02/09 |
 | Attribuer le blocage des roues `cp314` à AppLocker | Faux : Windows 11 Home n'a pas AppLocker ; c'est SAC (`VerifiedAndReputablePolicyState = 1`) | 02/09 |
+| Garde-fou d'entrée par **juge LLM** (regex + escalade en zone grise) | Plus robuste aux paraphrases, mais un appel modèle de plus par question, une latence en centaines de ms, et un éval de cohérence du juge à construire — disproportionné tant que la limite du regex n'est pas **mesurée** (action 9 d'`ETAT.md`). Choix d'Era, réversible | 18/09 |
+| Relever `SEUIL_DISTANCE_DENSE` pour arrêter de rejeter la question LVMH à 0,0009 près | Rouvrait les fuites AMF ; le vrai problème était de demander à une distance de juger une intention | 18/09 |
 
 ## F. Modifications d'Era (après la baseline)
 
@@ -85,9 +88,11 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 
 ## G. Questions ouvertes
 
-- **Garde-fou d'entrée sur l'intention (AMF)** — posé le 06/09 : refuser *« quelle action acheter
-  pour gagner X % »* **avant** la recherche, au lieu de compter sur une distance. **Era tranche**
-  (c'est un choix d'architecture, et il touche C10/C17).
+- ~~**Garde-fou d'entrée sur l'intention (AMF)** — posé le 06/09~~ → **tranché le 18/09 : regex seul**,
+  construit, câblé, mesuré (D, I, commit `6cf48fd`). Reste ouvert, en dessous : **la limite est-elle
+  acceptable ?** Écrire 3 paraphrases contre les 6 motifs (action 9 d'`ETAT.md`) avant de conclure.
+- 🆕 **Pourquoi la collecte a été coupée 4 soirs sur 7** (13, 14, 16, 17/09 : `^C` dans le journal)
+  — Era seul le sait (fenêtre fermée ? session ?). À comprendre **avant** d'automatiser.
 - **Rang du rafraîchissement serveur** dans la liste d'`ETAT.md` (n°3 posé le 06/09) — **Era tranche**.
 - **Le message au formateur du 30/08** (2 questions : « RAG avancé », MCP↔C10) est-il parti ? — **Era**.
 - Les **4 questions du jeu annoté encore refusées à tort** : la règle de couverture casse sur une
@@ -118,6 +123,9 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | Image Docker démarre | **EXÉCUTÉ** | commit `77c9ecd`, suite 429 passed dans le conteneur (02/09) |
 | Sauvegarde restaurable | **VALIDÉ** | `pg_restore --list` : 55 entrées, 8 tables — `D:\KandaWork\RITA_PROJECT\sauvegardes\rita-2026-08-24.dump` |
 | Déploiement HTTPS + pare-feu | **VALIDÉ** | vérifié de l'extérieur : 200 HTTPS, 403 sans clé, 308 depuis HTTP, 5432/80 fermés (20/08) |
+| Garde-fou d'entrée AMF | **TESTÉ + MESURÉ** | TDD : `ModuleNotFoundError` → `9 passed` · `python -m evals.mesurer_entree` → blocage **100 %** (5/5 `hors_perimetre_amf`), faux positifs **0 %** (0/5), **0,003 ms** · les 5 questions renvoient `INTENTION_INTERDITE` sans toucher Chroma · suite **450 passed, 2 xfailed** (18/09, commit `6cf48fd`) |
+| Suite de tests locale après le garde-fou | **TESTÉ** | `C:\Python314\python.exe -m pytest -q` → `450 passed, 2 xfailed, 2 warnings in 28.70s` (18/09) |
+| Collecte du 18/09 | **EXÉCUTÉ** | `logs\collecte-2026-09-18.log` : 5/5, 871 indexés, 48 articles écrits, 42 rejetés, 66,9 s, code 0 |
 
 ## J. En cours
 
@@ -156,9 +164,15 @@ deux fois du risque. Décision assumée et tracée.
 
 ## L. Risques et bloqueurs
 
-- 🔴 **La question AMF reçoit à nouveau 2 articles (06/09)** : deux titres arrivés les 01 et 04/09
-  passent sous le seuil 0,42 (0,386 · 0,401). Le seuil n'a pas bougé, le corpus si. Seule la sortie
-  (70 %) protège. Réponse de conception à trancher par Era : **garde-fou d'entrée** sur l'intention.
+- ~~🔴 **La question AMF reçoit à nouveau 2 articles (06/09)**~~ → **fermé le 18/09** : le garde-fou
+  d'entrée la refuse avant la recherche (`INTENTION_INTERDITE`), quel que soit le corpus. Le seuil
+  0,42 n'a **pas** été touché. ⚠️ Constat de cadrage : `POST /briefing` ne prend qu'un `ticker`, aucun
+  texte libre — la faille était **latente** (banc d'éval), pas exploitable ; elle le serait devenue avec
+  l'interface C10. À présenter ainsi, ni plus ni moins.
+- 🟠 **Collecte coupée 4 soirs sur 7** (13, 14, 16, 17/09 : `^C` dans le journal, aucune indexation ces
+  soirs-là). Les 12, 15 et 18/09 sont complets. Une collecte qui tourne sur le PC dépend de ce que
+  fait Era à 19 h — cause à comprendre avant d'automatiser.
+- 🟡 yfinance le 16/09 : `GTO.PA`, `ZC.PA`, `ELE.PA` « possibly delisted » — 3 valeurs sur 111 à vérifier.
 - **Le seuil 0,42 est calibré sur 9 questions** : toute conclusion du banc est fragile jusqu'au jeu
   étendu — **démontré le 06/09** : 127 articles de plus ont suffi à rouvrir une fuite.
 - **Le jeu annoté vieillit avec le corpus** : l'article 825 (LVMH, secteur du luxe) était pertinent
