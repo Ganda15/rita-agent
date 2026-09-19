@@ -14,6 +14,7 @@ une session l'a fait remarquer elle-meme : « je pourrais passer par une command
 shell et le hook ne verrait rien ». Un garde-fou contournable n'est pas un garde-fou.
 """
 import json
+import os
 import re
 import sys
 from pathlib import PurePath
@@ -43,6 +44,11 @@ INTERPRETEURS = re.compile(
 FICHIERS_SENSIBLES = re.compile(
     r"(?<![\w-])(\.env(?:\.[\w-]+)?|[\w.-]+\.(?:pem|key|p12|pfx)|id_rsa|id_ed25519|"
     r"credentials\.json|secrets\.json)(?![\w-])", re.I)
+
+# En CI (GitHub Actions), les workflows font ce travail et la session de revue n'a pas les dependances :
+# le hook se tait. Trouve sur la PR #4 du 19/09 : le hook Stop tuait la revue automatisee.
+if os.environ.get("GITHUB_ACTIONS") == "true":
+    sys.exit(0)
 
 donnees = json.load(sys.stdin)
 outil = donnees.get("tool_name", "")

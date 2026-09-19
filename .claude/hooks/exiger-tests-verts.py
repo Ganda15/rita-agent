@@ -14,6 +14,11 @@ from pathlib import Path
 PYTHON = sys.executable  # le meme interpreteur que celui qui lance le hook (Windows local, Linux en CI)
 MAX_BLOCAGES = 2
 
+# En CI (GitHub Actions), les workflows font ce travail et la session de revue n'a pas les dependances :
+# le hook se tait. Trouve sur la PR #4 du 19/09 : le hook Stop tuait la revue automatisee.
+if os.environ.get("GITHUB_ACTIONS") == "true":
+    sys.exit(0)
+
 donnees = json.load(sys.stdin)
 projet = Path(donnees.get("cwd") or os.getcwd())
 prompt_id = str(donnees.get("prompt_id", "sans-id"))

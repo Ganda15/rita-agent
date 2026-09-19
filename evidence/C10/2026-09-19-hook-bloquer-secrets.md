@@ -119,3 +119,16 @@ Bilan du 19/09 : **quatre contournements ou defauts trouves sur les hooks** (Bas
 Windows en CI) + un angle mort (commits non pousses, puis commit de doc). Tous fermes le jour meme, chacun par un test.
 La revue automatisee Claude (`revue-pr.yml`) a tourne sur la PR #2 (5 tours, 14 s, succes) mais n'a rien publie ;
 cause non identifiee ce soir (sortie masquee par l'action). Codex, deja branche au depot, a fourni les 8 commentaires.
+
+## Preuve 7 - la revue muette : cause trouvee, c'etait notre propre hook
+
+PR #3 a active `show_full_output: true`. Log de la revue de la PR #4 (run `35463740411`) : l'action charge
+`.claude/settings.json` du depot (`settingSources: user, project, local`), donc **le hook Stop `exiger-tests-verts.py`
+a tourne dans la session de revue**, sur un runner sans les dependances de test. Derniere ligne de la session :
+`"Stop hook error occurred"` ; resultat final : *« I've launched all three initial background agents... I'll wait »* -
+la revue est morte a 5 tours, avant d'avoir relu quoi que ce soit. Les deux runs « succes » de la PR #2 (5 tours, 14 s)
+avaient la meme forme.
+
+Correction : les deux hooks sortent immediatement quand `GITHUB_ACTIONS=true` (en CI, ce sont les workflows qui
+lancent les tests). Test ajoute : rouge avant, vert apres ; 9 tests hooks. Un garde-fou qui tue le relecteur est un
+garde-fou mal borne : le perimetre d'un hook fait partie de sa conception.

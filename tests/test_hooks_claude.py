@@ -98,3 +98,17 @@ def test_un_test_rouge_commite_puis_masque_par_un_commit_doc_bloque_encore(tmp_p
     (depot / "NOTES.md").write_text("doc seulement\n"); git("add", "."); git("commit", "-q", "-m", "doc")
     r = lancer_hook("exiger-tests-verts.py", {"cwd": str(depot), "prompt_id": "d", "scratchpad_dir": str(tmp_path)})
     assert r.returncode == 2, r.stderr
+
+
+def test_en_ci_le_hook_stop_se_tait_meme_avec_un_test_rouge(tmp_path, monkeypatch):
+    """Trouvé sur la PR #4 : le hook Stop tournait DANS la session de revue GitHub Actions (l'action charge
+    `.claude/settings.json` du dépôt), échouait sur le runner sans dépendances, et tuait la revue après 5 tours.
+    En CI, ce sont les workflows qui lancent les tests ; le hook n'a rien à y faire."""
+    import os
+    depot = depot_temporaire(tmp_path)
+    (depot / "tests").mkdir(); (depot / "tests" / "test_ko.py").write_text("def test_ko():\n    assert 1 == 2\n")
+    env = dict(os.environ, GITHUB_ACTIONS="true")
+    r = subprocess.run([PYTHON, str(HOOKS / "exiger-tests-verts.py")], env=env,
+                       input=json.dumps({"cwd": str(depot), "prompt_id": "e", "scratchpad_dir": str(tmp_path)}),
+                       capture_output=True, text=True, encoding="utf-8")
+    assert r.returncode == 0, r.stderr
