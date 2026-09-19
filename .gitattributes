@@ -1,0 +1,2 @@
+# Les hooks git sont des scripts sh : toujours en LF, sinon un checkout en CRLF casse #!/bin/sh (19/09/2026)
+.githooks/* text eol=lf

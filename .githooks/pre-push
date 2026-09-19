@@ -1,0 +1,12 @@
+#!/bin/sh
+# Refuse tout push direct sur main : main ne bouge que par une pull request fusionnee sur GitHub.
+# Active par : git config core.hooksPath .githooks   (une fois par clone, voir AGENTS.md)
+# Les tags (refs/tags/livrable-*) passent : ils se posent sur main APRES la fusion.
+while read local_ref local_sha remote_ref remote_sha; do
+  case "$remote_ref" in
+    refs/heads/main)
+      echo "REFUSE : push direct sur main. Ouvrir une pull request develop -> main (gh pr create --base main)." >&2
+      exit 1 ;;
+  esac
+done
+exit 0

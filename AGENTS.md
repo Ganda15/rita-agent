@@ -54,6 +54,9 @@ L'agent implémente ; l'humain garde l'architecture, la sécurité et le seuil d
 - `bigdata/` : hors image Docker et hors couverture, par choix documenté dans `.coveragerc`
 
 ## Livraison
-- Un livrable = un **tag** `livrable-E<n>-v<k>` ; on envoie le lien du tag, jamais celui du dépôt
+- `main` ne bouge **que par une pull request** `develop → main`, relue par `Revue PR` (Claude Code, Action
+  officielle). Jamais de push direct : `git config core.hooksPath .githooks` l'interdit (à activer une fois par clone)
+- Un livrable = un **tag** `livrable-E<n>-v<k>` posé sur `main` **après** la fusion ; on envoie le lien du tag,
+  jamais celui du dépôt
 - Avant le tag : tests verts, évals vertes, liens vérifiés, `ETAT.md` à jour
 - Procédure complète et gabarit de message : `docs/FILE-DE-VALIDATION.md`

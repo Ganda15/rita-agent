@@ -64,6 +64,9 @@ gh api repos/Ganda15/rita-agent/collaborators --jq ".[].login"
 C:\Python314\python.exe scripts\verifier_liens.py
 ```
 
+-1. **La pull request `develop → main` est fusionnée** après la revue automatisée (`Revue PR`) :
+   `gh pr create --base main --head develop`, lire les commentaires, corriger, fusionner sur GitHub.
+   Le tag se pose sur `main`, jamais sur `develop` (depuis le 19/09/2026 ; avant : fusion directe).
 0. **La Definition of Done est verte** : tests + couverture ≥ 90 %, portes d'évaluation,
    liens internes, tag cité dans `ETAT.md` et `CHANGELOG.md`, arbre git propre.
 1. **Le tag existe** sur GitHub, et pointe où on croit.
