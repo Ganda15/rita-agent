@@ -9,10 +9,11 @@
 
 ---
 
-## 2026-09-19, nuit — Flux PR en service : 4 PR fusionnées, 10 défauts trouvés par la revue, et la revue Claude réparée
+## 2026-09-19, nuit — Flux PR en service : 4 PR fusionnées, 8 défauts trouvés par la revue, et la revue Claude réparée
 
 **Fait** : PR #1 (97 commits) à PR #4 fusionnées ; `main` = `develop`. Revue Codex active : **8 commentaires** utiles
-sur les deux premières PR (4 sur les hooks, fermés le soir même ; 4 bugs RAG/Compose consignés dans `ETAT.md`).
+sur les deux premières PR — **6 sur la PR #1** (2 hooks + 4 bugs RAG/Compose, consignés dans `ETAT.md`) et **2 sur la PR #2**
+(2 hooks). Les 4 commentaires sur les hooks sont fermés le soir même, chacun par un test.
 
 **Manque découvert, et sa cause** : la revue Claude (`revue-pr.yml`) finissait en « succès » sans rien publier.
 `show_full_output` (PR #3) a montré la cause : l'action charge `.claude/settings.json` du dépôt, donc **notre hook Stop
