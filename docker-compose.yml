@@ -103,6 +103,30 @@ services:
       # Empêche un processus d'obtenir plus de privilèges que son parent.
       - no-new-privileges:true
 
+  # --- Outil : remplir l'index Chroma du conteneur ------------------------------
+  # Revue Codex, PR #12 : le volume nommé démarre VIDE, et l'indexation planifiée de
+  # 19h00 écrit sur l'hôte (`data/chroma` du dépôt), pas dans le conteneur. Sans ce
+  # service, l'API en conteneur répondrait OUT_OF_CORPUS pour toujours.
+  # Profil `outils` : jamais démarré par `docker compose up`. À lancer à la main :
+  #   docker compose run --rm indexation
+  # Même image que l'API (même code, même ChromaDB), même volume, même base Compose.
+  indexation:
+    image: rita-api:local
+    profiles: ["outils"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:-rita_preprod_local}@postgres:5432/rita
+    volumes:
+      - rita_chroma_preprod:/app/data/chroma
+    command: ["python", "-m", "pipelines.ingest", "--etapes", "indexation"]
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+
 volumes:
   rita_pgdata_preprod:
   rita_chroma_preprod:
