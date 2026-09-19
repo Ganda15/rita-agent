@@ -34,6 +34,7 @@ data/positions-reelles*.csv
 !.claude/settings.json
 !.claude/hooks/
 !.claude/rules/
+!.claude/skills/
 
 # --- Artefacts de mesure de couverture (C12) ----------------------------------
 # Regenerables par `pytest --cov` : les versionner ferait grossir le depot d'un
