@@ -27,8 +27,12 @@ data/positions-reelles*.csv
 *portefeuille*.xlsx
 !data/positions-exemple.csv
 
-# Configuration locale de l outil de developpement (non livrable)
-.claude/
+# Configuration locale de l outil de developpement (non livrable) : launch.json,
+# settings.local.json. MAIS les hooks et settings.json sont livres : ce sont les
+# garde-fous du depot (19/09/2026), un evaluateur doit pouvoir les lire.
+.claude/*
+!.claude/settings.json
+!.claude/hooks/
 
 # --- Artefacts de mesure de couverture (C12) ----------------------------------
 # Regenerables par `pytest --cov` : les versionner ferait grossir le depot d'un

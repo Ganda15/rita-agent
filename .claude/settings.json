@@ -1,0 +1,35 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Python314/python.exe",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/bloquer-secrets.py"
+            ],
+            "timeout": 10,
+            "statusMessage": "hook : pas de secret ?"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Python314/python.exe",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/exiger-tests-verts.py"
+            ],
+            "timeout": 600,
+            "statusMessage": "hook : pytest vert ?"
+          }
+        ]
+      }
+    ]
+  }
+}
