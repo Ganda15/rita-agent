@@ -1,5 +1,7 @@
 # RITA — projet fil rouge RNCP 37827
 
+@AGENTS.md
+
 > ## 🚦 À FAIRE AU DÉBUT DE CHAQUE SESSION — avant toute autre chose
 >
 > 1. **Lire `ETAT.md`** (à la racine, à côté de ce fichier).
@@ -98,24 +100,9 @@ OpenAPI **3.1.0** · **8** chemins documentés
 - Signaler les manques franchement. Un document qui ne signale aucune faiblesse n'est pas
   crédible devant un jury.
 
-## Environnement — pièges de cette machine
+## Commandes et environnement
 
-- `venv` et `pip.exe` bloqués par **Smart App Control** (pas AppLocker, corrigé le 02/09/2026) → utiliser `C:\Python314\python.exe -m pytest -q`
-- PostgreSQL sur le port **5433**
-- PySpark exige un **JDK 21** dans `JAVA_HOME` — sinon `tests/test_spark.py` est *ignoré*,
-  pas en échec
-- Fichiers destinés à Excel ou Word : **nom ASCII pur**, sans tiret long `—`, sans accents,
-  sans parenthèses — sinon Windows refuse de les ouvrir
-
-## Commandes
-
-```powershell
-C:\Python314\python.exe -m pytest -q                          # les 458 tests
-C:\Python314\python.exe -m evals.mesurer_gardefou             # taux de blocage + faux positifs
-C:\Python314\python.exe -X utf8 -m pipelines.ingest --simulation
-C:\Python314\python.exe -m uvicorn api.main:app --reload      # API sur :8000
-C:\Python314\python.exe scripts\verifier_liens.py             # liens internes + externes
-```
+Voir `AGENTS.md` — un seul endroit, lu par tout agent.
 
 ## 📤 Envoyer un livrable — le lien du TAG, jamais celui du dépôt
 
