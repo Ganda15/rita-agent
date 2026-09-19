@@ -16,8 +16,11 @@ MAX_BLOCAGES = 2
 
 # En CI (GitHub Actions), les workflows font ce travail et la session de revue n'a pas les dependances :
 # le hook se tait. Trouve sur la PR #4 du 19/09 : le hook Stop tuait la revue automatisee.
-if os.environ.get("GITHUB_ACTIONS") == "true":
-    sys.exit(0)
+# Trois signaux, pas un : GITHUB_ACTIONS peut ne pas etre transmis au sous-processus du hook
+# (revue de la PR #6 : hook Stop encore actif malgre le silence CI de la PR #4).
+if (os.environ.get("GITHUB_ACTIONS") == "true" or os.environ.get("CI") == "true"
+        or os.environ.get("RUNNER_OS") or sys.platform != "win32"):
+    sys.exit(0)  # ce hook est fait pour le poste Windows d Era ; ailleurs, les workflows font le travail
 
 donnees = json.load(sys.stdin)
 projet = Path(donnees.get("cwd") or os.getcwd())

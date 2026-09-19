@@ -11,6 +11,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 RACINE = Path(__file__).parent.parent
 HOOKS = RACINE / ".claude" / "hooks"
 PYTHON = sys.executable
@@ -19,12 +21,14 @@ PYTHON = sys.executable
 def lancer_hook(nom: str, entree: dict) -> subprocess.CompletedProcess:
     # Session locale simulee : sans GITHUB_ACTIONS, sinon sur le runner les hooks se taisent
     # (c'est voulu, et teste a part) et les six tests de refus passaient a 0 (CI rouge du 19/09).
-    env = {k: v for k, v in os.environ.items() if k != "GITHUB_ACTIONS"}
+    env = {k: v for k, v in os.environ.items() if k not in ("GITHUB_ACTIONS", "CI", "RUNNER_OS")}
     return subprocess.run([PYTHON, str(HOOKS / nom)], input=json.dumps(entree), env=env,
                           capture_output=True, text=True, encoding="utf-8")
 
 
 # --- bloquer-secrets -----------------------------------------------------------------------------
+
+pytestmark = pytest.mark.skipif(sys.platform != "win32", reason="les hooks sont muets hors Windows (poste d Era) ; en CI les workflows testent")
 
 def test_un_write_vers_env_est_refuse():
     r = lancer_hook("bloquer-secrets.py", {"tool_name": "Write", "tool_input": {"file_path": "D:/x/.env"}})
