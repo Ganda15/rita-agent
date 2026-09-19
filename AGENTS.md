@@ -11,7 +11,7 @@ recommandation d'achat ou de vente (contrainte AMF, vérifiée par `guardrails/`
 L'agent implémente ; l'humain garde l'architecture, la sécurité et le seuil des évals.
 
 ## Commandes — depuis la racine du dépôt
-- Tests : `C:\Python314\python.exe -m pytest -q` (dernier passage complet : 450 passed, 2 xfailed, 18/09/2026)
+- Tests : `C:\Python314\python.exe -m pytest -q` (dernier passage complet : 468 passed, 2 xfailed, 19/09/2026 ; smoke UI Playwright inclus)
 - Couverture : `C:\Python314\python.exe -m pytest --cov` — seuil `fail_under = 90` dans `.coveragerc`
 - Garde-fous : `C:\Python314\python.exe -m evals.mesurer_gardefou` (taux de blocage + faux positifs)
 - Collecte à blanc : `C:\Python314\python.exe -X utf8 -m pipelines.ingest --simulation`
@@ -39,6 +39,8 @@ L'agent implémente ; l'humain garde l'architecture, la sécurité et le seuil d
   **Ne jamais inventer une colonne ou une table.**
 - Écriture en base uniquement par `db/importer.py` et `pipelines/ingest.py`
 - Requêtes paramétrées, jamais de SQL concaténé
+- **Tout outil d'agent qui lit la base** (MCP, exploration, text-to-SQL) se connecte avec le rôle **`rita_lecture`**
+  (`db/roles.sql`, SELECT seul, DSN dans `RITA_DSN_LECTURE`), jamais avec `DATABASE_URL`
 - Données personnelles : registre `db/RGPD-registre-des-traitements.md`, purge `db/rgpd_purge.py`
 
 ## Sécurité
