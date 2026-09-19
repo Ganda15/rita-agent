@@ -72,6 +72,11 @@ COPY --chown=rita:rita sources/ ./sources/
 COPY --chown=rita:rita src/     ./src/
 COPY --chown=rita:rita frontend/ ./frontend/
 
+# Revue Codex, PR #12 : un volume nommé hérite du propriétaire du dossier de l'image à sa
+# première création. Sans ce `chown` AVANT `USER rita`, le point de montage `/app/data/chroma`
+# appartient à root et ChromaDB (UID 10001) ne peut rien y écrire. Testé par
+# tests/test_docker_compose.py.
+RUN mkdir -p /app/data/chroma /home/rita/.cache && chown -R rita:rita /app/data /home/rita/.cache
 USER rita
 
 # Python n'écrit pas de .pyc et ne tamponne pas sa sortie : sans cela, les journaux

@@ -46,3 +46,46 @@ def test_le_volume_chroma_est_declare_et_persistant(compose):
             and v.split(":")[1] == CHEMIN_CHROMA_CONTENEUR]
     assert noms, "le montage Chroma doit être un volume nommé, pas un tmpfs : l'index survit au redémarrage"
     assert noms[0] in (compose.get("volumes") or {}), f"volume {noms[0]} non déclaré en tête de fichier"
+
+
+# --- revue Codex, PR #12 : le volume doit être inscriptible par `rita` ET rempli par quelqu'un -------
+
+def test_le_dossier_chroma_est_cree_et_donne_a_rita_avant_de_changer_d_utilisateur():
+    """Un volume nommé hérite, à sa création, du propriétaire du dossier dans l'image. Sans `chown`
+    avant `USER rita`, le point de montage est à root et ChromaDB (UID 10001) ne peut rien y écrire."""
+    lignes = (RACINE / "Dockerfile").read_text(encoding="utf-8").splitlines()
+    i_user = next(i for i, l in enumerate(lignes) if l.strip() == "USER rita")
+    prepare = [i for i, l in enumerate(lignes)
+               if "data/chroma" in l and "mkdir" in l and "chown" in l and "rita" in l]
+    assert prepare, "aucune ligne `mkdir ... data/chroma ... chown rita` dans le Dockerfile"
+    assert prepare[0] < i_user, "le dossier Chroma doit être préparé AVANT `USER rita`"
+
+
+def test_un_service_compose_remplit_le_volume_chroma(compose):
+    """Le volume nommé démarre vide et l'indexation planifiée écrit sur l'hôte, pas dans le conteneur.
+    Un service `indexation` (profil `outils`, jamais démarré par défaut) partage le volume et lance
+    l'étape d'indexation contre le PostgreSQL de Compose : `docker compose run --rm indexation`."""
+    services = compose["services"]
+    assert "indexation" in services, "service `indexation` absent"
+    s = services["indexation"]
+    assert CHEMIN_CHROMA_CONTENEUR in _montages(s)
+    assert s.get("image") == services["api"].get("image"), "même image que l'API : même code, même Chroma"
+    assert "outils" in (s.get("profiles") or []), "profil `outils` : ne démarre pas avec `docker compose up`"
+    commande = " ".join(s["command"]) if isinstance(s.get("command"), list) else str(s.get("command"))
+    assert "pipelines.ingest" in commande and "indexation" in commande
+
+
+# --- revue Codex, PR #13 : le modèle d'embedding se télécharge dans ~/.cache — impossible en lecture seule ---
+
+CHEMIN_CACHE_CONTENEUR = "/home/rita/.cache"
+
+
+@pytest.mark.parametrize("service", ["api", "indexation"])
+def test_le_cache_du_modele_d_embedding_est_inscriptible(compose, service):
+    """ChromaDB télécharge `all-MiniLM-L6-v2` sous `~/.cache/chroma/onnx_models` au premier `upsert`
+    ET à la première `query`. Racine en lecture seule + rien de monté là = ni indexation ni recherche
+    en conteneur. Un volume nommé partagé par les deux services, persistant : un seul téléchargement."""
+    s = compose["services"][service]
+    assert CHEMIN_CACHE_CONTENEUR in _montages(s), f"{service} : aucun montage inscriptible sur {CHEMIN_CACHE_CONTENEUR}"
+    noms = [v.split(":")[0] for v in s.get("volumes", []) if isinstance(v, str) and v.split(":")[1] == CHEMIN_CACHE_CONTENEUR]
+    assert noms and noms[0] in (compose.get("volumes") or {}), "le cache doit être un volume nommé déclaré"
