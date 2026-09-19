@@ -323,3 +323,22 @@ def test_l_indexation_recoit_le_dsn_choisi_par_le_pipeline():
 
 def test_le_pipeline_transmet_le_dsn_a_l_etape_indexation():
     assert "indexation" in ingest.ETAPES_AVEC_DSN
+
+
+# --- revue Codex, PR #13 : le conteneur one-shot doit ECHOUER quand l'indexation échoue ----------------
+
+def test_en_mode_strict_un_echec_d_etape_donne_un_code_de_sortie_non_nul():
+    """`docker compose run --rm indexation` rendait 0 même avec un bilan en échec : un opérateur ou un
+    script ne pouvait pas voir que le volume restait vide. `--strict` : une étape en échec = code 1.
+    Le pipeline nocturne, lui, garde son comportement (une panne BCE ne doit pas marquer la nuit en échec)."""
+    resultat = {"bilans": [ingest.Bilan("indexation", erreur="ImportError: cygrpc")], "etapes_ok": 0}
+    assert ingest.code_de_sortie(resultat, strict=True) == 1
+    assert ingest.code_de_sortie(resultat, strict=False) == 0
+    assert ingest.code_de_sortie({"bilans": [ingest.Bilan("indexation", lues=3, ecrites=3)], "etapes_ok": 1}, strict=True) == 0
+
+
+def test_le_service_compose_indexation_est_strict():
+    import yaml
+    from pathlib import Path
+    compose = yaml.safe_load((Path(__file__).parent.parent / "docker-compose.yml").read_text(encoding="utf-8"))
+    assert "--strict" in compose["services"]["indexation"]["command"]

@@ -73,3 +73,19 @@ def test_un_service_compose_remplit_le_volume_chroma(compose):
     assert "outils" in (s.get("profiles") or []), "profil `outils` : ne démarre pas avec `docker compose up`"
     commande = " ".join(s["command"]) if isinstance(s.get("command"), list) else str(s.get("command"))
     assert "pipelines.ingest" in commande and "indexation" in commande
+
+
+# --- revue Codex, PR #13 : le modèle d'embedding se télécharge dans ~/.cache — impossible en lecture seule ---
+
+CHEMIN_CACHE_CONTENEUR = "/home/rita/.cache"
+
+
+@pytest.mark.parametrize("service", ["api", "indexation"])
+def test_le_cache_du_modele_d_embedding_est_inscriptible(compose, service):
+    """ChromaDB télécharge `all-MiniLM-L6-v2` sous `~/.cache/chroma/onnx_models` au premier `upsert`
+    ET à la première `query`. Racine en lecture seule + rien de monté là = ni indexation ni recherche
+    en conteneur. Un volume nommé partagé par les deux services, persistant : un seul téléchargement."""
+    s = compose["services"][service]
+    assert CHEMIN_CACHE_CONTENEUR in _montages(s), f"{service} : aucun montage inscriptible sur {CHEMIN_CACHE_CONTENEUR}"
+    noms = [v.split(":")[0] for v in s.get("volumes", []) if isinstance(v, str) and v.split(":")[1] == CHEMIN_CACHE_CONTENEUR]
+    assert noms and noms[0] in (compose.get("volumes") or {}), "le cache doit être un volume nommé déclaré"

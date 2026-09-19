@@ -99,6 +99,10 @@ services:
       # pour tout ticker valide — en conteneur seulement. Volume nommé, pas tmpfs : l'index
       # survit au redémarrage. Testé par tests/test_docker_compose.py.
       - rita_chroma_preprod:/app/data/chroma
+      # Revues Codex + Claude, PR #13 : ChromaDB télécharge son modèle d'embedding (all-MiniLM-L6-v2,
+      # ~79 Mo) dans ~/.cache au premier upsert ET à la première query. Racine en lecture seule :
+      # il faut un cache inscriptible, partagé par l'API et l'indexation, persistant (un seul téléchargement).
+      - rita_cache_preprod:/home/rita/.cache
     security_opt:
       # Empêche un processus d'obtenir plus de privilèges que son parent.
       - no-new-privileges:true
@@ -120,7 +124,12 @@ services:
       DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:-rita_preprod_local}@postgres:5432/rita
     volumes:
       - rita_chroma_preprod:/app/data/chroma
-    command: ["python", "-m", "pipelines.ingest", "--etapes", "indexation"]
+      # Revues Codex + Claude, PR #13 : ChromaDB télécharge son modèle d'embedding (all-MiniLM-L6-v2,
+      # ~79 Mo) dans ~/.cache au premier upsert ET à la première query. Racine en lecture seule :
+      # il faut un cache inscriptible, partagé par l'API et l'indexation, persistant (un seul téléchargement).
+      - rita_cache_preprod:/home/rita/.cache
+    # `--strict` : une étape en échec = code de sortie 1, sinon `docker compose run` rendait 0 avec un volume vide.
+    command: ["python", "-m", "pipelines.ingest", "--etapes", "indexation", "--strict"]
     read_only: true
     tmpfs:
       - /tmp
@@ -130,3 +139,4 @@ services:
 volumes:
   rita_pgdata_preprod:
   rita_chroma_preprod:
+  rita_cache_preprod:

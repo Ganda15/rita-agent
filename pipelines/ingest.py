@@ -41,6 +41,7 @@ import functools
 import logging
 import os
 import re
+import sys
 import time
 import unicodedata
 from dataclasses import dataclass, field
@@ -421,6 +422,16 @@ ETAPES = {
 # [1] POINT DE LANCEMENT · [2] CONNEXIONS · [4] ERREURS · [5] FIN · [6] SAUVEGARDE
 # =============================================================================
 
+def code_de_sortie(resultat: dict, strict: bool) -> int:
+    """Code de sortie du processus : 0 toujours en mode normal (le pipeline nocturne tolère une
+    étape en panne — une BCE indisponible ne doit pas marquer la nuit en échec), 1 en mode strict
+    si une étape a échoué. Revue Codex, PR #13 : `docker compose run --rm indexation` rendait 0
+    avec un volume resté vide, invisible pour un opérateur ou un script."""
+    if strict and any(not b.ok for b in resultat["bilans"]):
+        return 1
+    return 0
+
+
 def executer(dsn: str | None = None, etapes: list[str] | None = None,
              simulation: bool = False, periode: tuple[str, str] | None = None) -> dict:
     """Lance le pipeline d'agrégation.
@@ -489,6 +500,8 @@ if __name__ == "__main__":                                # [1] point de lanceme
     parseur.add_argument("--simulation", action="store_true", help="n'ecrit rien en base")
     parseur.add_argument("--du", default=None, help="rattrapage : premier jour, AAAA-MM-JJ")
     parseur.add_argument("--au", default=None, help="rattrapage : dernier jour, AAAA-MM-JJ")
+    parseur.add_argument("--strict", action="store_true",
+                         help="code de sortie 1 si une etape echoue (conteneur one-shot)")
     args = parseur.parse_args()
     if bool(args.du) != bool(args.au):
         parseur.error("--du et --au vont ensemble")
@@ -514,3 +527,4 @@ if __name__ == "__main__":                                # [1] point de lanceme
             print(f"      - {d}")
     print(f"\n  Etapes reussies : {r['etapes_ok']}/{len(r['bilans'])}"
           f"   Duree : {r['duree_s']} s\n")
+    sys.exit(code_de_sortie(r, args.strict))
