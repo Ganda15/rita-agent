@@ -91,3 +91,19 @@ Seul .env.example est autorise (modele sans valeur). Si c'est legitime, Era le f
 ```
 
 Verification apres coup : `grep -c "^CLE_TEST=" .env` → `0`. La commande qui passait a 19:2x est refusee a 19:34.
+
+## Preuve 5 - troisieme contournement, trouve par la revue automatisee (Codex, PR #1), ferme en v4
+
+La PR #1 (`develop -> main`, 97 commits) a recu 6 commentaires de revue de Codex, dont deux sur les hooks :
+- `bloquer-secrets.py` : *« `python -c "open('.env','w').write(...)"` matches FICHIERS_SENSIBLES but none of
+  these operators, so the hook exits successfully »* - vrai. La v3 enumerait des orthographes de shell.
+- `exiger-tests-verts.py` : *« after an agent commits its Python changes, git status is empty and the hook
+  exits without running pytest »* - vrai.
+
+**v4** : un interpreteur (`python`, `node`, `perl`, `pwsh`...) ou une API d'ecriture (`open(`, `write_text`,
+`writeFileSync`, `Set-Content`...) qui nomme un fichier sensible est refuse. Le hook Stop regarde aussi les
+commits pas encore pousses (`@{u}...HEAD`, ou `HEAD~1` sans amont).
+
+**Les contournements sont maintenant des tests** : `tests/test_hooks_claude.py` (7 tests, dont les 3 contournements
+reels du 19/09 : Bash, PowerShell, interpreteur ; et le cas « commite puis conclure »). Rouge avant la v4 (2 failed),
+vert apres (7 passed).
