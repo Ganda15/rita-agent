@@ -276,3 +276,39 @@ def test_un_resume_qui_apporte_vraiment_quelque_chose_est_conserve():
     titre = "LVMH publie ses resultats"
     resume = "Le groupe annonce un recul de 3 % de son chiffre d'affaires en Asie."
     assert texte_indexable(titre, resume) == f"{titre}. {resume}"
+
+
+# --- revue Codex, PR #1 (19/09/2026) : une reconstruction doit RETIRER ce qui n'est plus permis ---
+
+def _index_depuis(monkeypatch, tmp_path, articles):
+    """Indexe des articles simulés dans un index jetable et rend la collection."""
+    from datetime import datetime
+    lignes = [{"id": i, "source": "test", "titre": t, "resume": "", "lien": f"https://x.test/{i}",
+               "publie_le": datetime(2026, 9, 1), "bloque_injection": b}
+              for i, (t, b) in enumerate(articles, start=1)]
+
+    def faux(sql, nom, dsn=None, **kw):
+        class E:
+            pass
+        e = E()
+        e.lignes = lignes if "bloque_injection" in sql else []
+        return e
+
+    monkeypatch.setattr(indexation.database, "_executer", faux)
+    indexation.indexer(chemin=tmp_path)
+    return indexation._collection(tmp_path)
+
+
+def test_un_article_devenu_bloque_disparait_de_l_index_a_la_reconstruction(monkeypatch, tmp_path):
+    """Avant : `upsert` seul — un article marqué `bloque_injection` APRÈS une première indexation
+    restait cherchable pour toujours. Le garde-fou en base ne protégeait pas le RAG."""
+    _index_depuis(monkeypatch, tmp_path, [("Article sain sur le luxe", False), ("Article piege injecte", False)])
+    collection = _index_depuis(monkeypatch, tmp_path, [("Article sain sur le luxe", False), ("Article piege injecte", True)])
+    assert collection.get(ids=["2"])["ids"] == [], "l'article bloqué est toujours dans l'index"
+    assert collection.get(ids=["1"])["ids"] == ["1"]
+
+
+def test_un_article_supprime_de_la_base_disparait_de_l_index(monkeypatch, tmp_path):
+    _index_depuis(monkeypatch, tmp_path, [("Un", False), ("Deux", False), ("Trois", False)])
+    collection = _index_depuis(monkeypatch, tmp_path, [("Un", False)])
+    assert collection.count() == 1

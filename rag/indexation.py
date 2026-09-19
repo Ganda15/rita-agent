@@ -304,6 +304,15 @@ def indexer(dsn: str | None = None, chemin: Path | None = None) -> Resultat:
             "tickers": "," + ",".join(tickers) + "," if tickers else "",
         })
 
+    # Revue Codex, PR #1 (19/09/2026) : `upsert` seul n'enlevait jamais rien. Un article
+    # supprimé en base, ou marqué `bloque_injection` APRÈS une première indexation, restait
+    # cherchable — le garde-fou en base ne protégeait pas le RAG. Une reconstruction retire
+    # donc tout identifiant que la base ne permet plus.
+    presents = set(collection.get(include=[])["ids"])
+    a_retirer = sorted(presents - set(ids))
+    if a_retirer:
+        collection.delete(ids=a_retirer)
+
     if ids:
         collection.upsert(ids=ids, documents=textes, metadatas=metadonnees)
 

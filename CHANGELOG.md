@@ -9,6 +9,21 @@
 
 ---
 
+## 2026-09-20 — Les quatre bugs trouvés par la revue automatisée sont fermés, chacun par un test
+
+**Manques découverts** (revue Codex, PR #1, tous confirmés en relisant le code) et **corrigés** :
+1. En conteneur, `/app` en lecture seule sans montage pour ChromaDB : `/briefing` échouait pour tout ticker
+   valide, invisible en local. Volume nommé persistant + test du fichier Compose.
+2. Une reconstruction de l'index n'enlevait jamais rien : un article supprimé ou bloqué après coup restait
+   cherchable. Le garde-fou en base ne protégeait pas le RAG. Suppression des identifiants non permis.
+3. Avec un ticker, la requête dense parcourait toute la collection puis tronquait : faux `OUT_OF_CORPUS` possible,
+   bras de référence D0 de l'ablation faussé. La requête est restreinte au corpus filtré.
+4. `--dsn` n'atteignait pas l'indexation : articles dans une base, index reconstruit depuis une autre.
+
+**À mesurer** : l'ablation `evals/mesurer_rag.py` doit être relancée, le correctif 3 change D0.
+
+---
+
 ## 2026-09-19, 22h50 — Correctif de diagnostic : la revue Claude n'était pas tuée par notre hook
 
 L'entrée précédente attribue les revues muettes au hook Stop du dépôt. **Partiellement faux.** La notification

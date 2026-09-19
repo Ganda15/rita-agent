@@ -211,3 +211,33 @@ def test_un_mode_inconnu_est_refuse_bruyamment(monkeypatch, tmp_path):
     _index_jetable(monkeypatch, tmp_path, CORPUS)
     with pytest.raises(ValueError, match="mode"):
         recherche.rechercher("resultats", chemin=tmp_path, mode="dese")
+
+
+# --- revue Codex, PR #1 (19/09/2026) : le moteur dense doit chercher DANS le corpus filtré ---
+
+def test_avec_un_ticker_le_moteur_dense_ne_cherche_que_dans_le_corpus_du_ticker(monkeypatch, tmp_path):
+    """Avant : la requête dense parcourait TOUTE la collection puis tronquait au nombre de documents
+    du ticker. Un ticker à un seul article dont un article étranger était globalement plus proche
+    rendait un identifiant hors filtre, écarté ensuite → faux OUT_OF_CORPUS, ablation D0 faussée."""
+    _index_jetable(monkeypatch, tmp_path, CORPUS)
+    appels = []
+    vraie = recherche._collection
+
+    def espion(chemin=None):
+        collection = vraie(chemin)
+        query_reelle = collection.query
+
+        def query_espionnee(**kw):
+            appels.append(kw)
+            return query_reelle(**kw)
+        collection.query = query_espionnee
+        return collection
+
+    monkeypatch.setattr(recherche, "_collection", espion)
+    r = recherche.rechercher("resultats semestriels du luxe", ticker="MC.PA", chemin=tmp_path, k=1, mode="dense")
+    assert appels, "la requête dense n'a pas été lancée"
+    kw = appels[0]
+    assert kw.get("ids"), "la requête dense doit être restreinte aux identifiants du ticker"
+    assert set(kw["ids"]) == {"1"}  # seul l'article 1 cite LVMH (MC.PA)
+    assert r.trouve and len(r.passages) == 1
+    assert kw["n_results"] <= len(kw["ids"])

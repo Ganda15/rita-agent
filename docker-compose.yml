@@ -93,9 +93,16 @@ services:
     read_only: true
     tmpfs:
       - /tmp
+    volumes:
+      # Revue Codex, PR #1 (19/09/2026) : ChromaDB écrit dans `data/chroma` à l'ouverture de
+      # la collection. Avec `/app` en lecture seule et rien de monté ici, `/briefing` échouait
+      # pour tout ticker valide — en conteneur seulement. Volume nommé, pas tmpfs : l'index
+      # survit au redémarrage. Testé par tests/test_docker_compose.py.
+      - rita_chroma_preprod:/app/data/chroma
     security_opt:
       # Empêche un processus d'obtenir plus de privilèges que son parent.
       - no-new-privileges:true
 
 volumes:
   rita_pgdata_preprod:
+  rita_chroma_preprod:
