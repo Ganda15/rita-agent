@@ -73,12 +73,12 @@ pipelines/  ingestion (ingest.py)
 scripts/    planification de la collecte
 sources/    les 5 types de sources C1
 src/        appel du modèle (llm.py)
-tests/      pytest — 18 fichiers
+tests/      pytest — 30 fichiers
 ```
 
 ## Chiffres à ne jamais réinventer — les vérifier avant de les citer
 
-**186** tests · **8** tables · **1** vue · **15** index · **273 608** lignes ·
+**458** tests collectés (19/09/2026) · **8** tables · **1** vue · **15** index · **273 608** lignes ·
 **111** valeurs · **112** alias · **7** positions · **11** partitions Parquet ·
 OpenAPI **3.1.0** · **8** chemins documentés
 
@@ -100,7 +100,7 @@ OpenAPI **3.1.0** · **8** chemins documentés
 
 ## Environnement — pièges de cette machine
 
-- `venv` et `pip.exe` bloqués par AppLocker → utiliser `C:\Python314\python.exe -m pytest -q`
+- `venv` et `pip.exe` bloqués par **Smart App Control** (pas AppLocker, corrigé le 02/09/2026) → utiliser `C:\Python314\python.exe -m pytest -q`
 - PostgreSQL sur le port **5433**
 - PySpark exige un **JDK 21** dans `JAVA_HOME` — sinon `tests/test_spark.py` est *ignoré*,
   pas en échec
@@ -110,7 +110,7 @@ OpenAPI **3.1.0** · **8** chemins documentés
 ## Commandes
 
 ```powershell
-C:\Python314\python.exe -m pytest -q                          # les 186 tests
+C:\Python314\python.exe -m pytest -q                          # les 458 tests
 C:\Python314\python.exe -m evals.mesurer_gardefou             # taux de blocage + faux positifs
 C:\Python314\python.exe -X utf8 -m pipelines.ingest --simulation
 C:\Python314\python.exe -m uvicorn api.main:app --reload      # API sur :8000
