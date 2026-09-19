@@ -16,6 +16,11 @@ jobs:
           python-version: "3.13"
       - name: Installer les dépendances
         run: pip install -r requirements.txt
+      - name: Installer le navigateur du smoke test (C17, item 7 du harnais)
+        # Playwright + Chromium. En local : le Chrome installé (canal `chrome`), rien à télécharger.
+        run: |
+          pip install playwright
+          playwright install --with-deps chromium
       - name: Lancer les tests et mesurer la couverture
         # Le seuil vit dans `.coveragerc` (`fail_under = 80`), pas ici : un seuil
         # écrit dans le workflow serait invisible depuis la machine de développement,
