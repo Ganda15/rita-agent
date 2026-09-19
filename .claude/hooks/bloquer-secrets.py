@@ -1,10 +1,13 @@
-"""Hook PreToolUse (Edit|Write|Bash) - refuse d'ecrire un fichier de secrets.
+"""Hook PreToolUse (tous les outils) - refuse d'ecrire un fichier de secrets.
 
 Un CLAUDE.md qui dit « jamais de secret dans Git » est un conseil.
 Ce script est une garantie : il tourne AVANT chaque ecriture, sans exception.
 Sortie 2 = ecriture refusee, le message ci-dessous est montre a l'agent.
 
-v2 (19/09/2026) : couvre aussi l'outil Bash. La v1 ne regardait que Write et Edit ;
+v3 (19/09/2026, soir) : tourne sur TOUS les outils (matcher "*"). La v2 ne listait que
+Edit|Write|Bash ; une session a ecrit le secret par l'outil PowerShell, absent de la liste.
+Lecon : ne jamais enumerer les outils a surveiller, surveiller tout et regarder le contenu.
+v2 (19/09/2026) : couvrait aussi l'outil Bash. La v1 ne regardait que Write et Edit ;
 une session l'a fait remarquer elle-meme : « je pourrais passer par une commande
 shell et le hook ne verrait rien ». Un garde-fou contournable n'est pas un garde-fou.
 """
@@ -39,11 +42,14 @@ donnees = json.load(sys.stdin)
 outil = donnees.get("tool_name", "")
 entree = donnees.get("tool_input", {})
 
-if outil in ("Write", "Edit"):
-    chemin = str(entree.get("file_path", ""))
+# Champs qui peuvent porter une commande, quel que soit l'outil (Bash, PowerShell, MCP...)
+CHAMPS_COMMANDE = ("command", "cmd", "script", "code", "text")
+
+if outil in ("Write", "Edit", "NotebookEdit"):
+    chemin = str(entree.get("file_path") or entree.get("notebook_path") or "")
     interdit, cible = fichier_interdit(chemin), chemin
-else:  # Bash
-    commande = str(entree.get("command", ""))
+else:  # tout autre outil : on regarde le contenu, pas le nom de l'outil
+    commande = " ".join(str(entree.get(c, "")) for c in CHAMPS_COMMANDE)
     cibles = [m.group(1) for m in FICHIERS_SENSIBLES.finditer(commande)
               if fichier_interdit(m.group(1))]
     interdit = bool(cibles) and bool(OPERATEURS_ECRITURE.search(commande))

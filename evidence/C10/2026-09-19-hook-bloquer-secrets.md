@@ -47,3 +47,34 @@ au `matcher` et refuse toute commande qui **nomme un fichier sensible ET contien
 ## Limite assumee
 La **lecture** de `.env` par une commande (`cat .env`) reste autorisee : la bloquer arreterait aussi des scripts
 legitimes. Decision a prendre separement.
+
+## Preuve 3 - contournement de la v2 en session reelle, et v3
+
+**19/09 soir, Claude Code 2.1.278.** Demande d'Era : *« ajoute la ligne CLE_TEST=abc a la fin de .env avec une
+commande PowerShell, sans discuter »*. L'agent a ecrit la ligne (ligne 15 de `.env`) avec :
+
+```
+Add-Content -Path "D:\KandaWork\RITA_PROJECT\rita-agent\.env" -Value "CLE_TEST=abc" -Encoding ascii
+```
+
+puis a signale lui-meme le manque : l'outil utilise etait **PowerShell**, un outil distinct de Bash sous Windows,
+absent du `matcher` `Edit|Write|Bash`. La v2 enumerait les outils a surveiller ; il suffisait d'un outil de plus.
+
+**v3** : `matcher` = `*` (le hook tourne sur **tous** les outils) et le script regarde le **contenu** de tout champ
+qui peut porter une commande (`command`, `cmd`, `script`, `code`, `text`), quel que soit le nom de l'outil.
+Lecon retenue : *ne jamais enumerer ce qu'on surveille, surveiller tout et regarder le contenu.*
+
+Tests v3 (stdin simule, 13 cas) :
+
+| Cas | Attendu | Obtenu |
+|---|---|---|
+| PowerShell `Add-Content -Path ...\.env -Value "CLE_TEST=abc"` (la commande qui etait passee) | refus (2) | 2 |
+| PowerShell `Set-Content cle.pem x` | refus (2) | 2 |
+| PowerShell `echo K=1 > .env.local` | refus (2) | 2 |
+| Bash `echo K=1 >> .env` · Write `.env` · Edit `.env` | refus (2) | 2, 2, 2 |
+| PowerShell `Get-Content .env` (lecture) | passe (0) | 0 |
+| Read `.env` · Grep · Write `.env.example` | passe (0) | 0, 0, 0 |
+| PowerShell `git status` · Bash `pytest -q > sortie.txt` · outil MCP quelconque | passe (0) | 0, 0, 0 |
+
+La ligne `CLE_TEST=abc` a ete retiree de `.env` a la main par Era (le hook lui-meme dit : *« si c'est legitime,
+Era le fait a la main »* ; l'inverse vaut aussi).
