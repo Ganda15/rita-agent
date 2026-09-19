@@ -86,3 +86,15 @@ def test_un_test_rouge_deja_commite_bloque_aussi_le_stop(tmp_path):
     subprocess.run(["git", "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-q", "-m", "ko"], cwd=depot, check=True)
     r = lancer_hook("exiger-tests-verts.py", {"cwd": str(depot), "prompt_id": "c", "scratchpad_dir": str(tmp_path)})
     assert r.returncode == 2, r.stderr
+
+
+def test_un_test_rouge_commite_puis_masque_par_un_commit_doc_bloque_encore(tmp_path):
+    """Trouvé par la revue Codex (PR #2) : sans amont, ne regarder que HEAD~1 laissait passer un .py
+    rouge commité juste avant un commit de documentation."""
+    depot = depot_temporaire(tmp_path)
+    git = lambda *a: subprocess.run(["git", "-c", "user.email=t@t", "-c", "user.name=t", *a], cwd=depot, check=True)
+    (depot / "tests").mkdir(); (depot / "tests" / "test_ko.py").write_text("def test_ko():\n    assert 1 == 2\n")
+    git("add", "."); git("commit", "-q", "-m", "ko")
+    (depot / "NOTES.md").write_text("doc seulement\n"); git("add", "."); git("commit", "-q", "-m", "doc")
+    r = lancer_hook("exiger-tests-verts.py", {"cwd": str(depot), "prompt_id": "d", "scratchpad_dir": str(tmp_path)})
+    assert r.returncode == 2, r.stderr

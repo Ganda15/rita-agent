@@ -107,3 +107,15 @@ commits pas encore pousses (`@{u}...HEAD`, ou `HEAD~1` sans amont).
 **Les contournements sont maintenant des tests** : `tests/test_hooks_claude.py` (7 tests, dont les 3 contournements
 reels du 19/09 : Bash, PowerShell, interpreteur ; et le cas « commite puis conclure »). Rouge avant la v4 (2 failed),
 vert apres (7 passed).
+
+## Preuve 6 - revue de la PR #2 (Codex) : deux corrections sur le hook Stop
+
+- `exiger-tests-verts.py` lancait `C:/Python314/python.exe` en dur : sur la CI Linux, `FileNotFoundError`, code 1 au lieu
+  de 2, et `tests/test_hooks_claude.py` rouge en CI (run PR #2, `pytest` fail). Corrige : `sys.executable`.
+- Sans amont, le repli `HEAD~1` laissait passer un `.py` rouge commite juste avant un commit de documentation.
+  Corrige : tous les commits des 24 dernieres heures. Test ajoute (rouge avant, vert apres) ; 8 tests, suite 468.
+
+Bilan du 19/09 : **quatre contournements ou defauts trouves sur les hooks** (Bash, PowerShell, interpreteur, chemin
+Windows en CI) + un angle mort (commits non pousses, puis commit de doc). Tous fermes le jour meme, chacun par un test.
+La revue automatisee Claude (`revue-pr.yml`) a tourne sur la PR #2 (5 tours, 14 s, succes) mais n'a rien publie ;
+cause non identifiee ce soir (sortie masquee par l'action). Codex, deja branche au depot, a fourni les 8 commentaires.
