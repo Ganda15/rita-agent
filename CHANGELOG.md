@@ -9,6 +9,23 @@
 
 ---
 
+## 2026-09-19, nuit — Flux PR en service : 4 PR fusionnées, 8 défauts trouvés par la revue, et la revue Claude réparée
+
+**Fait** : PR #1 (97 commits) à PR #4 fusionnées ; `main` = `develop`. Revue Codex active : **8 commentaires** utiles
+sur les deux premières PR — **6 sur la PR #1** (2 hooks + 4 bugs RAG/Compose, consignés dans `ETAT.md`) et **2 sur la PR #2**
+(2 hooks). Les 4 commentaires sur les hooks sont fermés le soir même, chacun par un test.
+
+**Manque découvert, et sa cause** : la revue Claude (`revue-pr.yml`) finissait en « succès » sans rien publier.
+`show_full_output` (PR #3) a montré la cause : l'action charge `.claude/settings.json` du dépôt, donc **notre hook Stop
+tournait dans la session de revue** et la tuait (`Stop hook error`) avant que ses agents de relecture ne rendent
+(5 tours sur la PR #2, 23 tours et 4 min sur la PR #4). Correction PR #4 : les hooks se taisent sous `GITHUB_ACTIONS`.
+Leçon : le périmètre d'un garde-fou fait partie de sa conception ; un garde-fou qui tue le relecteur protège de rien.
+
+**Décision** : Codex reste branché (il a payé) ; la revue Claude est vérifiée sur cette PR #5, première à tourner
+avec le hook silencieux.
+
+---
+
 ## 2026-09-19 — Le harnais devient une garantie : AGENTS.md, hooks, Definition of Done, flux PR
 
 **Décision structurante** (Era, option A) : `main` ne bouge plus que par une pull request `develop → main`,
