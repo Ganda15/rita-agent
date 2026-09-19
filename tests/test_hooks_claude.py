@@ -6,6 +6,7 @@ de tour. Un garde-fou contournable n'est pas un garde-fou — trois contournemen
 trouvé devient un test ici, pour ne jamais revenir.
 """
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -16,7 +17,10 @@ PYTHON = sys.executable
 
 
 def lancer_hook(nom: str, entree: dict) -> subprocess.CompletedProcess:
-    return subprocess.run([PYTHON, str(HOOKS / nom)], input=json.dumps(entree),
+    # Session locale simulee : sans GITHUB_ACTIONS, sinon sur le runner les hooks se taisent
+    # (c'est voulu, et teste a part) et les six tests de refus passaient a 0 (CI rouge du 19/09).
+    env = {k: v for k, v in os.environ.items() if k != "GITHUB_ACTIONS"}
+    return subprocess.run([PYTHON, str(HOOKS / nom)], input=json.dumps(entree), env=env,
                           capture_output=True, text=True, encoding="utf-8")
 
 
