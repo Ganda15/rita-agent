@@ -1,18 +1,31 @@
 # Indicateurs de marché — conception
 
-> ## ⚠️ Statut : **CONCEPTION SEULE — aucun code écrit** · 15/08/2026
+> ## Statut : **LES 13 INDICATEURS CODÉS ET AFFICHÉS** · réécrit le 19/08/2026
 >
-> | | |
-> |---|---|
-> | Code | **aucun** |
-> | Tests | **aucun** |
-> | Destination | livrable **E4** (application, C14–C19) — `frontend/` est vide à ce jour |
-> | Ce fichier sert à | ne pas re-débattre la liste dans six semaines |
+> | Lot | Code | Tests | Preuve |
+> |---|---|---|---|
+> | **1 — Socle** (11) | `db/indicateurs.sql` · `indicateurs/socle.py` | 13 | `preuve-indicateurs-lot1.md` |
+> | **2 — Portefeuille** (2) | `db/indicateurs_portefeuille.sql` · `indicateurs/portefeuille.py` | 12 | dans le corps de C10 |
+> | **3 — Risque** (3) | `db/indicateurs_risque.sql` · `indicateurs/risque.py` | 19 | `preuve-indicateurs-lot3.md` |
 >
-> **Ce bandeau doit être réécrit le jour où le premier indicateur est codé.**
-> `bigdata/CONCEPTION.md` a annoncé « aucun code écrit » pendant huit jours après
-> l'implémentation, alors que le rapport E1 y renvoyait. On ne refait pas l'erreur :
-> tant que ce bandeau dit « conception seule », c'est que rien n'existe.
+> **Les 13 indicateurs de la spécification sont codés, exposés par l'API et affichés à
+> l'écran** — écran 1 (portefeuille) pour le lot 2, écran 2 (univers) pour les lots 1 et 3.
+> Destination livrable **E4** (application, C14–C19).
+>
+> ⚠️ **Écarts constatés à l'implémentation, aucun caché** :
+> - Le §4 annonçait 8 indicateurs restants pour le lot 1 ; la requête en rend 11, plus une
+>   12ᵉ colonne non prévue (`fraicheur_jours`), ajoutée après avoir mesuré que 3 valeurs
+>   radiées portaient encore `statut_qualite = 'OK'`. La même correction a dû être refaite
+>   pour le lot 3, le 19/08 — l'angle mort n'avait pas été généralisé du premier coup.
+> - Le module externe `quant_metrics.py` a été relu **deux fois** (lots 1 et 3) et **jamais
+>   réutilisé** : décalage en nombre de lignes, rendement simple au lieu de logarithmique,
+>   maximum incluant le jour courant, moyenne mobile simple au lieu du lissage de Wilder.
+>   Quatre défauts différents, un seul verdict à chaque fois.
+> - Le lot 3 a révélé un vrai bug de conception SQL — fonctions fenêtre placées après un
+>   filtre qui réduit chaque ticker à une seule ligne, corrigé le 19/08 (voir la preuve).
+>
+> **Ce bandeau a été réécrit à chaque lot codé** — la règle qu'il pose lui-même a été tenue
+> trois fois de suite.
 
 ## D'où vient ce dossier
 
@@ -99,7 +112,8 @@ C'est le seul critère qui commande l'ordre des lots ci-dessous.
 
 **Pourquoi le portefeuille passe avant le risque.** Les 19 lignes proposées décrivaient
 toutes des *instruments* — ce que fait déjà n'importe quel site de cotations. Ce qui rend
-RITA défendable, c'est qu'elle connaît **les 7 positions et leur PRU**. À la question
+RITA défendable, c'est qu'elle connaît **les 7 positions et leur PRU** (jeu de démonstration
+anonymisé — voir la précision du 19/08 dans `ETAT.md`). À la question
 « qu'est-ce qui est spécifique à votre projet ? », un RSI ne répond rien ; une exposition
 par devise répond tout.
 

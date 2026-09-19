@@ -1,0 +1,107 @@
+"""Tests du Scout après bascule sur la base — chantier RAG-MCP, étape 4a.
+
+⚠️ Même limite que `test_indicateurs_socle.py`, dite d'emblée : ces tests
+remplacent `lire_socle` et `lire_volatilite_drawdown`. Ils vérifient ce que le
+Scout FAIT des indicateurs, pas le SQL qui les produit — celui-ci est déjà
+vérifié par exécution réelle dans `evidence/C14/preuve-indicateurs-lot1.md`.
+"""
+from datetime import date
+from unittest.mock import patch
+
+from agents.scout import collect
+from indicateurs.socle import IndicateursValeur
+from indicateurs.risque import IndicateursRisqueValeur
+
+
+def socle_lvmh(**surcharges):
+    """Un lot 1 tel que `lire_socle` le rend, pour LVMH."""
+    base = dict(
+        ticker="MC.PA", nom_officiel="LVMH", devise="EUR", statut_qualite="OK",
+        date_cours=date(2026, 8, 28), cours=545.2, fraicheur_jours=2,
+        perf_1j_pct=-1.10, perf_1s_pct=2.40, perf_1m_pct=-3.80,
+        perf_ytd_pct=5.20, perf_1a_pct=-11.10,
+        ma20=552.3, ma50=561.9, adtv20=128456789.0,
+        distance_plus_haut_1a_pct=-14.20,
+    )
+    base.update(surcharges)
+    return IndicateursValeur(**base)
+
+
+def risque_lvmh(**surcharges):
+    """Un lot 3 tel que `lire_volatilite_drawdown` le rend."""
+    base = dict(
+        ticker="MC.PA", nom_officiel="LVMH", statut_qualite="OK",
+        date_cours="2026-08-28", cours=545.2, fraicheur_jours=2,
+        volatilite_annualisee_pct=24.7, drawdown_max_1a_pct=-18.3,
+    )
+    base.update(surcharges)
+    return IndicateursRisqueValeur(**base)
+
+
+# --- le Scout lit la base ------------------------------------------------------
+
+def test_collect_prend_le_cours_dans_la_base_et_non_sur_le_reseau():
+    """Le prix vient de la dernière cotation collectée, pas de yfinance."""
+    with patch("agents.scout.lire_socle", return_value=[socle_lvmh()]), \
+         patch("agents.scout.lire_volatilite_drawdown", return_value=[risque_lvmh()]):
+        etat = collect("MC.PA")
+
+    assert etat["price"] == 545.2
+    assert etat["change_pct"] == -1.10
+    assert etat["currency"] == "EUR"
+    assert etat["error"] == ""
+
+
+def test_collect_expose_adtv20_et_non_un_champ_nomme_volume():
+    """`adtv20` est une MOYENNE sur 20 jours, pas le volume du jour.
+
+    L'appeler `volume` serait une étiquette fausse — le rédacteur écrirait
+    « volume échangé » sur une moyenne, et personne ne le verrait.
+    """
+    with patch("agents.scout.lire_socle", return_value=[socle_lvmh()]), \
+         patch("agents.scout.lire_volatilite_drawdown", return_value=[risque_lvmh()]):
+        etat = collect("MC.PA")
+
+    assert etat["adtv20"] == 128456789.0
+    assert "volume" not in etat
+
+
+def test_collect_remonte_les_indicateurs_de_risque():
+    """Volatilité et drawdown doivent arriver jusqu'au rédacteur."""
+    with patch("agents.scout.lire_socle", return_value=[socle_lvmh()]), \
+         patch("agents.scout.lire_volatilite_drawdown", return_value=[risque_lvmh()]):
+        etat = collect("MC.PA")
+
+    assert etat["indicateurs"]["volatilite_annualisee_pct"] == 24.7
+    assert etat["indicateurs"]["drawdown_max_1a_pct"] == -18.3
+
+
+# --- les refus -----------------------------------------------------------------
+
+def test_collect_refuse_un_ticker_absent_de_la_base():
+    """Un ticker inconnu rend une erreur — jamais une exception, jamais un zéro.
+
+    Le graphe teste `state["error"]` pour sauter le rédacteur : une erreur muette
+    produirait un briefing sur des chiffres à zéro.
+    """
+    with patch("agents.scout.lire_socle", return_value=[]), \
+         patch("agents.scout.lire_volatilite_drawdown", return_value=[]):
+        etat = collect("INEXISTANT.PA")
+
+    assert etat["error"] != ""
+    assert etat["price"] == 0.0
+
+
+def test_collect_signale_une_cotation_perimee():
+    """Une valeur radiée garde `statut_qualite = 'OK'` — seule la fraîcheur le dit.
+
+    Le défaut corrigé le 19/08 sur l'API : `fraicheur_jours` était présent mais
+    jamais exploité, et 3 valeurs radiées affichaient des chiffres de 2018.
+    """
+    vieux = socle_lvmh(fraicheur_jours=2000)
+    with patch("agents.scout.lire_socle", return_value=[vieux]), \
+         patch("agents.scout.lire_volatilite_drawdown", return_value=[risque_lvmh()]):
+        etat = collect("MC.PA")
+
+    assert etat["cotation_perimee"] is True
+    assert etat["fraicheur_jours"] == 2000

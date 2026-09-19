@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RITA — Indicateurs de marché</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>RITA — Indicateurs de marché</h1>
+    <p class="sous-titre">Retrieval Intelligence pour le Tracking et l'Analyse</p>
+    <p class="avertissement">
+      Aide à la lecture. Aucune recommandation d'achat ou de vente.
+    </p>
+    <nav aria-label="Navigation principale">
+      <a href="index.html">Mon portefeuille</a>
+      <span aria-current="page">Indicateurs</span>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ÉTAT 1 — pas de clé d'API : on la demande -->
+    <section id="connexion" hidden>
+      <h2>Connexion</h2>
+      <form id="form-cle">
+        <label for="cle">Clé d'API</label>
+        <input type="password" id="cle" name="cle" required autocomplete="off">
+        <button type="submit">Se connecter</button>
+      </form>
+    </section>
+
+    <!-- ÉTATS 2 et 3 — chargement / erreur.
+         Même dispositif que l'écran portefeuille : role="status" + aria-live font
+         annoncer tout changement de texte par un lecteur d'écran, sans interrompre
+         la lecture en cours. -->
+    <p id="statut" role="status" aria-live="polite"></p>
+
+    <!-- ÉTAT 4 — les données -->
+    <section id="resultat" hidden>
+      <div class="barre-outils">
+        <p class="total">
+          <strong id="nb-valeurs">—</strong><span id="mention-perimees"></span>
+        </p>
+
+        <!-- Le filtre agit sur les données DÉJÀ chargées : aucun appel réseau,
+             donc aucune attente. `aria-controls` relie la case au tableau qu'elle
+             modifie, pour qu'un lecteur d'écran l'annonce. -->
+        <p class="filtre">
+          <input type="checkbox" id="masquer-perimees" aria-controls="tableau-indicateurs">
+          <label for="masquer-perimees">Masquer les cotations périmées</label>
+        </p>
+      </div>
+
+      <!-- `tabindex="0"` + `role="region"` + un nom accessible : sans eux, une zone
+           qui défile horizontalement ne serait atteignable qu'à la souris. Une
+           personne naviguant au clavier ne pourrait jamais voir les colonnes de
+           droite. C'est le seul cas où poser `tabindex` sur un élément non
+           interactif est recommandé (RGAA / WCAG 2.1.1). -->
+      <div class="tableau-large" tabindex="0" role="region"
+           aria-label="Tableau des indicateurs, défilement horizontal">
+        <table id="tableau-indicateurs">
+          <caption id="legende">Indicateurs de marché</caption>
+          <thead>
+            <tr>
+              <th scope="col">Ticker</th>
+              <th scope="col">Nom</th>
+              <th scope="col">Cours</th>
+              <th scope="col">1 jour</th>
+              <th scope="col">1 sem.</th>
+              <th scope="col">1 mois</th>
+              <th scope="col">Depuis le 1<sup>er</sup> janv.</th>
+              <th scope="col">1 an</th>
+              <th scope="col">MA20</th>
+              <th scope="col">MA50</th>
+              <th scope="col">Échangé/jour</th>
+              <th scope="col">Écart au plus haut</th>
+              <th scope="col">Volatilité (1 an)</th>
+              <th scope="col">Pire baisse (1 an)</th>
+              <th scope="col">RSI 14</th>
+            </tr>
+          </thead>
+          <tbody id="lignes"></tbody>
+        </table>
+      </div>
+
+      <details>
+        <summary>Comment lire ce tableau&nbsp;?</summary>
+        <dl>
+          <dt>Indicateur, et non stratégie</dt>
+          <dd>Chaque colonne est un <strong>fait mesuré</strong> : un nombre, son unité,
+              sa date. Aucune n'indique quoi faire. RITA ne classe pas les valeurs et
+              ne signale aucun seuil : ce serait un conseil.</dd>
+          <dt>1 jour, 1 semaine, 1 mois, 1 an</dt>
+          <dd>Écart entre le dernier cours et celui de la dernière séance <em>à ou avant</em>
+              la date visée. Les jours fériés ne faussent donc pas le calcul.</dd>
+          <dt>Depuis le 1<sup>er</sup> janvier</dt>
+          <dd>Écart depuis la <strong>première</strong> séance de l'année en cours.</dd>
+          <dt>MA20 et MA50</dt>
+          <dd>Moyenne des clôtures sur les 20 (ou 50) dernières <strong>séances</strong>.
+              Vide si l'historique est plus court : une moyenne sur moins de points
+              serait trompeuse.</dd>
+          <dt>Échangé par jour</dt>
+          <dd>Valeur moyenne échangée par séance sur 20 séances (volume × cours).
+              Approximation : RITA n'a pas le détail intraséance.</dd>
+          <dt>Écart au plus haut</dt>
+          <dd>Distance au plus haut atteint sur un an, en séance. Toujours négatif ou nul.</dd>
+          <dt>Volatilité (1 an)</dt>
+          <dd>Amplitude des variations quotidiennes des 20 dernières séances, annualisée.
+              Un nombre, jamais un jugement : une volatilité élevée n'est ni bonne ni
+              mauvaise en soi.</dd>
+          <dt>Pire baisse (1 an)</dt>
+          <dd>La plus forte chute entre un sommet et le creux qui a suivi, sur les 252
+              dernières séances. Toujours négatif ou nul.</dd>
+          <dt>RSI 14</dt>
+          <dd>Rapport entre hausses et baisses des 14 dernières séances, sur 100. Un
+              <strong>fait mesuré</strong> — RITA n'indique jamais qu'un niveau de RSI
+              signifierait qu'il faut acheter ou vendre.</dd>
+          <dt>Cotation périmée</dt>
+          <dd>La valeur n'a plus coté depuis longtemps — elle est probablement
+              <strong>radiée</strong>. Ses chiffres sont affichés tels quels, mais ils
+              décrivent le passé. Trois valeurs de l'univers sont dans ce cas.
+              <strong>Le RSI, lui, n'est pas affiché</strong> pour ces valeurs : un RSI
+              calculé sur des cours de 2018 ne dirait rien d'utile sur aujourd'hui.</dd>
+          <dt>Tiret</dt>
+          <dd>Le calcul n'est pas possible faute d'historique. Ce n'est pas un zéro.</dd>
+        </dl>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <p>RNCP 37827 · Eramalingam GANDAKUMAR · indicateurs — lot 1 « socle »</p>
+  </footer>
+
+  <script src="indicateurs.js"></script>
+</body>
+</html>

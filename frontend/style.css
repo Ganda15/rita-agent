@@ -12,6 +12,10 @@
   --fond-alt: #f6f6f6;
   --accent: #12507a;         /*  7,6:1 sur blanc */
   --alerte: #8a1f11;         /*  8,2:1 sur blanc */
+  /* Fraîcheur des données (C20). Teintes SOMBRES et non saturées : le texte du
+     bandeau doit rester lisible, pas seulement coloré. Ratios calculés sur blanc. */
+  --frais-ok: #145a32;       /*  8,3:1 sur blanc */
+  --frais-attention: #7a4f00;/*  7,1:1 sur blanc */
 }
 
 * { box-sizing: border-box; }
@@ -161,3 +165,90 @@ footer {
   body { padding: 1rem; }
   table { display: block; overflow-x: auto; }
 }
+
+/* --- Navigation entre les deux écrans ------------------------------------ */
+nav {
+  margin-top: .9rem;
+  display: flex;
+  gap: 1rem;
+  font-size: .95rem;
+}
+nav a { color: var(--accent); }
+/* La page courante n'est pas un lien : cliquer sur l'endroit où l'on est déjà
+   n'a aucun sens, et `aria-current` l'annonce aux lecteurs d'écran. */
+nav [aria-current="page"] { font-weight: 600; color: var(--texte-doux); }
+
+/* --- Écran 2 : indicateurs ------------------------------------------------ */
+.barre-outils {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.filtre { display: flex; align-items: center; gap: .45rem; }
+.filtre label { font-weight: 400; }
+
+/* Douze colonnes ne tiennent pas sur un écran étroit. On fait défiler le TABLEAU,
+   jamais la page entière. Les attributs `tabindex="0"` et `role="region"` sont posés
+   sur le div DANS LE HTML — sans eux, le défilement serait réservé à la souris. */
+.tableau-large {
+  overflow-x: auto;
+  margin-top: .5rem;
+}
+/* La zone est focalisable : son focus doit donc se voir. Un `outline: none` ici
+   rendrait la navigation au clavier invisible. */
+.tableau-large:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.tableau-large table { min-width: 60rem; }
+
+/* Une cotation périmée est signalée par le TEXTE de la cellule « Nom ».
+   Ce fond n'est qu'un renfort : à lui seul, il ne porterait aucune information
+   pour une personne qui ne perçoit pas les couleurs (RGAA 3.1). */
+tbody tr.perimee { background: #fdf6e3; }
+tbody tr.perimee:hover { background: #f8edd0; }
+
+/* --- Exposition par devise (lot 2) --------------------------------------- */
+#bloc-exposition { margin-top: 1.75rem; }
+#bloc-exposition h2 { font-size: 1.1rem; margin: 0 0 .3rem; }
+/* La précision « cotation, pas exposition économique » n'est pas un détail
+   décoratif : sans elle le chiffre se lit de travers. Elle reste donc lisible,
+   pas réduite à une note de bas de page grisée. */
+.precision {
+  margin: 0 0 .75rem;
+  font-size: .9rem;
+  color: var(--texte-doux);
+  max-width: 55ch;
+}
+#exposition { display: grid; grid-template-columns: auto 1fr; gap: .35rem 1rem; margin: 0; }
+#exposition dt { font-weight: 600; margin: 0; }
+#exposition dd { margin: 0; color: var(--texte-doux); }
+
+/* --- Bandeau de fraîcheur des données (C20) -------------------------------
+   La pastille est PUREMENT décorative : elle porte aria-hidden dans le HTML et
+   n'ajoute aucune information que le texte ne dise déjà. Si l'utilisateur ne
+   distingue pas les couleurs, ou si le CSS ne charge pas, le message reste
+   complet — c'est la condition posée par RGAA 3.1 / WCAG 1.4.1. */
+.fraicheur {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin: 0 0 .75rem;
+  font-size: .9rem;
+  color: var(--texte-doux);
+}
+.pastille {
+  width: .7rem;
+  height: .7rem;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  /* Une bordure sombre garde la pastille visible en contraste élevé forcé,
+     où les couleurs de fond sont écrasées par le système. */
+  border: 1px solid currentColor;
+  background: currentColor;
+}
+.fraicheur-vert   { color: var(--frais-ok); }
+.fraicheur-orange { color: var(--frais-attention); }
+.fraicheur-rouge  { color: var(--alerte); font-weight: 600; }

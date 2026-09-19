@@ -1,13 +1,23 @@
 # RITA — projet fil rouge RNCP 37827
 
+@AGENTS.md
+
 > ## 🚦 À FAIRE AU DÉBUT DE CHAQUE SESSION — avant toute autre chose
 >
 > 1. **Lire `ETAT.md`** (à la racine, à côté de ce fichier).
-> 2. **Annoncer à Era, en 3 lignes** : où on s'est arrêté · la prochaine action · les verrous.
-> 3. **Ne rien commencer d'autre** tant que ces 3 lignes ne sont pas dites.
+> 2. **Vérifier le réel** : `git log --oneline -5` · `git status` · `ls logs/`.
+>    Ne jamais réciter `ETAT.md` sans le confronter aux faits.
+> 3. **Invoquer la skill `boussole`** — et poser LA tâche principale de la session.
+> 4. **Annoncer à Era, en 3 lignes** : où on s'est arrêté · la prochaine action · les verrous.
+> 5. **Ne rien commencer d'autre** tant que ces lignes ne sont pas dites.
 >
 > Era peut avoir laissé passer un jour ou trois semaines. Il ne doit **jamais** avoir à
 > réexpliquer où on en était : c'est le travail de ce dépôt, pas le sien.
+>
+> 🧰 **Quelle skill pour quoi** → `C:\Users\kanda\.claude\CLAUDE.md`, section « Les skills ».
+> Pour ce dépôt : `langgraph-agents` · `fastapi-templates` · `rag-implementation` ·
+> `mcp-builder` · `agent-standard` · `test-driven-development` · `projet-rncp` ·
+> **`superpowers:verification-before-completion`** avant tout « c'est fini ».
 >
 > ## 🏁 À FAIRE À LA FIN DE CHAQUE SESSION
 >
@@ -65,12 +75,12 @@ pipelines/  ingestion (ingest.py)
 scripts/    planification de la collecte
 sources/    les 5 types de sources C1
 src/        appel du modèle (llm.py)
-tests/      pytest — 18 fichiers
+tests/      pytest — 30 fichiers
 ```
 
 ## Chiffres à ne jamais réinventer — les vérifier avant de les citer
 
-**186** tests · **8** tables · **1** vue · **15** index · **273 608** lignes ·
+**458** tests collectés (19/09/2026) · **8** tables · **1** vue · **15** index · **273 608** lignes ·
 **111** valeurs · **112** alias · **7** positions · **11** partitions Parquet ·
 OpenAPI **3.1.0** · **8** chemins documentés
 
@@ -90,24 +100,22 @@ OpenAPI **3.1.0** · **8** chemins documentés
 - Signaler les manques franchement. Un document qui ne signale aucune faiblesse n'est pas
   crédible devant un jury.
 
-## Environnement — pièges de cette machine
+## Commandes et environnement
 
-- `venv` et `pip.exe` bloqués par AppLocker → utiliser `C:\Python314\python.exe -m pytest -q`
-- PostgreSQL sur le port **5433**
-- PySpark exige un **JDK 21** dans `JAVA_HOME` — sinon `tests/test_spark.py` est *ignoré*,
-  pas en échec
-- Fichiers destinés à Excel ou Word : **nom ASCII pur**, sans tiret long `—`, sans accents,
-  sans parenthèses — sinon Windows refuse de les ouvrir
+Voir `AGENTS.md` — un seul endroit, lu par tout agent.
 
-## Commandes
+## 📤 Envoyer un livrable — le lien du TAG, jamais celui du dépôt
 
-```powershell
-C:\Python314\python.exe -m pytest -q                          # les 186 tests
-C:\Python314\python.exe -m evals.mesurer_gardefou             # taux de blocage + faux positifs
-C:\Python314\python.exe -X utf8 -m pipelines.ingest --simulation
-C:\Python314\python.exe -m uvicorn api.main:app --reload      # API sur :8000
-C:\Python314\python.exe scripts\verifier_liens.py             # liens internes + externes
+`main` est la branche par défaut et elle **avance** : au 18/08 elle comptait 29 commits de
+plus que le tag `livrable-E1-v1`. Qui ouvre `github.com/Ganda15/rita-agent` voit le projet
+**d'aujourd'hui**, pas le livrable.
+
 ```
+❌  https://github.com/Ganda15/rita-agent
+✅  https://github.com/Ganda15/rita-agent/tree/livrable-E1-v1
+```
+
+Procédure complète, gabarit de message et vérifications : **`docs/FILE-DE-VALIDATION.md`**.
 
 ## 🔗 Avant CHAQUE envoi de livrable — vérifier les liens
 

@@ -10,22 +10,25 @@ jobs:
   pytest:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
       - name: Installer les dépendances
         run: pip install -r requirements.txt
-      - name: Lancer les tests
-        run: pytest -v
+      - name: Lancer les tests et mesurer la couverture
+        # Le seuil vit dans `.coveragerc` (`fail_under = 80`), pas ici : un seuil
+        # écrit dans le workflow serait invisible depuis la machine de développement,
+        # et on découvrirait la régression en CI plutôt qu'avant de pousser.
+        run: pytest -v --cov --cov-report=term-missing
 
   # Porte de qualité : la mesure des garde-fous bloque le merge si elle régresse.
   # Standard Velmo 2.0 — une porte d'évaluation à chaque transition de branche.
   evals:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
       - name: Installer les dépendances

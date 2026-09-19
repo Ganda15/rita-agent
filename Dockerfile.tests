@@ -1,0 +1,49 @@
+# =============================================================================
+# RITA — image d'EXÉCUTION DES TESTS
+#
+# Pourquoi une image séparée de `Dockerfile` :
+#
+#   `Dockerfile` produit l'image LIVRÉE. Elle ne contient ni pytest, ni les tests,
+#   ni pyspark — c'est voulu (C15, éco-conception). On ne peut donc pas y lancer la
+#   suite sans la dénaturer.
+#
+#   Cette image-ci est l'inverse : tout le dépôt, tous les outils, rien de livré.
+#
+# Pourquoi elle existe du tout — la raison est datée du 02/09/2026 :
+#
+#   **Smart App Control** (Windows 11 Home) refuse de charger
+#   `grpc/_cython/cygrpc.cp314-win_amd64.pyd` : une roue **cp314** trop récente pour
+#   avoir une réputation. Or `rag/indexation.py` importe `chromadb`, qui tire
+#   `opentelemetry`, qui tire `grpc`. Conséquence mesurée : **6 fichiers de tests ne
+#   se collectent plus** sur le poste, et la suite tombe de 407 à 266.
+#   Le conteneur tourne en **Python 3.13**, dont les roues sont largement diffusées :
+#   il n'est pas soumis à ce blocage. Ce n'est donc pas un contournement de sécurité,
+#   c'est un environnement d'exécution différent — et c'est celui de la production.
+#
+# Construire : docker build -f Dockerfile.tests -t rita-tests .
+# Lancer     : docker run --rm rita-tests
+# Un fichier : docker run --rm rita-tests python -m pytest tests/test_mesurer_rag.py -q
+# =============================================================================
+
+FROM python:3.13-slim
+
+RUN apt-get update \
+ && apt-get install --no-install-recommends -y gcc libpq-dev \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# pyspark (492 Mo) est retiré : il n'est importé qu'à l'intérieur d'une fonction de
+# `bigdata/session_spark.py`, et ses tests d'intégration sont ignorés sans JDK — ici
+# comme sur le poste. L'embarquer coûterait un demi-gigaoctet pour des tests sautés.
+COPY requirements.txt .
+RUN grep -v "^pyspark" requirements.txt > /tmp/req-tests.txt \
+ && pip install --no-cache-dir -r /tmp/req-tests.txt
+
+COPY . .
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app
+
+CMD ["python", "-m", "pytest", "-q"]

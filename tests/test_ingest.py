@@ -82,9 +82,12 @@ def test_ecb_simulation_n_ecrit_rien():
 # --- articles -----------------------------------------------------------------
 
 def test_articles_dedoublonne_sur_le_lien():
-    """Deux flux reprennent souvent la même dépêche — le lien est la clé métier."""
+    """Deux flux reprennent souvent la même dépêche — le lien est la première clé.
+
+    Depuis le 06/09/2026 il y en a une seconde, (titre, jour) : le troisième article
+    porte donc un titre distinct, sinon il serait — à raison — compté comme un jumeau."""
     articles = [_Article("https://a.fr/1"), _Article("https://a.fr/1"),
-                _Article("https://a.fr/2")]
+                _Article("https://a.fr/2", titre="Un autre article, le meme jour")]
     with patch("sources.rss.collecter",
                return_value={"articles": articles, "articles_bloques": [],
                              "flux_ok": ["bfm"], "flux_echec": [], "total": 3}):
@@ -113,6 +116,38 @@ def test_articles_sans_lien_sont_ignores():
                              "flux_ok": ["bfm"], "flux_echec": [], "total": 1}):
         b = ingest.etape_articles(_curseur(), simulation=False)
     assert b.ecrites == 0
+
+
+def test_articles_dedoublonne_sur_le_titre_et_la_date_dans_le_lot():
+    """Mesuré le 06/09/2026 : 26 lignes en trop sur 566 — même titre, lien différent
+    (Google News donne parfois deux adresses pour un même papier). Le lien ne suffit pas.
+    La clé est (titre normalisé, jour de publication) : 25 groupes sur 26 partagent le
+    jour ; le 26ᵉ (« BNP : la tendance baissière peut reprendre », 28/08 et 02/09) est
+    une vraie analyse récurrente et doit rester."""
+    a = _Article("https://a.fr/1", titre="L'Oréal bondit en Bourse")
+    b = _Article("https://b.fr/9", titre="L’Oreal bondit en bourse")      # apostrophe typographique, sans accent
+    c = _Article("https://c.fr/3", titre="L'Oréal bondit en Bourse")
+    c.publie_le = "2026-08-02T06:00:00+00:00"                              # même titre, autre jour : conservé
+    with patch("sources.rss.collecter",
+               return_value={"articles": [a, b, c], "articles_bloques": [],
+                             "flux_ok": ["bfm"], "flux_echec": [], "total": 3}):
+        bilan = ingest.etape_articles(_curseur(), simulation=False)
+
+    assert bilan.ecrites == 2
+    assert bilan.rejetees == 1
+
+
+def test_articles_deja_en_base_au_meme_titre_et_jour_sont_ignores():
+    """Deux jumeaux ne doivent pas non plus entrer à deux collectes différentes."""
+    cur = _curseur()
+    cur.fetchall.side_effect = [[], [("L'Oréal bondit en Bourse", "2026-08-01")]]
+    with patch("sources.rss.collecter",
+               return_value={"articles": [_Article("https://z.fr/1", titre="L'Oreal bondit en bourse")],
+                             "articles_bloques": [], "flux_ok": ["bfm"], "flux_echec": [], "total": 1}):
+        bilan = ingest.etape_articles(cur, simulation=False)
+
+    assert bilan.ecrites == 0
+    assert bilan.rejetees == 1
 
 
 # --- cours scrapés ------------------------------------------------------------
@@ -216,3 +251,60 @@ def test_la_connexion_est_fermee_meme_en_cas_d_erreur():
         ingest.executer()
 
     conn.close.assert_called_once()
+
+
+# --- l'indexation du RAG, étape à part entière (E5) ---------------------------
+
+def test_l_indexation_est_une_etape_du_pipeline():
+    """Le défaut qu'elle corrige, mesuré le 02/09/2026 : la collecte de 19h00 écrivait
+    130 articles que l'index ne voyait pas (309 indexés pour 439 en base). Le RAG
+    cherchait dans un corpus périmé d'un peu plus chaque jour, et rien ne le signalait.
+    `rag/indexation.py` disait pourtant déjà, dans sa docstring, qu'on pouvait la
+    relancer après chaque collecte."""
+    assert "indexation" in ingest.ETAPES
+
+
+def test_l_indexation_en_simulation_ne_touche_pas_a_l_index():
+    """Le mode simulation doit rester vrai de bout en bout. Un `--simulation` qui
+    réécrit l'index serait pire qu'inutile : il donnerait confiance à tort."""
+    with patch("rag.indexation.indexer") as indexer:
+        bilan = ingest.etape_indexation(_curseur(), simulation=True)
+
+    indexer.assert_not_called()
+    assert bilan.ok
+
+
+def test_l_indexation_rend_les_chiffres_de_l_index_pas_un_ok():
+    from rag.indexation import Resultat
+
+    with patch("rag.indexation.indexer",
+               return_value=Resultat(lus=439, indexes=439, ignores_bloques=0,
+                                     avec_ticker=184)) as indexer:
+        bilan = ingest.etape_indexation(_curseur(), simulation=False)
+
+    indexer.assert_called_once()
+    assert bilan.lues == 439
+    assert bilan.ecrites == 439
+    assert bilan.ok
+
+
+def test_l_indexation_indisponible_n_emporte_pas_la_collecte():
+    """⚠️ LE test qui protège la collecte de 19h00. Sur le poste d'Era, chromadb ne se
+    charge pas (Smart App Control refuse une roue cp314 sans réputation). L'import doit
+    donc être TARDIF : s'il était en tête de `pipelines/ingest.py`, le module entier
+    deviendrait inimportable et la collecte quotidienne — taux, cotations, articles —
+    s'arrêterait complètement. Ici l'étape échoue seule, et les autres passent."""
+    def indexation_ko(cur, simulation):
+        raise ImportError("DLL load failed while importing cygrpc")
+
+    with patch.dict(ingest.ETAPES,
+                    {"indexation": indexation_ko,
+                     "rss": lambda cur, sim: ingest.Bilan("rss", lues=30, ecrites=30)},
+                    clear=True), \
+         patch("pipelines.ingest.psycopg2.connect", return_value=MagicMock()):
+        r = ingest.executer(etapes=["indexation", "rss"])
+
+    assert r["etapes_ok"] == 1
+    assert r["bilans"][0].ok is False
+    assert "ImportError" in r["bilans"][0].erreur
+    assert r["bilans"][1].ecrites == 30

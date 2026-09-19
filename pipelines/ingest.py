@@ -37,9 +37,12 @@ Usage :
 from __future__ import annotations
 
 import argparse
+import functools
 import logging
 import os
+import re
 import time
+import unicodedata
 from dataclasses import dataclass, field
 
 import psycopg2
@@ -70,25 +73,32 @@ class Bilan:
 # [3] RÈGLES LOGIQUES DE TRAITEMENT — une fonction par source
 # =============================================================================
 
-def etape_taux_change(cur, simulation: bool) -> Bilan:
-    """BCE -> table `taux_change`. Homogénéisation : 1 EUR = N unités de devise."""
-    from sources.ecb import fetch_taux_change
+def etape_taux_change(cur, simulation: bool,
+                      periode: tuple[str, str] | None = None) -> Bilan:
+    """BCE -> table `taux_change`. Homogénéisation : 1 EUR = N unités de devise.
+
+    `periode=(debut, fin)` : rattrapage d'une plage de jours, une ligne par jour publié.
+    Sans période : la dernière observation, comportement nocturne inchangé.
+    """
+    from sources.ecb import fetch_taux_change, fetch_taux_change_periode
 
     b = Bilan("taux_change (BCE)")
     lignes = []
     for devise in DEVISES_SUIVIES:
         try:
-            t = fetch_taux_change(devise)
-            lignes.append((t["devise"], t["date"], t["valeur"]))
-            b.lues += 1
+            recus = (fetch_taux_change_periode(devise, *periode) if periode
+                     else [fetch_taux_change(devise)])
+            lignes.extend((t["devise"], t["date"], t["valeur"]) for t in recus)
+            b.lues += len(recus)
         except Exception as erreur:                       # noqa: BLE001
             b.rejetees += 1
             b.details.append(f"{devise} : {type(erreur).__name__}")
 
     # L'euro vaut 1 euro. Évident — mais sans cette ligne, la jointure de valorisation
     # ne trouve aucun taux pour les positions en EUR et retombe sur le COALESCE.
-    if lignes:
-        lignes.append(("EUR", lignes[0][1], 1.0))
+    # Une ligne PAR jour présent : la jointure cherche le taux du jour, pas « un » taux.
+    for jour in sorted({l[1] for l in lignes}):
+        lignes.append(("EUR", jour, 1.0))
 
     if lignes and not simulation:
         execute_values(cur, """
@@ -175,32 +185,82 @@ def etape_cotations(cur, simulation: bool) -> Bilan:
     return b
 
 
-def etape_articles(cur, simulation: bool) -> Bilan:
+def etape_articles(cur, simulation: bool, periode: tuple[str, str] | None = None,
+                   limite_par_flux: int | None = None) -> Bilan:
     """RSS -> table `article`.
 
     Les articles porteurs d'injection sont **conservés et marqués**, pas supprimés :
     la colonne `bloque_injection` permet de les auditer, l'index partiel les exclut
     des lectures destinées au LLM.
+
+    `periode=(debut, fin)` : rattrapage — les flux Google News par entreprise reçoivent
+    une fenêtre `after:`/`before:` (voir `flux_par_entreprise`). Les trois flux généraux
+    ne savent pas remonter dans le temps : ils rendent ce qu'ils rendent ce jour-là.
     """
-    from sources.rss import collecter
+    from sources.rss import collecter, flux_par_entreprise
 
     b = Bilan("articles (RSS)")
-    r = collecter()
+
+    # Un flux Google News par entreprise DÉTENUE, en plus des trois flux d'économie
+    # générale. Mesuré le 28/08 : sur 163 articles, 22 seulement citaient une valeur
+    # suivie — le RAG interrogé sur « les résultats de LVMH » ne trouvait donc rien.
+    #
+    # Les positions, pas les 111 valeurs suivies : 111 flux, ce seraient 111 requêtes
+    # chaque soir pour des titres sur lesquels RITA ne rédige jamais.
+    #
+    # ⚠️ Si la lecture des positions échoue, la collecte générale continue. Une source
+    # d'enrichissement ne doit pas faire tomber la collecte qu'elle enrichit — même
+    # principe que le front, où une panne des indicateurs n'emporte pas le portefeuille.
+    flux_entreprises: dict[str, str] = {}
+    try:
+        cur.execute("""
+            SELECT DISTINCT v.nom_officiel
+            FROM   position p
+            JOIN   valeur   v ON v.ticker = p.ticker
+            WHERE  v.nom_officiel IS NOT NULL
+        """)
+        flux_entreprises = flux_par_entreprise([l[0] for l in cur.fetchall()], periode=periode)
+    except Exception as erreur:              # noqa: BLE001 — dégradation volontaire
+        b.details.append(f"flux entreprises indisponibles ({type(erreur).__name__})")
+
+    # 10 items par flux suffisent chaque soir ; sur une période de plusieurs jours,
+    # Google News en rend jusqu'à 100 — on les prend tous, le dédoublonnage trie.
+    if limite_par_flux is None:
+        limite_par_flux = 100 if periode else 10
+    r = collecter(flux_supplementaires=flux_entreprises, limite_par_flux=limite_par_flux)
     retenus, bloques = r["articles"], r["articles_bloques"]
     b.lues = r["total"]
     total_flux = len(r["flux_ok"]) + len(r["flux_echec"])
-    b.details.append(f"flux OK {len(r['flux_ok'])}/{total_flux}")
+    b.details.append(f"flux OK {len(r['flux_ok'])}/{total_flux}"
+                     f" (dont {len(flux_entreprises)} par entreprise)")
 
     lignes = [(a.source, a.titre, a.lien, a.publie_le or None, a.resume,
                a.bloque, a.motifs_injection or None)
               for a in retenus + bloques if a.lien]
 
-    # Dédoublonnage AVANT insertion : deux flux reprennent souvent la même dépêche.
-    vus, uniques = set(), []
+    # Dédoublonnage AVANT insertion, sur DEUX clés :
+    #  - le lien (deux flux reprennent souvent la même dépêche) — depuis l'origine ;
+    #  - (titre normalisé, jour) — depuis le 06/09/2026, voir `cle_article`. Contre le lot
+    #    ET contre ce que la base contient déjà pour les mêmes jours : deux jumeaux
+    #    peuvent arriver à deux collectes différentes.
+    jours = sorted({l[3][:10] for l in lignes if l[3]})
+    deja_en_base: set[tuple[str, str]] = set()
+    if jours:
+        cur.execute("""
+            SELECT titre, publie_le::date
+            FROM   article
+            WHERE  publie_le::date = ANY(%s::date[])
+        """, (jours,))
+        deja_en_base = {cle_article(titre, str(jour)) for titre, jour in cur.fetchall()}
+
+    vus_liens, vus_cles, uniques = set(), set(), []
     for l in lignes:
-        if l[2] not in vus:
-            vus.add(l[2])
-            uniques.append(l)
+        cle = cle_article(l[1], l[3])
+        if l[2] in vus_liens or cle in vus_cles or cle in deja_en_base:
+            continue
+        vus_liens.add(l[2])
+        vus_cles.add(cle)
+        uniques.append(l)
     b.rejetees = len(lignes) - len(uniques)
 
     if uniques and not simulation:
@@ -213,6 +273,27 @@ def etape_articles(cur, simulation: bool) -> Bilan:
     if bloques:
         b.details.append(f"{len(bloques)} bloque(s) par le garde-fou d'injection")
     return b
+
+
+def cle_article(titre: str, publie_le: str | None) -> tuple[str, str]:
+    """La clé d'unicité MÉTIER d'un article : (titre normalisé, jour de publication).
+
+    Le lien ne suffit pas. Mesuré le 06/09/2026 sur 566 articles : **26 lignes en trop**
+    portaient le même titre sous deux liens (Google News fournit parfois deux adresses
+    pour un même papier). Deux jumeaux dans l'index occupent deux places du top-k et
+    doublent le poids BM25 d'un même texte.
+
+    Pourquoi le JOUR fait partie de la clé : 25 groupes de doublons sur 26 partagent le
+    jour de publication ; le 26ᵉ — « BNP PARIBAS : la tendance baissière peut reprendre »,
+    le 28/08 puis le 02/09 — est une analyse récurrente, deux papiers distincts. Sans le
+    jour, on l'aurait supprimé à tort.
+
+    Normalisation : majuscules, sans accents, tout ce qui n'est pas lettre ou chiffre
+    devient un espace — « L'Oréal » et « L’Oreal » donnent la même clé.
+    """
+    decompose = unicodedata.normalize("NFD", (titre or "").upper())
+    sans_accents = "".join(c for c in decompose if unicodedata.category(c) != "Mn")
+    return (re.sub(r"[^A-Z0-9]+", " ", sans_accents).strip(), (publie_le or "")[:10])
 
 
 def etape_cours_scrapes(cur, simulation: bool) -> Bilan:
@@ -271,11 +352,64 @@ def etape_cours_scrapes(cur, simulation: bool) -> Bilan:
     return b
 
 
+def etape_indexation(cur, simulation: bool) -> Bilan:
+    """Réindexe le corpus pour le RAG, après que les articles ont été écrits.
+
+    ## Le défaut que cette étape corrige
+
+    Mesuré le 02/09/2026 : **309 documents indexés pour 439 articles en base**. La
+    collecte de 19h00 écrivait des articles tous les soirs et **rien ne réindexait
+    jamais** — ni le pipeline, ni `scripts/collecte-quotidienne.cmd`. Le RAG cherchait
+    donc dans un corpus périmé d'un peu plus chaque jour, sans qu'aucun signal ne le
+    dise. `rag/indexation.py` annonçait pourtant, dans sa propre docstring, qu'elle est
+    *« idempotente, on peut donc la relancer après chaque collecte de 19h00 »*.
+
+    L'ordre compte : cette étape vient **après** `rss` et `scraping`, sinon elle
+    indexerait le corpus d'avant la collecte du soir.
+
+    ## Pourquoi l'import est tardif — ce n'est pas un détail de style
+
+    `rag.indexation` importe `chromadb`, qui tire `opentelemetry`, qui tire `grpc`. Sur
+    le poste d'Era, **Smart App Control refuse de charger `cygrpc`** (roue `cp314` sans
+    réputation). Un import en tête de module rendrait `pipelines/ingest.py` entièrement
+    inimportable, et la collecte quotidienne — taux, cotations, articles, scraping —
+    **s'arrêterait complètement**. Avec l'import ici, seule cette étape échoue ; le
+    pipeline attrape l'erreur, la journalise, et les autres étapes passent.
+
+    C'est la même convention que `bigdata/session_spark.py`, qui n'importe `pyspark`
+    qu'à l'intérieur d'une fonction pour la même raison.
+
+    Le curseur n'est pas utilisé : `indexer()` ouvre sa propre connexion, parce qu'elle
+    relit la table `article` entière et n'a rien à écrire en base.
+    """
+    del cur
+
+    if simulation:
+        return Bilan("indexation", details=["simulation : index laisse intact"])
+
+    from rag.indexation import indexer          # tardif — voir la docstring
+
+    resultat = indexer()
+    return Bilan(
+        "indexation",
+        lues=resultat.lus,
+        ecrites=resultat.indexes,
+        rejetees=resultat.ignores_bloques,
+        details=[f"{resultat.avec_ticker} citant une valeur suivie"],
+    )
+
+
+# Les étapes qui savent rattraper une période (argument `periode=(debut, fin)`).
+# `cotations` n'en a pas besoin : elle est déjà incrémentale depuis la dernière séance.
+ETAPES_AVEC_PERIODE = ("ecb", "rss")
+
 ETAPES = {
     "ecb": etape_taux_change,
     "cotations": etape_cotations,
     "rss": etape_articles,
     "scraping": etape_cours_scrapes,
+    # Après rss et scraping : on indexe ce qui vient d'être collecté, pas l'état d'avant.
+    "indexation": etape_indexation,
 }
 
 
@@ -284,12 +418,15 @@ ETAPES = {
 # =============================================================================
 
 def executer(dsn: str | None = None, etapes: list[str] | None = None,
-             simulation: bool = False) -> dict:
+             simulation: bool = False, periode: tuple[str, str] | None = None) -> dict:
     """Lance le pipeline d'agrégation.
 
     Une étape qui échoue **n'interrompt pas** les autres : une panne de la BCE ne doit pas
     priver le briefing des actualités. Chaque étape a sa transaction — un échec en fin de
     parcours n'annule pas ce qui a réussi avant.
+
+    `periode=(debut, fin)` : rattrapage d'une plage de jours, transmis aux seules étapes
+    de `ETAPES_AVEC_PERIODE` ; les autres sont appelées exactement comme chaque soir.
     """
     choisies = etapes or list(ETAPES)
     inconnues = [e for e in choisies if e not in ETAPES]
@@ -304,8 +441,11 @@ def executer(dsn: str | None = None, etapes: list[str] | None = None,
     try:
         for nom in choisies:
             try:
+                fonction = ETAPES[nom]
+                if periode and nom in ETAPES_AVEC_PERIODE:
+                    fonction = functools.partial(fonction, periode=periode)
                 with conn.cursor() as cur:
-                    bilans.append(ETAPES[nom](cur, simulation))
+                    bilans.append(fonction(cur, simulation))
                 # [6] sauvegarde : un commit PAR étape
                 conn.rollback() if simulation else conn.commit()
             except Exception as erreur:                   # noqa: BLE001
@@ -341,13 +481,20 @@ if __name__ == "__main__":                                # [1] point de lanceme
     parseur.add_argument("--etapes", default=None,
                          help="liste separee par des virgules : " + ",".join(ETAPES))
     parseur.add_argument("--simulation", action="store_true", help="n'ecrit rien en base")
+    parseur.add_argument("--du", default=None, help="rattrapage : premier jour, AAAA-MM-JJ")
+    parseur.add_argument("--au", default=None, help="rattrapage : dernier jour, AAAA-MM-JJ")
     args = parseur.parse_args()
+    if bool(args.du) != bool(args.au):
+        parseur.error("--du et --au vont ensemble")
 
     r = executer(args.dsn,
                  args.etapes.split(",") if args.etapes else None,
-                 args.simulation)
+                 args.simulation,
+                 periode=(args.du, args.au) if args.du else None)
 
     mode = "SIMULATION (rien n'est ecrit)" if r["simulation"] else "EXECUTION"
+    if args.du:
+        mode += f"  --  RATTRAPAGE du {args.du} au {args.au}"
     print("\n" + "=" * 68)
     print(f"PIPELINE D'AGREGATION  --  {mode}")
     print("=" * 68)

@@ -62,6 +62,38 @@ def verifier_interne(source: Path, cible: str) -> str | None:
     return None
 
 
+def verifier_github_prive(url: str) -> str | None:
+    """Vérifie un lien vers le dépôt privé du projet, via `gh` (authentifié).
+
+    ⚠️ Écrit le 18/08/2026 après un **faux positif de ce script**. Le dépôt est privé :
+    une requête HTTP anonyme reçoit **404** sur un lien pourtant valide. Le script
+    signalait donc comme cassé le lien du tag `livrable-E1-v1` — celui-là même qu'on
+    envoie au formateur.
+
+    *Un vérificateur qui crie au loup sur des liens corrects finit par être ignoré, et
+    c'est alors le vrai lien cassé qui passe.*
+    """
+    import re
+    import subprocess
+
+    m = re.match(r"https://github\.com/([^/]+)/([^/]+)/tree/([^/?#]+)", url)
+    if not m:
+        return "HTTP 404 (dépôt privé, forme d'URL non vérifiable par gh)"
+    proprietaire, depot, reference = m.groups()
+
+    try:
+        r = subprocess.run(
+            ["gh", "api", f"repos/{proprietaire}/{depot}/contents/?ref={reference}"],
+            capture_output=True, timeout=DELAI_S,
+        )
+    except Exception as erreur:
+        return f"HTTP 404 et gh injoignable ({type(erreur).__name__})"
+
+    if r.returncode != 0:
+        return f"introuvable meme via gh : la reference '{reference}' n'existe pas"
+    return None      # la référence existe : le lien est bon pour qui a l'accès
+
+
 def verifier_externe(url: str) -> str | None:
     import httpx
     try:
@@ -69,6 +101,12 @@ def verifier_externe(url: str) -> str | None:
                       headers={"User-Agent": AGENT})
     except Exception as erreur:
         return f"injoignable ({type(erreur).__name__})"
+
+    # Un 404 sur notre propre dépôt GitHub ne prouve rien : il est privé.
+    # On retente avec `gh`, qui est authentifié.
+    if r.status_code == 404 and "github.com/Ganda15/" in url:
+        return verifier_github_prive(url)
+
     return None if r.status_code < 400 else f"HTTP {r.status_code}"
 
 

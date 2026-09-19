@@ -1,0 +1,101 @@
+# Configuration de la mesure de couverture — compétence C12
+#
+# C12 exige que « les tests soient intégrés et respectent la couverture souhaitée
+# ÉTABLIE ». Le mot « établie » impose de fixer un objectif ET de le justifier.
+# Ce fichier porte le périmètre ET le seuil : `fail_under = 90`, tout en bas, avec
+# l'historique qui le justifie.
+#
+# ⚠️ Corrigé le 07/09/2026. Cette ligne annonçait le seuil dans `pyproject.toml` — c'était
+#    faux, `pyproject.toml` ne contient aucun `fail_under`. Un commentaire qui envoie
+#    chercher une valeur là où elle n'est pas coûte plus cher qu'une absence de commentaire :
+#    le lecteur conclut que le seuil n'existe pas.
+
+[run]
+source = agents, api, bigdata, db, evals, graph, guardrails, indicateurs, pipelines, sources, src
+
+omit =
+    # ⚠️ Les FICHIERS DE TESTS sont exclus, et c'est le point le plus important
+    #    de ce fichier.
+    #
+    #    Mesurés le 19/08/2026 : couverture **78 %** en les incluant, **67 %** sans.
+    #    Les 11 points d'écart sont un mirage — un fichier de tests est couvert à
+    #    100 % par construction, puisqu'il s'exécute. L'inclure revient à se noter
+    #    soi-même sur sa propre copie.
+    tests/*
+    */__init__.py
+
+    # --- Le dossier bigdata/, en entier -------------------------------------
+    # Exclu parce qu'il ne fait pas partie du service livré, pas pour améliorer
+    # le chiffre. L'argument ne vient pas d'ici : `.dockerignore` écarte déjà
+    # **tout `bigdata/`** de l'image, parce que `pyspark` (492 Mo) n'y est pas
+    # installé. Ce code NE PEUT PAS tourner dans le système livré.
+    #
+    # ⚠️ **Corrigé le 19/08/2026, après un échec de la CI.** La première version
+    #    n'excluait que 3 des 5 fichiers du dossier — une incohérence : le même
+    #    argument valait pour les cinq. Conséquence mesurée :
+    #
+    #      local : 82 %  (les 6 tests d'intégration Spark tournent)
+    #      CI    : 79 %  (ils sont IGNORÉS — le jeu Parquet est gitignoré)
+    #
+    #    Le seuil de 80 % avait donc été fixé sur une mesure **dépendante de
+    #    l'environnement**, et la CI est tombée au premier passage.
+    #
+    # 🔑 **Une couverture qui change selon la machine ne peut pas servir de
+    #    garde-fou** : le chiffre doit être le même partout, sinon il ne mesure
+    #    pas le code mais la configuration de celui qui le lance.
+    bigdata/*
+    #
+    # ⚠️ `db/importer.py` n'est PAS exclu, alors qu'il est aussi lancé à la main :
+    #    un critère de C4 exige qu'il soit **fonctionnel**. Son 0 % est un vrai
+    #    manque, déclaré comme tel — pas quelque chose à faire disparaître par
+    #    une ligne de configuration.
+
+[report]
+# Une ligne `if TYPE_CHECKING:` ou un `raise NotImplementedError` n'est pas du code
+# non testé : c'est du code qui ne s'exécute jamais.
+exclude_lines =
+    pragma: no cover
+    if TYPE_CHECKING:
+    if __name__ == .__main__.:
+    raise NotImplementedError
+
+# Affiche les numéros de lignes non couvertes : un pourcentage dit qu'il manque
+# quelque chose, ces numéros disent QUOI.
+show_missing = True
+skip_covered = False
+precision = 0
+
+# =============================================================================
+# LE SEUIL — « la couverture souhaitée ÉTABLIE » (C12)
+#
+# Fixé à **90 %**, et voici d'où vient ce nombre.
+#
+# Historique :
+#   19/08/2026 (mesure initiale)  81 %  — seuil posé à 80 %
+#   19/08/2026 (lot 3 indicateurs) 83 %  — seuil inchangé, la marge s'élargit
+#   19/08/2026 (les deux manques comblés) 92 % — seuil relevé à 90 %
+#
+# Les deux manques identifiés à la mesure initiale sont désormais couverts :
+#   db/importer.py           85 instructions, 0 % → 100 %  (tests/test_importer.py)
+#   evals/mesurer_sortie.py  10 instructions, 0 % → 100 %  (tests/test_evals.py)
+# Mesure réelle après fermeture : **92 %** (1016 instructions, 79 non couvertes).
+# Le seuil est posé **2 points sous la mesure** — même marge relative que le
+# premier seuil (80 sous 81/83) : assez serré pour qu'une régression le
+# déclenche, assez lâche pour qu'un refactoring légitime ne casse pas la CI
+# sur une ligne.
+#
+# 🔑 **Le seuil suit la mesure, jamais l'inverse.** Il n'a été relevé qu'une
+#    fois les deux manques réellement fermés et le nouveau chiffre confirmé —
+#    pas anticipé sur une promesse.
+#
+# ⚠️ Ce chiffre est **identique en local et en intégration continue** — c'est la
+#    condition pour qu'il serve de garde-fou. La première version donnait 82 %
+#    en local et 79 % en CI, et la CI est tombée au premier passage (voir
+#    l'exclusion de `bigdata/*` ci-dessus).
+#
+# Manques restants, aucun ne justifie d'exclusion :
+#   db/rgpd_purge.py   73 %  — 9 lignes non couvertes, purge RGPD peu exercée
+#   pipelines/ingest.py 78 % — 31 lignes, chemins d'erreur peu exercés
+#   src/llm.py         72 %  — 11 lignes, cascade de fournisseurs peu exercée
+# =============================================================================
+fail_under = 90

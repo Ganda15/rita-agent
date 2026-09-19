@@ -45,6 +45,52 @@ FLUX = {
 
 DELAI_S = 20.0
 
+# --- Flux par entreprise (ajouté le 28/08/2026 pour le RAG) -------------------
+#
+# **Le problème mesuré.** Les trois flux ci-dessus sont des flux d'économie *générale*.
+# Sur 163 articles indexés le 28/08, **22 seulement** citaient une des 111 valeurs
+# suivies — soit 13 %. Un RAG interrogé sur « les résultats de LVMH » ne trouvait donc
+# rien de pertinent et rendait le *moins mauvais* article du corpus : une dépêche sur
+# une péniche, à une distance de 0,489. (`evidence/C17/preuve-rag-indexation.md`)
+#
+# **Le correctif** : un flux Google News par entreprise réellement détenue. Google News
+# est une recherche, pas une rédaction : elle agrège Boursorama, Les Échos et Zonebourse
+# — les trois sources qui nous renvoient un 403 en direct. On obtient donc leur contenu
+# par une porte ouverte, sans contourner quoi que ce soit.
+#
+# ⚠️ **Un flux par valeur DÉTENUE, pas par valeur suivie.** 111 flux, ce seraient
+# 111 requêtes HTTP chaque soir pour des titres qu'on ne commente jamais. Les positions
+# du portefeuille sont ce sur quoi RITA rédige : c'est là que l'actualité doit être dense.
+MODELE_GOOGLE_NEWS = (
+    "https://news.google.com/rss/search"
+    "?q={requete}&hl=fr&gl=FR&ceid=FR:fr"
+)
+
+
+def flux_par_entreprise(noms: list[str],
+                        periode: tuple[str, str] | None = None) -> dict[str, str]:
+    """Construit un flux Google News par entreprise, `{nom du flux: URL}`.
+
+    Le nom du flux est préfixé `ent_` pour rester distinguable en base : on peut ainsi
+    compter les articles d'entreprise et ceux d'économie générale séparément.
+
+    La requête ajoute « bourse » pour écarter les homonymes — sans ce mot, « Orange »
+    ramène des articles sur le fruit, et « Total » sur à peu près n'importe quoi.
+    """
+    from urllib.parse import quote_plus
+
+    # Rattrapage : Google News accepte `after:` et `before:` dans la requête (vérifié le
+    # 18/09/2026 — 11 items Sanofi pour after:2026-09-16 before:2026-09-18). Les bornes
+    # sont floues d'un jour (fuseaux) : prendre large, le dédoublonnage fait le reste.
+    fenetre = f" after:{periode[0]} before:{periode[1]}" if periode else ""
+
+    return {
+        f"ent_{nom.lower().replace(' ', '_')[:24]}":
+            MODELE_GOOGLE_NEWS.format(requete=quote_plus(f"{nom} bourse{fenetre}"))
+        for nom in noms
+        if nom and nom.strip()
+    }
+
 
 @dataclass
 class Article:
@@ -125,15 +171,25 @@ def lire_flux(nom: str, url: str, limite: int = 10) -> list[Article]:
     return articles
 
 
-def collecter(limite_par_flux: int = 10) -> dict:
-    """Collecte tous les flux configurés.
+def collecter(limite_par_flux: int = 10,
+              flux_supplementaires: dict[str, str] | None = None) -> dict:
+    """Collecte tous les flux configurés, plus ceux passés en argument.
+
+    `flux_supplementaires` reçoit les flux par entreprise construits par
+    `flux_par_entreprise()`. **Ils sont passés en argument plutôt que lus en base ici** :
+    ce module ne connaît pas PostgreSQL et ne doit pas l'apprendre. C'est l'appelant
+    (`pipelines/ingest.py`) qui sait quelles valeurs sont détenues.
+
+    Un flux d'entreprise en échec n'interrompt pas les autres — même comportement que
+    pour les flux généraux : `flux_echec` le signale, et la collecte continue.
 
     Returns:
         {articles, articles_bloques, flux_ok, flux_echec, total}
     """
     tous, bloques, ok, echec = [], [], [], []
+    flux = {**FLUX, **(flux_supplementaires or {})}
 
-    for nom, url in FLUX.items():
+    for nom, url in flux.items():
         articles = lire_flux(nom, url, limite_par_flux)
         if not articles:
             echec.append(nom)

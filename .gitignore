@@ -1,4 +1,10 @@
 .env
+# ⚠️ Motif élargi le 18/08/2026. `.env` seul ne couvrait QUE le nom exact : une copie
+#    comme `.env.sauvegarde-2026-08-18` ou `.env.local` restait visible de Git, et un
+#    `git add .` l'aurait committée avec toutes les clés. Le défaut a été créé puis
+#    trouvé le jour même, avant tout commit.
+.env.*
+!.env.example
 .venv/
 __pycache__/
 *.pyc
@@ -21,5 +27,20 @@ data/positions-reelles*.csv
 *portefeuille*.xlsx
 !data/positions-exemple.csv
 
-# Configuration locale de l outil de developpement (non livrable)
-.claude/
+# Configuration locale de l outil de developpement (non livrable) : launch.json,
+# settings.local.json. MAIS les hooks et settings.json sont livres : ce sont les
+# garde-fous du depot (19/09/2026), un evaluateur doit pouvoir les lire.
+.claude/*
+!.claude/settings.json
+!.claude/hooks/
+!.claude/rules/
+
+# --- Artefacts de mesure de couverture (C12) ----------------------------------
+# Regenerables par `pytest --cov` : les versionner ferait grossir le depot d'un
+# rapport HTML complet a chaque execution, pour une information qui se recalcule
+# en 20 secondes.
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+data/chroma/

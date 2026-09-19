@@ -1,0 +1,44 @@
+# Dépendances de l'IMAGE de l'API — un sous-ensemble de requirements.txt.
+#
+# Pourquoi un second fichier plutôt qu'un seul :
+#
+#   pyspark pèse 492 Mo et n'est importé QUE dans bigdata/session_spark.py, à
+#   l'intérieur d'une fonction. L'API ne l'atteint jamais. L'embarquer dans l'image
+#   ajouterait un demi-gigaoctet transféré, stocké et scanné à chaque déploiement,
+#   pour du code qui ne s'exécute pas. C'est le critère d'éco-conception de C15,
+#   appliqué là où il se mesure vraiment.
+#
+#   Même raisonnement pour pyarrow : le format Parquet ne sert qu'à l'archive et à
+#   l'import initial, pas au service.
+#
+# ⚠️ Les versions sont épinglées ici alors que requirements.txt ne l'est
+#    qu'à moitié — OWASP ASI04 (« allowlist and pin »), relevé par la veille S34.
+#    Une image doit se reconstruire à l'identique dans six mois.
+
+# Versions relevées le 18/08/2026 par `importlib.metadata` sur l'environnement qui
+# fait tourner les 245 tests — pas choisies au jugé. Une version inventée s'installe
+# et casse en silence.
+
+fastapi==0.136.3
+uvicorn[standard]==0.40.0
+python-dotenv==1.2.2
+psycopg2-binary==2.9.12
+httpx==0.28.1
+anthropic==0.120.0
+langgraph==1.2.9
+feedparser==6.0.14
+pandas==3.0.3
+yfinance==1.4.1
+
+# --- RAG (C17) — ajoutés le 02/09/2026 ---------------------------------------
+# 🔴 Ils manquaient, et l'image ne pouvait donc PAS démarrer : `api/main.py` charge
+# `graph/workflow.py`, qui fait `from rag.recherche import rechercher` en haut de
+# fichier depuis le 30/08. Sans ces deux paquets — et sans le dossier `rag/`, qui
+# n'était pas copié non plus (corrigé dans le Dockerfile le même jour) — le
+# conteneur s'arrêtait à l'import, avant même d'écouter sur le port.
+#
+# ⚠️ Conséquence à mesurer, pas à supposer : chromadb tire onnxruntime et
+# tokenizers. L'image faisait 595 Mo le 18/08 ; le chiffre est à relever de nouveau
+# et l'argument d'éco-conception de C15 à réécrire sur la valeur réelle.
+chromadb==1.5.9
+rank-bm25==0.2.2

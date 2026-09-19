@@ -9,6 +9,7 @@ Documentation interactive : http://127.0.0.1:8000/docs
 Contrat OpenAPI :           http://127.0.0.1:8000/openapi.json
 """
 import os
+import secrets
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -18,6 +19,7 @@ from fastapi.staticfiles import StaticFiles
 
 from api.donnees import routeur as routeur_donnees
 from graph.workflow import generer_briefing_complet
+from guardrails.sortie import verifier_sortie
 
 load_dotenv()
 
@@ -48,6 +50,38 @@ app = FastAPI(
 API_KEY_HEADER = APIKeyHeader(name="X-API-Key", auto_error=False)
 
 
+LONGUEUR_MINIMALE_CLE = 16
+
+
+def cle_attendue() -> str:
+    """La clé d'API, lue dans l'environnement — **sans valeur par défaut**.
+
+    ⚠️ **Corrigé le 18/08/2026 — OWASP API2 (authentification défaillante).**
+    Ce code disait `os.getenv("RITA_API_KEY", "dev-key")`. La variable n'étant pas
+    définie, l'API acceptait en réalité la chaîne **`dev-key`, écrite en clair dans
+    ce fichier** — donc dans un dépôt que le formateur et le jury vont lire.
+    *Une clé par défaut n'est pas une clé : c'est une porte ouverte documentée.*
+
+    Le remplacement volontaire d'un défaut par une **panne au démarrage** : mieux vaut
+    une API qui refuse de servir qu'une API qui sert n'importe qui. Le message dit
+    exactement quoi faire — un garde-fou qui bloque sans expliquer se contourne.
+    """
+    cle = os.getenv("RITA_API_KEY")
+    if not cle:
+        raise RuntimeError(
+            "RITA_API_KEY absente. L'API refuse de demarrer sans cle : une valeur par "
+            "defaut serait devinable par quiconque lit le code (OWASP API2).\n"
+            "  Generer une cle :  python -c \"import secrets; print(secrets.token_urlsafe(32))\"\n"
+            "  Puis l'ajouter au fichier .env :  RITA_API_KEY=<la cle generee>"
+        )
+    if len(cle) < LONGUEUR_MINIMALE_CLE:
+        raise RuntimeError(
+            f"RITA_API_KEY trop courte ({len(cle)} caracteres, minimum "
+            f"{LONGUEUR_MINIMALE_CLE}). Une cle courte se devine ou se force."
+        )
+    return cle
+
+
 def verify_api_key(api_key: str = Security(API_KEY_HEADER)):
     """Autorisation par clé d'API.
 
@@ -56,8 +90,10 @@ def verify_api_key(api_key: str = Security(API_KEY_HEADER)):
     besoin. La contrepartie est assumée : pas de révocation partielle, pas de traçabilité
     par appelant.
     """
-    attendue = os.getenv("RITA_API_KEY", "dev-key")
-    if api_key != attendue:
+    # `compare_digest` et non `!=` : une comparaison de chaînes ordinaire s'arrête au
+    # premier caractère différent, et son temps d'exécution renseigne donc un attaquant
+    # sur le nombre de caractères devinés. La différence est infime, la parade gratuite.
+    if api_key is None or not secrets.compare_digest(api_key, cle_attendue()):
         raise HTTPException(status_code=403, detail="Cle d'API invalide ou absente")
     return api_key
 
@@ -86,12 +122,22 @@ def briefing(ticker: str, api_key: str = Security(verify_api_key)):
     resultat = generer_briefing_complet(ticker)
     if resultat["error"]:
         raise HTTPException(status_code=502, detail=resultat["error"])
+
+    # Garde-fou de SORTIE (C17) — l'interdit AMF s'applique au texte produit, pas
+    # seulement au prompt. Le prompt demande déjà « aucune recommandation » ; un prompt
+    # est une consigne, pas un contrôle. Ajouté le 17/08/2026 : il était invoqué par le
+    # docstring de guardrails/injection.py sans exister. Fail-closed : en cas de doute,
+    # on ne diffuse pas.
+    verdict = verifier_sortie(resultat["briefing"])
+
     return {
         "ticker": resultat["ticker"],
         "price": resultat["price"],
         "change_pct": resultat["change_pct"],
         "currency": resultat["currency"],
-        "briefing": resultat["briefing"],
+        "briefing": verdict["texte_diffusable"],
+        "conforme_amf": verdict["conforme"],
+        "motifs_amf": verdict["motifs_detectes"],
     }
 
 

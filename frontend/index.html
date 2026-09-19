@@ -13,6 +13,10 @@
     <p class="avertissement">
       Aide à la lecture. Aucune recommandation d'achat ou de vente.
     </p>
+    <nav aria-label="Navigation principale">
+      <span aria-current="page">Mon portefeuille</span>
+      <a href="indicateurs.html">Indicateurs</a>
+    </nav>
   </header>
 
   <main>
@@ -34,6 +38,20 @@
 
     <!-- ÉTAT 4 — les données -->
     <section id="resultat" hidden>
+
+      <!-- FRAÎCHEUR DES DONNÉES (C20) — répond à « vos données sont-elles à jour ? »
+           sans rien relancer, donc sans dépendre du réseau au moment de la démo.
+
+           ⚠️ Le statut n'est JAMAIS porté par la seule couleur : la pastille est
+           décorative (aria-hidden) et c'est le TEXTE qui dit tout. RGAA 3.1 /
+           WCAG 1.4.1 — « l'information ne doit pas être véhiculée uniquement par
+           la couleur ». Une personne daltonienne lit la même chose que les autres.
+
+           Pas de role="status" ici : l'annonce de chargement est déjà portée par
+           #statut plus haut. Deux régions live qui parlent en même temps se
+           coupent la parole chez un lecteur d'écran. -->
+      <p id="fraicheur" class="fraicheur" hidden></p>
+
       <p class="total">
         Total du portefeuille&nbsp;: <strong id="total">—</strong><span id="nb-lignes"></span>
       </p>
@@ -50,10 +68,25 @@
             <th scope="col">Investi (€)</th>
             <th scope="col">Valorisation (€)</th>
             <th scope="col">Performance</th>
+            <th scope="col">Poids</th>
           </tr>
         </thead>
         <tbody id="lignes"></tbody>
       </table>
+
+      <!-- Exposition par devise — lot 2 des indicateurs.
+           Une liste de définitions (`dl`) et non un tableau : il s'agit de paires
+           devise → part, pas d'un croisement de lignes et de colonnes. Un tableau
+           à deux colonnes serait lu comme tel par un lecteur d'écran, avec des
+           en-têtes qui n'apportent rien. -->
+      <section id="bloc-exposition" hidden>
+        <h2>Exposition par devise</h2>
+        <p class="precision">
+          Devise de <strong>cotation</strong> — pas l'exposition économique. Une valeur
+          cotée en euros peut réaliser l'essentiel de son chiffre d'affaires ailleurs.
+        </p>
+        <dl id="exposition"></dl>
+      </section>
 
       <details>
         <summary>Comment lire ce tableau&nbsp;?</summary>
@@ -68,6 +101,14 @@
           <dd>Écart entre le cours actuel et le PRU, en pourcentage.
               Le signe est toujours affiché : l'information n'est jamais portée
               par la seule couleur.</dd>
+          <dt>Poids</dt>
+          <dd>Part de la ligne dans le total du portefeuille, après conversion en euros.
+              La somme des poids fait 100&nbsp;%. C'est un <strong>fait</strong> : RITA
+              n'indique aucun seuil et ne dit jamais qu'une ligne serait trop lourde.</dd>
+          <dt>Exposition par devise</dt>
+          <dd>Répartition du portefeuille selon la monnaie dans laquelle chaque titre est
+              <strong>coté</strong>. Ce n'est pas l'exposition économique&nbsp;: une société
+              cotée en euros peut vendre surtout en dollars.</dd>
           <dt>Donnée douteuse</dt>
           <dd>La valeur est marquée <code>INCOHERENT</code> en base : son historique a
               échoué aux contrôles de qualité. Le chiffre est affiché, mais signalé.</dd>

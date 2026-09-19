@@ -28,12 +28,39 @@ import logging
 import os
 from dataclasses import dataclass
 from decimal import Decimal
+from pathlib import Path
 
 import psycopg2
+from dotenv import load_dotenv
 from psycopg2.extras import RealDictCursor
 
 logger = logging.getLogger(__name__)
 
+# ⚠️ Le `.env` se charge ICI, dans le module qui ouvre réellement la connexion.
+#
+# Avant le 28/08/2026, il se chargeait dans les APPELANTS — six modules le faisaient
+# à la place de celui qui en avait besoin. Résultat : chaque nouvel appelant devait y
+# penser, et **quatre l'ont oublié** : `db/importer.py` (17/08, commit a7a3dba),
+# `indicateurs/socle.py`, `monitorage/fraicheur.py` (25/08), puis un script d'analyse
+# le 28/08. À chaque fois le même symptôme — connexion tentée sur le port **5432**
+# au lieu de **5433**, parce que `DATABASE_URL` était absente et que `DSN_DEFAUT`
+# prenait le relais.
+#
+# Corriger le quatrième symptôme aurait garanti un cinquième. La cause était
+# architecturale : *le module qui a besoin d'une configuration doit la charger
+# lui-même, pas compter sur ses appelants pour le faire.*
+#
+# `load_dotenv` est idempotent et ne remplace pas une variable déjà définie : les
+# appels des six modules restent inoffensifs, et l'environnement du conteneur Docker
+# (où `DATABASE_URL` est posée par `docker-compose`) garde la priorité.
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+
+# ⚠️ Ce défaut vise le port **5432**, alors que la base tourne sur **5433**.
+# Il n'est atteint que si `DATABASE_URL` est absente — c'est-à-dire quand la
+# configuration manque. Il produit alors une erreur de connexion plutôt qu'un
+# silence, ce qui est le comportement voulu. **Ne pas le "corriger" en 5433** :
+# une valeur par défaut qui marche masquerait l'absence de configuration, exactement
+# comme la clé `dev-key` masquait l'absence de `RITA_API_KEY` (evidence/C21/INC-001).
 DSN_DEFAUT = "postgresql://rita:rita_dev_local@localhost:5432/rita"
 
 

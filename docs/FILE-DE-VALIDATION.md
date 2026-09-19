@@ -29,20 +29,165 @@ besoins, deux registres.
 
 ---
 
+## ⛔ La règle d'envoi : le lien du TAG, jamais l'adresse du dépôt
+
+> **Le problème, constaté le 18/08/2026.** `main` est la branche par défaut : c'est elle que
+> GitHub affiche à qui ouvre le dépôt. Or `main` **avance** — au 18/08 elle comptait déjà
+> **29 commits de plus** que le tag `livrable-E1-v1`, dont le renommage du projet, le premier
+> écran d'E4 et la reconstruction de la base.
+>
+> Un formateur qui ouvre `github.com/Ganda15/rita-agent` ne voit donc **pas** le livrable E1 :
+> il voit le projet d'aujourd'hui. Il jugerait E1 sur du travail qui n'en fait pas partie.
+
+**Ce qui règle le problème, et qui existe déjà** : chaque livrable est figé par un tag. Il
+suffit d'envoyer **l'adresse du tag**.
+
+| ❌ Ne jamais envoyer | ✅ Toujours envoyer |
+|---|---|
+| `https://github.com/Ganda15/rita-agent` | `https://github.com/Ganda15/rita-agent/tree/livrable-E1-v1` |
+
+### Vérifier avant d'envoyer — quatre commandes
+
+La première est la **Definition of Done** (ajoutée le 19/09/2026) : cinq contrôles, un verdict
+généré depuis leurs codes de sortie. Rien ne se tague tant qu'une ligne est rouge.
+
+```powershell
+C:\Python314\python.exe scripts\verifier_livrable.py livrable-E1-v1
+```
+```powershell
+gh api repos/Ganda15/rita-agent/git/ref/tags/livrable-E1-v1 --jq .object.sha
+```
+```powershell
+gh api repos/Ganda15/rita-agent/collaborators --jq ".[].login"
+```
+```powershell
+C:\Python314\python.exe scripts\verifier_liens.py
+```
+
+-1. **La pull request `develop → main` est fusionnée** après la revue automatisée (`Revue PR`) :
+   `gh pr create --base main --head develop`, lire les commentaires, corriger, fusionner sur GitHub.
+   Le tag se pose sur `main`, jamais sur `develop` (depuis le 19/09/2026 ; avant : fusion directe).
+0. **La Definition of Done est verte** : tests + couverture ≥ 90 %, portes d'évaluation,
+   liens internes, tag cité dans `ETAT.md` et `CHANGELOG.md`, arbre git propre.
+1. **Le tag existe** sur GitHub, et pointe où on croit.
+2. **Le destinataire est bien collaborateur** — une invitation *envoyée* n'est pas un accès
+   *donné* : tant qu'elle n'est pas acceptée, le lien renvoie une page 404.
+3. **Zéro lien cassé** dans le dépôt.
+
+### Gabarit du message
+
+> Bonjour,
+>
+> Le livrable **E1 — Données (C1 à C5)** est prêt. Deux éléments :
+>
+> - **Le rapport** : `rapport-E1.pdf` (ci-joint)
+> - **Le code, figé au jour de l'envoi** :
+>   <https://github.com/Ganda15/rita-agent/tree/livrable-E1-v1>
+>
+> ⚠️ Ce lien pointe sur un **tag Git**, pas sur la branche principale. Il montre le dépôt
+> exactement tel qu'il était lors de la remise. La branche principale, elle, continue
+> d'avancer avec les livrables suivants — l'ouvrir donnerait une image faussée d'E1.
+>
+> Le dépôt est privé ; vous y avez été invité en tant que collaborateur.
+>
+> Bien à vous,
+> Eramalingam GANDAKUMAR
+
+**Pourquoi expliquer le tag dans le message** : personne n'est tenu de connaître cette
+convention. Un lien qu'on ne comprend pas est un lien qu'on remplace par celui qu'on connaît.
+
+### ⚠️ Le piège du tag — rencontré deux fois
+
+**Un tag ne suit pas les commits** : il reste sur celui où on l'a posé. Tant que le lien
+**n'est pas parti**, on peut le déplacer. **Une fois parti, on ne le déplace plus** — on crée
+un `-v2`, sinon le destinataire et l'expéditeur ne regardent plus la même chose.
+
+Et GitHub refuse `git push --force` sur un tag annoté (erreur 500). La séquence qui marche :
+
+```powershell
+git push origin refs/tags/livrable-E1-v1:refs/tags/livrable-E1-v1
+```
+
+---
+
 ## La file
 
 | # | Gelé le | Livrable | Compétences | Tag / commit | Envoyé le | Retour reçu | Ce que le retour change |
 |---|---|---|---|---|---|---|---|
-| 1 | 2026-08-13 | **E1 — Données** | C1–C5 | `livrable-E1-v1` | ⬜ | ⬜ | — |
+| 1 | 2026-08-13 | **E1 — Données** | C1–C5 | `livrable-E1-v1` | ✅ **relu avant le gel** (message « Bloc 1 », début août) | ✅ **3 réponses reçues** — voir ci-dessous | Le cadrage big data d'E1 est **validé** |
 | 2 | 2026-08-15 | Protocole de veille C6 (complet) | C6 | `27ff359` | ⬜ | ⬜ | — |
 | 3 | 2026-08-15 | Conception des indicateurs (E4) | — *(conception)* | `81780cb` | ⬜ | ⬜ | — |
 | 4 | 2026-08-14 | **Note de veille S33** — injection de prompt | C6 | `1da976f` | ⬜ **prête, non partie** | ⬜ | — |
 
 **Légende** : ⬜ = pas encore fait · ✅ = fait, avec la date.
 
+### 🔴 28/08 — Retour formateur reçu, noté LE JOUR MÊME
+
+**RAG et MCP sont obligatoires. Text-to-SQL : « pas vraiment ».** Et le RAG doit être
+**avancé**. Échange direct avec Elbby, rapporté par Era le 28/08.
+
+*Noté ici le jour même, contrairement aux trois réponses du Bloc 1 qui sont restées non
+tracées pendant trois semaines — c'est précisément la faute que ce registre existe pour
+éviter.*
+
+⚠️ **Reste à préciser** : pour quel livrable (E3/E4 ?), et ce que « avancé » recouvre
+exactement. À poser au prochain échange plutôt qu'à supposer.
+
+---
+
+### 🔴 Correction du 24/08 — ce registre sous-estimait le travail réel
+
+Ce fichier, créé le 16/08, affirmait **« 4 éléments en file, 0 envoyé »**. **C'est faux, et à
+la défaveur d'Era** : le **message « Bloc 1 »** (rédigé le 02/08, ajusté le 07/08, conservé dans
+le vault Obsidian `Projets/RITA/00-Pilotage/`) **est bien parti**, et le formateur **y a répondu
+sur les trois questions** :
+
+| # | Question posée | Réponse |
+|---|---|---|
+| 1 | La preuve big data couvre-t-elle **C1 seul ou C2 aussi** ? | ✅ accepté |
+| 2 | « 276 168 lignes, ce n'est pas du big data — je démontre la **méthode qui scale** » | ✅ accepté — **le cadrage du rapport E1 tient** |
+| 3 | LangSmith → sous-traitant **américain**, quel niveau de détail RGPD ? | ✅ OK |
+
+**Nuance de date à ne pas gommer** : cette relecture portait sur l'état d'**avant le gel** ; le
+tag `livrable-E1-v1` a été posé le **13/08**, après. Le fond validé est le même, la version
+figée est postérieure.
+
+⚠️ **Date exacte et formulation du retour : à reprendre de la capture Discord**, pas d'ici.
+Le canal était **GitHub** (accès au dépôt) + **Discord** (le retour lui-même).
+
+> **Leçon, et c'est la 5ᵉ du même genre** : un registre qui n'est pas tenu au fil de l'eau finit
+> par **mentir dans les deux sens** — ici il effaçait une validation obtenue. Les quatre autres
+> (garde-fou de sortie, `tabindex`, récurrence veille, collecte quotidienne) faisaient l'inverse :
+> ils affirmaient un contrôle inexistant.
+
 > **État au 2026-08-16 : 4 éléments en file, 0 envoyé.** Le formateur est en congé.
 > **La note de veille S33 est écrite et prête, mais n'est pas partie** — voir la ligne 4
 > ci-dessus et `docs/veille/_JOURNAL-DES-ENVOIS.md`, qui reste vide et le dit.
+
+### 🟢 2026-08-24 — LE VERROU SAUTE : la file peut s'ouvrir
+
+Le formateur est de nouveau joignable : **l'invitation du 13/08 a été acceptée**, et il a validé
+les points *big data* sans aucune remarque négative à ce jour.
+
+**Les trois vérifications d'avant-envoi ont été passées le 24/08, dans l'ordre du protocole
+ci-dessus — les trois sont vertes :**
+
+| # | Vérification | Résultat du 24/08 |
+|---|---|---|
+| 1 | Le tag existe sur GitHub et pointe où on croit | ✅ `livrable-E1-v1` → objet-tag `85e2adf` → commit **`659c047`**, tagué le **13/08 14h40**. **Local et GitHub identiques** |
+| 2 | Le destinataire est bien collaborateur | ✅ `bybysker (read)` dans `/collaborators` · **aucune invitation en attente** |
+| 3 | Zéro lien cassé dans le dépôt | ✅ `verifier_liens.py` : 52 fichiers, **74 liens internes + 32 externes, 0 cassé** |
+
+⚠️ **Piège de lecture écarté au passage** : la commande du protocole
+(`git/ref/tags/... --jq .object.sha`) renvoie le SHA de l'**objet-tag**, pas celui du **commit** —
+il diffère donc de `git rev-parse livrable-E1-v1^{}` en local **sans que rien ne soit anormal**.
+Vérifié en déréférençant l'objet-tag côté GitHub : il vise bien `659c047`.
+*Ajouter `^{}` pour comparer des commits, sinon on compare une étiquette à une page.*
+
+Le rapport est à `docs/rapports/E1/rapport-E1.pdf`.
+
+**➡️ E1 est prêt à partir. Un seul envoi aujourd'hui** — la règle §3 tient : trois livrables
+envoyés le même jour reçoivent un seul retour, superficiel.
 
 ---
 

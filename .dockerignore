@@ -1,0 +1,45 @@
+# Ce qui n'entre pas dans l'image ne peut pas en fuir, ni l'alourdir.
+#
+# ⚠️ Le premier bloc est le plus important : sans lui, `COPY . .` embarquerait le
+#    fichier `.env` — donc toutes les clés d'API — dans une image que l'on pousse
+#    ensuite sur un registre. C'est une des fuites de secrets les plus courantes.
+
+# --- Secrets et données personnelles -----------------------------------------
+.env
+.env.*
+!.env.example
+data/positions.csv
+data/positions-reelles*.csv
+*bourse*.xlsm
+*bourse*.xlsx
+*portefeuille*.csv
+*portefeuille*.xlsx
+
+# --- Historique et outils de développement -----------------------------------
+.git
+.gitignore
+.github
+.claude
+.venv
+venv
+
+# --- Ce qui ne sert pas à l'exécution ----------------------------------------
+tests/
+evidence/
+docs/
+bigdata/          # pyspark n'est pas dans l'image : ce code ne pourrait pas tourner
+scripts/
+evals/            # les évaluations tournent en intégration continue, pas en service
+*.md
+!README.md
+
+# --- Fichiers volumineux ou reconstructibles ---------------------------------
+data/parquet/
+*.parquet
+*.log
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+node_modules/
