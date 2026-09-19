@@ -16,18 +16,6 @@ psycopg2 = pytest.importorskip("psycopg2")
 RACINE = Path(__file__).parent.parent
 
 
-def role_present() -> bool:
-    """Le rôle demande un superutilisateur pour être créé (CREATEROLE). Tant qu'il n'existe pas,
-    ces tests sont des échecs ATTENDUS et STRICTS : le jour où il existe, ils passent au rouge
-    (XPASS strict) jusqu'à ce qu'on retire ce marqueur — impossible d'oublier de le faire."""
-    try:
-        con = psycopg2.connect(dsn_proprietaire(), connect_timeout=3)
-        cur = con.cursor(); cur.execute("select 1 from pg_roles where rolname = 'rita_lecture'")
-        ok = cur.fetchone() is not None; con.close(); return ok
-    except Exception:
-        return False
-
-
 def dsn_proprietaire() -> str:
     if os.environ.get("DATABASE_URL"):
         return os.environ["DATABASE_URL"]
@@ -38,10 +26,6 @@ def dsn_proprietaire() -> str:
             if m:
                 return m.group(1).strip().strip('"').strip("'")
     pytest.skip("pas de DATABASE_URL : base locale absente (CI)", allow_module_level=True)
-
-
-if not role_present():
-    pytestmark = pytest.mark.xfail(strict=True, reason="rôle rita_lecture absent : `db/roles.sql` à appliquer en superutilisateur (19/09 : mot de passe postgres inconnu)")
 
 
 @pytest.fixture
