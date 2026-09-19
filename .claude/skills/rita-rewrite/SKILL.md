@@ -3,11 +3,11 @@ name: rita-rewrite
 description: >-
   Réécriture de RITA-Agent en projet fil rouge RNCP 37827 (Wild Code School, Niveau 6), phase par
   phase avec validation d'Era à chaque étape. Déclencher pour "/rita-rewrite", "réécris RITA",
-  "reprends RITA", "continue" (dans le contexte RITA-rewrite), ou toute demande de réorganiser/ré-
-  analyser/réécrire le projet RITA pour l'examen final E1–E5. Couvre : inventaire des fichiers,
-  mapping briefs→RITA→E1-E5, schémas Mermaid, spec-driven development (spec → plan → tâches), puis
-  réécriture documentée. NE PAS utiliser pour le tutorat d'un exercice (formation-guide) ni la
-  vérification critères seule (projet-rncp).
+  "reprends RITA", "continue" (dans le contexte RITA-rewrite), ou toute demande de
+  réorganiser/ré-analyser/réécrire le projet RITA pour l'examen final E1–E5. Couvre : inventaire des
+  fichiers, mapping briefs→RITA→E1-E5, schémas Mermaid, spec-driven development (spec → plan →
+  tâches), puis réécriture documentée. NE PAS utiliser pour le tutorat d'un exercice (formation-guide)
+  ni la vérification critères seule (projet-rncp).
 ---
 
 # /rita-rewrite — Réécriture de RITA en projet fil rouge RNCP 37827
@@ -23,7 +23,8 @@ couvrant les 5 événements d'évaluation E1–E5.
 du dossier projet. Si une info manque : écrire « Information manquante — à compléter » et poser la question.
 
 ## Sources de vérité (mis à jour le 20/09/2026 — dépôt unique depuis le 28/07/2026)
-- **Le code et les docs de conception sont ICI** : ce dépôt, `D:\KandaWork\RITA_PROJECTita-agent`
+- **Le code et les docs de conception sont ICI** : ce dépôt, `D:\KandaWork\RITA_PROJECT
+ita-agent`
   (`Ganda15/rita-agent`) — `docs/`, `evidence/C<n>/`, `ETAT.md` (présent), `CONTINUITE.md` (décisions),
   `CHANGELOG.md` (passé). Le dossier Desktop `RITA PROJET PRO` et le dépôt `rita-agent-certif` sont des archives.
 - Vault Obsidian (MCP obsidian) — le récit, pas la source :
