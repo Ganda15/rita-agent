@@ -9,6 +9,17 @@
 
 ---
 
+## 2026-09-19, 22h50 — Correctif de diagnostic : la revue Claude n'était pas tuée par notre hook
+
+L'entrée précédente attribue les revues muettes au hook Stop du dépôt. **Partiellement faux.** La notification
+`stop-hook-error` apparaît aussi dans les runs réussis (PR #5, PR #8) : elle est bénigne. Les revues mortes
+(PR #2, #4, #6) s'arrêtent parce que l'agent de revue termine son tour pendant que ses sous-agents tournent encore,
+comportement du plugin dans l'action, nondéterministe, hors de notre portée ; parade `gh run rerun`. Les hooks
+muets en CI (PR #4, #7) restent justes : un hook de poste ne doit jamais tourner dans un runner. Append-only :
+l'entrée d'origine reste, celle-ci la corrige.
+
+---
+
 ## 2026-09-19, nuit — Flux PR en service : 4 PR fusionnées, 8 défauts trouvés par la revue, et la revue Claude réparée
 
 **Fait** : PR #1 (97 commits) à PR #4 fusionnées ; `main` = `develop`. Revue Codex active : **8 commentaires** utiles

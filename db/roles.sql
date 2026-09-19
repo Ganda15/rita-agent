@@ -25,3 +25,7 @@ GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO rita_lecture;
 -- Les tables créées plus tard par le propriétaire restent lisibles, jamais modifiables.
 ALTER DEFAULT PRIVILEGES FOR ROLE rita IN SCHEMA public GRANT SELECT ON TABLES TO rita_lecture;
 ALTER DEFAULT PRIVILEGES FOR ROLE rita IN SCHEMA public GRANT SELECT ON SEQUENCES TO rita_lecture;
+
+-- Le proprietaire peut prendre le role (SET ROLE rita_lecture) : c est ce que font les tests pour prouver
+-- les refus sans mot de passe. Membership seulement ; rita_lecture n a aucun droit de plus.
+GRANT rita_lecture TO rita;
