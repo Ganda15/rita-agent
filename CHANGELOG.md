@@ -9,6 +9,24 @@
 
 ---
 
+## 2026-09-19 — Le harnais devient une garantie : AGENTS.md, hooks, Definition of Done, flux PR
+
+**Décision structurante** (Era, option A) : `main` ne bouge plus que par une pull request `develop → main`,
+relue automatiquement par Claude Code (même choix que la conception Mardik ③ du 18/09, ici exécuté pour de vrai).
+Le push direct est refusé par un hook `pre-push` versionné (`.githooks/`), GitHub ne pouvant pas protéger la
+branche sur un dépôt privé gratuit.
+
+**Fait** : `AGENTS.md` importé par `CLAUDE.md` ; deux hooks Claude Code livrés avec le dépôt (secrets, tests
+verts) ; `scripts/verifier_livrable.py`, Definition of Done à verdict généré, branchée dans `livraison.yml` ;
+règles `.claude/rules/` ; `revue-pr.yml` ; PR #1 ouverte (97 commits).
+
+**Manques découverts** : le hook secrets v1 puis v2 ont été contournés en session réelle (outil Bash, puis outil
+PowerShell) avant la v3 — preuve C10 complète ; la chaîne de livraison ne lançait que `pytest -q` sur un tag,
+sans couverture ni portes d'évaluation ; la première revue de PR est « skipped » tant que le workflow n'est pas
+sur `main`. Playwright, rôle PostgreSQL lecture seule et skills projet restent à faire.
+
+---
+
 ## 2026-09-18, soir — Les 4 collectes coupées sont rattrapées là où c'était possible, et la cause est traitée
 
 **Cause** : une console noire s'affichait à 19 h (tâche interactive, non cachée) ; quatre journaux

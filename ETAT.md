@@ -15,7 +15,32 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-09-18** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+**Dernière mise à jour : 2026-09-19** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+
+---
+
+🔎 **19/09 — LE HARNAIS AGENTIQUE : les règles deviennent des garanties. 6 items sur 9, chacun prouvé.**
+Source : rapport « Agentic SD Tooling Stack » (Krish Naik / Google « New SDLC »), analysé le 19/09 : RITA avait
+déjà la CI, la porte d'évaluation, les garde-fous et la livraison par tag ; il manquait l'**enforcement**.
+
+| Date | Fait | Preuve |
+|---|---|---|
+| 19/09 | `CLAUDE.md` remis à jour : 30 fichiers de tests (pas 18), 458 tests collectés (pas 186), cause réelle = Smart App Control (pas AppLocker) | `b13ad19` |
+| 19/09 | `AGENTS.md` (59 lignes, standard portable) ; `CLAUDE.md` l'importe (`@AGENTS.md`) et passe de 149 à 136 lignes | `ff5f923`, 21 chemins cités vérifiés |
+| 19/09 | **Hooks livrés avec le dépôt** : `bloquer-secrets.py` (refus d'écrire `.env*`, `.pem`…) et `exiger-tests-verts.py` (refus de conclure si pytest rouge). **Attaqué deux fois en session réelle, fermé deux fois** : v1 contournable par Bash → v2 ; v2 contournée par l'outil PowerShell → v3 (matcher `*`, lecture du contenu des commandes). Refus réels à 17:22 et 17:34 UTC | `3082542` → `28cc2d6` → `f114ef3` ; `evidence/C10/2026-09-19-hook-bloquer-secrets.md` |
+| 19/09 | **Definition of Done** `scripts/verifier_livrable.py` : 5 contrôles, verdict généré ; 4 tests écrits avant (rouge → vert) ; `livraison.yml` l'exécute à la place de `pytest -q` ; tableau imprimé par GitHub Actions, run `35460028031` vert | `79ce4e1` ; local **460 passed, 2 xfailed**, couverture ≥ 90 % |
+| 19/09 | Règles à portée de chemin `.claude/rules/` (zones sous garde, données-SQL) — se chargent quand un fichier concerné est lu | `1bb9378` |
+| 19/09 | **Flux PR `develop → main`** (décision d'Era, option A) : `revue-pr.yml` (Claude Code, jeton d'abonnement), hook `pre-push` qui refuse le push direct sur `main` (testé : refus sur `--force --dry-run`), procédure mise à jour. App GitHub installée, secret `CLAUDE_CODE_OAUTH_TOKEN` posé. **PR #1 ouverte** (97 commits) : la revue s'est déclarée « skipped » parce que le workflow n'existe pas encore sur `main` — attendu par la doc ; première revue réelle = PR #2 | `7285082` ; https://github.com/Ganda15/rita-agent/pull/1 |
+
+| 19/09 | **La revue paie dès la PR #1** : Codex (déjà connecté au dépôt) a laissé **6 commentaires**, 4 P1. Deux sur les hooks du soir, **vrais** et fermés le soir même (v4 : écriture par interpréteur ; Stop : commits non poussés), avec `tests/test_hooks_claude.py` (7 tests, rouge → vert). **Quatre bugs réels dans le code existant, à traiter** : `docker-compose.yml` monte `/app` en lecture seule → Chroma ne peut pas s'initialiser sur `/briefing` ; `rag/indexation.py` ne supprime jamais les documents retirés ou `bloque_injection` lors d'une reconstruction ; `rag/recherche.py` cherche dans toute la collection puis tronque au lieu de restreindre au ticker (fausse `OUT_OF_CORPUS`, dégrade l'ablation D0) ; `pipelines/ingest.py` ne transmet pas `--dsn` à l'indexation | https://github.com/Ganda15/rita-agent/pull/1 (commentaires inline) |
+**▶️ Prochaine action** : fusionner PR #1 une fois les checks verts ; ouvrir PR #2 (cet `ETAT.md` + `CHANGELOG.md`)
+pour voir la revue tourner ; supprimer la branche `add-claude-github-actions-1789843030839` de l'installateur.
+**Restent** : 7 smoke Playwright du front (dépend de Node ≥ 20 sous Smart App Control, non vérifié) · 8 rôle
+PostgreSQL lecture seule pour tout outil d'agent · 9 skills projet committées dans `.claude/skills/` ·
+reporter les items 2 à 5 dans le modèle `CLAUDE.md` de `/demarrer` (levier « tout projet »).
+**Manques assumés** : la protection de branche est refusée par GitHub (dépôt privé, plan gratuit) → le flux PR
+tient par le hook local et l'habitude ; le hook `pre-push` n'agit que sur les clones où `core.hooksPath` est activé ;
+la lecture de `.env` par une commande reste autorisée ; les règles `.claude/rules/` ne sont pas testées en session.
 
 ---
 

@@ -4,6 +4,8 @@ Un CLAUDE.md qui dit « jamais de secret dans Git » est un conseil.
 Ce script est une garantie : il tourne AVANT chaque ecriture, sans exception.
 Sortie 2 = ecriture refusee, le message ci-dessous est montre a l'agent.
 
+v4 (19/09/2026, revue Codex sur la PR #1) : un INTERPRETEUR (python -c, node -e...) qui nomme un
+fichier sensible est refuse, meme sans operateur shell. `python -c "open('.env','w')"` passait en v3.
 v3 (19/09/2026, soir) : tourne sur TOUS les outils (matcher "*"). La v2 ne listait que
 Edit|Write|Bash ; une session a ecrit le secret par l'outil PowerShell, absent de la liste.
 Lecon : ne jamais enumerer les outils a surveiller, surveiller tout et regarder le contenu.
@@ -33,6 +35,10 @@ def fichier_interdit(chemin: str) -> bool:
 OPERATEURS_ECRITURE = re.compile(
     r"(>{1,2}|\btee\b|Add-Content|Set-Content|Out-File|Copy-Item|Move-Item|"
     r"\bcp\b|\bmv\b|sed\s+-i|\bcat\s*>)", re.I)
+# Un interpreteur ou une API d'ecriture : s'il nomme un fichier sensible, on presume l'ecriture (v4).
+INTERPRETEURS = re.compile(
+    r"\b(python3?|py|node|deno|bun|perl|ruby|php|pwsh|powershell)\b|"
+    r"open\(|write_text|write_bytes|writeFileSync|writeFile\(|Set-Content|Out-File|\[IO\.File\]", re.I)
 # Un nom de fichier sensible cite dans la commande (.env, .env.local, cle.pem, id_rsa...)
 FICHIERS_SENSIBLES = re.compile(
     r"(?<![\w-])(\.env(?:\.[\w-]+)?|[\w.-]+\.(?:pem|key|p12|pfx)|id_rsa|id_ed25519|"
@@ -52,7 +58,8 @@ else:  # tout autre outil : on regarde le contenu, pas le nom de l'outil
     commande = " ".join(str(entree.get(c, "")) for c in CHAMPS_COMMANDE)
     cibles = [m.group(1) for m in FICHIERS_SENSIBLES.finditer(commande)
               if fichier_interdit(m.group(1))]
-    interdit = bool(cibles) and bool(OPERATEURS_ECRITURE.search(commande))
+    interdit = bool(cibles) and bool(OPERATEURS_ECRITURE.search(commande)
+                                      or INTERPRETEURS.search(commande))
     cible = ", ".join(sorted(set(cibles))) if cibles else commande[:80]
 
 if interdit:

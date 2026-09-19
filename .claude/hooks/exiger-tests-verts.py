@@ -11,7 +11,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-PYTHON = r"C:\Python314\python.exe"
+PYTHON = sys.executable  # le meme interpreteur que celui qui lance le hook (Windows local, Linux en CI)
 MAX_BLOCAGES = 2
 
 donnees = json.load(sys.stdin)
@@ -19,12 +19,23 @@ projet = Path(donnees.get("cwd") or os.getcwd())
 prompt_id = str(donnees.get("prompt_id", "sans-id"))
 marque = Path(donnees.get("scratchpad_dir") or os.environ.get("TEMP", ".")) / "rita-stop-hook.json"
 
-# 1. Un .py a-t-il change ? (modifie, ajoute ou non suivi)
-statut = subprocess.run(
-    ["git", "status", "--porcelain", "--", "*.py"],
-    cwd=projet, capture_output=True, text=True,
-)
-if statut.returncode != 0 or not statut.stdout.strip():
+# 1. Un .py a-t-il change ? Arbre de travail (modifie, ajoute, non suivi) ET commits pas encore
+#    pousses. Revue Codex sur la PR #1 (19/09) : ne regarder que l'arbre laissait conclure juste
+#    apres un commit, avec des tests rouges deja commites.
+def git(*args: str) -> str:
+    r = subprocess.run(["git", *args], cwd=projet, capture_output=True, text=True)
+    return r.stdout if r.returncode == 0 else ""
+
+changes = git("status", "--porcelain", "--", "*.py").strip()
+if not changes:
+    amont = git("rev-parse", "--abbrev-ref", "@{u}").strip()
+    if amont:
+        changes = git("diff", "--name-only", f"{amont}...HEAD", "--", "*.py").strip()
+    else:
+        # Sans amont, pas de base fiable : on prend tous les commits des dernieres 24 h
+        # (revue Codex PR #2 : HEAD~1 seul laissait passer un .py rouge suivi d'un commit de doc).
+        changes = git("log", "--since=24.hours", "--name-only", "--pretty=format:", "--", "*.py").strip()
+if not changes:
     sys.exit(0)  # pas de depot git, ou rien de Python n'a bouge : rien a verifier
 
 # 2. Garde anti-boucle
