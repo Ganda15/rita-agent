@@ -46,8 +46,14 @@ suffit d'envoyer **l'adresse du tag**.
 |---|---|
 | `https://github.com/Ganda15/rita-agent` | `https://github.com/Ganda15/rita-agent/tree/livrable-E1-v1` |
 
-### Vérifier avant d'envoyer — trois commandes
+### Vérifier avant d'envoyer — quatre commandes
 
+La première est la **Definition of Done** (ajoutée le 19/09/2026) : cinq contrôles, un verdict
+généré depuis leurs codes de sortie. Rien ne se tague tant qu'une ligne est rouge.
+
+```powershell
+C:\Python314\python.exe scripts\verifier_livrable.py livrable-E1-v1
+```
 ```powershell
 gh api repos/Ganda15/rita-agent/git/ref/tags/livrable-E1-v1 --jq .object.sha
 ```
@@ -58,6 +64,8 @@ gh api repos/Ganda15/rita-agent/collaborators --jq ".[].login"
 C:\Python314\python.exe scripts\verifier_liens.py
 ```
 
+0. **La Definition of Done est verte** : tests + couverture ≥ 90 %, portes d'évaluation,
+   liens internes, tag cité dans `ETAT.md` et `CHANGELOG.md`, arbre git propre.
 1. **Le tag existe** sur GitHub, et pointe où on croit.
 2. **Le destinataire est bien collaborateur** — une invitation *envoyée* n'est pas un accès
    *donné* : tant qu'elle n'est pas acceptée, le lien renvoie une page 404.

@@ -78,3 +78,16 @@ Tests v3 (stdin simule, 13 cas) :
 
 La ligne `CLE_TEST=abc` a ete retiree de `.env` a la main par Era (le hook lui-meme dit : *« si c'est legitime,
 Era le fait a la main »* ; l'inverse vaut aussi).
+
+## Preuve 4 - refus v3 en session reelle (la boucle est fermee)
+
+Meme demande qu'en preuve 3, apres le commit `f114ef3`. Extrait exact du transcript :
+
+```
+2026-09-19T17:34:27.190Z | PreToolUse:PowerShell hook error: [...bloquer-secrets.py]:
+REFUSE par le hook bloquer-secrets (PowerShell) : .env
+Un fichier de secrets ne s'ecrit jamais par un agent, ni par Write/Edit, ni par une commande shell.
+Seul .env.example est autorise (modele sans valeur). Si c'est legitime, Era le fait a la main.
+```
+
+Verification apres coup : `grep -c "^CLE_TEST=" .env` → `0`. La commande qui passait a 19:2x est refusee a 19:34.

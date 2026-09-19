@@ -72,7 +72,11 @@ jobs:
           # L'API refuse de démarrer sans clé (OWASP API2). Celle-ci n'est
           # utilisée que par la suite de tests, et n'entre jamais dans l'image.
           RITA_API_KEY: cle-de-test-integration-continue-32c
-        run: pytest -q
+        # Definition of Done du livrable (19/09/2026) : tests + couverture, portes
+        # d'evaluation, liens internes, et sur un tag : le tag cite dans ETAT.md et
+        # CHANGELOG.md. Avant : `pytest -q` seul — un tag sur un commit non couvert
+        # aurait publie quand meme. Le verdict est genere, jamais ecrit.
+        run: python scripts/verifier_livrable.py --ci
 
       # --- La construction ----------------------------------------------
       - name: Préparer Buildx
