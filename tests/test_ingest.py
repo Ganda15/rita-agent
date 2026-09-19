@@ -294,7 +294,7 @@ def test_l_indexation_indisponible_n_emporte_pas_la_collecte():
     donc être TARDIF : s'il était en tête de `pipelines/ingest.py`, le module entier
     deviendrait inimportable et la collecte quotidienne — taux, cotations, articles —
     s'arrêterait complètement. Ici l'étape échoue seule, et les autres passent."""
-    def indexation_ko(cur, simulation):
+    def indexation_ko(cur, simulation, dsn=None):   # même signature que l'étape réelle (dsn depuis le 20/09)
         raise ImportError("DLL load failed while importing cygrpc")
 
     with patch.dict(ingest.ETAPES,
@@ -308,3 +308,18 @@ def test_l_indexation_indisponible_n_emporte_pas_la_collecte():
     assert r["bilans"][0].ok is False
     assert "ImportError" in r["bilans"][0].erreur
     assert r["bilans"][1].ecrites == 30
+
+
+# --- revue Codex, PR #1 (19/09/2026) : l'indexation doit utiliser le DSN du pipeline --------------
+
+def test_l_indexation_recoit_le_dsn_choisi_par_le_pipeline():
+    """Avant : `indexer()` sans argument — avec `--dsn`, les articles allaient dans une base et
+    l'index se reconstruisait depuis une autre (ou échouait sans DATABASE_URL)."""
+    from rag.indexation import Resultat
+    with patch("rag.indexation.indexer", return_value=Resultat(1, 1, 0, 0)) as indexer:
+        ingest.etape_indexation(_curseur(), simulation=False, dsn="postgresql://x/y")
+    indexer.assert_called_once_with(dsn="postgresql://x/y")
+
+
+def test_le_pipeline_transmet_le_dsn_a_l_etape_indexation():
+    assert "indexation" in ingest.ETAPES_AVEC_DSN

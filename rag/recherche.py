@@ -251,8 +251,14 @@ def rechercher(question: str, ticker: str | None = None, k: int = 3,
         return Resultat(False, "OUT_OF_CORPUS", [], 0)
 
     # --- liste 1 : dense ------------------------------------------------------
+    # Revue Codex, PR #1 (19/09/2026) : avec un ticker, la requête parcourait TOUTE la
+    # collection puis tronquait au nombre de documents du ticker ; un article étranger
+    # globalement plus proche évinçait le seul article permis → faux OUT_OF_CORPUS, et
+    # l'ablation D0 (dense seul) en était faussée. `ids=` restreint le classement dense au
+    # corpus déjà filtré (ChromaDB ≥ 1.0).
     dense = collection.query(query_texts=[question],
-                             n_results=min(CANDIDATS_PAR_MOTEUR, len(documents)))
+                             n_results=min(CANDIDATS_PAR_MOTEUR, len(documents)),
+                             ids=identifiants if ticker else None)
     rangs_dense = {ident: i for i, ident in enumerate(dense["ids"][0])}
     distances = dict(zip(dense["ids"][0], dense["distances"][0]))
 

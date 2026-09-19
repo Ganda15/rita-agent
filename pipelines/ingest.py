@@ -352,7 +352,7 @@ def etape_cours_scrapes(cur, simulation: bool) -> Bilan:
     return b
 
 
-def etape_indexation(cur, simulation: bool) -> Bilan:
+def etape_indexation(cur, simulation: bool, dsn: str | None = None) -> Bilan:
     """Réindexe le corpus pour le RAG, après que les articles ont été écrits.
 
     ## Le défaut que cette étape corrige
@@ -389,7 +389,9 @@ def etape_indexation(cur, simulation: bool) -> Bilan:
 
     from rag.indexation import indexer          # tardif — voir la docstring
 
-    resultat = indexer()
+    # Revue Codex, PR #1 (19/09/2026) : sans `dsn`, l'index se reconstruisait depuis
+    # DATABASE_URL alors que les étapes précédentes avaient écrit dans la base de `--dsn`.
+    resultat = indexer(dsn=dsn)
     return Bilan(
         "indexation",
         lues=resultat.lus,
@@ -402,6 +404,8 @@ def etape_indexation(cur, simulation: bool) -> Bilan:
 # Les étapes qui savent rattraper une période (argument `periode=(debut, fin)`).
 # `cotations` n'en a pas besoin : elle est déjà incrémentale depuis la dernière séance.
 ETAPES_AVEC_PERIODE = ("ecb", "rss")
+# Étapes qui ouvrent leur propre connexion : le DSN du pipeline doit leur parvenir (Codex, PR #1).
+ETAPES_AVEC_DSN = {"indexation"}
 
 ETAPES = {
     "ecb": etape_taux_change,
@@ -444,6 +448,8 @@ def executer(dsn: str | None = None, etapes: list[str] | None = None,
                 fonction = ETAPES[nom]
                 if periode and nom in ETAPES_AVEC_PERIODE:
                     fonction = functools.partial(fonction, periode=periode)
+                if nom in ETAPES_AVEC_DSN:
+                    fonction = functools.partial(fonction, dsn=dsn)
                 with conn.cursor() as cur:
                     bilans.append(fonction(cur, simulation))
                 # [6] sauvegarde : un commit PAR étape
