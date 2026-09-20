@@ -87,3 +87,58 @@ def test_un_modele_d_un_fournisseur_natif_ne_declare_rien():
     pytest.importorskip("giskard.llm")
     from evals.scan_giskard import configurer_juge
     assert configurer_juge("anthropic/claude-sonnet-5") == "anthropic"
+
+
+# --- lancement : la ligne de commande et l'appel à Giskard, sans Giskard installé --------------------
+
+import json
+import sys
+import types
+
+
+def test_une_liste_de_messages_est_ramenee_au_dernier():
+    from evals.scan_giskard import _texte
+    assert _texte([{"role": "user", "content": "a"}, {"role": "user", "content": "b"}]) == "b"
+    assert _texte(42) == ""
+
+
+def test_lancer_appelle_vulnerability_scan_avec_la_bonne_cible_et_ecrit_le_rapport(tmp_path, monkeypatch):
+    """`giskard.scan` n'est pas installable sur ce poste : un faux module suffit à prouver le câblage —
+    la bonne cible pour la frontière, la description de cette frontière, le plafond, le mode mono-tour,
+    et un rapport JSON qui porte la frontière."""
+    import asyncio
+    from evals import scan_giskard as sg
+    appels = {}
+
+    class FauxResultat:
+        def model_dump(self, mode="json"):
+            return {"name": "Scenarios", "results": []}
+
+    async def faux_scan(target, description, languages, **kw):
+        appels.update(target=target, description=description, languages=languages, **kw)
+        return FauxResultat()
+
+    faux = types.ModuleType("giskard.scan"); faux.vulnerability_scan = faux_scan
+    monkeypatch.setitem(sys.modules, "giskard.scan", faux)
+    monkeypatch.setenv("GISKARD_CHECKS_DEFAULT_MODEL", "anthropic/claude-sonnet-5")   # natif : rien à déclarer
+    sortie = tmp_path / "r.json"
+    rapport = asyncio.run(sg.lancer("contenu", 7, ["fr"], sortie))
+    assert appels["target"] is sg.cible_contenu
+    assert appels["description"] == sg.DESCRIPTIONS["contenu"]
+    assert appels["languages"] == ["fr"] and appels["max_scenarios"] == 7 and appels["target_mode"] == "singleturn"
+    assert rapport["frontiere"] == "contenu"
+    assert json.loads(sortie.read_text(encoding="utf-8"))["frontiere"] == "contenu"
+
+
+def test_la_ligne_de_commande_choisit_le_fichier_de_sortie_par_frontiere(tmp_path, monkeypatch, capsys):
+    from evals import scan_giskard as sg
+
+    async def faux_lancer(frontiere, max_scenarios, langues, sortie, graine=42):
+        sortie.write_text("{}", encoding="utf-8")
+        return {"results": [1, 2, 3]}
+
+    monkeypatch.setattr(sg, "lancer", faux_lancer)
+    monkeypatch.chdir(tmp_path)
+    assert sg.main(["--frontiere", "question", "--max-scenarios", "3"]) == 0
+    assert (tmp_path / "rapport-giskard-question.json").exists()
+    assert "3 scénarios" in capsys.readouterr().out
