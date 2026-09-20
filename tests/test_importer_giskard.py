@@ -12,6 +12,7 @@ Structure et valeurs lues dans la SOURCE de giskard-checks 1.0.4 (`core/result.p
 Une conversation à plusieurs tours = UNE attaque (le dernier tour), avec les tours précédents en
 contexte — sinon les tours d'amorce inoffensifs seraient exportés comme des contournements.
 """
+import json
 from pathlib import Path
 
 import pytest
@@ -119,3 +120,23 @@ def test_le_resume_compte_par_categorie_et_par_verdict():
 
 def test_un_rapport_sans_resultat_donne_zero_attaque_et_pas_d_erreur():
     assert ig.extraire_attaques({"results": []}) == []
+
+
+# --- ligne de commande et entrées structurées (couverture : la CI est tombée à 89 % sans eux) -------
+
+def test_une_entree_liste_de_messages_donne_le_dernier_message():
+    r = rapport(scenario("x", INJECTION, [[{"role": "user", "content": "premier"}, {"role": "user", "content": "dernier"}]], ["fail"]))
+    [a] = ig.extraire_attaques(r)
+    assert a.texte == "dernier"
+
+
+def test_la_ligne_de_commande_ecrit_le_fichier_et_imprime_le_tableau(tmp_path, capsys):
+    r = rapport(scenario("a", INJECTION, ["x"], ["fail"]), scenario("b", CONSEIL, ["w"], ["pass"]))
+    entree = tmp_path / "rapport-giskard-question.json"
+    entree.write_text(json.dumps(r, ensure_ascii=False), encoding="utf-8")
+    sortie = tmp_path / "cas.py"
+    assert ig.main([str(entree), "--sortie", str(sortie)]) == 0
+    assert sortie.exists() and "rapport-giskard-question.json" in sortie.read_text(encoding="utf-8")
+    texte = capsys.readouterr().out
+    assert "| prompt-injection | 1 | 1 | 0 | 0 |" in texte
+    assert "| misguidance-and-unauthorized-advice | 1 | 0 | 1 | 0 |" in texte
