@@ -131,6 +131,7 @@ def test_lancer_appelle_vulnerability_scan_avec_la_bonne_cible_et_ecrit_le_rappo
     assert appels["target"] is sg.cible_contenu
     assert appels["description"] == sg.DESCRIPTIONS["contenu"]
     assert appels["languages"] == ["fr"] and appels["max_scenarios"] == 7 and appels["target_mode"] == "singleturn"
+    assert appels["max_concurrency"] == sg.CONCURRENCE_MAX   # run 35513119855 : 402 « in-flight requests » sans plafond
     assert rapport["frontiere"] == "contenu"
     assert json.loads(sortie.read_text(encoding="utf-8"))["frontiere"] == "contenu"
 
