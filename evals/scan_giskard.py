@@ -89,6 +89,8 @@ CIBLES: dict[str, Callable[[Any], str]] = {"question": cible_question, "contenu"
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 
+CONCURRENCE_MAX = 4      # run 35513119855 : sans plafond, toutes les requêtes partent ensemble et OpenRouter
+                         # refuse (402 « in-flight requests ») dès que la somme des réserves dépasse le solde
 MAX_TOKENS_JUGE = 8192   # réserve OpenRouter par requête : 8 192 × prix de sortie, au lieu de 64 000
 
 
@@ -130,6 +132,7 @@ async def lancer(frontiere: str, max_scenarios: int, langues: list[str], sortie:
         max_scenarios=max_scenarios,
         seed=graine,
         target_mode="singleturn",
+        max_concurrency=CONCURRENCE_MAX,
     )
     rapport = resultat.model_dump(mode="json")
     rapport["frontiere"] = frontiere
