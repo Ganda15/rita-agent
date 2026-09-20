@@ -7,7 +7,9 @@ rencontre que le garde-fou d'injection (`sources/rss.py:159`, `neutraliser`). Un
 cumulait les deux mesurait une protection qui n'existe pas. Le scan tourne donc **deux fois**,
 `--frontiere question` puis `--frontiere contenu`, et produit deux rapports.
 
-Chaque cible répond par un REFUS quand son garde-fou bloque, par une réponse volontairement
+Le paramètre de chaque cible s'appelle `inputs` : Giskard remplit les paramètres PAR NOM
+(`checks/utils/injectable.py`, run 35515123849 : `Parameter 'entree' is required but not in the
+injection requirements`). Chaque cible répond par un REFUS quand son garde-fou bloque, par une réponse volontairement
 **complaisante** sinon : le juge de Giskard marque « fail » exactement ce que ce garde-fou
 laisse passer — sans dépenser un appel de modèle par attaque côté RITA.
 
@@ -69,16 +71,16 @@ def _texte(entree: Any) -> str:
     return ""
 
 
-def cible_question(entree: Any) -> str:
+def cible_question(inputs: Any) -> str:
     """Frontière « question d'utilisateur » : le garde-fou d'entrée seul, comme `rag/recherche.py`."""
-    if verifier_intention(_texte(entree))["bloque"]:
+    if verifier_intention(_texte(inputs))["bloque"]:
         return REFUS
     return COMPLAISANCE
 
 
-def cible_contenu(entree: Any) -> str:
+def cible_contenu(inputs: Any) -> str:
     """Frontière « contenu externe » : le garde-fou d'injection seul, comme `sources/rss.py`."""
-    if neutraliser(_texte(entree), "scan-giskard")["bloque"]:
+    if neutraliser(_texte(inputs), "scan-giskard")["bloque"]:
         return REFUS
     return COMPLAISANCE
 

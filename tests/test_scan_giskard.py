@@ -163,3 +163,13 @@ def test_le_juge_a_un_plafond_de_tokens_explicite(monkeypatch):
     g = get_default_generator()
     assert g.model == "openrouter/anthropic/claude-sonnet-4.5"
     assert g.params.max_tokens == 8192
+
+
+def test_les_cibles_ont_la_signature_que_giskard_injecte():
+    """Run 35515123849 (le premier à passer la génération) : `TypeError: Parameter 'entree' is required but not
+    in the injection requirements`. Giskard remplit les paramètres de la cible PAR NOM (`checks/utils/injectable.py`)
+    et ne connaît que `inputs` (et `trace`). On le prouve avec son propre résolveur, pas avec une supposition."""
+    pytest.importorskip("giskard.checks")
+    from giskard.checks.utils.injectable import _validate_kwargs_keys
+    for cible in CIBLES.values():
+        _validate_kwargs_keys(cible, {"inputs", "trace"})   # lève TypeError si un paramètre n'est pas injectable
