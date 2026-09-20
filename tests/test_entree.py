@@ -71,3 +71,12 @@ def test_une_question_legitime_qui_contient_le_mot_role_passe():
     for question in ("Quel est le rôle de la BCE dans la décision de jeudi ?",
                      "En tant que particulier, comment lire le rapport annuel de LVMH ?"):
         assert not verifier_intention(question)["bloque"], question
+
+
+def test_une_question_legitime_avec_sans_filtre_ou_jeu_de_role_n_est_pas_refusee():
+    """Revue Codex, PR #20 : ces mots seuls ne sont pas une intention interdite. Le refus exige une demande
+    d'INCARNER un personnage ET une consigne d'ignorer les règles."""
+    for question in ("Quels articles proposent une analyse sans filtre des résultats de LVMH ?",
+                     "Explique ce jeu de rôle entre la BCE et les banques commerciales.",
+                     "Y a-t-il des critiques des conseils d'investissement agressifs de certains courtiers ?"):
+        assert not verifier_intention(question)["bloque"], question

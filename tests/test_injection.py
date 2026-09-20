@@ -60,3 +60,19 @@ def test_un_article_qui_parle_du_role_d_une_institution_n_est_pas_bloque():
                   "En tant que premier assureur européen, Axa publie des résultats en hausse.",
                   "Le jeu des taux de change pèse sur les exportateurs, selon l'analyste."):
         assert not neutraliser(texte, "eval")["bloque"], texte
+
+
+def test_la_presse_anglaise_qui_dit_act_as_n_est_pas_bloquee():
+    """Revue Codex, PR #20 : « act as » est un tour ordinaire de la presse financière anglaise. Un article
+    ainsi marqué serait EXCLU de l'index (`rag/indexation.py`). Le motif doit viser une consigne adressée
+    à l'agent (« you will act as… »), pas une tournure."""
+    for texte in ("The bank will act as the sole bookrunner for the offering.",
+                  "The acquisition could act as a catalyst for the share price.",
+                  "Regulators asked the firm to act as a market maker."):
+        assert not neutraliser(texte, "eval")["bloque"], texte
+
+
+def test_un_article_qui_decrit_un_jeu_de_role_institutionnel_n_est_pas_bloque():
+    for texte in ("Ce jeu de rôle entre la BCE et les banques commerciales dure depuis dix ans, selon l'économiste.",
+                  "Les analystes décrivent un jeu de rôles bien réglé entre l'AMF et les émetteurs."):
+        assert not neutraliser(texte, "eval")["bloque"], texte
