@@ -173,3 +173,14 @@ def test_les_cibles_ont_la_signature_que_giskard_injecte():
     from giskard.checks.utils.injectable import _validate_kwargs_keys
     for cible in CIBLES.values():
         _validate_kwargs_keys(cible, {"inputs", "trace"})   # lève TypeError si un paramètre n'est pas injectable
+
+
+def test_giskard_infere_str_comme_type_d_entree_des_cibles():
+    """Run 35515920338 : `AttributeError: type object 'Any' has no attribute 'model_json_schema'`. Giskard lit
+    l'ANNOTATION du paramètre `inputs` de la cible (`checks/utils/inference.py`) pour savoir quoi générer ;
+    annoté `Any`, il tentait d'en faire un schéma pydantic. Les générateurs produisent des `str` : la cible
+    doit le dire, et on le prouve avec l'inférence de Giskard elle-même."""
+    pytest.importorskip("giskard.checks")
+    from giskard.checks.utils.inference import _infer_input_type
+    for cible in CIBLES.values():
+        assert _infer_input_type(cible) is str
