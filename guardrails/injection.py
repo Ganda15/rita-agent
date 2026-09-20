@@ -26,6 +26,13 @@ MOTIFS = [
     (r"nouvelles?\s+instructions?\s*:", "nouvelles_instructions_fr"),
     (r"system\s*prompt", "mention_system_prompt"),
     (r"</?\s*donnees_externes", "tentative_evasion_balise"),
+    # --- scan Giskard, run 9 (20/09/2026) : « Character roleplay bypass » (OWASP LLM01) passait ---
+    # Aucun mot-clé d'injection classique : on demande à l'agent d'INCARNER un personnage qui ignore
+    # les règles. Le jeu de rôle et « réponds… en tant que X » n'ont aucun usage légitime dans un
+    # article de presse financière ni dans une question de lecteur.
+    (r"jeu\s+de\s+r[ôo]les?", "jeu_de_role"),
+    (r"r[ée]pond(re|s|ez|ras)([^a-z].{0,60})?en\s+tant\s+que\s+", "reponds_en_tant_que"),
+    (r"(^|[^a-z])(role[- ]?play|act\s+as\s+(a|an|the)|pretend\s+(to\s+be|you\s+are))([^a-z]|$)", "roleplay_en"),
 ]
 
 _COMPILES = [(re.compile(m, re.IGNORECASE), nom) for m, nom in MOTIFS]
