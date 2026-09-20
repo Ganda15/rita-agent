@@ -120,7 +120,12 @@ def test_lancer_appelle_vulnerability_scan_avec_la_bonne_cible_et_ecrit_le_rappo
 
     faux = types.ModuleType("giskard.scan"); faux.vulnerability_scan = faux_scan
     monkeypatch.setitem(sys.modules, "giskard.scan", faux)
-    monkeypatch.setenv("GISKARD_CHECKS_DEFAULT_MODEL", "anthropic/claude-sonnet-5")   # natif : rien à déclarer
+    # Ce test prouve le câblage de `lancer`, pas la configuration du juge (testée à part) : modèle vide,
+    # et `giskard.agents` rendu INDISPONIBLE — c'est la situation du job de livraison (revue Codex,
+    # PR #16 : sans Giskard installé, l'import inconditionnel faisait échouer ce test avant le stub).
+    monkeypatch.setenv("GISKARD_CHECKS_DEFAULT_MODEL", "")
+    monkeypatch.setitem(sys.modules, "giskard.agents", None)
+    monkeypatch.setitem(sys.modules, "giskard.checks", None)
     sortie = tmp_path / "r.json"
     rapport = asyncio.run(sg.lancer("contenu", 7, ["fr"], sortie))
     assert appels["target"] is sg.cible_contenu
