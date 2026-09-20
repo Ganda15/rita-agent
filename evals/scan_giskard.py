@@ -17,8 +17,9 @@ deepteam, donc torch — des roues que Smart App Control refuse sur le poste d'E
 sont des artefacts du run ; `evals/importer_giskard.py` en fait `evals/cas_giskard.py`.
 
 ## Le juge
-`GISKARD_CHECKS_DEFAULT_MODEL` (lu par giskard-checks), une chaîne litellm ; ici OpenRouter, la seule
-clé de RITA : `openrouter/anthropic/claude-sonnet-4.5`. Type de la cible lu dans giskard-checks :
+`GISKARD_CHECKS_DEFAULT_MODEL` (lu par giskard-checks), au format `fournisseur/modèle` de giskard-llm
+(PAS litellm — vérifié dans la source et par le premier run) ; ici OpenRouter, la seule clé de RITA :
+`openrouter/anthropic/claude-sonnet-4.5`, déclaré par `configurer_juge()` comme alias compatible OpenAI. Type de la cible lu dans giskard-checks :
 `Target = Callable[[InputType], OutputType]`, les générateurs produisent des `str`.
 
 Usage (CI) :
@@ -30,6 +31,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any, Callable
@@ -84,8 +86,29 @@ def cible_contenu(entree: Any) -> str:
 CIBLES: dict[str, Callable[[Any], str]] = {"question": cible_question, "contenu": cible_contenu}
 
 
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+
+
+def configurer_juge(modele: str) -> str:
+    """Déclare le fournisseur du juge quand il n'est pas natif dans giskard-llm.
+
+    Premier run réel (20/09/2026, run 35510863169) : `Provider 'openrouter' is not configured and not
+    in the registry`. giskard-llm (source `routing.py`) ne connaît que openai, google, anthropic, azure.
+    OpenRouter parle le protocole OpenAI : on l'enregistre comme alias `openrouter` du fournisseur
+    `openai`, avec l'URL d'OpenRouter et la clé en résolution DIFFÉRÉE (`os.environ/…`), jamais copiée.
+    Rend l'alias (le préfixe du modèle). Un fournisseur natif ne déclare rien.
+    """
+    alias = modele.split("/", 1)[0] if "/" in modele else "openai"
+    if alias == "openrouter":
+        from giskard.llm import configure   # import tardif : giskard-llm n'est pas installé partout
+        configure("openrouter", provider="openai",
+                  api_key="os.environ/OPENROUTER_API_KEY", base_url=OPENROUTER_BASE_URL)
+    return alias
+
+
 async def lancer(frontiere: str, max_scenarios: int, langues: list[str], sortie: Path, graine: int = 42) -> dict:
     from giskard.scan import vulnerability_scan   # import tardif : dépendances lourdes, CI seulement
+    configurer_juge(os.environ.get("GISKARD_CHECKS_DEFAULT_MODEL", ""))
 
     resultat = await vulnerability_scan(
         CIBLES[frontiere],
