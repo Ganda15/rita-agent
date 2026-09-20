@@ -9,6 +9,22 @@
 
 ---
 
+## 2026-09-20 — Décision : Giskard comme challenger des garde-fous, pas comme dépendance
+
+**Décision structurante** (Era, option 1 sur trois) : le scanner open source Giskard (`vulnerability_scan`, OWASP LLM Top 10)
+attaque la chaîne de garde-fous de RITA une fois, en CI, avec un plafond de 200 scénarios ; les attaques passées entrent dans
+un fichier de cas séparé et deviennent chacune un incident (C21). Écartés : la bibliothèque `Checks` comme dépendance pytest,
+RAGET (legacy), le Hub payant. Pourquoi : RITA a déjà la méthode (10 attaques à la main, seuils gatés) ; ce qui manque est
+l'échelle et un nom que le jury reconnaît, pas une structure.
+
+**Fait** : cible, importeur et workflow manuel, 13 tests écrits avant. **Pas encore fait** : le scan lui-même.
+
+**Contraintes découvertes** : `giskard[scan]` tire garak et deepteam donc torch (refusé par Smart App Control → CI) ; le juge
+par défaut est OpenAI, remplacé par Claude via OpenRouter, la seule clé de RITA ; le « jeu » d'injections livré est 17 gabarits,
+pas des attaques : tout est généré par un modèle, donc tout coûte.
+
+---
+
 ## 2026-09-20 — Les quatre bugs trouvés par la revue automatisée sont fermés, chacun par un test
 
 **Manques découverts** (revue Codex, PR #1, tous confirmés en relisant le code) et **corrigés** :

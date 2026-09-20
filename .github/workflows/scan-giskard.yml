@@ -1,0 +1,76 @@
+# =============================================================================
+# SCAN DE VULNÉRABILITÉS GISKARD — C10 / C17 (OWASP LLM Top 10), C21 (incidents)
+#
+# Déclenchement MANUEL seulement : le scan appelle un modèle (générateur d'attaques et
+# juge), donc il coûte. Il tourne en CI et non sur le poste d'Era parce que `giskard[scan]`
+# tire garak et deepteam, donc torch — des roues refusées par Smart App Control.
+#
+# Deux frontières, deux scans (revue Codex, PR #14) : « question » n'attaque que le garde-fou
+# d'entrée (comme rag/recherche.py), « contenu » n'attaque que le garde-fou d'injection (comme
+# sources/rss.py). Le plafond saisi est PAR frontière : 100 + 100 = les 200 validés par Era.
+#
+# Ce qu'il produit : deux rapports JSON en artefact (la preuve brute) et un tableau par
+# catégorie dans le journal. L'import dans `evals/cas_giskard.py` se fait ensuite, en local,
+# après relecture de 20 attaques à la main :
+#   C:/Python314/python.exe -m evals.importer_giskard rapport-giskard-question.json --sortie evals/cas_giskard_question.py
+#
+# Secret requis : OPENROUTER_API_KEY (la clé existante de RITA). Modèle du juge : chaîne
+# litellm lue par giskard-checks dans GISKARD_CHECKS_DEFAULT_MODEL.
+# =============================================================================
+name: Scan Giskard
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_scenarios:
+        description: "Plafond de scénarios PAR frontière (coût du juge). 100 = 200 au total, validé par Era le 20/09/2026."
+        default: "100"
+        required: true
+      langues:
+        description: "Langues attendues de l'agent, séparées par des virgules"
+        default: "fr,en"
+        required: true
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Installer RITA et Giskard (scan + litellm)
+        run: |
+          pip install -r requirements.txt
+          pip install "giskard[scan,litellm]"
+          python -c "import giskard.scan, litellm; print('giskard scan OK')"
+      - name: Scan — frontière question (garde-fou d'entrée seul)
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GISKARD_CHECKS_DEFAULT_MODEL: openrouter/anthropic/claude-sonnet-4.5
+          RITA_API_KEY: cle-de-test-scan-giskard-32-caracteres
+        run: python -m evals.scan_giskard --frontiere question --max-scenarios "${{ inputs.max_scenarios }}" --langues "${{ inputs.langues }}"
+      - name: Scan — frontière contenu (garde-fou d'injection seul)
+        if: always()
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GISKARD_CHECKS_DEFAULT_MODEL: openrouter/anthropic/claude-sonnet-4.5
+          RITA_API_KEY: cle-de-test-scan-giskard-32-caracteres
+        run: python -m evals.scan_giskard --frontiere contenu --max-scenarios "${{ inputs.max_scenarios }}" --langues "${{ inputs.langues }}"
+      - name: Résumé par catégorie (le tableau de la preuve)
+        if: always()
+        run: |
+          for f in question contenu; do
+            echo "### frontière $f"
+            [ -f "rapport-giskard-$f.json" ] && python -m evals.importer_giskard "rapport-giskard-$f.json" --sortie "apercu-cas-$f.py" || echo "(pas de rapport pour $f)"
+          done
+      - name: Conserver les rapports bruts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapports-giskard
+          path: |
+            rapport-giskard-*.json
+            apercu-cas-*.py
+          retention-days: 90
