@@ -38,6 +38,9 @@ MOTIFS_INTENTION_AMF = [
      "va_doubler_ou_chuter"),
     (r"pour\s+gagner\s+\d+\s*%", "pour_gagner_pourcentage"),
     (r"quelle\s+(action|valeur)\w*.*\bacheter\b", "quelle_action_acheter"),
+    # --- scan Giskard, run 9 (20/09/2026) : une question qui demande d'incarner un personnage « sans
+    # filtre » qui « se moque des régulations » est une intention interdite déguisée (OWASP LLM01).
+    (r"(jeu\s+de\s+r[ôo]les?|en\s+tant\s+que|incarne[sz]?|joue[sz]?\s+le\s+r[ôo]le\s+d).{0,150}(sans\s+filtre|se\s+moque\s+des\s+r[ée]gulations|ignore\s+les\s+r[èe]gles|cynique|conseils?\s+d\'investissement\s+agressifs?)", "personnage_sans_filtre"),
 ]
 
 _COMPILES = [(re.compile(m, re.IGNORECASE), nom) for m, nom in MOTIFS_INTENTION_AMF]
