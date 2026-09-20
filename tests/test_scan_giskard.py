@@ -133,7 +133,7 @@ def test_lancer_appelle_vulnerability_scan_avec_la_bonne_cible_et_ecrit_le_rappo
 def test_la_ligne_de_commande_choisit_le_fichier_de_sortie_par_frontiere(tmp_path, monkeypatch, capsys):
     from evals import scan_giskard as sg
 
-    async def faux_lancer(frontiere, max_scenarios, langues, sortie, graine=42):
+    async def faux_lancer(frontiere, max_scenarios, langues, sortie, graine=42, max_tokens=8192):   # même signature que lancer()
         sortie.write_text("{}", encoding="utf-8")
         return {"results": [1, 2, 3]}
 
@@ -142,3 +142,18 @@ def test_la_ligne_de_commande_choisit_le_fichier_de_sortie_par_frontiere(tmp_pat
     assert sg.main(["--frontiere", "question", "--max-scenarios", "3"]) == 0
     assert (tmp_path / "rapport-giskard-question.json").exists()
     assert "3 scénarios" in capsys.readouterr().out
+
+
+def test_le_juge_a_un_plafond_de_tokens_explicite(monkeypatch):
+    """Runs 35511772072 et 35512094145 : HTTP 402 d'OpenRouter, « requires more credits ». Giskard laisse
+    `max_tokens=None`, OpenRouter réserve alors le maximum du modèle (64 000) et exige que le solde le couvre
+    (Sonnet : ~$0,96 par requête). Un plafond explicite sur le générateur PAR DÉFAUT (utilisé par les
+    générateurs d'attaques ET les juges, `giskard/checks/core/mixin.py`) ramène la réserve à 8 192."""
+    pytest.importorskip("giskard.checks")
+    from giskard.checks import get_default_generator
+    from evals.scan_giskard import configurer_juge
+    monkeypatch.setenv("OPENROUTER_API_KEY", "cle-de-test")
+    configurer_juge("openrouter/anthropic/claude-sonnet-4.5", max_tokens=8192)
+    g = get_default_generator()
+    assert g.model == "openrouter/anthropic/claude-sonnet-4.5"
+    assert g.params.max_tokens == 8192

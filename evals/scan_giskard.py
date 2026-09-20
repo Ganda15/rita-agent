@@ -89,7 +89,10 @@ CIBLES: dict[str, Callable[[Any], str]] = {"question": cible_question, "contenu"
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 
-def configurer_juge(modele: str) -> str:
+MAX_TOKENS_JUGE = 8192   # réserve OpenRouter par requête : 8 192 × prix de sortie, au lieu de 64 000
+
+
+def configurer_juge(modele: str, max_tokens: int = MAX_TOKENS_JUGE) -> str:
     """Déclare le fournisseur du juge quand il n'est pas natif dans giskard-llm.
 
     Premier run réel (20/09/2026, run 35510863169) : `Provider 'openrouter' is not configured and not
@@ -103,12 +106,22 @@ def configurer_juge(modele: str) -> str:
         from giskard.llm import configure   # import tardif : giskard-llm n'est pas installé partout
         configure("openrouter", provider="openai",
                   api_key="os.environ/OPENROUTER_API_KEY", base_url=OPENROUTER_BASE_URL)
+    if modele:
+        # Runs 35511772072 / 35512094145 : 402 « requires more credits ». Sans `max_tokens`, OpenRouter
+        # réserve le maximum du modèle (64 000 tokens) et exige que le solde le couvre à chaque requête.
+        # Le générateur PAR DÉFAUT sert aux générateurs d'attaques et aux juges (checks/core/mixin.py) :
+        # un plafond explicite ici vaut pour tout le scan.
+        from giskard.agents import Generator
+        from giskard.agents.generators import GenerationParams
+        from giskard.checks import set_default_generator
+        set_default_generator(Generator(model=modele, params=GenerationParams(max_tokens=max_tokens)))
     return alias
 
 
-async def lancer(frontiere: str, max_scenarios: int, langues: list[str], sortie: Path, graine: int = 42) -> dict:
+async def lancer(frontiere: str, max_scenarios: int, langues: list[str], sortie: Path, graine: int = 42,
+                 max_tokens: int = MAX_TOKENS_JUGE) -> dict:
     from giskard.scan import vulnerability_scan   # import tardif : dépendances lourdes, CI seulement
-    configurer_juge(os.environ.get("GISKARD_CHECKS_DEFAULT_MODEL", ""))
+    configurer_juge(os.environ.get("GISKARD_CHECKS_DEFAULT_MODEL", ""), max_tokens=max_tokens)
 
     resultat = await vulnerability_scan(
         CIBLES[frontiere],
@@ -132,9 +145,11 @@ def main(argv: list[str] | None = None) -> int:
     parseur.add_argument("--langues", default="fr,en")
     parseur.add_argument("--sortie", default=None)
     parseur.add_argument("--graine", type=int, default=42)
+    parseur.add_argument("--max-tokens", type=int, default=MAX_TOKENS_JUGE, help="plafond de sortie par requête du juge (réserve OpenRouter)")
     args = parseur.parse_args(argv)
     sortie = Path(args.sortie or f"rapport-giskard-{args.frontiere}.json")
-    rapport = asyncio.run(lancer(args.frontiere, args.max_scenarios, args.langues.split(","), sortie, args.graine))
+    rapport = asyncio.run(lancer(args.frontiere, args.max_scenarios, args.langues.split(","), sortie, args.graine,
+                                 max_tokens=args.max_tokens))
     print(f"rapport : {sortie} — frontière {args.frontiere} — {len(rapport.get('results') or [])} scénarios")
     return 0
 
