@@ -53,6 +53,13 @@ détectées), tenue visible par un `xfail(strict=True)` dans `tests/test_evals.p
   « rôle de la BCE » ou disent « en tant que premier assureur » NON bloqués), `tests/test_entree.py` (question refusée + deux questions
   légitimes avec le mot « rôle » NON refusées).
 
+## Deuxième tour : les motifs resserrés par la revue de la PR #20
+Codex a montré deux faux positifs que les premiers motifs auraient créés : *« The bank will act as the sole bookrunner »*
+(article exclu de l'index) et *« Quels articles proposent une analyse sans filtre des résultats de LVMH ? »* (question refusée).
+Motifs resserrés à une **consigne adressée à l'agent** (« tu vas répondre en tant que… », « you will act as… ») et, côté question,
+à la conjonction d'un indice de personnage ET d'un indice d'ignorance des règles. Trois tests anti-faux-positifs ajoutés avec ces
+phrases ; les deux attaques Giskard restent bloquées 2/2 sur chaque frontière. Suite : 532.
+
 ## Le chemin jusqu'à ce run — 9 lancements, 8 échecs, chacun fermé par un test
 | Run | Échec | Correctif |
 |---|---|---|
