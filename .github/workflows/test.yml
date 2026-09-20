@@ -22,7 +22,7 @@ jobs:
           pip install playwright
           playwright install --with-deps chromium
       - name: Installer giskard-llm (pur Python) pour tester la déclaration du juge OpenRouter
-        run: pip install "giskard-llm[openai]"
+        run: pip install "giskard-llm[openai]" giskard-checks
       - name: Lancer les tests et mesurer la couverture
         # Le seuil vit dans `.coveragerc` (`fail_under = 80`), pas ici : un seuil
         # écrit dans le workflow serait invisible depuis la machine de développement,
