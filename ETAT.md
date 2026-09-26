@@ -15,7 +15,33 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-09-19** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+**Dernière mise à jour : 2026-09-26** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+
+---
+
+🔎 **26/09 : livre Packt « Building AI Agents for Finance » lu en entier. Rien à coder hors plan.**
+4 éléments retenus, chacun rangé à sa semaine de `docs/PLAN-12-SEMAINES.md` : Wilson (S40, protocole
+du benchmark C7) · traces et alerte de `src/llm.py` (S43, C11/C20) · journal d'audit de `/briefing`
+(S43, C20) · trous des garde-fous (S44, C17 ; correctif testé sur une copie : 571 passed, 0 faux
+positif sur 2 592 textes réels, 0/8 hors échantillon). Le reste est parqué. Détail : Obsidian
+`Projets/RITA/08-Etude/ETUDE - Livre Packt ... (2026-09-26).md`.
+⚠️ **Retard mesuré sur le plan** : S38 (monitorage instrumenté) et S39 (E4 rédigé) non faits ;
+`docs/rapports/` ne contient que E1.
+
+**▶️ Tâche principale (Era, 26/09) : retour au plan, S39 = rédiger le livrable E4 (C14-C19), puis le geler.**
+✅ **Étape 1 faite le 26/09** : les 36 critères officiels confrontés aux preuves (skill `projet-rncp`) →
+**21 ✅ · 11 ⚠️ · 4 ❌**, rapport E4 : 0 page. Détail, preuves `fichier:ligne` et plan d'action : Obsidian
+`Projets/RITA/04-Certif/RITA - Vérification critères RNCP E4 (2026-09-26).md`. Trois constats :
+- 🔴 **C16 (4 critères) n'est dans aucune semaine du plan** : 0 issue, aucun tableau, aucune méthode décrite.
+- 🟠 **`livraison.yml` publie l'image avant de vérifier qu'elle démarre** (`:110` avant `:121`). La branche
+  « publier sur tag » n'a jamais tourné (seul tag : `livrable-E1-v1`, antérieur au fichier).
+- 🟡 `requirements.txt` : 13 dépendances sans version (l'image, elle, est épinglée).
+
+**Prochaine action** : décision d'Era sur la méthode agile de C16 (méthode, outil), l'action la plus rentable
+du plan d'action (4 critères) ; puis `livraison.yml`, `requirements.txt`, écran 2, mesure EcoIndex.
+
+⚠️ **Deux trous de suivi trouvés le 26/09** : aucune note de veille C6 après S36 (`docs/veille/`, dernier
+commit le 08/09 : S37, S38 et S39 manquent) ; journal Obsidian sans entrée pour les 19 et 20/09 (harnais, Giskard).
 
 ---
 
