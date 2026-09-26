@@ -22,6 +22,22 @@ n'apparaissait dans aucune semaine de `docs/PLAN-12-SEMAINES.md`.
 | Accès du formateur (`bybysker`) au tableau, en lecture | ✅ | mutation GraphQL `updateProjectV2Collaborators`, réponse : `bybysker` |
 | Méthode écrite : rôles, colonnes, limite de travail en cours, rituels, accès | ✅ | `docs/PILOTAGE-AGILE.md` |
 
+### Automatisations du tableau, testées le 26/09
+
+Réglées par Era dans l'interface GitHub (l'API ne permet pas de les configurer), puis testées
+avec une issue de test, #45, fermée ensuite comme « not planned » et retirée du tableau.
+
+| Automatisation | Test | Résultat |
+|---|---|---|
+| Vue du tableau | lecture par l'API GraphQL | disposition `BOARD_LAYOUT`, colonnes = champ `Status` |
+| « Item closed » → Fait | carte placée en Backlog, puis issue fermée | la carte passe à **Fait** |
+| « Item added to project » → Backlog | issue **ouverte** ajoutée au tableau | la carte arrive en **Backlog** |
+| « Pull request merged » → Fait, « Pull request linked to issue » → En cours | activées | à vérifier à la première pull request liée à une issue |
+
+Le premier essai de « Item added » avait placé la carte en Fait. Il a été refait avec une issue
+ouverte, parce qu'une issue fermée déclenche aussi « Item closed ». Réglage corrigé par Era
+entre les deux essais.
+
 ## 3. Les 4 critères après la mise en place
 
 | Critère officiel | État | Pourquoi |
