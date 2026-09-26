@@ -37,8 +37,15 @@ positif sur 2 592 textes réels, 0/8 hors échantillon). Le reste est parqué. D
   « publier sur tag » n'a jamais tourné (seul tag : `livrable-E1-v1`, antérieur au fichier).
 - 🟡 `requirements.txt` : 13 dépendances sans version (l'image, elle, est épinglée).
 
-**Prochaine action** : décision d'Era sur la méthode agile de C16 (méthode, outil), l'action la plus rentable
-du plan d'action (4 critères) ; puis `livraison.yml`, `requirements.txt`, écran 2, mesure EcoIndex.
+✅ **C16 mis en place le 26/09 (décision d'Era : Kanban, tableau GitHub, revue du lundi)** : tableau
+« RITA - Pilotage Kanban (livrables E2-E5) », https://github.com/users/Ganda15/projects/4 (privé, formateur
+en lecture) ; **backlog = 24 issues (#21 à #44)** tirées du plan et de la vérification E4 (16 Backlog,
+7 Cette semaine, 1 En cours) ; méthode : `docs/PILOTAGE-AGILE.md` ; preuve : `evidence/C16/preuve-mise-en-place-kanban.md`.
+C16 passe de 0 à 2 ✅ + 2 ⚠️ (« tout au long du projet » ne vaut qu'à partir du 26/09).
+
+**Prochaine action** : **lundi 28/09, première revue hebdomadaire** (après la note de veille S40, issue #30) :
+compte rendu daté ici même. Puis les cartes « Cette semaine » : #22 `livraison.yml`, #23 `requirements.txt`,
+#24 écran 2, #25 EcoIndex, #26 droits d'accès (décision d'Era), #27 doc CI/CD, #28 rapport E4.
 
 ⚠️ **Deux trous de suivi trouvés le 26/09** : aucune note de veille C6 après S36 (`docs/veille/`, dernier
 commit le 08/09 : S37, S38 et S39 manquent) ; journal Obsidian sans entrée pour les 19 et 20/09 (harnais, Giskard).
