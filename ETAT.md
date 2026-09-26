@@ -43,9 +43,17 @@ en lecture) ; **backlog = 24 issues (#21 à #44)** tirées du plan et de la vér
 7 Cette semaine, 1 En cours) ; méthode : `docs/PILOTAGE-AGILE.md` ; preuve : `evidence/C16/preuve-mise-en-place-kanban.md`.
 C16 passe de 0 à 2 ✅ + 2 ⚠️ (« tout au long du projet » ne vaut qu'à partir du 26/09).
 
+✅ **#22 fermée le 26/09 (C19)** : `livraison.yml` construit sans publier, vérifie l'image construite
+(sans la reconstruire), puis publie cette image seulement sur un tag. PR #46 fusionnée par Era (`556990e`) ;
+`tests/test_livraison.py` 3 rouges puis verts ; suite locale 535 passed ; run Livraison `36247837793` :
+image démarrée en 4 s, 403 sans clé, publication sautée hors tag. Reste à prouver : la publication, au
+premier tag `livrable-E4-v1`. Première carte passée à « Fait » par l'automatisation du tableau.
+⚠️ Appris en route : « Closes #N » ne ferme l'issue qu'à l'arrivée sur `main` (branche par défaut) ;
+les PR visant `develop`, l'issue se ferme à la main après fusion et CI verte.
+
 **Prochaine action** : **lundi 28/09, première revue hebdomadaire** (après la note de veille S40, issue #30) :
-compte rendu daté ici même. Puis les cartes « Cette semaine » : #22 `livraison.yml`, #23 `requirements.txt`,
-#24 écran 2, #25 EcoIndex, #26 droits d'accès (décision d'Era), #27 doc CI/CD, #28 rapport E4.
+compte rendu daté ici même. Puis les cartes « Cette semaine » : #23 `requirements.txt`, #24 écran 2,
+#25 EcoIndex, #26 droits d'accès (décision d'Era), #27 doc CI/CD, #28 rapport E4.
 
 ⚠️ **Deux trous de suivi trouvés le 26/09** : aucune note de veille C6 après S36 (`docs/veille/`, dernier
 commit le 08/09 : S37, S38 et S39 manquent) ; journal Obsidian sans entrée pour les 19 et 20/09 (harnais, Giskard).
