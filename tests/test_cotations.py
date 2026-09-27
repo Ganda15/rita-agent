@@ -149,3 +149,40 @@ def test_reponse_vide_retourne_liste_vide():
 def test_sans_ticker_erreur_explicite():
     with pytest.raises(ValueError, match="Aucun ticker"):
         fetch_cotations([], date(2026, 7, 30))
+
+
+# --- 27/09/2026 : issues #50 et #47 --------------------------------------------
+# Tous les tests ci-dessus demandent DEUX tickers. Le cas d'un ticker seul n'était pas
+# couvert, et c'est lui qui a figé HSBA.L un mois : yfinance imbrique aussi les colonnes
+# pour un seul ticker, et le code les lisait à plat, donc écartait chaque ligne.
+
+def test_un_ticker_seul_est_lu_malgre_les_colonnes_imbriquees():
+    rep = _fausse_reponse(UNE_SEANCE, {"HSBA.L": {
+        "Open": [1515.4], "High": [1524.0], "Low": [1507.6],
+        "Close": [1512.2], "Volume": [10200809]}})
+    with patch("yfinance.download", return_value=rep):
+        r = fetch_cotations(["HSBA.L"], date(2026, 7, 30))
+
+    assert len(r) == 1
+
+
+def test_les_pence_de_londres_sont_convertis_en_livres():
+    """Yahoo cote Londres en pence : 1 512,2 pence = 15,122 livres."""
+    rep = _fausse_reponse(UNE_SEANCE, {"HSBA.L": {
+        "Open": [1515.4], "High": [1524.0], "Low": [1507.6],
+        "Close": [1512.2], "Volume": [10200809]}})
+    with patch("yfinance.download", return_value=rep):
+        r = fetch_cotations(["HSBA.L"], date(2026, 7, 30))
+
+    assert r[0]["cloture"] == pytest.approx(15.122)
+    assert r[0]["ouverture"] == pytest.approx(15.154)
+    assert r[0]["volume"] == 10200809          # un nombre de titres, pas un prix
+
+
+def test_un_ticker_seul_non_imbrique_reste_lu():
+    """Si une future version de yfinance revenait aux colonnes à plat, rien ne casse."""
+    rep = pd.DataFrame({"Open": [100.0], "High": [101.0], "Low": [99.0],
+                        "Close": [100.5], "Volume": [1000]},
+                       index=pd.DatetimeIndex(UNE_SEANCE))
+    with patch("yfinance.download", return_value=rep):
+        assert len(fetch_cotations(["MC.PA"], date(2026, 7, 30))) == 1

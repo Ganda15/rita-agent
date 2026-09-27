@@ -4,6 +4,7 @@ Ce qu'on vérifie ici n'est pas « les données arrivent » (prouvé par l'exéc
 `evidence/C3/`), mais les **règles d'agrégation** : dédoublonnage, tolérance aux pannes,
 mode simulation, et le fait qu'une étape en échec n'emporte pas les autres.
 """
+from datetime import date
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -342,3 +343,61 @@ def test_le_service_compose_indexation_est_strict():
     from pathlib import Path
     compose = yaml.safe_load((Path(__file__).parent.parent / "docker-compose.yml").read_text(encoding="utf-8"))
     assert "--strict" in compose["services"]["indexation"]["command"]
+
+
+# --- 27/09/2026 : issues #49, #48 et #52 -------------------------------------------
+
+def test_un_cours_scrape_le_samedi_est_range_au_vendredi(sans_execute_values):
+    """Collecte du samedi 26/09/2026 à 19h00 (17h00 UTC) : la page montre la clôture du
+    vendredi. La ranger sous le samedi créait une séance fictive (#49)."""
+    cotation = _Cotation()
+    cotation.collecte_le = "2026-09-26T17:00:00+00:00"
+    cur = _curseur(retour=("MC.PA", "FR0000121014"))
+    with patch("sources.scraper.collecter",
+               return_value={"cotations": [cotation], "echecs": []}):
+        ingest.etape_cours_scrapes(cur, simulation=False)
+
+    ligne = sans_execute_values.call_args.args[2][0]
+    assert ligne[1] == date(2026, 9, 25)
+
+
+def test_les_valeurs_radiees_ne_sont_plus_demandees_a_yahoo():
+    """ZC.PA, ELE.PA, GTO.PA échouaient chaque soir (« possibly delisted ») : #48."""
+    cur = _curseur()
+    cur.fetchall.return_value = [("MC.PA", date(2026, 9, 24), "OK"),
+                                 ("ZC.PA", date(2018, 3, 22), "DELISTEE")]
+    with patch("sources.cotations.fetch_cotations", return_value=[]) as fetch:
+        b = ingest.etape_cotations(cur, simulation=True)
+
+    demandes = [t for appel in fetch.call_args_list for t in appel.args[0]]
+    assert demandes == ["MC.PA"]
+    assert any("radi" in d for d in b.details)
+
+
+def test_l_etape_fred_ecrit_les_observations(sans_execute_values):
+    def fausse_serie(serie, limite=1):
+        return [{"date": "2026-09-24", "valeur": 5.18}]
+
+    with patch("sources.fred.fetch_indicateur", side_effect=fausse_serie):
+        b = ingest.etape_fred(_curseur(), simulation=False)
+
+    lignes = sans_execute_values.call_args.args[2]
+    assert ("DGS10", date(2026, 9, 24), 5.18) in lignes
+    assert b.ecrites == 3                          # DGS10, CPIAUCSL, DFF
+
+
+def test_une_serie_fred_en_echec_n_emporte_pas_les_autres(sans_execute_values):
+    def parfois(serie, limite=1):
+        if serie == "CPIAUCSL":
+            raise RuntimeError("FRED indisponible")
+        return [{"date": "2026-09-24", "valeur": 3.88}]
+
+    with patch("sources.fred.fetch_indicateur", side_effect=parfois):
+        b = ingest.etape_fred(_curseur(), simulation=False)
+
+    assert b.ecrites == 2
+    assert b.rejetees == 1
+
+
+def test_fred_fait_partie_de_la_collecte_du_soir():
+    assert "fred" in ingest.ETAPES

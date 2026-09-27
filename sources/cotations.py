@@ -85,13 +85,25 @@ def fetch_cotations(tickers: list[str], depuis: date) -> list[dict]:
     if donnees is None or donnees.empty:
         return []
 
+    import pandas as pd
+
+    from sources.marches import facteur_prix
+
+    # 27/09/2026 (#50) : yfinance imbrique les colonnes (ticker, champ) MÊME pour un seul
+    # ticker. L'ancien code lisait « à plat » dès qu'il n'y avait qu'un ticker : chaque
+    # ligne était écartée, sans erreur. HSBA.L, seule dans son groupe après un férié à
+    # Londres (31/08), n'a plus été alimentée pendant un mois. On décide donc sur la FORME
+    # des colonnes, pas sur le nombre de tickers.
+    imbrique = isinstance(donnees.columns, pd.MultiIndex)
+
     lignes: list[dict] = []
     for ticker in tickers:
-        # Avec un seul ticker, yfinance n'imbrique pas les colonnes.
         try:
-            sous = donnees[ticker] if len(tickers) > 1 else donnees
+            sous = donnees[ticker] if imbrique else donnees
         except KeyError:
             continue
+        # Londres cote en pence : 1 512,2 GBp = 15,122 GBP (#47). Le volume ne change pas.
+        facteur = facteur_prix(ticker)
 
         for horodatage, r in sous.iterrows():
             o, h, b, c, v = (r.get("Open"), r.get("High"),
@@ -102,10 +114,10 @@ def fetch_cotations(tickers: list[str], depuis: date) -> list[dict]:
             lignes.append({
                 "ticker": ticker,
                 "date_seance": horodatage.date(),
-                "ouverture": round(float(o), 4),
-                "haut": round(float(h), 4),
-                "bas": round(float(b), 4),
-                "cloture": round(float(c), 4),
+                "ouverture": round(float(o) * facteur, 4),
+                "haut": round(float(h) * facteur, 4),
+                "bas": round(float(b) * facteur, 4),
+                "cloture": round(float(c) * facteur, 4),
                 "volume": int(v),
             })
     return lignes

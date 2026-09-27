@@ -31,6 +31,8 @@ import psycopg2
 from dotenv import load_dotenv
 from psycopg2.extras import execute_values
 
+from sources.marches import date_de_seance, devise_de_cotation, facteur_prix
+
 # Sans cette ligne, le script ne lit PAS le .env et retombe sur DSN_DEFAUT, qui
 # pointe le port 5432 du docker-compose — alors que le PostgreSQL réel écoute sur
 # 5433. Constaté le 16/08/2026 : l'import échouait avec « Connection refused » sur
@@ -52,6 +54,12 @@ QUALITE = {
                  "1142 clotures hors bornes + 1143 volumes nuls (explorer.py 31/07/2026)"),
     "ALJXR.PA": ("INCOHERENT",
                  "prix max 7 156 748 EUR - echelle aberrante (ligne de droits non ajustee)"),
+    # 27/09/2026 (#48) : classées OK_PARTIEL dans l'univers (« série partielle »), elles
+    # devenaient OK en base et étaient redemandées à Yahoo chaque soir, en échec.
+    # Leur historique reste : il sert à mesurer le biais du survivant.
+    "ZC.PA": ("DELISTEE", "radiee : derniere seance le 2018-03-22 (Zodiac Aerospace)"),
+    "ELE.PA": ("DELISTEE", "radiee : derniere seance le 2018-04-26 (Euler Hermes)"),
+    "GTO.PA": ("DELISTEE", "radiee : derniere seance le 2019-05-28 (Gemalto)"),
 }
 
 
@@ -79,14 +87,18 @@ def charger_univers() -> tuple[dict[str, dict], list[tuple[str, str]]]:
 
 
 def importer_valeurs(cur, valeurs: dict[str, dict], alias: list[tuple[str, str]]) -> None:
+    # 27/09/2026 (#47) : la devise n'était jamais renseignée, donc EUR par défaut pour
+    # tout le monde, y compris FTI et SLB (dollars) et HSBA.L (livres).
     execute_values(cur, """
-        INSERT INTO valeur (ticker, nom_officiel, statut_qualite, note_qualite)
+        INSERT INTO valeur (ticker, nom_officiel, statut_qualite, note_qualite, devise)
         VALUES %s
         ON CONFLICT (ticker) DO UPDATE
           SET nom_officiel   = EXCLUDED.nom_officiel,
               statut_qualite = EXCLUDED.statut_qualite,
-              note_qualite   = EXCLUDED.note_qualite
-    """, [(v["ticker"], v["nom"], v["statut"], v["note"]) for v in valeurs.values()])
+              note_qualite   = EXCLUDED.note_qualite,
+              devise         = EXCLUDED.devise
+    """, [(v["ticker"], v["nom"], v["statut"], v["note"], devise_de_cotation(v["ticker"]))
+          for v in valeurs.values()])
 
     execute_values(cur, """
         INSERT INTO alias_valeur (alias, ticker) VALUES %s
@@ -123,11 +135,17 @@ def importer_cotations(cur, limite_annees: int | None = None) -> dict:
                        len(orphelins), sorted(orphelins)[:5])
         df = df[df["ticker"].isin(connus)]
 
-    lignes = [
-        (r.ticker, r.date.date(), float(r.ouverture), float(r.haut),
-         float(r.bas), float(r.cloture), int(r.volume))
-        for r in df.itertuples()
-    ]
+    # 27/09/2026 (#53) : `r.date.date()` prenait la date UTC. Le Parquet stocke minuit
+    # heure de la place converti en UTC, soit 22h00 ou 23h00 LA VEILLE à Paris : dix ans
+    # d'archive étaient décalés d'un jour (52 426 cotations rangées un dimanche). Le fait
+    # était pourtant écrit dans `sources/cotations.py` depuis le 03/08 (§2).
+    # Et Londres cote en pence : on ramène en livres (#47).
+    lignes = []
+    for r in df.itertuples():
+        f = facteur_prix(r.ticker)
+        lignes.append((r.ticker, date_de_seance(r.date, r.ticker),
+                       float(r.ouverture) * f, float(r.haut) * f,
+                       float(r.bas) * f, float(r.cloture) * f, int(r.volume)))
 
     execute_values(cur, """
         INSERT INTO cotation

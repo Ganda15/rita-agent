@@ -48,6 +48,7 @@ from indicateurs import socle
 # `fraicheur()`. Sans alias, elle écraserait le module au chargement.
 from monitorage import fraicheur as monitorage_fraicheur
 from sources import database
+from sources.fred import SERIES
 
 routeur = APIRouter(prefix="/donnees", tags=["jeu de données"])
 
@@ -103,6 +104,30 @@ def cotations(
         raise HTTPException(status_code=404,
                             detail=f"Aucune cotation pour le ticker '{ticker}'")
     return {"ticker": ticker, "nb": e.nb, "cotations": e.lignes}
+
+
+@routeur.get("/macro", summary="Séries macroéconomiques FRED (taux US 10 ans, inflation US, taux Fed)")
+def macro(
+    serie: str = Query(..., description="Code FRED : DGS10, CPIAUCSL ou DFF"),
+    limite: int = Query(60, ge=1, le=LIMITE_MAX),
+) -> dict:
+    """Les observations d'une série macro, de la plus récente à la plus ancienne (issue #52).
+
+    La série est vérifiée contre la liste fermée de `sources/fred.py` : une valeur hors
+    liste vaut 422, jamais une requête sur un code inventé.
+    """
+    if serie not in SERIES:
+        raise HTTPException(status_code=422,
+                            detail=f"Série inconnue '{serie}'. Séries suivies : {sorted(SERIES)}")
+    sql = """
+        SELECT serie, date_observation, valeur
+        FROM   macro_observation
+        WHERE  serie = %(serie)s
+        ORDER  BY date_observation DESC
+        LIMIT  %(limite)s
+    """
+    e = database._executer(sql, "macro", None, serie=serie, limite=limite)
+    return {"serie": serie, "libelle": SERIES[serie], "nb": e.nb, "observations": e.lignes}
 
 
 @routeur.get("/portefeuille", summary="Portefeuille valorisé, converti en euros")

@@ -193,6 +193,26 @@ COMMENT ON COLUMN taux_change.valeur_pour_eur IS
 
 
 -- =============================================================================
+-- 5 bis. MACRO_OBSERVATION : séries macroéconomiques (FRED), ajoutée le 27/09/2026
+-- =============================================================================
+-- Issue #52 : `sources/fred.py` savait lire DGS10 (Trésor US 10 ans), CPIAUCSL
+-- (inflation US) et DFF (taux directeur effectif de la Fed), mais aucune table ne les
+-- recevait. Une série = une clé texte, pas une table par série : ajouter une série
+-- est une ligne de configuration, pas une migration.
+CREATE TABLE macro_observation (
+    serie            VARCHAR(20)   NOT NULL,
+    date_observation DATE          NOT NULL,
+    valeur           NUMERIC(14,4) NOT NULL,
+    collecte_le      TIMESTAMPTZ   NOT NULL DEFAULT now(),
+
+    PRIMARY KEY (serie, date_observation)
+);
+
+COMMENT ON TABLE macro_observation IS
+    'Observations FRED. serie = code FRED (DGS10, CPIAUCSL, DFF), voir sources/fred.py:SERIES.';
+
+
+-- =============================================================================
 -- 6. ARTICLE — actualités RSS
 -- =============================================================================
 CREATE TABLE article (

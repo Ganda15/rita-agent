@@ -22,9 +22,11 @@ un dimanche est **normal** ; le même retard un mercredi est une panne. Compter
 en jours calendaires ferait passer la jauge au rouge chaque week-end — une
 alerte qui crie tous les samedis est une alerte qu'on finit par ignorer.
 
-⚠️ **Limite assumée** : les jours fériés boursiers ne sont pas connus de ce
-module. Un 14 juillet ajoute donc 1 jour ouvré apparent. Le seuil VERT tolère
-1 jour, ce qui absorbe un férié isolé sans le masquer indéfiniment.
+Les jours fériés **Euronext** ne comptent pas non plus (27/09/2026, issue #51) :
+1er janvier, Vendredi saint, lundi de Pâques, 1er mai, 25 et 26 décembre, voir
+`sources/marches.py`. L'ancienne version de ce paragraphe citait le 14 juillet
+comme férié : c'est faux, Euronext Paris cote le 14 juillet (comme l'Ascension,
+le lundi de Pentecôte et le 15 août).
 
 ## Pourquoi la décision est en Python et les faits en SQL
 
@@ -42,6 +44,7 @@ from typing import Any
 from dotenv import load_dotenv
 
 from sources import database
+from sources.marches import est_jour_de_bourse
 
 # ⚠️ Sans cette ligne, le module ne lit pas le `.env` : `DATABASE_URL` est absente
 # et `sources.database` retombe sur son DSN par défaut, en port **5432** — alors
@@ -69,7 +72,7 @@ SEUIL_ORANGE_JOURS_OUVRES = 3
 def jours_ouvres_ecoules(depuis: date, jusqu_a: date) -> int:
     """Nombre de jours ouvrés strictement après `depuis`, jusqu'à `jusqu_a` inclus.
 
-    Samedi et dimanche ne comptent pas. Rend 0 si `jusqu_a` précède `depuis`
+    Samedi, dimanche et fériés Euronext ne comptent pas. Rend 0 si `jusqu_a` précède `depuis`
     (une donnée « du futur » n'est pas un retard négatif, c'est zéro retard).
 
     >>> jours_ouvres_ecoules(date(2026, 8, 21), date(2026, 8, 24))  # ven -> lun
@@ -82,7 +85,7 @@ def jours_ouvres_ecoules(depuis: date, jusqu_a: date) -> int:
     n = 0
     jour = depuis + timedelta(days=1)
     while jour <= jusqu_a:
-        if jour.weekday() < 5:  # 0 = lundi … 4 = vendredi
+        if est_jour_de_bourse(jour):  # ni week-end, ni férié Euronext
             n += 1
         jour += timedelta(days=1)
     return n

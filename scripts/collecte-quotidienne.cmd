@@ -24,7 +24,7 @@ for /f %%d in ('%PYTHON% -c "import datetime;print(datetime.date.today().isoform
 echo. >> "logs\collecte-%JOUR%.log"
 echo ==================== %DATE% %TIME% ==================== >> "logs\collecte-%JOUR%.log"
 
-REM Les 5 etapes. Une etape en echec n'interrompt pas les suivantes : c'est le
+REM Les 6 etapes (fred ajoutee le 27/09/2026, issue #52). Une etape en echec n'interrompt pas les suivantes : c'est le
 REM comportement voulu du pipeline (un COMMIT par etape).
 REM
 REM  "indexation" ajoutee le 02/09/2026. Le defaut qu'elle corrige, mesure ce
@@ -47,7 +47,7 @@ REM  Une reputation SAC peut redescendre : le plan de repli (Python 3.13 a cote,
 REM  ou lancer cette etape dans Docker) est CONSERVE, pas supprime. Si une ligne
 REM  "!! indexation ECHEC : ImportError: DLL load failed..." reapparait au
 REM  journal, c'est ce signal-la, et c'est le repli qui s'applique.
-"%PYTHON%" -X utf8 -m pipelines.ingest --etapes ecb,cotations,rss,scraping,indexation >> "logs\collecte-%JOUR%.log" 2>&1
+"%PYTHON%" -X utf8 -m pipelines.ingest --etapes ecb,fred,cotations,rss,scraping,indexation >> "logs\collecte-%JOUR%.log" 2>&1
 set CODE=%ERRORLEVEL%
 
 echo Code de sortie : %CODE% >> "logs\collecte-%JOUR%.log"
