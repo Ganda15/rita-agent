@@ -35,7 +35,11 @@ Cause unique : la place de cotation n'était modélisée nulle part (Paris, euro
 Sauvegarde avant toute écriture : `sauvegardes/rita-2026-09-27-avant-migration.dump`. Reconstruction en une transaction,
 positions vérifiées inchangées (7). **42 tests écrits avant les correctifs**, suite **577 passed, 2 xfailed**.
 Fiche : `evidence/C21/INC-005-archive-decalee-d-un-jour.md`. ⚠️ **Le rapport E1 cite des dates décalées d'un jour**
-(« 28/07/2016 → 29/07/2026 ») : à corriger dans sa prochaine version. Branche `qualite-donnees`, PR à ouvrir.
+(« 28/07/2016 → 29/07/2026 ») : à corriger dans sa prochaine version (carte #56, S45).
+✅ **PR #54 fusionnée par Era le 27/09 (`10ef31e`)** après la revue Codex (un point P2 fondé, corrigé test d'abord :
+l'étape `fred` est en échec quand aucune série ne répond, `4037a32`). Cartes #47 à #53 fermées avec leur preuve,
+passées à « Fait » par l'automatisation. Même défaut sur l'étape `ecb`, antérieur : carte #55 (S40).
+⏰ **Ce soir 19h00 : première collecte planifiée avec l'étape `fred`** ; lire `logs/collecte-2026-09-27.log`.
 
 ---
 
