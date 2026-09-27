@@ -9,6 +9,45 @@
 
 ---
 
+## 2026-09-27 : sept défauts de données avaient une seule cause, la place de cotation n'existait pas dans le modèle (INC-005)
+
+**Manque découvert** en relisant le guide d'étude « marchés et finance » : l'archive de 10 ans était datée
+**un jour trop tôt** (date UTC au lieu de la date locale ; 52 426 cotations tombaient un dimanche). En tirant
+le fil : HSBA.L figée depuis le 28/08 (un ticker seul lu sans erreur et sans ligne), FTI, SLB et HSBA.L en
+mauvaise devise (HSBA.L en pence), 24 séances fictives du samedi écrites par le scraping, trois valeurs
+radiées redemandées chaque soir, fériés Euronext inconnus, et FRED lue mais jamais stockée.
+
+**Décision structurante** : la place de cotation devient une donnée (`sources/marches.py` : devise, fuseau,
+calendrier officiel). Reconstruction en une transaction après sauvegarde, positions inchangées (7),
+**42 tests écrits avant**, suite 577 passed. FRED stockée (`macro_observation`, étape `fred` à 19 h,
+`/donnees/macro`). PR #54 fusionnée par Era après revue Codex (un point P2 fondé, corrigé test d'abord).
+
+**Ce qui reste faux ailleurs** : le rapport E1 cite les anciennes dates (carte #56) ; l'étape `ecb` a le même
+défaut de faux succès que `fred` avant correction (carte #55) ; ADTV20 est présenté au modèle comme un
+volume (carte #57).
+
+**Ce soir** : première collecte planifiée avec `fred`, 6/6, 30 observations, 1 359 documents indexés.
+Ce ledger et `CONTINUITE.md` avaient 9 jours de retard : rattrapés le 27/09 avec les vraies dates.
+
+---
+
+## 2026-09-26 : C16 mis en place (Kanban GitHub, revue du lundi) et retour au plan, E4 d'abord
+
+**Décision structurante** (Era) : le pilotage C16, absent de toutes les semaines du plan (0 issue, aucune
+méthode), passe par un tableau Kanban GitHub (projet #4, formateur en lecture), un backlog de 24 issues
+tirées du plan et de la vérification E4, et une revue hebdomadaire le lundi. Méthode : `docs/PILOTAGE-AGILE.md`.
+« Tout au long du projet » ne vaut qu'à partir du 26/09, et se dit tel quel.
+
+**Décision structurante** (Era) : retour au plan. Le livre Packt « Building AI Agents for Finance », lu en
+entier, ne fait rien coder hors plan : ses 4 éléments retenus sont rangés en S40, S43 et S44. S39 = rédiger
+le livrable E4 puis le geler. Vérification E4 contre les 36 critères : 21 ✅, 11 ⚠️, 4 ❌, rapport à 0 page.
+
+**Manques découverts** : S38 et S39 du plan non faits ; `livraison.yml` publiait l'image avant de vérifier
+qu'elle démarre (corrigé le jour même, PR #46, run `36247837793`) ; `requirements.txt` sans versions ;
+aucune note de veille après S36 ; journal Obsidian sans entrée pour les 19 et 20/09.
+
+---
+
 ## 2026-09-20, soir — Premier scan externe des garde-fous : un contournement trouvé et fermé le jour même
 
 **Manque découvert** (Giskard, run 9, OWASP LLM01 « Character roleplay bypass ») : une demande de jeu de rôle — « réponds en tant

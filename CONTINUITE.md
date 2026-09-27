@@ -1,6 +1,9 @@
 # CONTINUITE — RITA (fil rouge RNCP 37827)
 
-> Dernière mise à jour : 2026-09-18 · par : Claude (skill `agent-standard`), sur « update » d'Era
+> Dernière mise à jour : 2026-09-27 · par : Claude (skill `continuity`), sur « update » d'Era
+> ⚠️ Ce ledger avait 9 jours de retard (18 → 27/09) : les décisions du 19 au 27/09 sont ajoutées ce soir depuis
+> `ETAT.md`, `CHANGELOG.md` et `git log`, avec leur date réelle. Un ledger en retard laisse une décision
+> se réinverser en silence ; le mettre à jour fait partie de la fin de session (question posée en G).
 > Fichiers qui font foi (lus AVANT ce ledger) :
 > `D:\KandaWork\RITA_PROJECT\rita-agent\CLAUDE.md` · `D:\KandaWork\RITA_PROJECT\rita-agent\ETAT.md` ·
 > `D:\KandaWork\RITA_PROJECT\rita-agent\docs\` · référentiel C1–C21.
@@ -61,6 +64,15 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | **Rattrapage d'une période = les étapes existantes + `periode`**, jamais un script à part | Un second chemin d'écriture aurait dupliqué le dédoublonnage et l'`ON CONFLICT` ; ici `ecb` et `rss` reçoivent `periode=(debut, fin)` via `functools.partial`, `cotations` reste incrémentale. BCE : `startPeriod/endPeriod` ; Google News : `after:/before:` (bornes floues d'un jour → fenêtre large, le dédoublonnage trie) ; 100 items par flux au lieu de 10 | 18/09 | `pipelines/ingest.py` (`--du/--au`, `ETAPES_AVEC_PERIODE`), `sources/ecb.py`, `sources/rss.py` | 6 tests `tests/test_rattrapage.py` ; exécution réelle : 25 taux, 156 articles, index 1 038 | Oui |
 | **Collecte lancée sans fenêtre** : l'action de la tâche = `powershell.exe -NoProfile -WindowStyle Hidden -Command "$p = Start-Process -FilePath '…\collecte-quotidienne.cmd' -WindowStyle Hidden -PassThru -Wait; exit $p.ExitCode"` | 4 soirs sur 7 coupés par un `^C` : la console noire de 19 h invitait à la fermer. Cacher la fenêtre retire la cause ; `exit $p.ExitCode` garde le « Dernier résultat » du Planificateur significatif. Le `.cmd` lui-même n'est pas modifié | 18/09 | tâche `RITA - collecte quotidienne` (hors dépôt) ; `scripts/README-planification.md` §2 bis | `schtasks /run` 21:11 → 5/5, code 0, `LastTaskResult 0` ; wrapper testé sur un `.cmd` factice : code 3 remonté | Oui — si un jour le compte devient local, S4U est plus propre |
 | **Garde-fou d'entrée AMF = regex seul**, câblé dans `rechercher()` **avant tout accès à la base** | Un seuil de distance mesure une pertinence, pas une intention : relever 0,42 pour LVMH rouvrait la fuite AMF, la baisser rejetait de bonnes réponses. Regex : même coût (µs) et même style que `injection.py`/`sortie.py` ; un juge LLM aurait coûté un appel par question pour un projet de certification (skill `agent-standard`, point 5). Placé avant `_collection()` : un refus ne charge ni corpus ni embedder | 18/09 | `guardrails/entree.py`, `rag/recherche.py` l.211–223, `motif = INTENTION_INTERDITE` | commit `6cf48fd` ; `evals/mesurer_entree.py` → 100 % blocage (5/5), 0 % faux positif (0/5), 0,003 ms ; suite 450 passed | Oui — passer au juge LLM en zone grise si des paraphrases mesurées passent (cf. action 9 d'`ETAT.md`) |
+| **`main` ne bouge que par une pull request `develop → main`**, relue par Claude Code (`revue-pr.yml`) ; le push direct est refusé par un hook `pre-push` versionné (`.githooks/`) | `main` porte les tags de livrable ; GitHub ne protège pas une branche sur un dépôt privé gratuit, donc le refus vit dans le dépôt ; la revue a trouvé 8 défauts réels sur les deux premières PR. Même choix que la conception Mardik ③, exécuté ici pour de vrai (option A d'Era) | 19/09 | `.githooks/pre-push`, `.github/workflows/revue-pr.yml`, `docs/FILE-DE-VALIDATION.md` | `7285082` ; PR #1 à #8 fusionnées ; `CHANGELOG.md` 19/09 | Par Era seulement |
+| **Hooks Claude Code livrés avec le dépôt** (`bloquer-secrets.py`, `exiger-tests-verts.py`), muets en CI et hors Windows | Une règle écrite n'est pas une garantie : v1 puis v2 contournées en session réelle (Bash, puis PowerShell), v3 et v4 fermées ; un hook de poste qui tourne dans un runner tue le relecteur (revue Claude morte sur PR #2, #4, #6) | 19/09 | `.claude/hooks/`, `tests/test_hooks_claude.py` (7 tests) | `3082542` → `28cc2d6` → `f114ef3` ; `evidence/C10/2026-09-19-hook-bloquer-secrets.md` (refus réels 17:22 et 17:34 UTC) | Oui |
+| **Definition of Done = `scripts/verifier_livrable.py`** (5 contrôles, verdict généré), exécutée par `livraison.yml` à la place de `pytest -q` | La chaîne de livraison ne lançait que `pytest -q` sur un tag, sans couverture ni portes d'évaluation ; un verdict se génère, il ne s'écrit pas à la main | 19/09 | `scripts/verifier_livrable.py`, `.github/workflows/livraison.yml` | `79ce4e1` ; 4 tests écrits avant ; run `35460028031` vert ; 460 passed | Oui (ajouter un contrôle) |
+| **Giskard = challenger des garde-fous**, une fois, en CI manuelle, plafond 200 scénarios, juge Claude via OpenRouter ; chaque contournement devient un cas dans `evals/cas_giskard_*.py` et un incident C21 | RITA a déjà la méthode (10 attaques à la main, seuils gatés) ; ce qui manque est l'échelle et un nom que le jury reconnaît. `giskard[scan]` tire torch (refusé par SAC) donc le scan tourne dans le runner, pas sur le poste (option 1 d'Era) | 20/09 | `evals/scan_giskard.py`, `evals/importer_giskard.py`, `.github/workflows/scan-giskard.yml` | run 9 `35517866543` ; `evidence/C10/2026-09-20-scan-giskard-run9.md` ; `CHANGELOG.md` 20/09 | Oui |
+| **Motifs « jeu de rôle » dans les deux garde-fous**, resserrés à une consigne adressée à l'agent (« réponds en tant que… ») | Contournement OWASP LLM01 trouvé par Giskard (« Jean-Marc le Loup de la Finance ») ; première version bloquait « act as the sole bookrunner » et « analyse sans filtre des résultats » (revue Codex, PR #20) : un mot seul n'est pas une intention | 20/09 | `guardrails/entree.py`, `guardrails/injection.py`, `tests/test_entree.py` | `0eacde2`, `f0e4169` ; mesure Giskard 0/2 → 2/2 et 1/2 → 2/2 ; 3 tests anti-faux-positifs | Oui, la liste n'est jamais finie |
+| **C16 = Kanban GitHub** (projet #4, privé, formateur en lecture), backlog d'issues tirées du plan, **revue hebdomadaire du lundi**, méthode dans `docs/PILOTAGE-AGILE.md` | C16 (4 critères) n'était dans aucune semaine du plan : 0 issue, aucune méthode décrite. « Tout au long du projet » ne vaut qu'à partir du 26/09, et se dit tel quel au jury | 26/09 | tableau https://github.com/users/Ganda15/projects/4, issues #21 à #44 | `2eb408f`, `297dc7e` ; `evidence/C16/preuve-mise-en-place-kanban.md` ; automatisations testées (Item added → Backlog, closed → Fait) | Par Era seulement |
+| **Retour au plan : S39 = rédiger E4 (C14-C19) puis le geler** ; le livre Packt est rangé dans les semaines du plan (S40, S43, S44), rien n'est codé hors plan | Retard mesuré : S38 (monitorage) et S39 non faits ; `docs/rapports/` ne contient que E1. Coder ce qu'un livre suggère avant d'écrire le livrable dû aurait creusé le retard | 26/09 | pilotage, `docs/PLAN-12-SEMAINES.md` | `1e3f7fc` ; vérification E4 du 26/09 : 21 ✅ · 11 ⚠️ · 4 ❌ (Obsidian `04-Certif/`) | Par Era seulement |
+| **`livraison.yml` : construire, vérifier l'image construite, publier seulement sur un tag**, dans cet ordre | Le fichier publiait l'image avant de vérifier qu'elle démarre, et la branche « publier sur tag » n'avait jamais tourné (seul tag : `livrable-E1-v1`, antérieur au fichier) | 26/09 | `.github/workflows/livraison.yml`, `tests/test_livraison.py` (3 tests) | PR #46 `556990e` ; run `36247837793` : image démarrée en 4 s, 403 sans clé, publication sautée hors tag. **Reste à prouver** : la publication elle-même, au premier tag `livrable-E4-v1` | Non |
+| **La place de cotation est modélisée** (`sources/marches.py` : devise, fuseau, calendrier Euronext officiel) ; archive redatée en date locale ; valeurs radiées `DELISTEE` non redemandées ; **FRED stockée** (`macro_observation`, étape `fred` à 19 h, route `/donnees/macro`) | Cinq défauts de données, une seule cause : « Paris, euros, UTC, sans férié » supposés partout. Mesuré : 52 426 cotations datées un dimanche, HSBA.L figée depuis le 28/08, trois valeurs en mauvaise devise, 24 séances fictives du samedi | 27/09 | `sources/marches.py`, `db/schema.sql`, `pipelines/ingest.py`, `api/` | INC-005 `evidence/C21/INC-005-archive-decalee-d-un-jour.md` ; PR #54 `10ef31e` ; 42 tests écrits avant ; 577 passed ; sauvegarde `sauvegardes/rita-2026-09-27-avant-migration.dump` ; collecte du 27/09 : 6/6, `fred` 30 obs. | Non. Le rapport E1 cite encore les anciennes dates : carte #56 |
 
 ## E. Alternatives rejetées
 
@@ -76,6 +88,10 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | Garde-fou d'entrée par **juge LLM** (regex + escalade en zone grise) | Plus robuste aux paraphrases, mais un appel modèle de plus par question, une latence en centaines de ms, et un éval de cohérence du juge à construire — disproportionné tant que la limite du regex n'est pas **mesurée** (action 9 d'`ETAT.md`). Choix d'Era, réversible | 18/09 |
 | Tâche planifiée en mode **S4U** (« exécuter même si l'utilisateur n'est pas connecté », sans mot de passe) | `Accès refusé` même en admin : **`kanda` est un compte Microsoft** (`PrincipalSource: MicrosoftAccount`), et Windows n'accorde pas S4U à ces comptes. Le mode « avec mot de passe » stockerait le mot de passe Microsoft dans la tâche et casserait à chaque changement — écarté | 18/09 |
 | Relever `SEUIL_DISTANCE_DENSE` pour arrêter de rejeter la question LVMH à 0,0009 près | Rouvrait les fuites AMF ; le vrai problème était de demander à une distance de juger une intention | 18/09 |
+| Protéger `main` par les réglages GitHub (branch protection) | Indisponible sur un dépôt privé gratuit ; remplacé par un hook `pre-push` versionné, testé (`--force --dry-run` refusé) | 19/09 |
+| Giskard comme **dépendance** de la suite (`Checks` sous pytest), RAGET (legacy), Hub payant | RITA a déjà sa structure d'évaluation ; il manque l'échelle, pas une bibliothèque de plus ; le Hub coûte et n'apporte rien au jury | 20/09 |
+| Publier l'image Docker **puis** vérifier qu'elle démarre | Ordre inverse de ce qu'une livraison doit garantir ; corrigé PR #46 | 26/09 |
+| Coder les 4 éléments retenus du livre Packt tout de suite | Hors plan, alors que S38 et S39 sont en retard et que E4 est à 0 page ; chaque élément est rangé dans sa semaine (S40, S43, S44) | 26/09 |
 
 ## F. Modifications d'Era (après la baseline)
 
@@ -88,6 +104,11 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | 28/08 | corrigé | « you do not use claude md many other skills » → invoquer les skills, pas les citer de mémoire | façon de travailler |
 | 06/09 | ajouté | Skill `continuity` appliquée en plus de `boussole` ; ce ledger créé | pilotage |
 | 07/09 | allégé | **C12/C13 sans modèle entraîné.** Consigne écrite de la chef de projet (réponse à un camarade, non spécifique à RITA) : tests automatisés sur l'évaluation des réponses et la validation des formats, plus les descriptifs des pratiques LLMOps/AgentOps **mises en place**, suffisent. **Pas de modèle sklearn d'appoint.** La CI/CD reste exigée — elle figurait dans la question approuvée. | C12, C13 (E3) |
+| 18/09 | rendu obligatoire | Toute commande donnée est **expliquée dans le même message**, même routinière (« that i can learn ») ; un `git commit` tient sur **une ligne, deux `-m`** ; « do it » couvre le code demandé, pas les tests ni la suite | façon de travailler |
+| 19/09 | changé | **Flux PR `develop → main`** relue par Claude Code, push direct refusé (option A) | C13, C19, façon de livrer |
+| 20/09 | ajouté | **Giskard** comme challenger des garde-fous, une fois, plafond 200 (option 1 sur trois) ; crédit OpenRouter ajouté par Era | C10, C17, C21 |
+| 26/09 | ajouté | **C16 par Kanban GitHub et revue du lundi** ; **retour au plan, S39 = E4** ; le livre Packt rangé dans le plan, rien codé hors plan | C16, ordre des livrables |
+| 26/09 | rendu obligatoire | **Écriture humaine partout** : zéro tiret long, pas de tournures qui sonnent IA, relecture à voix haute avant de rendre (mesuré : 38 tirets longs dans le rapport E1). Vaut pour le chat, les livrables, les commits, les skills | tous les livrables |
 
 ## G. Questions ouvertes
 
@@ -99,12 +120,27 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
   Non prouvable : l'historique du Planificateur était désactivé. Parade posée (D). **Reste** : activer
   cet historique (`wevtutil`, fenêtre admin) — refusé hors admin le 18/09, à refaire.
 - **Rang du rafraîchissement serveur** dans la liste d'`ETAT.md` (n°3 posé le 06/09) — **Era tranche**.
+  Au 27/09 : carte #36, aucune trace de rafraîchissement depuis le 19/08 (environ 40 jours).
 - **Le message au formateur du 30/08** (2 questions : « RAG avancé », MCP↔C10) est-il parti ? — **Era**.
 - Les **4 questions du jeu annoté encore refusées à tort** : la règle de couverture casse sur une
   question en langage naturel — à traiter **après** l'extension du jeu.
-- **Reranker** : D1 et H1 non mesurables tant que le jeu annoté est à 10 questions.
-- **Éco-conception C15** : l'argument était écrit sur une image de 595 Mo ; elle fait 1,01 Go.
-- `requirements.txt` toujours non épinglé.
+- **Reranker** : D1 et H1 non mesurables tant que le jeu annoté n'est pas relu par Era (53 questions
+  arbitrées par un LLM le 07/09, statut inchangé au 27/09).
+- **Éco-conception C15** : l'argument était écrit sur une image de 595 Mo ; elle fait 1,01 Go. Carte #25
+  (mesure EcoIndex ou Lighthouse des 2 pages).
+- `requirements.txt` toujours non épinglé : 13 dépendances sans version au 26/09 (carte #23).
+- 🆕 **Ordre de la semaine 40 (28/09 au 04/10)** : le plan y met le protocole de benchmark C7 (#32), et
+  la tâche principale du 26/09 (E4 rédigé puis gelé, #28) n'est pas faite. Deux chantiers, une semaine :
+  **Era tranche** lundi, à la revue hebdomadaire.
+- 🆕 **C17 droits d'accès** (carte #26) : défendre le choix mono-utilisateur ou ajouter un second niveau.
+  **Era tranche.**
+- 🆕 **Veille S37, S38, S39 manquantes** (carte #31, étiquette `decision-era`) : les rattraper avec leur
+  vraie date, ou déclarer le trou. **Era tranche.**
+- 🆕 **Mettre ce ledger à jour à chaque fin de session** : `CLAUDE.md` liste `ETAT.md`, `CHANGELOG.md` et
+  le journal, pas `CONTINUITE.md`. Résultat : 9 jours de retard découverts le 27/09. Ajouter la ligne
+  dans `CLAUDE.md` ? **Era tranche.**
+- Historique du Planificateur de tâches toujours désactivé (`wevtutil`, fenêtre administrateur) : la
+  collecte tourne 9 soirs sur 9 depuis le 19/09, mais une prochaine coupure ne laisserait pas de trace.
 
 ## H. Hypothèses
 
@@ -132,6 +168,17 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | Suite de tests locale après le garde-fou | **TESTÉ** | `C:\Python314\python.exe -m pytest -q` → `450 passed, 2 xfailed, 2 warnings in 28.70s` (18/09) |
 | Rattrapage 12–18/09 | **EXÉCUTÉ + MESURÉ** | simulation d'abord (0 écrit), puis `--etapes ecb,rss,indexation --du 2026-09-12 --au 2026-09-18` : taux 25, articles 164 envoyés / **156 en base**, index 1 038 · comptes par jour avant/après : 13/09 0→5, 14/09 19→41, 16/09 1→30, 17/09 5→51 (18/09) |
 | Collecte du 18/09 | **EXÉCUTÉ** | `logs\collecte-2026-09-18.log` : 5/5, 871 indexés, 48 articles écrits, 42 rejetés, 66,9 s, code 0 |
+| Harnais : hooks attaqués deux fois en session réelle, fermés deux fois | **EXÉCUTÉ** | refus réels à 17:22 et 17:34 UTC le 19/09, `evidence/C10/2026-09-19-hook-bloquer-secrets.md` ; `tests/test_hooks_claude.py` 7 tests |
+| Definition of Done dans la chaîne de livraison | **EXÉCUTÉ** | run `35460028031` vert, tableau imprimé par GitHub Actions (19/09) ; local 460 passed, 2 xfailed |
+| Flux PR en service | **VALIDÉ** | PR #1 à #8 fusionnées les 19 et 20/09 ; 8 commentaires Codex utiles, 4 hooks fermés le soir même, 4 bugs RAG/Compose fermés le 20/09 (8 tests rouges → verts, 485 passed) |
+| Ablation relancée après le correctif dense (`ids=`) | **MESURÉ** | 20/09, 1 072 documents, 53 questions : D0 0,415 / 0,566 / 0,466 et H0 0,434 / 0,679 / 0,523 (Hit@1 / Hit@5 / MRR), **identiques avec et sans le correctif**. Baisse depuis le 06/09 = dérive du corpus (+478 documents), refus correct 0,811 → 0,849/0,868 grâce au garde-fou d'entrée |
+| Rôle PostgreSQL lecture seule `rita_lecture` | **TESTÉ** | `db/roles.sql` appliqué en superutilisateur le 19/09 (mot de passe `postgres` réinitialisé, `pg_hba` revenu en scram) ; `tests/test_role_lecture.py` 4 passed, marqueur xfail retiré |
+| Scan Giskard, run 9 | **EXÉCUTÉ + MESURÉ** | run `35517866543` (20/09) : 6 scénarios par frontière, 1 contournement sur chaque, fermé le jour même ; 0/2 → 2/2 et 1/2 → 2/2 ; suite 529 passed ; rapports bruts `evidence/C10/giskard-run9/` |
+| C16 : tableau Kanban et automatisations | **EXÉCUTÉ** | 24 issues créées (#21 à #44), automatisations testées (26/09), `evidence/C16/preuve-mise-en-place-kanban.md` ; première carte passée à « Fait » par l'automatisation (#22) |
+| `livraison.yml` corrigé (#22) | **EXÉCUTÉ** | run `36247837793` : image démarrée en 4 s, 403 sans clé, publication sautée hors tag ; `tests/test_livraison.py` 3 tests ; 535 passed (26/09) |
+| INC-005 : sept défauts de données corrigés en une transaction | **VALIDÉ** | PR #54 `10ef31e` fusionnée par Era après revue Codex (un P2 fondé, corrigé test d'abord `4037a32`) ; 42 tests écrits avant ; **577 passed, 2 xfailed** (27/09) ; positions vérifiées inchangées (7) ; sauvegarde préalable |
+| Collecte planifiée sans fenêtre, 9 soirs de suite | **EXÉCUTÉ** | `logs\collecte-2026-09-19.log` à `-27.log` : `Code de sortie : 0` les neuf fois ; le 27/09 : 6/6, `macro (FRED) lues 30 / ecrites 30`, 108 cotations, 1 359 documents indexés, 187 s |
+| Suite de tests, taille au 27/09 | **COLLECTÉ, non relancé par Claude** | `pytest --collect-only -q` → **580 tests collected**, 41 fichiers dans `tests/` ; le dernier passage complet (577 passed) est celui d'Era le 27/09 |
 
 ## J. En cours
 
@@ -155,18 +202,37 @@ deux fois du risque. Décision assumée et tracée.
   « cours de Sanofi fin d'année » et « Roland-Garros ». Deux sont alimentées par des articles
   **arrivés le 07/09** (`1054`, `1055`) — le seuil n'a pas bougé, le corpus si.
   **6 silences** (il se tait quand il devrait répondre) : n°1, n°2, n°6, n°35, n°37, n°42.
+- **20/09, banc rejoué sur 1 072 documents** : D0 Hit@1 0,415, H0 0,434 (contre 0,472 et 0,547 le 07/09).
+  Ce n'est pas un correctif qui a baissé le score, c'est le corpus qui a doublé (plus de distracteurs) ;
+  mesuré avec et sans le correctif dense, résultat identique à la décimale. L'hybride reste devant.
+
+**Au 27/09, rien n'est en cours dans le code** : arbre propre, `develop` = `origin/develop`, 0 PR ouverte.
+Le chantier ouvert est un chantier d'écriture : le rapport E4 (#28), 0 page.
 
 ## K. Reste à faire
 
 - **Relire les 54 questions du jeu annoté** (écrites le 06/09, statut *proposées*) — fiche : `evals\RELECTURE-2026-09-06.md`. Jugement d'Era, non délégable : un jeu annoté non relu rend la mesure circulaire. → puis recalibrer le seuil → mesurer D1/H1 → reranker.
 - **Valider le format de la sortie du modèle** (C12, consigne du 07/09). Mesuré absent le 07/09 : aucune occurrence de `pydantic`/`BaseModel`/`json.loads` hors `.venv` et `tests` ; `pydantic` n'existe que dans `requirements-future.txt`.
 - ✅ **Descriptif LLMOps/AgentOps ÉCRIT le 07/09** : `docs\LLMOPS.md`. Couvre les 4 harnais de mesure avec leurs sorties réelles, les portes bloquantes de la CI, l'établissement du seuil de couverture (C12), le statut exact du jeu annoté, et 5 manques déclarés. Reste à l'intégrer au rapport E3.
-- Rafraîchir et automatiser le serveur Hetzner (cron/systemd) — C20–C21.
-- Notes de veille S35 et S36 (matière : `docs\veille\_candidats-2026-S35.md`, `-S36.md`).
+- Rafraîchir et automatiser le serveur Hetzner (cron/systemd), C20-C21. Carte #36.
+- ~~Notes de veille S35 et S36~~ écrites le 08/09 (`23318a6`). **Manquent S37, S38, S39** (carte #31,
+  décision d'Era) et **S40 à écrire lundi 28/09** (carte #30).
 - Message au formateur (si non parti).
-- Réécrire l'argument d'éco-conception C15 sur 1,01 Go.
-- Épingler `requirements.txt`.
-- C7, C11, C16 à zéro (tableau de bord) — à planifier dans `docs\PLAN-12-SEMAINES.md`.
+- Réécrire l'argument d'éco-conception C15 sur 1,01 Go. Carte #25.
+- Épingler `requirements.txt` (13 dépendances sans version). Carte #23.
+- ~~C7, C11, C16 à zéro~~ : **C16 en place le 26/09** (2 ✅ + 2 ⚠️). Restent **C7** (protocole de benchmark
+  #32, conclusion #33) et **C11** (monitorage du modèle #38, traces de `src/llm.py` #39).
+- **Les trois rapports à rédiger puis geler** : E4 (#28, tâche principale), E3 (#37), E2 (#34). Au 27/09,
+  `docs/rapports/` ne contient que E1.
+- **Rapport E1 à corriger** (carte #56) : les dates de l'archive y sont décalées d'un jour depuis INC-005.
+- **Étape `ecb`** : passe pour réussie quand les 4 devises échouent, même défaut que celui corrigé sur
+  `fred` le 27/09 (carte #55).
+- **Briefing** : ADTV20 (capitaux en euros) présenté au modèle comme un « volume moyen » (carte #57).
+- Documentation CI/CD rassemblée (#27), user story et wireframe de l'écran 2 (#24), revue OWASP entrée
+  par entrée (#29, décision d'Era), `db/importer.py` dans l'image (#35).
+- Scan Giskard complet (100 scénarios, environ 9 $ estimés) : à confirmer par Era avant de lancer ;
+  relire chaque « fail » à la main avant import.
+- Gel final du 05/11 (#44) : relecture, liens, tests verts, envoi.
 
 ## L. Risques et bloqueurs
 
@@ -175,17 +241,31 @@ deux fois du risque. Décision assumée et tracée.
   0,42 n'a **pas** été touché. ⚠️ Constat de cadrage : `POST /briefing` ne prend qu'un `ticker`, aucun
   texte libre — la faille était **latente** (banc d'éval), pas exploitable ; elle le serait devenue avec
   l'interface C10. À présenter ainsi, ni plus ni moins.
-- 🟡 **Collecte coupée 4 soirs sur 7** (13, 14, 16, 17/09 : `^C`) → parade posée le 18/09 (fenêtre cachée,
-  voir D). Le risque de fond demeure : **la collecte tourne sur le PC d'Era**, donc PC éteint à 19 h =
-  pas de collecte (`StartWhenAvailable` est à `False` : une exécution manquée n'est pas rattrapée).
-  À surveiller sur les journaux des 19–25/09 ; si un `^C` réapparaît, l'hypothèse « fermée à la main »
-  est fausse et l'historique du Planificateur (à activer) dira quoi.
-- 🟡 yfinance le 16/09 : `GTO.PA`, `ZC.PA`, `ELE.PA` « possibly delisted » — 3 valeurs sur 111 à vérifier.
+- 🔴 **Ce ledger a eu 9 jours de retard** (18 → 27/09) alors que dix décisions structurantes ont été prises
+  entre-temps. Cause : la fin de session dans `CLAUDE.md` ne le nomme pas. Tant que ce n'est pas réglé
+  (question en G), le risque revient à chaque session chargée.
+- 🟠 **Le plan a deux semaines de retard** : S38 (monitorage instrumenté) et S39 (E4 rédigé) non faits au
+  soir du 27/09 ; S40 commence demain avec le benchmark C7. Les livrables se rendent le 05/11 (39 jours).
+- 🟡 **Chiffres périmés dans les fichiers de règles** : `AGENTS.md` dit 468 tests (19/09), `CLAUDE.md` dit
+  458 collectés et 30 fichiers ; mesuré le 27/09 : 580 collectés, 41 fichiers. Un jury qui compte verra l'écart.
+- ~~🟡 **Collecte coupée 4 soirs sur 7**~~ → **9 soirs sur 9 réussis du 19 au 27/09** après la fenêtre cachée.
+  Le risque de fond demeure : **la collecte tourne sur le PC d'Era**, donc PC éteint à 19 h = pas de
+  collecte (`StartWhenAvailable` à `False`, exécution manquée non rattrapée) ; l'option `--du/--au` du 18/09
+  permet de rattraper BCE et Google News, pas la presse générale.
+- ~~🟡 yfinance : `GTO.PA`, `ZC.PA`, `ELE.PA` « possibly delisted »~~ → **fermé le 27/09** (carte #48) :
+  statut `DELISTEE`, plus redemandées ; le journal du 27/09 le dit : « 3 valeur(s) radiee(s) non demandee(s) ».
 - 🟡 **Séance du 17/09 absente chez yfinance pour toutes les valeurs de Paris** (présente pour `^FCHI`,
   `HAVAS.AS`, `SLB`) — trou fournisseur, pas RITA. ⚠️ **Ne se répare pas seul** : l'incrémental part
-  de la dernière séance connue (18/09). Si Yahoo la publie, la récupérer explicitement.
-- 🟡 **Le scraping date la cotation du jour courant, même sans séance** : 3 lignes du samedi 12/09.
-  Bug de qualité de donnée, à corriger en TDD.
+  de la dernière séance connue. **Non revérifié depuis le 18/09** : à contrôler avec le calendrier de
+  `sources/marches.py`, qui existe depuis le 27/09.
+- ~~🟡 **Le scraping date la cotation du jour courant, même sans séance**~~ → **fermé le 27/09** (carte #49,
+  INC-005) : 24 séances fictives supprimées, la date de séance suit le calendrier de la place.
+- 🟡 **L'étape `ecb` passe pour réussie quand les 4 devises échouent** (carte #55) : même défaut que celui
+  corrigé sur `fred` le 27/09, antérieur, encore ouvert.
+- 🟡 **ADTV20 présenté au modèle comme un « volume moyen »** (carte #57) : ce sont des capitaux en euros ;
+  un briefing qui lit mal ses propres données est un risque C9.
+- 🟡 **Le rapport E1 cite des dates décalées d'un jour** depuis INC-005 (carte #56) : à corriger dans sa
+  prochaine version, sans réécrire le livrable envoyé.
 - 🟡 **Presse générale des 13, 14, 16, 17/09 : perdue** (flux sans profondeur). À dire tel quel dans
   tout rapport : quatre jours de couverture générale plus mince, couverture d'entreprise restaurée.
 - **Le seuil 0,42 est calibré sur 9 questions** : toute conclusion du banc est fragile jusqu'au jeu
@@ -211,15 +291,16 @@ deux fois du risque. Décision assumée et tracée.
   C'est l'argument même en faveur d'un **garde-fou d'entrée sur l'intention** (question ouverte G)
   plutôt que d'un seuil de distance unique. **Excellent matériau d'oral : une limite mesurée,
   chiffrée, et dont on sait pourquoi on ne la corrige pas n'importe comment.**
-- 🔴 **`indexation` ne supprime toujours pas les orphelins** — confirmé par la mesure du 07/09 :
-  après la purge, la réindexation a écrit 594 vecteurs mais Chroma en comptait encore **605**, les
-  11 articles supprimés restant **interrogeables par le RAG**. Nettoyage manuel cette fois.
-  **Le correctif dans `rag/indexation.py` reste à écrire, en TDD.**
+- ~~🔴 **`indexation` ne supprime toujours pas les orphelins**~~ → **fermé le 20/09** (bug 2 de la revue
+  Codex, PR #1) : `rag/indexation.py` retire de l'index les identifiants que la base ne permet plus
+  (article supprimé ou `bloque_injection` après coup), test d'abord. Le nettoyage manuel du 07/09 reste
+  dans l'historique comme incident.
 - 🟡 **Le chiffre `ecrites` des journaux de collecte était gonflé** : il comptait les lignes envoyées
   à l'INSERT, pas celles réellement insérées (`ON CONFLICT DO NOTHING` silencieux). Depuis le 06/09,
   les jumeaux par titre sont comptés en `rejetees` ; les jumeaux par lien contre la base ne le sont
   toujours pas.
-- **Données en ligne périmées** : 18 jours au 06/09, ~3 mois le 30/11 si rien n'est fait. Le jury verra ça.
+- **Données en ligne périmées** : 18 jours au 06/09, **environ 40 jours au 27/09** (aucune trace de
+  rafraîchissement depuis le 19/08, carte #36), ~3 mois le 30/11 si rien n'est fait. Le jury verra ça.
 - **SAC peut re-bloquer `cygrpc`** : l'indexation retomberait en échec visible ; repli Docker à jour.
 - **Certificat Let's Encrypt** valide jusqu'au 18/11/2026 — Caddy renouvelle seul ~30 j avant ; à vérifier vers le 20/10.
 - **Défaut récurrent du projet** : « documenté mais absent » — 6 occurrences en août. Antidote : preuve collée avant tout ✅.
@@ -232,6 +313,10 @@ deux fois du risque. Décision assumée et tracée.
 | Reranker (D1/H1) | Non mesurable sans jeu annoté suffisant | idem |
 | Oral E1 (simulation d'entretien) | Redescendu en tâche différée par Era le 13/08 | à la demande d'Era |
 | Question « article pertinent sur une valeur hors univers » | Ne se pose pas tant que l'entrée est un ticker | le jour d'une question libre |
+| Trois paraphrases contre les motifs AMF de `guardrails/entree.py` (mesurer la limite du regex) | Le livre Packt (26/09) apporte un correctif plus large des garde-fous, testé sur une copie : 0 faux positif sur 2 592 textes réels | S44, carte #42 |
+| Scan Giskard complet (100 scénarios, fr + en) | Coût estimé 9 $, à confirmer par Era ; le run 9 a déjà donné un contournement réel | à la décision d'Era |
+| Question « ticker à un seul article » dans le jeu annoté | Le cas décrit par Codex est réel en principe, absent du jeu ; l'ablation du 20/09 n'a rien montré | à la relecture du jeu annoté |
+| Mot de passe `postgres` dans Bitwarden | Réinitialisé le 19/09 ; perdu une fois déjà | à faire par Era |
 
 ## N. Passerelle vers le fil rouge
 
