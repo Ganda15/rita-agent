@@ -138,6 +138,14 @@ def etape_fred(cur, simulation: bool) -> Bilan:
             b.rejetees += 1
             b.details.append(f"{serie} : {type(erreur).__name__}")
 
+    # Revue Codex, PR #54 : clé absente ou FRED indisponible, chaque série est attrapée
+    # ci-dessus, mais l'étape passait pour réussie sans une ligne écrite, et /donnees/macro
+    # pouvait rester vide indéfiniment avec un résumé du soir au vert. Succès partiel
+    # conservé (une série sur trois suffit) ; zéro ligne = échec déclaré.
+    if not lignes:
+        b.erreur = "aucune observation FRED recue (" + "; ".join(b.details or ["aucune serie"]) + ")"
+        return b
+
     if lignes and not simulation:
         execute_values(cur, """
             INSERT INTO macro_observation (serie, date_observation, valeur) VALUES %s

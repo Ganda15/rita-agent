@@ -401,3 +401,15 @@ def test_une_serie_fred_en_echec_n_emporte_pas_les_autres(sans_execute_values):
 
 def test_fred_fait_partie_de_la_collecte_du_soir():
     assert "fred" in ingest.ETAPES
+
+
+def test_l_etape_fred_est_en_echec_quand_aucune_serie_ne_repond(sans_execute_values):
+    """Revue Codex, PR #54 : clé absente ou FRED indisponible, toutes les séries échouent,
+    mais `Bilan.erreur` restait None et le résumé du soir comptait l'étape parmi les
+    réussies, sans une ligne écrite. Succès partiel conservé ; zéro ligne = échec."""
+    with patch("sources.fred.fetch_indicateur", side_effect=RuntimeError("cle absente")):
+        b = ingest.etape_fred(_curseur(), simulation=False)
+
+    assert b.ok is False
+    assert b.ecrites == 0
+    assert "FRED" in b.erreur
