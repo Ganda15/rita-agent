@@ -111,6 +111,51 @@ def etape_taux_change(cur, simulation: bool,
     return b
 
 
+# Assez d'observations pour rattraper une semaine de collecte manquée (séries quotidiennes)
+# et plusieurs mois pour l'inflation, mensuelle. `ON CONFLICT DO UPDATE` rend l'étape rejouable.
+OBSERVATIONS_FRED_PAR_SERIE = 10
+
+
+def etape_fred(cur, simulation: bool) -> Bilan:
+    """FRED -> table `macro_observation` (issue #52, 27/09/2026).
+
+    `sources/fred.py` récupérait déjà DGS10, CPIAUCSL et DFF, mais rien ne les stockait
+    ni ne les collectait : « RITA sait collecter FRED » était vrai, « RITA a les données
+    FRED » était faux. Une série en échec n'emporte pas les autres.
+    """
+    from datetime import date
+
+    from sources.fred import SERIES, fetch_indicateur
+
+    b = Bilan("macro (FRED)")
+    lignes = []
+    for serie in SERIES:
+        try:
+            recus = fetch_indicateur(serie, limite=OBSERVATIONS_FRED_PAR_SERIE)
+            lignes.extend((serie, date.fromisoformat(o["date"]), o["valeur"]) for o in recus)
+            b.lues += len(recus)
+        except Exception as erreur:                       # noqa: BLE001
+            b.rejetees += 1
+            b.details.append(f"{serie} : {type(erreur).__name__}")
+
+    # Revue Codex, PR #54 : clé absente ou FRED indisponible, chaque série est attrapée
+    # ci-dessus, mais l'étape passait pour réussie sans une ligne écrite, et /donnees/macro
+    # pouvait rester vide indéfiniment avec un résumé du soir au vert. Succès partiel
+    # conservé (une série sur trois suffit) ; zéro ligne = échec déclaré.
+    if not lignes:
+        b.erreur = "aucune observation FRED recue (" + "; ".join(b.details or ["aucune serie"]) + ")"
+        return b
+
+    if lignes and not simulation:
+        execute_values(cur, """
+            INSERT INTO macro_observation (serie, date_observation, valeur) VALUES %s
+            ON CONFLICT (serie, date_observation) DO UPDATE
+              SET valeur = EXCLUDED.valeur
+        """, lignes)
+        b.ecrites = len(lignes)
+    return b
+
+
 def etape_cotations(cur, simulation: bool) -> Bilan:
     """yfinance -> table `cotation`. Rafraîchissement **incrémental** des 111 valeurs.
 
@@ -138,14 +183,23 @@ def etape_cotations(cur, simulation: bool) -> Bilan:
     # Dernière séance connue, valeur par valeur. LEFT JOIN : une valeur sans aucune
     # cotation doit apparaître aussi, sinon elle ne serait jamais alimentée.
     cur.execute("""
-        SELECT v.ticker, MAX(c.date_seance)
+        SELECT v.ticker, MAX(c.date_seance), v.statut_qualite
         FROM   valeur v
         LEFT   JOIN cotation c ON c.ticker = v.ticker
-        GROUP  BY v.ticker
+        GROUP  BY v.ticker, v.statut_qualite
     """)
     par_date: dict = defaultdict(list)
-    for ticker, derniere in cur.fetchall():
+    radiees = []
+    for ticker, derniere, statut in cur.fetchall():
+        # 27/09/2026 (#48) : une valeur radiée n'a plus de cours à demander. ZC.PA,
+        # ELE.PA et GTO.PA échouaient chaque soir (« possibly delisted »).
+        if statut == "DELISTEE":
+            radiees.append(ticker)
+            continue
         par_date[derniere].append(ticker)
+    if radiees:
+        b.details.append(f"{len(radiees)} valeur(s) radiee(s) non demandee(s) : "
+                         f"{', '.join(sorted(radiees))}")
 
     if not par_date:
         b.erreur = "aucune valeur en base — lancer db.importer d'abord"
@@ -310,6 +364,7 @@ def etape_cours_scrapes(cur, simulation: bool) -> Bilan:
     vide sur 111 lignes et le rapprochement échouait 3 fois sur 3.
     Le scraping, lui, fournit l'ISIN : on l'écrit donc dans `valeur` au passage.
     """
+    from sources.marches import date_de_seance, derniere_seance
     from sources.scraper import SYMBOLES, collecter
 
     b = Bilan("cours du jour (scraping)")
@@ -341,7 +396,11 @@ def etape_cours_scrapes(cur, simulation: bool) -> Bilan:
             cur.execute("UPDATE valeur SET isin = %s WHERE ticker = %s", (c.isin, ticker))
             b.details.append(f"{ticker} : ISIN {c.isin} ajoute")
 
-        lignes.append((trouve[0], c.collecte_le[:10], c.ouverture, c.haut,
+        # 27/09/2026 (#49) : `collecte_le[:10]` était la date UTC de la collecte. Un samedi,
+        # la page montre la clôture du vendredi, rangée sous le samedi : une séance fictive.
+        # La séance est la dernière séance Euronext à ou avant le jour de collecte à Paris.
+        seance = derniere_seance(date_de_seance(c.collecte_le, trouve[0]))
+        lignes.append((trouve[0], seance, c.ouverture, c.haut,
                        c.bas, c.dernier, c.volume or 0))
 
     if lignes and not simulation:
@@ -410,6 +469,7 @@ ETAPES_AVEC_DSN = {"indexation"}
 
 ETAPES = {
     "ecb": etape_taux_change,
+    "fred": etape_fred,
     "cotations": etape_cotations,
     "rss": etape_articles,
     "scraping": etape_cours_scrapes,

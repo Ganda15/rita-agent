@@ -29,6 +29,7 @@ ROUTES_PROTEGEES = [
     "/donnees/indicateurs-portefeuille",
     "/donnees/indicateurs-risque",
     "/donnees/fraicheur",
+    "/donnees/macro",
 ]
 
 
@@ -444,3 +445,25 @@ def test_fraicheur_signale_une_base_vide_en_rouge(client):
 
     assert reponse.status_code == 200
     assert reponse.json()["statut"] == "rouge"
+
+
+# --- 27/09/2026 : issue #52, les séries macro FRED ----------------------------------
+
+def test_macro_rend_les_observations_d_une_serie(client):
+    requetes = []
+
+    def capturer(sql, nom, dsn=None, **params):
+        requetes.append((sql, params))
+        return Extraction(nom=nom, lignes=[{"serie": "DGS10", "date_observation": "2026-09-24",
+                                            "valeur": 5.18}], nb=1)
+
+    with patch("sources.database._executer", side_effect=capturer):
+        r = client.get("/donnees/macro?serie=DGS10", headers=CLE)
+
+    assert r.status_code == 200
+    assert r.json()["observations"][0]["valeur"] == 5.18
+    assert requetes[0][1]["serie"] == "DGS10"
+
+
+def test_macro_refuse_une_serie_inconnue(client):
+    assert client.get("/donnees/macro?serie=INCONNUE", headers=CLE).status_code == 422

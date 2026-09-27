@@ -15,7 +15,27 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-09-26** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+**Dernière mise à jour : 2026-09-27** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+
+---
+
+🔎 **27/09 : le guide d'étude « marchés et finance » a fait tomber cinq défauts de données, tous corrigés (INC-005).**
+Cause unique : la place de cotation n'était modélisée nulle part (Paris, euros, UTC, sans férié, supposés partout).
+
+| Défaut | Mesuré | Corrigé | Carte |
+|---|---|---|---|
+| Archive de 10 ans datée **un jour trop tôt** (date UTC au lieu de la date locale) | 52 426 cotations un dimanche | 0 ; MC.PA 01/08/2016 = 127,945 comme le docstring | #53 |
+| HSBA.L figée depuis le 28/08 (un ticker seul = colonnes imbriquées non lues, sans erreur) | 0 ligne lue sur 20 | 127 cotations rattrapées, dernière 25/09 | #50 |
+| FTI, SLB, HSBA.L étiquetées EUR ; HSBA.L en pence (×100) | 3 valeurs | USD, USD, GBP ; 15,122 £ | #47 |
+| Cours scrapé rangé sous la date du samedi | 24 séances fictives | 0 | #49 |
+| ZC.PA, ELE.PA, GTO.PA radiées mais OK, redemandées chaque soir | 3 échecs par soir | DELISTEE, non demandées | #48 |
+| Fériés Euronext inconnus de la fraîcheur (et « 14 juillet férié » : faux) | | calendrier officiel dans `sources/marches.py` | #51 |
+| FRED lisible mais jamais stockée | 0 table | `macro_observation`, étape `fred` à 19h00, route `/donnees/macro`, 30 obs. | #52 |
+
+Sauvegarde avant toute écriture : `sauvegardes/rita-2026-09-27-avant-migration.dump`. Reconstruction en une transaction,
+positions vérifiées inchangées (7). **42 tests écrits avant les correctifs**, suite **577 passed, 2 xfailed**.
+Fiche : `evidence/C21/INC-005-archive-decalee-d-un-jour.md`. ⚠️ **Le rapport E1 cite des dates décalées d'un jour**
+(« 28/07/2016 → 29/07/2026 ») : à corriger dans sa prochaine version. Branche `qualite-donnees`, PR à ouvrir.
 
 ---
 
@@ -1018,7 +1038,7 @@ fabriquée, donc irrecevable pour C6.
 | **C10** | 🔨 **19/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **10 points de terminaison** intégrés. **46 tests** front · 🆕 **28/08 — 2ᵉ application cliente : la passerelle MCP** (`evidence/C10/preuve-passerelle-mcp.md`), qui consomme l'API en HTTP avec la même authentification | tri/recherche · audit RGAA outillé · doc d'architecture · ⚠️ confirmer qu'un client MCP compte comme « une application » |
 | **C11** | **rien** | tout |
 | **C20** | 🔨 **25/08** — `GET /donnees/fraicheur` + bandeau : l'application sait dire de quand datent ses données (retard en **jours ouvrés**, statut vert/orange/rouge, accessible sans la couleur). 23 tests. Preuve : `evidence/C20/preuve-fraicheur.md` | métriques applicatives (Prometheus) · journaux structurés · alertes · dashboard |
-| **C21** | 🔨 **25/08 — 4 post-mortems rédigés** dans `evidence/C21/` + gabarit aligné sur les 5 critères officiels. Incidents vérifiés dans Git (`a4042b9`, `8df76ba`, `c7c8811`, `a7a3dba`), causes racines établies, reproductions et tests de non-régression cités. **3 critères sur 5 satisfaits** | 🔴 **critère 3** (procédure documentée *depuis l'outil de suivi*) et **critère 5** (correctif en *merge request*) : **0 issue et 0 PR** sur le dépôt. On ne fabrique pas la trace après coup → **installer la chaîne issue → branche → PR dès le prochain incident** |
+| **C21** | 🔨 **25/08 — 4 post-mortems rédigés** dans `evidence/C21/` + gabarit aligné sur les 5 critères officiels. Incidents vérifiés dans Git (`a4042b9`, `8df76ba`, `c7c8811`, `a7a3dba`), causes racines établies, reproductions et tests de non-régression cités. **3 critères sur 5 satisfaits** · ✅ **27/09 : INC-005** est le premier incident traité de bout en bout par la chaîne **issues (#47 à #53) → branche `qualite-donnees` → pull request**, tests rouges puis verts, sauvegarde avant reconstruction | critères 3 et 5 désormais **prouvés sur un incident réel** (pas reconstitués) ; reste à le refaire au moins une fois pour montrer que c'est la méthode, pas l'exception |
 | **C12** | **319 tests** (2 xfailed volontaires — entrée et sortie), 15 cas d'éval, seuils non compensables en CI · **couverture 92 %**, seuil **90 %** verrouillé en CI (19/08, `db/importer.py` et `evals/mesurer_sortie.py` fermés 0→100 %) · procédure documentée | DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
 | **C13** | GitHub Actions (2 jobs, porte garde-fous) · **empaquetage Docker 18/08** — image 595 Mo, non-root, lecture seule · **volet LIVRAISON 19/08** (`7570bc9`) : publie sur GHCR uniquement sur tag `livrable-*`, démarre l'image et vérifie `/health` + 403 · ✅ **DÉPLOYÉ 19/08** sur Hetzner CX23, **HTTPS 20/08** (Caddy + Let's Encrypt via sslip.io) — `https://178-104-184-125.sslip.io/`, vérifié depuis l'extérieur, PostgreSQL 18 aligné partout, pare-feu `ufw` actif (22/80/443/8001) | 🔴 `db/importer.py` **ne tourne pas dans l'image** (pyarrow exclu) · certificat à surveiller fin octobre (renouvellement auto avant le 18/11) |
 | **C14** | 🔨 **18/08** — wireframes des 4 états (`evidence/C14/`), spécification US-1 : contexte, 5 scénarios, 11 critères d'acceptation dont 6 avec numéro de règle RGAA. Modélisation des données déjà couverte par le MCD Merise de C4 | US de l'**écran 2** non spécifiées · aucun audit RGAA outillé · aucun test avec un vrai lecteur d'écran |

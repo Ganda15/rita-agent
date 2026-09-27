@@ -132,3 +132,16 @@ def test_lire_prend_la_date_du_serveur_pas_celle_du_poste(monkeypatch):
     assert f.aujourdhui == date(2026, 8, 26)
     assert f.retard_jours_ouvres == 3
     assert f.statut == "orange"
+
+
+# --- 27/09/2026 : issue #51, les jours fériés Euronext ------------------------------
+
+def test_le_week_end_de_paques_ne_compte_pas():
+    """Jeudi 2 avril 2026 -> mardi 7 avril : Vendredi saint et lundi de Pâques sont fériés
+    à Euronext. Seul le mardi est un jour de bourse."""
+    assert jours_ouvres_ecoules(date(2026, 4, 2), date(2026, 4, 7)) == 1
+
+
+def test_le_14_juillet_est_un_jour_de_bourse():
+    """L'ancien commentaire du module disait le contraire : Euronext Paris cote le 14 juillet."""
+    assert jours_ouvres_ecoules(date(2026, 7, 13), date(2026, 7, 14)) == 1
