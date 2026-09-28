@@ -15,7 +15,22 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-09-27** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+**Dernière mise à jour : 2026-09-28** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+
+---
+
+🔎 **28/09, dimanche soir : le ledger rattrapé, la veille S40 préparée, le traçage tranché.**
+
+| Fait | Preuve |
+|---|---|
+| `CONTINUITE.md` et `CHANGELOG.md` avaient **9 jours de retard** (18 → 27/09) : rattrapés avec les vraies dates (9 décisions, 4 alternatives, 4 risques fermés, 6 ouverts) | `e8fd220` |
+| Candidats de veille **S40** : fenêtre élargie au 14/09 faute de S38-S39, 4 candidats (dont l'injection « explosive », arXiv 18/09, qu'aucun motif de `guardrails/injection.py` ne couvre), 16 liens à `200` | `c497858`, `docs/veille/_candidats-2026-S40.md` |
+| **Traçage : Langfuse Cloud, région UE, palier gratuit** (décision d'Era, règle du formateur « la condition = la sensibilité des données », mesurée : aucune donnée personnelle dans le prompt ; auto-hébergement impossible sur 4 Go ; LangSmith sans porte de sortie). Activation en **S43**, carte #39. Réserve : l'entité qui traite (Langfuse ou ClickHouse Inc.) à lire dans le DPA | `db/RGPD-registre-des-traitements.md` §T3 « Décision du 28/09 » ; `CONTINUITE.md` D et E |
+| Collecte du 27/09 confirmée : 6/6 avec l'étape `fred`, 30 observations, 1 359 documents indexés | `logs/collecte-2026-09-27.log` |
+
+**Quatre questions pour la revue de lundi** (section G de `CONTINUITE.md`) : ordre E4 / C7 en S40 · droits
+d'accès (#26) · veille S37-S39 (#31, voies A ou B décrites dans le relevé S40) · ajouter le ledger à la fin
+de session dans `CLAUDE.md`.
 
 ---
 

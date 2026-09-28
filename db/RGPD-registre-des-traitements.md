@@ -118,6 +118,34 @@ L'outil de monitorage n'est pas encore arrêté, et le choix a une conséquence 
 > ⚠️ Il exige Docker — **aujourd'hui le démon ne démarre pas sur la machine d'Era**, c'est
 > le vrai obstacle, et il vaut aussi pour C13 (empaquetage, livraison continue).
 
+#### Décision du 2026-09-28 : **Langfuse Cloud, région UE** (option 3), activation prévue en S43 (carte #39)
+
+Décision d'Era, après la règle donnée par le formateur le 28/09 (« la condition, c'est la sensibilité
+des données ») et une mesure dans le code plutôt qu'une supposition :
+
+| Ce qui a été mesuré | Résultat | Où |
+|---|---|---|
+| Le prompt envoyé au modèle contient-il une donnée personnelle ? | **Non** : ticker, cours, variation, ADTV20, devise, fraîcheur, passages de presse. Aucune position, aucun PRU, aucune quantité | `agents/analyst.py`, `generate_briefing()` ; `grep` sur `agents/`, `graph/` : zéro |
+| Ce qu'une trace révèle malgré tout | les tickers demandés, donc les valeurs détenues, par effet de bord | ce registre, ligne « catégories » |
+| Auto-hébergement possible sur le serveur ? | **Non** : Langfuse v3 = six composants (web, worker, Postgres, ClickHouse, Redis, S3) ; le CX23 a 4 Go partagés, déjà occupés par l'API, PostgreSQL et Chroma | doc Langfuse « self-hosting » ; spécification CX23 |
+| Région UE de Langfuse Cloud | Irlande, AWS `eu-west-1`, `cloud.langfuse.com` ; palier gratuit : 50 000 unités/mois, 30 jours de rétention, 2 alertes | doc Langfuse « cloud data regions », « pricing » |
+| LangSmith aurait-il convenu ? | région UE disponible (GCP), mais l'éditeur déclare **aucune entité juridique en UE** pour contracter, et l'auto-hébergement est réservé au plan Enterprise : pas de porte de sortie | doc LangSmith « regions FAQ », page des tarifs |
+
+**Conséquences pour ce registre, à appliquer le jour de l'activation (S43)** :
+
+- Destinataire : **Langfuse**, région UE. ⚠️ La page RGPD de Langfuse renvoie à `privacy@clickhouse.com` :
+  **l'entité qui traite peut être ClickHouse Inc. (États-Unis)** même pour la région UE. Une région n'est
+  pas une personne morale. **Lire le DPA à la création du compte** et inscrire ici le nom exact du
+  sous-traitant et sa juridiction. Tant que ce n'est pas fait, T3 reste « envisagé ».
+- Transfert hors UE : **non** au titre de la localisation des données ; à confirmer au titre de l'entité
+  (point ci-dessus).
+- Durée de conservation : 30 jours (palier gratuit), inférieure aux 90 jours de T2.
+- Mesure de réduction : rien à masquer aujourd'hui (aucune donnée personnelle dans le prompt). **Condition
+  écrite** : si une position, un PRU ou une quantité entre un jour dans le prompt, brancher la fonction de
+  masquage du SDK Langfuse avant d'activer la trace correspondante.
+- Alternative écartée et pourquoi : auto-hébergement (mesuré impossible sur 4 Go, coût d'entretien décrit par
+  le formateur) ; LangSmith (pas de porte de sortie open source, entité UE absente).
+
 ### T4 — Fichier CSV source du portefeuille
 
 | Rubrique | Contenu |
