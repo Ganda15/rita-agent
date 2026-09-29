@@ -27,6 +27,10 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 - `D:\KandaWork\RITA_PROJECT\rita-agent\docs\PLAN-12-SEMAINES.md` — le plan jusqu'au rendu.
 - `D:\KandaWork\RITA_PROJECT\rita-agent\docs\FILE-DE-VALIDATION.md` — comment un livrable part.
 - Dates : livrables **05/11/2026** · jury **30/11–01/12/2026** (mail Helena, 17/07/2026).
+  **Ajout du 29/09/2026** (message du formateur après échange avec Elbby et Nadège) : **oral blanc 1 les
+  29-30/10** (E1 15 min + E3 20 min + 10 min de retours, environ 45 min) · **oral blanc 2 les 12-13/11**
+  (situation réelle d'examen, 90 min). Les dates « oraux blancs 09-10/11 » du mail de juillet sont
+  périmées.
 
 ## C. Exigences non négociables
 
@@ -73,7 +77,8 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | **Retour au plan : S39 = rédiger E4 (C14-C19) puis le geler** ; le livre Packt est rangé dans les semaines du plan (S40, S43, S44), rien n'est codé hors plan | Retard mesuré : S38 (monitorage) et S39 non faits ; `docs/rapports/` ne contient que E1. Coder ce qu'un livre suggère avant d'écrire le livrable dû aurait creusé le retard | 26/09 | pilotage, `docs/PLAN-12-SEMAINES.md` | `1e3f7fc` ; vérification E4 du 26/09 : 21 ✅ · 11 ⚠️ · 4 ❌ (Obsidian `04-Certif/`) | Par Era seulement |
 | **`livraison.yml` : construire, vérifier l'image construite, publier seulement sur un tag**, dans cet ordre | Le fichier publiait l'image avant de vérifier qu'elle démarre, et la branche « publier sur tag » n'avait jamais tourné (seul tag : `livrable-E1-v1`, antérieur au fichier) | 26/09 | `.github/workflows/livraison.yml`, `tests/test_livraison.py` (3 tests) | PR #46 `556990e` ; run `36247837793` : image démarrée en 4 s, 403 sans clé, publication sautée hors tag. **Reste à prouver** : la publication elle-même, au premier tag `livrable-E4-v1` | Non |
 | **La place de cotation est modélisée** (`sources/marches.py` : devise, fuseau, calendrier Euronext officiel) ; archive redatée en date locale ; valeurs radiées `DELISTEE` non redemandées ; **FRED stockée** (`macro_observation`, étape `fred` à 19 h, route `/donnees/macro`) | Cinq défauts de données, une seule cause : « Paris, euros, UTC, sans férié » supposés partout. Mesuré : 52 426 cotations datées un dimanche, HSBA.L figée depuis le 28/08, trois valeurs en mauvaise devise, 24 séances fictives du samedi | 27/09 | `sources/marches.py`, `db/schema.sql`, `pipelines/ingest.py`, `api/` | INC-005 `evidence/C21/INC-005-archive-decalee-d-un-jour.md` ; PR #54 `10ef31e` ; 42 tests écrits avant ; 577 passed ; sauvegarde `sauvegardes/rita-2026-09-27-avant-migration.dump` ; collecte du 27/09 : 6/6, `fred` 30 obs. | Non. Le rapport E1 cite encore les anciennes dates : carte #56 |
-| **Traçage des appels au modèle = Langfuse Cloud, région UE (Irlande), palier gratuit** ; activation en S43 (carte #39), code en TDD | Règle du formateur (28/09) : la condition est la sensibilité des données, pas l'outil. Mesuré : le prompt ne contient aucune donnée personnelle (ticker, cours, ADTV20, passages de presse ; aucune position ni PRU). La région UE retire le transfert (art. 44). L'auto-hébergement est exclu par les chiffres : six composants dont ClickHouse sur un CX23 de 4 Go partagés. Le cœur open source est la porte de sortie si la gouvernance change. Colle au code : `src/llm.py` appelle les fournisseurs en direct, sans LangChain | 28/09 | `src/llm.py` (S43), `db/RGPD-registre-des-traitements.md` §T3 | registre RGPD « Décision du 28/09 » avec les mesures ; docs Langfuse (régions, tarifs, self-hosting) et LangSmith (regions FAQ, tarifs) vérifiées le 28/09 | Oui : auto-héberger si une donnée personnelle entre un jour dans le prompt et qu'un serveur le permet ; réserve à lever dans le DPA (entité Langfuse ou ClickHouse Inc.) |
+| **Tout livrable est gelé 2 à 3 semaines avant son passage à l'oral** ; donc **E3 et E1 gelés le 11/10** pour l'oral blanc du 29-30/10, et le calendrier S40-S45 est réécrit : E3 → E4 → C7 minimal → E2 et E5 en une semaine → gel du 05/11 | C'est la présentation qui est notée, et Era la prépare sur du figé, pas sur un chantier ouvert (« even 3 weeks counts because presentation for taught part »). L'ordre précédent (C7 en S40-S41) laissait E3 sans C11 et sans rapport sur la scène du 29/10 | 29/09 | `docs/PLAN-12-SEMAINES.md` §5 (calendrier révisé), Kanban | dates du formateur du 29/09 ; état E3 mesuré : code présent, C11 = `monitorage/fraicheur.py` seulement, rapport 0 page | Par Era seulement ; le coût (E2 et E5 courts) est écrit dans le plan |
+| **Traçage des appels au modèle = Langfuse Cloud, région UE (Irlande), palier gratuit** ; activation **avancée de S43 à S40** par la décision ci-dessus (carte #39), code en TDD | Règle du formateur (28/09) : la condition est la sensibilité des données, pas l'outil. Mesuré : le prompt ne contient aucune donnée personnelle (ticker, cours, ADTV20, passages de presse ; aucune position ni PRU). La région UE retire le transfert (art. 44). L'auto-hébergement est exclu par les chiffres : six composants dont ClickHouse sur un CX23 de 4 Go partagés. Le cœur open source est la porte de sortie si la gouvernance change. Colle au code : `src/llm.py` appelle les fournisseurs en direct, sans LangChain | 28/09 | `src/llm.py` (S43), `db/RGPD-registre-des-traitements.md` §T3 | registre RGPD « Décision du 28/09 » avec les mesures ; docs Langfuse (régions, tarifs, self-hosting) et LangSmith (regions FAQ, tarifs) vérifiées le 28/09 | Oui : auto-héberger si une donnée personnelle entre un jour dans le prompt et qu'un serveur le permet ; réserve à lever dans le DPA (entité Langfuse ou ClickHouse Inc.) |
 
 ## E. Alternatives rejetées
 
@@ -111,6 +116,7 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | 19/09 | changé | **Flux PR `develop → main`** relue par Claude Code, push direct refusé (option A) | C13, C19, façon de livrer |
 | 20/09 | ajouté | **Giskard** comme challenger des garde-fous, une fois, plafond 200 (option 1 sur trois) ; crédit OpenRouter ajouté par Era | C10, C17, C21 |
 | 26/09 | ajouté | **C16 par Kanban GitHub et revue du lundi** ; **retour au plan, S39 = E4** ; le livre Packt rangé dans le plan, rien codé hors plan | C16, ordre des livrables |
+| 29/09 | changé | **Gel 2 à 3 semaines avant chaque oral** ; E3 passe devant E4 et C7 ; Langfuse avancé en S40 | ordre des livrables, plan S40-S45 |
 | 26/09 | rendu obligatoire | **Écriture humaine partout** : zéro tiret long, pas de tournures qui sonnent IA, relecture à voix haute avant de rendre (mesuré : 38 tirets longs dans le rapport E1). Vaut pour le chat, les livrables, les commits, les skills | tous les livrables |
 
 ## G. Questions ouvertes
@@ -132,9 +138,8 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 - **Éco-conception C15** : l'argument était écrit sur une image de 595 Mo ; elle fait 1,01 Go. Carte #25
   (mesure EcoIndex ou Lighthouse des 2 pages).
 - `requirements.txt` toujours non épinglé : 13 dépendances sans version au 26/09 (carte #23).
-- 🆕 **Ordre de la semaine 40 (28/09 au 04/10)** : le plan y met le protocole de benchmark C7 (#32), et
-  la tâche principale du 26/09 (E4 rédigé puis gelé, #28) n'est pas faite. Deux chantiers, une semaine :
-  **Era tranche** lundi, à la revue hebdomadaire.
+- ~~**Ordre de la semaine 40**~~ → **tranché le 29/09 : E3 d'abord** (oral blanc E1 + E3 le 29-30/10, gel
+  le 11/10), puis E4, C7 minimal, E2 et E5. Voir D et `docs/PLAN-12-SEMAINES.md` §5.
 - 🆕 **C17 droits d'accès** (carte #26) : défendre le choix mono-utilisateur ou ajouter un second niveau.
   **Era tranche.**
 - 🆕 **Veille S37, S38, S39 manquantes** (carte #31, étiquette `decision-era`) : les rattraper avec leur

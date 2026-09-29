@@ -15,7 +15,30 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-09-28** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+**Dernière mise à jour : 2026-09-29** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
+
+---
+
+🔎 **29/09 : deux oraux blancs annoncés, le plan est réécrit, E3 passe devant.**
+
+Message du formateur (échange avec Elbby et Nadège) : **29-30/10** oral blanc E1 (15 min) + E3 (20 min)
++ 10 min de retours ; **12-13/11** oral blanc en situation réelle, 90 min. Règle d'Era, posée le même
+jour : **tout livrable gelé 2 à 3 semaines avant son oral**, la présentation se prépare sur du figé.
+
+| Conséquence | Date |
+|---|---|
+| **E3 et E1 gelés** (rapport E3 écrit, C11 réel, Hetzner rafraîchi, dates du rapport E1 corrigées) | **dimanche 11/10** |
+| E4 gelé | 25/10 |
+| Les cinq envoyés | 05/11 |
+| Étude seule | 14 → 29/11 |
+
+Calendrier révisé dans `docs/PLAN-12-SEMAINES.md` §5 ; décision et coût dans `CONTINUITE.md` D et F.
+Langfuse (carte #39) avancé de S43 à **cette semaine**.
+
+**▶️ Tâche principale (Era, 29/09) : E3 prêt pour l'oral blanc, gelé le 11/10.** Prochaine action, la
+plus petite : créer le compte Langfuse Cloud **région UE** (`cloud.langfuse.com`), lire le DPA, noter l'entité
+qui traite dans le registre RGPD §T3 ; puis, en TDD, la trace d'un appel de `src/llm.py` (#39).
 
 ---
 

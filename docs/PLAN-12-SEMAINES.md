@@ -14,6 +14,14 @@ scripts d'oral et les répétitions se préparent **là**, pas maintenant.
 ➡️ **Les 12 semaines qui viennent sont de la production pure.** Ne pas y mélanger la
 préparation de soutenance : c'est le meilleur moyen de ne finir ni l'une ni l'autre.
 
+> ⚠️ **Correction du 29/09/2026 : ce paragraphe est devenu faux.** Le formateur a annoncé deux
+> oraux blancs : le **29-30/10** (E1 15 min + E3 20 min + 10 min de retours) et le **12-13/11**
+> (situation réelle, 90 min, les cinq). Le premier tombe **dans** les 12 semaines. Règle posée par
+> Era le 29/09 : **tout livrable est gelé 2 à 3 semaines avant son passage à l'oral**, parce que
+> c'est la présentation qui est notée et qu'elle se prépare sur du figé. Conséquence : E3 et E1
+> doivent être gelés le **dimanche 11/10**. Le calendrier du §5 est réécrit à partir de S40 ;
+> les semaines passées ne bougent pas.
+
 ---
 
 ## 2. Le principe qui commande tout : deux types de temps
@@ -85,12 +93,31 @@ prend la semaine libre.** S'il échoue, le plan échoue — c'est le risque assu
 | **S37** | 07–13/09 | **C** | `pytest-cov` branché, seuil fixé, **C12 clos** |
 | **S38** | 14–20/09 | **A** + **D** | Monitorage instrumenté **pendant** le développement |
 | **S39** | 21–27/09 | **A** | **E4 rédigé** → gelé → **mis en file** |
-| **S40** | 28/09–04/10 | **B** | Protocole de benchmark + première mesure sur les 3 fournisseurs |
-| **S41** | 05–11/10 | **B** | **C7 clos** → gelé → mis en file |
-| **S42** | 12–18/10 | **C** | Packaging + déploiement, **C13 clos** |
-| **S43** | 19–25/10 | **D** | Dérive et alertes, **C20–C21 clos** → E5 gelé |
-| **S44** | 26/10–01/11 | rattrapage | C8 doc d'exploitation · C9 revue OWASP · le retard accumulé |
-| **S45** | 02–05/11 | **gel** | Relecture, `verifier_liens.py`, tests verts, **envoi du 05/11** |
+| ~~**S40**~~ | ~~28/09–04/10~~ | ~~**B**~~ | ~~Protocole de benchmark + première mesure sur les 3 fournisseurs~~ |
+| ~~**S41**~~ | ~~05–11/10~~ | ~~**B**~~ | ~~**C7 clos** → gelé → mis en file~~ |
+| ~~**S42**~~ | ~~12–18/10~~ | ~~**C**~~ | ~~Packaging + déploiement, **C13 clos**~~ |
+| ~~**S43**~~ | ~~19–25/10~~ | ~~**D**~~ | ~~Dérive et alertes, **C20–C21 clos** → E5 gelé~~ |
+| ~~**S44**~~ | ~~26/10–01/11~~ | ~~rattrapage~~ | ~~C8 doc d'exploitation · C9 revue OWASP · le retard accumulé~~ |
+| ~~**S45**~~ | ~~02–05/11~~ | ~~**gel**~~ | ~~Relecture, `verifier_liens.py`, tests verts, **envoi du 05/11**~~ |
+
+**Calendrier révisé le 29/09/2026** (oraux blancs annoncés, règle « gelé 2 à 3 semaines avant l'oral ») :
+
+| Semaine | Dates | Chantier | Ce qui doit exister à la fin |
+|---|---|---|---|
+| **S40** | 29/09–04/10 | **E3 d'abord** (C, D) | Langfuse Cloud UE activé (DPA lu), traces de `src/llm.py` + 2 alertes (#39), une vue temps réel C11 (#38) · squelette du rapport E3 depuis `docs/LLMOPS.md` et `evidence/` · E1 : dates corrigées (#56) · veille S40 (#30) |
+| **S41** | 05–11/10 | **E3** (C) | Rapport E3 rédigé, C9 à C13, revue OWASP en section (#29), `db/importer.py` dans l'image (#35) · **Hetzner rafraîchi et automatisé** (#36) : la démo de l'oral tourne sur des données du jour · **E3 gelé le 11/10**, tag `livrable-E3-v1`, envoyé à Elbby · script E1 rafraîchi (580 tests, 1 359 documents, calendrier des places) |
+| **S42** | 12–18/10 | **E4** (A) + prépa oral | Rapport E4 rédigé (#28) depuis la vérification du 26/09 ; #23, #27 · préparation de l'oral E1 + E3 commence (`coach-soutenance`) : c'est la période de 2,5 semaines demandée |
+| **S43** | 19–25/10 | **E4 gelé** + **B** minimal | Tag `livrable-E4-v1`, envoyé · benchmark C7 minimal, protocole + une mesure (#32, #33) · première répétition E1 + E3 |
+| **S44** | 26/10–01/11 | **oral blanc 1** (29-30/10) | Passage E1 + E3, retours notés dans le journal · rapport E2 (#34 : veille, C7, C8 #43) · rapport E5 (#40, #41 minimal, les cinq incidents) |
+| **S45** | 02–05/11 | **gel** | Relecture, `verifier_liens.py`, tests verts, **envoi des cinq le 05/11** |
+| 06–11/11 | | répétition | Deux passages complets de 90 min, `coach-soutenance` |
+| **12–13/11** | | **oral blanc 2** | Situation réelle, 90 min, les cinq |
+| 14–29/11 | | étude | Révision seule, plus de code |
+| **30/11–01/12** | | **jury** | |
+
+**Ce que cet ordre coûte, dit à l'avance** : E2 et E5 ont une semaine chacun (S44), leurs rapports
+seront plus courts et le diront. L'alternative (garder C7 en S40-S41) laissait E3 sans C11 et sans
+rapport sur la scène du 29/10.
 
 **Toutes les semaines, sans exception** : lundi 09h–10h, la note de veille C6.
 12 lundis restants au 16/08 = **12 notes possibles**, S33 comprise. Aucune marge.
