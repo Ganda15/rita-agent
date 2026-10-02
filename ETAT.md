@@ -15,8 +15,22 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-09-29** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-02** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
+
+---
+
+🔎 **02/10 : C11 devient réel. Première trace Langfuse de RITA, et deux défauts trouvés en la lisant.**
+
+| Fait | Preuve |
+|---|---|
+| **Chaque appel au modèle est tracé** (carte #39) : `src/traces.py` (no-op sans clés), `src/llm.py` restructuré, un trace `briefing-llm` par appel avec une génération `llm-<fournisseur>` par tentative, usage en tokens, erreur du repli. **8 tests écrits avant** (rouge → vert), suite **586 passed, 2 xfailed** | `7cf3ffd` ; `tests/test_traces.py`, `tests/test_llm.py` |
+| **Première trace réelle** : 02/10 18:39, Foundry et Anthropic en erreur, OpenRouter répond (`anthropic/claude-sonnet-4.5`, 27 tokens, 1,73 s) ; seconde à 19 h avec la hiérarchie | captures Langfuse d'Era ; projet `rita`, région UE |
+| 🔴 **Trouvé dans Langfuse, pas dans le code : les tests écrivaient en production.** 12 générations « prompt test » → « ok anthropic » entre 18:25 et 18:38 : `api/main.py` charge le fichier d'environnement à l'import, les vraies clés restaient dans le processus, la cascade simulée traçait pour de vrai. Corrigé le jour même : test rouge puis fixture `couper_le_tracage` dans `tests/conftest.py` | même commit ; capture des 12 lignes avant suppression |
+| 🟠 **Le poste de démonstration n'a qu'un fournisseur qui répond** : OpenRouter (clé neuve le 02/10). Pas de clé Foundry ni Anthropic en local. La cascade et son repli sont donc visibles à chaque appel, mais une panne OpenRouter = pas de briefing en démo | sortie des deux appels réels |
+| Fichier d'environnement : deux faux départs instructifs (clés jamais écrites, puis les « … » de l'exemple collés à la place des clés) ; résolu par Era à la main, le hook `bloquer-secrets.py` ayant refusé 4 commandes de Claude qui nommaient le fichier, lecture comprise | session du 02/10 |
+
+**Reste pour C11 avant le 11/10** : tableau « RITA C11 » (3 widgets), les 2 alertes du palier gratuit vers GitHub Actions (ouvrir une issue `incident`), `evidence/C11/` avec les captures datées, le nom de l'entité du DPA dans le registre. Décision à prendre : écrire la fuite des tests comme **INC-006** (`evidence/C21/`).
 
 ---
 

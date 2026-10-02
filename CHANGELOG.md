@@ -9,6 +9,28 @@
 
 ---
 
+## 2026-10-02 : C11 devient réel, la première trace Langfuse de RITA, et les tests qui écrivaient en production
+
+**Fait** : chaque appel au modèle est tracé dans Langfuse Cloud, région UE (décision du 28/09) : un trace par
+appel, une génération par fournisseur tenté, usage en tokens, erreur du repli. Sans clés, no-op. Huit tests
+écrits avant le code ; suite 586 passed. Première trace réelle le 02/10 à 18:39 : Foundry et Anthropic en
+erreur, OpenRouter répond. Commit `7cf3ffd`.
+
+**Manque découvert, en lisant l'écran Langfuse** : douze générations factices (« prompt test » → « ok anthropic »)
+venaient de la suite de tests. `api/main.py` charge le fichier d'environnement à l'import ; après le premier
+test d'API, les vraies clés restaient dans le processus. Corrigé le jour même par un test puis une fixture de
+`conftest.py` qui coupe le traçage pour toute la suite. Un monitorage pollué par ses propres tests ment : c'est
+un incident, petit, réel, fermé par un test.
+
+**Second manque** : le poste de démonstration n'a qu'un fournisseur qui répond (OpenRouter). Risque daté pour
+l'oral du 29/10, décision d'Era à prendre.
+
+**Appris** : le hook `bloquer-secrets.py` a refusé quatre commandes de Claude qui nommaient le fichier de
+secrets, lecture comprise ; les clés ont été posées à la main par Era, après deux faux départs (fichier jamais
+modifié, puis les « … » de l'exemple collés tels quels).
+
+---
+
 ## 2026-09-27 : sept défauts de données avaient une seule cause, la place de cotation n'existait pas dans le modèle (INC-005)
 
 **Manque découvert** en relisant le guide d'étude « marchés et finance » : l'archive de 10 ans était datée
