@@ -20,6 +20,44 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 
 ---
 
+🔎 **02/10, soir : gel repoussé au 15/10, et une relecture complète du dépôt face à tous les briefs.**
+
+Décision d'Era : **E3 et E1 gelés le jeudi 15/10**, pas le 11/10. Le formateur a annoncé un brief de création la semaine
+du 05/10 ; l'audit chiffre le travail de E3 restant à 30 à 45 h. **Ce que le gel permet** : on ne construit plus rien,
+mais on corrige ce que les retours de l'oral blanc (29-30/10) montrent, par une version taguée `v2`, jamais en silence ;
+limites 05/11 (relecture d'Elbby) et 23/11 (jury). Écrit dans `CONTINUITE.md` F.
+
+**Relecture du 02/10** (14 agents : 5 auditeurs, 5 contradicteurs, 3 chercheurs, 1 critique ; constats clés revérifiés
+par commande) :
+
+| Question du formateur | Réponse mesurée |
+|---|---|
+| **Garde-fous intégrés ?** | **Oui, mesurés.** `entree.py` 7 motifs, 100 % et 0 % de faux positifs ; `injection.py` 12 motifs, 70 % et 0 % ; `sortie.py` 9 motifs, 70 % et 0 %. Cible de 85 % déclarée non atteinte (`xfail` strict). Quatre manques à dire d'abord : l'enveloppe `<donnees_externes>` jamais branchée, aucun journal ni marque de trace au refus, aucun test d'API sur la substitution AMF, l'entrée qui ne voit aucun texte libre aujourd'hui |
+| **Mémoire intégrée ?** | **Conçue le 28/07, à moitié construite.** M1, M2, M3 et M6 réelles ; M4 et M5 abandonnées pour la V1 (le modèle est le dernier nœud, un checkpointer ne sauverait aucun appel payant) ; `memory_audit` sans écrivain. **La décision n'était écrite nulle part** : elle l'est depuis ce soir, `CONTINUITE.md` D |
+
+**Faits que la relecture a trouvés** : aucun `request_id` dans le code ; `docker-compose.yml` ne transmet aucune variable `LANGFUSE_*`, donc le conteneur ne trace pas ; la clé FRED est écrite en clair dans 6 journaux locaux (rapporté par un auditeur, non revérifié par commande) ; `README.md` (18/08) annonce 186 tests et « C11 non commencé » ; `CLAUDE.md` annonce 458 tests, 8 tables, 15 index (mesuré : 588 collectés, 9 tables) ; la table de compétences plus bas dans ce fichier contredit son propre en-tête (C11, C16) ; passerelles manquantes pour Velmo, Kaldera, Kaldera-A2A, Industrialisation, Factum : **écrites ce soir**, et la ligne fausse « RITA n'a aucun gate d'évaluation » corrigée.
+
+**À ne pas faire (décisions écrites)** : pas d'endpoint A2A (aucun critère, 10 à 16 h, surface à état) ; pas de Prometheus et Grafana sur le serveur de 4 Go ; pas de checkpointer ; pas de NeMo Guardrails (Python 3.13 au plus) ; pas de changement d'outil de traçage ; pas de gestion des prompts dans Langfuse (dépendance réseau sur `/briefing`).
+
+**Plan jusqu'au gel du 15/10** (heures de l'audit, dans l'ordre) :
+1. Registre RGPD T3 corrigé, entité du DPA : addendum ClickHouse, Langfuse GmbH sous-traitant allemand (1 h)
+2. Test d'API de la substitution AMF + une ligne de journal + le verdict sur la trace (2 à 3 h)
+3. `request_id` : middleware, journal, identifiant de trace (2 à 3 h)
+4. C11 visible : variables transmises au conteneur, spans `scout`, `rag`, garde-fous, tableau « RITA C11 », 2 alertes vers une issue GitHub, `evidence/C11/`, INC-006 (6 à 9 h)
+5. Enveloppe `<donnees_externes>` branchée, tests de seuil de l'entrée, cas Giskard rejoués, test de l'ordre des nœuds (2 à 2,5 h)
+6. `memory_audit` : écrire ou retirer (0,5 h ou 2 à 3 h)
+7. Dossiers de preuves C9, C12, C13, C18 depuis les exécutions existantes de la CI (2 à 3 h)
+8. Rapport E3 (6 à 10 h)
+9. Hygiène : `README.md`, `CLAUDE.md`, commentaire de `test.yml`, `requirements.txt` épinglé, 422 pour ticker inconnu, retour arrière, tag `livrable-E1-v2` puis `livrable-E3-v1` (7 à 10 h)
+
+**Après le gel** : revue du lundi pour C16 (5 entrées datées), note de veille S40 avec A2A, paquet E4 le 25/10, benchmark C7 sur les trois fournisseurs déjà branchés.
+
+**Non vérifié** : si Hetzner reçoit les clés Langfuse autrement ; l'existence d'un tableau ou d'alertes dans l'interface Langfuse ; la couverture du jour (suite non relancée) ; quel brief occupe la semaine du 05/10 ; deux notes de la phase 1 du programme (« modèle open source, mode d'emploi » et « l'agent qui a perdu la tête ») sans trace dans Obsidian.
+
+**▶️ Prochaine action la plus petite : corriger le registre RGPD T3 (titre, date, entité du DPA).** Puis le test d'API de la substitution AMF, en TDD.
+
+---
+
 🔎 **02/10 : C11 devient réel. Première trace Langfuse de RITA, et deux défauts trouvés en la lisant.**
 
 | Fait | Preuve |
@@ -30,7 +68,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 | 🟠 **Le poste de démonstration n'a qu'un fournisseur qui répond** : OpenRouter (clé neuve le 02/10). Pas de clé Foundry ni Anthropic en local. La cascade et son repli sont donc visibles à chaque appel, mais une panne OpenRouter = pas de briefing en démo | sortie des deux appels réels |
 | Fichier d'environnement : deux faux départs instructifs (clés jamais écrites, puis les « … » de l'exemple collés à la place des clés) ; résolu par Era à la main, le hook `bloquer-secrets.py` ayant refusé 4 commandes de Claude qui nommaient le fichier, lecture comprise | session du 02/10 |
 
-**Reste pour C11 avant le 11/10** : tableau « RITA C11 » (3 widgets), les 2 alertes du palier gratuit vers GitHub Actions (ouvrir une issue `incident`), `evidence/C11/` avec les captures datées, le nom de l'entité du DPA dans le registre. Décision à prendre : écrire la fuite des tests comme **INC-006** (`evidence/C21/`).
+**Reste pour C11 avant le 15/10** : tableau « RITA C11 » (3 widgets), les 2 alertes du palier gratuit vers GitHub Actions (ouvrir une issue `incident`), `evidence/C11/` avec les captures datées, le nom de l'entité du DPA dans le registre. Décision à prendre : écrire la fuite des tests comme **INC-006** (`evidence/C21/`).
 
 ---
 
@@ -42,7 +80,7 @@ jour : **tout livrable gelé 2 à 3 semaines avant son oral**, la présentation 
 
 | Conséquence | Date |
 |---|---|
-| **E3 et E1 gelés** (rapport E3 écrit, C11 réel, Hetzner rafraîchi, dates du rapport E1 corrigées) | **dimanche 11/10** |
+| **E3 et E1 gelés** (rapport E3 écrit, C11 réel, Hetzner rafraîchi, dates du rapport E1 corrigées) | ~~dimanche 11/10~~ **jeudi 15/10** (repoussé le 02/10) |
 | E4 gelé | 25/10 |
 | Les cinq envoyés | 05/11 |
 | Étude seule | 14 → 29/11 |
@@ -50,7 +88,7 @@ jour : **tout livrable gelé 2 à 3 semaines avant son oral**, la présentation 
 Calendrier révisé dans `docs/PLAN-12-SEMAINES.md` §5 ; décision et coût dans `CONTINUITE.md` D et F.
 Langfuse (carte #39) avancé de S43 à **cette semaine**.
 
-**▶️ Tâche principale (Era, 29/09) : E3 prêt pour l'oral blanc, gelé le 11/10.** Prochaine action, la
+**▶️ Tâche principale (Era, 29/09) : E3 prêt pour l'oral blanc, gelé le 15/10 (repoussé du 11/10 le 02/10).** Prochaine action, la
 plus petite : créer le compte Langfuse Cloud **région UE** (`cloud.langfuse.com`), lire le DPA, noter l'entité
 qui traite dans le registre RGPD §T3 ; puis, en TDD, la trace d'un appel de `src/llm.py` (#39).
 

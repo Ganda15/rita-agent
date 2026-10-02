@@ -19,7 +19,7 @@ préparation de soutenance : c'est le meilleur moyen de ne finir ni l'une ni l'a
 > (situation réelle, 90 min, les cinq). Le premier tombe **dans** les 12 semaines. Règle posée par
 > Era le 29/09 : **tout livrable est gelé 2 à 3 semaines avant son passage à l'oral**, parce que
 > c'est la présentation qui est notée et qu'elle se prépare sur du figé. Conséquence : E3 et E1
-> doivent être gelés le **dimanche 11/10**. Le calendrier du §5 est réécrit à partir de S40 ;
+> doivent être gelés le **jeudi 15/10** (repoussé du 11/10 le 02/10, car un brief de création occupe la semaine du 05/10 ; après le gel, seules des corrections issues de l'oral blanc, par une version `v2`). Le calendrier du §5 est réécrit à partir de S40 ;
 > les semaines passées ne bougent pas.
 
 ---
@@ -105,8 +105,8 @@ prend la semaine libre.** S'il échoue, le plan échoue — c'est le risque assu
 | Semaine | Dates | Chantier | Ce qui doit exister à la fin |
 |---|---|---|---|
 | **S40** | 29/09–04/10 | **E3 d'abord** (C, D) | Langfuse Cloud UE activé (DPA lu), traces de `src/llm.py` + 2 alertes (#39), une vue temps réel C11 (#38) · squelette du rapport E3 depuis `docs/LLMOPS.md` et `evidence/` · E1 : dates corrigées (#56) · veille S40 (#30) |
-| **S41** | 05–11/10 | **E3** (C) | Rapport E3 rédigé, C9 à C13, revue OWASP en section (#29), `db/importer.py` dans l'image (#35) · **Hetzner rafraîchi et automatisé** (#36) : la démo de l'oral tourne sur des données du jour · **E3 gelé le 11/10**, tag `livrable-E3-v1`, envoyé à Elbby · script E1 rafraîchi (580 tests, 1 359 documents, calendrier des places) |
-| **S42** | 12–18/10 | **E4** (A) + prépa oral | Rapport E4 rédigé (#28) depuis la vérification du 26/09 ; #23, #27 · préparation de l'oral E1 + E3 commence (`coach-soutenance`) : c'est la période de 2,5 semaines demandée |
+| **S41** | 05–11/10 | **E3** (C) | Rapport E3 rédigé, C9 à C13, revue OWASP en section (#29), `db/importer.py` dans l'image (#35) · **Hetzner rafraîchi et automatisé** (#36) : la démo de l'oral tourne sur des données du jour · **E3 en fin de rédaction** (gel le 15/10, voir S42) · script E1 rafraîchi (580 tests, 1 359 documents, calendrier des places) |
+| **S42** | 12–18/10 | **E3 gelé jeudi 15/10** · **E4** (A) + prépa oral | **Gel du 15/10** : tag `livrable-E3-v1` (et `livrable-E1-v2`), envoyés à Elbby · Rapport E4 rédigé (#28) depuis la vérification du 26/09 ; #23, #27 · préparation de l'oral E1 + E3 commence (`coach-soutenance`) : c'est la période de 2,5 semaines demandée |
 | **S43** | 19–25/10 | **E4 gelé** + **B** minimal | Tag `livrable-E4-v1`, envoyé · benchmark C7 minimal, protocole + une mesure (#32, #33) · première répétition E1 + E3 |
 | **S44** | 26/10–01/11 | **oral blanc 1** (29-30/10) | Passage E1 + E3, retours notés dans le journal · rapport E2 (#34 : veille, C7, C8 #43) · rapport E5 (#40, #41 minimal, les cinq incidents) |
 | **S45** | 02–05/11 | **gel** | Relecture, `verifier_liens.py`, tests verts, **envoi des cinq le 05/11** |

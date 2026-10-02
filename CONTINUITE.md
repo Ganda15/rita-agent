@@ -77,9 +77,12 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | **Retour au plan : S39 = rédiger E4 (C14-C19) puis le geler** ; le livre Packt est rangé dans les semaines du plan (S40, S43, S44), rien n'est codé hors plan | Retard mesuré : S38 (monitorage) et S39 non faits ; `docs/rapports/` ne contient que E1. Coder ce qu'un livre suggère avant d'écrire le livrable dû aurait creusé le retard | 26/09 | pilotage, `docs/PLAN-12-SEMAINES.md` | `1e3f7fc` ; vérification E4 du 26/09 : 21 ✅ · 11 ⚠️ · 4 ❌ (Obsidian `04-Certif/`) | Par Era seulement |
 | **`livraison.yml` : construire, vérifier l'image construite, publier seulement sur un tag**, dans cet ordre | Le fichier publiait l'image avant de vérifier qu'elle démarre, et la branche « publier sur tag » n'avait jamais tourné (seul tag : `livrable-E1-v1`, antérieur au fichier) | 26/09 | `.github/workflows/livraison.yml`, `tests/test_livraison.py` (3 tests) | PR #46 `556990e` ; run `36247837793` : image démarrée en 4 s, 403 sans clé, publication sautée hors tag. **Reste à prouver** : la publication elle-même, au premier tag `livrable-E4-v1` | Non |
 | **La place de cotation est modélisée** (`sources/marches.py` : devise, fuseau, calendrier Euronext officiel) ; archive redatée en date locale ; valeurs radiées `DELISTEE` non redemandées ; **FRED stockée** (`macro_observation`, étape `fred` à 19 h, route `/donnees/macro`) | Cinq défauts de données, une seule cause : « Paris, euros, UTC, sans férié » supposés partout. Mesuré : 52 426 cotations datées un dimanche, HSBA.L figée depuis le 28/08, trois valeurs en mauvaise devise, 24 séances fictives du samedi | 27/09 | `sources/marches.py`, `db/schema.sql`, `pipelines/ingest.py`, `api/` | INC-005 `evidence/C21/INC-005-archive-decalee-d-un-jour.md` ; PR #54 `10ef31e` ; 42 tests écrits avant ; 577 passed ; sauvegarde `sauvegardes/rita-2026-09-27-avant-migration.dump` ; collecte du 27/09 : 6/6, `fred` 30 obs. | Non. Le rapport E1 cite encore les anciennes dates : carte #56 |
-| **Tout livrable est gelé 2 à 3 semaines avant son passage à l'oral** ; donc **E3 et E1 gelés le 11/10** pour l'oral blanc du 29-30/10, et le calendrier S40-S45 est réécrit : E3 → E4 → C7 minimal → E2 et E5 en une semaine → gel du 05/11 | C'est la présentation qui est notée, et Era la prépare sur du figé, pas sur un chantier ouvert (« even 3 weeks counts because presentation for taught part »). L'ordre précédent (C7 en S40-S41) laissait E3 sans C11 et sans rapport sur la scène du 29/10 | 29/09 | `docs/PLAN-12-SEMAINES.md` §5 (calendrier révisé), Kanban | dates du formateur du 29/09 ; état E3 mesuré : code présent, C11 = `monitorage/fraicheur.py` seulement, rapport 0 page | Par Era seulement ; le coût (E2 et E5 courts) est écrit dans le plan |
+| **Tout livrable est gelé 2 à 3 semaines avant son passage à l'oral** ; donc **E3 et E1 gelés le 11/10** (repoussé au 15/10 le 02/10, voir F) pour l'oral blanc du 29-30/10, et le calendrier S40-S45 est réécrit : E3 → E4 → C7 minimal → E2 et E5 en une semaine → gel du 05/11 | C'est la présentation qui est notée, et Era la prépare sur du figé, pas sur un chantier ouvert (« even 3 weeks counts because presentation for taught part »). L'ordre précédent (C7 en S40-S41) laissait E3 sans C11 et sans rapport sur la scène du 29/10 | 29/09 | `docs/PLAN-12-SEMAINES.md` §5 (calendrier révisé), Kanban | dates du formateur du 29/09 ; état E3 mesuré : code présent, C11 = `monitorage/fraicheur.py` seulement, rapport 0 page | Par Era seulement ; le coût (E2 et E5 courts) est écrit dans le plan |
 | **Un trace Langfuse par appel au rédacteur** (span racine `briefing-llm`), **une génération par tentative** nommée `llm-<fournisseur>`, flush après la fermeture du span ; **la suite de tests ne trace jamais** (`conftest.py`, `LANGFUSE_TRACING_ENABLED=false`) | Mesuré le 02/10 avant la structure : 9 lignes racines pour 3 appels, illisible ; et 12 générations de tests dans le projet de production, parce que `api/main.py` charge l'environnement à l'import. Un trace par appel se lit d'un coup ; une suite qui trace en prod fausse le monitorage | 02/10 | `src/traces.py`, `src/llm.py`, `tests/conftest.py` | `7cf3ffd` ; 8 tests rouges → verts ; 586 passed ; captures Langfuse | Oui |
 | **Traçage des appels au modèle = Langfuse Cloud, région UE (Irlande), palier gratuit** ; activation **avancée de S43 à S40** par la décision ci-dessus (carte #39), code en TDD | Règle du formateur (28/09) : la condition est la sensibilité des données, pas l'outil. Mesuré : le prompt ne contient aucune donnée personnelle (ticker, cours, ADTV20, passages de presse ; aucune position ni PRU). La région UE retire le transfert (art. 44). L'auto-hébergement est exclu par les chiffres : six composants dont ClickHouse sur un CX23 de 4 Go partagés. Le cœur open source est la porte de sortie si la gouvernance change. Colle au code : `src/llm.py` appelle les fournisseurs en direct, sans LangChain | 28/09 | `src/llm.py` (S43), `db/RGPD-registre-des-traitements.md` §T3 | registre RGPD « Décision du 28/09 » avec les mesures ; docs Langfuse (régions, tarifs, self-hosting) et LangSmith (regions FAQ, tarifs) vérifiées le 28/09 | Oui : auto-héberger si une donnée personnelle entre un jour dans le prompt et qu'un serveur le permet ; réserve à lever dans le DPA (entité Langfuse ou ClickHouse Inc.) |
+| **Mémoire de RITA en V1 : M1, M2, M3 et M6 sont réelles ; M4 (historique des briefings) et M5 (checkpointer LangGraph) sont abandonnées pour la V1 ; pas de mémoire de conversation.** M1 : `graph/state.py`, recréé à chaque appel. M2 : PostgreSQL, 9 tables, écrit par le seul pipeline. M3 : index ChromaDB reconstruit chaque nuit. M6 : traces Langfuse depuis le 02/10, limitées à l'appel au modèle. | Un briefing est une fonction de (valeur, date) : une valeur en entrée, un texte en sortie, un seul utilisateur (décision D10), aucune action. Le checkpointer ne sauverait aucun appel payant : le modèle est le dernier des trois nœuds, et LangGraph reprend au début du nœud interrompu ; il ajouterait 4 tables hors du MCD. Pas de mémoire de conversation retire aussi la surface d'attaque des sessions (Unit 42 et A2ABreak). Le coût : pas de personnalisation, pas de « ce que RITA a dit hier » | 02/10 | `graph/`, `db/`, `rag/`, `src/traces.py` | audit du 02/10 (5 auditeurs, 5 contradicteurs) ; note `RITA - Conception mémoire (2026-07-28)` dans Obsidian, à dater « état du 02/10 » ; `git grep` de `checkpoint`, `thread_id`, `INTO memory_audit` : vide | **Oui, après l'oral blanc** : la table `briefing`, écrite après `guardrails/sortie.py` (règle B), est le premier chantier de l'après-E3 (5 à 8 h, zone sous garde, plan écrit d'abord) |
+| **`memory_audit` : à trancher avant le gel du 15/10.** Soit un écrivain par document indexé (`rag/indexation.py`, empreintes SHA-256 seulement, 3 tests avant le code), soit la table est retirée avec T2, P1 et P5 du registre RGPD, par un fichier de migration daté. | La table existe depuis le 01/08 (`db/schema.sql:246`), la purge P1 est testée, mais aucune ligne n'est jamais écrite : le registre documente un risque sur une colonne que rien ne remplit. C'est le défaut « documenté mais absent » (INC-004), pas encore compté. Le texte clair du champ `resume` contredit en plus la conception (empreinte seule) | 02/10 | `db/schema.sql`, `db/rgpd_purge.py`, registre RGPD | `grep -rn "INTO memory_audit"` : aucun résultat ; audit du 02/10 | **Era tranche** (carte à créer) |
+| **Pas de point d'accès A2A dans RITA en V1.** RITA reste un serveur opaque joignable par REST et par la passerelle MCP. L'A2A est une position écrite et un schéma, datés ; l'endpoint est une idée pour l'après-jury (30/11). | Aucun des 21 critères ne nomme l'A2A ; 10 à 16 h de travail ; une deuxième surface publique à état sur un serveur de 4 Go, exactement l'attaque que montrent Unit 42 (31/10/2025) et A2ABreak (09/09/2026) ; RITA n'a aucun agent externe à qui déléguer. Le formateur a dit le 01/10 que le travail Kaldera n'était pas de l'A2A : un graphe interne n'en est pas | 02/10 | architecture | recherche du 02/10 : spécification 1.0.0 (12/03/2026), `a2a-sdk` 1.2.1 (30/09), entrée dans l'AAIF le 27/08 ; fiche A2A du binôme dans Obsidian | Oui, après le jury |
 
 ## E. Alternatives rejetées
 
@@ -119,6 +122,7 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | 26/09 | ajouté | **C16 par Kanban GitHub et revue du lundi** ; **retour au plan, S39 = E4** ; le livre Packt rangé dans le plan, rien codé hors plan | C16, ordre des livrables |
 | 29/09 | changé | **Gel 2 à 3 semaines avant chaque oral** ; E3 passe devant E4 et C7 ; Langfuse avancé en S40 | ordre des livrables, plan S40-S45 |
 | 26/09 | rendu obligatoire | **Écriture humaine partout** : zéro tiret long, pas de tournures qui sonnent IA, relecture à voix haute avant de rendre (mesuré : 38 tirets longs dans le rapport E1). Vaut pour le chat, les livrables, les commits, les skills | tous les livrables |
+| 02/10 | changé | **Gel de E3 et de E1 repoussé du 11/10 au jeudi 15/10** (décision d'Era). Raison : une semaine de brief de création occupe les journées du 05 au 11/10, et l'audit chiffre le travail de E3 restant à 30 à 45 h. Le gel garde au moins 2 semaines avant l'oral blanc du 29/10. **Ce que le gel permet** : on ne construit plus rien ; on corrige seulement ce que les retours de l'oral blanc montrent, par une nouvelle version taguée (`v2`), jamais par une modification silencieuse ; les diapositives et le discours suivent la `v2`. Limites : 05/11 pour la relecture d'Elbby, 23/11 pour le partage au jury | ordre des livrables, plan S41-S42 |
 
 ## G. Questions ouvertes
 
@@ -140,7 +144,7 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
   (mesure EcoIndex ou Lighthouse des 2 pages).
 - `requirements.txt` toujours non épinglé : 13 dépendances sans version au 26/09 (carte #23).
 - ~~**Ordre de la semaine 40**~~ → **tranché le 29/09 : E3 d'abord** (oral blanc E1 + E3 le 29-30/10, gel
-  le 11/10), puis E4, C7 minimal, E2 et E5. Voir D et `docs/PLAN-12-SEMAINES.md` §5.
+  le 11/10, repoussé au 15/10 le 02/10), puis E4, C7 minimal, E2 et E5. Voir D et `docs/PLAN-12-SEMAINES.md` §5.
 - 🆕 **C17 droits d'accès** (carte #26) : défendre le choix mono-utilisateur ou ajouter un second niveau.
   **Era tranche.**
 - 🆕 **Veille S37, S38, S39 manquantes** (carte #31, étiquette `decision-era`) : les rattraper avec leur
@@ -394,7 +398,7 @@ Dossier : `C:\Users\kanda\Desktop\Mardik_La nouvelle version\livrables\` (2 PDF,
 
 | Quoi | Où le retrouver | Pour RITA |
 |---|---|---|
-| **La chaîne avant la fusion** — branche courte, PR, job gratuit à chaque push, gate d'évaluation payant déclenché par **filtre de chemin** (prompt, config du modèle, code d'analyse, jeu de référence, seuils), les deux rejoués à la fusion | `Mardik-Conception-Chantier1.pdf` §3.0, schéma de la chaîne (région violette) | RITA n'a **aucun gate d'évaluation** : `test.yml` ne joue que des tests, et `fail_under` y est commenté. Un gate à seuil versionné sur PR, puis à la fusion, est la première chose à porter |
+| **La chaîne avant la fusion** — branche courte, PR, job gratuit à chaque push, gate d'évaluation payant déclenché par **filtre de chemin** (prompt, config du modèle, code d'analyse, jeu de référence, seuils), les deux rejoués à la fusion | `Mardik-Conception-Chantier1.pdf` §3.0, schéma de la chaîne (région violette) | **Corrigé le 02/10 : RITA a un gate d'évaluation depuis le 29/07** (`test.yml`, jobs de tests et d'évaluation : `python -m evals.mesurer_gardefou` et `tests/test_evals.py`, faux positifs sous 15 % et latence sous 250 ms ; le seuil de blocage de 85 % est déclaré non atteint par un `xfail` strict). Ce qui manque encore par rapport à Mardik : le **filtre de chemin** (n'exécuter le gate payant que si le prompt, la config du modèle ou le jeu de référence changent) et un seuil versionné dans un fichier unique |
 | **Prompts en fichiers versionnés** (`prompts/…`, `prompt_version` dans le manifeste) | Ch1 §4.1 (Bundle + manifeste) | les prompts RITA vivent dans `agents/analyst.py` : tant qu'ils y restent, un filtre de chemin n'a rien à surveiller et une version de prompt n'existe pas |
 | **« Quand un gate échoue, on rejoue le niveau qui a échoué »** — local → relancer ; PR → même branche ; fusion → nouvelle PR, rien en production, tag précédent servi | Ch1 §3.0 (tableau), sorties des boîtes rouges du schéma | réponse toute faite à la question du formateur (« refait-on tout ? ») pour E3/E5 ; à écrire dans le runbook RITA |
 | **Manifeste de version** (commit, `model_id` daté, `prompt_version`, `config_hash`, `calibration_version`, `eval_score`, `golden_dataset_version`) exposé par `GET /version` et un en-tête par réponse | Ch1 §4 | RITA n'a pas de `config.yaml` ni de manifeste : la « version qui a répondu » n'est pas prouvable requête par requête |
@@ -436,3 +440,81 @@ Sources : `Projets/Mardik/Fiche-1-API-modele-chaine-LLMOps.md` (partie D, **mesu
 | **Retry = appel LLM payant** → idempotence par identifiant de requête ; erreurs d'authentification cohérentes ; codes 401/403/422/429/502/504/503 | FINAL1-CORRIGE, contrat proposé `POST /v1/summarize` | le contrat RITA (`api/main.py`) n'a ni `request_id` ni idempotence : à ajouter avec la version dans l'URL |
 | **Approbation humaine avant prod compatible avec l'automatisation** ; shadow → canary → rollback ; manifeste signé (cosign) ; boucle incident → dataset | FINAL1-CORRIGE p. 6–7 ; `Schema-2…` (le cas Salesforce : « Salesforce gère les poids ; Mardik gère l'enveloppe ») | à l'échelle de RITA (un serveur) : le smoke test de `livraison.yml` tient lieu de canary — le dire, pas le maquiller ; cosign reste différé |
 | **Retour du formateur sur ma façon de présenter** (15/09) : partir du 🔴 avancé, ne redescendre qu'à la question ; puis (18/09) : la question et la réponse courte d'abord | `Mardik-STUDY-EN.md` (3 niveaux), oraux Mardik | consigne d'oral pour E1–E5 |
+
+
+---
+
+## 🔗 Passerelle depuis le brief Velmo 2.0 : mémoire, garde-fous, évaluation et MLOps (juillet 2026, relevée le 02/10/2026)
+
+Source : `Projets/Velmo/Velmo - Index.md` (Obsidian) et le dépôt `Ganda15/velmo-v2`, tag `rendu-brief-c1c2c3`. Rapprochements faits le 02/10 avec le dépôt RITA lu fichier par fichier.
+
+| Quoi | Où le retrouver | Pour RITA : ce qui s'applique, ce qui ne s'applique pas, pourquoi |
+|---|---|---|
+| **Faits durables isolés par `user_id`, extraction par regex, oubli en suppression douce avec trace d'audit, `inspect()`** | chantier 1, `Velmo - Index.md` §2 | **Ne s'applique pas en grande partie** : RITA est mono-utilisateur (D10), en lecture seule, et ne retient aucun fait appris sur l'utilisateur. **S'applique** : la trace d'audit à l'effacement, c'est l'écrivain manquant de `memory_audit`. Voir la décision du 02/10 en D |
+| **Deux portiques (entrée, sortie), 7 catégories, données bancaires par regex** ; 23 attaques sur 23 bloquées, 0 faux positif sur 12 | chantier 2 | **Appliqué** en trois emplacements : `guardrails/entree.py` (7 motifs, 100 % et 0 %), `guardrails/injection.py` (12 motifs, 70 % et 0 %), `guardrails/sortie.py` (9 motifs, 70 % et 0 %), mesurés le 02/10. **Absent et justifié** : le détecteur de données bancaires (aucune saisie libre ni donnée bancaire dans le flux) |
+| **Note globale versionnée par l'empreinte de la configuration, `--min-score` avec code de sortie, gate CI bloquant à 0,8** | chantier 3, `mlops-report.md` | **Appliqué en partie** : le gate est dans `test.yml` depuis le 29/07 (faux positifs et latence). **Manque** : les scripts `mesurer_*` sortent toujours en 0 et ne peuvent pas faire échouer une chaîne ; pas de note globale versionnée ; le seuil de blocage de 85 % est déclaré non atteint (`xfail` strict) |
+| **« Un test vert prouve seulement qu'on est protégé contre ce qu'on a pensé à tester »** | journaux des chantiers 2 et 3 | A justifié le scan Giskard du 20/09 (une faille de jeu de rôle trouvée et corrigée). **Reste ouvert** : les attaques importées ne sont rejouées par aucun test, deux textes sont copiés à la main dans `tests/test_injection.py` et `tests/test_entree.py` |
+| **Règle A : la mémoire est une donnée, jamais une instruction** (conception du 28/07, §5 bis) | `<donnees_externes>`, `guardrails/injection.py:40-43` | **Écrit et testé, jamais branché** : `neutraliser()` calcule l'enveloppe et `agents/analyst.py` insère le texte des passages sans elle (`git grep texte_sur` hors `guardrails/`, tests et évaluations : aucun résultat). À brancher avant le gel, 2 h environ |
+
+---
+
+## 🔗 Passerelle depuis le brief Kaldera : « L'équipe d'agents qui se marche dessus » (01/10/2026)
+
+Source : `Projets/Kaldera/Kaldera - Index.md` §4. Le graphe de RITA est un pipeline de trois nœuds à arêtes fixes (`graph/workflow.py:66-75` : `scout`, `rag`, `redacteur`). La plupart des défauts de Kaldera (ping-pong, boucle, double responsable) n'existent pas dans un graphe linéaire. À dire à l'oral tel quel, avec les trois manques réels.
+
+| Leçon Kaldera | État dans RITA (02/10) |
+|---|---|
+| Une étape, un responsable, un artefact | **Appliqué** : trois nœuds, chacun écrit ses propres champs |
+| Superviseur déterministe quand l'ordre est connu | **Appliqué** : arêtes fixes, aucun choix de suite par le modèle |
+| La frontière est dans le code, pas dans le prompt | **Manque** : n'importe quel nœud peut écrire n'importe quel champ de `RitaState` |
+| Arrêt contrôlé avec une raison nommée (`stop_reason`) | **Manque** : un texte dans `error` court-circuite le graphe, sans code d'arrêt |
+| **Tests de trace** : qui, dans quel ordre, combien de fois | **Manque** : cinq lignes de test suffiraient (`['scout', 'rag', 'redacteur']`, chacun une fois). L'ordre n'est garanti que par construction |
+| Invariant de progrès, budget d'étapes, page de vérification en direct, taxonomie MAST | **Sans objet** à trois nœuds sans boucle. Le dire, avec la raison |
+
+---
+
+## 🔗 Passerelle depuis le brief Kaldera-A2A : « Quand les agents se parlent » (02/10/2026)
+
+Source : `Projets/Kaldera-A2A/Kaldera-A2A - Index.md` §5 et le retour du formateur du 01/10 : le travail multi-agents de la veille **n'était pas de l'A2A**, c'était un pipeline interne.
+
+**Réponse en 30 secondes, pour un ingénieur en IA (consigne du formateur)** : A2A est un protocole à cinq objets (Agent Card, Task, Message, Part, Artifact) où le client ne connaît pas le serveur, qui reste opaque. Les tâches d'une même conversation sont reliées par un `contextId` généré par le serveur. L'authentification est vérifiée à chaque requête. Il sert à déléguer une compétence à un système externe qu'on ne veut ni construire ni maintenir. MCP, lui, expose des outils à un modèle.
+
+| Leçon | État dans RITA (02/10) |
+|---|---|
+| Un graphe interne n'est pas de l'A2A ; MCP pour les outils, A2A pour déléguer | RITA a une passerelle MCP (`passerelle_mcp/serveur.py`, trois outils en lecture) et **aucun point A2A**. Position écrite en D le 02/10 |
+| Toute réponse d'un autre système est non fiable et validée par schéma | **Partiel** : filtre par regex à l'entrée des sources ; aucun schéma déclaré sur les entrées RSS ni sur la sortie du modèle |
+| Une identité distincte par composant | **Limite** : une seule clé d'API pour tous les clients (`RITA_API_KEY`) ; à défendre ou à scinder (carte #26) |
+| Un identifiant de corrélation par échange | **Absent** : aucun `request_id` dans le code. Premier chantier de traçage avant le gel |
+| Validation humaine avant action | **Sans objet** : RITA ne passe aucun ordre, elle propose |
+| Un état de session est une surface d'attaque (Unit 42, 31/10/2025 ; A2ABreak, 09/09/2026, 11 failles de la spécification) | RITA est sans état : un briefing, une valeur, aucune session. C'est l'argument le plus fort de la décision en D |
+
+---
+
+## 🔗 Passerelle depuis le brief « Concevoir l'industrialisation de mon fil rouge » (25/09 au 01/10/2026)
+
+Source : `Projets/RITA-Industrialisation/RITA-Industrialisation - Index.md` ; chapitre de 19 pages (conception seule). **Aucune trace de ce chapitre n'existait dans ce dépôt avant le 02/10.** Le chapitre a été écrit avec Telegram et des lignes JSON ; le dépôt a choisi Langfuse le 28/09. Cette divergence est à réconcilier dans le rapport E3 par un tableau « retenu, remplacé, reporté ».
+
+| Élément du chapitre | État dans le dépôt (02/10) |
+|---|---|
+| Objectifs de service OS-1 à OS-4 (contenu exact, 7 briefings à 8 h 45 sur 95 % des jours, 99 % de disponibilité, p95 sous 10 s) | Valeurs marquées **[À MESURER]** dans le chapitre ; non mesurées. À faire sur 5 jours de Bourse |
+| Points de trace T0 à T9 | **Remplacé en partie** par les traces Langfuse, limitées à l'appel au modèle ; rien dans `graph/`, `rag/`, `guardrails/` n'ouvre de span |
+| Alertes A1 à A5 par Telegram | **Remplacé** : 2 alertes du palier gratuit Langfuse vers une issue GitHub (le palier ne propose ni courriel ni Telegram). Non configurées au 02/10 |
+| Contrat `/v1/briefing`, erreurs RFC 9457, ticker inconnu en 422 | **Pas fait** : la version est 1.1.0 dans les métadonnées seulement ; un ticker inconnu répond encore 502 (`api/main.py:124`) et un test fige ce comportement |
+| Plan de tests (U-1, I-1, I-2, S1, S2, cliquet de couverture) | Suite de 588 tests collectés ; scénarios S1 et S2 non écrits |
+| Chaîne en 8 étapes de la PR au retour arrière | `livraison.yml` : contrôle, construction, test de fumée, publication sur tag. **Manque** : retour arrière, manifeste de version, filtre de chemin. La publication sur tag n'a jamais été exécutée |
+| Cinq décisions gardées pour plus tard (outil de migration, budget de coût par briefing, quel bot Telegram, horaires Euronext, partage du serveur avec Sorabel) | Toujours ouvertes, sauf Telegram, sans objet depuis Langfuse |
+| Le dépôt est privé : le jury d'E3 doit y avoir accès | À régler avant l'envoi |
+
+---
+
+## 🔗 Passerelle depuis l'exercice Factum : « Pourquoi la CI était-elle verte ? » (02/10/2026)
+
+Source : `Projets/Factum-couverture/Factum-couverture - Index.md` §4. Cinq vérifications faites sur RITA le 02/10.
+
+| Leçon Factum | État dans RITA |
+|---|---|
+| Sans `--cov` dans la commande, `fail_under` n'est jamais appliqué | **Bon** : `test.yml:30` lance `pytest -v --cov --cov-report=term-missing` |
+| Une seule source pour le seuil | **Bon** : `.coveragerc:101`, `fail_under = 90`. **Défaut** : le commentaire de `test.yml:27` dit encore `fail_under = 80` (signalé le 15/09, jamais corrigé) |
+| Le périmètre mesuré doit contenir ce qu'on veut protéger | **Défaut** : `.coveragerc:14` ne liste ni `rag`, ni `monitorage`, ni `passerelle_mcp`, pourtant testés |
+| Un test sans `assert` ne prouve rien | Aucun test d'API ne fait passer une phrase interdite par `/briefing` pour vérifier le remplacement par le message de refus (`api/main.py:131`) : un retrait de cette ligne laisserait la suite verte |
+| Preuve par deux PR, une verte et une rouge fermée sans fusion | **Absent** : aucune PR rouge conservée. À refaire sur RITA avant le jury (1 h) |
