@@ -10,6 +10,7 @@ httpx
 pandas
 pyarrow
 langgraph
+langfuse==4.12.0  # tracage des appels au modele (C11, carte #39), ajoute le 02/10/2026
 feedparser==6.0.14
 
 # Passerelle MCP (C10) - expose l'API REST a un client LLM. SDK v2 : la classe
