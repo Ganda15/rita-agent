@@ -11,7 +11,7 @@
 **Base réglementaire** : RGPD (Règlement Général sur la Protection des Données,
 UE 2016/679), **article 30** — registre des activités de traitement.
 
-**Dernière mise à jour** : 2026-08-14 *(correction de T3 — voir §1)*
+**Dernière mise à jour** : 2026-10-02 *(T3 devient un traitement actif : Langfuse Cloud, région UE ; P1 et P2 corrigées ; état de `memory_audit` ajouté à T2)*
 
 ---
 
@@ -67,8 +67,18 @@ divulgation cause un préjudice réel, donc à protéger sérieusement.
 | **Support** | Table `memory_audit` |
 | **Durée de conservation** | **90 jours** — au-delà, un log de débogage n'a plus d'utilité |
 | **Sécurité** | Purge automatisée (voir §2) |
+| **État au 2026-10-02** | **Aucun code n'écrit dans cette table** (`grep -rn "INTO memory_audit"` : aucun résultat). Le risque ci-dessus est donc théorique aujourd'hui. Décision en attente : un écrivain qui ne stocke que des empreintes SHA-256, ou le retrait de la table avec T2, P1 et P5 (`CONTINUITE.md` D, 02/10) |
 
-### T3 — Traces d'exécution LangSmith — ⏸ **ENVISAGÉ, NON ACTIVÉ**
+### T3 : Traces d'exécution Langfuse Cloud, région UE : ✅ **ACTIF depuis le 2026-10-02**
+
+> ## ✅ Mise à jour du 2026-10-02 : ce traitement est maintenant réel
+>
+> Le traçage est activé depuis le 02/10 : `src/traces.py` envoie à **Langfuse Cloud, région UE (Irlande)** un trace par appel
+> au modèle, avec une génération par fournisseur essayé. L'outil retenu le 28/09 est Langfuse, **pas LangSmith** :
+> LangSmith n'a jamais été activé ici et reste dans ce registre seulement comme l'option comparée et écartée.
+> Sans clés Langfuse dans l'environnement, rien ne part (le module ne fait alors rien). La suite de tests coupe le traçage
+> pour tous les tests depuis le 02/10 (douze lignes de test avaient atteint la production, voir plus bas).
+
 
 > ## ⚠️ Correction du 2026-08-14 — ce traitement n'a **jamais eu lieu**
 >
@@ -90,22 +100,24 @@ divulgation cause un préjudice réel, donc à protéger sérieusement.
 > oublie. Déclarer un transfert hors UE qui n'existe pas, c'est se décrire moins protecteur
 > qu'on ne l'est — et rendre invérifiable tout le reste du document.
 
-**Le jour où le traçage sera activé**, ce traitement redeviendra réel et les rubriques
-ci-dessous s'appliqueront telles quelles. Elles sont conservées pour cette raison.
+Ce traitement est réel depuis le 02/10/2026 ; les rubriques ci-dessous décrivent **Langfuse** (elles décrivaient LangSmith
+avant le 28/09).
 
-| Rubrique | Contenu *(applicable seulement après activation)* |
+| Rubrique | Contenu (état au 2026-10-02) |
 |---|---|
-| **Finalité** | Monitorage des agents : latence, coût, qualité des réponses (C11/C20) |
+| **Finalité** | Monitorage du modèle : latence, coût, jetons, erreurs de repli entre fournisseurs (C11, C20) |
 | **Base légale** | Intérêt légitime |
-| **Catégories de données** | Prompts et réponses des agents — **donc potentiellement des tickers détenus et des montants** |
-| **⚠️ Destinataire** | **LangChain Inc. (États-Unis)** — sous-traitant |
-| **⚠️ Transfert hors UE** | **OUI** — encadré par les clauses contractuelles types (CCT) et le *Data Privacy Framework* UE–États-Unis |
-| **Durée de conservation** | Selon la politique LangSmith (non maîtrisée par nous) |
-| **Mesure de réduction** | ⬜ masquer les montants dans les prompts tracés, ou désactiver le traçage sur les nœuds manipulant le portefeuille |
+| **Catégories de données** | Le prompt envoyé au modèle et sa réponse : ticker, cours, variation, ADTV20, devise, fraîcheur, passages de presse. **Aucune position, aucun PRU, aucune quantité** (mesuré le 28/09 dans `agents/analyst.py`). Malgré cela, les tickers demandés révèlent les valeurs d'intérêt de l'utilisateur. S'y ajoutent le modèle, le fournisseur, l'usage en jetons et le message d'erreur (tronqué à 300 caractères) |
+| **Destinataire** | **Langfuse GmbH** (Allemagne), sous-traitant, au sein du groupe ClickHouse. L'addendum applicable est le « ClickHouse Customer Data Processing Addendum » (en vigueur le 10/04/2026) ; contact : privacy@clickhouse.com. Hébergement : AWS `eu-west-1` (Irlande) |
+| **Sous-traitants ultérieurs** | Selon la liste publiée par l'éditeur (en vigueur le 10/08/2026) : ClickHouse GmbH (Allemagne), ClickHouse BV (Pays-Bas) et **ClickHouse, Inc. (États-Unis)** |
+| **Transfert hors UE** | Les données sont hébergées dans l'UE. **Une entité américaine figure parmi les sous-traitants du groupe** : le transfert au titre de l'entité reste **à confirmer par la lecture du DPA**, pas encore faite par Era. Tant que ce n'est pas fait, ne pas écrire « aucun transfert » |
+| **Durée de conservation** | 30 jours (palier gratuit), moins que les 90 jours de T2. Suppression possible à la demande par l'interface ou par l'API (quelques minutes selon l'éditeur) |
+| **Mesure de réduction** | Rien à masquer aujourd'hui. **Condition écrite** : si une position, un PRU ou une quantité entre un jour dans le prompt, brancher la fonction de masquage du SDK Langfuse avant de tracer le nœud concerné |
+| **Incident du 2026-10-02** | Douze générations de test (texte « prompt test ») ont été écrites dans le projet de production par la suite de tests. Aucune donnée personnelle dedans. Cause corrigée le jour même ; suppression des douze lignes à faire par Era dans l'interface |
 
-#### Décision à prendre **avant** d'activer le traçage
+#### Décision prise avant l'activation (historique du 14/08 et du 28/09)
 
-L'outil de monitorage n'est pas encore arrêté, et le choix a une conséquence RGPD directe :
+Au 14/08, l'outil de monitorage n'était pas arrêté, et le choix avait une conséquence RGPD directe :
 
 | Option | Sous-traitant | Transfert hors UE | Conséquence pour ce registre |
 |---|---|---|---|
@@ -118,7 +130,7 @@ L'outil de monitorage n'est pas encore arrêté, et le choix a une conséquence 
 > ⚠️ Il exige Docker — **aujourd'hui le démon ne démarre pas sur la machine d'Era**, c'est
 > le vrai obstacle, et il vaut aussi pour C13 (empaquetage, livraison continue).
 
-#### Décision du 2026-09-28 : **Langfuse Cloud, région UE** (option 3), activation prévue en S43 (carte #39)
+#### Décision du 2026-09-28 : **Langfuse Cloud, région UE** (option 3), activée le 2026-10-02 (carte #39)
 
 Décision d'Era, après la règle donnée par le formateur le 28/09 (« la condition, c'est la sensibilité
 des données ») et une mesure dans le code plutôt qu'une supposition :
@@ -131,12 +143,14 @@ des données ») et une mesure dans le code plutôt qu'une supposition :
 | Région UE de Langfuse Cloud | Irlande, AWS `eu-west-1`, `cloud.langfuse.com` ; palier gratuit : 50 000 unités/mois, 30 jours de rétention, 2 alertes | doc Langfuse « cloud data regions », « pricing » |
 | LangSmith aurait-il convenu ? | région UE disponible (GCP), mais l'éditeur déclare **aucune entité juridique en UE** pour contracter, et l'auto-hébergement est réservé au plan Enterprise : pas de porte de sortie | doc LangSmith « regions FAQ », page des tarifs |
 
-**Conséquences pour ce registre, à appliquer le jour de l'activation (S43)** :
+**Conséquences pour ce registre, appliquées le 2026-10-02 (voir le tableau de T3 plus haut)** :
 
 - Destinataire : **Langfuse**, région UE. ⚠️ La page RGPD de Langfuse renvoie à `privacy@clickhouse.com` :
   **l'entité qui traite peut être ClickHouse Inc. (États-Unis)** même pour la région UE. Une région n'est
-  pas une personne morale. **Lire le DPA à la création du compte** et inscrire ici le nom exact du
-  sous-traitant et sa juridiction. Tant que ce n'est pas fait, T3 reste « envisagé ».
+  pas une personne morale. Relevé le 02/10 par recherche : le contrat est le « ClickHouse Customer Data Processing
+  Addendum », avec Langfuse GmbH (Allemagne) comme sous-traitant et ClickHouse, Inc. (États-Unis) parmi les entités
+  du groupe. **Reste à faire par Era : lire ce DPA** et confirmer si un transfert vers les États-Unis est encadré
+  (clauses contractuelles types ou Data Privacy Framework). Le registre ne dit pas « aucun transfert » avant cela.
 - Transfert hors UE : **non** au titre de la localisation des données ; à confirmer au titre de l'entité
   (point ci-dessus).
 - Durée de conservation : 30 jours (palier gratuit), inférieure aux 90 jours de T2.
@@ -171,8 +185,8 @@ des données ») et une mesure dans le code plutôt qu'une supposition :
 
 | # | Procédure | Fréquence | Automatisé |
 |---|---|---|---|
-| **P1** | Purger `memory_audit` au-delà de **90 jours** | **Hebdomadaire** (lundi 03 h 00, APScheduler) | ✅ oui |
-| **P2** | Supprimer les positions **soldées depuis plus de 3 ans** | **Mensuelle** (1er du mois) | ✅ oui |
+| **P1** | Purger `memory_audit` au-delà de **90 jours** | Prévue hebdomadaire ; **lancement manuel aujourd'hui** (aucun planificateur : APScheduler n'est dans aucun fichier de dépendances). La table étant vide, la purge ne supprime rien | ⚠️ script prêt et testé, planification absente |
+| **P2** | Supprimer les positions **soldées depuis plus de 3 ans** | Prévue mensuelle ; **lancement manuel aujourd'hui** | ⚠️ script prêt et testé, planification absente |
 | **P3** | Détecter les **doublons de positions** (même ticker, même date d'achat, même PRU) | Mensuelle | ✅ détection ; ⚠️ suppression **manuelle** — un doublon peut être un vrai second achat |
 | **P4** | Vérifier qu'**aucun fichier personnel n'est suivi par Git** | **À chaque commit** (hook pre-commit) | ⬜ **à mettre en place** |
 | **P5** | Revoir le champ `resume` de `memory_audit` : contient-il des montants ? | Trimestrielle | ❌ **manuelle** — jugement humain requis |
@@ -188,7 +202,7 @@ accident est une perte de données irréversible.*
 | **M1** | Relire le registre ci-dessus | À chaque nouvelle source de données | Un nouveau traitement doit être inscrit **avant** d'être codé |
 | **M2** | Vérifier que le dépôt public ne contient aucune donnée personnelle | **Avant chaque passage en public** | ⚠️ Le dépôt doit s'ouvrir avant le 05/11 |
 | **M3** | Décider du sort des doublons détectés par P3 | Mensuelle | Deux achats identiques le même jour sont possibles |
-| **M4** | Réévaluer le traçage LangSmith (T3) | Trimestrielle | Arbitrage entre valeur du monitorage et exposition des données |
+| **M4** | Réévaluer le traçage Langfuse (T3) | Trimestrielle | Arbitrage entre valeur du monitorage et exposition des données |
 
 ---
 
@@ -213,7 +227,7 @@ utilisateur.
 
 | # | Action | Criticité |
 |---|---|---|
-| 1 | **Choisir l'outil de monitorage AVANT d'activer le traçage** (T3) — l'auto-hébergement supprime le transfert hors UE ; LangSmith le crée | 🟠 moyenne *(abaissée le 14/08 : le traçage n'est pas activé, donc aucune donnée ne sort aujourd'hui)* |
+| 1 | ~~Choisir l'outil de monitorage avant d'activer le traçage (T3)~~ **Fait : Langfuse Cloud UE choisi le 28/09, activé le 02/10.** Reste : lire le DPA et confirmer l'encadrement du transfert, puis supprimer les douze lignes de test | 🟠 moyenne |
 | 2 | **Hook Git `pre-commit`** interdisant l'ajout d'un fichier personnel (P4) | 🟠 moyenne |
 | 3 | Brancher P1 et P2 sur APScheduler (aujourd'hui : lancement manuel) | 🟠 moyenne |
 | 4 | Chiffrer la sauvegarde de la base si elle sort de la machine | 🟡 basse tant que tout est local |
@@ -233,7 +247,7 @@ utilisateur.
 | **Traitement** | Toute opération sur une donnée : collecte, stockage, consultation, suppression | Même *lire* est un traitement |
 | **Responsable de traitement** | Celui qui décide **pourquoi** et **comment** on traite | Era |
 | **Personne concernée** | Celui **dont** on traite les données | Era aussi, ici |
-| **Sous-traitant** | Un tiers qui traite pour le compte du responsable | LangSmith / LangChain Inc. |
+| **Sous-traitant** | Un tiers qui traite pour le compte du responsable | Langfuse GmbH et le groupe ClickHouse (T3) |
 | **Base légale** (art. 6) | La justification juridique du traitement — il en faut **une** parmi six | Ici : intérêt légitime |
 | **Intérêt légitime** | Base légale : le traitement sert un intérêt réel sans léser la personne | Celle retenue pour RITA |
 | **Registre des traitements** (art. 30) | La liste écrite de tous les traitements | Ce document |
@@ -241,8 +255,8 @@ utilisateur.
 | **Limitation de conservation** (art. 5) | Ne pas garder indéfiniment | D'où les durées du §1 |
 | **Données sensibles** (art. 9) | Catégories particulières : santé, opinions, origine… | Les données financières **n'en font pas partie** |
 | **AIPD / DPIA** | *Analyse d'Impact relative à la Protection des Données* — étude obligatoire si risque élevé | Non requise en mono-utilisateur |
-| **CCT / SCC** | *Clauses Contractuelles Types* — contrat encadrant un transfert hors UE | Couvre le transfert vers LangSmith |
-| **Data Privacy Framework** | Accord UE–États-Unis autorisant certains transferts (2023) | Base du transfert T3 |
+| **CCT / SCC** | *Clauses Contractuelles Types* — contrat encadrant un transfert hors UE | Encadrerait un transfert vers l'entité américaine du groupe ClickHouse, si le DPA le prévoit (à confirmer) |
+| **Data Privacy Framework** | Accord UE–États-Unis autorisant certains transferts (2023) | Base possible du transfert T3 vers une entité américaine, à confirmer par le DPA |
 | **Purge** | Suppression programmée des données trop anciennes | P1 et P2 |
 | **Mode simulation** (*dry-run*) | Le script montre ce qu'il ferait, sans le faire | Comportement par défaut de `rgpd_purge.py` |
 | **Hook pre-commit** | Script Git qui s'exécute **avant** d'enregistrer un commit | Empêcherait d'ajouter un fichier personnel |
