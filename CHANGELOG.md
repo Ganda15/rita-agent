@@ -9,6 +9,25 @@
 
 ---
 
+## 2026-10-03 (suite) : chapitre « Données » validé par le formateur et intégré, PR 58 relue par Codex
+
+**Décision structurante** : le chapitre « Données » (brief du 01/09, rendu le 07/09, écrit hors dépôt au commit `23318a6`) reçoit
+le retour du formateur « Très bon travail. Se montrera utile à l'exécution. Rien à redire. » Il entre dans le dépôt
+(`docs/conception/donnees/`) et ses propositions deviennent du travail planifié : trois décisions inscrites dans `CONTINUITE.md`
+(text-to-SQL écarté ; trois outils MCP via l'API, `search_articles` reste une proposition ; règle de fermeture de la matrice
+d'accès), dix issues ouvertes (label `conception-donnees`), dont trois en zone sous garde (`db/schema.sql`) et deux décisions d'Era
+(quasi-doublons, `search_articles`). Lecture honnête : cinq lignes du chapitre sont déjà tenues par le code (orphelins, filtre
+dense, rôle lecture seule, `request_id`), neuf restent proposées.
+
+**Fait aussi** : PR #58 `develop → main` ouverte (31 commits) ; les deux remarques de la revue Codex corrigées, test d'abord
+(une panne de Langfuse ne fait plus tomber un briefing ; un 500 inattendu porte `X-Request-ID`) : 635 passed, 93,41 %.
+Classeur des 135 critères rempli (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER). Tableau de bord Langfuse « RITA C11 » créé par l'API.
+
+**Manque découvert** : INC-006 comptait douze traces factices, il y en a quinze ; le bouton *Run workflow* n'existe qu'une fois
+`alerte-incident.yml` sur `main`.
+
+---
+
 ## 2026-10-03 : reconnaissance complète, plan initial contre réalisé, pointeurs périmés
 
 **Manques découverts** par une lecture de toutes les sources (dépôt, GitHub, coffre Obsidian, classeurs Excel,

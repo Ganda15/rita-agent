@@ -20,7 +20,16 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 
 ---
 
-▶️ **PR #58 `develop → main` ouverte le 03/10 au soir** (31 commits : C11 de bout en bout, INC-006, rapport E3 v0.1, états).
+🧭 **Tâche principale depuis le 03/10 : intégrer le chapitre « Données » validé par le formateur** (« Très bon travail. Se montrera
+utile à l'exécution. Rien à redire. »). Le chapitre est dans `docs/conception/donnees/` (README = tableau chapitre contre code au
+03/10) ; dix issues `conception-donnees` portent les écarts ouverts. **Ordre** : 1) sans zone sous garde, test d'abord : `titre`
+dans l'index, vérification de la démonstration dans la passerelle, cartographie des 32 cas, manifeste de collecte ; 2) avec plan
+validé par Era : `COALESCE` de la vue, `mcp_calls`, clôture des positions ; 3) décisions d'Era : quasi-doublons, `search_articles`.
+Rien de ce qui touche `db/schema.sql` ne se code sans ce plan.
+
+▶️ **PR #58 `develop → main`** : ouverte le 03/10 au soir (31 commits), relue par Codex (2 remarques, **corrigées le 03/10** :
+`c4b1517`, `1ee721c`, 635 passed, 93,41 %), la revue Claude n'a rien publié. Checks verts : **à fusionner** par Era
+(`gh pr merge 58 --merge`) ; aucun tag, ce n'est pas un livrable.
 Prochaine action, à la reprise : lire les commentaires de la revue automatisée sur
 https://github.com/Ganda15/rita-agent/pull/58 ; chaque remarque vraie = un correctif et un test poussés sur `develop` ;
 puis `gh pr merge 58 --merge` quand les checks sont verts. Aucun tag : ce n'est pas un livrable. Une fois sur `main`,
