@@ -538,8 +538,21 @@ def executer(dsn: str | None = None, etapes: list[str] | None = None,
             "etapes_ok": sum(1 for b in bilans if b.ok)}
 
 
-if __name__ == "__main__":                                # [1] point de lancement
+def configurer_journal() -> None:
+    """Le journal du pipeline : INFO pour nous, WARNING pour `httpx`.
+
+    Mesuré le 02/10/2026 : 6 des 40 journaux nocturnes contenaient la clé FRED en clair.
+    Ce n'est pas notre code qui l'écrivait, c'est `httpx`, qui journalise chaque requête avec
+    son URL complète au niveau INFO, et FRED impose la clé dans l'URL. On garde ses erreurs
+    (WARNING), on coupe ses succès (INFO). Un journal qu'on ne lit pas est quand même un
+    fichier que quelqu'un peut lire.
+    """
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+
+
+if __name__ == "__main__":                                # [1] point de lancement
+    configurer_journal()
 
     # Le fichier .env n'est lu QU'ICI, au lancement en ligne de commande — jamais à
     # l'import. Un module qui lit des fichiers quand on l'importe est imprévisible en
