@@ -35,10 +35,10 @@ reste avant est de ta main. Règle : **c'est Era qui envoie tout message** au fo
    5 cartes proposées à Fait, ajouter au tableau les 7 issues ouvertes absentes, dire si la revue du 28/09 a eu lieu, garder
    2 cartes « En cours », remplir le §6, coller la ligne du §7 ici, commiter. Seul moyen de fermer C16.1. Vérifier au passage
    que le formateur a bien accès au tableau (C16.4, je ne peux pas le lire).
-2. **Relire** `docs/rapports/E1/rapport-E1.pdf` et `docs/rapports/E3/rapport-E3.pdf` ; corrections dans le chat. **Question à
-   trancher en relisant E3** : y ajouter une ligne sur INC-007 (dix exécutions rouges de la chaîne le 03/10, C12 et C13) et
-   sur les constats OWASP qui touchent l'API (C9) ? E3 n'en parle pas aujourd'hui. Recommandation : oui, une ligne dans
-   les limites, pour qu'un jury qui lit `evidence/C21/` ne trouve pas l'incident absent du rapport.
+2. **Relire** `docs/rapports/E1/rapport-E1.pdf` et `docs/rapports/E3/rapport-E3.pdf` ; corrections dans le chat. **Fait le 03/10
+   à ta demande** : E3 mentionne INC-007 (§7.4, page 15) ; la revue OWASP 2025 y est citée (§3.3), API8 passe à « partiel »
+   (aucun en-tête de sécurité en production), et le risque de démonstration dit vrai (panne des fournisseurs = « Erreur 500 »,
+   pas le message « aucun fournisseur »). PDF régénéré, 19 pages, décompte E3 inchangé (33, 6, 0).
 3. **Noter les 60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1 ou 2), **sans ouvrir** le fichier `-cle.csv`.
    C'est ce qui fait passer la recommandation C7 de « provisoire » à « argumentée ».
 4. **Envoyer au formateur** le message rédigé (journal 019, §32), adapté : le périmètre C7 est maintenant à deux éditeurs,

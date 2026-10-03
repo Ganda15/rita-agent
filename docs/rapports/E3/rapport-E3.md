@@ -97,11 +97,11 @@ Le top 10 OWASP des API (2023) a servi de grille. Ce qui est appliqué, et ce qu
 |---|---|---|
 | API2, authentification défaillante | clé obligatoire, longueur minimale, temps constant, aucune valeur par défaut | appliqué (INC-001) |
 | API4, consommation de ressources non limitée | aucune limite de débit : celui qui tient la clé peut déclencher des appels payants au modèle sans borne | **non appliqué**, déclaré |
-| API8, mauvaise configuration | conteneur non-root (UID 10001), système de fichiers en lecture seule, `no-new-privileges`, aucun port de base publié | appliqué |
-| A03 (OWASP web), injection | l'interface n'utilise jamais `innerHTML` ; tout texte passe par `textContent` | appliqué |
+| API8, mauvaise configuration | conteneur non-root (UID 10001), système de fichiers en lecture seule, `no-new-privileges`, aucun port de base publié ; **mais en production, aucun en-tête de sécurité** (mesuré le 3 octobre au soir) | **partiel** |
+| A05:2025 (OWASP web ; A03 dans l'édition 2021), injection | l'interface n'utilise jamais `innerHTML` ; tout texte passe par `textContent` | appliqué |
 | LLM01 (OWASP LLM), injection de prompt | trois garde-fous mesurés, scan Giskard du 20 septembre | appliqué, limite mesurée (section 6) |
 
-La revue ligne par ligne des dix risques, demandée par la carte #29 du Kanban, n'est pas faite : ce tableau en est l'état au 3 octobre.
+La revue entrée par entrée, sur l'édition **OWASP Top 10:2025**, est faite le 3 octobre au soir : `evidence/C17/revue-owasp-top10-2025-2026-10-03.md` (dix constats, dont l'absence d'en-têtes de sécurité et de limite de débit ; corrections après le gel, carte #75). Ce tableau en garde les lignes qui touchent l'API.
 
 ### 3.4 Versionnage et tests
 
@@ -455,6 +455,7 @@ Le 2 octobre, le garde-fou de sortie était testé seul ; aucun test ne prouvait
 - **Aucun manifeste de version** : pas de `GET /version`, pas de version de prompt, modèle non daté ; les prompts vivent dans `agents/analyst.py`.
 - `requirements.txt` n'est épinglé que pour quatre dépendances (`feedparser`, `chromadb`, `rank-bm25`, `langfuse`), une dizaine restent sans version ; `requirements-api.txt`, celui de l'image, est épinglé entièrement (13 lignes). Une exécution de la CI est tombée le 28 septembre parce que `pip` a dû construire pandas depuis les sources.
 - Pas de filtre de chemin : la porte d'évaluation tourne à chaque poussée, qu'un prompt ait changé ou non. Pas d'analyse de vulnérabilités des dépendances.
+- **Incident du 3 octobre au soir (INC-007)** : dix exécutions rouges consécutives de Tests et de Livraison sur `develop` pendant 1 h 26, alors que la suite passait sur le poste. Quatre tests du scout lisaient la vraie base locale par le calcul du RSI, base absente en CI. La chaîne a fait son travail (la porte de tests a sauté la construction et la publication à chaque fois, `main` n'a jamais été touchée), mais personne ne l'a vu : **aucune alerte ne signale une exécution rouge**, et la vérification s'arrêtait au poste. Corrigé le jour même par une fixture (`0e53ede`), vérifié en CI ; fiche `evidence/C21/INC-007-ci-rouge-scout-base-reelle.md`.
 - La copie du serveur Hetzner est figée au commit du 20 août 2026 : les migrations de base du 27 septembre et du 3 octobre y sont jouées, le code non ; déploiement manuel après le gel du 15 octobre.
 
 ---
@@ -500,7 +501,7 @@ Les trois mesures de garde-fous ne dépendent que du code. La suite complète et
 |---|---|---|
 | L'API restreint l'accès au modèle par une authentification | ✅ | `X-API-Key`, 403, aucune clé par défaut ; `tests/test_health.py` |
 | L'API donne accès aux fonctions du modèle selon les spécifications | ✅ | `POST /briefing` ; un ticker inconnu répond 502 au lieu de 422 (défaut connu) |
-| Recommandations OWASP intégrées quand nécessaire | 🟠 | section 3.3 : API2, API8, A03 appliqués ; API4 non ; revue ligne à ligne à faire |
+| Recommandations OWASP intégrées quand nécessaire | 🟠 | section 3.3 : API2 et injection appliqués ; API8 partiel ; API4 non ; revue entrée par entrée faite le 3 octobre au soir, corrections après le gel (#75) |
 | Sources versionnées sur un dépôt distant | ✅ | `Ganda15/rita-agent` |
 | Les tests couvrent tous les points de terminaison | ✅ | `test_health.py` (10), `test_api_donnees.py` (31) |
 | Les tests s'exécutent sans bug, résultats interprétés | ✅ | 740 passed, 2 xfailed volontaires et expliqués (3 octobre) |
@@ -564,9 +565,9 @@ Les trois mesures de garde-fous ne dépendent que du code. La suite complète et
 
 ## 11. Ce qui n'est pas fait, et les risques
 
-**Pas fait au 3 octobre 2026 au soir** : les deux alertes dans l'interface Langfuse et la suppression des quinze traces factices (clics du propriétaire du compte) ; les captures d'écran de C11 ; le contrat `/v1` et le 422 pour un ticker inconnu ; la limite de débit ; le manifeste de version et les prompts en fichiers ; le retour arrière ; l'épinglage des dépendances ; le jeu de référence de briefings ; la validation de format des sorties ; la revue OWASP ligne par ligne. Le troisième écran (briefing), lui, est construit le 3 octobre au soir, test d'abord. La documentation de la chaîne en un seul endroit, elle, est faite (`docs/CI-CD.md`).
+**Pas fait au 3 octobre 2026 au soir** : les deux alertes dans l'interface Langfuse et la suppression des quinze traces factices (clics du propriétaire du compte) ; les captures d'écran de C11 ; le contrat `/v1` et le 422 pour un ticker inconnu ; la limite de débit ; le manifeste de version et les prompts en fichiers ; le retour arrière ; l'épinglage des dépendances ; le jeu de référence de briefings ; la validation de format des sorties ; les corrections demandées par la revue OWASP (faite le 3 octobre au soir, #75) ; une alerte quand la chaîne est rouge (INC-007). Le troisième écran (briefing), lui, est construit le 3 octobre au soir, test d'abord. La documentation de la chaîne en un seul endroit, elle, est faite (`docs/CI-CD.md`).
 
-**Risques pour la démonstration** : deux fournisseurs répondent sur le poste depuis le 3 octobre au soir (Azure AI Foundry en premier, OpenRouter en secours) ; Anthropic en direct n'a pas de clé. Une panne des deux, et aucun briefing ne sort, l'écran 3 le dit alors en clair (« aucun fournisseur ne répond »). La copie du serveur est figée au code du 20 août. Le dépôt est privé. Les métriques agrégées de Langfuse sont polluées par quinze traces factices tant qu'elles ne sont pas supprimées.
+**Risques pour la démonstration** : deux fournisseurs répondent sur le poste depuis le 3 octobre au soir (Azure AI Foundry en premier, OpenRouter en secours) ; Anthropic en direct n'a pas de clé. Une panne des deux, et aucun briefing ne sort : l'API répond alors une erreur 500 générique, sans fuite d'information, et l'écran 3 affiche « Erreur 500 » au lieu du message « aucun fournisseur » prévu (mesuré le 3 octobre au soir ; correction après le gel, #75). La copie du serveur est figée au code du 20 août. Le dépôt est privé. Les métriques agrégées de Langfuse sont polluées par quinze traces factices tant qu'elles ne sont pas supprimées.
 
 **Ce que ce rapport ne prétend pas** : qu'un garde-fou à motifs lexicaux arrête une intention habilement formulée (70 %) ; qu'une mesure de recherche sur un jeu annoté par un modèle vaut une mesure humaine ; qu'une chaîne d'alerte exécutée une fois à la main a déjà attrapé une vraie panne.
 
