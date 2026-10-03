@@ -9,6 +9,14 @@
 
 ---
 
+## 2026-10-03 (soir, suite) : seize indicateurs spécifiés, treize reçus, neuf cités ; plan E4 écrit
+
+**Manque découvert** : la spécification des indicateurs en compte seize, le briefing en reçoit treize (les trois absents : le volume relatif, requête R3 non appelée par le scout, et les deux indicateurs de portefeuille), et les textes générés en citent neuf en moyenne ; **le drawdown n'est cité par aucun des 60 textes du banc**. Mesure : `evidence/C7/indicateurs-cites-dans-les-textes-2026-10-03.md`. Aucune décision de changer le prompt avant le gel du 15/10 : l'écart sera dit dans le rapport E3.
+
+**Décision structurante** : plan du livrable E4 écrit (`docs/PLAN-E4-rapport.md`), avec cinq décisions attendues d'Era. Il ajoute trois écarts que la vérification du 26/09 ne pouvait pas voir : l'écran 3 sans user story, l'absence de compte rendu daté des revues du lundi, et la première publication sur tag qui sera celle du 15/10.
+
+---
+
 ## 2026-10-03 (soir) : C7, prix publics relevés, et un manque qui ne se comble pas
 
 **Manque découvert** : pour le critère C7.5 (approche environnementale), **aucun des deux éditeurs mesurés ne publie de chiffre par
