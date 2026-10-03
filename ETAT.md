@@ -41,7 +41,7 @@ reste avant est de ta main. Règle : **c'est Era qui envoie tout message** au fo
    pas le message « aucun fournisseur »). PDF régénéré, 19 pages, décompte E3 inchangé (33, 6, 0).
 3. **Noter les 60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1 ou 2), **sans ouvrir** le fichier `-cle.csv`.
    C'est ce qui fait passer la recommandation C7 de « provisoire » à « argumentée ».
-4. **Envoyer au formateur** le message rédigé (journal 019, §32), adapté : le périmètre C7 est maintenant à deux éditeurs,
+4. **Envoyer au formateur** le message (brouillon réécrit le 03/10 au soir dans le chat ; `docs/EXPLOITATION.pdf` régénéré le même soir, deux phrases périmées corrigées), adapté : le périmètre C7 est maintenant à deux éditeurs,
    c'est une confirmation, plus une question ; joindre `docs/EXPLOITATION.pdf`. Garder l'envoi et la réponse dans
    `evidence/C8/` (#43, le seul 🔴 de E2).
 5. **Décisions** (une ligne chacune suffit, dans le chat ou à la revue) : **D7** documentation `/docs` publique en production
