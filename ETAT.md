@@ -20,6 +20,8 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 
 ---
 
+🔀 **03/10, nuit : PR #72 `develop → main` ouverte** (2 commits : clôture des positions, plan 66, et l'état après la fusion de la PR 58). Ferme #66 et #69 à la fusion. `evals` vert, `pytest` et `Livraison` en cours au moment de l'ouverture. **À fusionner par Era** quand les trois checks sont verts : `gh pr merge 72 --merge` depuis `D:\KandaWork\RITA_PROJECTita-agent`.
+
 ✅ **03/10, après-midi : la liste « reste à Era » traitée.** PR #58 **fusionnée** (`d1cec3b` sur `main`, six issues fermées) ;
 bouton *Run workflow* testé pour de vrai juste après (issue #71 créée puis fermée comme démonstration) ; les trois migrations
 rejouables + `roles.sql` jouées sur la base Compose (conteneur démarré pour ça) et sur la base Hetzner (`/root/rita-agent`,
