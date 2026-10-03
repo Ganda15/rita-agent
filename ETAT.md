@@ -55,7 +55,7 @@ cochée** : c'est ce que le formateur regarde la semaine du 05/10.
 restent à Era les clics de suppression (refusée à l'agent), les 2 alertes (pas d'API) et les captures ; le bouton
 *Run workflow* attend la PR `develop → main` (`evidence/C11/preuve-langfuse-2026-10-03.md`) ; 4) **fait le 03/10** : le classeur Excel rempli critère par critère depuis la note (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER, preuve en commentaire de chaque cellule, sauvegarde SAUVEGARDE3 à côté) ; puis E1 v2 (tag `livrable-E1-v2` le 15/10) et
 le rapport E3. Pointeurs des skills et table de `CLAUDE.md` global : **corrigés le 03/10**. **`main` protégée côté serveur depuis le 03/10**
-(GitHub Pro activé par Era, ruleset : PR obligatoire, `pytest` et `evals` verts ; `evidence/C19/`) : capture d'écran de
+(GitHub Pro activé par Era, ruleset : PR obligatoire, `pytest` et `evals` verts ; **tags `livrable-*` figés** par un second ruleset le soir ; `evidence/C19/`) : capture d'écran de
 *Settings → Rules* à ranger par Era.
 
 ---

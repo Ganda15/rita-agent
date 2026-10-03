@@ -30,6 +30,19 @@ Commande de vérification, rejouable :
 gh api repos/Ganda15/rita-agent/rules/branches/main
 ```
 
+## Les tags de livrable sont figés aussi (ruleset `24415612`, 03/10/2026, soir)
+
+Un livrable est un tag `livrable-E<n>-v<k>` ; c'est le lien que le formateur ouvre. Un tag qu'on peut déplacer ou
+supprimer n'est pas une preuve. Second ruleset, cible `refs/tags/livrable-*` : `deletion`, `non_fast_forward`,
+`update` ; aucun contournement. Relu par l'API :
+
+```
+24415612 | tag | tags livrable-* figes : ni suppression ni deplacement
+regles = deletion, non_fast_forward, update | motif = refs/tags/livrable-* | bypass = 0
+```
+
+Un tag `livrable-E1-v2` se **pose** librement (nouveau nom) ; `livrable-E1-v1` ne bougera plus.
+
 ## Ce que ça change pour les critères
 
 - **C19, critère 4** (« l'étape de livraison est intégrée et exécutée une fois les étapes de packaging validées ») :
