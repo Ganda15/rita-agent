@@ -78,7 +78,8 @@ def test_appel_foundry_poste_sur_le_point_compatible_openai_avec_la_cle_et_le_de
     r = llm._appel_foundry("Capitale de la France ?", 50)
     assert appels["url"] == "https://ressource.services.ai.azure.com/openai/v1/chat/completions"
     assert appels["headers"]["Authorization"] == "Bearer cle-de-test"
-    assert appels["json"]["model"] == "gpt-5.4" and appels["json"]["max_tokens"] == 50
+    assert appels["json"]["model"] == "gpt-5.4" and appels["json"]["max_completion_tokens"] == 50
+    assert "max_tokens" not in appels["json"], "refusé par les modèles GPT-5 (400 unsupported parameter)"
     assert appels["json"]["messages"] == [{"role": "user", "content": "Capitale de la France ?"}]
     assert r.texte == "Paris." and r.modele == "gpt-5.4-2026-01" and r.usage == {"input": 12, "output": 3}
 

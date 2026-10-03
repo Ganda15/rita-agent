@@ -61,7 +61,9 @@ def _appel_foundry(prompt: str, max_tokens: int) -> Reponse:
         headers={"Authorization": f"Bearer {os.environ['AZURE_FOUNDRY_API_KEY']}"},
         json={
             "model": _modele_prevu("foundry"),
-            "max_tokens": max_tokens,
+            # Les modèles GPT-5 refusent `max_tokens` (400 « unsupported parameter », mesuré le 03/10) :
+            # le nom est `max_completion_tokens` sur ce point de terminaison.
+            "max_completion_tokens": max_tokens,
             "messages": [{"role": "user", "content": prompt}],
         },
         timeout=60.0,

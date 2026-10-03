@@ -1,10 +1,11 @@
 # Preuve C7 : première mesure du banc des fournisseurs (03/10/2026)
 
 > Plan : `../../docs/PLAN-C7-benchmark.md`, options D1 à D3 = A retenues par Era le 03/10 (« ok do it »).
-> **Trois passages le 03/10** : le premier sur le prompt d'avant la carte #57 (`*-avant-57.*`), le deuxième sur le
+> **Quatre passages le 03/10** : le premier sur le prompt d'avant la carte #57 (`*-avant-57.*`), le deuxième sur le
 > prompt corrigé (`*-v2-prompt-57.*`), le troisième, **qui fait foi**, sur le prompt qui porte les 13 indicateurs
-> (§8 ; jeu figé `jeu-d-essai-2026-10-03.json`, l'ancien jeu sans indicateurs est `-v1-sans-indicateurs`). Les chiffres
-> du §3 sont ceux du deuxième passage ; le §8 donne ceux du troisième et ce qui a changé.
+> (§8, fichiers `*-v3-13-indicateurs.*`), le quatrième, **qui fait foi**, avec Azure AI Foundry enfin disponible : la
+> **première comparaison** (§9, fichiers sans suffixe). Jeu figé `jeu-d-essai-2026-10-03.json` (l'ancien jeu sans
+> indicateurs est `-v1-sans-indicateurs`). Le §3 donne le deuxième passage, le §8 le troisième, le §9 la comparaison.
 > Script : `evals/benchmark_fournisseurs.py`, écrit test d'abord (`tests/test_benchmark_fournisseurs.py`,
 > `tests/test_benchmark_outillage.py`). Brut : `resultats-2026-10-03.jsonl` (30 lignes), `resume-2026-10-03.json`,
 > jeu figé `jeu-d-essai-2026-10-03.json`. Notation du français à faire par Era : `notes-francais-2026-10-03.csv`
@@ -109,6 +110,43 @@ recommandation ; le garde-fou de sortie l'accepte, et c'est le genre de formulat
 garde-fou devra contenir pour que la limite reste mesurée. Le coût monte d'un tiers (300 jetons d'entrée de plus),
 la latence d'une demi-seconde en médiane. Le drawdown n'est jamais repris : le mot ne parle pas à un particulier,
 le libellé du prompt pourra le dire autrement.
+
+## 9. Quatrième passage : la première comparaison, GPT par Foundry contre Claude par OpenRouter
+
+Era a posé la clé de sa ressource Azure AI Foundry le 03/10 au soir (point compatible OpenAI, déploiement `gpt-5.4`,
+gratuit pour le projet ; `src/llm.py` adapté test d'abord, un premier 400 « `max_tokens` unsupported » corrigé en
+`max_completion_tokens`). Même jeu figé, mêmes 13 indicateurs dans le prompt, trois répétitions ; Anthropic en direct
+reste indisponible (pas de clé). Coût du passage : 0,18 USD côté OpenRouter, 0 pour Foundry.
+
+| Mesure | Azure AI Foundry, `gpt-5.4-2026-03-05` | OpenRouter, `anthropic/claude-sonnet-4.5` |
+|---|---|---|
+| Disponibilité | 30 / 30, Wilson [0,89 ; 1,00] | 30 / 30, [0,89 ; 1,00] |
+| Conformité AMF (garde-fou de sortie) | 30 / 30, [0,89 ; 1,00] | 30 / 30, [0,89 ; 1,00] |
+| Fidélité aux faits fournis | 30 / 30, [0,89 ; 1,00] | 30 / 30, [0,89 ; 1,00] |
+| Latence, médiane et p95 | **3,21 s** et **10,69 s** (maximum 11,9 s) | 6,33 s et 7,20 s (maximum 7,3 s) |
+| Jetons, entrée et sortie (moyenne) | 644 et 204 | 797 et 243 |
+| Coût par briefing | **0 pour le projet** (ressource du candidat) ; prix public du modèle : non relevé, inconnu ici | 0,0060 USD au prix public du 03/10 |
+| Longueur moyenne du texte | 714 caractères | 707 caractères |
+| Textes qui citent le RSI ; la volatilité | 29 ; 17 | 28 ; 22 |
+| Mots de signal | 0 | 0 |
+
+**Lecture, sans conclure plus que les chiffres.** Sur ce que le banc mesure automatiquement, les deux services sont
+**indiscernables** : trente textes conformes et fidèles chacun, des intervalles identiques. Ce qui les distingue :
+la latence (Foundry deux fois plus rapide en médiane, mais une queue plus longue, un appel sur vingt dépasse 10 s,
+quand OpenRouter reste entre 5 et 7,3 s) ; le coût (zéro pour le projet contre 0,006 USD, le prix public de
+`gpt-5.4` restant à relever avant toute phrase sur le coût réel) ; et le style, que seule la notation à l'aveugle
+d'Era peut départager (fichier `notes-francais-2026-10-03.csv`, 60 textes mélangés, les deux services confondus).
+Les deux modèles lisent les 13 indicateurs de la même façon : HSBA.L chez Foundry, « sous ses moyennes mobiles à 20
+séances (15,18 GBP) et 50 séances (15,30 GBP), RSI 14 à 34,5 », sans un mot de conseil.
+
+**Recommandation provisoire, en attendant la notation du français** : Foundry en premier (gratuit pour le projet,
+conformité et fidélité égales, médiane plus courte), OpenRouter en secours, ce qui est la configuration actuelle de
+`LLM_ORDRE`. Ce qui ferait changer la décision : une note de français nettement plus basse pour Foundry, une queue de
+latence qui gênerait la démonstration (un appel sur vingt au-delà de 10 s), ou la fin de la gratuité de la ressource.
+
+**Ce qui manque encore pour clore C7** : la notation du français (Era) ; Anthropic en direct, jamais mesuré faute de
+clé ; le prix public et l'information environnementale de `gpt-5.4`, à relever avec leur date ; la variance d'un jour
+à l'autre (tout est mesuré le 03/10).
 
 ## 6. Commandes
 

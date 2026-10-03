@@ -11,8 +11,8 @@
  },
  "etat": {
   "foundry": {
-   "statut": "indisponible",
-   "motif": "KeyError: 'AZURE_FOUNDRY_API_KEY'"
+   "statut": "mesure",
+   "motif": ""
   },
   "anthropic": {
    "statut": "indisponible",
@@ -24,6 +24,30 @@
   }
  },
  "resume": {
+  "foundry": {
+   "appels": 30,
+   "reussis": 30,
+   "intervalle_disponibilite": [
+    0.8864829086095221,
+    1.0
+   ],
+   "conformes_amf": 30,
+   "intervalle_conformes": [
+    0.8864829086095221,
+    1.0
+   ],
+   "fideles": 30,
+   "intervalle_fideles": [
+    0.8864829086095221,
+    1.0
+   ],
+   "latence_p50_s": 3.2055,
+   "latence_p95_s": 10.69,
+   "jetons_entree_moyen": 643.8,
+   "jetons_sortie_moyen": 203.83333333333334,
+   "cout_total_usd": 0.0,
+   "cout_moyen_usd": 0.0
+  },
   "openrouter": {
    "appels": 30,
    "reussis": 30,
@@ -41,12 +65,12 @@
     0.8864829086095221,
     1.0
    ],
-   "latence_p50_s": 6.338,
-   "latence_p95_s": 7.296,
+   "latence_p50_s": 6.3285,
+   "latence_p95_s": 7.204,
    "jetons_entree_moyen": 796.8,
-   "jetons_sortie_moyen": 241.93333333333334,
-   "cout_total_usd": 0.18058200000000002,
-   "cout_moyen_usd": 0.0060194
+   "jetons_sortie_moyen": 243.4,
+   "cout_total_usd": 0.18124200000000001,
+   "cout_moyen_usd": 0.006041400000000001
   }
  }
 }
