@@ -214,6 +214,7 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | Clôture des positions (plan 66), 03/10 soir | **EXÉCUTÉ + TESTÉ** | migration rejouable jouée sur le poste, Compose (0 position : base de marché seule) et Hetzner (7 actives / 7) ; import réel rejoué sur le poste : 7 mises à jour, 0 insérée, 0 rouverte, 0 close ; touchés `146 passed`, suite `738 passed, 2 xfailed`, 93,91 % ; `evidence/C4/preuve-cloture-positions.md` |
 | Rapport E1 v2, 03/10 nuit | **IMPLÉMENTÉ + VÉRIFIÉ visuellement** | `docs/rapports/E1/rapport-E1.pdf` 5 pages (limite 5), 0 tiret long, chaque page rendue en PNG et lue ; carte #55 corrigée test d'abord (rouge `ok True` puis vert) ; suite `740 passed, 2 xfailed`, 93,92 % ; **non fait** : relecture d'Era, décision `memory_audit`, tag le 15/10 |
 | Rapport E3 v1.0, 03/10 nuit | **IMPLÉMENTÉ + VÉRIFIÉ visuellement** | `docs/rapports/E3/rapport-E3.pdf` 20 pages (limite 15 à 20), 0 tiret long ; première trace complète réelle `d52a3d28…` lue par l'API Langfuse (10 observations, score `conforme_amf` = 1) ; preuves C9, C12, C13 créées depuis des exécutions réelles ; 39 critères : 30 ✅ 9 🟠 0 🔴 ; **non fait** : relecture d'Era, clics Langfuse, capture, tag le 15/10 |
+| Preuve C18 et `docs/CI-CD.md`, 03/10 nuit | **EXÉCUTÉ (lu par l'API) + IMPLÉMENTÉ** | `evidence/C18/preuve-integration-continue-2026-10-03.md` : 268 runs Tests, 97/100 verts, 3 rouges expliqués avec leurs identifiants et commits ; `docs/CI-CD.md` ferme la carte #27 ; E3 : 32 ✅ 7 🟠 0 🔴 |
 
 ## J. En cours
 

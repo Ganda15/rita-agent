@@ -550,21 +550,21 @@ Les trois mesures de garde-fous ne dépendent que du code. La suite complète et
 
 | Critère | État | Preuve |
 |---|---|---|
-| Documentation de la chaîne : étapes, tâches, déclencheurs | 🟠 | section 7 ; `docs/LLMOPS.md` §3 ; pas de `docs/CI-CD.md` dédié (carte #27) |
+| Documentation de la chaîne : étapes, tâches, déclencheurs | ✅ | `docs/CI-CD.md` (03/10, carte #27 fermée) : cinq workflows, tous les déclencheurs, chaque étape ; section 7 de ce rapport |
 | Déclencheurs intégrés comme définis | ✅ | poussée, pull request, tag, manuel, `repository_dispatch` |
 | Fichiers de configuration reconnus et exécutés | ✅ | le 3 octobre : treize exécutions vertes sur deux pull requests et deux fusions, une annulation volontaire, une alerte manuelle (`evidence/C13/`) |
 | Étape de test des données intégrée | 🟠 | tests de collecte et de nettoyage dans la suite ; pas d'étape nommée « test des données » dans la chaîne |
 | Étapes de test et de validation du modèle intégrées | ✅ | garde-fous mesurés et portes en CI ; aucun entraînement par construction |
 | Sources de la chaîne versionnées | ✅ | `.github/workflows/`, `.githooks/`, `scripts/verifier_livrable.py` |
-| Documentation d'installation, configuration, test de la chaîne, accessible | 🟠 | répartie entre `docs/EXPLOITATION.md`, `docs/LLMOPS.md` et les commentaires des workflows |
+| Documentation d'installation, configuration, test de la chaîne, accessible | ✅ | `docs/CI-CD.md` §4 à §7 : secrets, permissions, installation sur un clone neuf, tests de la chaîne, quoi faire quand c'est rouge ; Markdown et PDF |
 
-**Décompte** : 30 ✅ · 9 🟠 · 0 🔴 sur 39 (le matin du 3 octobre, version 0.1 : 27, 11, 1).
+**Décompte** : 32 ✅ · 7 🟠 · 0 🔴 sur 39 (le matin du 3 octobre, version 0.1 : 27, 11, 1).
 
 ---
 
 ## 11. Ce qui n'est pas fait, et les risques
 
-**Pas fait au 3 octobre 2026 au soir** : les deux alertes dans l'interface Langfuse et la suppression des quinze traces factices (clics du propriétaire du compte) ; les captures d'écran de C11 ; le contrat `/v1` et le 422 pour un ticker inconnu ; la limite de débit ; le manifeste de version et les prompts en fichiers ; le retour arrière ; l'épinglage des dépendances ; le jeu de référence de briefings ; la validation de format des sorties ; le troisième écran (briefing) de l'interface ; la revue OWASP ligne par ligne.
+**Pas fait au 3 octobre 2026 au soir** : les deux alertes dans l'interface Langfuse et la suppression des quinze traces factices (clics du propriétaire du compte) ; les captures d'écran de C11 ; le contrat `/v1` et le 422 pour un ticker inconnu ; la limite de débit ; le manifeste de version et les prompts en fichiers ; le retour arrière ; l'épinglage des dépendances ; le jeu de référence de briefings ; la validation de format des sorties ; le troisième écran (briefing) de l'interface ; la revue OWASP ligne par ligne. La documentation de la chaîne en un seul endroit, elle, est faite (`docs/CI-CD.md`).
 
 **Risques pour la démonstration** : le poste de démonstration n'a qu'un fournisseur de modèle qui répond (OpenRouter) ; une panne de ce fournisseur, et aucun briefing ne sort. La copie du serveur est figée au code du 20 août. Le dépôt est privé. Les métriques agrégées de Langfuse sont polluées par quinze traces factices tant qu'elles ne sont pas supprimées.
 
