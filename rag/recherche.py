@@ -77,6 +77,7 @@ from rank_bm25 import BM25Okapi
 
 from guardrails.entree import verifier_intention
 from rag.indexation import _collection
+from src import traces
 
 # Constante usuelle de la fusion RRF. Voir la docstring du module.
 K_RRF = 60
@@ -217,7 +218,9 @@ def rechercher(question: str, ticker: str | None = None, k: int = 3,
     # Placé ICI, avant `_collection()` : un refus ne coûte ni chargement du corpus
     # ni appel à l'embedder — la question la plus chère à ignorer est ignorée au
     # prix le plus bas.
-    verification = verifier_intention(question)
+    with traces.etape("garde-fou-entree") as span:
+        verification = verifier_intention(question)
+        traces.noter_garde_fou(span, verification["bloque"], verification["motifs_detectes"])
     if verification["bloque"]:
         return Resultat(False, "INTENTION_INTERDITE", [], 0)
 
