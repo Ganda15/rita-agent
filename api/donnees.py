@@ -40,6 +40,7 @@ from fastapi import APIRouter, HTTPException, Query
 #
 # Renommer la route aurait été l'autre solution ; l'alias est plus sûr, car le nom
 # de la fonction de route apparaît ailleurs (tests, OpenAPI).
+from db import audit_mcp
 from indicateurs import portefeuille as indicateurs_portefeuille_module
 from indicateurs import risque as indicateurs_risque_module
 from indicateurs import socle
@@ -48,6 +49,7 @@ from indicateurs import socle
 # `fraicheur()`. Sans alias, elle écraserait le module au chargement.
 from monitorage import fraicheur as monitorage_fraicheur
 from sources import database
+from sources.fred import SERIES
 
 routeur = APIRouter(prefix="/donnees", tags=["jeu de données"])
 
@@ -105,6 +107,30 @@ def cotations(
     return {"ticker": ticker, "nb": e.nb, "cotations": e.lignes}
 
 
+@routeur.get("/macro", summary="Séries macroéconomiques FRED (taux US 10 ans, inflation US, taux Fed)")
+def macro(
+    serie: str = Query(..., description="Code FRED : DGS10, CPIAUCSL ou DFF"),
+    limite: int = Query(60, ge=1, le=LIMITE_MAX),
+) -> dict:
+    """Les observations d'une série macro, de la plus récente à la plus ancienne (issue #52).
+
+    La série est vérifiée contre la liste fermée de `sources/fred.py` : une valeur hors
+    liste vaut 422, jamais une requête sur un code inventé.
+    """
+    if serie not in SERIES:
+        raise HTTPException(status_code=422,
+                            detail=f"Série inconnue '{serie}'. Séries suivies : {sorted(SERIES)}")
+    sql = """
+        SELECT serie, date_observation, valeur
+        FROM   macro_observation
+        WHERE  serie = %(serie)s
+        ORDER  BY date_observation DESC
+        LIMIT  %(limite)s
+    """
+    e = database._executer(sql, "macro", None, serie=serie, limite=limite)
+    return {"serie": serie, "libelle": SERIES[serie], "nb": e.nb, "observations": e.lignes}
+
+
 @routeur.get("/portefeuille", summary="Portefeuille valorisé, converti en euros")
 def portefeuille() -> dict:
     """Chaque ligne détenue avec son dernier cours, sa valorisation et sa performance.
@@ -113,8 +139,13 @@ def portefeuille() -> dict:
     par la clé d'API au niveau du routeur. Traitement T1 du registre.
     """
     e = database.portefeuille()
+    total = database.total_portefeuille(e)
+    # Plan 65 (03/10/2026, décision D1 d'Era) : une ligne sans taux de change rend le total
+    # indisponible (null) et `positions_sans_taux` dit combien ; un total partiel présenté
+    # comme total serait le même mensonge à une autre échelle.
     return {"nb": e.nb,
-            "total_eur": float(database.total_portefeuille(e)),
+            "total_eur": float(total) if total is not None else None,
+            "positions_sans_taux": database.positions_sans_taux(e),
             "positions": e.lignes}
 
 
@@ -197,11 +228,13 @@ def indicateurs_portefeuille() -> dict:
     additionner soi-même les valorisations reviendrait à refaire un calcul déjà fait,
     et deux calculs de la même chose finissent par diverger.
     """
-    lignes, total = indicateurs_portefeuille_module.lire_poids()
+    r = indicateurs_portefeuille_module.lire_poids_detail()
     return {
-        "nb": len(lignes),
-        "total_eur": total,
-        "lignes": [l.en_dict() for l in lignes],
+        "nb": len(r.lignes),
+        "total_eur": r.total_eur,
+        # Plan 65 (décision D2) : faux dès qu'une ligne n'a pas de taux ; tous les poids sont alors null.
+        "complet": r.complet,
+        "lignes": [l.en_dict() for l in r.lignes],
         "exposition": [e.en_dict() for e in indicateurs_portefeuille_module.lire_exposition()],
     }
 
@@ -278,4 +311,8 @@ def fraicheur() -> dict:
     Le seuil vert tolère 1 jour parce que la séance du jour n'entre en base
     qu'après la collecte de 19h00 — la Bourse clôture à 17h35.
     """
-    return monitorage_fraicheur.lire().en_dict()
+    reponse = monitorage_fraicheur.lire().en_dict()
+    # Plan 62 (décision D3) : une panne du journal des appels MCP se voit ici, le vecteur C20 que
+    # l'écran et l'outil MCP lisent déjà ; zéro est la valeur normale.
+    reponse["audit_mcp_echecs"] = audit_mcp.echecs()
+    return reponse

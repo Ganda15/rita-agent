@@ -42,3 +42,9 @@ yfinance==1.4.1
 # et l'argument d'éco-conception de C15 à réécrire sur la valeur réelle.
 chromadb==1.5.9
 rank-bm25==0.2.2
+
+# --- Traçage des appels au modèle (C11, carte #39), ajouté le 02/10/2026 ------
+# Langfuse Cloud, région UE (décision du 28/09, registre RGPD §T3). Sans clés dans
+# l'environnement, src/traces.py ne fait rien : l'image démarre et sert sans traçage.
+# Version relevée par importlib.metadata sur le poste qui fait tourner la suite.
+langfuse==4.12.0

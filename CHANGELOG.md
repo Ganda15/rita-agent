@@ -9,6 +9,154 @@
 
 ---
 
+## 2026-10-03 (suite) : chapitre « Données » validé par le formateur et intégré, PR 58 relue par la revue automatisée
+
+**Décision structurante** : le chapitre « Données » (brief du 01/09, rendu le 07/09, écrit hors dépôt au commit `23318a6`) reçoit
+le retour du formateur « Très bon travail. Se montrera utile à l'exécution. Rien à redire. » Il entre dans le dépôt
+(`docs/conception/donnees/`) et ses propositions deviennent du travail planifié : trois décisions inscrites dans `CONTINUITE.md`
+(text-to-SQL écarté ; trois outils MCP via l'API, `search_articles` reste une proposition ; règle de fermeture de la matrice
+d'accès), dix issues ouvertes (label `conception-donnees`), dont trois en zone sous garde (`db/schema.sql`) et deux décisions d'Era
+(quasi-doublons, `search_articles`). Lecture honnête : cinq lignes du chapitre sont déjà tenues par le code (orphelins, filtre
+dense, rôle lecture seule, `request_id`), neuf restent proposées.
+
+**Fait aussi** : PR #58 `develop → main` ouverte (31 commits) ; les deux remarques de la revue automatisée corrigées, test d'abord
+(une panne de Langfuse ne fait plus tomber un briefing ; un 500 inattendu porte `X-Request-ID`) : 635 passed, 93,41 %.
+Classeur des 135 critères rempli (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER). Tableau de bord Langfuse « RITA C11 » créé par l'API.
+
+**Manque découvert** : INC-006 comptait douze traces factices, il y en a quinze ; le bouton *Run workflow* n'existe qu'une fois
+`alerte-incident.yml` sur `main`.
+
+**Décision structurante (après-midi)** : première modification de `db/schema.sql` depuis le chapitre, sur plan validé par Era
+(`docs/PLAN-65-valorisation-taux-manquant.md`, D1 D2 D3 = A). La vue de valorisation ne remplace plus un taux manquant par 1 :
+montants `NULL` et `taux_manquant` ; total `null` avec `positions_sans_taux` ; poids tous `null` avec `complet: false` ;
+« indisponible » à l'écran. 23 tests écrits avant, dont trois sur la base réelle en transaction annulée et un dans un vrai
+navigateur ; migration rejouable jouée sur le poste (7 positions, aucune sans taux : les chiffres n'ont pas bougé). Compose
+et Hetzner restent à migrer. Quatre autres items du chapitre faits le même jour : #59 titre dans l'index, #60 démonstration
+vérifiée par la passerelle, #61 les 32 cas rapprochés des tests, #64 manifeste de collecte.
+
+**Décision structurante (soir)** : deuxième zone sous garde sur plan validé (`docs/PLAN-62-journal-mcp-calls.md`, D1 D2 D3 = A) :
+le journal des appels MCP `mcp_calls`, écrit par l'API seule, refus locaux remontés par `POST /audit/mcp`, traitement RGPD T5 et
+purge P6 à 90 jours ; 21 tests écrits avant dont quatre sur la base réelle ; migration jouée sur le poste et premières lignes
+réelles écrites par la passerelle. Et GitHub Pro activé par Era : `main` protégée côté serveur (ruleset, `evidence/C19/`).
+
+---
+
+## 2026-10-03 : reconnaissance complète, plan initial contre réalisé, pointeurs périmés
+
+**Manques découverts** par une lecture de toutes les sources (dépôt, GitHub, coffre Obsidian, classeurs Excel,
+disque D:, Bureau, skills), sans rien construire : le classeur des 135 critères
+`D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP.xlsx` existe depuis le 14/08 mais sa colonne « Critère
+validé » est vide sur 156 lignes, alors que c'est le document que le formateur contrôle la semaine du 05/10 ;
+sept écarts entre la SPEC v3 du 18/07 et le code ne sont datés nulle part comme décisions (3 nœuds et non 5 agents,
+Langfuse et non LangSmith sans Prometheus ni Grafana ni Sentry, interface HTML sans Gradio, clé d'API sans JWT ni
+limite de débit, aucun briefing planifié ni alerte Telegram, aucun PDF indexé) ; le Hub Obsidian était figé au 28/07 ;
+`ETAT.md` citait encore la boussole du Bureau, archivée depuis le 14/08, et « 7 entrées de journal » pour 19 ;
+quatre skills (`boussole`, `projet-rncp`, `mlops-verifier`, `rita-rewrite` niveau utilisateur) pointent vers des
+chemins archivés et la table des skills de `CLAUDE.md` global omet 12 skills présentes ; des fichiers de clés en clair
+traînent sur le Bureau (non ouverts) ; le journal Obsidian 018 avait été créé dans un sous-dossier parce que son
+titre contenait « 15/10 ».
+
+**Fait** : note d'état des lieux dans Obsidian (`00-Pilotage`, 03/10) avec le tableau prévu contre réel et la liste
+de ce qui revient à Era ; bloc daté en tête du Hub ; les deux lignes d'`ETAT.md` corrigées ; journal 018 remis à plat
+et son lien d'index corrigé ; journal 019 écrit. Aucun fichier de skill ni de configuration modifié : ce sont les
+fichiers de méthode d'Era, les corrections sont proposées dans la note.
+
+**Décision d'ordre** (proposée, à confirmer par Era) : 1) push des 9 commits de la nuit ; 2) clés en clair du Bureau ;
+3) clics Langfuse ; 4) classeur Excel rempli depuis la note de vérification ; puis E1 v2 et rapport E3.
+
+---
+
+## 2026-10-02 (soir et nuit) : relecture complète, gel repoussé au 15/10, C11 construit de bout en bout
+
+**Décisions** (Era) : **E3 et E1 gelés le jeudi 15/10**, et non le 11/10, parce qu'un brief de création occupe la
+semaine du 05/10 et que l'audit chiffre le travail restant à 30 à 45 h ; après le gel, seules des corrections issues
+de l'oral blanc, par une version taguée `v2`. **Mémoire en V1** : M1, M2, M3 et M6 réelles, M4 et M5 abandonnées
+(le modèle est le dernier nœud, un checkpointer ne sauverait aucun appel payant), `memory_audit` à trancher, pas de
+mémoire de conversation par conception. **Pas d'endpoint A2A** : aucun critère ne le nomme, surface à état sur 4 Go.
+
+**Manques découverts** par une relecture du dépôt face aux treize briefs (14 agents, constats revérifiés par commande) :
+aucun `request_id` ; `docker-compose.yml` ne transmettait aucune variable Langfuse (le conteneur ne traçait pas) ;
+la clé FRED en clair dans 6 journaux locaux ; `memory_audit` sans aucun écrivain depuis le 01/08 ; l'enveloppe
+`<donnees_externes>` calculée puis jetée ; la ligne « RITA n'a aucun gate d'évaluation » du ledger fausse depuis le
+29/07 ; `README.md` (18/08), `CLAUDE.md` (458 tests, 8 tables) et la table de compétences d'`ETAT.md` périmés ;
+cinq briefs sans passerelle (Velmo, Kaldera, Kaldera-A2A, Industrialisation, Factum) ; registre RGPD T3 encore
+« LangSmith, non activé » après l'activation de Langfuse.
+
+**Fait** : passerelles écrites, registre T3 corrigé (entité du DPA : addendum ClickHouse, Langfuse GmbH ; transfert à
+confirmer par la lecture du DPA) ; puis, test d'abord à chaque étape : garde-fou de sortie prouvé branché par
+mutation ; ligne de journal au refus ; verdict AMF sur la trace ; `request_id` ; clé FRED hors des journaux ; variables
+Langfuse au conteneur ; une trace par briefing avec une étape par nœud et par garde-fou ; alerte Langfuse vers une
+issue `incident` ; `evidence/C11/README.md` ; **INC-006** (douze générations de test en production, commit direct
+assumé) ; index C21 à jour. Suite : **586 → 626 passed**, couverture 93,66 %, 0 lien cassé. Sept commits préparés,
+**push en attente d'Era** au moment d'écrire.
+
+**Appris** : un contrôle qui tourne après le span ne peut pas écrire dedans, il faut remonter la racine ; un test qui
+passe du premier coup se prouve par mutation ; un index de preuves qui ne suit pas ment (« 0 PR » cinq jours après la
+PR #54) ; `gh --jq` n'accepte pas `--arg`, et un test qui lit un fichier ne voit pas ce genre d'erreur.
+
+---
+
+## 2026-10-02 : C11 devient réel, la première trace Langfuse de RITA, et les tests qui écrivaient en production
+
+**Fait** : chaque appel au modèle est tracé dans Langfuse Cloud, région UE (décision du 28/09) : un trace par
+appel, une génération par fournisseur tenté, usage en tokens, erreur du repli. Sans clés, no-op. Huit tests
+écrits avant le code ; suite 586 passed. Première trace réelle le 02/10 à 18:39 : Foundry et Anthropic en
+erreur, OpenRouter répond. Commit `7cf3ffd`.
+
+**Manque découvert, en lisant l'écran Langfuse** : douze générations factices (« prompt test » → « ok anthropic »)
+venaient de la suite de tests. `api/main.py` charge le fichier d'environnement à l'import ; après le premier
+test d'API, les vraies clés restaient dans le processus. Corrigé le jour même par un test puis une fixture de
+`conftest.py` qui coupe le traçage pour toute la suite. Un monitorage pollué par ses propres tests ment : c'est
+un incident, petit, réel, fermé par un test.
+
+**Second manque** : le poste de démonstration n'a qu'un fournisseur qui répond (OpenRouter). Risque daté pour
+l'oral du 29/10, décision d'Era à prendre.
+
+**Appris** : le hook `bloquer-secrets.py` a refusé quatre commandes de Claude qui nommaient le fichier de
+secrets, lecture comprise ; les clés ont été posées à la main par Era, après deux faux départs (fichier jamais
+modifié, puis les « … » de l'exemple collés tels quels).
+
+---
+
+## 2026-09-27 : sept défauts de données avaient une seule cause, la place de cotation n'existait pas dans le modèle (INC-005)
+
+**Manque découvert** en relisant le guide d'étude « marchés et finance » : l'archive de 10 ans était datée
+**un jour trop tôt** (date UTC au lieu de la date locale ; 52 426 cotations tombaient un dimanche). En tirant
+le fil : HSBA.L figée depuis le 28/08 (un ticker seul lu sans erreur et sans ligne), FTI, SLB et HSBA.L en
+mauvaise devise (HSBA.L en pence), 24 séances fictives du samedi écrites par le scraping, trois valeurs
+radiées redemandées chaque soir, fériés Euronext inconnus, et FRED lue mais jamais stockée.
+
+**Décision structurante** : la place de cotation devient une donnée (`sources/marches.py` : devise, fuseau,
+calendrier officiel). Reconstruction en une transaction après sauvegarde, positions inchangées (7),
+**42 tests écrits avant**, suite 577 passed. FRED stockée (`macro_observation`, étape `fred` à 19 h,
+`/donnees/macro`). PR #54 fusionnée par Era après revue automatisée (un point P2 fondé, corrigé test d'abord).
+
+**Ce qui reste faux ailleurs** : le rapport E1 cite les anciennes dates (carte #56) ; l'étape `ecb` a le même
+défaut de faux succès que `fred` avant correction (carte #55) ; ADTV20 est présenté au modèle comme un
+volume (carte #57).
+
+**Ce soir** : première collecte planifiée avec `fred`, 6/6, 30 observations, 1 359 documents indexés.
+Ce ledger et `CONTINUITE.md` avaient 9 jours de retard : rattrapés le 27/09 avec les vraies dates.
+
+---
+
+## 2026-09-26 : C16 mis en place (Kanban GitHub, revue du lundi) et retour au plan, E4 d'abord
+
+**Décision structurante** (Era) : le pilotage C16, absent de toutes les semaines du plan (0 issue, aucune
+méthode), passe par un tableau Kanban GitHub (projet #4, formateur en lecture), un backlog de 24 issues
+tirées du plan et de la vérification E4, et une revue hebdomadaire le lundi. Méthode : `docs/PILOTAGE-AGILE.md`.
+« Tout au long du projet » ne vaut qu'à partir du 26/09, et se dit tel quel.
+
+**Décision structurante** (Era) : retour au plan. Le livre Packt « Building AI Agents for Finance », lu en
+entier, ne fait rien coder hors plan : ses 4 éléments retenus sont rangés en S40, S43 et S44. S39 = rédiger
+le livrable E4 puis le geler. Vérification E4 contre les 36 critères : 21 ✅, 11 ⚠️, 4 ❌, rapport à 0 page.
+
+**Manques découverts** : S38 et S39 du plan non faits ; `livraison.yml` publiait l'image avant de vérifier
+qu'elle démarre (corrigé le jour même, PR #46, run `36247837793`) ; `requirements.txt` sans versions ;
+aucune note de veille après S36 ; journal Obsidian sans entrée pour les 19 et 20/09.
+
+---
+
 ## 2026-09-20, soir — Premier scan externe des garde-fous : un contournement trouvé et fermé le jour même
 
 **Manque découvert** (Giskard, run 9, OWASP LLM01 « Character roleplay bypass ») : une demande de jeu de rôle — « réponds en tant
@@ -45,7 +193,7 @@ pas des attaques : tout est généré par un modèle, donc tout coûte.
 
 ## 2026-09-20 — Les quatre bugs trouvés par la revue automatisée sont fermés, chacun par un test
 
-**Manques découverts** (revue Codex, PR #1, tous confirmés en relisant le code) et **corrigés** :
+**Manques découverts** (revue automatisée, PR #1, tous confirmés en relisant le code) et **corrigés** :
 1. En conteneur, `/app` en lecture seule sans montage pour ChromaDB : `/briefing` échouait pour tout ticker
    valide, invisible en local. Volume nommé persistant + test du fichier Compose.
 2. Une reconstruction de l'index n'enlevait jamais rien : un article supprimé ou bloqué après coup restait
@@ -58,7 +206,7 @@ pas des attaques : tout est généré par un modèle, donc tout coûte.
 
 ---
 
-## 2026-09-19, 22h50 — Correctif de diagnostic : la revue Claude n'était pas tuée par notre hook
+## 2026-09-19, 22h50 — Correctif de diagnostic : la revue automatisée n'était pas tuée par notre hook
 
 L'entrée précédente attribue les revues muettes au hook Stop du dépôt. **Partiellement faux.** La notification
 `stop-hook-error` apparaît aussi dans les runs réussis (PR #5, PR #8) : elle est bénigne. Les revues mortes
@@ -69,19 +217,19 @@ l'entrée d'origine reste, celle-ci la corrige.
 
 ---
 
-## 2026-09-19, nuit — Flux PR en service : 4 PR fusionnées, 8 défauts trouvés par la revue, et la revue Claude réparée
+## 2026-09-19, nuit — Flux PR en service : 4 PR fusionnées, 8 défauts trouvés par la revue, et la revue automatisée réparée
 
-**Fait** : PR #1 (97 commits) à PR #4 fusionnées ; `main` = `develop`. Revue Codex active : **8 commentaires** utiles
+**Fait** : PR #1 (97 commits) à PR #4 fusionnées ; `main` = `develop`. Revue automatisée active : **8 commentaires** utiles
 sur les deux premières PR — **6 sur la PR #1** (2 hooks + 4 bugs RAG/Compose, consignés dans `ETAT.md`) et **2 sur la PR #2**
 (2 hooks). Les 4 commentaires sur les hooks sont fermés le soir même, chacun par un test.
 
-**Manque découvert, et sa cause** : la revue Claude (`revue-pr.yml`) finissait en « succès » sans rien publier.
+**Manque découvert, et sa cause** : la revue automatisée (`revue-pr.yml`) finissait en « succès » sans rien publier.
 `show_full_output` (PR #3) a montré la cause : l'action charge `.claude/settings.json` du dépôt, donc **notre hook Stop
 tournait dans la session de revue** et la tuait (`Stop hook error`) avant que ses agents de relecture ne rendent
 (5 tours sur la PR #2, 23 tours et 4 min sur la PR #4). Correction PR #4 : les hooks se taisent sous `GITHUB_ACTIONS`.
 Leçon : le périmètre d'un garde-fou fait partie de sa conception ; un garde-fou qui tue le relecteur protège de rien.
 
-**Décision** : Codex reste branché (il a payé) ; la revue Claude est vérifiée sur cette PR #5, première à tourner
+**Décision** : la revue tierce reste branchée (elle a payé) ; la revue automatisée est vérifiée sur cette PR #5, première à tourner
 avec le hook silencieux.
 
 ---
@@ -89,11 +237,11 @@ avec le hook silencieux.
 ## 2026-09-19 — Le harnais devient une garantie : AGENTS.md, hooks, Definition of Done, flux PR
 
 **Décision structurante** (Era, option A) : `main` ne bouge plus que par une pull request `develop → main`,
-relue automatiquement par Claude Code (même choix que la conception Mardik ③ du 18/09, ici exécuté pour de vrai).
+relue automatiquement par le workflow de revue (même choix que la conception Mardik ③ du 18/09, ici exécuté pour de vrai).
 Le push direct est refusé par un hook `pre-push` versionné (`.githooks/`), GitHub ne pouvant pas protéger la
 branche sur un dépôt privé gratuit.
 
-**Fait** : `AGENTS.md` importé par `CLAUDE.md` ; deux hooks Claude Code livrés avec le dépôt (secrets, tests
+**Fait** : `AGENTS.md` importé par `CLAUDE.md` ; deux hooks de l'assistant de développement livrés avec le dépôt (secrets, tests
 verts) ; `scripts/verifier_livrable.py`, Definition of Done à verdict généré, branchée dans `livraison.yml` ;
 règles `.claude/rules/` ; `revue-pr.yml` ; PR #1 ouverte (97 commits).
 

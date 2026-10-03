@@ -10,6 +10,7 @@ tickers hors univers (contrainte de clé étrangère), la résolution des alias 
 portefeuille — dont le cas CGG (deux libellés, une valeur) — et le fait qu'un
 portefeuille vide ou sans correspondance n'insère jamais rien.
 """
+from datetime import date
 from unittest.mock import MagicMock, patch
 
 import pandas as pd
@@ -116,7 +117,7 @@ def test_importer_valeurs_insere_valeurs_et_alias(sans_execute_values):
     assert sans_execute_values.call_count == 2       # 1 INSERT valeur, 1 INSERT alias_valeur
     sql_valeur, lignes_valeur = sans_execute_values.call_args_list[0].args[1:3]
     assert "INSERT INTO valeur" in sql_valeur
-    assert lignes_valeur == [("AC.PA", "ACCOR", "OK", None)]
+    assert lignes_valeur == [("AC.PA", "ACCOR", "OK", None, "EUR")]
     sql_alias, lignes_alias = sans_execute_values.call_args_list[1].args[1:3]
     assert "INSERT INTO alias_valeur" in sql_alias
     assert lignes_alias == alias
@@ -244,3 +245,54 @@ def test_importer_assemble_les_statistiques_et_commit(monkeypatch):
     connect.return_value.__enter__.return_value.commit.assert_called_once()
     assert r == {"lues": 10, "dedoublonnees": 1, "inserees": 9,
                  "valeurs": 1, "alias": 1, "positions": 7}
+
+
+# --- 27/09/2026 : issues #53, #47 et #48 ----------------------------------------
+
+def test_la_date_de_seance_est_la_date_locale_de_la_place_pas_la_date_utc(monkeypatch, sans_execute_values):
+    """Le Parquet stocke minuit heure de Paris converti en UTC, soit 22h la veille.
+    Prendre la date UTC a décalé dix ans d'archive d'un jour (52 426 « dimanches »)."""
+    df = _df_cotations([("MC.PA", "2016-07-31", 2016)])
+    df["date"] = pd.Timestamp("2016-07-31 22:00", tz="UTC")
+    monkeypatch.setattr(importer, "PARQUET", importer.RACINE)
+    monkeypatch.setattr(importer.pd, "read_parquet", lambda _chemin: df)
+
+    importer.importer_cotations(_curseur(["MC.PA"]))
+
+    lignes = sans_execute_values.call_args.args[2]
+    assert lignes[0][1] == date(2016, 8, 1)
+
+
+def test_les_pence_de_l_archive_sont_convertis_en_livres(monkeypatch, sans_execute_values):
+    df = _df_cotations([("HSBA.L", "2026-07-30", 2026)])
+    df[["ouverture", "haut", "bas", "cloture"]] = [1515.4, 1524.0, 1507.6, 1512.2]
+    monkeypatch.setattr(importer, "PARQUET", importer.RACINE)
+    monkeypatch.setattr(importer.pd, "read_parquet", lambda _chemin: df)
+
+    importer.importer_cotations(_curseur(["HSBA.L"]))
+
+    ligne = sans_execute_values.call_args.args[2][0]
+    assert ligne[5] == pytest.approx(15.122)
+
+
+def test_importer_valeurs_renseigne_la_devise_de_cotation(sans_execute_values):
+    valeurs = {t: {"ticker": t, "nom": t, "statut": "OK", "note": None}
+               for t in ("MC.PA", "HSBA.L", "FTI")}
+    importer.importer_valeurs(_curseur(), valeurs, [])
+
+    lignes = sans_execute_values.call_args_list[0].args[2]
+    devises = {l[0]: l[-1] for l in lignes}
+    assert devises == {"MC.PA": "EUR", "HSBA.L": "GBP", "FTI": "USD"}
+
+
+@pytest.mark.parametrize("ticker", ["ZC.PA", "ELE.PA", "GTO.PA"])
+def test_les_trois_valeurs_radiees_sont_marquees_delistee(tmp_path, monkeypatch, ticker):
+    """Classées OK_PARTIEL dans l'univers, elles devenaient OK en base (#48)."""
+    csv = tmp_path / "u.csv"
+    csv.write_text("nom,ticker,statut,lignes_10ans,premiere_date,note\n"
+                   f"X,{ticker},OK_PARTIEL,400,2016-07-29,serie partielle\n", encoding="utf-8")
+    monkeypatch.setattr(importer, "UNIVERS", csv)
+
+    valeurs, _ = importer.charger_univers()
+
+    assert valeurs[ticker]["statut"] == "DELISTEE"

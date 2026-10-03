@@ -38,13 +38,17 @@ from __future__ import annotations
 
 import argparse
 import functools
+import json
 import logging
 import os
 import re
+import subprocess
 import sys
 import time
 import unicodedata
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
+from datetime import datetime
+from pathlib import Path
 
 import psycopg2
 from psycopg2.extras import execute_values
@@ -111,6 +115,51 @@ def etape_taux_change(cur, simulation: bool,
     return b
 
 
+# Assez d'observations pour rattraper une semaine de collecte manquée (séries quotidiennes)
+# et plusieurs mois pour l'inflation, mensuelle. `ON CONFLICT DO UPDATE` rend l'étape rejouable.
+OBSERVATIONS_FRED_PAR_SERIE = 10
+
+
+def etape_fred(cur, simulation: bool) -> Bilan:
+    """FRED -> table `macro_observation` (issue #52, 27/09/2026).
+
+    `sources/fred.py` récupérait déjà DGS10, CPIAUCSL et DFF, mais rien ne les stockait
+    ni ne les collectait : « RITA sait collecter FRED » était vrai, « RITA a les données
+    FRED » était faux. Une série en échec n'emporte pas les autres.
+    """
+    from datetime import date
+
+    from sources.fred import SERIES, fetch_indicateur
+
+    b = Bilan("macro (FRED)")
+    lignes = []
+    for serie in SERIES:
+        try:
+            recus = fetch_indicateur(serie, limite=OBSERVATIONS_FRED_PAR_SERIE)
+            lignes.extend((serie, date.fromisoformat(o["date"]), o["valeur"]) for o in recus)
+            b.lues += len(recus)
+        except Exception as erreur:                       # noqa: BLE001
+            b.rejetees += 1
+            b.details.append(f"{serie} : {type(erreur).__name__}")
+
+    # Revue automatisée, PR #54 : clé absente ou FRED indisponible, chaque série est attrapée
+    # ci-dessus, mais l'étape passait pour réussie sans une ligne écrite, et /donnees/macro
+    # pouvait rester vide indéfiniment avec un résumé du soir au vert. Succès partiel
+    # conservé (une série sur trois suffit) ; zéro ligne = échec déclaré.
+    if not lignes:
+        b.erreur = "aucune observation FRED recue (" + "; ".join(b.details or ["aucune serie"]) + ")"
+        return b
+
+    if lignes and not simulation:
+        execute_values(cur, """
+            INSERT INTO macro_observation (serie, date_observation, valeur) VALUES %s
+            ON CONFLICT (serie, date_observation) DO UPDATE
+              SET valeur = EXCLUDED.valeur
+        """, lignes)
+        b.ecrites = len(lignes)
+    return b
+
+
 def etape_cotations(cur, simulation: bool) -> Bilan:
     """yfinance -> table `cotation`. Rafraîchissement **incrémental** des 111 valeurs.
 
@@ -138,14 +187,23 @@ def etape_cotations(cur, simulation: bool) -> Bilan:
     # Dernière séance connue, valeur par valeur. LEFT JOIN : une valeur sans aucune
     # cotation doit apparaître aussi, sinon elle ne serait jamais alimentée.
     cur.execute("""
-        SELECT v.ticker, MAX(c.date_seance)
+        SELECT v.ticker, MAX(c.date_seance), v.statut_qualite
         FROM   valeur v
         LEFT   JOIN cotation c ON c.ticker = v.ticker
-        GROUP  BY v.ticker
+        GROUP  BY v.ticker, v.statut_qualite
     """)
     par_date: dict = defaultdict(list)
-    for ticker, derniere in cur.fetchall():
+    radiees = []
+    for ticker, derniere, statut in cur.fetchall():
+        # 27/09/2026 (#48) : une valeur radiée n'a plus de cours à demander. ZC.PA,
+        # ELE.PA et GTO.PA échouaient chaque soir (« possibly delisted »).
+        if statut == "DELISTEE":
+            radiees.append(ticker)
+            continue
         par_date[derniere].append(ticker)
+    if radiees:
+        b.details.append(f"{len(radiees)} valeur(s) radiee(s) non demandee(s) : "
+                         f"{', '.join(sorted(radiees))}")
 
     if not par_date:
         b.erreur = "aucune valeur en base — lancer db.importer d'abord"
@@ -310,6 +368,7 @@ def etape_cours_scrapes(cur, simulation: bool) -> Bilan:
     vide sur 111 lignes et le rapprochement échouait 3 fois sur 3.
     Le scraping, lui, fournit l'ISIN : on l'écrit donc dans `valeur` au passage.
     """
+    from sources.marches import date_de_seance, derniere_seance
     from sources.scraper import SYMBOLES, collecter
 
     b = Bilan("cours du jour (scraping)")
@@ -341,7 +400,11 @@ def etape_cours_scrapes(cur, simulation: bool) -> Bilan:
             cur.execute("UPDATE valeur SET isin = %s WHERE ticker = %s", (c.isin, ticker))
             b.details.append(f"{ticker} : ISIN {c.isin} ajoute")
 
-        lignes.append((trouve[0], c.collecte_le[:10], c.ouverture, c.haut,
+        # 27/09/2026 (#49) : `collecte_le[:10]` était la date UTC de la collecte. Un samedi,
+        # la page montre la clôture du vendredi, rangée sous le samedi : une séance fictive.
+        # La séance est la dernière séance Euronext à ou avant le jour de collecte à Paris.
+        seance = derniere_seance(date_de_seance(c.collecte_le, trouve[0]))
+        lignes.append((trouve[0], seance, c.ouverture, c.haut,
                        c.bas, c.dernier, c.volume or 0))
 
     if lignes and not simulation:
@@ -390,7 +453,7 @@ def etape_indexation(cur, simulation: bool, dsn: str | None = None) -> Bilan:
 
     from rag.indexation import indexer          # tardif — voir la docstring
 
-    # Revue Codex, PR #1 (19/09/2026) : sans `dsn`, l'index se reconstruisait depuis
+    # Revue automatisée, PR #1 (19/09/2026) : sans `dsn`, l'index se reconstruisait depuis
     # DATABASE_URL alors que les étapes précédentes avaient écrit dans la base de `--dsn`.
     resultat = indexer(dsn=dsn)
     return Bilan(
@@ -405,11 +468,12 @@ def etape_indexation(cur, simulation: bool, dsn: str | None = None) -> Bilan:
 # Les étapes qui savent rattraper une période (argument `periode=(debut, fin)`).
 # `cotations` n'en a pas besoin : elle est déjà incrémentale depuis la dernière séance.
 ETAPES_AVEC_PERIODE = ("ecb", "rss")
-# Étapes qui ouvrent leur propre connexion : le DSN du pipeline doit leur parvenir (Codex, PR #1).
+# Étapes qui ouvrent leur propre connexion : le DSN du pipeline doit leur parvenir (revue automatisée, PR #1).
 ETAPES_AVEC_DSN = {"indexation"}
 
 ETAPES = {
     "ecb": etape_taux_change,
+    "fred": etape_fred,
     "cotations": etape_cotations,
     "rss": etape_articles,
     "scraping": etape_cours_scrapes,
@@ -425,7 +489,7 @@ ETAPES = {
 def code_de_sortie(resultat: dict, strict: bool) -> int:
     """Code de sortie du processus : 0 toujours en mode normal (le pipeline nocturne tolère une
     étape en panne — une BCE indisponible ne doit pas marquer la nuit en échec), 1 en mode strict
-    si une étape a échoué. Revue Codex, PR #13 : `docker compose run --rm indexation` rendait 0
+    si une étape a échoué. Revue automatisée, PR #13 : `docker compose run --rm indexation` rendait 0
     avec un volume resté vide, invisible pour un opérateur ou un script."""
     if strict and any(not b.ok for b in resultat["bilans"]):
         return 1
@@ -478,8 +542,105 @@ def executer(dsn: str | None = None, etapes: list[str] | None = None,
             "etapes_ok": sum(1 for b in bilans if b.ok)}
 
 
-if __name__ == "__main__":                                # [1] point de lancement
+def configurer_journal() -> None:
+    """Le journal du pipeline : INFO pour nous, WARNING pour `httpx`.
+
+    Mesuré le 02/10/2026 : 6 des 40 journaux nocturnes contenaient la clé FRED en clair.
+    Ce n'est pas notre code qui l'écrivait, c'est `httpx`, qui journalise chaque requête avec
+    son URL complète au niveau INFO, et FRED impose la clé dans l'URL. On garde ses erreurs
+    (WARNING), on coupe ses succès (INFO). Un journal qu'on ne lit pas est quand même un
+    fichier que quelqu'un peut lire.
+    """
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+
+
+# =============================================================================
+# [7] LE MANIFESTE DE COLLECTE : un fichier de faits par exécution (chapitre « Données » §1.3,
+#     issue #64 ; sert C1 « toutes les données visées sont récupérées » et C20 « surveiller »)
+# =============================================================================
+#
+# Le journal raconte ; le manifeste compte. Par étape : lues, écrites, rejetées, erreur, détails ;
+# pour l'exécution : mode, période, durée, commit, version de Python. Rien d'autre : jamais un
+# texte d'article, jamais une clé. Il part dans `logs/` (ignoré par Git) à côté du journal du soir.
+
+VERSION_MANIFESTE = 1
+_CLE_DANS_URL = re.compile(r"(api_key=)[^&\s\"']+", re.IGNORECASE)
+
+
+def _sans_cle(texte: str | None) -> str | None:
+    """Une erreur recopiée peut contenir une URL, et FRED met la clé dans l'URL (mesuré le 02/10 :
+    6 journaux sur 40). On masque la valeur, on garde le reste du message."""
+    return None if texte is None else _CLE_DANS_URL.sub(r"\1***", texte)
+
+
+def _commit_courant() -> str | None:
+    """Le commit du code qui a tourné, ou None si Git n'est pas là (conteneur, poste sans Git)."""
+    try:
+        sortie = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True,
+                                text=True, timeout=5, cwd=Path(__file__).resolve().parent.parent)
+        return sortie.stdout.strip() or None
+    except Exception:  # noqa: BLE001, l'absence de Git n'est pas une erreur de collecte
+        return None
+
+
+def ecrire_manifeste(resultat: dict, dossier: Path | str, maintenant: datetime | None = None,
+                     periode: tuple[str, str] | None = None,
+                     etapes_demandees: list[str] | None = None) -> str:
+    """Écrit `manifeste-AAAA-MM-JJ-HHMMSS.json` dans `dossier` et rend son chemin.
+
+    Le nom porte l'heure : un rattrapage l'après-midi n'écrase pas la collecte du soir.
+    `maintenant` est le début de l'exécution ; la fin s'en déduit par `duree_s`.
+    """
+    debut = maintenant or datetime.now()
+    dossier = Path(dossier)
+    dossier.mkdir(parents=True, exist_ok=True)
+    etapes = []
+    for b in resultat["bilans"]:
+        d = asdict(b)
+        d["ok"] = b.ok
+        d["nom"] = d.pop("etape")
+        d["erreur"] = _sans_cle(d["erreur"])
+        d["details"] = [_sans_cle(x) for x in d["details"]]
+        etapes.append(d)
+    contenu = {
+        "version_manifeste": VERSION_MANIFESTE,
+        "debut": debut.isoformat(timespec="seconds"),
+        "duree_s": resultat.get("duree_s"),
+        "mode": "simulation" if resultat.get("simulation") else "execution",
+        "periode": list(periode) if periode else None,
+        "etapes_demandees": etapes_demandees or list(ETAPES),
+        "code": {"commit": _commit_courant(), "python": sys.version.split()[0]},
+        "etapes": etapes,
+        "etapes_ok": resultat.get("etapes_ok"),
+        "etapes_total": len(etapes),
+    }
+    chemin = dossier / f"manifeste-{debut:%Y-%m-%d-%H%M%S}.json"
+    chemin.write_text(json.dumps(contenu, ensure_ascii=False, indent=1), encoding="utf-8")
+    return str(chemin)
+
+
+def ecrire_manifeste_sans_casser(resultat: dict, dossier: Path | str, **kw) -> str | None:
+    """La collecte a réussi ; le manifeste est un bonus. Une panne d'écriture (disque plein,
+    dossier illisible) vaut une ligne WARNING, jamais une exception après 25 minutes de collecte."""
+    try:
+        return ecrire_manifeste(resultat, dossier, **kw)
+    except Exception as erreur:  # noqa: BLE001
+        logger.warning("manifeste non ecrit dans %s : %s", dossier, f"{type(erreur).__name__}: {erreur}"[:160])
+        return None
+
+
+def lire_dernier_manifeste(dossier: Path | str) -> dict | None:
+    """Le manifeste le plus récent du dossier, ou None s'il n'y en a aucun. Pour l'API et la
+    surveillance : « dernière collecte : 90 articles lus, 51 nouveaux, 39 rejetés »."""
+    fichiers = sorted(Path(dossier).glob("manifeste-*.json"))
+    if not fichiers:
+        return None
+    return json.loads(fichiers[-1].read_text(encoding="utf-8"))
+
+
+if __name__ == "__main__":                                # [1] point de lancement
+    configurer_journal()
 
     # Le fichier .env n'est lu QU'ICI, au lancement en ligne de commande — jamais à
     # l'import. Un module qui lit des fichiers quand on l'importe est imprévisible en
@@ -506,10 +667,15 @@ if __name__ == "__main__":                                # [1] point de lanceme
     if bool(args.du) != bool(args.au):
         parseur.error("--du et --au vont ensemble")
 
+    debut_execution = datetime.now()
     r = executer(args.dsn,
                  args.etapes.split(",") if args.etapes else None,
                  args.simulation,
                  periode=(args.du, args.au) if args.du else None)
+    chemin_manifeste = ecrire_manifeste_sans_casser(
+        r, Path(__file__).resolve().parent.parent / "logs", maintenant=debut_execution,
+        periode=(args.du, args.au) if args.du else None,
+        etapes_demandees=args.etapes.split(",") if args.etapes else None)
 
     mode = "SIMULATION (rien n'est ecrit)" if r["simulation"] else "EXECUTION"
     if args.du:
@@ -526,5 +692,6 @@ if __name__ == "__main__":                                # [1] point de lanceme
         for d in b.details:
             print(f"      - {d}")
     print(f"\n  Etapes reussies : {r['etapes_ok']}/{len(r['bilans'])}"
-          f"   Duree : {r['duree_s']} s\n")
+          f"   Duree : {r['duree_s']} s")
+    print(f"  Manifeste : {chemin_manifeste or 'non ecrit (voir WARNING)'}\n")
     sys.exit(code_de_sortie(r, args.strict))

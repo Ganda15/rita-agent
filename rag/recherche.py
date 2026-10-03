@@ -77,6 +77,7 @@ from rank_bm25 import BM25Okapi
 
 from guardrails.entree import verifier_intention
 from rag.indexation import _collection
+from src import traces
 
 # Constante usuelle de la fusion RRF. Voir la docstring du module.
 K_RRF = 60
@@ -138,6 +139,9 @@ class Passage:
     # d'ablation n'est possible.
     article_id: int
     texte: str
+    # Le titre seul, pour la citation (chapitre « Données », cas R11, issue #59). Vide sur un
+    # index construit avant le 03/10/2026, jusqu'à sa réindexation.
+    titre: str
     source: str
     lien: str
     publie_le: str
@@ -217,7 +221,9 @@ def rechercher(question: str, ticker: str | None = None, k: int = 3,
     # Placé ICI, avant `_collection()` : un refus ne coûte ni chargement du corpus
     # ni appel à l'embedder — la question la plus chère à ignorer est ignorée au
     # prix le plus bas.
-    verification = verifier_intention(question)
+    with traces.etape("garde-fou-entree") as span:
+        verification = verifier_intention(question)
+        traces.noter_garde_fou(span, verification["bloque"], verification["motifs_detectes"])
     if verification["bloque"]:
         return Resultat(False, "INTENTION_INTERDITE", [], 0)
 
@@ -251,7 +257,7 @@ def rechercher(question: str, ticker: str | None = None, k: int = 3,
         return Resultat(False, "OUT_OF_CORPUS", [], 0)
 
     # --- liste 1 : dense ------------------------------------------------------
-    # Revue Codex, PR #1 (19/09/2026) : avec un ticker, la requête parcourait TOUTE la
+    # Revue automatisée, PR #1 (19/09/2026) : avec un ticker, la requête parcourait TOUTE la
     # collection puis tronquait au nombre de documents du ticker ; un article étranger
     # globalement plus proche évinçait le seul article permis → faux OUT_OF_CORPUS, et
     # l'ablation D0 (dense seul) en était faussée. `ids=` restreint le classement dense au
@@ -334,6 +340,7 @@ def rechercher(question: str, ticker: str | None = None, k: int = 3,
         retenus.append(Passage(
             article_id=int(ident),
             texte=doc,
+            titre=meta.get("titre", ""),
             source=meta.get("source", ""),
             lien=meta.get("lien", ""),
             publie_le=meta.get("publie_le", ""),

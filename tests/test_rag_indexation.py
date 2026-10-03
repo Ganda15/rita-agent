@@ -278,7 +278,7 @@ def test_un_resume_qui_apporte_vraiment_quelque_chose_est_conserve():
     assert texte_indexable(titre, resume) == f"{titre}. {resume}"
 
 
-# --- revue Codex, PR #1 (19/09/2026) : une reconstruction doit RETIRER ce qui n'est plus permis ---
+# --- revue automatisée, PR #1 (19/09/2026) : une reconstruction doit RETIRER ce qui n'est plus permis ---
 
 def _index_depuis(monkeypatch, tmp_path, articles):
     """Indexe des articles simulés dans un index jetable et rend la collection."""
@@ -312,3 +312,15 @@ def test_un_article_supprime_de_la_base_disparait_de_l_index(monkeypatch, tmp_pa
     _index_depuis(monkeypatch, tmp_path, [("Un", False), ("Deux", False), ("Trois", False)])
     collection = _index_depuis(monkeypatch, tmp_path, [("Un", False)])
     assert collection.count() == 1
+
+
+# --- chapitre « Données » (validé le 03/10/2026), cas R11 : citer, c'est titre + source + date + lien
+
+def test_le_titre_est_stocke_en_metadonnee_pour_la_citation(monkeypatch, tmp_path):
+    """Issue #59. Le texte indexé commence par le titre, mais un passage cité doit pouvoir donner
+    le titre seul, sans le découper du résumé : la métadonnée le porte tel quel."""
+    _articles_simules(monkeypatch, [_article(1, "Accor ouvre 40 hotels", "Le groupe accelere")])
+    indexation.indexer(chemin=tmp_path)
+
+    stocke = indexation._collection(tmp_path).get(ids=["1"])
+    assert stocke["metadatas"][0]["titre"] == "Accor ouvre 40 hotels"

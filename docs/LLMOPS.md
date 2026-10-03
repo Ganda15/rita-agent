@@ -144,9 +144,10 @@ qu'avant de pousser.*
 ### `livraison.yml` — construction et vérification de l'image
 
 1. **Tests — porte de livraison** : rien n'est construit si la suite échoue
-2. Construction de l'image Docker (publiée seulement sur un tag `livrable-*`)
-3. **Vérifier que l'image démarre et répond**
-4. **Vérifier que l'accès est bien restreint** — l'API doit refuser sans clé
+2. Construction de l'image Docker, **jamais publiée à cette étape** (chargée dans Docker pour être vérifiée)
+3. **Vérifier que l'image démarre et répond**, sur l'image construite, sans la reconstruire
+4. **Vérifier que l'accès est bien restreint** : l'API doit refuser sans clé
+5. **Publier l'image vérifiée**, seulement sur un tag `livrable-*` : c'est l'image testée aux étapes 3 et 4 qui part sur le registre (corrigé le 26/09/2026, issue #22 ; avant, la publication précédait la vérification)
 
 > ⚠️ **Docker n'est pas une chaîne de livraison continue.** Un `Dockerfile` seul ne coche
 > aucun critère. Ce qui coche C13 ici, c'est l'enchaînement **test → construction →

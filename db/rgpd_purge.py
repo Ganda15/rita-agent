@@ -36,6 +36,7 @@ logger = logging.getLogger(__name__)
 DSN_DEFAUT = "postgresql://rita:rita_dev_local@localhost:5432/rita"
 
 RETENTION_AUDIT_JOURS = 90      # T2 du registre
+RETENTION_MCP_CALLS_JOURS = 90  # T5 du registre (plan 62)
 RETENTION_POSITION_ANS = 3      # T1 du registre
 
 
@@ -60,6 +61,30 @@ def p1_purger_audit(cur, appliquer: bool) -> dict:
         """ % RETENTION_AUDIT_JOURS)
 
     return {"procedure": "P1", "libelle": f"memory_audit > {RETENTION_AUDIT_JOURS} jours",
+            "concernees": concernees, "supprimees": concernees if appliquer else 0}
+
+
+# --- P6 -----------------------------------------------------------------------
+
+def p6_purger_mcp_calls(cur, appliquer: bool) -> dict:
+    """Purge le journal des appels MCP au-delà de la durée de conservation (T5, plan 62).
+
+    Pourquoi 90 jours, les mêmes que T2 : au-delà, un refus ancien n'aide plus un diagnostic ; et
+    un journal technique reste une donnée personnelle quand il n'y a qu'un utilisateur.
+    """
+    cur.execute("""
+        SELECT count(*) FROM mcp_calls
+        WHERE horodatage < now() - INTERVAL '%s days'
+    """ % RETENTION_MCP_CALLS_JOURS)
+    concernees = cur.fetchone()[0]
+
+    if appliquer and concernees:
+        cur.execute("""
+            DELETE FROM mcp_calls
+            WHERE horodatage < now() - INTERVAL '%s days'
+        """ % RETENTION_MCP_CALLS_JOURS)
+
+    return {"procedure": "P6", "libelle": f"mcp_calls > {RETENTION_MCP_CALLS_JOURS} jours",
             "concernees": concernees, "supprimees": concernees if appliquer else 0}
 
 
@@ -119,7 +144,8 @@ def executer(dsn: str, appliquer: bool = False) -> dict:
     with psycopg2.connect(dsn) as conn:
         with conn.cursor() as cur:
             resultats = [p1_purger_audit(cur, appliquer),
-                         p2_purger_positions_soldees(cur, appliquer)]
+                         p2_purger_positions_soldees(cur, appliquer),
+                         p6_purger_mcp_calls(cur, appliquer)]
             doublons = p3_detecter_doublons(cur)
         if appliquer:
             conn.commit()

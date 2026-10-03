@@ -1,6 +1,6 @@
 """Les cibles que le scan Giskard attaque : chaque garde-fou À SA FRONTIÈRE réelle — C10, C17.
 
-Revue Codex, PR #14 : en production, une QUESTION d'utilisateur ne rencontre que le garde-fou
+Revue automatisée, PR #14 : en production, une QUESTION d'utilisateur ne rencontre que le garde-fou
 d'entrée (`rag/recherche.py:220`, `verifier_intention`), et un CONTENU externe (RSS, scraping)
 ne rencontre que le garde-fou d'injection (`sources/rss.py:159`, `neutraliser`). Une cible qui
 cumulait les deux mesurait une protection qui n'existe pas. Deux cibles, donc, une par frontière.
@@ -121,7 +121,7 @@ def test_lancer_appelle_vulnerability_scan_avec_la_bonne_cible_et_ecrit_le_rappo
     faux = types.ModuleType("giskard.scan"); faux.vulnerability_scan = faux_scan
     monkeypatch.setitem(sys.modules, "giskard.scan", faux)
     # Ce test prouve le câblage de `lancer`, pas la configuration du juge (testée à part) : modèle vide,
-    # et `giskard.agents` rendu INDISPONIBLE — c'est la situation du job de livraison (revue Codex,
+    # et `giskard.agents` rendu INDISPONIBLE — c'est la situation du job de livraison (revue automatisée,
     # PR #16 : sans Giskard installé, l'import inconditionnel faisait échouer ce test avant le stub).
     monkeypatch.setenv("GISKARD_CHECKS_DEFAULT_MODEL", "")
     monkeypatch.setitem(sys.modules, "giskard.agents", None)

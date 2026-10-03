@@ -79,18 +79,11 @@ jobs:
         run: python scripts/verifier_livrable.py --ci
 
       # --- La construction ----------------------------------------------
+      # Issue #22 (26/09/2026) : l'image n'est JAMAIS publiée ici. Elle est chargée
+      # dans Docker (`load: true`) pour être vérifiée, puis c'est CETTE image, et pas
+      # une autre construction, qui est publiée à la fin, seulement si tout est vert.
       - name: Préparer Buildx
         uses: docker/setup-buildx-action@v4
-
-      - name: S'authentifier sur le registre
-        # Seulement quand on publie : une connexion inutile est une
-        # permission accordée pour rien.
-        if: startsWith(github.ref, 'refs/tags/livrable-')
-        uses: docker/login-action@v4
-        with:
-          registry: ${{ env.REGISTRE }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Calculer les étiquettes de l'image
         id: etiquettes
@@ -103,12 +96,15 @@ jobs:
             type=ref,event=tag
             type=sha,format=short
 
-      - name: Construire (et publier si c'est un tag)
+      - name: Construire l'image (sans publier)
         uses: docker/build-push-action@v7
         with:
           context: .
-          push: ${{ startsWith(github.ref, 'refs/tags/livrable-') }}
-          tags: ${{ steps.etiquettes.outputs.tags }}
+          push: false
+          load: true
+          tags: |
+            ${{ steps.etiquettes.outputs.tags }}
+            rita-api:verification
           labels: ${{ steps.etiquettes.outputs.labels }}
           # Le cache évite de retélécharger et recompiler les dépendances à
           # chaque exécution : quelques minutes, et autant d'énergie, en moins.
@@ -116,11 +112,11 @@ jobs:
           cache-to: type=gha,mode=max
 
       # --- La vérification ------------------------------------------------
-      # ⚠️ Une image qui se construit n'est pas une image qui démarre. Sans
-      # cette étape, on publierait une image cassée avec un workflow au vert.
+      # ⚠️ Une image qui se construit n'est pas une image qui démarre. On lance
+      # l'image construite juste au-dessus, sans la reconstruire : c'est elle,
+      # et elle seule, qui sera publiée.
       - name: Vérifier que l'image démarre et répond
         run: |
-          docker build -t rita-api:verification .
           docker run -d --name verification -p 8000:8000 \
             -e RITA_API_KEY=cle-de-verification-au-demarrage-32c \
             rita-api:verification
@@ -153,6 +149,28 @@ jobs:
       - name: Arrêter le conteneur de vérification
         if: always()
         run: docker rm -f verification || true
+
+      # --- La publication -------------------------------------------------
+      # Seulement sur un tag, et seulement si les deux vérifications sont passées
+      # (une étape en échec arrête le job avant d'arriver ici).
+      - name: S'authentifier sur le registre
+        # Juste avant de publier : une connexion inutile est une permission
+        # accordée pour rien.
+        if: startsWith(github.ref, 'refs/tags/livrable-')
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRE }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publier l'image vérifiée
+        if: startsWith(github.ref, 'refs/tags/livrable-')
+        env:
+          ETIQUETTES: ${{ steps.etiquettes.outputs.tags }}
+        run: |
+          printf '%s\n' "$ETIQUETTES" | while read -r etiquette; do
+            [ -n "$etiquette" ] && docker push "$etiquette"
+          done
 
       - name: Résumé
         run: |

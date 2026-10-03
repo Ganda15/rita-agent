@@ -1,6 +1,6 @@
 """Scan de vulnérabilités Giskard contre les garde-fous de RITA — C10, C17 (OWASP LLM Top 10).
 
-## Deux cibles, une par frontière réelle (revue Codex, PR #14)
+## Deux cibles, une par frontière réelle (revue revue automatisée de la PR #14)
 En production, une **question d'utilisateur** ne rencontre que le garde-fou d'entrée
 (`rag/recherche.py:220`, `verifier_intention`) ; un **contenu externe** (RSS, scraping) ne
 rencontre que le garde-fou d'injection (`sources/rss.py:159`, `neutraliser`). Une cible qui

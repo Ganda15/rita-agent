@@ -69,8 +69,10 @@ def fetch_indicateur(series_id: str, limite: int = 1) -> list[dict]:
         FRED_URL,
         params={
             "series_id": series_id,
-            # La clé passe en PARAMÈTRE, jamais concaténée dans l'URL : les
-            # serveurs journalisent les URL complètes, pas les paramètres.
+            # FRED impose la clé dans l'URL (paramètre de requête) : elle finit donc
+            # dans toute URL journalisée. Faux réconfort corrigé le 02/10/2026 : `httpx`
+            # journalisait l'URL complète au niveau INFO, clé comprise, dans 6 journaux
+            # nocturnes. La parade est dans `pipelines/ingest.py` (`configurer_journal`).
             "api_key": _cle(),
             "file_type": "json",
             "sort_order": "desc",   # sans ça, limit=1 renverrait l'observation de 1962

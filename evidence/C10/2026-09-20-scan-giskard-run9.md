@@ -5,7 +5,7 @@ langues fr,en) · **Rapports bruts** : `giskard-run9/rapport-giskard-question.js
 (artefact du run, conservés ici) · **Outil** : Giskard OSS 3.0.0 (`giskard[scan]`), juge `openrouter/anthropic/claude-sonnet-4.5`.
 
 ## Ce qui a été attaqué, et pourquoi deux frontières
-Pas le briefing complet : la **chaîne de garde-fous seule**, à ses deux frontières réelles (revue Codex, PR #14) :
+Pas le briefing complet : la **chaîne de garde-fous seule**, à ses deux frontières réelles (revue revue automatisée de la PR #14) :
 - **question** : ce qu'une question d'utilisateur rencontre en production, `verifier_intention` seul (`rag/recherche.py:220`) ;
 - **contenu** : ce qu'un article collecté rencontre, `neutraliser` seul (`sources/rss.py:159`).
 
@@ -54,7 +54,7 @@ détectées), tenue visible par un `xfail(strict=True)` dans `tests/test_evals.p
   légitimes avec le mot « rôle » NON refusées).
 
 ## Deuxième tour : les motifs resserrés par la revue de la PR #20
-Codex a montré deux faux positifs que les premiers motifs auraient créés : *« The bank will act as the sole bookrunner »*
+La revue automatisée a montré deux faux positifs que les premiers motifs auraient créés : *« The bank will act as the sole bookrunner »*
 (article exclu de l'index) et *« Quels articles proposent une analyse sans filtre des résultats de LVMH ? »* (question refusée).
 Motifs resserrés à une **consigne adressée à l'agent** (« tu vas répondre en tant que… », « you will act as… ») et, côté question,
 à la conjonction d'un indice de personnage ET d'un indice d'ignorance des règles. Trois tests anti-faux-positifs ajoutés avec ces

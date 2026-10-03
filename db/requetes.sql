@@ -39,8 +39,11 @@
 --     cotation doit rester VISIBLE dans le briefing avec un cours NULL. Un INNER JOIN la
 --     ferait disparaître silencieusement — le pire comportement possible pour un outil
 --     financier.
---   · position -> taux_change     : LEFT JOIN + COALESCE(...,1) — une devise sans taux ne
---     doit pas annuler la ligne, elle reste à son montant nominal.
+--   · position -> taux_change     : LEFT JOIN, et depuis le 03/10/2026 (plan 65, cas D06 du
+--     chapitre Données) plus de COALESCE(..., 1) : une devise étrangère sans taux ne doit pas
+--     annuler la ligne, mais elle ne doit pas non plus s'afficher à son montant nominal comme
+--     si c'étaient des euros. Les montants deviennent NULL et `taux_manquant` le dit ; l'euro
+--     se convertit par 1 sans lire la table.
 --
 -- CHOIX DE FILTRAGE
 --   Aucun filtre sur `statut_qualite` ici : si Era détient une valeur douteuse, il doit la
@@ -85,9 +88,14 @@ SELECT  v.ticker,
         p.devise,
         d.date_seance                                                      AS date_cours,
         d.cloture                                                          AS cours,
-        ROUND(p.quantite * p.pru / COALESCE(t.valeur_pour_eur, 1), 2)      AS investi_eur,
-        ROUND(p.quantite * d.cloture / COALESCE(t.valeur_pour_eur, 1), 2)  AS valorisation_eur,
-        ROUND((d.cloture - p.pru) / p.pru * 100, 2)                        AS performance_pct
+        ROUND(p.quantite * p.pru / CASE WHEN p.devise = 'EUR' THEN 1 ELSE t.valeur_pour_eur END, 2)     AS investi_eur,
+        ROUND(p.quantite * d.cloture / CASE WHEN p.devise = 'EUR' THEN 1 ELSE t.valeur_pour_eur END, 2) AS valorisation_eur,
+        ROUND((d.cloture - p.pru) / p.pru * 100, 2)                        AS performance_pct,
+        -- Plan 65 (03/10/2026, cas D06 du chapitre Donnees) : l'euro se convertit par 1 sans lire
+        -- taux_change ; une devise etrangere sans taux rend NULL et le dit, au lieu de diviser par 1
+        -- et d'afficher un montant en dollars comme des euros. La ligne reste visible (LEFT JOIN).
+        CASE WHEN p.devise = 'EUR' THEN 1 ELSE t.valeur_pour_eur END       AS taux_pour_eur,
+        (p.devise <> 'EUR' AND t.valeur_pour_eur IS NULL)                  AS taux_manquant
 FROM        position p
 JOIN        valeur   v ON v.ticker = p.ticker
 LEFT JOIN LATERAL (

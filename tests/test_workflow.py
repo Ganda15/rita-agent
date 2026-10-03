@@ -80,6 +80,7 @@ def passage_lvmh():
     return Passage(
         article_id=379,
         texte="LVMH publie des resultats en hausse",
+        titre="LVMH publie des resultats semestriels en hausse",
         source="Boursorama", lien="https://exemple.test/lvmh",
         publie_le="2026-08-29", tickers=["MC.PA"],
         rang_dense=0, rang_lexical=0, distance_dense=0.31, score_lexical=8.2,

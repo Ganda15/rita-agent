@@ -74,7 +74,7 @@ def test_une_question_legitime_qui_contient_le_mot_role_passe():
 
 
 def test_une_question_legitime_avec_sans_filtre_ou_jeu_de_role_n_est_pas_refusee():
-    """Revue Codex, PR #20 : ces mots seuls ne sont pas une intention interdite. Le refus exige une demande
+    """Revue automatisée, PR #20 : ces mots seuls ne sont pas une intention interdite. Le refus exige une demande
     d'INCARNER un personnage ET une consigne d'ignorer les règles."""
     for question in ("Quels articles proposent une analyse sans filtre des résultats de LVMH ?",
                      "Explique ce jeu de rôle entre la BCE et les banques commerciales.",

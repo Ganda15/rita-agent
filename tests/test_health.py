@@ -119,3 +119,28 @@ def test_la_comparaison_des_cles_est_a_temps_constant():
 
     source = inspect.getsource(main.verify_api_key)
     assert "compare_digest" in source
+
+
+# --- C9, C17 : le garde-fou de sortie est branché sur la route ----------------
+
+def test_briefing_interdit_est_remplace_par_le_message_de_refus():
+    """Ajouté le 02/10/2026 (audit) : le garde-fou de sortie est testé seul, mais
+    aucun test ne prouvait qu'il est BRANCHÉ sur /briefing. Retirer l'appel dans
+    api/main.py laissait toute la suite verte.
+
+    Le modèle est simulé : on lui fait produire une recommandation d'achat, et on
+    vérifie que l'API ne la diffuse pas."""
+    from guardrails.sortie import MESSAGE_REFUS
+
+    resultat_simule = {"ticker": "MC.PA", "price": 457.5, "change_pct": -1.99,
+                        "currency": "EUR", "error": "",
+                        "briefing": "Nous recommandons l'achat de cette valeur."}
+    with patch("api.main.generer_briefing_complet", return_value=resultat_simule):
+        response = client.post("/briefing?ticker=MC.PA", headers={"X-API-Key": CLE_DE_TEST})
+
+    assert response.status_code == 200          # un refus n'est pas une panne
+    corps = response.json()
+    assert corps["conforme_amf"] is False
+    assert corps["briefing"] == MESSAGE_REFUS
+    assert "recommandons" not in corps["briefing"], "le texte interdit ne doit jamais sortir"
+    assert "recommandation_explicite_fr" in corps["motifs_amf"]

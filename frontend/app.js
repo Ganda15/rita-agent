@@ -155,7 +155,11 @@ function afficherFraicheur(fraicheur) {
 
 // --- LE RENDU ----------------------------------------------------------------
 function afficher(donnees, indicateurs) {
-  document.getElementById("total").textContent = euro.format(nb(donnees.total_eur));
+  // Plan 65 (03/10/2026, cas D06) : un total inconnu s'écrit « indisponible », jamais 0,00 €.
+  const sansTaux = nb(donnees.positions_sans_taux) ?? 0;
+  document.getElementById("total").textContent = donnees.total_eur === null || donnees.total_eur === undefined
+    ? `indisponible (${sansTaux} position${sansTaux > 1 ? "s" : ""} sans taux de change)`
+    : euro.format(nb(donnees.total_eur));
   document.getElementById("nb-lignes").textContent =
     ` · ${donnees.nb} ligne${donnees.nb > 1 ? "s" : ""}`;
 
@@ -184,8 +188,11 @@ function afficher(donnees, indicateurs) {
     ajouterCellule(tr, nombre.format(nb(p.quantite)));
     ajouterCellule(tr, nombre.format(nb(p.pru)));
     ajouterCellule(tr, nombre.format(nb(p.cours)));
-    ajouterCellule(tr, euro.format(nb(p.investi_eur)));
-    ajouterCellule(tr, euro.format(nb(p.valorisation_eur)));
+    // Un montant sans taux de change est « indisponible », avec la raison au survol ;
+    // « 0,00 € » se lirait comme un montant nul, et absent n'est pas nul.
+    const raisonTaux = p.taux_manquant ? `taux de change manquant pour ${p.devise}` : "";
+    ajouterCellule(tr, p.taux_manquant ? "indisponible" : euro.format(nb(p.investi_eur)), "td", raisonTaux);
+    ajouterCellule(tr, p.taux_manquant ? "indisponible" : euro.format(nb(p.valorisation_eur)), "td", raisonTaux);
     ajouterCellule(tr, textePerf);
 
     // Un tiret si le poids manque — jamais « 0,00 % », qui se lirait comme une
@@ -235,7 +242,7 @@ function afficherExposition(expositions) {
     dd.textContent =
       `${part === null ? "—" : pourcentSansSigne.format(part)} %`
       + ` — ${e.nb_lignes} ligne${e.nb_lignes > 1 ? "s" : ""},`
-      + ` ${euro.format(nb(e.valorisation_eur))}`;
+      + ` ${nb(e.valorisation_eur) === null ? "indisponible" : euro.format(nb(e.valorisation_eur))}`;
 
     liste.append(dt, dd);
   }
@@ -243,9 +250,10 @@ function afficherExposition(expositions) {
   bloc.hidden = false;
 }
 
-function ajouterCellule(tr, texte, balise = "td") {
+function ajouterCellule(tr, texte, balise = "td", titre = "") {
   const cellule = document.createElement(balise);
   if (balise === "th") cellule.setAttribute("scope", "row");   // RGAA 5.7
+  if (titre) cellule.title = titre;   // la raison d'un « indisponible », au survol
   // textContent, JAMAIS innerHTML : un nom d'instrument contenant du HTML
   // serait exécuté. C'est OWASP A03 — injection.
   cellule.textContent = texte;

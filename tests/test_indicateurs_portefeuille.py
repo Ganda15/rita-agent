@@ -185,3 +185,28 @@ def test_la_distinction_cotation_vs_economique_est_documentee():
     assert "économique" in portefeuille.ExpositionDevise.__doc__
     assert "économique" in _charger_requetes()["exposition"] or \
            "economique" in _charger_requetes()["exposition"]
+
+
+# --- plan 65 (cas D06, 03/10/2026) : des parts seulement sur un total complet ------------------
+
+def test_un_taux_manquant_rend_toutes_les_parts_indisponibles_et_le_dit(monkeypatch):
+    """La requête rend `complet` faux et des `poids_pct` NULL dès qu'une valorisation manque ;
+    le module le transmet tel quel, sans recalculer quoi que ce soit."""
+    from indicateurs.portefeuille import lire_poids_detail
+    monkeypatch.setattr(socle, "_executer", lambda sql, p=None: [
+        ligne_poids(poids_pct=None, total_eur=None, complet=False),
+        ligne_poids(ticker="AAPL", nom_officiel="Apple", devise="USD",
+                    valorisation_eur=None, poids_pct=None, total_eur=None, complet=False),
+    ])
+    r = lire_poids_detail()
+    assert r.complet is False and r.total_eur is None
+    assert [l.poids_pct for l in r.lignes] == [None, None]
+    lignes, total = lire_poids()          # l'ancienne signature reste servie
+    assert total is None and len(lignes) == 2
+
+
+def test_un_portefeuille_complet_le_dit_aussi(monkeypatch):
+    from indicateurs.portefeuille import lire_poids_detail
+    monkeypatch.setattr(socle, "_executer", lambda sql, p=None: [ligne_poids(complet=True)])
+    r = lire_poids_detail()
+    assert r.complet is True and r.total_eur == pytest.approx(33214.80)

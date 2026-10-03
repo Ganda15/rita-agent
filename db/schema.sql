@@ -193,6 +193,26 @@ COMMENT ON COLUMN taux_change.valeur_pour_eur IS
 
 
 -- =============================================================================
+-- 5 bis. MACRO_OBSERVATION : séries macroéconomiques (FRED), ajoutée le 27/09/2026
+-- =============================================================================
+-- Issue #52 : `sources/fred.py` savait lire DGS10 (Trésor US 10 ans), CPIAUCSL
+-- (inflation US) et DFF (taux directeur effectif de la Fed), mais aucune table ne les
+-- recevait. Une série = une clé texte, pas une table par série : ajouter une série
+-- est une ligne de configuration, pas une migration.
+CREATE TABLE macro_observation (
+    serie            VARCHAR(20)   NOT NULL,
+    date_observation DATE          NOT NULL,
+    valeur           NUMERIC(14,4) NOT NULL,
+    collecte_le      TIMESTAMPTZ   NOT NULL DEFAULT now(),
+
+    PRIMARY KEY (serie, date_observation)
+);
+
+COMMENT ON TABLE macro_observation IS
+    'Observations FRED. serie = code FRED (DGS10, CPIAUCSL, DFF), voir sources/fred.py:SERIES.';
+
+
+-- =============================================================================
 -- 6. ARTICLE — actualités RSS
 -- =============================================================================
 CREATE TABLE article (
@@ -235,6 +255,33 @@ CREATE TABLE memory_audit (
 );
 
 CREATE INDEX idx_memory_audit_agent_date ON memory_audit (agent, horodatage DESC);
+
+
+-- =============================================================================
+-- JOURNAL DES APPELS MCP : plan 62 (03/10/2026), chapitre « Données » §3.7, C20
+-- =============================================================================
+-- Écrit par l'API seule : la passerelle MCP ne touche jamais la base (elle remonte ses refus
+-- locaux par POST /audit/mcp). Huit champs, pas un de plus : tout champ supplémentaire doit
+-- répondre à un besoin explicite. Un journal technique reste une donnée personnelle quand il
+-- n'y a qu'un utilisateur : traitement T5 du registre, purge P6 à 90 jours.
+CREATE TABLE mcp_calls (
+    id                BIGSERIAL    PRIMARY KEY,
+    request_id        VARCHAR(64)  NOT NULL,
+    client_id         VARCHAR(40)  NOT NULL,
+    outil             VARCHAR(60)  NOT NULL,
+    statut            VARCHAR(10)  NOT NULL CHECK (statut IN ('succes', 'refuse', 'erreur')),
+    code_erreur       VARCHAR(40),
+    duree_ms          INTEGER      CHECK (duree_ms IS NULL OR duree_ms >= 0),
+    version_politique VARCHAR(40)  NOT NULL,
+    horodatage        TIMESTAMPTZ  NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_mcp_calls_horodatage ON mcp_calls (horodatage DESC);
+
+COMMENT ON TABLE mcp_calls IS
+    'Journal des appels MCP (C20, chapitre Donnees 3.7, plan 62). Aucun parametre brut, aucun '
+    'prompt, aucune cle, aucun chiffre de portefeuille : seulement qui, quel outil, quel resultat, '
+    'quand. Retention 90 jours (procedure P6). Ecrit par l API seule, jamais par la passerelle.';
 
 
 -- =============================================================================
@@ -281,9 +328,14 @@ SELECT  v.ticker,
         p.devise,
         d.date_seance                                                      AS date_cours,
         d.cloture                                                          AS cours,
-        ROUND(p.quantite * p.pru / COALESCE(t.valeur_pour_eur, 1), 2)      AS investi_eur,
-        ROUND(p.quantite * d.cloture / COALESCE(t.valeur_pour_eur, 1), 2)  AS valorisation_eur,
-        ROUND((d.cloture - p.pru) / p.pru * 100, 2)                        AS performance_pct
+        ROUND(p.quantite * p.pru / CASE WHEN p.devise = 'EUR' THEN 1 ELSE t.valeur_pour_eur END, 2)     AS investi_eur,
+        ROUND(p.quantite * d.cloture / CASE WHEN p.devise = 'EUR' THEN 1 ELSE t.valeur_pour_eur END, 2) AS valorisation_eur,
+        ROUND((d.cloture - p.pru) / p.pru * 100, 2)                        AS performance_pct,
+        -- Plan 65 (03/10/2026, cas D06 du chapitre Donnees) : l'euro se convertit par 1 sans lire
+        -- taux_change ; une devise etrangere sans taux rend NULL et le dit, au lieu de diviser par 1
+        -- et d'afficher un montant en dollars comme des euros. La ligne reste visible (LEFT JOIN).
+        CASE WHEN p.devise = 'EUR' THEN 1 ELSE t.valeur_pour_eur END       AS taux_pour_eur,
+        (p.devise <> 'EUR' AND t.valeur_pour_eur IS NULL)                  AS taux_manquant
 FROM        position p
 JOIN        valeur   v ON v.ticker = p.ticker
 LEFT JOIN LATERAL (
@@ -300,6 +352,8 @@ ORDER BY    performance_pct DESC NULLS LAST;
 
 COMMENT ON VIEW v_portefeuille_valorise IS
     'Briefing quotidien, converti en euros. Deux LEFT JOIN volontaires : une position '
-    'sans cotation reste visible avec un cours NULL, et une devise sans taux reste a son '
-    'montant nominal via COALESCE. Un INNER JOIN les ferait disparaitre en silence — le '
-    'pire comportement possible pour un outil financier.';
+    'sans cotation reste visible avec un cours NULL ; une devise etrangere sans taux reste '
+    'visible avec des montants NULL et taux_manquant vrai (plan 65, 03/10/2026 : avant, '
+    'COALESCE(taux, 1) affichait un montant en devise comme des euros). L euro se convertit '
+    'par 1 sans lire taux_change. Un INNER JOIN ferait disparaitre la ligne en silence, '
+    'le pire comportement possible pour un outil financier.';

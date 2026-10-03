@@ -30,7 +30,10 @@ docker compose -f db/docker-compose.yml up -d
 ```
 
 Le schéma `db/schema.sql` est joué **automatiquement à la première création du volume**
-(mécanisme `/docker-entrypoint-initdb.d`). Il ne l'est plus ensuite.
+(mécanisme `/docker-entrypoint-initdb.d`). Il ne l'est plus ensuite. Les changements de
+schéma postérieurs à la création d'une base se jouent par un fichier de migration rejouable :
+`db/migration-2026-09-27-places-de-cotation.sql` (table `macro_observation`, devise de cotation,
+valeurs radiées).
 
 ```powershell
 # Vérifier que la base accepte les connexions (le healthcheck fait la même chose)

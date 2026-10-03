@@ -5,10 +5,16 @@ from agents.analyst import generate_briefing
 from agents.scout import collect
 from graph.state import RitaState
 from rag.recherche import rechercher
+from src import traces
 
 
 def noeud_scout(state: RitaState) -> RitaState:
-    donnees = collect(state["ticker"])
+    with traces.etape("scout") as span:
+        donnees = collect(state["ticker"])
+        # Résumé seulement : des données de marché publiques, jamais une position ni un PRU.
+        traces.terminer_etape(span, output={
+            "ticker": donnees.get("ticker"), "fraicheur_jours": donnees.get("fraicheur_jours"),
+            "cotation_perimee": donnees.get("cotation_perimee"), "erreur": donnees.get("error") or None})
     return {**state, **donnees}
 
 
@@ -23,7 +29,13 @@ def noeud_rag(state: RitaState) -> RitaState:
     Si le Scout a échoué, on ne cherche pas : balayer le corpus pour un briefing
     qui ne sera jamais rédigé serait du travail pur perdu.
     """
+    with traces.etape("rag", "retriever") as span:
+        return _noeud_rag(state, span)
+
+
+def _noeud_rag(state: RitaState, span) -> RitaState:
     if state["error"]:
+        traces.terminer_etape(span, output={"motif": "NON_APPELE", "nb_passages": 0})
         return {**state, "passages": [], "motif_rag": "NON_APPELE"}
 
     # ⚠️ Le NOM COURT, jamais la raison sociale. `valeur.nom_officiel` vaut
@@ -41,16 +53,28 @@ def noeud_rag(state: RitaState) -> RitaState:
     # articles dont on sait déjà qu'ils parlent de Crédit Agricole.)
     nom = state["indicateurs"].get("nom_officiel") or state["ticker"]
     resultat = rechercher(f"actualite {nom.split()[0]}", ticker=state["ticker"])
+    passages = [p.en_dict() for p in resultat.passages]
+    # Le compte et les sources, pas le texte des articles : il est déjà dans la génération.
+    traces.terminer_etape(span, output={"motif": resultat.motif, "nb_passages": len(passages),
+                                        "sources": [p.get("source") for p in passages]})
 
-    return {**state,
-            "passages": [p.en_dict() for p in resultat.passages],
-            "motif_rag": resultat.motif}
+    return {**state, "passages": passages, "motif_rag": resultat.motif}
 
 
 def noeud_redacteur(state: RitaState) -> RitaState:
-    if state["error"]:
-        return {**state, "briefing": ""}
-    texte = generate_briefing(
+    with traces.etape("redacteur") as span:
+        if state["error"]:
+            traces.terminer_etape(span, output={"saute": True})
+            return {**state, "briefing": ""}
+        texte = _rediger(state)
+        # La longueur seulement : le texte est dans la génération, et il n'est pas encore
+        # passé par le garde-fou de sortie (api/main.py).
+        traces.terminer_etape(span, output={"longueur": len(texte)})
+    return {**state, "briefing": texte}
+
+
+def _rediger(state: RitaState) -> str:
+    return generate_briefing(
         ticker=state["ticker"],
         price=state["price"],
         change_pct=state["change_pct"],
@@ -60,7 +84,6 @@ def noeud_redacteur(state: RitaState) -> RitaState:
         cotation_perimee=state["cotation_perimee"],
         passages=state["passages"],
     )
-    return {**state, "briefing": texte}
 
 
 def construire_graphe():

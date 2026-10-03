@@ -10,12 +10,245 @@
 Chronologie datée · les 5 livrables · **table filtrable des 21 compétences** (bouton
 « À zéro » → C7, C11, C16) · inventaire du code, des schémas et des preuves.
 
-> Dans le terminal Claude Code : **`/artifacts`** liste tes tableaux de bord (`o` pour ouvrir,
+> Dans le terminal de l'assistant : **`/artifacts`** liste tes tableaux de bord (`o` pour ouvrir,
 > `c` pour copier le lien) · **`Ctrl+]`** rouvre le dernier. Sur le web :
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-09-19** · deadline livrables **05/11/2026** · jury **30/11–01/12**
+**Dernière mise à jour : 2026-10-03** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
+
+---
+
+🧹 **03/10, fin de journée** : description GitHub remise sur la décision du 16/08 (« Tracking et l'Analyse », plus
+« Trading ») ; tableau des livrables du README réécrit (il disait encore « C11 non commencé », « E5 non commencé ») ;
+**plus aucune trace d'outil** (« revue Codex », « Claude Code ») dans les textes visibles du jury, 73 remplacements dans 32
+fichiers ; les notes de veille (citations), la preuve C10 du hook et la configuration de l'outillage restent telles quelles ;
+les commits ne portent plus de ligne de co-signature. L'historique déjà poussé ne se réécrit pas (`main` protégée).
+
+🧭 **Tâche principale depuis le 03/10 : intégrer le chapitre « Données » validé par le formateur** (« Très bon travail. Se montrera
+utile à l'exécution. Rien à redire. »). Le chapitre est dans `docs/conception/donnees/` (README = tableau chapitre contre code au
+03/10) ; dix issues `conception-donnees` portent les écarts ouverts. **Ordre** : 1) sans zone sous garde, test d'abord : `titre`
+dans l'index (**#59 fait le 03/10**, 3 tests ; l'index du poste, 1 563 documents sans titre, se reconstruit à la collecte de 19 h), vérification de la démonstration dans la passerelle (**#60 fait le 03/10**, 5 tests : déclaration `RITA_MCP_PORTEFEUILLE=demo` et comparaison au jeu d'exemple), cartographie des 32 cas (**#61 fait le 03/10** : 23 ✅ 5 🟠 4 ❌, quatre tests écrits, deux issues ouvertes #69 D07 et #70 A08), manifeste de collecte (**#64 fait le 03/10**, 9 tests ; premier manifeste réel attendu à la collecte de 19 h dans `logs/`) ; vérification de la démonstration dans la passerelle, cartographie des 32 cas, manifeste de collecte ; 2) avec plan
+validé par Era : `COALESCE` de la vue (**#65 fait le 03/10** sur plan validé D1 D2 D3 = A : 23 tests, migration jouée sur le poste ; **reste à jouer sur Compose et Hetzner** : `db/migration-2026-10-03-vue-valorisation-taux.sql`), `mcp_calls` (**#62 fait le 03/10** sur plan validé D1 D2 D3 = A : 21 tests, migration jouée sur le poste, premières lignes réelles ; **reste Compose et Hetzner** : `db/migration-2026-10-03-mcp-calls.sql`), clôture des positions (**plan écrit le 03/10** : `docs/PLAN-66-cloture-positions.md`, quatre décisions D1 à D4 en attente d'Era ; découvert au passage : l'import des positions duplique tout à la seconde exécution) ; 3) décisions d'Era : quasi-doublons, `search_articles`.
+Rien de ce qui touche `db/schema.sql` ne se code sans ce plan.
+
+▶️ **PR #58 `develop → main`** : ouverte le 03/10 au soir (31 commits), relue par la revue automatisée (2 remarques, **corrigées le 03/10** :
+`c4b1517`, `1ee721c`, 635 passed, 93,41 %), la revue automatisée n'a rien publié. Checks verts : **à fusionner** par Era
+(`gh pr merge 58 --merge`) ; aucun tag, ce n'est pas un livrable.
+Prochaine action, à la reprise : lire les commentaires de la revue automatisée sur
+https://github.com/Ganda15/rita-agent/pull/58 ; chaque remarque vraie = un correctif et un test poussés sur `develop` ;
+puis `gh pr merge 58 --merge` quand les checks sont verts. Aucun tag : ce n'est pas un livrable. Une fois sur `main`,
+le bouton *Run workflow* d'`alerte-incident.yml` existe et le test manuel de la chaîne d'alerte devient possible.
+
+🧭 **03/10, matin : reconnaissance complète, rien construit, deux notes Obsidian et deux lignes corrigées ici.**
+
+Era a demandé de tout retrouver sans question. Lu et confronté : dépôt, GitHub, coffre, classeurs Excel, disque D:,
+Bureau, skills. Résultat dans `Projets/RITA/00-Pilotage/RITA - Etat des lieux complet, plan initial et realise
+(2026-10-03).md` (prévu contre réel, doublons, qui fait quoi) et dans `Projets/RITA/04-Certif/RITA - Verification
+criteres RNCP C1-C21 (2026-10-03).md` (7 ✅, 13 ⚠️, 1 ❌ : C7). Le classeur
+`D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP.xlsx` existe depuis le 14/08 et n'a **aucune case
+cochée** : c'est ce que le formateur regarde la semaine du 05/10.
+
+**Push fait le 03/10 à la demande d'Era** : dix commits, `2022689..a1c14e6` sur `origin/develop`, suite verte avant
+(626 passed, 2 xfailed, 126 s), arbre propre après. **▶️ Ordre des prochaines actions** : 1) les fichiers de clés en clair du Bureau (Era seul : gestionnaire, suppression, rotation) ; 3) Langfuse : **tableau « RITA C11 » construit par l'API le 03/10** (3 tuiles), 15 traces factices exportées ;
+restent à Era les clics de suppression (refusée à l'agent), les 2 alertes (pas d'API) et les captures ; le bouton
+*Run workflow* attend la PR `develop → main` (`evidence/C11/preuve-langfuse-2026-10-03.md`) ; 4) **fait le 03/10** : le classeur Excel rempli critère par critère depuis la note (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER, preuve en commentaire de chaque cellule, sauvegarde SAUVEGARDE3 à côté) ; puis E1 v2 (tag `livrable-E1-v2` le 15/10) et
+le rapport E3. Pointeurs des skills et table de `CLAUDE.md` global : **corrigés le 03/10**. **`main` protégée côté serveur depuis le 03/10**
+(GitHub Pro activé par Era, ruleset : PR obligatoire, `pytest` et `evals` verts ; **tags `livrable-*` figés** par un second ruleset le soir ; `evidence/C19/`) : capture d'écran de
+*Settings → Rules* à ranger par Era.
+
+---
+
+🔎 **02/10, nuit : C11 construit de bout en bout dans le code ; il reste les clics dans Langfuse, et le push.**
+
+Tout le volet 4 du plan du soir est codé, testé avant d'être écrit, et expliqué dans le journal Obsidian 018
+(sections 2 à 13). Poussé le 03/10 au matin (`2022689..a1c14e6`, dix commits) ; ce paragraphe disait « rien n'est
+encore poussé » jusque-là.
+
+| Fait cette nuit | Preuve |
+|---|---|
+| Le garde-fou de sortie est prouvé **branché** sur `/briefing` : test d'API, mutation rouge puis verte | `tests/test_health.py`, `evidence/C17/preuve-garde-fou-sortie-branche.md` |
+| Un refus écrit une ligne de journal (valeur, motifs, jamais le texte) ; le verdict AMF est sur la trace (métadonnées, niveau WARNING, note `conforme_amf`) | `tests/test_journal_refus_amf.py`, `tests/test_trace_verdict_amf.py` |
+| **`request_id`** sur chaque réponse (`X-Request-ID`), dans le journal et comme identifiant de trace ; identifiant client douteux remplacé | `tests/test_request_id.py` (11) |
+| La clé FRED ne s'écrit plus dans le journal de la collecte (`httpx` à WARNING) ; commentaire faux de `fred.py` corrigé | `tests/test_journal_pipeline.py` |
+| Compose transmet les variables Langfuse au conteneur `api` | `tests/test_docker_compose.py` (3 ajoutés) |
+| **Une trace montre tout le chemin** : `briefing` puis `scout`, `rag` (retriever), `garde-fou-entree`, `redacteur`, `briefing-llm`, `llm-<fournisseur>`, `garde-fou-sortie` ; test de trace à la Kaldera | `tests/test_trace_chemin.py` (8) |
+| Une alerte Langfuse ouvre une issue `incident` (workflow `alerte-incident.yml`, bouton manuel, label créé, alerte répétée commentée) ; section « Monitorage Langfuse et alertes » dans `docs/EXPLOITATION.md` | `tests/test_alerte_incident.py` (7) |
+| `evidence/C11/README.md` (9 critères : 5 tenus, 1 partiel, 3 à faire) ; **INC-006** écrit ; index C21 à jour (critères 3 et 5 ✅ depuis INC-005) | `evidence/C11/`, `evidence/C21/` |
+
+**Mesures** : `C:\Python314\python.exe -m pytest -q` : **626 passed, 2 xfailed** (586 ce matin) · couverture **93,66 %**
+(seuil 90 %), `api/main.py` et `graph/workflow.py` à 100 % · `scripts\verifier_liens.py` : 82 liens internes, 84 externes,
+**0 cassé**.
+
+**Ce qui reste du volet 4, et qui le fait** : Era, dans Langfuse : supprimer les 12 lignes de test (capture avant),
+regarder la trace réelle complète, construire le tableau « RITA C11 » (3 widgets), régler les 2 alertes (canal GitHub
+Actions, après une semaine de traces pour les seuils) ; sur GitHub : lancer une fois le workflow d'alerte à la main
+(branche `develop`) et garder l'issue ; captures datées dans `evidence/C11/`. Sur le serveur : les trois variables
+Langfuse, puis `docker compose up -d --force-recreate api`, après fusion dans `main`.
+
+**Décisions d'Era en attente** : faire tourner la clé FRED (6 journaux locaux la contiennent en clair) ; un second
+projet Langfuse `rita-dev` pour le poste ; `memory_audit` : écrire des empreintes ou retirer la table (`CONTINUITE.md` D).
+
+**Volet du plan** : 1 ✅ · 2 ✅ · 3 ✅ · 4 ✅ côté code · 5 à 9 restent (enveloppe `<donnees_externes>`, `memory_audit`,
+dossiers de preuves C9 C12 C13 C18, **rapport E3**, hygiène et tags).
+
+**▶️ Prochaine action la plus petite : les 7 commits et le push (journal 018, section 13), puis le bouton Run workflow.**
+Ensuite : `docs/rapports/E3/` commence (0 page au 02/10).
+
+---
+
+🔎 **02/10, soir : gel repoussé au 15/10, et une relecture complète du dépôt face à tous les briefs.**
+
+Décision d'Era : **E3 et E1 gelés le jeudi 15/10**, pas le 11/10. Le formateur a annoncé un brief de création la semaine
+du 05/10 ; l'audit chiffre le travail de E3 restant à 30 à 45 h. **Ce que le gel permet** : on ne construit plus rien,
+mais on corrige ce que les retours de l'oral blanc (29-30/10) montrent, par une version taguée `v2`, jamais en silence ;
+limites 05/11 (relecture d'Elbby) et 23/11 (jury). Écrit dans `CONTINUITE.md` F.
+
+**Relecture du 02/10** (14 agents : 5 auditeurs, 5 contradicteurs, 3 chercheurs, 1 critique ; constats clés revérifiés
+par commande) :
+
+| Question du formateur | Réponse mesurée |
+|---|---|
+| **Garde-fous intégrés ?** | **Oui, mesurés.** `entree.py` 7 motifs, 100 % et 0 % de faux positifs ; `injection.py` 12 motifs, 70 % et 0 % ; `sortie.py` 9 motifs, 70 % et 0 %. Cible de 85 % déclarée non atteinte (`xfail` strict). Quatre manques à dire d'abord : l'enveloppe `<donnees_externes>` jamais branchée, aucun journal ni marque de trace au refus, aucun test d'API sur la substitution AMF, l'entrée qui ne voit aucun texte libre aujourd'hui |
+| **Mémoire intégrée ?** | **Conçue le 28/07, à moitié construite.** M1, M2, M3 et M6 réelles ; M4 et M5 abandonnées pour la V1 (le modèle est le dernier nœud, un checkpointer ne sauverait aucun appel payant) ; `memory_audit` sans écrivain. **La décision n'était écrite nulle part** : elle l'est depuis ce soir, `CONTINUITE.md` D |
+
+**Faits que la relecture a trouvés** : aucun `request_id` dans le code ; `docker-compose.yml` ne transmet aucune variable `LANGFUSE_*`, donc le conteneur ne trace pas ; la clé FRED est écrite en clair dans 6 journaux locaux (rapporté par un auditeur, non revérifié par commande) ; `README.md` (18/08) annonce 186 tests et « C11 non commencé » ; `CLAUDE.md` annonce 458 tests, 8 tables, 15 index (mesuré : 588 collectés, 9 tables) ; la table de compétences plus bas dans ce fichier contredit son propre en-tête (C11, C16) ; passerelles manquantes pour Velmo, Kaldera, Kaldera-A2A, Industrialisation, Factum : **écrites ce soir**, et la ligne fausse « RITA n'a aucun gate d'évaluation » corrigée.
+
+**À ne pas faire (décisions écrites)** : pas d'endpoint A2A (aucun critère, 10 à 16 h, surface à état) ; pas de Prometheus et Grafana sur le serveur de 4 Go ; pas de checkpointer ; pas de NeMo Guardrails (Python 3.13 au plus) ; pas de changement d'outil de traçage ; pas de gestion des prompts dans Langfuse (dépendance réseau sur `/briefing`).
+
+**Plan jusqu'au gel du 15/10** (heures de l'audit, dans l'ordre) :
+1. Registre RGPD T3 corrigé, entité du DPA : addendum ClickHouse, Langfuse GmbH sous-traitant allemand (1 h)
+2. Test d'API de la substitution AMF + une ligne de journal + le verdict sur la trace (2 à 3 h)
+3. `request_id` : middleware, journal, identifiant de trace (2 à 3 h)
+4. C11 visible : variables transmises au conteneur, spans `scout`, `rag`, garde-fous, tableau « RITA C11 », 2 alertes vers une issue GitHub, `evidence/C11/`, INC-006 (6 à 9 h)
+5. Enveloppe `<donnees_externes>` branchée, tests de seuil de l'entrée, cas Giskard rejoués, test de l'ordre des nœuds (2 à 2,5 h)
+6. `memory_audit` : écrire ou retirer (0,5 h ou 2 à 3 h)
+7. Dossiers de preuves C9, C12, C13, C18 depuis les exécutions existantes de la CI (2 à 3 h)
+8. Rapport E3 (6 à 10 h)
+9. Hygiène : `README.md`, `CLAUDE.md`, commentaire de `test.yml`, `requirements.txt` épinglé, 422 pour ticker inconnu, retour arrière, tag `livrable-E1-v2` puis `livrable-E3-v1` (7 à 10 h)
+
+**Après le gel** : revue du lundi pour C16 (5 entrées datées), note de veille S40 avec A2A, paquet E4 le 25/10, benchmark C7 sur les trois fournisseurs déjà branchés.
+
+**Non vérifié** : si Hetzner reçoit les clés Langfuse autrement ; l'existence d'un tableau ou d'alertes dans l'interface Langfuse ; la couverture du jour (suite non relancée) ; quel brief occupe la semaine du 05/10 ; deux notes de la phase 1 du programme (« modèle open source, mode d'emploi » et « l'agent qui a perdu la tête ») sans trace dans Obsidian.
+
+~~**▶️ Prochaine action la plus petite : corriger le registre RGPD T3 (titre, date, entité du DPA).** Puis le test d'API de la substitution AMF, en TDD.~~ **Fait dans la nuit du 02/10** (bloc ci-dessus).
+
+---
+
+🔎 **02/10 : C11 devient réel. Première trace Langfuse de RITA, et deux défauts trouvés en la lisant.**
+
+| Fait | Preuve |
+|---|---|
+| **Chaque appel au modèle est tracé** (carte #39) : `src/traces.py` (no-op sans clés), `src/llm.py` restructuré, un trace `briefing-llm` par appel avec une génération `llm-<fournisseur>` par tentative, usage en tokens, erreur du repli. **8 tests écrits avant** (rouge → vert), suite **586 passed, 2 xfailed** | `7cf3ffd` ; `tests/test_traces.py`, `tests/test_llm.py` |
+| **Première trace réelle** : 02/10 18:39, Foundry et Anthropic en erreur, OpenRouter répond (`anthropic/claude-sonnet-4.5`, 27 tokens, 1,73 s) ; seconde à 19 h avec la hiérarchie | captures Langfuse d'Era ; projet `rita`, région UE |
+| 🔴 **Trouvé dans Langfuse, pas dans le code : les tests écrivaient en production.** 12 générations « prompt test » → « ok anthropic » entre 18:25 et 18:38 : `api/main.py` charge le fichier d'environnement à l'import, les vraies clés restaient dans le processus, la cascade simulée traçait pour de vrai. Corrigé le jour même : test rouge puis fixture `couper_le_tracage` dans `tests/conftest.py` | même commit ; capture des 12 lignes avant suppression |
+| 🟠 **Le poste de démonstration n'a qu'un fournisseur qui répond** : OpenRouter (clé neuve le 02/10). Pas de clé Foundry ni Anthropic en local. La cascade et son repli sont donc visibles à chaque appel, mais une panne OpenRouter = pas de briefing en démo | sortie des deux appels réels |
+| Fichier d'environnement : deux faux départs instructifs (clés jamais écrites, puis les « … » de l'exemple collés à la place des clés) ; résolu par Era à la main, le hook `bloquer-secrets.py` ayant refusé 4 commandes de Claude qui nommaient le fichier, lecture comprise | session du 02/10 |
+
+**Reste pour C11 avant le 15/10** : tableau « RITA C11 » (3 widgets), les 2 alertes du palier gratuit vers GitHub Actions (ouvrir une issue `incident`), `evidence/C11/` avec les captures datées, le nom de l'entité du DPA dans le registre. Décision à prendre : écrire la fuite des tests comme **INC-006** (`evidence/C21/`).
+
+---
+
+🔎 **29/09 : deux oraux blancs annoncés, le plan est réécrit, E3 passe devant.**
+
+Message du formateur (échange avec Elbby et Nadège) : **29-30/10** oral blanc E1 (15 min) + E3 (20 min)
++ 10 min de retours ; **12-13/11** oral blanc en situation réelle, 90 min. Règle d'Era, posée le même
+jour : **tout livrable gelé 2 à 3 semaines avant son oral**, la présentation se prépare sur du figé.
+
+| Conséquence | Date |
+|---|---|
+| **E3 et E1 gelés** (rapport E3 écrit, C11 réel, Hetzner rafraîchi, dates du rapport E1 corrigées) | ~~dimanche 11/10~~ **jeudi 15/10** (repoussé le 02/10) |
+| E4 gelé | 25/10 |
+| Les cinq envoyés | 05/11 |
+| Étude seule | 14 → 29/11 |
+
+Calendrier révisé dans `docs/PLAN-12-SEMAINES.md` §5 ; décision et coût dans `CONTINUITE.md` D et F.
+Langfuse (carte #39) avancé de S43 à **cette semaine**.
+
+**▶️ Tâche principale (Era, 29/09) : E3 prêt pour l'oral blanc, gelé le 15/10 (repoussé du 11/10 le 02/10).** Prochaine action, la
+plus petite : créer le compte Langfuse Cloud **région UE** (`cloud.langfuse.com`), lire le DPA, noter l'entité
+qui traite dans le registre RGPD §T3 ; puis, en TDD, la trace d'un appel de `src/llm.py` (#39).
+
+---
+
+🔎 **28/09, dimanche soir : le ledger rattrapé, la veille S40 préparée, le traçage tranché.**
+
+| Fait | Preuve |
+|---|---|
+| `CONTINUITE.md` et `CHANGELOG.md` avaient **9 jours de retard** (18 → 27/09) : rattrapés avec les vraies dates (9 décisions, 4 alternatives, 4 risques fermés, 6 ouverts) | `e8fd220` |
+| Candidats de veille **S40** : fenêtre élargie au 14/09 faute de S38-S39, 4 candidats (dont l'injection « explosive », arXiv 18/09, qu'aucun motif de `guardrails/injection.py` ne couvre), 16 liens à `200` | `c497858`, `docs/veille/_candidats-2026-S40.md` |
+| **Traçage : Langfuse Cloud, région UE, palier gratuit** (décision d'Era, règle du formateur « la condition = la sensibilité des données », mesurée : aucune donnée personnelle dans le prompt ; auto-hébergement impossible sur 4 Go ; LangSmith sans porte de sortie). Activation en **S43**, carte #39. Réserve : l'entité qui traite (Langfuse ou ClickHouse Inc.) à lire dans le DPA | `db/RGPD-registre-des-traitements.md` §T3 « Décision du 28/09 » ; `CONTINUITE.md` D et E |
+| Collecte du 27/09 confirmée : 6/6 avec l'étape `fred`, 30 observations, 1 359 documents indexés | `logs/collecte-2026-09-27.log` |
+
+**Quatre questions pour la revue de lundi** (section G de `CONTINUITE.md`) : ordre E4 / C7 en S40 · droits
+d'accès (#26) · veille S37-S39 (#31, voies A ou B décrites dans le relevé S40) · ajouter le ledger à la fin
+de session dans `CLAUDE.md`.
+
+---
+
+🔎 **27/09 : le guide d'étude « marchés et finance » a fait tomber cinq défauts de données, tous corrigés (INC-005).**
+Cause unique : la place de cotation n'était modélisée nulle part (Paris, euros, UTC, sans férié, supposés partout).
+
+| Défaut | Mesuré | Corrigé | Carte |
+|---|---|---|---|
+| Archive de 10 ans datée **un jour trop tôt** (date UTC au lieu de la date locale) | 52 426 cotations un dimanche | 0 ; MC.PA 01/08/2016 = 127,945 comme le docstring | #53 |
+| HSBA.L figée depuis le 28/08 (un ticker seul = colonnes imbriquées non lues, sans erreur) | 0 ligne lue sur 20 | 127 cotations rattrapées, dernière 25/09 | #50 |
+| FTI, SLB, HSBA.L étiquetées EUR ; HSBA.L en pence (×100) | 3 valeurs | USD, USD, GBP ; 15,122 £ | #47 |
+| Cours scrapé rangé sous la date du samedi | 24 séances fictives | 0 | #49 |
+| ZC.PA, ELE.PA, GTO.PA radiées mais OK, redemandées chaque soir | 3 échecs par soir | DELISTEE, non demandées | #48 |
+| Fériés Euronext inconnus de la fraîcheur (et « 14 juillet férié » : faux) | | calendrier officiel dans `sources/marches.py` | #51 |
+| FRED lisible mais jamais stockée | 0 table | `macro_observation`, étape `fred` à 19h00, route `/donnees/macro`, 30 obs. | #52 |
+
+Sauvegarde avant toute écriture : `sauvegardes/rita-2026-09-27-avant-migration.dump`. Reconstruction en une transaction,
+positions vérifiées inchangées (7). **42 tests écrits avant les correctifs**, suite **577 passed, 2 xfailed**.
+Fiche : `evidence/C21/INC-005-archive-decalee-d-un-jour.md`. ⚠️ **Le rapport E1 cite des dates décalées d'un jour**
+(« 28/07/2016 → 29/07/2026 ») : à corriger dans sa prochaine version (carte #56, S45).
+✅ **PR #54 fusionnée par Era le 27/09 (`10ef31e`)** après la revue automatisée (un point P2 fondé, corrigé test d'abord :
+l'étape `fred` est en échec quand aucune série ne répond, `4037a32`). Cartes #47 à #53 fermées avec leur preuve,
+passées à « Fait » par l'automatisation. Même défaut sur l'étape `ecb`, antérieur : carte #55 (S40).
+⏰ **Ce soir 19h00 : première collecte planifiée avec l'étape `fred`** ; lire `logs/collecte-2026-09-27.log`.
+
+---
+
+🔎 **26/09 : livre Packt « Building AI Agents for Finance » lu en entier. Rien à coder hors plan.**
+4 éléments retenus, chacun rangé à sa semaine de `docs/PLAN-12-SEMAINES.md` : Wilson (S40, protocole
+du benchmark C7) · traces et alerte de `src/llm.py` (S43, C11/C20) · journal d'audit de `/briefing`
+(S43, C20) · trous des garde-fous (S44, C17 ; correctif testé sur une copie : 571 passed, 0 faux
+positif sur 2 592 textes réels, 0/8 hors échantillon). Le reste est parqué. Détail : Obsidian
+`Projets/RITA/08-Etude/ETUDE - Livre Packt ... (2026-09-26).md`.
+⚠️ **Retard mesuré sur le plan** : S38 (monitorage instrumenté) et S39 (E4 rédigé) non faits ;
+`docs/rapports/` ne contient que E1.
+
+**▶️ Tâche principale (Era, 26/09) : retour au plan, S39 = rédiger le livrable E4 (C14-C19), puis le geler.**
+✅ **Étape 1 faite le 26/09** : les 36 critères officiels confrontés aux preuves (skill `projet-rncp`) →
+**21 ✅ · 11 ⚠️ · 4 ❌**, rapport E4 : 0 page. Détail, preuves `fichier:ligne` et plan d'action : Obsidian
+`Projets/RITA/04-Certif/RITA - Vérification critères RNCP E4 (2026-09-26).md`. Trois constats :
+- 🔴 **C16 (4 critères) n'est dans aucune semaine du plan** : 0 issue, aucun tableau, aucune méthode décrite.
+- 🟠 **`livraison.yml` publie l'image avant de vérifier qu'elle démarre** (`:110` avant `:121`). La branche
+  « publier sur tag » n'a jamais tourné (seul tag : `livrable-E1-v1`, antérieur au fichier).
+- 🟡 `requirements.txt` : 13 dépendances sans version (l'image, elle, est épinglée).
+
+✅ **C16 mis en place le 26/09 (décision d'Era : Kanban, tableau GitHub, revue du lundi)** : tableau
+« RITA - Pilotage Kanban (livrables E2-E5) », https://github.com/users/Ganda15/projects/4 (privé, formateur
+en lecture) ; **backlog = 24 issues (#21 à #44)** tirées du plan et de la vérification E4 (16 Backlog,
+7 Cette semaine, 1 En cours) ; méthode : `docs/PILOTAGE-AGILE.md` ; preuve : `evidence/C16/preuve-mise-en-place-kanban.md`.
+C16 passe de 0 à 2 ✅ + 2 ⚠️ (« tout au long du projet » ne vaut qu'à partir du 26/09).
+
+✅ **#22 fermée le 26/09 (C19)** : `livraison.yml` construit sans publier, vérifie l'image construite
+(sans la reconstruire), puis publie cette image seulement sur un tag. PR #46 fusionnée par Era (`556990e`) ;
+`tests/test_livraison.py` 3 rouges puis verts ; suite locale 535 passed ; run Livraison `36247837793` :
+image démarrée en 4 s, 403 sans clé, publication sautée hors tag. Reste à prouver : la publication, au
+premier tag `livrable-E4-v1`. Première carte passée à « Fait » par l'automatisation du tableau.
+⚠️ Appris en route : « Closes #N » ne ferme l'issue qu'à l'arrivée sur `main` (branche par défaut) ;
+les PR visant `develop`, l'issue se ferme à la main après fusion et CI verte.
+
+**Prochaine action** : **lundi 28/09, première revue hebdomadaire** (après la note de veille S40, issue #30) :
+compte rendu daté ici même. Puis les cartes « Cette semaine » : #23 `requirements.txt`, #24 écran 2,
+#25 EcoIndex, #26 droits d'accès (décision d'Era), #27 doc CI/CD, #28 rapport E4.
+
+⚠️ **Deux trous de suivi trouvés le 26/09** : aucune note de veille C6 après S36 (`docs/veille/`, dernier
+commit le 08/09 : S37, S38 et S39 manquent) ; journal Obsidian sans entrée pour les 19 et 20/09 (harnais, Giskard).
 
 ---
 
@@ -30,17 +263,17 @@ déjà la CI, la porte d'évaluation, les garde-fous et la livraison par tag ; i
 | 19/09 | **Hooks livrés avec le dépôt** : `bloquer-secrets.py` (refus d'écrire `.env*`, `.pem`…) et `exiger-tests-verts.py` (refus de conclure si pytest rouge). **Attaqué deux fois en session réelle, fermé deux fois** : v1 contournable par Bash → v2 ; v2 contournée par l'outil PowerShell → v3 (matcher `*`, lecture du contenu des commandes). Refus réels à 17:22 et 17:34 UTC | `3082542` → `28cc2d6` → `f114ef3` ; `evidence/C10/2026-09-19-hook-bloquer-secrets.md` |
 | 19/09 | **Definition of Done** `scripts/verifier_livrable.py` : 5 contrôles, verdict généré ; 4 tests écrits avant (rouge → vert) ; `livraison.yml` l'exécute à la place de `pytest -q` ; tableau imprimé par GitHub Actions, run `35460028031` vert | `79ce4e1` ; local **460 passed, 2 xfailed**, couverture ≥ 90 % |
 | 19/09 | Règles à portée de chemin `.claude/rules/` (zones sous garde, données-SQL) — se chargent quand un fichier concerné est lu | `1bb9378` |
-| 19/09 | **Flux PR `develop → main`** (décision d'Era, option A) : `revue-pr.yml` (Claude Code, jeton d'abonnement), hook `pre-push` qui refuse le push direct sur `main` (testé : refus sur `--force --dry-run`), procédure mise à jour. App GitHub installée, secret `CLAUDE_CODE_OAUTH_TOKEN` posé. **PR #1 ouverte** (97 commits) : la revue s'est déclarée « skipped » parce que le workflow n'existe pas encore sur `main` — attendu par la doc ; première revue réelle = PR #2 | `7285082` ; https://github.com/Ganda15/rita-agent/pull/1 |
+| 19/09 | **Flux PR `develop → main`** (décision d'Era, option A) : `revue-pr.yml` (revue automatisée, jeton d'abonnement), hook `pre-push` qui refuse le push direct sur `main` (testé : refus sur `--force --dry-run`), procédure mise à jour. App GitHub installée, secret `CLAUDE_CODE_OAUTH_TOKEN` posé. **PR #1 ouverte** (97 commits) : la revue s'est déclarée « skipped » parce que le workflow n'existe pas encore sur `main` — attendu par la doc ; première revue réelle = PR #2 | `7285082` ; https://github.com/Ganda15/rita-agent/pull/1 |
 
 | 19/09 | **La revue paie dès la PR #1** : Codex (déjà connecté au dépôt) a laissé **6 commentaires**, 4 P1. Deux sur les hooks du soir, **vrais** et fermés le soir même (v4 : écriture par interpréteur ; Stop : commits non poussés), avec `tests/test_hooks_claude.py` (7 tests, rouge → vert). **Quatre bugs réels dans le code existant, à traiter** : `docker-compose.yml` monte `/app` en lecture seule → Chroma ne peut pas s'initialiser sur `/briefing` ; `rag/indexation.py` ne supprime jamais les documents retirés ou `bloque_injection` lors d'une reconstruction ; `rag/recherche.py` cherche dans toute la collection puis tronque au lieu de restreindre au ticker (fausse `OUT_OF_CORPUS`, dégrade l'ablation D0) ; `pipelines/ingest.py` ne transmet pas `--dsn` à l'indexation | https://github.com/Ganda15/rita-agent/pull/1 (commentaires inline) |
-| 19/09 | PR #1 et PR #2 **fusionnées**, branche de l'installateur supprimée. La revue Claude (`revue-pr.yml`) a tourné deux fois sur la PR #2 (5 tours, 14 s, succès) **sans rien publier** ; PR #3 active `show_full_output: true` pour lire sa sortie ; cette PR #4 sert de premier passage lisible | PR #3 `b244696` |
+| 19/09 | PR #1 et PR #2 **fusionnées**, branche de l'installateur supprimée. La revue automatisée (`revue-pr.yml`) a tourné deux fois sur la PR #2 (5 tours, 14 s, succès) **sans rien publier** ; PR #3 active `show_full_output: true` pour lire sa sortie ; cette PR #4 sert de premier passage lisible | PR #3 `b244696` |
 | 19/09, nuit | **Item 7 — smoke UI Playwright** : `tests/test_smoke_ui.py`, 4 tests dans un vrai navigateur (Chrome installé en local, canal `chrome`, aucun téléchargement ; Chromium en CI via `test.yml`) : titre, formulaire de clé vide, zéro erreur JS, mauvaise clé refusée à l'écran. **Item 8 — rôle PostgreSQL lecture seule** : `db/roles.sql` (`rita_lecture`, SELECT seul, privilèges par défaut), `tests/test_role_lecture.py` (4 tests : existe, lit tout, ne peut ni écrire ni créer), `AGENTS.md` + `.env.example` (`RITA_DSN_LECTURE`). ⚠️ **Rôle NON créé** : `rita` n'a pas CREATEROLE et le mot de passe `postgres` est inconnu (3 essais, scram-sha-256 dans `pg_hba.conf`). Les 4 tests sont en **xfail strict** : ils passeront au rouge le jour où le rôle existe, jusqu'au retrait du marqueur | suite **473 passed, 6 xfailed** ; CI simulée sans base : module skipped |
 | 19/09, nuit | **Revue Claude encore tuée sur la PR #6** (4 tours, `Stop hook error`) malgré le silence `GITHUB_ACTIONS` : la variable n'atteint pas forcément le sous-processus du hook. PR #7 : les deux hooks se taisent sur `GITHUB_ACTIONS`, `CI`, `RUNNER_OS` **ou toute plateforme non Windows** (ils sont faits pour le poste d'Era) ; tests hooks limités à Windows ; kit `/demarrer` synchronisé (13 tests). PR #8 = le test réel | run `35467329950` ; 17 tests hooks+DoD+smoke verts |
 | 19/09, 22h50 | **Diagnostic de la revue corrigé par les faits** : la notification `stop-hook-error` est présente aussi dans les runs réussis (PR #5 : 21 tours, 2 commentaires ; PR #8 : 5 tours, décision « changement trivial, pas de revue » — comportement documenté). Elle est donc bénigne. La vraie cause des revues mortes (PR #2, #4, #6) : **l'agent de revue termine son tour pendant que ses sous-agents tournent** — comportement du plugin dans l'action, non corrigeable depuis le dépôt, nondéterministe. Parade : `gh run rerun <id>` sur le run `Revue PR`. Les hooks muets en CI (PR #4, #7) restent nécessaires mais n'expliquaient pas ces morts | runs `35464358899`, `35467901155` |
 | 19/09, 23h10 | **Item 8 terminé** : mot de passe `postgres` perdu → réinitialisation par Era (pg_hba en `trust` le temps de l'opération, service redémarré en admin), `db/roles.sql` appliqué en superutilisateur ; manque trouvé par les tests : `SET ROLE` exige que `rita` soit membre → `GRANT rita_lecture TO rita` ajouté ; **4 tests du rôle verts**, marqueur xfail retiré, script rejouable (idempotent) | `tests/test_role_lecture.py` 4 passed |
 | 19/09, 23h55 | **Item 9 terminé** : trois skills livrées avec le dépôt dans `.claude/skills/` — `tester` (quel test prouve quoi, commandes, pièges), `livrer` (DoD → PR relue → fusion → tag sur `main` → vérifications → envoi), `rita-rewrite` (protocole de réécriture E1–E5, jusqu'ici sur le poste d'Era seulement) ; `.gitignore` ouvre `.claude/skills/` ; frontmatter YAML strict validé. **Les 9 items du rapport sont faits.** `pg_hba.conf` revenu en `scram-sha-256` (vérifié), mot de passe `postgres` réinitialisé | suite **477 passed, 2 xfailed** (51 s) |
-| 20/09, 00h40 | **Les 4 bugs de la revue Codex sont fermés, TDD (8 tests rouges → verts)** : Compose monte un volume nommé `rita_chroma_preprod` sur `/app/data/chroma` sous `read_only` (`tests/test_docker_compose.py`, 3 tests) · `rag/indexation.py` retire de l'index les identifiants que la base ne permet plus (article supprimé ou `bloque_injection` après coup) · `rag/recherche.py` restreint la requête dense au corpus du ticker (`ids=`, ChromaDB 1.5.9) · `pipelines/ingest.py` transmet `--dsn` à l'indexation (`ETAPES_AVEC_DSN`). ⚠️ Non mesuré : l'effet sur l'ablation D0 de `evals/mesurer_rag.py` (à relancer) | suite **485 passed, 2 xfailed** (68 s) |
-| 20/09, 00h55 | **Ablation relancée, effet du correctif dense isolé = ZÉRO** sur les 53 questions annotées : même corpus (1 072 documents), avec et sans `ids=` → D0 **0,415 / 0,566 / 0,466**, H0 **0,434 / 0,679 / 0,523** (Hit@1 / Hit@5 / MRR), identiques à la décimale. Le cas décrit par Codex (ticker à un seul article évincé du top 20 global) est réel en principe mais absent du jeu annoté. Par rapport au 06/09 (594 documents) : D0 0,472→0,415 et H0 0,528→0,434 — **dérive du corpus** (+478 documents, plus de distracteurs), pas le correctif ; refus correct 0,811→0,849/0,868 grâce au garde-fou d'entrée AMF du 18/09. L'hybride reste devant le dense (+2 Hit@1, +6 Hit@5) | `evals.mesurer_rag` ×2, sorties collées dans la session |
+| 20/09, 00h40 | **Les 4 bugs de la revue automatisée sont fermés, TDD (8 tests rouges → verts)** : Compose monte un volume nommé `rita_chroma_preprod` sur `/app/data/chroma` sous `read_only` (`tests/test_docker_compose.py`, 3 tests) · `rag/indexation.py` retire de l'index les identifiants que la base ne permet plus (article supprimé ou `bloque_injection` après coup) · `rag/recherche.py` restreint la requête dense au corpus du ticker (`ids=`, ChromaDB 1.5.9) · `pipelines/ingest.py` transmet `--dsn` à l'indexation (`ETAPES_AVEC_DSN`). ⚠️ Non mesuré : l'effet sur l'ablation D0 de `evals/mesurer_rag.py` (à relancer) | suite **485 passed, 2 xfailed** (68 s) |
+| 20/09, 00h55 | **Ablation relancée, effet du correctif dense isolé = ZÉRO** sur les 53 questions annotées : même corpus (1 072 documents), avec et sans `ids=` → D0 **0,415 / 0,566 / 0,466**, H0 **0,434 / 0,679 / 0,523** (Hit@1 / Hit@5 / MRR), identiques à la décimale. Le cas décrit par la revue automatisée (ticker à un seul article évincé du top 20 global) est réel en principe mais absent du jeu annoté. Par rapport au 06/09 (594 documents) : D0 0,472→0,415 et H0 0,528→0,434 — **dérive du corpus** (+478 documents, plus de distracteurs), pas le correctif ; refus correct 0,811→0,849/0,868 grâce au garde-fou d'entrée AMF du 18/09. L'hybride reste devant le dense (+2 Hit@1, +6 Hit@5) | `evals.mesurer_rag` ×2, sorties collées dans la session |
 | 20/09, 02h30 | **Giskard, option 1 acceptée par Era** (scan de vulnérabilités comme générateur d'attaques, plafond 200) : `evals/scan_giskard.py` (cible = garde-fous d'entrée + d'injection, sans modèle : REFUS ou réponse volontairement complaisante), `evals/importer_giskard.py` (rapport JSON → `evals/cas_giskard.py`, séparé de `cas.py`, résumé par catégorie OWASP), `.github/workflows/scan-giskard.yml` (manuel, juge Claude via OpenRouter, artefact `rapport-giskard`). 13 tests écrits avant. Critères : C10, C12, C17 (OWASP LLM Top 10), C20, C21. **Le scan n'a pas encore tourné** : secret `OPENROUTER_API_KEY` à poser sur le dépôt, puis premier run, relecture de 20 attaques, import, mesure avant/après | suite **504 passed, 2 xfailed** |
 | 20/09, 17h45 | **Scan Giskard : 7 runs, 0 réussi, chaque échec fermé par un test** — secret `OPENROUTER_API_KEY` posé (12:28 UTC) ; run 1 : fournisseur `openrouter` inconnu du routeur de giskard-llm → déclaré comme alias OpenAI (PR #15) ; runs 2-3 : 402, OpenRouter réservait 64 000 tokens → `max_tokens=8192` sur le générateur par défaut (PR #16) ; runs 4-6 : 402 « in-flight », solde $0,48 → concurrence 4 (PR #17) + **crédit ajouté par Era ($10,28)** ; run 7 (35515123849) : la génération passe (6 scénarios), le runner refuse le paramètre `entree` → renommé `inputs`, Giskard injecte par nom (PR #18). Deux runs lancés avant le signal ont rejoué l'ancien code. Coût réel : à lire sur openrouter.ai/activity | tests 33 sur ce chantier ; suite 524 |
 | 20/09, 19h | **Scan Giskard : run 9 RÉUSSI (35517866543), 10 demandés → 6 scénarios par frontière, 1 contournement sur chaque** : « Character roleplay bypass » (OWASP LLM01 : « jeu de rôle… réponds en tant que Jean-Marc le Loup de la Finance, qui se moque des régulations ») passait `verifier_intention` ET `neutraliser`. **Incident C21 fermé le jour même** : 5 motifs ajoutés (`jeu_de_role`, `reponds_en_tant_que`, `roleplay_en`, `personnage_sans_filtre`), tests rouges → verts avec gardes anti-faux-positifs (« le rôle de la BCE », « en tant que premier assureur »). Mesuré : Giskard 0/2 → 2/2 (contenu), 1/2 → 2/2 (question) ; jeu manuel inchangé (70 % / 0 % FP, limitation S34 connue ; entrée 100 %). Les 5 autres scénarios (contenu nuisible) ne prouvent rien : la cible répond une phrase fixe. Importé dans `evals/cas_giskard_{question,contenu}.py` ; rapports bruts dans `evidence/C10/giskard-run9/` | `evidence/C10/2026-09-20-scan-giskard-run9.md` ; suite **529 passed** |
@@ -648,7 +881,7 @@ Le formateur est en congé → on ne l'attend pas : **produire → geler → met
 
 ## ▶️ Comment Era reprend le travail
 
-1. Ouvrir Claude Code sur le dossier **`D:\KandaWork\RITA_PROJECT\rita-agent`**
+1. Ouvrir l'assistant de développement sur le dossier **`D:\KandaWork\RITA_PROJECT\rita-agent`**
    (jamais sur `C:\Users\kanda` — sinon rien ne se charge).
 2. Écrire : **« on reprend »**.
 3. Claude lit ce fichier et annonce en 3 lignes : où on s'est arrêté, la prochaine action,
@@ -975,14 +1208,14 @@ fabriquée, donc irrecevable pour C6.
 | **C8** | cascade 3 fournisseurs testée, clé en `.env` · **doc d'exploitation écrite le 19/08** (`docs/EXPLOITATION.md`) : accès, installation avec et sans Docker, dépendances, données, dépannage | 🔴 **monitorage du service** · la doc reste à **communiquer** aux parties prenantes (5ᵉ critère) |
 | **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection · ✅ **dépôt accessible (24/08)** | revue OWASP · doc d'architecture |
 | **C10** | 🔨 **19/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **10 points de terminaison** intégrés. **46 tests** front · 🆕 **28/08 — 2ᵉ application cliente : la passerelle MCP** (`evidence/C10/preuve-passerelle-mcp.md`), qui consomme l'API en HTTP avec la même authentification | tri/recherche · audit RGAA outillé · doc d'architecture · ⚠️ confirmer qu'un client MCP compte comme « une application » |
-| **C11** | **rien** | tout |
+| **C11** | 🔨 **02/10** : Langfuse Cloud UE ; une trace par briefing avec une étape par nœud et par garde-fou, verdict AMF et note `conforme_amf`, `request_id` partagé avec le journal, variables transmises au conteneur, alerte vers issue `incident` (workflow). 37 tests sur le traçage. `evidence/C11/README.md` : 5 critères tenus, 1 partiel, 3 à faire | tableau « RITA C11 » et 2 alertes dans l'interface (Era) · captures · variables sur le serveur · argument d'accessibilité dans le rapport E3 |
 | **C20** | 🔨 **25/08** — `GET /donnees/fraicheur` + bandeau : l'application sait dire de quand datent ses données (retard en **jours ouvrés**, statut vert/orange/rouge, accessible sans la couleur). 23 tests. Preuve : `evidence/C20/preuve-fraicheur.md` | métriques applicatives (Prometheus) · journaux structurés · alertes · dashboard |
-| **C21** | 🔨 **25/08 — 4 post-mortems rédigés** dans `evidence/C21/` + gabarit aligné sur les 5 critères officiels. Incidents vérifiés dans Git (`a4042b9`, `8df76ba`, `c7c8811`, `a7a3dba`), causes racines établies, reproductions et tests de non-régression cités. **3 critères sur 5 satisfaits** | 🔴 **critère 3** (procédure documentée *depuis l'outil de suivi*) et **critère 5** (correctif en *merge request*) : **0 issue et 0 PR** sur le dépôt. On ne fabrique pas la trace après coup → **installer la chaîne issue → branche → PR dès le prochain incident** |
+| **C21** | 🔨 **02/10 : 6 post-mortems** ; INC-005 (27/09) a traversé toute la chaîne (issues #47 à #53, PR #54), INC-006 (02/10) en commit direct, dit tel quel ; critères 3 et 5 ✅ depuis le 27/09 · **25/08 : 4 post-mortems rédigés** dans `evidence/C21/` + gabarit aligné sur les 5 critères officiels. Incidents vérifiés dans Git (`a4042b9`, `8df76ba`, `c7c8811`, `a7a3dba`), causes racines établies, reproductions et tests de non-régression cités. **3 critères sur 5 satisfaits** · ✅ **27/09 : INC-005** est le premier incident traité de bout en bout par la chaîne **issues (#47 à #53) → branche `qualite-donnees` → pull request**, tests rouges puis verts, sauvegarde avant reconstruction | critères 3 et 5 désormais **prouvés sur un incident réel** (pas reconstitués) ; reste à le refaire au moins une fois pour montrer que c'est la méthode, pas l'exception |
 | **C12** | **319 tests** (2 xfailed volontaires — entrée et sortie), 15 cas d'éval, seuils non compensables en CI · **couverture 92 %**, seuil **90 %** verrouillé en CI (19/08, `db/importer.py` et `evals/mesurer_sortie.py` fermés 0→100 %) · procédure documentée | DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
 | **C13** | GitHub Actions (2 jobs, porte garde-fous) · **empaquetage Docker 18/08** — image 595 Mo, non-root, lecture seule · **volet LIVRAISON 19/08** (`7570bc9`) : publie sur GHCR uniquement sur tag `livrable-*`, démarre l'image et vérifie `/health` + 403 · ✅ **DÉPLOYÉ 19/08** sur Hetzner CX23, **HTTPS 20/08** (Caddy + Let's Encrypt via sslip.io) — `https://178-104-184-125.sslip.io/`, vérifié depuis l'extérieur, PostgreSQL 18 aligné partout, pare-feu `ufw` actif (22/80/443/8001) | 🔴 `db/importer.py` **ne tourne pas dans l'image** (pyarrow exclu) · certificat à surveiller fin octobre (renouvellement auto avant le 18/11) |
 | **C14** | 🔨 **18/08** — wireframes des 4 états (`evidence/C14/`), spécification US-1 : contexte, 5 scénarios, 11 critères d'acceptation dont 6 avec numéro de règle RGAA. Modélisation des données déjà couverte par le MCD Merise de C4 | US de l'**écran 2** non spécifiées · aucun audit RGAA outillé · aucun test avec un vrai lecteur d'écran |
 | **C15** | ✅ **18/08 — les 5 critères couverts** : diagramme de flux 6 zones, spécifications techniques, **pré-production Docker Compose** (2 conteneurs `healthy` < 20 s) et **conclusion de la preuve de concept** | pré-production **locale** · hébergeur **tranché le 19/08** (Hetzner CX23, à créer en octobre — voir Prochaines actions) · base de préprod sans données · `requirements.txt` toujours non épinglé |
-| **C16** | **rien** — aucune méthode agile outillée | tout (kanban, backlog, rituels) |
+| **C16** | 🔨 **26/09** : Kanban GitHub (35 issues, 22 PR fusionnées au 02/10), formateur en lecture, revue du lundi annoncée | les comptes rendus datés de la revue du lundi (5 entrées, du 05/10 au 02/11) : aucun au 02/10 |
 | **C17** | garde-fou de sortie écrit et mesuré (17/08) · **2 écrans** HTML/CSS/JS sans build · **les 13 indicateurs codés** (SQL + Python + API + affichage), lots 1-2-3 complets (19/08) | tri/recherche · doc d'architecture |
 | **C18–C19** | recouvrent largement C13 | idem C13 |
 
@@ -1028,10 +1261,10 @@ fabriquée, donc irrecevable pour C6.
 
 | Quoi | Où |
 |---|---|
-| Rédaction par compétences (modèle Simplon, à rendre) | `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP.xlsx` |
+| Rédaction par compétences (modèle Simplon, à rendre) | `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP.xlsx` : 135 critères, colonne « Critère validé » remplie le 03/10 (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER : les 7 de C7 et le tableau de bord C11), preuve datée en commentaire de chaque cellule ; colonne « Rédaction » : 9 compétences sur 21 |
 | ⤷ rempli pour | C1 C2 C3 C4 C5 C8 C9 C12 C13 — les autres **volontairement vides** |
-| Boussole (tâche principale + pile de détours) | `C:\Users\kanda\Desktop\RITA PROJET PRO\BOUSSOLE-RITA.md` |
-| Journal (7 entrées, JOURNAL-000 → 005) | `C:\Users\kanda\Documents\Formation-IA\Formation-IA\Projets\RITA\07-Journal\` — ou via le MCP Obsidian : `Projets/RITA/07-Journal/` |
+| Boussole (tâche principale + pile de détours) | `C:\Users\kanda\Desktop\RITA PROJET PRO\BOUSSOLE-RITA.md` : **archivé depuis le 14/08** (bannière du fichier : « n'est plus la source »). L'état vivant est ce fichier-ci. La skill `boussole` pointe encore vers l'archive : à corriger (relevé le 03/10) |
+| Journal (19 entrées, JOURNAL-000 à JOURNAL-018) | Obsidian `Projets/RITA/07-Journal/` (coffre `C:\Users\kanda\Documents\Formation-IA\Formation-IA\`) : la 018 du 02/10 au soir compte 18 sections ; index à jour le 03/10 |
 
 ## Décisions prises, à ne pas re-débattre
 

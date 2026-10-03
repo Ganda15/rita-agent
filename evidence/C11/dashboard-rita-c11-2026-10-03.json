@@ -1,0 +1,138 @@
+{
+ "cree_le": "2026-10-03",
+ "par": "API publique Langfuse (prefixe unstable), depuis le poste d'Era",
+ "url": "https://cloud.langfuse.com/project/cmr25olp200v5ad0d1jrrmtui/dashboards/cmurnbyvy0a9oad0hauajc8t4",
+ "dashboard": {
+  "id": "cmurnbyvy0a9oad0hauajc8t4",
+  "createdAt": "2026-10-03T00:20:56.542Z",
+  "updatedAt": "2026-10-03T00:20:56.542Z",
+  "name": "RITA C11",
+  "description": "Monitorage du modèle RITA (C11, rapport E3) : repli entre fournisseurs, latence p95 de l'appel au modèle, erreurs et refus AMF. Créé par l'API le 03/10/2026.",
+  "definition": {
+   "widgets": [
+    {
+     "type": "widget",
+     "id": "8d7b68ea-6ec7-4ba1-b823-7c3f3651c799",
+     "widgetId": "cmurna0aj0b06ad0di29tnlcc",
+     "x": 0,
+     "y": 0,
+     "width": 6,
+     "height": 6
+    },
+    {
+     "type": "widget",
+     "id": "e430ae2c-fd23-4f6b-beb9-558839d10995",
+     "widgetId": "cmurna0c00b2jad0bibnqg5q7",
+     "x": 6,
+     "y": 0,
+     "width": 6,
+     "height": 6
+    },
+    {
+     "type": "widget",
+     "id": "50026c3a-5261-4cd3-8962-fdd1e2260f60",
+     "widgetId": "cmurna0da0ar8ad0cciml5yvb",
+     "x": 0,
+     "y": 6,
+     "width": 12,
+     "height": 6
+    }
+   ]
+  },
+  "filters": []
+ },
+ "widgets": [
+  {
+   "id": "cmurna0da0ar8ad0cciml5yvb",
+   "createdAt": "2026-10-03T00:19:25.150Z",
+   "updatedAt": "2026-10-03T00:19:25.150Z",
+   "name": "Observations en ERROR ou WARNING",
+   "description": "ERROR = fournisseur en echec (repli) ; WARNING = refus du garde-fou de sortie (verdict AMF). A lire avec le message, pas comme un taux brut.",
+   "view": "observations",
+   "dimensions": [
+    {
+     "field": "level"
+    }
+   ],
+   "metrics": [
+    {
+     "measure": "count",
+     "agg": "count"
+    }
+   ],
+   "filters": [
+    {
+     "column": "level",
+     "operator": "any of",
+     "value": [
+      "ERROR",
+      "WARNING"
+     ],
+     "type": "stringOptions"
+    }
+   ],
+   "chartType": "BAR_TIME_SERIES",
+   "chartConfig": {
+    "type": "BAR_TIME_SERIES"
+   }
+  },
+  {
+   "id": "cmurna0c00b2jad0bibnqg5q7",
+   "createdAt": "2026-10-03T00:19:25.104Z",
+   "updatedAt": "2026-10-03T00:19:25.104Z",
+   "name": "Latence p95 de briefing-llm",
+   "description": "p95 de la durée de l'étape briefing-llm (l'appel au modèle, pas la racine qui inclut la recherche documentaire). Fenêtre raisonnable : la semaine.",
+   "view": "observations",
+   "dimensions": [],
+   "metrics": [
+    {
+     "measure": "latency",
+     "agg": "p95"
+    }
+   ],
+   "filters": [
+    {
+     "column": "name",
+     "operator": "=",
+     "value": "briefing-llm",
+     "type": "string"
+    }
+   ],
+   "chartType": "LINE_TIME_SERIES",
+   "chartConfig": {
+    "type": "LINE_TIME_SERIES"
+   }
+  },
+  {
+   "id": "cmurna0aj0b06ad0di29tnlcc",
+   "createdAt": "2026-10-03T00:19:25.051Z",
+   "updatedAt": "2026-10-03T00:19:25.051Z",
+   "name": "Générations par fournisseur",
+   "description": "Nombre d'appels au modèle par étape llm-<fournisseur> : montre le repli Foundry, Anthropic, OpenRouter (C11, métrique « erreurs de repli »).",
+   "view": "observations",
+   "dimensions": [
+    {
+     "field": "name"
+    }
+   ],
+   "metrics": [
+    {
+     "measure": "count",
+     "agg": "count"
+    }
+   ],
+   "filters": [
+    {
+     "column": "type",
+     "operator": "=",
+     "value": "GENERATION",
+     "type": "string"
+    }
+   ],
+   "chartType": "VERTICAL_BAR",
+   "chartConfig": {
+    "type": "VERTICAL_BAR"
+   }
+  }
+ ]
+}

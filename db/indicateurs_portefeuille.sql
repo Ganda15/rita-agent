@@ -43,7 +43,10 @@ WITH total AS (
     -- Une seule ligne : le total du portefeuille en euros.
     -- NULLIF contre la division par zéro — un portefeuille vide, ou dont toutes
     -- les valorisations seraient nulles, rendrait NULL plutôt que d'échouer.
-    SELECT NULLIF(SUM(valorisation_eur), 0) AS total_eur
+    -- Plan 65 (03/10/2026, decision D2 d'Era) : si une valorisation manque (taux absent), le
+    -- total est inconnu, donc TOUS les poids le sont ; `complet` le dit a l'appelant.
+    SELECT NULLIF(SUM(valorisation_eur), 0)          AS total_eur,
+           COALESCE(BOOL_OR(taux_manquant), false)   AS taux_manquant
     FROM   v_portefeuille_valorise
 )
 SELECT  p.ticker,
@@ -51,8 +54,10 @@ SELECT  p.ticker,
         p.devise,
         p.quantite,
         p.valorisation_eur,
-        ROUND(p.valorisation_eur / t.total_eur * 100, 2) AS poids_pct,
-        t.total_eur
+        CASE WHEN t.taux_manquant THEN NULL
+             ELSE ROUND(p.valorisation_eur / t.total_eur * 100, 2) END AS poids_pct,
+        CASE WHEN t.taux_manquant THEN NULL ELSE t.total_eur END    AS total_eur,
+        NOT t.taux_manquant                                          AS complet
 FROM        v_portefeuille_valorise p
 CROSS JOIN  total t
 ORDER BY    poids_pct DESC NULLS LAST;
@@ -74,14 +79,17 @@ ORDER BY    poids_pct DESC NULLS LAST;
 -- -----------------------------------------------------------------------------
 
 WITH total AS (
-    SELECT NULLIF(SUM(valorisation_eur), 0) AS total_eur
+    SELECT NULLIF(SUM(valorisation_eur), 0)          AS total_eur,
+           COALESCE(BOOL_OR(taux_manquant), false)   AS taux_manquant
     FROM   v_portefeuille_valorise
 )
 SELECT  p.devise,
         COUNT(*)                                              AS nb_lignes,
-        SUM(p.valorisation_eur)                               AS valorisation_eur,
-        ROUND(SUM(p.valorisation_eur) / t.total_eur * 100, 2) AS exposition_pct
+        CASE WHEN t.taux_manquant THEN NULL ELSE SUM(p.valorisation_eur) END AS valorisation_eur,
+        CASE WHEN t.taux_manquant THEN NULL
+             ELSE ROUND(SUM(p.valorisation_eur) / t.total_eur * 100, 2) END AS exposition_pct,
+        NOT t.taux_manquant                                   AS complet
 FROM        v_portefeuille_valorise p
 CROSS JOIN  total t
-GROUP BY    p.devise, t.total_eur
+GROUP BY    p.devise, t.total_eur, t.taux_manquant
 ORDER BY    exposition_pct DESC NULLS LAST;

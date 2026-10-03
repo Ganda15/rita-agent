@@ -9,12 +9,13 @@
 ## 1. Ce que fait la tâche
 
 Chaque soir à **19h00**, Windows lance `scripts/collecte-quotidienne.cmd`, qui exécute les
-cinq étapes du pipeline :
+six étapes du pipeline (`fred` ajoutée le 27/09/2026, issue #52) :
 
 | Étape | Source | Ce qu'elle met à jour |
 |---|---|---|
 | `ecb` | Banque centrale européenne | taux de change du jour |
-| `cotations` | yfinance | les séances manquantes des **111 valeurs** |
+| `fred` | Réserve fédérale de Saint-Louis (FRED) | les 3 séries macro US (taux 10 ans, inflation, taux Fed), table `macro_observation` |
+| `cotations` | yfinance | les séances manquantes des **108 valeurs** encore cotées (les 3 radiées ne sont plus demandées) |
 | `rss` | 3 flux d'actualité + Google News par entreprise | articles du jour |
 | `scraping` | Boursorama | cours de séance de 3 valeurs |
 | `indexation` | ChromaDB (ajoutée le 02/09) | ré-indexe le corpus d'articles pour le RAG — **en dernier**, pour indexer ce que `rss` vient d'écrire |

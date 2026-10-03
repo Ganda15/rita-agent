@@ -63,7 +63,7 @@ def test_un_article_qui_parle_du_role_d_une_institution_n_est_pas_bloque():
 
 
 def test_la_presse_anglaise_qui_dit_act_as_n_est_pas_bloquee():
-    """Revue Codex, PR #20 : « act as » est un tour ordinaire de la presse financière anglaise. Un article
+    """Revue automatisée, PR #20 : « act as » est un tour ordinaire de la presse financière anglaise. Un article
     ainsi marqué serait EXCLU de l'index (`rag/indexation.py`). Le motif doit viser une consigne adressée
     à l'agent (« you will act as… »), pas une tournure."""
     for texte in ("The bank will act as the sole bookrunner for the offering.",
