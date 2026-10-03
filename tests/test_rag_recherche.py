@@ -241,3 +241,29 @@ def test_avec_un_ticker_le_moteur_dense_ne_cherche_que_dans_le_corpus_du_ticker(
     assert set(kw["ids"]) == {"1"}  # seul l'article 1 cite LVMH (MC.PA)
     assert r.trouve and len(r.passages) == 1
     assert kw["n_results"] <= len(kw["ids"])
+
+
+# --- chapitre « Données » (validé le 03/10/2026), cas R11 : un passage servi porte son titre
+
+def test_un_passage_servi_porte_le_titre_de_l_article(monkeypatch, tmp_path):
+    """Issue #59. Les quatre champs d'une citation correcte : titre, source, date, lien."""
+    _index_jetable(monkeypatch, tmp_path, CORPUS)
+    r = recherche.rechercher("resultats semestriels du luxe", chemin=tmp_path, k=1)
+    p = r.passages[0]
+    assert p.titre == "LVMH publie des resultats semestriels en hausse"
+    assert p.source and p.publie_le and p.lien, "les trois autres champs de la citation restent la"
+    assert "titre" in p.en_dict(), "le graphe passe les passages en dictionnaires : le titre doit suivre"
+
+
+def test_un_index_construit_avant_le_titre_rend_une_chaine_vide_pas_une_erreur(tmp_path):
+    """Les index déjà construits (serveur, poste : 1 563 documents le 03/10) n'ont pas la métadonnée :
+    la recherche ne doit pas casser dessus, elle rend un titre vide jusqu'à la prochaine réindexation.
+    On construit l'ancien index à la main : `update` de ChromaDB fusionne les métadonnées et ne sait
+    pas retirer une clé, donc passer par l'indexeur puis effacer la clé ne simule rien."""
+    collection = indexation._collection(tmp_path)
+    collection.add(ids=["1"], documents=["LVMH publie des resultats semestriels en hausse"],
+                   metadatas=[{"source": "test", "flux": "test", "lien": "https://exemple.test/1",
+                               "publie_le": "2026-08-28T00:00:00", "tickers": ",MC.PA,"}])
+
+    r = recherche.rechercher("resultats semestriels du luxe", chemin=tmp_path, k=1)
+    assert r.trouve and r.passages[0].titre == ""

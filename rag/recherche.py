@@ -139,6 +139,9 @@ class Passage:
     # d'ablation n'est possible.
     article_id: int
     texte: str
+    # Le titre seul, pour la citation (chapitre « Données », cas R11, issue #59). Vide sur un
+    # index construit avant le 03/10/2026, jusqu'à sa réindexation.
+    titre: str
     source: str
     lien: str
     publie_le: str
@@ -337,6 +340,7 @@ def rechercher(question: str, ticker: str | None = None, k: int = 3,
         retenus.append(Passage(
             article_id=int(ident),
             texte=doc,
+            titre=meta.get("titre", ""),
             source=meta.get("source", ""),
             lien=meta.get("lien", ""),
             publie_le=meta.get("publie_le", ""),

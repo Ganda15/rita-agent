@@ -295,6 +295,10 @@ def indexer(dsn: str | None = None, chemin: Path | None = None) -> Resultat:
             # `source` est ce qu'on CITE, `flux` est d'où ça vient. Garder les deux :
             # l'un sert le lecteur du briefing, l'autre sert le diagnostic.
             "source": editeur(article["source"] or "", article["titre"]),
+            # Chapitre « Données » (validé le 03/10/2026), cas R11 : une citation correcte, c'est
+            # titre + source + date + lien. Le texte indexé commence par le titre, mais le
+            # redécouper au moment de citer serait fragile : la métadonnée le porte tel quel.
+            "titre": article["titre"] or "",
             "flux": article["source"] or "",
             "lien": article["lien"] or "",
             "publie_le": article["publie_le"].isoformat() if article["publie_le"] else "",
