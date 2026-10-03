@@ -77,8 +77,8 @@ footer.sign{ margin-top:4pt; padding-top:3.5pt; border-top:.75pt solid var(--rul
   <dl class="idcard">
     <div><dt>Candidat</dt><dd>Eramalingam Gandakumar<small>erama70@outlook.com<br>ganda70@gmail.com</small></dd></div>
     <div><dt>Organisme</dt><dd>Simplon × Wild Code School<small>Session 2026</small></dd></div>
-    <div><dt>Dépôt du code</dt><dd>Ganda15/rita-agent<small>github.com · tag <code>livrable-E1-v2</code></small></dd></div>
-    <div><dt>Date</dt><dd>3 octobre 2026<small>version 2.0, gelée le 15 octobre 2026</small></dd></div>
+    <div><dt>Dépôt du code</dt><dd>Ganda15/rita-agent<small>github.com · tag <code>livrable-E1-v2</code> à poser le 15/10</small></dd></div>
+    <div><dt>Date</dt><dd>3 octobre 2026<small>version 2.0, gel prévu le 15 octobre 2026</small></dd></div>
   </dl>
 </header>
 
@@ -96,7 +96,7 @@ L'objet de E1 est de rendre ces données fiables, traçables et exploitables.</p
 
 <table>
   <tr><th style="width:21%">Dimension</th><th>Contenu</th></tr>
-  <tr><td><strong>Acteurs</strong></td><td>Développeur et responsable de traitement : Eramalingam Gandakumar · utilisateur final : un investisseur particulier qui suit son propre portefeuille · consommateurs techniques : les agents de RITA et une passerelle MCP, qui lisent les données par l'API, jamais directement en base</td></tr>
+  <tr><td><strong>Acteurs</strong></td><td>Développeur et responsable de traitement : Eramalingam Gandakumar · utilisateur final : un investisseur particulier qui suit son propre portefeuille · consommateurs techniques : les nœuds de l'agent (le scout lit la base directement, dans le même processus que l'API) et deux clients extérieurs, l'interface web et une passerelle MCP, qui ne passent que par l'API, avec une clé</td></tr>
   <tr><td><strong>Objectifs fonctionnels</strong></td><td>Consolider dix ans de cours de 111 valeurs · valoriser un portefeuille multi-devises · détecter les anomalies de marché · fournir un contexte macro-économique et d'actualité</td></tr>
   <tr><td><strong>Objectifs techniques</strong></td><td>Automatiser l'extraction depuis <strong>les 5 types de sources</strong> du référentiel, chaque soir · stocker en base relationnelle modélisée Merise · exposer le jeu de données par une API REST authentifiée</td></tr>
   <tr><td><strong>Environnement</strong></td><td>Windows 11 · Python 3.14 sur le poste, 3.13 en intégration continue · PostgreSQL 18 (port 5433) · Apache Spark 4.2.0 sur JDK Temurin 21 · Docker Compose (base de pré-production) · Git, GitHub Actions</td></tr>
@@ -141,8 +141,8 @@ L'objet de E1 est de rendre ces données fiables, traçables et exploitables.</p
 
 <h2><span class="n">3</span> Collecte automatisée multi-source <span class="tag">C1</span></h2>
 
-<p>Le référentiel demande une extraction depuis <strong>au moins deux</strong> types de sources. RITA en couvre
-<strong>cinq sur cinq</strong>, et la collecte tourne <strong>chaque soir à 19 h</strong> par le planificateur de Windows depuis
+<p>Le référentiel demande un mix d'<strong>au moins cinq</strong> types de sources : service web, fichier, scraping, base de données et
+système big data. RITA couvre <strong>les cinq</strong>, et la collecte tourne <strong>chaque soir à 19 h</strong> par le planificateur de Windows depuis
 le 24 août : 40 journaux du 24/08 au 02/10, 33 terminés avec le code 0, les 7 autres interrompus par l'arrêt du poste et
 rattrapés par les plages de dates que chaque étape accepte. </p>
 
@@ -161,7 +161,7 @@ rattrapés par les plages de dates que chaque étape accepte. </p>
   <tr><td><strong>Fichier</strong></td><td class="mono">sources/positions.py<br>export courtier</td>
     <td>Positions détenues. Quatre pièges d'un export courtier : séparateur <code>;</code>, encodage <code>cp1252</code>, nombres français avec espace insécable, en-têtes variables. Depuis le 03/10 l'import est une <strong>réconciliation</strong> : une ligne retirée du fichier est close à la date du jour, jamais supprimée (§&nbsp;7).</td></tr>
   <tr><td><strong>Base de données</strong></td><td class="mono">sources/database.py</td>
-    <td>Relecture programmatique du stock constitué, en requêtes paramétrées ; les outils d'agent lisent avec le rôle <code>rita_lecture</code>, SELECT seul.</td></tr>
+    <td>Relecture programmatique du stock constitué, en requêtes paramétrées, par le nœud scout. Un rôle <code>rita_lecture</code> (SELECT seul) existe pour tout outil d'agent qui lirait la base directement ; au 3 octobre aucun ne le fait, la passerelle MCP passe par l'API.</td></tr>
   <tr><td><strong>Big data</strong></td><td class="mono">bigdata/extract_spark.py</td>
     <td>Lecture d'un jeu Parquet partitionné par année via Spark, voir §&nbsp;6.2.</td></tr>
 </table>
@@ -403,7 +403,7 @@ La séquence ci-dessous reconstruit le projet depuis un dépôt vierge (rejouée
 
 <pre>python -m pip install --user -r requirements.txt   <b># dependances (pas de venv sous Smart App Control)</b>
 psql -h localhost -p 5433 -f db/schema.sql         <b># 10 tables, 1 vue, 12 CHECK, 19 objets d'index</b>
-psql -h localhost -p 5433 -f db/roles.sql          <b># role rita_lecture, SELECT seul, pour les outils d'agent</b>
+psql -h localhost -p 5433 -f db/roles.sql          <b># role rita_lecture, SELECT seul, prevu pour les outils d'agent</b>
 python -m db.importer                              <b># archive 10 ans + positions, import en reconciliation</b>
 python -m pipelines.ingest                         <b># 6 etapes, un COMMIT par etape, manifeste JSON</b>
 python -m bigdata.build_parquet                    <b># jeu Parquet partitionne par annee</b>
@@ -412,7 +412,7 @@ python -m pytest -q                                <b># 740 passed, 2 xfailed, 9
 
 <table>
   <tr><th style="width:24%">Dépendance</th><th style="width:18%">Version</th><th>Pourquoi elle est requise</th></tr>
-  <tr><td>PostgreSQL</td><td>18 (port 5433)</td><td>SGBD cible ; authentification <code>scram-sha-256</code> ; rôle lecture seule pour les agents</td></tr>
+  <tr><td>PostgreSQL</td><td>18 (port 5433)</td><td>SGBD cible ; authentification <code>scram-sha-256</code> ; rôle lecture seule prévu pour les outils d'agent</td></tr>
   <tr><td><code>psycopg2-binary</code></td><td>non épinglée</td><td>pilote PostgreSQL, requêtes paramétrées</td></tr>
   <tr><td><code>feedparser</code></td><td><strong>6.0.14</strong></td><td>le comportement d'analyse des flux varie d'une version à l'autre</td></tr>
   <tr><td><code>pyspark</code></td><td><strong>4.2.0</strong></td><td>système big data ; exige un <strong>JDK 21</strong> dans <code>JAVA_HOME</code>, sinon ses 16 tests s'ignorent d'eux-mêmes</td></tr>
