@@ -18,10 +18,11 @@
 
 ## Ce qu'il faut dire tel quel
 
-- **Un seul fournisseur répond sur le poste de démonstration** : OpenRouter. Azure AI Foundry n'a pas de clé sur
-  ce poste, l'API Anthropic directe échoue à l'authentification. La cascade fonctionne (le repli est tracé), mais
-  « trois fournisseurs opérationnels » serait faux. Le service **retenu et démontré** est OpenRouter servant
-  `anthropic/claude-sonnet-4.5`.
+- **Deux fournisseurs répondent sur le poste de démonstration** depuis le 03/10 au soir : Azure AI Foundry
+  (`gpt-5.4`, point compatible OpenAI, premier de la cascade, gratuit pour le projet) et OpenRouter
+  (`anthropic/claude-sonnet-4.5`, secours). L'API Anthropic directe n'a pas de clé. Le service **retenu et démontré**
+  est Foundry (briefing réel SAN.PA en 5,6 s, trace à une seule génération) ; « trois fournisseurs opérationnels »
+  serait faux. Comparaison mesurée : `../C7/preuve-benchmark-2026-10-03.md` §9.
 - **Le coût affiché par Langfuse vaut 0** pour ce modèle (nom au format OpenRouter absent de la grille de prix) :
   la métrique existe, elle est fausse ; correction dans l'interface ou dans le code, pas faite au 03/10.
 - **Quinze traces factices** (suite de tests, incident INC-006) polluent encore les métriques agrégées jusqu'à leur
@@ -37,7 +38,7 @@
 | Critère | État | Preuve ou manque |
 |---|---|---|
 | C8.1 Service accessible, authentification en place | ✅ | appel réel du 03/10, clé en variable d'environnement, 403 sans clé côté RITA |
-| C8.2 Configuration conforme aux besoins | 🟠 | briefing servi par le code actuel ; deux fournisseurs sur trois en échec sur le poste, à dire ; `memory_audit` et inventaire #68 en cours côté RGPD |
+| C8.2 Configuration conforme aux besoins | 🟠 | briefings servis par Foundry et par OpenRouter ; un fournisseur sur trois sans clé, à dire ; `memory_audit` et inventaire #68 en cours côté RGPD |
 | C8.3 Monitorage disponible opérationnel | 🟠 | trace complète et tableau ; coût faux, traces factices, alertes non réglées |
 | C8.4 Documentation d'accès, d'installation, de tests, de dépendances, de flux | ✅ | `docs/EXPLOITATION.md`, ordre des fournisseurs corrigé le 03/10 |
 | C8.5 Documentation communiquée, format accessible | 🔴 | aucune remise prouvée (#43) ; Markdown lisible, PDF du rapport E2 à produire |

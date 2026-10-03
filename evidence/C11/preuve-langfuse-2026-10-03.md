@@ -79,6 +79,11 @@ prendront effet à la fusion.
 
 ## 5. La première trace complète d'un briefing réel (03/10/2026, 14 h 48)
 
+> **Ajout du 03/10 au soir** : second briefing réel (SAN.PA) après la pose de la clé Azure AI Foundry, trace `9bce9715…`,
+> **une seule génération**, `llm-foundry`, niveau DEFAULT, modèle `gpt-5.4-2026-03-05`, 2,78 s ; aucun repli. La cascade
+> montre maintenant les deux cas : trois tentatives avec repli (trace de 14 h 48) et une réussite directe (celle-ci).
+
+
 Un seul appel réel, parce qu'il est payant : `POST /briefing?ticker=MC.PA` sur l'API démarrée sur le poste (détail de
 la réponse : `../C9/preuve-api-modele-2026-10-03.md`). La trace relue par l'API publique de Langfuse, identifiant
 `d52a3d2805b0cd251dec13b242ff3e62`, nom `briefing`, 10 observations :

@@ -50,5 +50,6 @@ Suite complète le 03/10/2026 : `740 passed, 2 xfailed`, couverture 93,92 %.
 - Un ticker inconnu répond **502** au lieu de **422** ; un test fige encore ce comportement.
 - Aucune limite de débit (OWASP API4) : celui qui tient la clé peut déclencher des appels payants sans borne.
 - Pas de version dans l'adresse (`/v1`), pas de format d'erreur RFC 9457.
-- Sur le poste de démonstration, un seul fournisseur de modèle répond (OpenRouter) ; les deux autres échouent faute de clé,
-  et la trace le montre.
+- Sur le poste de démonstration, deux fournisseurs répondent depuis le 03/10 au soir (Azure AI Foundry, puis OpenRouter en
+  secours) ; Anthropic en direct échoue faute de clé, et la trace le montre. Second briefing réel du 03/10, SAN.PA par Foundry :
+  200 en 5,57 s, `request_id=a9164ad8…`, journal « Réponse obtenue via foundry », trace `9bce9715…` à une seule génération.

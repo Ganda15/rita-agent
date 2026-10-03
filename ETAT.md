@@ -38,7 +38,7 @@ l'assistant rédige le texte, jamais l'envoi.**
 3. **Trancher `memory_audit`** (écrire des empreintes ou retirer la table ; zone sous garde, plan d'abord).
 4. **Clés** dans `.env` (jamais touché par l'assistant) : les trois lignes Foundry (`AZURE_FOUNDRY_ENDPOINT` finissant par `/openai/v1`, `AZURE_FOUNDRY_API_KEY`, `AZURE_FOUNDRY_DEPLOYMENT=gpt-5.4`) et, si tu veux Claude en direct, `ANTHROPIC_API_KEY` ; puis relancer le banc : une commande,
    `C:\Python314\python.exe -X utf8 -m evals.benchmark_fournisseurs --jeu evidence\C7\jeu-d-essai-2026-10-03.json --repetitions 3 --plafond 5 --sortie evidence\C7`.
-5. **Noter le français** des 30 textes de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1, 2), sans ouvrir le fichier `-cle.csv`. Ce CSV est celui du troisième passage (prompt avec les 13 indicateurs) ; les fichiers `-avant-57` et `-v2-prompt-57` sont conservés, pas à noter.
+5. **Noter le français** des **60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1, 2), sans ouvrir le fichier `-cle.csv` : c'est le quatrième passage, Foundry et OpenRouter mélangés, prompt avec les 13 indicateurs. Les fichiers `-avant-57`, `-v2-prompt-57` et `-v3-13-indicateurs` sont conservés, pas à noter.
 6. **Langfuse, clics** (`evidence/C11/preuve-langfuse-2026-10-03.md` §3) : supprimer les 15 traces factices du 02/10 (il reste
    23 traces : 15 factices et 8 réelles), régler les 2 alertes, capture du tableau « RITA C11 » dans `evidence/C11/`.
 7. **C6** : capture du fil Discord du 16/08 avec ses réponses dans `evidence/C6/` ; note S40 écrite depuis
@@ -56,6 +56,8 @@ zones sous garde (`db/schema.sql`, `guardrails/`, `evals/`) : rien sans plan val
 
 
 ---
+
+🏁 **03/10, nuit : Foundry répond, et le banc C7 compare enfin deux éditeurs.** Clé posée par Era ; un 400 « `max_tokens` unsupported » corrigé en `max_completion_tokens` (test d'abord) ; briefing réel SAN.PA servi par Foundry en 5,6 s sans repli (trace à une génération). **Quatrième passage du banc** : Foundry `gpt-5.4` et OpenRouter `claude-sonnet-4.5` indiscernables sur les contrôles automatiques (30/30 conformes et fidèles chacun, Wilson [0,89 ; 1,00]) ; Foundry médiane 3,2 s mais p95 10,7 s, OpenRouter 6,3 s et 7,2 s ; coût 0 pour le projet contre 0,0060 USD. Recommandation **provisoire** : Foundry en premier, OpenRouter en secours (l'ordre actuel), à confirmer par la notation du français d'Era (`notes-francais-2026-10-03.csv`, **60 textes**, deux services confondus). E2 : 6 ✅ 12 🟠 2 🔴. Preuve §9.
 
 ☁️ **03/10, nuit : Azure AI Foundry devient le premier fournisseur, par son point compatible OpenAI** (décision d'Era : sa ressource Foundry sert `gpt-5.4`, gratuite pour lui, pour les tests et la démonstration ; OpenRouter reste le secours). `src/llm.py` : `_appel_foundry` en httpx (chat completions, `Bearer`, le déploiement comme nom de modèle), plus de client Anthropic-sur-Foundry, 4 tests écrits avant ; modèle d'environnement, guide d'exploitation, plan C7, preuve C8, rapports E2 et E3 à jour. Conséquence pour C7 : la cascade porte maintenant **deux éditeurs** (GPT par Foundry, Claude par Anthropic et OpenRouter), la question du périmètre au formateur devient une confirmation. **Bloqué par les clés** : les trois variables `AZURE_FOUNDRY_*` ne sont pas dans l'environnement du poste ; Era les pose dans `.env` (jamais touché par l'assistant), puis une sonde et le banc donnent la première vraie comparaison.
 

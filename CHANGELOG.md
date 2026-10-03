@@ -77,6 +77,13 @@ le modèle n'en recevait que quatre nombres. Bloc « faits à décrire, jamais d
 refigé et relancé : conformité AMF intacte (30/30), 30 textes sur 30 citent le RSI, coût par briefing 0,0045 → 0,0060 USD. **Point
 à surveiller** : une lecture d'indicateur (« forte pression vendeuse ») passe le garde-fou ; à ajouter au jeu d'évaluation.
 
+**Décision structurante (fin de nuit, dernière)** : **Azure AI Foundry devient le premier fournisseur** (ressource d'Era, point compatible
+OpenAI, `gpt-5.4`, gratuit pour le projet), OpenRouter en secours ; test d'abord, un 400 corrigé (`max_completion_tokens`), briefing réel
+servi par Foundry sans repli. **Première comparaison C7** : GPT par Foundry et Claude par OpenRouter indiscernables sur les contrôles
+automatiques (30/30 chacun), Foundry plus rapide en médiane mais à la queue plus longue, 0 contre 0,006 USD par briefing ; recommandation
+provisoire Foundry puis OpenRouter, à confirmer par la notation du français. **Manque qui reste** : prix public et information
+environnementale de `gpt-5.4` non relevés ; Anthropic en direct jamais mesuré.
+
 ---
 
 ## 2026-10-03 : reconnaissance complète, plan initial contre réalisé, pointeurs périmés
