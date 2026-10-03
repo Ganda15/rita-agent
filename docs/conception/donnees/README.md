@@ -42,7 +42,7 @@ Lu fichier par fichier le 03/10 (`db/schema.sql`, `db/roles.sql`, `rag/indexatio
 | Manifeste de collecte (§1.3) | un manifeste par exécution : source, période, versions, comptages réels, erreurs | **absent** (`pipelines/ingest.py` journalise, ne produit pas de manifeste) | issue |
 | Quasi-doublons (§1.3, D08) | 14 quasi-doublons restants ; élargir la règle risque d'écraser des articles proches | règle inchangée : (titre normalisé, jour) depuis le 06/09 | **décision d'Era** : issue `decision-era` |
 | Champs envoyés au modèle (§1.4) | inventaire des champs sortants, destinataires, conservation | partiellement : registre RGPD T3 dit « aucune donnée personnelle dans le prompt » (mesuré le 28/09) ; pas d'inventaire champ par champ | issue, registre |
-| Les 32 cas de vérification (§4) | protocole de conception, non exécuté | une partie existe sous d'autres noms (`OUT_OF_CORPUS`, 403, refus AMF…) ; aucune table cas → test | issue : cartographie cas → test, puis les manquants |
+| Les 32 cas de vérification (§4) | protocole de conception, non exécuté | **cartographiés le 03/10** (issue #61) : 23 couverts, 5 partiels, 4 manquants ; quatre tests écrits (D02, D05, R09, R13) ; `evidence/C12/cas-de-verification-chapitre-donnees.md` | les 4 manquants ont leur issue : #65, #69, #63, #70 |
 | Jeu annoté (§4.4) | 53 questions annotées par un LLM, non revalidées ; Hit@1 0,547, MRR 0,605 en hybride | inchangé depuis le 07/09 | relecture humaine à planifier (E3, C12) |
 
 **Lecture honnête** : sur dix-sept lignes, cinq sont tenues par le code (dont trois depuis le rendu), neuf

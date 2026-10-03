@@ -24,7 +24,8 @@ def _bloc_articles(passages: list[dict] | None) -> str:
     lignes = [f"{i}. [{p['source']}, {p['publie_le']}] {p['texte']}"
               for i, p in enumerate(passages, 1)]
     return (f"\n\nArticles retrouvés ({len(passages)}) — classés par PERTINENCE, pas par date : vérifie leur date avant de t'en servir, et ne présente jamais une dépêche ancienne comme une actualité du jour. Quand tu t'appuies sur l'un d'eux, "
-            f"cite la source et la date :\n" + "\n".join(lignes))
+            f"cite la source et la date. Chaque affirmation tirée des articles doit être soutenue par l'un des articles "
+            f"ci-dessous ; si deux articles se contredisent, dis-le au lieu de choisir en silence :\n" + "\n".join(lignes))
 
 
 def generate_briefing(ticker: str, price: float, change_pct: float,
