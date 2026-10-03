@@ -82,6 +82,16 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
       LLM_ORDRE: ${LLM_ORDRE:-anthropic,openrouter}
+      # --- Traçage Langfuse (C11), facultatif ---------------------------------------
+      # Audit du 02/10/2026 : rien n'était transmis ici, donc l'API en conteneur (pré-production
+      # et serveur) servait des briefings que Langfuse ne voyait jamais. Les clés se lisent
+      # dans l'environnement de la machine, JAMAIS écrites ici ; par défaut vides : sans compte
+      # Langfuse, `src/traces.py` ne fait rien et l'API démarre quand même. L'interrupteur
+      # LANGFUSE_TRACING_ENABLED=false coupe le traçage sans toucher aux clés.
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:-}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY:-}
+      LANGFUSE_HOST: ${LANGFUSE_HOST:-https://cloud.langfuse.com}
+      LANGFUSE_TRACING_ENABLED: ${LANGFUSE_TRACING_ENABLED:-true}
     ports:
       - "8001:8000"
     # ⚠️ 8001 côté hôte, pas 8000 : le serveur de développement occupe déjà 8000.
