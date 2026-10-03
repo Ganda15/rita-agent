@@ -145,8 +145,9 @@ conformité et fidélité égales, médiane plus courte), OpenRouter en secours,
 latence qui gênerait la démonstration (un appel sur vingt au-delà de 10 s), ou la fin de la gratuité de la ressource.
 
 **Ce qui manque encore pour clore C7** : la notation du français (Era) ; Anthropic en direct, jamais mesuré faute de
-clé ; la variance d'un jour à l'autre (tout est mesuré le 03/10) ; la région qui a servi les appels (type de déploiement
-Foundry à lire dans le portail, point de sortie OpenRouter non journalisé).
+clé ; la variance d'un jour à l'autre (tout est mesuré le 03/10) ; la région des appels Foundry, mesurée par une sonde
+(`x-ms-region = Sweden Central`) mais non journalisée par le banc ; le type de déploiement (portail) ; le point de
+sortie OpenRouter, non journalisé.
 
 **Relevé le 03/10 au soir, après ce passage** (`prix-et-environnement-2026-10-03.md`) : le prix public des deux modèles, daté et sourcé ;
 l'information environnementale : Microsoft publie des chiffres d'entreprise vérifiés (FY25 : 21,1 millions de tonnes

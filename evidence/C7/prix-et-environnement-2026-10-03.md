@@ -84,12 +84,33 @@ https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/msc/docu
 Le rapport affirme aussi, sans nommer de modèle ni de méthode : « une inférence d'IA optimisée à grande échelle peut
 consommer moins d'un wattheure par requête ». À lire comme une communication, pas comme une mesure de `gpt-5.4`.
 
-**Le lieu de traitement dépend du type de déploiement**, et il n'est pas connu ici. D'après la documentation Microsoft
+**Le lieu de traitement, mesuré le 03/10 au soir : Sweden Central.** Chaque réponse d'Azure OpenAI porte un en-tête
+`x-ms-region` qui nomme la région qui a traité l'appel. Une sonde (un appel de 5 jetons, même clé, même point que le
+banc, clé jamais affichée) a renvoyé :
+
+```
+statut 200
+x-ms-region = Sweden Central
+x-ratelimit-limit-requests = 2500
+x-ratelimit-limit-tokens = 250000
+modele gpt-5.4-2026-03-05 | usage 11 4
+```
+
+Era situait sa ressource « France Central, Sweden Central ou West Europe » ; la mesure tranche pour la sonde. Les
+30 appels du banc n'ont pas journalisé cet en-tête (le script ne le lisait pas) : on sait où la sonde a été traitée,
+on suppose, sans preuve, la même région pour le banc. La fiche du modèle dans le portail (collée par Era le 03/10) donne
+les limites du modèle : fenêtre de 1 050 000 jetons, entrée jusqu'à 922 000, **sortie jusqu'à 128 000**, cycle de vie
+« Generally Available », entrées texte et image. Limites de débit de la ressource, lues dans les en-têtes : 2 500
+requêtes et 250 000 jetons par fenêtre (l'en-tête ne dit pas la durée de la fenêtre ; la documentation Azure parle de
+quotas par minute).
+
+Ce qui reste à lire dans le portail : le **type de déploiement**. D'après la documentation Microsoft
 (https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/deployment-types, mise à jour du 12/08/2026) :
-un déploiement **Standard Global** « peut être traité dans n'importe quelle région Azure » ; un déploiement **Data Zone
-EU** reste dans la frontière de données européenne ; `gpt-5.4` a été lancé en Standard Global et Data Zone US. Le type
-de déploiement et la région de la ressource d'Era se lisent dans le portail Foundry ; tant qu'ils ne sont pas relevés,
-**la région qui a servi les 30 appels est inconnue**, et avec elle l'intensité carbone du réseau électrique concerné.
+un déploiement **Standard Global** « peut être traité dans n'importe quelle région Azure » (Sweden Central aujourd'hui,
+ailleurs demain) ; un déploiement **Data Zone EU** reste dans la frontière de données européenne ; `gpt-5.4` a été
+lancé en Standard Global et Data Zone US. Sur l'énergie de la région suédoise, Microsoft communique sur une alimentation
+en électricité sans carbone, mais ses pages régionales refusent la lecture automatique (code 403 le 03/10) : **aucun
+chiffre régional n'est cité ici**, seuls les chiffres d'entreprise du tableau ci-dessus le sont.
 
 ### 2.3 Anthropic, éditeur de `claude-sonnet-4.5` : rien de publié
 
@@ -117,9 +138,11 @@ plutôt que de choisir un chiffre.
   approche, et l'approche honnête ici consiste à montrer l'absence de donnée et l'ordre de grandeur contradictoire.
 - **Le coût (C7.4)** a maintenant un prix public pour les deux modèles ; la recommandation provisoire de la preuve §9
   (Foundry d'abord, OpenRouter en secours) tient au prix public comme en gratuité.
-- **Restent inconnus**, et dits tels : la région de traitement des appels Foundry (Era lit le type de déploiement dans
-  le portail), le point de sortie des appels OpenRouter (le script pourrait le journaliser si l'API le renvoie), les
-  limites de débit par service (non relevées), et toute empreinte par modèle.
+- **Restent inconnus**, et dits tels : le type de déploiement Foundry (Era le lit dans le portail ; la région mesurée
+  par sonde est Sweden Central, mais le banc ne l'a pas journalisée), le point de sortie des appels OpenRouter (le
+  script pourrait le journaliser si l'API le renvoie), les limites de débit d'OpenRouter (non relevées), et toute
+  empreinte par modèle. Amélioration possible du banc : lire `x-ms-region` à chaque appel Foundry et l'écrire dans le
+  JSONL, pour que la région soit mesurée et non supposée.
 
 ## 📖 Glossaire
 
