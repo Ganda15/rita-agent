@@ -24,9 +24,9 @@ CHROME = Path(r"C:\Program Files\Google\Chrome\Application\chrome.exe")
 
 STYLE = """
 :root{ --ink:#16202B; --ink-soft:#4A5766; --rule:#D5DCE4; --rule-strong:#9DAAB8; --accent:#14607F; --wash:#ECF3F7; --flag:#9E4318; }
-@page{ size:A4; margin:16mm 15mm 16mm 15mm; }
+@page{ size:A4; margin:14mm 14mm 14mm 14mm; }
 *{ box-sizing:border-box; }
-body{ margin:0; color:var(--ink); font-family:"Segoe UI","Calibri",system-ui,sans-serif; font-size:10.2pt; line-height:1.42;
+body{ margin:0; color:var(--ink); font-family:"Segoe UI","Calibri",system-ui,sans-serif; font-size:10pt; line-height:1.4;
       font-variant-numeric:tabular-nums; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
 h1,h2,h3,h4{ font-family:Georgia,"Times New Roman",serif; font-weight:600; margin:0; color:var(--ink); break-after:avoid; }
 h1{ font-size:20pt; line-height:1.2; border-top:2.5pt solid var(--accent); padding-top:8pt; margin-bottom:8pt; }
