@@ -9,6 +9,12 @@ aujourd'hui ; la condition est écrite dans le registre pour le jour où ça cha
 briefing : sans clés (CI, tests, poste sans compte), tout ici est un no-op silencieux. Et un
 seul endroit décide « actif ou non », au lieu de trois `if` dans trois fournisseurs.
 
+**Et quand Langfuse casse en route** (exportateur injoignable, quota, SDK en erreur) : revue
+Codex de la PR #58 (03/10/2026), un `flush()` qui levait transformait un briefing valide en 500.
+Depuis, chaque opération Langfuse passe par `_observation`, `_maj` ou `_flush`, qui avalent
+l'erreur et laissent une ligne WARNING. L'isolation va dans un seul sens : une erreur du
+métier remonte toujours, une erreur du traçage jamais.
+
 **Ce qu'une trace porte** : une *génération* par tentative de la cascade, avec le fournisseur,
 le modèle, le prompt en entrée, le texte en sortie, l'usage en tokens quand le fournisseur le
 donne (Langfuse en déduit le coût), et `level="ERROR"` avec le message quand une tentative
@@ -23,6 +29,7 @@ from __future__ import annotations
 
 import logging
 import os
+import sys
 from contextlib import contextmanager
 from dataclasses import dataclass
 
@@ -57,6 +64,63 @@ def _actif() -> bool:
     if interrupteur in {"false", "0", "no", "non", "off"}:
         return False
     return bool(os.getenv("LANGFUSE_PUBLIC_KEY") and os.getenv("LANGFUSE_SECRET_KEY"))
+
+
+def _signaler(operation: str, erreur: BaseException) -> None:
+    """Une panne du traçage vaut une ligne WARNING, jamais une exception : le message est
+    tronqué et ne contient aucune clé (le SDK ne les met pas dans ses erreurs)."""
+    logger.warning("Langfuse : %s a echoue, le briefing continue sans trace : %s",
+                   operation, f"{type(erreur).__name__}: {erreur}"[:200])
+
+
+@contextmanager
+def _observation(client, **options):
+    """Ouvre une observation Langfuse sans jamais laisser une erreur du SDK remonter.
+
+    Si l'ouverture échoue, le corps reçoit `None` et tout ce qui suit est un no-op. Si la
+    fermeture échoue, on la signale et on continue. Une exception du corps (le métier), elle,
+    traverse : on la transmet au SDK pour qu'il marque l'observation, puis on la relance.
+    """
+    try:
+        gestionnaire = client.start_as_current_observation(**options)
+        observation = gestionnaire.__enter__()
+    except Exception as erreur:  # noqa: BLE001
+        _signaler(f"l'ouverture de {options.get('name')!r}", erreur)
+        yield None
+        return
+    try:
+        yield observation
+    except BaseException:
+        try:
+            gestionnaire.__exit__(*sys.exc_info())
+        except Exception as erreur:  # noqa: BLE001
+            _signaler(f"la fermeture de {options.get('name')!r}", erreur)
+        raise
+    else:
+        try:
+            gestionnaire.__exit__(None, None, None)
+        except Exception as erreur:  # noqa: BLE001
+            _signaler(f"la fermeture de {options.get('name')!r}", erreur)
+
+
+def _maj(observation, methode: str = "update", **champs) -> None:
+    """`update(...)` ou `score_trace(...)` sur une observation, sans jamais lever."""
+    if observation is None:
+        return
+    try:
+        getattr(observation, methode)(**champs)
+    except Exception as erreur:  # noqa: BLE001
+        _signaler(f"la mise a jour ({methode})", erreur)
+
+
+def _flush(client) -> None:
+    """Envoie ce qui attend ; une panne d'export est signalée, pas propagée."""
+    if client is None:
+        return
+    try:
+        client.flush()
+    except Exception as erreur:  # noqa: BLE001
+        _signaler("l'export (flush)", erreur)
 
 
 def client_traces():
@@ -105,12 +169,15 @@ def briefing(ticker: str, request_id: str | None = None):
         options["metadata"]["request_id"] = request_id
         # Un identifiant de trace Langfuse fait 32 hexadécimaux : la graine le dérive de façon
         # déterministe, donc le même `request_id` donne toujours la même trace.
-        options["trace_context"] = {"trace_id": client.create_trace_id(seed=request_id)}
+        try:
+            options["trace_context"] = {"trace_id": client.create_trace_id(seed=request_id)}
+        except Exception as erreur:  # noqa: BLE001
+            _signaler("la derivation de l'identifiant de trace", erreur)
     try:
-        with client.start_as_current_observation(as_type="span", name="briefing", **options) as racine:
+        with _observation(client, as_type="span", name="briefing", **options) as racine:
             yield racine
     finally:
-        client.flush()
+        _flush(client)
 
 
 def noter_verdict_amf(racine, ticker: str, conforme: bool, motifs: list[str],
@@ -132,8 +199,8 @@ def noter_verdict_amf(racine, ticker: str, conforme: bool, motifs: list[str],
     if not conforme:
         details["level"] = "WARNING"
         details["status_message"] = "refus AMF : " + ",".join(motifs)
-    racine.update(**details)
-    racine.score_trace(name="conforme_amf", value=1.0 if conforme else 0.0, data_type="BOOLEAN")
+    _maj(racine, **details)
+    _maj(racine, "score_trace", name="conforme_amf", value=1.0 if conforme else 0.0, data_type="BOOLEAN")
 
 
 @contextmanager
@@ -152,7 +219,7 @@ def etape(nom: str, genre: str = "span", **metadonnees):
     options: dict = {"as_type": genre, "name": nom}
     if metadonnees:
         options["metadata"] = metadonnees
-    with client.start_as_current_observation(**options) as span:
+    with _observation(client, **options) as span:
         yield span
 
 
@@ -160,7 +227,7 @@ def terminer_etape(span, **champs) -> None:
     """Complète une étape (sortie, métadonnées, niveau). Jamais un texte de briefing ici :
     la sortie d'une étape est un résumé (compte, motif, durée), pas le contenu."""
     if span is not None and champs:
-        span.update(**champs)
+        _maj(span, **champs)
 
 
 def noter_garde_fou(span, bloque: bool, motifs: list[str]) -> None:
@@ -171,7 +238,7 @@ def noter_garde_fou(span, bloque: bool, motifs: list[str]) -> None:
     champs: dict = {"metadata": {"bloque": bloque, "motifs": motifs}}
     if bloque:
         champs["level"] = "WARNING"
-    span.update(**champs)
+    _maj(span, **champs)
 
 
 @contextmanager
@@ -187,14 +254,14 @@ def appel(prompt: str):
     if client is None:
         yield None
         return
-    with client.start_as_current_observation(as_type="span", name="briefing-llm", input=prompt) as racine:
+    with _observation(client, as_type="span", name="briefing-llm", input=prompt) as racine:
         yield racine
 
 
 def terminer_appel(racine, texte: str) -> None:
     """Pose la sortie finale sur le trace : ce que le rédacteur a vraiment reçu."""
     if racine is not None:
-        racine.update(output=texte)
+        _maj(racine, output=texte)
 
 
 @contextmanager
@@ -208,7 +275,8 @@ def generation(fournisseur: str, modele: str, prompt: str, tentative: int):
     if client is None:
         yield None
         return
-    with client.start_as_current_observation(
+    with _observation(
+        client,
         as_type="generation",
         name=f"llm-{fournisseur}",
         model=modele,
@@ -227,19 +295,17 @@ def terminer(gen, reponse: Reponse) -> None:
         details["model"] = reponse.modele
     if reponse.usage:
         details["usage_details"] = reponse.usage
-    gen.update(**details)
+    _maj(gen, **details)
 
 
 def echouer(gen, erreur: BaseException) -> None:
     """Marque la tentative en erreur ; le message est tronqué, jamais la clé d'API."""
     if gen is None:
         return
-    gen.update(level="ERROR", status_message=f"{type(erreur).__name__}: {erreur}"[:300])
+    _maj(gen, level="ERROR", status_message=f"{type(erreur).__name__}: {erreur}"[:300])
 
 
 def vider() -> None:
     """Envoie ce qui attend. Appelé une fois par `generer_texte` : l'API vit longtemps,
     un script court s'arrête juste après, dans les deux cas la trace doit partir."""
-    client = client_traces()
-    if client is not None:
-        client.flush()
+    _flush(client_traces())
