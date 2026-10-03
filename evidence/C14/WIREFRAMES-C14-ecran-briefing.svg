@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="940" viewBox="0 0 1180 940" font-family="Arial,Helvetica,sans-serif">
+<rect x="0" y="0" width="1180" height="940" fill="#ffffff"/>
+<text x="20" y="28" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:17px;font-weight:700;fill:#111827;">C14 - Wireframes : les 4 états de l&#x27;écran briefing (RITA)</text>
+<text x="20" y="46" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;fill:#6b7280;">Dessinés le 03/10/2026 d&#x27;après l&#x27;écran réellement implémenté (frontend/briefing.html) : spécification écrite après le code, dit dans le document.</text>
+<text x="30" y="62" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;fill:#111827;">État 1 : aucune clé</text>
+<rect x="30" y="70" width="540" height="380" rx="6" fill="#ffffff" stroke="#9ca3af" stroke-width="1.5"/>
+<rect x="30" y="70" width="540" height="26" rx="6" fill="#e5e7eb" stroke="#9ca3af" stroke-width="1.5"/>
+<rect x="30" y="90" width="540" height="6" rx="0" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1.0"/>
+<circle cx="44" cy="83" r="4.5" fill="#ef4444"/>
+<circle cx="58" cy="83" r="4.5" fill="#fbbf24"/>
+<circle cx="72" cy="83" r="4.5" fill="#22c55e"/>
+<text x="330" y="87" text-anchor="middle" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;fill:#4b5563;">localhost:8000/app/briefing.html</text>
+<text x="44" y="116" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;fill:#111827;">RITA - Briefing</text>
+<text x="44" y="132" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#6b7280;">Retrieval Intelligence pour le Tracking et l&#x27;Analyse</text>
+<rect x="44" y="140" width="512" height="20" rx="4" fill="#fef3c7" stroke="#d97706" stroke-width="1.0"/>
+<text x="52" y="154" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#92400e;">Aide à la lecture. Aucune recommandation d&#x27;achat ou de vente.</text>
+<text x="44" y="178" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;fill:#1d4ed8;">Mon portefeuille</text>
+<line x1="44" y1="180" x2="130" y2="180" stroke="#1d4ed8" stroke-width="1.0"/>
+<text x="152" y="178" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;fill:#1d4ed8;">Indicateurs</text>
+<line x1="152" y1="180" x2="211" y2="180" stroke="#1d4ed8" stroke-width="1.0"/>
+<text x="233" y="178" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;fill:#111827;">Briefing</text>
+<text x="44" y="194" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8px;font-style:italic;fill:#6b7280;">(nav nommée, page courante : aria-current)</text>
+<text x="44" y="218" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;fill:#111827;">Connexion</text>
+<text x="44" y="242" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;fill:#111827;">Clé d&#x27;API</text>
+<rect x="44" y="250" width="300" height="24" rx="3" fill="#ffffff" stroke="#9ca3af" stroke-width="1.0"/>
+<text x="52" y="267" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;fill:#6b7280;">••••••••••••</text>
+<rect x="356" y="250" width="110" height="24" rx="3" fill="#e5e7eb" stroke="#9ca3af" stroke-width="1.0"/>
+<text x="411" y="267" text-anchor="middle" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;fill:#111827;">Se connecter</text>
+<text x="44" y="296" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;font-style:italic;fill:#1d4ed8;">champ masqué (password), étiqueté, sans mémorisation navigateur ; focus posé dessus</text>
+<text x="610" y="62" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;fill:#111827;">État 2 : la demande</text>
+<rect x="610" y="70" width="540" height="380" rx="6" fill="#ffffff" stroke="#9ca3af" stroke-width="1.5"/>
+<rect x="610" y="70" width="540" height="26" rx="6" fill="#e5e7eb" stroke="#9ca3af" stroke-width="1.5"/>
+<rect x="610" y="90" width="540" height="6" rx="0" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1.0"/>
+<circle cx="624" cy="83" r="4.5" fill="#ef4444"/>
+<circle cx="638" cy="83" r="4.5" fill="#fbbf24"/>
+<circle cx="652" cy="83" r="4.5" fill="#22c55e"/>
+<text x="910" y="87" text-anchor="middle" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;fill:#4b5563;">localhost:8000/app/briefing.html</text>
+<text x="624" y="116" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;fill:#111827;">RITA - Briefing</text>
+<text x="624" y="132" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#6b7280;">Retrieval Intelligence pour le Tracking et l&#x27;Analyse</text>
+<rect x="624" y="140" width="512" height="20" rx="4" fill="#fef3c7" stroke="#d97706" stroke-width="1.0"/>
+<text x="632" y="154" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#92400e;">Aide à la lecture. Aucune recommandation d&#x27;achat ou de vente.</text>
+<text x="624" y="178" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;fill:#1d4ed8;">Mon portefeuille</text>
+<line x1="624" y1="180" x2="710" y2="180" stroke="#1d4ed8" stroke-width="1.0"/>
+<text x="732" y="178" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;fill:#1d4ed8;">Indicateurs</text>
+<line x1="732" y1="180" x2="791" y2="180" stroke="#1d4ed8" stroke-width="1.0"/>
+<text x="813" y="178" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;fill:#111827;">Briefing</text>
+<text x="624" y="194" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8px;font-style:italic;fill:#6b7280;">(nav nommée, page courante : aria-current)</text>
+<text x="624" y="218" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;fill:#111827;">Demander un briefing</text>
+<text x="624" y="240" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;fill:#111827;">Code de la valeur (ticker)</text>
+<rect x="624" y="248" width="300" height="24" rx="3" fill="#ffffff" stroke="#9ca3af" stroke-width="1.0"/>
+<text x="632" y="265" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;fill:#9ca3af;">MC.PA</text>
+<rect x="936" y="248" width="130" height="24" rx="3" fill="#e5e7eb" stroke="#9ca3af" stroke-width="1.0"/>
+<text x="1001" y="265" text-anchor="middle" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;fill:#111827;">Rédiger le briefing</text>
+<rect x="624" y="274" width="300" height="44" rx="2" fill="#ffffff" stroke="#9ca3af" stroke-width="1.0"/>
+<text x="632" y="287" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9px;font-weight:700;fill:#374151;">AI.PA</text>
+<text x="686" y="287" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9px;fill:#374151;">AIR LIQUIDE</text>
+<text x="632" y="300" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9px;font-weight:700;fill:#374151;">BNP.PA</text>
+<text x="686" y="300" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9px;fill:#374151;">BNP PARIBAS</text>
+<text x="632" y="313" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9px;font-weight:700;fill:#374151;">MC.PA</text>
+<text x="686" y="313" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9px;fill:#374151;">LVMH</text>
+<text x="932" y="292" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8px;font-style:italic;fill:#1d4ed8;">← liste déroulante de l&#x27;univers suivi (complément) :</text>
+<text x="932" y="303" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8px;font-style:italic;fill:#1d4ed8;">si elle échoue, on tape le code à la main</text>
+<text x="624" y="338" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;fill:#374151;">Le texte est rédigé par un modèle de langage à partir des données collectées (cours, variation,</text>
+<text x="624" y="350" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;fill:#374151;">capitaux échangés, articles). Il est relu par un garde-fou avant affichage : une recommandation</text>
+<text x="624" y="362" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;fill:#374151;">d&#x27;achat ou de vente est retenue, jamais diffusée.</text>
+<text x="624" y="388" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;font-style:italic;fill:#1d4ed8;">champ étiqueté ; format du code contrôlé (lettres, chiffres, point, tiret, 16 signes) ; mis en majuscules</text>
+<text x="30" y="482" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;fill:#111827;">État 3 : attente et pannes (une zone de statut annoncée)</text>
+<rect x="30" y="490" width="540" height="380" rx="6" fill="#ffffff" stroke="#9ca3af" stroke-width="1.5"/>
+<rect x="30" y="490" width="540" height="26" rx="6" fill="#e5e7eb" stroke="#9ca3af" stroke-width="1.5"/>
+<rect x="30" y="510" width="540" height="6" rx="0" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1.0"/>
+<circle cx="44" cy="503" r="4.5" fill="#ef4444"/>
+<circle cx="58" cy="503" r="4.5" fill="#fbbf24"/>
+<circle cx="72" cy="503" r="4.5" fill="#22c55e"/>
+<text x="330" y="507" text-anchor="middle" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;fill:#4b5563;">localhost:8000/app/briefing.html</text>
+<text x="44" y="536" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;fill:#111827;">RITA - Briefing</text>
+<text x="44" y="552" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#6b7280;">Retrieval Intelligence pour le Tracking et l&#x27;Analyse</text>
+<rect x="44" y="560" width="512" height="20" rx="4" fill="#fef3c7" stroke="#d97706" stroke-width="1.0"/>
+<text x="52" y="574" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#92400e;">Aide à la lecture. Aucune recommandation d&#x27;achat ou de vente.</text>
+<text x="44" y="598" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;fill:#1d4ed8;">Mon portefeuille</text>
+<line x1="44" y1="600" x2="130" y2="600" stroke="#1d4ed8" stroke-width="1.0"/>
+<text x="152" y="598" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;fill:#1d4ed8;">Indicateurs</text>
+<line x1="152" y1="600" x2="211" y2="600" stroke="#1d4ed8" stroke-width="1.0"/>
+<text x="233" y="598" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;fill:#111827;">Briefing</text>
+<text x="44" y="614" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8px;font-style:italic;fill:#6b7280;">(nav nommée, page courante : aria-current)</text>
+<rect x="44" y="618" width="512" height="34" rx="3" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.0"/>
+<text x="52" y="631" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;font-weight:700;fill:#374151;">a. Attente (5 à 15 s)</text>
+<text x="52" y="645" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#111827;">Rédaction en cours pour MC.PA… Comptez quelques secondes (de 5 à 15 secondes).</text>
+<rect x="44" y="656" width="512" height="40" rx="3" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.0"/>
+<text x="52" y="669" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;font-weight:700;fill:#374151;">b. Clé refusée (403)</text>
+<text x="52" y="683" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#111827;">Clé d&#x27;API refusée. Saisissez-la à nouveau.</text>
+<text x="52" y="693" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8px;font-style:italic;fill:#1d4ed8;">→ clé oubliée, retour à l&#x27;état 1</text>
+<rect x="44" y="700" width="512" height="34" rx="3" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.0"/>
+<text x="52" y="713" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;font-weight:700;fill:#374151;">c. Code inconnu (502 « absent »)</text>
+<text x="52" y="727" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#111827;">Valeur introuvable : « XX.PA » n&#x27;est pas dans l&#x27;univers suivi.</text>
+<rect x="44" y="738" width="512" height="34" rx="3" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.0"/>
+<text x="52" y="751" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;font-weight:700;fill:#374151;">d. Aucun modèle (502 autre)</text>
+<text x="52" y="765" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#111827;">Aucun fournisseur de modèle ne répond pour le moment. Réessayez plus tard.</text>
+<rect x="44" y="776" width="512" height="34" rx="3" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.0"/>
+<text x="52" y="789" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;font-weight:700;fill:#374151;">e. Autre erreur / aucune réponse</text>
+<text x="52" y="803" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#111827;">Erreur 500 — le serveur n&#x27;a pas pu répondre.   |   Le serveur ne répond pas…</text>
+<text x="610" y="482" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;fill:#111827;">État 4 : le briefing et le verdict du garde-fou</text>
+<rect x="610" y="490" width="540" height="380" rx="6" fill="#ffffff" stroke="#9ca3af" stroke-width="1.5"/>
+<rect x="610" y="490" width="540" height="26" rx="6" fill="#e5e7eb" stroke="#9ca3af" stroke-width="1.5"/>
+<rect x="610" y="510" width="540" height="6" rx="0" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1.0"/>
+<circle cx="624" cy="503" r="4.5" fill="#ef4444"/>
+<circle cx="638" cy="503" r="4.5" fill="#fbbf24"/>
+<circle cx="652" cy="503" r="4.5" fill="#22c55e"/>
+<text x="910" y="507" text-anchor="middle" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;fill:#4b5563;">localhost:8000/app/briefing.html</text>
+<text x="624" y="536" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;fill:#111827;">RITA - Briefing</text>
+<text x="624" y="552" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#6b7280;">Retrieval Intelligence pour le Tracking et l&#x27;Analyse</text>
+<rect x="624" y="560" width="512" height="20" rx="4" fill="#fef3c7" stroke="#d97706" stroke-width="1.0"/>
+<text x="632" y="574" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#92400e;">Aide à la lecture. Aucune recommandation d&#x27;achat ou de vente.</text>
+<text x="624" y="598" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;fill:#1d4ed8;">Mon portefeuille</text>
+<line x1="624" y1="600" x2="710" y2="600" stroke="#1d4ed8" stroke-width="1.0"/>
+<text x="732" y="598" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;fill:#1d4ed8;">Indicateurs</text>
+<line x1="732" y1="600" x2="791" y2="600" stroke="#1d4ed8" stroke-width="1.0"/>
+<text x="813" y="598" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:700;fill:#111827;">Briefing</text>
+<text x="624" y="614" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8px;font-style:italic;fill:#6b7280;">(nav nommée, page courante : aria-current)</text>
+<text x="624" y="638" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;fill:#111827;">Briefing</text>
+<text x="624" y="654" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;font-weight:700;fill:#111827;">MC.PA — cours 378,55 EUR, variation sur une séance -0,25 %</text>
+<rect x="624" y="662" width="512" height="20" rx="3" fill="#dcfce7" stroke="#16a34a" stroke-width="1.0"/>
+<text x="632" y="676" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9px;fill:#166534;">Texte conforme : aucune recommandation d&#x27;achat ou de vente détectée.</text>
+<rect x="624" y="688" width="512" height="32" rx="3" fill="#fee2e2" stroke="#dc2626" stroke-width="1.0"/>
+<text x="632" y="701" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;fill:#991b1b;">Variante : Texte retenu par le garde-fou de sortie (motifs : …) : le modèle avait produit une</text>
+<text x="632" y="713" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;fill:#991b1b;">recommandation, elle n&#x27;est pas diffusée.   (le verdict est un texte ; la couleur ne fait que le répéter)</text>
+<rect x="624" y="730" width="512" height="9" rx="2" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1.0"/>
+<rect x="624" y="748" width="512" height="9" rx="2" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1.0"/>
+<rect x="624" y="766" width="472" height="9" rx="2" fill="#e5e7eb" stroke="#e5e7eb" stroke-width="1.0"/>
+<text x="624" y="794" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;fill:#6b7280;">Référence de la requête : &lt;X-Request-ID&gt;   (à citer pour signaler un problème)</text>
+<rect x="624" y="802" width="512" height="18" rx="3" fill="#ffffff" stroke="#9ca3af" stroke-width="1.0"/>
+<text x="632" y="815" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9px;fill:#111827;">▸ D&#x27;où vient ce texte ?   (données, modèle, garde-fou, référence)</text>
+<text x="624" y="840" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8px;font-style:italic;fill:#1d4ed8;">Le focus clavier et le lecteur d&#x27;écran sont déplacés sur la région « Briefing » à l&#x27;arrivée du texte ;</text>
+<text x="624" y="852" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8px;font-style:italic;fill:#1d4ed8;">le texte du modèle est inséré comme du texte (textContent), jamais comme du HTML.</text>
+<text x="20" y="906" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;fill:#374151;">Légende : texte bleu en italique = annotation d&#x27;accessibilité ou de comportement.</text>
+<text x="20" y="924" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:10px;fill:#374151;">Sources : frontend/briefing.html, frontend/briefing.js, frontend/style.css.</text>
+</svg>

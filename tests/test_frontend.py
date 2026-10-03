@@ -106,7 +106,7 @@ def test_le_rendu_n_utilise_jamais_innerhtml():
     ('lang="fr"', "RGAA 8.3 — langue de la page"),
     ("<caption", "RGAA 5.4 — titre du tableau"),
     ('scope="col"', "RGAA 5.7 — en-têtes de colonnes"),
-    ('aria-live="polite"', "RGAA 4.x — annonce des changements d'état"),
+    ('aria-live="polite"', "RGAA 7.5 — messages de statut annoncés"),
     ('role="status"', "zone de statut identifiée"),
 ])
 def test_les_marqueurs_d_accessibilite_sont_presents(marqueur, regle):
@@ -156,7 +156,7 @@ def test_l_ecran_indicateurs_n_utilise_jamais_innerhtml():
     ('lang="fr"', "RGAA 8.3 — langue de la page"),
     ('scope="col"', "RGAA 5.7 — en-têtes de colonne"),
     ("<caption", "RGAA 5.4 — titre du tableau"),
-    ('aria-live="polite"', "RGAA 12.x — annonce des changements de statut"),
+    ('aria-live="polite"', "RGAA 7.5 — messages de statut annoncés"),
     ('role="status"', "zone de statut identifiée"),
     ('aria-current="page"', "page courante signalée dans la navigation"),
     ('aria-controls="tableau-indicateurs"', "le filtre est relié au tableau qu'il modifie"),
@@ -468,9 +468,9 @@ def test_l_ecran_briefing_n_utilise_jamais_innerhtml():
 @pytest.mark.parametrize("marqueur, regle", [
     ('<label for="cle">', "RGAA 11.1 : le champ de clé a une étiquette"),
     ('<label for="ticker">', "RGAA 11.1 : le champ de ticker a une étiquette"),
-    ('aria-live="polite"', "RGAA : le statut est annoncé aux lecteurs d'écran"),
-    ('<nav aria-label=', "RGAA 12 : la navigation est nommée"),
-    ('aria-current="page"', "RGAA 12 : la page courante est marquée"),
+    ('aria-live="polite"', "RGAA 7.5 : le statut est annoncé aux lecteurs d'écran"),
+    ('<nav aria-label=', "RGAA 12.6 : la navigation est une zone nommée"),
+    ('aria-current="page"', "bonne pratique : la page courante est marquée"),
 ])
 def test_les_marqueurs_d_accessibilite_de_l_ecran_3(marqueur, regle):
     assert marqueur in BRIEFING_HTML, regle

@@ -105,6 +105,13 @@ de revue n'existe dans le dépôt (voir C16.1 et C16.4). Aucun ❌. Le rapport E
 - Le serveur a été sondé sur `/health` seulement, pas sur les trois écrans.
 - Ce recomptage est daté du 03/10 : à refaire une fois les tâches T2 à T9 faites, avant de figer la matrice de preuves du rapport.
 
+## 5. Mise à jour du 03/10/2026, après la tâche T2
+
+- **C14.3 passe à ✅** : les écrans 2 et 3 ont chacun une user story, des scénarios et des critères d'acceptation (`evidence/C14/preuve-specifications-ecrans-2-et-3.md`). Réserve écrite dans le document : elles sont rédigées après le code.
+- **C17.2 reste ⚠️** : les wireframes des écrans 2 et 3 existent, mais dessinés d'après l'écran réel ; ils ne prouvent pas que l'écran a suivi une maquette.
+- **Nouveau constat** : l'écran 3 mémorise la clé avant de savoir si elle fonctionne (carte #73), ce qui touche C17.5 et A2 ; non corrigé avant le tag du 15/10.
+- **Total : 26 ✅, 10 ⚠️, 0 ❌.**
+
 ## 📖 Glossaire
 
 - **Critère** : phrase du référentiel que le jury coche.

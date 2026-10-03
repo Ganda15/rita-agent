@@ -9,6 +9,12 @@
 
 ---
 
+## 2026-10-03 (nuit) : les écrans 2 et 3 spécifiés, un défaut et une erreur de référence trouvés en l'écrivant
+
+**Manque découvert** : en écrivant les critères d'acceptation des écrans 2 et 3 (tâche T2 du plan E4), (1) l'écran 3 mémorise la clé d'API avant d'avoir vérifié qu'elle fonctionne, contre son propre commentaire et contre les écrans 1 et 2 (carte #73, aucun test ne l'avait vu parce que les tests navigateur posent la clé directement) ; (2) la spécification de l'écran 1 et deux étiquettes de tests citaient « RGAA 12.x » ou « 4.x » pour les messages de statut, alors que la règle est la 7.5 du RGAA 4.1.2, contrôlée sur le texte officiel. Erratum daté, étiquettes corrigées, texte d'origine conservé. Les spécifications sont écrites après le code, et le disent en tête.
+
+---
+
 ## 2026-10-03 (soir, fin) : la chaîne était rouge depuis 1 h 20, trouvée en recomptant E4 (INC-007)
 
 **Manque découvert** : dix pushs consécutifs sur `develop`, du commit qui ajoute le RSI au scout, ont fait échouer Tests et Livraison, alors que chaque commit avait été annoncé vert sur le poste : quatre tests du scout lisaient la vraie base locale. Corrigé (`0e53ede`), vérifié en CI, fiche `evidence/C21/INC-007-ci-rouge-scout-base-reelle.md`. Règle qui en sort : la preuve qu'un push est bon est la chaîne, pas le poste.

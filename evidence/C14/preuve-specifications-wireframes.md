@@ -16,6 +16,12 @@
 
 **Date** : 2026-08-18
 
+> **Erratum du 03/10/2026.** En contrôlant les numéros de règle sur le texte officiel du RGAA 4.1.2, j'ai trouvé deux références inexactes dans ce
+> document, laissées telles quelles ci-dessous : le critère **A5** (messages de statut annoncés) cite « RGAA 12.x », la règle est le critère **7.5** ;
+> le critère **A9** (focus placé sur le champ) cite « RGAA 10.x », aucune règle du thème 10 ne porte sur ce geste, la référence la plus juste est WCAG 2.4.3.
+> Le code décrit est correct, seule la référence au standard était inexacte. Détail et liste des numéros contrôlés :
+> [`preuve-specifications-ecrans-2-et-3.md`](preuve-specifications-ecrans-2-et-3.md), §6. Les écrans 2 et 3 y sont spécifiés à leur tour.
+
 ---
 
 ## 1. Les 4 critères de C14, et où chacun est traité
@@ -119,7 +125,7 @@ Chaque ligne est **vérifiable** — par un test automatisé, ou par une manipul
 
 | Manque | Conséquence |
 |---|---|
-| **Une seule US est spécifiée** (US-1). L'écran 2 « indicateurs » n'a ni wireframe ni critères d'acceptation | C14 ne sera complet qu'avec les US de l'écran 2 |
+| **Une seule US est spécifiée** (US-1). L'écran 2 « indicateurs » n'a ni wireframe ni critères d'acceptation | C14 ne sera complet qu'avec les US de l'écran 2 *(levé le 03/10/2026 : US-2 et US-3 dans `preuve-specifications-ecrans-2-et-3.md`, écrites après le code)* |
 | **Aucun audit RGAA outillé** n'a été passé | les 11 critères ci-dessus sont vérifiés à la lecture et par test, pas par un outil de conformité |
 | **Aucun test avec un lecteur d'écran réel** (NVDA, VoiceOver) | `aria-live` est correct dans le code ; son comportement réel n'a pas été observé |
 

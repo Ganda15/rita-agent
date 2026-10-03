@@ -78,7 +78,7 @@ reprend ce qu'il lui faut et renvoie à E3 pour le détail, il ne s'y réduit pa
 | T | Tâche | Entrée | Sortie, preuve |
 |---|---|---|---|
 | T1 | Recompter les 36 critères contre le dépôt d'aujourd'hui | skill `projet-rncp` | **fait le 03/10** : `docs/rapports/E4/recomptage-criteres-2026-10-03.md`, remplace celui du 26/09 |
-| T2 | User stories et wireframes des écrans 2 et 3 (#24) | `evidence/C14/`, `frontend/` | deux fichiers dans `evidence/C14/`, un wireframe `.drawio` et `.png` par écran |
+| T2 | User stories et wireframes des écrans 2 et 3 (#24) | `evidence/C14/`, `frontend/` | **fait le 03/10** : `evidence/C14/preuve-specifications-ecrans-2-et-3.md`, un wireframe `.drawio`, `.svg` et `.png` par écran ; écrit après le code, dit en tête ; a fait trouver le défaut #73 et une erreur de référence RGAA |
 | T3 | Mesurer l'éco-conception et l'accessibilité des trois pages (#25) | le front local | `evidence/C17/preuve-eco-conception.md`, tableau et capture |
 | T4 | Revue OWASP Top 10 écrite (#29) | le code, `tests/` | `docs/` ou `evidence/C17/` : dix lignes, chacune avec son fichier ou son test |
 | T5 | Droits d'accès : défense écrite (#26) | `api/main.py`, `db/roles.sql` | une page avec le modèle de menace |
