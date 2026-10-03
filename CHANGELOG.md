@@ -9,7 +9,7 @@
 
 ---
 
-## 2026-10-03 (suite) : chapitre « Données » validé par le formateur et intégré, PR 58 relue par Codex
+## 2026-10-03 (suite) : chapitre « Données » validé par le formateur et intégré, PR 58 relue par la revue automatisée
 
 **Décision structurante** : le chapitre « Données » (brief du 01/09, rendu le 07/09, écrit hors dépôt au commit `23318a6`) reçoit
 le retour du formateur « Très bon travail. Se montrera utile à l'exécution. Rien à redire. » Il entre dans le dépôt
@@ -19,7 +19,7 @@ d'accès), dix issues ouvertes (label `conception-donnees`), dont trois en zone 
 (quasi-doublons, `search_articles`). Lecture honnête : cinq lignes du chapitre sont déjà tenues par le code (orphelins, filtre
 dense, rôle lecture seule, `request_id`), neuf restent proposées.
 
-**Fait aussi** : PR #58 `develop → main` ouverte (31 commits) ; les deux remarques de la revue Codex corrigées, test d'abord
+**Fait aussi** : PR #58 `develop → main` ouverte (31 commits) ; les deux remarques de la revue automatisée corrigées, test d'abord
 (une panne de Langfuse ne fait plus tomber un briefing ; un 500 inattendu porte `X-Request-ID`) : 635 passed, 93,41 %.
 Classeur des 135 critères rempli (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER). Tableau de bord Langfuse « RITA C11 » créé par l'API.
 
@@ -129,7 +129,7 @@ radiées redemandées chaque soir, fériés Euronext inconnus, et FRED lue mais 
 **Décision structurante** : la place de cotation devient une donnée (`sources/marches.py` : devise, fuseau,
 calendrier officiel). Reconstruction en une transaction après sauvegarde, positions inchangées (7),
 **42 tests écrits avant**, suite 577 passed. FRED stockée (`macro_observation`, étape `fred` à 19 h,
-`/donnees/macro`). PR #54 fusionnée par Era après revue Codex (un point P2 fondé, corrigé test d'abord).
+`/donnees/macro`). PR #54 fusionnée par Era après revue automatisée (un point P2 fondé, corrigé test d'abord).
 
 **Ce qui reste faux ailleurs** : le rapport E1 cite les anciennes dates (carte #56) ; l'étape `ecb` a le même
 défaut de faux succès que `fred` avant correction (carte #55) ; ADTV20 est présenté au modèle comme un
@@ -193,7 +193,7 @@ pas des attaques : tout est généré par un modèle, donc tout coûte.
 
 ## 2026-09-20 — Les quatre bugs trouvés par la revue automatisée sont fermés, chacun par un test
 
-**Manques découverts** (revue Codex, PR #1, tous confirmés en relisant le code) et **corrigés** :
+**Manques découverts** (revue automatisée, PR #1, tous confirmés en relisant le code) et **corrigés** :
 1. En conteneur, `/app` en lecture seule sans montage pour ChromaDB : `/briefing` échouait pour tout ticker
    valide, invisible en local. Volume nommé persistant + test du fichier Compose.
 2. Une reconstruction de l'index n'enlevait jamais rien : un article supprimé ou bloqué après coup restait
@@ -206,7 +206,7 @@ pas des attaques : tout est généré par un modèle, donc tout coûte.
 
 ---
 
-## 2026-09-19, 22h50 — Correctif de diagnostic : la revue Claude n'était pas tuée par notre hook
+## 2026-09-19, 22h50 — Correctif de diagnostic : la revue automatisée n'était pas tuée par notre hook
 
 L'entrée précédente attribue les revues muettes au hook Stop du dépôt. **Partiellement faux.** La notification
 `stop-hook-error` apparaît aussi dans les runs réussis (PR #5, PR #8) : elle est bénigne. Les revues mortes
@@ -217,19 +217,19 @@ l'entrée d'origine reste, celle-ci la corrige.
 
 ---
 
-## 2026-09-19, nuit — Flux PR en service : 4 PR fusionnées, 8 défauts trouvés par la revue, et la revue Claude réparée
+## 2026-09-19, nuit — Flux PR en service : 4 PR fusionnées, 8 défauts trouvés par la revue, et la revue automatisée réparée
 
-**Fait** : PR #1 (97 commits) à PR #4 fusionnées ; `main` = `develop`. Revue Codex active : **8 commentaires** utiles
+**Fait** : PR #1 (97 commits) à PR #4 fusionnées ; `main` = `develop`. Revue automatisée active : **8 commentaires** utiles
 sur les deux premières PR — **6 sur la PR #1** (2 hooks + 4 bugs RAG/Compose, consignés dans `ETAT.md`) et **2 sur la PR #2**
 (2 hooks). Les 4 commentaires sur les hooks sont fermés le soir même, chacun par un test.
 
-**Manque découvert, et sa cause** : la revue Claude (`revue-pr.yml`) finissait en « succès » sans rien publier.
+**Manque découvert, et sa cause** : la revue automatisée (`revue-pr.yml`) finissait en « succès » sans rien publier.
 `show_full_output` (PR #3) a montré la cause : l'action charge `.claude/settings.json` du dépôt, donc **notre hook Stop
 tournait dans la session de revue** et la tuait (`Stop hook error`) avant que ses agents de relecture ne rendent
 (5 tours sur la PR #2, 23 tours et 4 min sur la PR #4). Correction PR #4 : les hooks se taisent sous `GITHUB_ACTIONS`.
 Leçon : le périmètre d'un garde-fou fait partie de sa conception ; un garde-fou qui tue le relecteur protège de rien.
 
-**Décision** : Codex reste branché (il a payé) ; la revue Claude est vérifiée sur cette PR #5, première à tourner
+**Décision** : la revue tierce reste branchée (elle a payé) ; la revue automatisée est vérifiée sur cette PR #5, première à tourner
 avec le hook silencieux.
 
 ---
@@ -237,11 +237,11 @@ avec le hook silencieux.
 ## 2026-09-19 — Le harnais devient une garantie : AGENTS.md, hooks, Definition of Done, flux PR
 
 **Décision structurante** (Era, option A) : `main` ne bouge plus que par une pull request `develop → main`,
-relue automatiquement par Claude Code (même choix que la conception Mardik ③ du 18/09, ici exécuté pour de vrai).
+relue automatiquement par le workflow de revue (même choix que la conception Mardik ③ du 18/09, ici exécuté pour de vrai).
 Le push direct est refusé par un hook `pre-push` versionné (`.githooks/`), GitHub ne pouvant pas protéger la
 branche sur un dépôt privé gratuit.
 
-**Fait** : `AGENTS.md` importé par `CLAUDE.md` ; deux hooks Claude Code livrés avec le dépôt (secrets, tests
+**Fait** : `AGENTS.md` importé par `CLAUDE.md` ; deux hooks de l'assistant de développement livrés avec le dépôt (secrets, tests
 verts) ; `scripts/verifier_livrable.py`, Definition of Done à verdict généré, branchée dans `livraison.yml` ;
 règles `.claude/rules/` ; `revue-pr.yml` ; PR #1 ouverte (97 commits).
 

@@ -1,6 +1,6 @@
 # AGENTS.md — RITA
 
-Règles pour tout agent de codage qui travaille dans ce dépôt (Claude Code, Cursor, Codex…).
+Règles pour tout agent de codage qui travaille dans ce dépôt (assistants et éditeurs IA).
 Les humains lisent `README.md` ; les agents lisent ce fichier. Court par choix : ce qui est
 une procédure longue vit dans une skill, pas ici.
 
@@ -56,8 +56,7 @@ L'agent implémente ; l'humain garde l'architecture, la sécurité et le seuil d
 - `bigdata/` : hors image Docker et hors couverture, par choix documenté dans `.coveragerc`
 
 ## Livraison
-- `main` ne bouge **que par une pull request** `develop → main`, relue par `Revue PR` (Claude Code, Action
-  officielle). Jamais de push direct : `git config core.hooksPath .githooks` l'interdit (à activer une fois par clone),
+- `main` ne bouge **que par une pull request** `develop → main`, relue par `Revue PR` (revue automatisée, Action GitHub). Jamais de push direct : `git config core.hooksPath .githooks` l'interdit (à activer une fois par clone),
   et depuis le 03/10/2026 GitHub lui-même (ruleset `main protegee` : PR obligatoire, `pytest` et `evals` verts, ni suppression ni force-push)
 - Un livrable = un **tag** `livrable-E<n>-v<k>` posé sur `main` **après** la fusion ; on envoie le lien du tag,
   jamais celui du dépôt

@@ -31,9 +31,9 @@
 <text x="364" y="201" font-size="9" fill="#4A5766">626 passed, 93,66 % le 02/10</text>
 <rect x="664" y="118" width="280" height="100" fill="#ECF3F7" stroke="#14607F" stroke-width="1.2"/>
 <text x="672" y="134" font-size="10.5" font-weight="700" fill="#16202B">revue-pr.yml : chaque PR vers main</text>
-<text x="672" y="149" font-size="9" fill="#4A5766">relecture adversariale par Claude Code</text>
+<text x="672" y="149" font-size="9" fill="#4A5766">relecture adversariale automatisée</text>
 <text x="672" y="162" font-size="9" fill="#4A5766">(action officielle, jeton d&#x27;abonnement en secret)</text>
-<text x="672" y="175" font-size="9" fill="#4A5766">grille de lecture : AGENTS.md et CLAUDE.md</text>
+<text x="672" y="175" font-size="9" fill="#4A5766">grille de lecture : AGENTS.md et les règles du dépôt</text>
 <text x="672" y="188" font-size="9" fill="#4A5766">22 PR fusionnées au 02/10</text>
 <rect x="356" y="236" width="280" height="56" fill="#FFFFFF" stroke="#14607F" stroke-width="1.2"/>
 <text x="364" y="252" font-size="10.5" font-weight="700" fill="#16202B">Branche main</text>

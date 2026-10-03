@@ -278,7 +278,7 @@ def test_un_resume_qui_apporte_vraiment_quelque_chose_est_conserve():
     assert texte_indexable(titre, resume) == f"{titre}. {resume}"
 
 
-# --- revue Codex, PR #1 (19/09/2026) : une reconstruction doit RETIRER ce qui n'est plus permis ---
+# --- revue automatisée, PR #1 (19/09/2026) : une reconstruction doit RETIRER ce qui n'est plus permis ---
 
 def _index_depuis(monkeypatch, tmp_path, articles):
     """Indexe des articles simulés dans un index jetable et rend la collection."""

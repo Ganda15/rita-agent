@@ -21,16 +21,19 @@ Simplon & Wild Code School · Eramalingam GANDAKUMAR · ganda70@gmail.com · 202
 > *Un dépôt unique qui grandit est la règle du référentiel ; le tag est ce qui permet
 > malgré tout d'évaluer un livrable dans son état d'origine.*
 
-| Épreuve | Compétences | État | Documents | 🔒 Livrable figé |
+| Épreuve | Compétences | État au 03/10/2026 | Documents | 🔒 Livrable figé |
 |---|---|---|---|---|
-| **E1** — Données | C1–C5 | ✅ **livré** — 26 critères / 28 | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) (v1.3) · [preuves](evidence/) | **[`livrable-E1-v1`](https://github.com/Ganda15/rita-agent/tree/livrable-E1-v1)** |
-| **E2** — Veille & services IA | C6–C8 | 🔨 veille hebdomadaire **en cours** — protocole, récurrence, 2 notes · C7 non commencé | [docs/veille/](docs/veille/) | — |
-| **E3** — API modèle & MLOps | C9–C13 | 🔨 **en construction** — API du modèle, garde-fous mesurés, CI · C11 non commencé | [evidence/](evidence/) | — |
-| **E4** — Application | C14–C19 | 🔨 **en construction** — 2 écrans, spécifications et schémas C14/C15, pré-production Docker | [evidence/C14/](evidence/C14/) · [evidence/C15/](evidence/C15/) | — |
-| **E5** — Monitorage | C20–C21 | ⬜ non commencé | — | — |
+| **E1** : Données | C1–C5 | ✅ **livré** le 13/08 (26 critères / 28). Version 2 prévue le **15/10** : 9 tables depuis le 27/09, dates de l'archive corrigées, faux succès de l'étape `ecb`, vue de valorisation sans taux supposé | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) (v1.3) · [preuves C1 à C5](evidence/) | **[`livrable-E1-v1`](https://github.com/Ganda15/rita-agent/tree/livrable-E1-v1)** |
+| **E2** : Veille & services IA | C6–C8 | 🟡 **le plus en retard**. C6 : protocole, 4 notes (S33 à S36), un partage ; C7 : benchmark **non commencé** ; C8 : trois fournisseurs en cascade, tracés depuis le 02/10. Rapport : 0 page, dû le 05/11 | [docs/veille/](docs/veille/) · [evidence/C6/](evidence/C6/) | aucun |
+| **E3** : API modèle & MLOps | C9–C13 | 🔨 **proche du gel** (15/10). API du modèle, garde-fous mesurés, 700 tests, CI avec portes d'évaluation, traces et tableau de bord Langfuse, chaîne d'alerte, journal des appels MCP. Rapport v0.1 en relecture | [rapport-E3.md](docs/rapports/E3/rapport-E3.md) · [evidence/C11/](evidence/C11/) · [evidence/C12/](evidence/C12/) | aucun |
+| **E4** : Application | C14–C19 | 🔨 **23 critères / 36** prouvés le 26/09 : 2 écrans, spécifications et schémas, pré-production Docker, intégration continue, `main` protégée par pull request et tests verts. Rapport : 0 page, gel le 25/10 | [evidence/C14/](evidence/C14/) · [evidence/C15/](evidence/C15/) · [evidence/C19/](evidence/C19/) | aucun |
+| **E5** : Monitorage | C20–C21 | 🔨 **en construction** : jauge de fraîcheur, identifiant de requête dans journal et traces, alerte vers une issue, manifeste de collecte, journal des appels MCP ; 6 post-mortems d'incidents. Rapport : 0 page, dû le 05/11 | [evidence/C20/](evidence/C20/) · [evidence/C21/](evidence/C21/) | aucun |
 
 *Les 2 critères restants d'E1 (C1#6, C3#2) demandent un accès au dépôt Git — ils sont
 satisfaits par l'accès collaborateur, non par du code.*
+
+*Conception des données validée par le formateur le 03/10/2026 : [docs/conception/donnees/](docs/conception/donnees/).
+Tableau tenu à jour à chaque séance ; le détail du jour est dans [`ETAT.md`](ETAT.md).*
 
 ---
 

@@ -10,7 +10,7 @@ briefing : sans clés (CI, tests, poste sans compte), tout ici est un no-op sile
 seul endroit décide « actif ou non », au lieu de trois `if` dans trois fournisseurs.
 
 **Et quand Langfuse casse en route** (exportateur injoignable, quota, SDK en erreur) : revue
-Codex de la PR #58 (03/10/2026), un `flush()` qui levait transformait un briefing valide en 500.
+automatisée de la PR #58 (03/10/2026), un `flush()` qui levait transformait un briefing valide en 500.
 Depuis, chaque opération Langfuse passe par `_observation`, `_maj` ou `_flush`, qui avalent
 l'erreur et laissent une ligne WARNING. L'isolation va dans un seul sens : une erreur du
 métier remonte toujours, une erreur du traçage jamais.

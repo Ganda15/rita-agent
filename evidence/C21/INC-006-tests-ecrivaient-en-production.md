@@ -94,7 +94,7 @@ dans Langfuse pendant ces exécutions (à confirmer par Era dans l'interface : s
   **Complément du 03/10** : relues par l'API, elles sont **quinze**, pas douze : une troisième série de trois
   à 18 h 42 (heure de Paris) manquait au décompte du 02/10 au soir. Export d'avant suppression :
   `evidence/C11/inc-006-traces-factices-avant-suppression-2026-10-03.json`. La suppression par l'agent a été
-  refusée par la session Claude Code (suppression de masse chez un tiers) ; les clics sont dans
+  refusée par l'outil de développement (suppression de masse chez un tiers) ; les clics sont dans
   `evidence/C11/preuve-langfuse-2026-10-03.md`, section 3.1.
 - **À décider** : un second projet Langfuse `rita-dev` pour le poste de développement, afin que
   même un appel réel fait à la main pendant le travail n'entre pas dans les mesures de production.

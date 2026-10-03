@@ -1,6 +1,6 @@
 """Le fichier Compose de pré-production est un contrat : on le teste comme du code (C13).
 
-Revue Codex, PR #1 (19/09/2026) : le service `api` est monté en lecture seule (`read_only: true`,
+Revue automatisée, PR #1 (19/09/2026) : le service `api` est monté en lecture seule (`read_only: true`,
 durcissement voulu), mais ChromaDB écrit dans `data/chroma` à l'ouverture de la collection.
 Sans montage inscriptible à cet endroit, `/briefing` échouait pour tout ticker valide, en
 conteneur seulement — invisible en local. Un test le rend impossible à perdre.
@@ -48,7 +48,7 @@ def test_le_volume_chroma_est_declare_et_persistant(compose):
     assert noms[0] in (compose.get("volumes") or {}), f"volume {noms[0]} non déclaré en tête de fichier"
 
 
-# --- revue Codex, PR #12 : le volume doit être inscriptible par `rita` ET rempli par quelqu'un -------
+# --- revue automatisée, PR #12 : le volume doit être inscriptible par `rita` ET rempli par quelqu'un -------
 
 def test_le_dossier_chroma_est_cree_et_donne_a_rita_avant_de_changer_d_utilisateur():
     """Un volume nommé hérite, à sa création, du propriétaire du dossier dans l'image. Sans `chown`
@@ -75,7 +75,7 @@ def test_un_service_compose_remplit_le_volume_chroma(compose):
     assert "pipelines.ingest" in commande and "indexation" in commande
 
 
-# --- revue Codex, PR #13 : le modèle d'embedding se télécharge dans ~/.cache — impossible en lecture seule ---
+# --- revue automatisée, PR #13 : le modèle d'embedding se télécharge dans ~/.cache — impossible en lecture seule ---
 
 CHEMIN_CACHE_CONTENEUR = "/home/rita/.cache"
 

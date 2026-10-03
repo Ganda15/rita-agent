@@ -311,7 +311,7 @@ def test_l_indexation_indisponible_n_emporte_pas_la_collecte():
     assert r["bilans"][1].ecrites == 30
 
 
-# --- revue Codex, PR #1 (19/09/2026) : l'indexation doit utiliser le DSN du pipeline --------------
+# --- revue automatisée, PR #1 (19/09/2026) : l'indexation doit utiliser le DSN du pipeline --------------
 
 def test_l_indexation_recoit_le_dsn_choisi_par_le_pipeline():
     """Avant : `indexer()` sans argument — avec `--dsn`, les articles allaient dans une base et
@@ -326,7 +326,7 @@ def test_le_pipeline_transmet_le_dsn_a_l_etape_indexation():
     assert "indexation" in ingest.ETAPES_AVEC_DSN
 
 
-# --- revue Codex, PR #13 : le conteneur one-shot doit ECHOUER quand l'indexation échoue ----------------
+# --- revue automatisée, PR #13 : le conteneur one-shot doit ECHOUER quand l'indexation échoue ----------------
 
 def test_en_mode_strict_un_echec_d_etape_donne_un_code_de_sortie_non_nul():
     """`docker compose run --rm indexation` rendait 0 même avec un bilan en échec : un opérateur ou un
@@ -404,7 +404,7 @@ def test_fred_fait_partie_de_la_collecte_du_soir():
 
 
 def test_l_etape_fred_est_en_echec_quand_aucune_serie_ne_repond(sans_execute_values):
-    """Revue Codex, PR #54 : clé absente ou FRED indisponible, toutes les séries échouent,
+    """Revue automatisée, PR #54 : clé absente ou FRED indisponible, toutes les séries échouent,
     mais `Bilan.erreur` restait None et le résumé du soir comptait l'étape parmi les
     réussies, sans une ligne écrite. Succès partiel conservé ; zéro ligne = échec."""
     with patch("sources.fred.fetch_indicateur", side_effect=RuntimeError("cle absente")):

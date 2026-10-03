@@ -94,7 +94,7 @@ async def attribuer_un_identifiant_de_requete(request: Request, call_next):
     try:
         reponse = await call_next(request)
     except Exception as erreur:  # noqa: BLE001
-        # Revue Codex de la PR #58 (03/10/2026) : une exception imprévue traversait ce bloc et
+        # Revue automatisée de la PR #58 (03/10/2026) : une exception imprévue traversait ce bloc et
         # Starlette fabriquait un 500 SANS identifiant, précisément la panne qu'on doit retrouver.
         # On la journalise avec l'identifiant (type et message, jamais vers le client) et on
         # répond nous-mêmes, l'en-tête posé.

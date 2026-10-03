@@ -135,7 +135,7 @@ L'API a deux clients dans le dépôt, et tous deux passent par HTTP avec la clé
 
 ### 4.3 Les garde-fous du développement lui-même
 
-Deux hooks Claude Code vivent dans `.claude/hooks/` : `bloquer-secrets.py` refuse toute commande ou écriture qui nomme le fichier de secrets, lecture comprise ; `exiger-tests-verts.py` refuse de conclure sans une sortie de tests. Treize tests les couvrent. Le 2 octobre 2026, le premier a refusé cinq commandes de l'assistant, dont une lecture : il fait ce qu'il dit. Un scan d'attaques Giskard (20 septembre, 6 scénarios par frontière) a trouvé un contournement par jeu de rôle sur les deux frontières, corrigé le jour même (`evidence/C10/2026-09-20-scan-giskard-run9.md`).
+Deux hooks de l'assistant de développement vivent dans `.claude/hooks/` : `bloquer-secrets.py` refuse toute commande ou écriture qui nomme le fichier de secrets, lecture comprise ; `exiger-tests-verts.py` refuse de conclure sans une sortie de tests. Treize tests les couvrent. Le 2 octobre 2026, le premier a refusé cinq commandes de l'assistant, dont une lecture : il fait ce qu'il dit. Un scan d'attaques Giskard (20 septembre, 6 scénarios par frontière) a trouvé un contournement par jeu de rôle sur les deux frontières, corrigé le jour même (`evidence/C10/2026-09-20-scan-giskard-run9.md`).
 
 ### 4.4 Ce qui manque, C10
 
@@ -409,7 +409,7 @@ Le 2 octobre, le garde-fou de sortie était testé seul ; aucun test ne prouvait
 |---|---|---|
 | `test.yml` | chaque poussée et pull request sur `main` et `develop` | deux travaux : la suite avec couverture (seuil 90 %) ; les garde-fous mesurés et les portes non compensables |
 | `livraison.yml` | poussée, pull request, et tag `livrable-*` | construit l'image, la vérifie, la publie seulement sur un tag |
-| `revue-pr.yml` | chaque pull request vers `main` | relecture adversariale par Claude Code (action officielle), jeton d'abonnement en secret du dépôt |
+| `revue-pr.yml` | chaque pull request vers `main` | relecture adversariale automatisée (action GitHub), jeton d'abonnement en secret du dépôt |
 | `scan-giskard.yml` | manuel | scan d'attaques, deux frontières, plafond de coût saisi |
 | `alerte-incident.yml` | envoi de Langfuse (`repository_dispatch`) ou bouton manuel | ouvre ou commente une issue `incident` |
 

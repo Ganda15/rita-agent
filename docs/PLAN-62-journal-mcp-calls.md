@@ -57,7 +57,7 @@ Deux chemins, un seul écrivain.
 L'écrivain : `db/audit_mcp.py::enregistrer(evenement)`, requête paramétrée, une connexion courte. **Fail-safe dans un seul
 sens** : une panne d'écriture ne fait jamais échouer l'appel métier, mais elle est **détectable** : une ligne WARNING
 `audit mcp non ecrit` et un compteur `audit_mcp_echecs` lisible par `GET /donnees/fraicheur` (déjà le vecteur de C20).
-C'est la règle 7 du chapitre, et la même règle que le traçage Langfuse depuis la revue Codex du 03/10.
+C'est la règle 7 du chapitre, et la même règle que le traçage Langfuse depuis la revue automatisée du 03/10.
 
 Le middleware écrit hors du chemin de la réponse (`BackgroundTask` de Starlette) : l'appelant ne paie pas l'écriture.
 `version_politique` est une constante de l'API, `matrice-acces-2026-09-07` (la date de la matrice du chapitre) ; elle

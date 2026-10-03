@@ -202,7 +202,7 @@ CHAINE = Schema(
 
         Boite("zgh", 340, 90, 620, 500, "GITHUB (dépôt privé Ganda15/rita-agent)", genre="zone"),
         Boite("test", 356, 118, 280, 100, "test.yml : à chaque poussée et PR", ["job pytest : suite + couverture ≥ 90 %", "  (seuil dans .coveragerc, --cov sur la commande)", "job evals : garde-fous mesurés,", "  portes non compensables (xfail strict à 85 %)", "626 passed, 93,66 % le 02/10"], "lavis"),
-        Boite("pr", 664, 118, 280, 100, "revue-pr.yml : chaque PR vers main", ["relecture adversariale par Claude Code", "(action officielle, jeton d'abonnement en secret)", "grille de lecture : AGENTS.md et CLAUDE.md", "22 PR fusionnées au 02/10"], "lavis"),
+        Boite("pr", 664, 118, 280, 100, "revue-pr.yml : chaque PR vers main", ["relecture adversariale automatisée", "(action officielle, jeton d'abonnement en secret)", "grille de lecture : AGENTS.md et les règles du dépôt", "22 PR fusionnées au 02/10"], "lavis"),
         Boite("main", 356, 236, 280, 56, "Branche main", ["ne bouge que par une PR depuis develop", "un livrable = un tag livrable-E<n>-v<k>"], "normal"),
         Boite("liv", 356, 310, 588, 120, "livraison.yml : poussée, PR, et tag livrable-*", ["1. tests, porte de livraison (rien n'est construit si rouge)", "2. construction de l'image, jamais publiée ici", "3. l'image construite démarre et répond sur /health", "4. l'accès est restreint : 403 sans clé", "5. publication sur ghcr.io/ganda15/rita-api, seulement sur un tag (issue #22 : avant, la publication précédait la vérification)"], "lavis"),
         Boite("gisk", 664, 236, 280, 56, "scan-giskard.yml : manuel", ["scan d'attaques, deux frontières", "plafond de coût saisi ; run 9 le 20/09"], "normal"),

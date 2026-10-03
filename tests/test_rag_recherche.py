@@ -213,7 +213,7 @@ def test_un_mode_inconnu_est_refuse_bruyamment(monkeypatch, tmp_path):
         recherche.rechercher("resultats", chemin=tmp_path, mode="dese")
 
 
-# --- revue Codex, PR #1 (19/09/2026) : le moteur dense doit chercher DANS le corpus filtré ---
+# --- revue automatisée, PR #1 (19/09/2026) : le moteur dense doit chercher DANS le corpus filtré ---
 
 def test_avec_un_ticker_le_moteur_dense_ne_cherche_que_dans_le_corpus_du_ticker(monkeypatch, tmp_path):
     """Avant : la requête dense parcourait TOUTE la collection puis tronquait au nombre de documents

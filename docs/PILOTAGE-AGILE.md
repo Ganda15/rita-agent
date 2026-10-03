@@ -22,8 +22,8 @@ semaines S34 à S45, chacune avec un objectif. **Un cycle Kanban = une semaine d
 |---|---|---|
 | Porteur du produit et développeur | Era | ordonne le backlog, décide, développe, rédige les livrables |
 | Partie prenante, relecteur | le formateur (`bybysker`) | lit le tableau et le dépôt, valide les livrables envoyés |
-| Revue automatique des pull requests | workflow `revue-pr.yml` (Claude Code), Codex | commente chaque pull request avant fusion |
-| Assistant de développement | Claude Code | propose et écrit sur demande d'Era ; ne décide pas |
+| Revue automatique des pull requests | workflow `revue-pr.yml` et une revue tierce | commente chaque pull request avant fusion |
+| Assistant de développement | assistant IA sur abonnement | propose et écrit sur demande d'Era ; ne décide pas |
 
 ## 3. Les outils
 

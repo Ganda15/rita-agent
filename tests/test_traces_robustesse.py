@@ -1,6 +1,6 @@
 """Le traçage ne fait jamais tomber un briefing, même quand Langfuse casse (C11, C20).
 
-Revue Codex de la PR #58 (03/10/2026), remarque P1 : le module promettait l'isolation
+Revue automatisée de la PR #58 (03/10/2026), remarque P1 : le module promettait l'isolation
 (« le traçage ne doit jamais faire échouer un briefing ») mais ne la tenait que pour la
 construction du client. Un `flush()` qui lève (exportateur en panne, réseau coupé, quota
 dépassé) remontait depuis le `finally` de `briefing()` et transformait un briefing valide en

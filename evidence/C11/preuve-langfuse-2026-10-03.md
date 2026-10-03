@@ -27,7 +27,7 @@ peut en changer la forme. Le SDK installé (4.12.0) ne l'expose pas encore, l'ap
 
 | Action | Pourquoi | Qui, quand |
 |---|---|---|
-| Suppression des 15 traces factices | l'appel `DELETE /api/public/traces` était prêt ; la session Claude Code l'a **refusé** (règle : pas de suppression de masse sur un service distant par l'agent). L'export d'avant suppression est fait | **Era**, clics en 3.1 |
+| Suppression des 15 traces factices | l'appel `DELETE /api/public/traces` était prêt ; l'outil de développement l'a **refusé** (règle : pas de suppression de masse sur un service distant par l'agent). L'export d'avant suppression est fait | **Era**, clics en 3.1 |
 | Les 2 alertes (ERROR sur 24 h ; aucune trace en 24 h) vers GitHub Actions | aucune route d'API pour les alertes dans la spécification OpenAPI du 03/10 | **Era**, clics en 3.2 |
 | Déclenchement manuel du workflow `alerte-incident.yml` (bouton *Run workflow*) | GitHub ne propose un `workflow_dispatch` que pour un fichier présent sur la branche par défaut (`main`). Le fichier n'est que sur `develop` (30 commits d'avance). `gh workflow run` répond 404 | après la prochaine pull request `develop → main` |
 | Captures d'écran | pas de session navigateur sur le compte Langfuse d'Era | **Era**, après 3.1 et 3.2 |

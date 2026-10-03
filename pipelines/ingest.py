@@ -142,7 +142,7 @@ def etape_fred(cur, simulation: bool) -> Bilan:
             b.rejetees += 1
             b.details.append(f"{serie} : {type(erreur).__name__}")
 
-    # Revue Codex, PR #54 : clé absente ou FRED indisponible, chaque série est attrapée
+    # Revue automatisée, PR #54 : clé absente ou FRED indisponible, chaque série est attrapée
     # ci-dessus, mais l'étape passait pour réussie sans une ligne écrite, et /donnees/macro
     # pouvait rester vide indéfiniment avec un résumé du soir au vert. Succès partiel
     # conservé (une série sur trois suffit) ; zéro ligne = échec déclaré.
@@ -453,7 +453,7 @@ def etape_indexation(cur, simulation: bool, dsn: str | None = None) -> Bilan:
 
     from rag.indexation import indexer          # tardif — voir la docstring
 
-    # Revue Codex, PR #1 (19/09/2026) : sans `dsn`, l'index se reconstruisait depuis
+    # Revue automatisée, PR #1 (19/09/2026) : sans `dsn`, l'index se reconstruisait depuis
     # DATABASE_URL alors que les étapes précédentes avaient écrit dans la base de `--dsn`.
     resultat = indexer(dsn=dsn)
     return Bilan(
@@ -468,7 +468,7 @@ def etape_indexation(cur, simulation: bool, dsn: str | None = None) -> Bilan:
 # Les étapes qui savent rattraper une période (argument `periode=(debut, fin)`).
 # `cotations` n'en a pas besoin : elle est déjà incrémentale depuis la dernière séance.
 ETAPES_AVEC_PERIODE = ("ecb", "rss")
-# Étapes qui ouvrent leur propre connexion : le DSN du pipeline doit leur parvenir (Codex, PR #1).
+# Étapes qui ouvrent leur propre connexion : le DSN du pipeline doit leur parvenir (revue automatisée, PR #1).
 ETAPES_AVEC_DSN = {"indexation"}
 
 ETAPES = {
@@ -489,7 +489,7 @@ ETAPES = {
 def code_de_sortie(resultat: dict, strict: bool) -> int:
     """Code de sortie du processus : 0 toujours en mode normal (le pipeline nocturne tolère une
     étape en panne — une BCE indisponible ne doit pas marquer la nuit en échec), 1 en mode strict
-    si une étape a échoué. Revue Codex, PR #13 : `docker compose run --rm indexation` rendait 0
+    si une étape a échoué. Revue automatisée, PR #13 : `docker compose run --rm indexation` rendait 0
     avec un volume resté vide, invisible pour un opérateur ou un script."""
     if strict and any(not b.ok for b in resultat["bilans"]):
         return 1

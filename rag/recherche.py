@@ -257,7 +257,7 @@ def rechercher(question: str, ticker: str | None = None, k: int = 3,
         return Resultat(False, "OUT_OF_CORPUS", [], 0)
 
     # --- liste 1 : dense ------------------------------------------------------
-    # Revue Codex, PR #1 (19/09/2026) : avec un ticker, la requête parcourait TOUTE la
+    # Revue automatisée, PR #1 (19/09/2026) : avec un ticker, la requête parcourait TOUTE la
     # collection puis tronquait au nombre de documents du ticker ; un article étranger
     # globalement plus proche évinçait le seul article permis → faux OUT_OF_CORPUS, et
     # l'ablation D0 (dense seul) en était faussée. `ids=` restreint le classement dense au

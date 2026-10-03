@@ -179,7 +179,7 @@ def test_sous_uvicorn_les_lignes_info_de_l_api_sont_visibles():
 
 
 # --- 5. une erreur inattendue (500) porte aussi l'identifiant ------------------
-# Revue Codex de la PR #58 (03/10/2026), remarque P2 : quand une route levait une exception
+# Revue automatisée de la PR #58 (03/10/2026), remarque P2 : quand une route levait une exception
 # non prévue, `call_next` la propageait à travers le `finally` du middleware et la ligne qui
 # pose l'en-tête n'était jamais atteinte. Le 500 fabriqué par Starlette partait sans
 # `X-Request-ID` : précisément la panne qu'on a le plus besoin de retrouver dans les journaux.
