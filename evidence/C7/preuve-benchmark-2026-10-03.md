@@ -145,9 +145,8 @@ conformité et fidélité égales, médiane plus courte), OpenRouter en secours,
 latence qui gênerait la démonstration (un appel sur vingt au-delà de 10 s), ou la fin de la gratuité de la ressource.
 
 **Ce qui manque encore pour clore C7** : la notation du français (Era) ; Anthropic en direct, jamais mesuré faute de
-clé ; la variance d'un jour à l'autre (tout est mesuré le 03/10) ; la région des appels Foundry, mesurée par une sonde
-(`x-ms-region = Sweden Central`) mais non journalisée par le banc, et variable par construction (déploiement Global
-Standard, lu dans le portail par Era) ; le point de sortie OpenRouter, non journalisé.
+clé ; la variance d'un jour à l'autre (tout est mesuré le 03/10) ; l'origine des 60 appels du quatrième passage, qui
+n'était pas journalisée (voir §10 pour ce qui l'est désormais, sur un passage séparé).
 
 **Relevé le 03/10 au soir, après ce passage** (`prix-et-environnement-2026-10-03.md`) : le prix public des deux modèles, daté et sourcé ;
 l'information environnementale : Microsoft publie des chiffres d'entreprise vérifiés (FY25 : 21,1 millions de tonnes
@@ -155,6 +154,32 @@ l'information environnementale : Microsoft publie des chiffres d'entreprise vér
 publie quoi que ce soit par modèle** (OpenAI : un seul chiffre moyen de 0,34 Wh par requête, sans méthode ; Anthropic :
 rien). C7.5 reste donc une approche par l'absence : l'ordre de grandeur va de 0,3 à 18 Wh par briefing selon la source,
 et le fichier le dit au lieu de choisir.
+
+## 10. L'origine de chaque appel est journalisée (03/10, soir)
+
+Le déploiement Foundry d'Era est en Global Standard : Azure peut traiter un appel dans n'importe quelle région, donc la
+région est le résultat de l'appel, pas une propriété de la ressource. Le banc ne la lisait pas. Ajouté test d'abord (6
+tests rouges, puis verts) : `Reponse.origine` (`src/traces.py`), lue dans l'en-tête `x-ms-region` pour Foundry et dans le
+champ `provider` du corps pour OpenRouter (`src/llm.py`) ; une colonne `origine` dans chaque ligne brute et un compte
+`origines` par fournisseur dans le résumé (`evals/benchmark_fournisseurs.py`). Aucun seuil touché ; suite complète :
+803 passed, 2 xfailed, couverture 94,99 % (seuil 90).
+
+**Mesure réelle**, une répétition sur les dix cas figés, Foundry et OpenRouter, vers un dossier séparé pour ne pas
+écraser le quatrième passage (`evidence/C7/passage-origine-2026-10-03/`, 20 appels, 0,059 USD au prix public côté OpenRouter, 0 côté Foundry) :
+
+| Fournisseur | Modèle servi | Origine journalisée | Appels |
+|---|---|---|---|
+| Foundry | `gpt-5.4-2026-03-05` | **Sweden Central** | 10 sur 10 |
+| OpenRouter | `anthropic/claude-sonnet-4.5` | **Amazon Bedrock** | 10 sur 10 |
+
+À retenir, sans en tirer plus : (1) la région Foundry est maintenant mesurée appel par appel, et la sonde de tout à
+l'heure est confirmée ; (2) OpenRouter n'a pas servi Claude par Anthropic mais par Amazon Bedrock, ce qui est une
+information nouvelle pour le jury (le "Claude d'OpenRouter" et le "Claude d'Anthropic en direct" de la cascade ne
+sont pas le même hébergeur) ; (3) le champ ne nomme pas la région de Bedrock, elle reste inconnue ; (4) dix appels
+ne disent rien de la fréquence à laquelle Azure ou OpenRouter changent de région ou d'hébergeur : seul un journal sur
+plusieurs jours le dira, et chaque futur passage l'écrira désormais sans rien faire de plus. Les 60 appels du quatrième
+passage restent sans origine ; ce passage-ci ne les remplace pas et n'est pas à noter (aucun fichier de notation
+conservé).
 
 ## 6. Commandes
 

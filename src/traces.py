@@ -51,6 +51,9 @@ class Reponse:
     texte: str
     modele: str | None = None
     usage: dict | None = None
+    # Où l'appel a réellement été traité : région Azure (en-tête `x-ms-region`) ou point de sortie
+    # d'OpenRouter (champ `provider`). None quand le fournisseur ne le dit pas : on n'invente pas.
+    origine: str | None = None
 
 
 def reinitialiser() -> None:

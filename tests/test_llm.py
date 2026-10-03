@@ -102,3 +102,45 @@ def test_foundry_n_utilise_plus_le_client_anthropic():
     import inspect
     from src import llm
     assert "AnthropicFoundry" not in inspect.getsource(llm)
+
+
+# --- L'origine d'un appel (03/10/2026, soir) --------------------------------------------------------
+#
+# Un déploiement Foundry « Global Standard » peut être traité dans n'importe quelle région Azure ; la région
+# n'est donc pas une propriété de la ressource, c'est le résultat d'un appel, lisible dans l'en-tête `x-ms-region`.
+# OpenRouter route vers sept points de sortie et nomme celui qui a répondu dans le champ `provider` du corps.
+# Le banc C7 doit journaliser cette origine à chaque appel : une région supposée n'est pas une région mesurée.
+
+class _ReponseHttpAvecEntetes(_ReponseHttp):
+    def __init__(self, corps, headers=None):
+        super().__init__(corps)
+        self.headers = headers or {}
+
+
+def test_appel_foundry_lit_la_region_dans_l_en_tete_x_ms_region(monkeypatch):
+    from src import llm
+    monkeypatch.setenv("AZURE_FOUNDRY_ENDPOINT", "https://ressource.services.ai.azure.com/openai/v1")
+    monkeypatch.setenv("AZURE_FOUNDRY_API_KEY", "cle-de-test")
+    corps = {"model": "gpt-5.4-2026-03-05", "choices": [{"message": {"content": "ok"}}],
+             "usage": {"prompt_tokens": 11, "completion_tokens": 4}}
+    monkeypatch.setattr(llm.httpx, "post", lambda *a, **k: _ReponseHttpAvecEntetes(corps, {"x-ms-region": "Sweden Central"}))
+    assert llm._appel_foundry("Réponds : ok", 5).origine == "Sweden Central"
+
+
+def test_appel_foundry_sans_en_tete_de_region_laisse_l_origine_inconnue(monkeypatch):
+    from src import llm
+    monkeypatch.setenv("AZURE_FOUNDRY_ENDPOINT", "https://ressource.services.ai.azure.com/openai/v1")
+    monkeypatch.setenv("AZURE_FOUNDRY_API_KEY", "cle-de-test")
+    corps = {"model": "gpt-5.4-2026-03-05", "choices": [{"message": {"content": "ok"}}]}
+    monkeypatch.setattr(llm.httpx, "post", lambda *a, **k: _ReponseHttpAvecEntetes(corps))
+    assert llm._appel_foundry("x", 5).origine is None
+
+
+def test_appel_openrouter_lit_le_point_de_sortie_dans_le_champ_provider(monkeypatch):
+    from src import llm
+    monkeypatch.setenv("OPENROUTER_API_KEY", "cle-de-test")
+    corps = {"model": "anthropic/claude-sonnet-4.5", "provider": "Anthropic",
+             "choices": [{"message": {"content": "ok"}}], "usage": {"prompt_tokens": 9, "completion_tokens": 2}}
+    monkeypatch.setattr(llm.httpx, "post", lambda *a, **k: _ReponseHttpAvecEntetes(corps))
+    r = llm._appel_openrouter("x", 5)
+    assert r.origine == "Anthropic" and r.modele == "anthropic/claude-sonnet-4.5"

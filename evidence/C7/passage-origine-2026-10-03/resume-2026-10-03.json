@@ -1,0 +1,78 @@
+{
+ "fige_le": "2026-10-03",
+ "prix_par_million_usd": {
+  "openrouter": [
+   3.0,
+   15.0
+  ]
+ },
+ "sources_prix": {
+  "openrouter": "https://openrouter.ai/api/v1/models"
+ },
+ "etat": {
+  "foundry": {
+   "statut": "mesure",
+   "motif": ""
+  },
+  "openrouter": {
+   "statut": "mesure",
+   "motif": ""
+  }
+ },
+ "resume": {
+  "foundry": {
+   "appels": 10,
+   "reussis": 10,
+   "intervalle_disponibilite": [
+    0.7224598312333834,
+    1.0
+   ],
+   "conformes_amf": 10,
+   "intervalle_conformes": [
+    0.7224598312333834,
+    1.0
+   ],
+   "fideles": 10,
+   "intervalle_fideles": [
+    0.7224598312333834,
+    1.0
+   ],
+   "latence_p50_s": 3.3085,
+   "latence_p95_s": 7.947,
+   "jetons_entree_moyen": 643.8,
+   "jetons_sortie_moyen": 202.6,
+   "origines": {
+    "Sweden Central": 10
+   },
+   "cout_total_usd": 0.0,
+   "cout_moyen_usd": 0.0
+  },
+  "openrouter": {
+   "appels": 10,
+   "reussis": 10,
+   "intervalle_disponibilite": [
+    0.7224598312333834,
+    1.0
+   ],
+   "conformes_amf": 10,
+   "intervalle_conformes": [
+    0.7224598312333834,
+    1.0
+   ],
+   "fideles": 10,
+   "intervalle_fideles": [
+    0.7224598312333834,
+    1.0
+   ],
+   "latence_p50_s": 6.439,
+   "latence_p95_s": 7.103,
+   "jetons_entree_moyen": 796.8,
+   "jetons_sortie_moyen": 235.8,
+   "origines": {
+    "Amazon Bedrock": 10
+   },
+   "cout_total_usd": 0.059274,
+   "cout_moyen_usd": 0.0059274
+  }
+ }
+}

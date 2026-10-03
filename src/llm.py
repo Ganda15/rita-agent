@@ -76,6 +76,9 @@ def _appel_foundry(prompt: str, max_tokens: int) -> Reponse:
         modele=corps.get("model"),
         usage={"input": usage.get("prompt_tokens", 0), "output": usage.get("completion_tokens", 0)}
         if usage else None,
+        # Un déploiement « Global Standard » peut être traité dans n'importe quelle région Azure :
+        # la région est le résultat de l'appel, pas une propriété de la ressource.
+        origine=(getattr(reponse, "headers", None) or {}).get("x-ms-region"),
     )
 
 
@@ -109,6 +112,8 @@ def _appel_openrouter(prompt: str, max_tokens: int) -> Reponse:
         modele=corps.get("model"),
         usage={"input": usage.get("prompt_tokens", 0), "output": usage.get("completion_tokens", 0)}
         if usage else None,
+        # OpenRouter route vers plusieurs hébergeurs et nomme celui qui a répondu.
+        origine=corps.get("provider"),
     )
 
 

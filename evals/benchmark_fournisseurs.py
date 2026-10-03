@@ -19,6 +19,7 @@ Usage, depuis la racine (clés lues dans l'environnement par `api.main`, jamais 
 from __future__ import annotations
 
 import argparse
+import collections
 import csv
 import datetime as dt
 import json
@@ -155,13 +156,14 @@ def executer(jeu: dict, fournisseurs: list[str], repetitions: int, plafond_usd: 
                 ligne = {"fournisseur": nom, "modele": None, "ticker": cas["ticker"], "repetition": repetition,
                          "horodatage": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
                          "duree_s": None, "jetons_entree": 0, "jetons_sortie": 0, "cout_usd": 0.0,
-                         "texte": None, "erreur": None, "conforme_amf": None, "fidele": None}
+                         "origine": None, "texte": None, "erreur": None, "conforme_amf": None, "fidele": None}
                 try:
                     reponse = appel(nom, prompt, MAX_TOKENS)
                     texte = reponse if isinstance(reponse, str) else reponse.texte
                     usage = None if isinstance(reponse, str) else getattr(reponse, "usage", None)
                     ligne.update({
                         "modele": None if isinstance(reponse, str) else getattr(reponse, "modele", None),
+                        "origine": None if isinstance(reponse, str) else getattr(reponse, "origine", None),
                         "jetons_entree": (usage or {}).get("input", 0), "jetons_sortie": (usage or {}).get("output", 0),
                         "cout_usd": _cout(usage, prix.get(nom)), "texte": texte,
                         "conforme_amf": bool(verifier_sortie(texte)["conforme"]), "fidele": fidele(texte, cas),
@@ -204,6 +206,9 @@ def resumer(lignes: list[dict]) -> dict[str, dict]:
             "latence_p50_s": statistics.median(durees) if durees else None, "latence_p95_s": _percentile(durees, 0.95),
             "jetons_entree_moyen": statistics.mean([l["jetons_entree"] for l in ok]) if ok else None,
             "jetons_sortie_moyen": statistics.mean([l["jetons_sortie"] for l in ok]) if ok else None,
+            # Où les appels ont réellement été traités (région Azure, point de sortie OpenRouter) ;
+            # les lignes d'avant ce champ n'en ont pas, d'où `.get`.
+            "origines": dict(collections.Counter(l.get("origine") for l in ok if l.get("origine"))),
             "cout_total_usd": sum(l["cout_usd"] for l in mes),
             "cout_moyen_usd": (sum(l["cout_usd"] for l in ok) / len(ok)) if ok else None,
         }

@@ -110,10 +110,10 @@ Les sections suivantes seront remplies **après** la mesure, depuis `evidence/C7
   public, 0,0047 contre 0,0060 USD par briefing. Environnement : Microsoft publie des chiffres d'entreprise vérifiés pour
   FY25 (21,1 millions de tonnes équivalent CO2, +62 % sur 2020 ; 100 % d'électricité renouvelable directe ; PUE 1,17 ;
   objectif carbone négatif 2030) ; **aucun des deux éditeurs ne publie de chiffre par modèle** (OpenAI : 0,34 Wh par
-  requête moyenne, sans méthode ; Anthropic : rien, page inexistante). Région de traitement : une sonde a lu l'en-tête `x-ms-region = Sweden
-  Central` sur Foundry (le banc ne journalise pas cet en-tête, la région des 30 appels est supposée, pas mesurée ; déploiement
+  requête moyenne, sans méthode ; Anthropic : rien, page inexistante). Région de traitement : le banc journalise désormais l'origine de chaque appel (test d'abord) ; sur 10
+  appels, `x-ms-region = Sweden Central` 10 fois sur 10 pour Foundry (le quatrième passage, 30 appels, n'a pas d'origine ; déploiement
   **Global Standard**, lu dans le portail : Azure peut traiter chaque appel dans n'importe quelle région, les prompts,
-  sans donnée personnelle, peuvent donc sortir de l'Union européenne) ; point de sortie OpenRouter non journalisé, inconnu. Limites de débit lues
+  sans donnée personnelle, peuvent donc sortir de l'Union européenne) ; OpenRouter a servi Claude par Amazon Bedrock 10 fois sur 10, région non nommée. Limites de débit lues
   dans les en-têtes Foundry : 2 500 requêtes et 250 000 jetons par fenêtre ; sortie du modèle plafonnée à 128 000 jetons. Le rapport
   donne l'ordre de grandeur (0,3 à 18 Wh par briefing selon la source) comme une hypothèse, pas comme une mesure.
 - 3.5 Recommandation, **provisoire** jusqu'à la notation du français : Foundry en premier (gratuit pour le projet,
@@ -204,7 +204,7 @@ Information missing, to complete later.
 
 1. Captures du fil Discord du 16/08 et envoi daté au formateur (Era) : la seule preuve de partage possible.
 2. Note S40 écrite par Era depuis les candidats ; les semaines S37 à S39 restent déclarées sans séance.
-3. Noter le français à l'aveugle (60 textes, deux services confondus) ; journaliser `x-ms-region` dans le banc (déploiement Global Standard, région variable ; Sweden Central pour la sonde) ; confirmer le périmètre avec le formateur ; Anthropic en direct si une clé arrive.
+3. Noter le français à l'aveugle (60 textes, deux services confondus) ; refaire un passage complet avec l'origine journalisée (déploiement Global Standard, région variable) ; confirmer le périmètre avec le formateur ; Anthropic en direct si une clé arrive.
 4. Envoi du guide d'exploitation au formateur, preuve rangée (#43).
 5. Rédaction des sections C7 depuis `evidence/C7/`, relecture, PDF (`scripts/rendre_pdf.py`), tag `livrable-E2-v1`.
 

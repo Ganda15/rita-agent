@@ -26,7 +26,8 @@ Deux observations à garder :
 - Sur OpenRouter, `claude-sonnet-4.5` est servi par sept points de sortie (Anthropic, Claude sur AWS, Amazon Bedrock,
   Azure global, Google Vertex global à 3,00 et 15,00 ; Bedrock `eu-west-1` et Vertex `us-east5` à 3,30 et 16,50), lus
   dans https://openrouter.ai/api/v1/models/anthropic/claude-sonnet-4.5/endpoints le 03/10/2026. Le script du banc ne
-  conserve pas le point de sortie qui a servi chaque appel : **le lieu physique des 30 appels OpenRouter est inconnu**.
+  conservait pas le point de sortie qui a servi chaque appel : le quatrième passage (30 appels) n'a pas d'origine. Depuis
+  le soir du 03/10 le banc la journalise : sur 10 appels, **Amazon Bedrock** les a tous servis (preuve §10), région non nommée.
 
 ### Ce que ça donne pour le banc du 03/10, au prix public
 
@@ -97,8 +98,9 @@ modele gpt-5.4-2026-03-05 | usage 11 4
 ```
 
 Era situait sa ressource « France Central, Sweden Central ou West Europe » ; la mesure tranche pour la sonde. Les
-30 appels du banc n'ont pas journalisé cet en-tête (le script ne le lisait pas) : on sait où la sonde a été traitée,
-on suppose, sans preuve, la même région pour le banc. La fiche du modèle dans le portail (collée par Era le 03/10) donne
+30 appels du quatrième passage n'ont pas journalisé cet en-tête (le script ne le lisait pas). **Depuis, il le journalise** :
+un passage séparé de 10 appels a donné `Sweden Central` 10 fois sur 10 (preuve §10), ce qui confirme la sonde sans
+rien dire du quatrième passage, ni de demain. La fiche du modèle dans le portail (collée par Era le 03/10) donne
 les limites du modèle : fenêtre de 1 050 000 jetons, entrée jusqu'à 922 000, **sortie jusqu'à 128 000**, cycle de vie
 « Generally Available », entrées texte et image. Limites de débit de la ressource, lues dans les en-têtes : 2 500
 requêtes et 250 000 jetons par fenêtre (l'en-tête ne dit pas la durée de la fenêtre ; la documentation Azure parle de
@@ -125,7 +127,9 @@ web n'a trouvé de rapport d'émissions ni de chiffre par requête. **Inconnu.**
 ### 2.4 OpenRouter, fournisseur : un routeur, pas un hébergeur
 
 OpenRouter ne publie rien sur l'environnement, et pour cause : il route vers sept points de sortie (§1). L'empreinte
-d'un appel est celle de l'hébergeur qui l'a servi, que le banc ne connaît pas. **Inconnu.**
+d'un appel est celle de l'hébergeur qui l'a servi. Le banc le journalise depuis le 03/10 au soir : **Amazon Bedrock** sur
+10 appels sur 10 (preuve §10), sans région. Les données d'Amazon (AWS) n'ont pas été relevées ici : **Inconnu**, à relever
+si le jury demande l'empreinte du Claude d'OpenRouter.
 
 ## 3. Un ordre de grandeur, écrit comme une hypothèse
 
@@ -142,11 +146,11 @@ plutôt que de choisir un chiffre.
   approche, et l'approche honnête ici consiste à montrer l'absence de donnée et l'ordre de grandeur contradictoire.
 - **Le coût (C7.4)** a maintenant un prix public pour les deux modèles ; la recommandation provisoire de la preuve §9
   (Foundry d'abord, OpenRouter en secours) tient au prix public comme en gratuité.
-- **Restent inconnus**, et dits tels : la région des 30 appels du banc (déploiement Global Standard, donc variable ;
-  la sonde a été traitée à Sweden Central, le banc n'a pas journalisé l'en-tête), le point de sortie des appels OpenRouter (le
-  script pourrait le journaliser si l'API le renvoie), les limites de débit d'OpenRouter (non relevées), et toute
-  empreinte par modèle. Amélioration possible du banc : lire `x-ms-region` à chaque appel Foundry et l'écrire dans le
-  JSONL, pour que la région soit mesurée et non supposée.
+- **Fait le 03/10 au soir** : le banc journalise l'origine de chaque appel (région Azure, hébergeur OpenRouter), test
+  d'abord ; première mesure : Sweden Central 10 sur 10 pour Foundry, Amazon Bedrock 10 sur 10 pour OpenRouter (preuve §10).
+- **Restent inconnus**, et dits tels : l'origine des 60 appels du quatrième passage (non journalisée à l'époque), la région
+  d'Amazon Bedrock, la variation de région dans le temps (déploiement Global Standard : un journal sur plusieurs jours),
+  les limites de débit d'OpenRouter (non relevées), les données environnementales d'AWS, et toute empreinte par modèle.
 
 ## 📖 Glossaire
 

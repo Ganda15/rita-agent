@@ -166,3 +166,37 @@ def test_un_jeu_fige_sans_indicateurs_reste_lisible(tmp_path):
     chemin = tmp_path / "jeu.json"
     chemin.write_text(json.dumps({"fige_le": "2026-10-03", "cas": [CAS]}), encoding="utf-8")
     assert banc.charger_jeu(chemin)["cas"][0]["ticker"] == "MC.PA"
+
+
+# --- L'origine de chaque appel est journalisée (03/10/2026, soir) ------------------------------------
+
+class _ReponseAvecOrigine(_Reponse):
+    def __init__(self, texte, origine=None, **k):
+        super().__init__(texte, **k)
+        self.origine = origine
+
+
+def test_chaque_ligne_brute_porte_l_origine_de_l_appel():
+    def appel(nom, prompt, max_tokens):
+        return _ReponseAvecOrigine("LVMH clôture à 378,55 EUR, en baisse.", origine="Sweden Central")
+
+    lignes, _ = banc.executer({"cas": [CAS]}, ["foundry"], repetitions=1, plafond_usd=5.0, prix={}, appel=appel)
+    assert lignes[0]["origine"] == "Sweden Central"
+
+
+def test_une_reponse_sans_origine_donne_une_ligne_a_l_origine_inconnue():
+    def appel(nom, prompt, max_tokens):
+        return _Reponse("LVMH clôture à 378,55 EUR, en baisse.")   # ni attribut, ni valeur
+
+    lignes, _ = banc.executer({"cas": [CAS]}, ["foundry"], repetitions=1, plafond_usd=5.0, prix={}, appel=appel)
+    assert "origine" in lignes[0] and lignes[0]["origine"] is None
+
+
+def test_le_resume_compte_les_origines_par_fournisseur():
+    origines = iter([None, "Sweden Central", "Sweden Central", "France Central"])   # la sonde, puis 3 cas
+
+    def appel(nom, prompt, max_tokens):
+        return _ReponseAvecOrigine("LVMH clôture à 378,55 EUR, en baisse.", origine=next(origines))
+
+    lignes, _ = banc.executer({"cas": [CAS] * 3}, ["foundry"], repetitions=1, plafond_usd=5.0, prix={}, appel=appel)
+    assert banc.resumer(lignes)["foundry"]["origines"] == {"Sweden Central": 2, "France Central": 1}
