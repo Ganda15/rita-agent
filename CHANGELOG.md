@@ -9,6 +9,12 @@
 
 ---
 
+## 2026-10-03 (soir, fin) : la chaîne était rouge depuis 1 h 20, trouvée en recomptant E4 (INC-007)
+
+**Manque découvert** : dix pushs consécutifs sur `develop`, du commit qui ajoute le RSI au scout, ont fait échouer Tests et Livraison, alors que chaque commit avait été annoncé vert sur le poste : quatre tests du scout lisaient la vraie base locale. Corrigé (`0e53ede`), vérifié en CI, fiche `evidence/C21/INC-007-ci-rouge-scout-base-reelle.md`. Règle qui en sort : la preuve qu'un push est bon est la chaîne, pas le poste.
+
+---
+
 ## 2026-10-03 (soir, suite) : seize indicateurs spécifiés, treize reçus, neuf cités ; plan E4 écrit
 
 **Manque découvert** : la spécification des indicateurs en compte seize, le briefing en reçoit treize (les trois absents : le volume relatif, requête R3 non appelée par le scout, et les deux indicateurs de portefeuille), et les textes générés en citent neuf en moyenne ; **le drawdown n'est cité par aucun des 60 textes du banc**. Mesure : `evidence/C7/indicateurs-cites-dans-les-textes-2026-10-03.md`. Aucune décision de changer le prompt avant le gel du 15/10 : l'écart sera dit dans le rapport E3.

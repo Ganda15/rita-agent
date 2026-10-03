@@ -68,3 +68,9 @@ garde-fou.**
 | La chaîne exécute les tests à chaque déclenchement | ✅ | 268 exécutions, 97 vertes sur les 100 dernières, les 3 rouges expliquées |
 | Configurations versionnées avec les sources | ✅ | `.github/workflows/` (5 fichiers), `.coveragerc`, `.githooks/`, dans le même dépôt |
 | Documentation : installation, configuration, test de la chaîne, format accessible | ✅ (03/10) | `docs/CI-CD.md` §4 à §6 (secrets, permissions, activer un clone, tester la chaîne) ; Markdown lisible, PDF des rapports |
+
+---
+
+## Addendum du 03/10/2026, soir : dix exécutions rouges d'affilée, trouvées en relisant ce même historique
+
+Les chiffres ci-dessus (268 exécutions, 97 sur 100 vertes) datent de la journée et restent vrais pour leur période. En recomptant les critères de E4 le soir, `gh run list --workflow test.yml` a montré **dix exécutions rouges consécutives** sur `develop` (de 17:15 à 18:31 UTC, commits `b54d65e` à `46aab59`), puis le premier vert à 18:41 UTC (`0e53ede`). Cause : quatre tests du scout atteignaient la vraie base par le RSI, verts sur le poste, rouges sans base. Fiche complète : `evidence/C21/INC-007-ci-rouge-scout-base-reelle.md`. Ce que cela prouve pour C18 : la chaîne a fait son travail (elle a refusé dix fois un état que le poste jugeait bon) ; ce que cela montre aussi : la vérification locale ne suffit pas, et personne n'a regardé la chaîne pendant 1 h 20.

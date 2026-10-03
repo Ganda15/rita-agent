@@ -66,6 +66,7 @@ régularité qui prouve, pas l'intention.*
 | [INC-003](INC-003-base-perdue.md) | La base de données a disparu | *(reconstruction 16/08)* | **Exploitation** — perte de données |
 | [INC-004](INC-004-controle-documente-mais-absent.md) | Des contrôles décrits dans la doc n'existaient pas dans le code | `c7c8811`, `a7a3dba` | **Défaut récurrent** — 5 occurrences |
 | [INC-005](INC-005-archive-decalee-d-un-jour.md) | Dix ans de cotations datées un jour trop tôt, quatre défauts de place de cotation | `af783d7`, PR #54 | **Qualité des données** : première chaîne complète issue, PR, post-mortem |
+| [INC-007](INC-007-ci-rouge-scout-base-reelle.md) | Dix pushs de suite avec la chaîne rouge, la suite étant verte sur le poste | `0e53ede` | **Intégration continue** : trouvé en recomptant les critères E4, pas par une alerte ; test qui dépendait de la machine ; commit direct |
 | [INC-006](INC-006-tests-ecrivaient-en-production.md) | Douze générations de test dans le projet Langfuse de production | `7cf3ffd` | **Observabilité** : trouvé dans l'outil de surveillance, pas dans le code ; commit direct |
 
 **INC-004 est le plus important des quatre devant un jury** : ce n'est pas un bug, c'est un
