@@ -53,9 +53,11 @@ l'exige, avec une mesure.
 
 ## 3. Le jeu d'essai, figé avant la première mesure (critère C7.4)
 
-- **Dix prompts**, construits par la fonction réelle du projet (`agents/analyst.py`), pas à la main : les neuf
-  valeurs valides du portefeuille d'exemple (`data/positions-exemple.csv`, la dixième ligne y est volontairement
-  corrompue) plus une valeur de l'univers sans article retrouvé, pour voir ce que chaque service fait du vide.
+- **Dix prompts**, construits par la fonction réelle du projet (`agents/analyst.py`), pas à la main : les sept
+  valeurs du portefeuille présentes dans la base (AI.PA, BNP.PA, MC.PA, OR.PA, SAN.PA, SU.PA, VIRI.PA ; le fichier
+  d'exemple porte aussi TTE.PA, AAPL et MSFT, absents de l'univers, donc inutilisables), plus la plus forte hausse et
+  la plus forte baisse de la dernière séance (CO.PA, ALMKT.PA) et une valeur cotée à Londres en livres (HSBA.L).
+  Trois de ces cas n'ont aucun article retrouvé : on voit ce que chaque service fait du vide.
 - **Les faits sont figés** : un instantané des cours, variations et volumes du jour J, et les passages retrouvés ce
   jour-là, enregistrés dans `evidence/C7/jeu-d-essai-<date>.json`. Le même instantané sert à tous les fournisseurs.
 - **Mêmes réglages** : `max_tokens` du projet, aucune température modifiée, même prompt système.
@@ -113,7 +115,7 @@ une heure de rédaction. Après le gel du 15/10, avant le 25/10 si E4 le permet,
 | # | Question | Option A (recommandée) | Option B |
 |---|---|---|---|
 | D1 | Périmètre | trois fournisseurs de `src/llm.py`, et la question posée au formateur ; un quatrième modèle par OpenRouter seulement si le formateur l'attend | ajouter d'emblée un modèle d'un autre éditeur par OpenRouter |
-| D2 | Plafond de dépense | 5 € pour tout le banc, paramètre du script, arrêt au-delà | sans plafond |
+| D2 | Plafond de dépense | 5 USD pour tout le banc (les prix publics des fournisseurs sont en dollars), paramètre du script, arrêt au-delà | sans plafond |
 | D3 | Qui note le français | Era seul, à l'aveugle, grille à trois niveaux écrite avant | un modèle juge (refusé par ce plan : un modèle qui note un modèle de la même famille ne prouve rien au jury) |
 
 Tant que D1 à D3 ne sont pas tranchées, aucun appel payant n'est lancé.

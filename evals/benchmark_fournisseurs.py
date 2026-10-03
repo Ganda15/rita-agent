@@ -125,7 +125,7 @@ def _cout(usage: dict | None, prix: tuple[float, float] | None) -> float:
     return usage.get("input", 0) / 1e6 * entree + usage.get("output", 0) / 1e6 * sortie
 
 
-def executer(jeu: dict, fournisseurs: list[str], repetitions: int, plafond_eur: float,
+def executer(jeu: dict, fournisseurs: list[str], repetitions: int, plafond_usd: float,
              prix: dict[str, tuple[float, float]], appel: Callable | None = None,
              journal: Callable[[dict], None] | None = None) -> tuple[list[dict], dict]:
     """Une sonde par fournisseur, puis cas × répétitions ; s'arrête quand le plafond est franchi."""
@@ -145,14 +145,14 @@ def executer(jeu: dict, fournisseurs: list[str], repetitions: int, plafond_eur: 
         etat[nom] = {"statut": "mesure", "motif": ""}
         for repetition in range(1, repetitions + 1):
             for cas in cas_liste:
-                if depense > plafond_eur:
-                    etat[nom] = {"statut": "plafond atteint", "motif": f"{depense:.4f} EUR > {plafond_eur} EUR"}
+                if depense > plafond_usd:
+                    etat[nom] = {"statut": "plafond atteint", "motif": f"{depense:.4f} USD > {plafond_usd} USD"}
                     break
                 prompt = prompt_du_cas(cas)
                 debut = time.perf_counter()
                 ligne = {"fournisseur": nom, "modele": None, "ticker": cas["ticker"], "repetition": repetition,
                          "horodatage": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
-                         "duree_s": None, "jetons_entree": 0, "jetons_sortie": 0, "cout_eur": 0.0,
+                         "duree_s": None, "jetons_entree": 0, "jetons_sortie": 0, "cout_usd": 0.0,
                          "texte": None, "erreur": None, "conforme_amf": None, "fidele": None}
                 try:
                     reponse = appel(nom, prompt, MAX_TOKENS)
@@ -161,13 +161,13 @@ def executer(jeu: dict, fournisseurs: list[str], repetitions: int, plafond_eur: 
                     ligne.update({
                         "modele": None if isinstance(reponse, str) else getattr(reponse, "modele", None),
                         "jetons_entree": (usage or {}).get("input", 0), "jetons_sortie": (usage or {}).get("output", 0),
-                        "cout_eur": _cout(usage, prix.get(nom)), "texte": texte,
+                        "cout_usd": _cout(usage, prix.get(nom)), "texte": texte,
                         "conforme_amf": bool(verifier_sortie(texte)["conforme"]), "fidele": fidele(texte, cas),
                     })
                 except Exception as erreur:  # noqa: BLE001 : une erreur est une ligne, pas un arrêt
                     ligne["erreur"] = f"{type(erreur).__name__}: {erreur}"[:200]
                 ligne["duree_s"] = round(time.perf_counter() - debut, 3)
-                depense += ligne["cout_eur"]
+                depense += ligne["cout_usd"]
                 lignes.append(ligne)
                 if journal:
                     journal(ligne)
@@ -202,8 +202,8 @@ def resumer(lignes: list[dict]) -> dict[str, dict]:
             "latence_p50_s": statistics.median(durees) if durees else None, "latence_p95_s": _percentile(durees, 0.95),
             "jetons_entree_moyen": statistics.mean([l["jetons_entree"] for l in ok]) if ok else None,
             "jetons_sortie_moyen": statistics.mean([l["jetons_sortie"] for l in ok]) if ok else None,
-            "cout_total_eur": sum(l["cout_eur"] for l in mes),
-            "cout_moyen_eur": (sum(l["cout_eur"] for l in ok) / len(ok)) if ok else None,
+            "cout_total_usd": sum(l["cout_usd"] for l in mes),
+            "cout_moyen_usd": (sum(l["cout_usd"] for l in ok) / len(ok)) if ok else None,
         }
     return resume
 
@@ -251,7 +251,7 @@ def _afficher(resume: dict, etat: dict) -> None:
         print(f"  fidèles       : {r['fideles']}/{r['reussis']} {iv(r['intervalle_fideles'])}")
         print(f"  latence p50 / p95 : {r['latence_p50_s']} s / {r['latence_p95_s']} s")
         print(f"  jetons entrée / sortie (moyenne) : {r['jetons_entree_moyen']} / {r['jetons_sortie_moyen']}")
-        print(f"  coût total : {r['cout_total_eur']:.4f} EUR, moyen par briefing : {r['cout_moyen_eur']}")
+        print(f"  coût total : {r['cout_total_usd']:.4f} USD, moyen par briefing : {r['cout_moyen_usd']}")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -266,7 +266,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--jeu", help="jeu d'essai figé (JSON)")
     p.add_argument("--sortie", default="evidence/C7")
     p.add_argument("--repetitions", type=int, default=3)
-    p.add_argument("--plafond", type=float, default=5.0, help="plafond de dépense en EUR")
+    p.add_argument("--plafond", type=float, default=5.0, help="plafond de dépense en USD (prix publics des fournisseurs, en dollars)")
     p.add_argument("--fournisseurs", default=",".join(FOURNISSEURS))
     a = p.parse_args(argv)
     dossier = Path(a.sortie); dossier.mkdir(parents=True, exist_ok=True)

@@ -85,7 +85,7 @@ def test_un_fournisseur_injoignable_est_indisponible_et_n_est_pas_appele_sur_les
         return _Reponse("LVMH clôture à 378,55 EUR, en baisse.")
 
     lignes, etat = banc.executer({"cas": [CAS, CAS]}, ["foundry", "openrouter"], repetitions=1,
-                                 plafond_eur=5.0, prix={"openrouter": (3.0, 15.0)}, appel=appel)
+                                 plafond_usd=5.0, prix={"openrouter": (3.0, 15.0)}, appel=appel)
     assert etat["foundry"]["statut"] == "indisponible" and "AZURE_FOUNDRY_API_KEY" in etat["foundry"]["motif"]
     assert appels.count("foundry") == 1, "une sonde, puis on n'insiste pas"
     assert all(l["fournisseur"] == "openrouter" for l in lignes) and len(lignes) == 2
@@ -93,11 +93,11 @@ def test_un_fournisseur_injoignable_est_indisponible_et_n_est_pas_appele_sur_les
 
 def test_le_plafond_de_depense_arrete_le_banc():
     def appel(nom, prompt, max_tokens):
-        return _Reponse("texte", usage={"input": 1_000_000, "output": 0})   # 3 € l'appel au prix de test
+        return _Reponse("texte", usage={"input": 1_000_000, "output": 0})   # 3 USD l'appel au prix de test
 
     lignes, etat = banc.executer({"cas": [CAS] * 10}, ["openrouter"], repetitions=1,
-                                 plafond_eur=5.0, prix={"openrouter": (3.0, 15.0)}, appel=appel)
-    assert len(lignes) == 2, "le second appel franchit 5 euros, le troisième ne part pas"
+                                 plafond_usd=5.0, prix={"openrouter": (3.0, 15.0)}, appel=appel)
+    assert len(lignes) == 2, "le second appel franchit 5 dollars, le troisième ne part pas"
     assert etat["openrouter"]["statut"] == "plafond atteint"
 
 
@@ -105,11 +105,11 @@ def test_chaque_ligne_brute_porte_ce_que_le_plan_exige():
     def appel(nom, prompt, max_tokens):
         return _Reponse("LVMH clôture à 378,55 EUR, en baisse.", modele="anthropic/claude-sonnet-4.5")
 
-    lignes, _ = banc.executer({"cas": [CAS]}, ["openrouter"], repetitions=1, plafond_eur=5.0,
+    lignes, _ = banc.executer({"cas": [CAS]}, ["openrouter"], repetitions=1, plafond_usd=5.0,
                               prix={"openrouter": (3.0, 15.0)}, appel=appel)
     l = lignes[0]
     for champ in ("fournisseur", "modele", "ticker", "repetition", "horodatage", "duree_s",
-                  "jetons_entree", "jetons_sortie", "cout_eur", "texte", "erreur", "conforme_amf", "fidele"):
+                  "jetons_entree", "jetons_sortie", "cout_usd", "texte", "erreur", "conforme_amf", "fidele"):
         assert champ in l, champ
     assert l["modele"] == "anthropic/claude-sonnet-4.5" and l["erreur"] is None
 
@@ -123,7 +123,7 @@ def test_une_erreur_en_cours_de_banc_est_une_ligne_en_echec_pas_un_arret():
             raise TimeoutError("60 s")
         return _Reponse("LVMH clôture à 378,55 EUR, en baisse.")
 
-    lignes, etat = banc.executer({"cas": [CAS] * 3}, ["openrouter"], repetitions=1, plafond_eur=5.0,
+    lignes, etat = banc.executer({"cas": [CAS] * 3}, ["openrouter"], repetitions=1, plafond_usd=5.0,
                                  prix={"openrouter": (3.0, 15.0)}, appel=appel)
     assert len(lignes) == 3 and lignes[1]["erreur"].startswith("TimeoutError")
     assert etat["openrouter"]["statut"] == "mesure"
@@ -134,22 +134,22 @@ def test_une_erreur_en_cours_de_banc_est_une_ligne_en_echec_pas_un_arret():
 def test_le_resume_separe_conformite_fidelite_latence_et_cout():
     lignes = [
         {"fournisseur": "openrouter", "erreur": None, "conforme_amf": True, "fidele": True, "duree_s": 1.0,
-         "jetons_entree": 600, "jetons_sortie": 200, "cout_eur": 0.001},
+         "jetons_entree": 600, "jetons_sortie": 200, "cout_usd": 0.001},
         {"fournisseur": "openrouter", "erreur": None, "conforme_amf": False, "fidele": True, "duree_s": 3.0,
-         "jetons_entree": 600, "jetons_sortie": 200, "cout_eur": 0.001},
+         "jetons_entree": 600, "jetons_sortie": 200, "cout_usd": 0.001},
         {"fournisseur": "openrouter", "erreur": "TimeoutError: 60 s", "conforme_amf": None, "fidele": None,
-         "duree_s": 60.0, "jetons_entree": 0, "jetons_sortie": 0, "cout_eur": 0.0},
+         "duree_s": 60.0, "jetons_entree": 0, "jetons_sortie": 0, "cout_usd": 0.0},
     ]
     r = banc.resumer(lignes)["openrouter"]
     assert r["appels"] == 3 and r["reussis"] == 2
     assert r["conformes_amf"] == 1 and r["intervalle_conformes"] is not None
     assert r["fideles"] == 2
     assert r["latence_p50_s"] == 2.0 and r["latence_p95_s"] == 3.0   # p50 = médiane ; p95 = rang le plus proche
-    assert abs(r["cout_total_eur"] - 0.002) < 1e-9
+    assert abs(r["cout_total_usd"] - 0.002) < 1e-9
 
 
 def test_un_fournisseur_sans_appel_reussi_n_a_pas_de_taux():
     lignes = [{"fournisseur": "anthropic", "erreur": "AuthenticationError", "conforme_amf": None, "fidele": None,
-               "duree_s": 0.2, "jetons_entree": 0, "jetons_sortie": 0, "cout_eur": 0.0}]
+               "duree_s": 0.2, "jetons_entree": 0, "jetons_sortie": 0, "cout_usd": 0.0}]
     r = banc.resumer(lignes)["anthropic"]
     assert r["reussis"] == 0 and r["intervalle_conformes"] is None

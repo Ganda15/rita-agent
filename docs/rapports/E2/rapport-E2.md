@@ -8,7 +8,7 @@
 | **Formation** | Simplon × Wild Code School, promotion Développeur IA et IA agentique |
 | **Dépôt** | `Ganda15/rita-agent` (privé ; accès du jury par invitation de collaborateur) |
 | **Version** | 0.1, squelette du 3 octobre 2026 ; format attendu 15 à 20 pages, oral 15 minutes, sans démonstration ; dû le 5 novembre 2026 |
-| **État** | C6 et C8 rédigés depuis les faits du dépôt ; **C7 vide par construction** : aucune mesure n'existe, le plan du banc est écrit, les décisions sont attendues |
+| **État** | C6 et C8 rédigés depuis les faits du dépôt ; **C7 : le banc a tourné une fois sur le seul fournisseur disponible** (OpenRouter), aucune comparaison tant que les deux autres clés manquent ; plan validé D1 à D3 = A |
 
 ## Lire ce rapport
 
@@ -100,7 +100,7 @@ Les sections suivantes seront remplies **après** la mesure, depuis `evidence/C7
 
 - 3.1 Le besoin et les contraintes : Information missing, to complete later (le plan en donne la version du 03/10).
 - 3.2 Services inclus, exclus, et pourquoi : Information missing, to complete later.
-- 3.3 Résultats mesurés : **première mesure le 03/10** (`evidence/C7/preuve-benchmark-2026-10-03.md`) sur dix cas figés, trois répétitions : OpenRouter servant `anthropic/claude-sonnet-4.5`, 30 appels sur 30 réussis, 30 textes conformes AMF et 30 fidèles aux faits fournis (Wilson 95 % [0,89 ; 1,00] pour chaque taux), latence médiane 5,8 s et p95 7,0 s, 491 jetons en entrée et 212 en sortie en moyenne, 0,0047 USD par briefing au prix public du jour. Azure AI Foundry et Anthropic en direct : **indisponibles pour la mesure** (clés absentes du poste), pas notés. Qualité du français : à noter par Era à l'aveugle, fichier préparé. Comparaison : Information missing, to complete later.
+- 3.3 Résultats mesurés : **première mesure le 03/10** (`evidence/C7/preuve-benchmark-2026-10-03.md`) sur dix cas figés, trois répétitions : OpenRouter servant `anthropic/claude-sonnet-4.5`, 30 appels sur 30 réussis, 30 textes conformes AMF et 30 fidèles aux faits fournis (Wilson 95 % [0,89 ; 1,00] pour chaque taux), latence médiane 5,6 s et p95 7,4 s, 506 jetons en entrée et 196 en sortie en moyenne, 0,0045 USD par briefing au prix public du jour ; second passage du 03/10, sur le prompt corrigé de la carte #57 (le chiffre des 20 séances est nommé capitaux, plus volume ; avant : 5 textes sur 30 parlaient de « titres échangés »). Azure AI Foundry et Anthropic en direct : **indisponibles pour la mesure** (clés absentes du poste), pas notés. Qualité du français : à noter par Era à l'aveugle, fichier préparé. Comparaison : Information missing, to complete later.
 - 3.4 Environnement et prérequis techniques : Information missing, to complete later.
 - 3.5 Recommandation argumentée : Information missing, to complete later.
 

@@ -87,7 +87,7 @@ def test_l_affichage_dit_les_indisponibles_et_les_intervalles(capsys):
     resume = {"openrouter": {"appels": 2, "reussis": 2, "intervalle_disponibilite": (0.3, 1.0), "conformes_amf": 2,
                              "intervalle_conformes": (0.3, 1.0), "fideles": 1, "intervalle_fideles": (0.1, 0.9),
                              "latence_p50_s": 1.0, "latence_p95_s": 2.0, "jetons_entree_moyen": 500.0,
-                             "jetons_sortie_moyen": 200.0, "cout_total_eur": 0.01, "cout_moyen_eur": 0.005}}
+                             "jetons_sortie_moyen": 200.0, "cout_total_usd": 0.01, "cout_moyen_usd": 0.005}}
     banc._afficher(resume, etat)
     sortie = capsys.readouterr().out
     assert "indisponible" in sortie and "[0.30 ; 1.00]" in sortie

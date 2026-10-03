@@ -19,15 +19,18 @@ def test_generate_briefing_appelle_le_llm_et_retourne_le_texte():
     assert "AUCUNE recommandation" in prompt_produit(mock_llm)
 
 
-def test_le_prompt_nomme_le_volume_comme_une_moyenne_20_seances():
-    """Le modèle ne doit jamais pouvoir écrire « volume du jour » sur une moyenne."""
+def test_le_prompt_nomme_les_capitaux_moyens_avec_leur_devise_et_jamais_un_volume():
+    """Carte #57 : `adtv20` est AVG(volume × clôture), des capitaux en devise, pas un nombre de titres.
+    Le prompt disait « Volume moyen » : le modèle écrivait « 299 millions d'unités » (banc C7 du 03/10, HSBA.L).
+    Le nom dit la mesure, et la devise est à côté du nombre ; le mot « volume » ne doit plus nommer ce chiffre."""
     with patch("agents.analyst.generer_texte", return_value="x") as mock_llm:
         generate_briefing(ticker="MC.PA", price=457.5, change_pct=-1.99,
                           adtv20=1_200_000.0, currency="EUR")
 
     prompt = prompt_produit(mock_llm)
-    assert "Volume moyen sur 20 séances" in prompt
-    assert "JAMAIS le volume moyen 20 séances comme le volume du jour" in prompt
+    assert "Capitaux échangés en moyenne par séance sur 20 séances : 1,200,000 EUR" in prompt
+    assert "Volume moyen sur 20 séances" not in prompt
+    assert "ni comme un volume du jour, ni comme un nombre de titres" in prompt
 
 
 def test_un_adtv20_absent_ne_produit_pas_un_zero_invente():

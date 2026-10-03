@@ -43,7 +43,9 @@ def construire_prompt(ticker: str, price: float, change_pct: float,
         voir `generate_briefing`.
     """
     direction = "hausse" if change_pct >= 0 else "baisse"
-    volume_moyen = f"{adtv20:,.0f}" if adtv20 is not None else "non disponible"
+    # Carte #57 (03/10/2026) : `adtv20` est AVG(volume × clôture), des CAPITAUX en devise, pas un nombre de
+    # titres. Nommé « volume moyen » jusqu'ici, le modèle écrivait « 299 millions d'unités ». Le nom dit la mesure.
+    capitaux_moyens = f"{adtv20:,.0f} {currency}" if adtv20 is not None else "non disponible"
 
     # La fraîcheur est DITE au modèle, pas seulement calculée. Le défaut du 19/08 :
     # `fraicheur_jours` existait et n'était jamais exploité — trois valeurs radiées
@@ -65,7 +67,7 @@ Données de la dernière séance collectée :
 - Action : {ticker}
 - Cours de clôture : {price} {currency}
 - Variation sur 1 jour : {change_pct}% ({direction})
-- Volume moyen sur 20 séances : {volume_moyen}{avertissement}{articles}
+- Capitaux échangés en moyenne par séance sur 20 séances : {capitaux_moyens}{avertissement}{articles}
 
 Rédige un briefing de 3 à 5 phrases en français qui :
 1. Résume la performance du jour avec un ton factuel
@@ -75,7 +77,7 @@ Rédige un briefing de 3 à 5 phrases en français qui :
 Règles strictes :
 - AUCUNE recommandation d'achat ou de vente
 - Pas d'invention de chiffres ou d'événements non fournis
-- Ne présente JAMAIS le volume moyen 20 séances comme le volume du jour
+- Ne présente JAMAIS ces capitaux moyens ni comme un volume du jour, ni comme un nombre de titres
 - Ton neutre, professionnel, accessible"""
 
     return prompt
@@ -92,7 +94,8 @@ def generate_briefing(ticker: str, price: float, change_pct: float,
         ticker: code boursier, ex. 'MC.PA'.
         price: cours de la dernière séance collectée.
         change_pct: performance sur 1 jour, en pourcentage.
-        adtv20: volume MOYEN sur 20 séances. `None` si l'historique est trop court.
+        adtv20: capitaux échangés en moyenne par séance sur 20 séances (AVG(volume × clôture), en devise
+            de la valeur). `None` si l'historique est trop court.
         currency: devise de la valeur, lue dans `valeur.devise`.
         fraicheur_jours: âge de la cotation, en jours.
         cotation_perimee: vrai au-delà de 40 jours — la valeur est probablement radiée.
