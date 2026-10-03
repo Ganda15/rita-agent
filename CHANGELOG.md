@@ -9,6 +9,12 @@
 
 ---
 
+## 2026-10-03 (nuit, suite) : éco-conception et accessibilité mesurées ; un écran noté D
+
+**Manque découvert** : la première mesure d'éco-conception (Lighthouse et EcoIndex officiel) classe l'écran **indicateurs en D** (51 sur 100) quand il affiche les 111 valeurs : 1 860 éléments dans la page. Le poids n'est pas en cause (compression mesurée : 51 devient 52). Autres constats : aucune compression ni en-tête de cache, `favicon.ico` en 404, et la **production sert toujours les pages du 19/08**, sans l'écran briefing. Accessibilité automatique : 100 sur 100, zéro échec, clavier mesuré. Corrections regroupées (carte #74) après le tag du 15/10 ; la décision de réduire les lignes affichées reste à Era (D6).
+
+---
+
 ## 2026-10-03 (nuit) : les écrans 2 et 3 spécifiés, un défaut et une erreur de référence trouvés en l'écrivant
 
 **Manque découvert** : en écrivant les critères d'acceptation des écrans 2 et 3 (tâche T2 du plan E4), (1) l'écran 3 mémorise la clé d'API avant d'avoir vérifié qu'elle fonctionne, contre son propre commentaire et contre les écrans 1 et 2 (carte #73, aucun test ne l'avait vu parce que les tests navigateur posent la clé directement) ; (2) la spécification de l'écran 1 et deux étiquettes de tests citaient « RGAA 12.x » ou « 4.x » pour les messages de statut, alors que la règle est la 7.5 du RGAA 4.1.2, contrôlée sur le texte officiel. Erratum daté, étiquettes corrigées, texte d'origine conservé. Les spécifications sont écrites après le code, et le disent en tête.

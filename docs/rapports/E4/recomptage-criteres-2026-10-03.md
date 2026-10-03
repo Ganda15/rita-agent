@@ -112,6 +112,13 @@ de revue n'existe dans le dépôt (voir C16.1 et C16.4). Aucun ❌. Le rapport E
 - **Nouveau constat** : l'écran 3 mémorise la clé avant de savoir si elle fonctionne (carte #73), ce qui touche C17.5 et A2 ; non corrigé avant le tag du 15/10.
 - **Total : 26 ✅, 10 ⚠️, 0 ❌.**
 
+## 6. Mise à jour du 03/10/2026, après la tâche T3
+
+- **C17.7 (éco-conception) passe à ✅** : l'éco-conception est maintenant **mesurée** (`evidence/C17/preuve-eco-conception-et-accessibilite-2026-10-03.md` : EcoIndex A, A et D selon l'écran, poids, requêtes, éléments du DOM, compression mesurée). Réserve écrite : l'écran indicateurs avec ses 111 valeurs est noté D, et les corrections (compression, cache, favicon, carte #74) ne sont pas faites ; le tableau avant/après viendra après le 15/10.
+- **C14.5 reste ✅** et sa réserve change : l'audit d'accessibilité **outillé** existe (Lighthouse, 100 sur 100, zéro échec aux dix étapes), mais il couvre une partie des critères du RGAA ; pas de lecteur d'écran réel.
+- **C17.3 et R11 mieux étayés** : l'ordre de tabulation, le focus visible et le déplacement du focus sur le résultat sont **mesurés** (`clavier.json`) et non plus seulement lus.
+- **Total : 27 ✅, 9 ⚠️, 0 ❌.**
+
 ## 📖 Glossaire
 
 - **Critère** : phrase du référentiel que le jury coche.

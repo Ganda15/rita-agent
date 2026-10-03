@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RITA — Mon portefeuille</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>RITA — Mon portefeuille</h1>
+    <p class="sous-titre">Retrieval Intelligence pour le Tracking et l'Analyse</p>
+    <p class="avertissement">
+      Aide à la lecture. Aucune recommandation d'achat ou de vente.
+    </p>
+    <nav aria-label="Navigation principale">
+      <span aria-current="page">Mon portefeuille</span>
+      <a href="indicateurs.html">Indicateurs</a>
+      <a href="briefing.html">Briefing</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ÉTAT 1 — pas de clé d'API : on la demande -->
+    <section id="connexion" hidden>
+      <h2>Connexion</h2>
+      <form id="form-cle">
+        <label for="cle">Clé d'API</label>
+        <input type="password" id="cle" name="cle" required autocomplete="off">
+        <button type="submit">Se connecter</button>
+      </form>
+    </section>
+
+    <!-- ÉTATS 2 et 3 — chargement / erreur.
+         role="status" + aria-live : tout changement de texte ici est annoncé par un
+         lecteur d'écran, sans interrompre la lecture en cours. Sans ça, une personne
+         aveugle ne saurait jamais que la page charge. -->
+    <p id="statut" role="status" aria-live="polite"></p>
+
+    <!-- ÉTAT 4 — les données -->
+    <section id="resultat" hidden>
+
+      <!-- FRAÎCHEUR DES DONNÉES (C20) — répond à « vos données sont-elles à jour ? »
+           sans rien relancer, donc sans dépendre du réseau au moment de la démo.
+
+           ⚠️ Le statut n'est JAMAIS porté par la seule couleur : la pastille est
+           décorative (aria-hidden) et c'est le TEXTE qui dit tout. RGAA 3.1 /
+           WCAG 1.4.1 — « l'information ne doit pas être véhiculée uniquement par
+           la couleur ». Une personne daltonienne lit la même chose que les autres.
+
+           Pas de role="status" ici : l'annonce de chargement est déjà portée par
+           #statut plus haut. Deux régions live qui parlent en même temps se
+           coupent la parole chez un lecteur d'écran. -->
+      <p id="fraicheur" class="fraicheur" hidden></p>
+
+      <p class="total">
+        Total du portefeuille&nbsp;: <strong id="total">—</strong><span id="nb-lignes"></span>
+      </p>
+
+      <table>
+        <caption id="legende">Portefeuille valorisé</caption>
+        <thead>
+          <tr>
+            <th scope="col">Ticker</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Qté</th>
+            <th scope="col">PRU</th>
+            <th scope="col">Cours</th>
+            <th scope="col">Investi (€)</th>
+            <th scope="col">Valorisation (€)</th>
+            <th scope="col">Performance</th>
+            <th scope="col">Poids</th>
+          </tr>
+        </thead>
+        <tbody id="lignes"></tbody>
+      </table>
+
+      <!-- Exposition par devise — lot 2 des indicateurs.
+           Une liste de définitions (`dl`) et non un tableau : il s'agit de paires
+           devise → part, pas d'un croisement de lignes et de colonnes. Un tableau
+           à deux colonnes serait lu comme tel par un lecteur d'écran, avec des
+           en-têtes qui n'apportent rien. -->
+      <section id="bloc-exposition" hidden>
+        <h2>Exposition par devise</h2>
+        <p class="precision">
+          Devise de <strong>cotation</strong> — pas l'exposition économique. Une valeur
+          cotée en euros peut réaliser l'essentiel de son chiffre d'affaires ailleurs.
+        </p>
+        <dl id="exposition"></dl>
+      </section>
+
+      <details>
+        <summary>Comment lire ce tableau&nbsp;?</summary>
+        <dl>
+          <dt>PRU</dt>
+          <dd>Prix de Revient Unitaire : ce que t'a coûté en moyenne une action détenue.</dd>
+          <dt>Investi (€)</dt>
+          <dd>Quantité × PRU, converti en euros au dernier taux BCE connu.</dd>
+          <dt>Valorisation (€)</dt>
+          <dd>Quantité × dernier cours de clôture, converti en euros.</dd>
+          <dt>Performance</dt>
+          <dd>Écart entre le cours actuel et le PRU, en pourcentage.
+              Le signe est toujours affiché : l'information n'est jamais portée
+              par la seule couleur.</dd>
+          <dt>Poids</dt>
+          <dd>Part de la ligne dans le total du portefeuille, après conversion en euros.
+              La somme des poids fait 100&nbsp;%. C'est un <strong>fait</strong> : RITA
+              n'indique aucun seuil et ne dit jamais qu'une ligne serait trop lourde.</dd>
+          <dt>Exposition par devise</dt>
+          <dd>Répartition du portefeuille selon la monnaie dans laquelle chaque titre est
+              <strong>coté</strong>. Ce n'est pas l'exposition économique&nbsp;: une société
+              cotée en euros peut vendre surtout en dollars.</dd>
+          <dt>Donnée douteuse</dt>
+          <dd>La valeur est marquée <code>INCOHERENT</code> en base : son historique a
+              échoué aux contrôles de qualité. Le chiffre est affiché, mais signalé.</dd>
+        </dl>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <p>RNCP 37827 · Eramalingam GANDAKUMAR · données personnelles, traitement T1 du registre RGPD</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

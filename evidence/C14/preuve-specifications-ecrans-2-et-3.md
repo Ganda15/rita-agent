@@ -183,6 +183,10 @@ ses motifs. L'écran dit aussi qu'**aucune donnée du portefeuille n'est envoyé
    lecture du code faute de test (I1, I6, I8, I10, I12, I13, I15, R1, R6, R9, R11, R12, R13, R14), dont six entièrement (I12, I15, R1, R12, R13, R14) :
    ce n'est pas un défaut, c'est une limite à dire.
 
+### Mise à jour du 03/10/2026, tâche T3
+
+Trois vérifications passent de « lecture du code » à « **mesuré** » (`../C17/mesures-2026-10-03/clavier.json`, Lighthouse 13.5.0) : **I10** (zone qui défile atteignable au clavier, focus visible : contour de 2 px sur la région, 3 px ailleurs), **R11** (le focus est déplacé sur la région « Briefing » à l'arrivée du texte, après un envoi au clavier) et l'ordre de tabulation des trois écrans (logique, sans piège). Lighthouse confirme par ailleurs, sans échec, `lang`, le titre de page, les étiquettes de champ, la structure de titres et les noms accessibles (I11, I12, R11). Les autres lignes « lecture » restent « lecture ».
+
 ## 6. Erratum sur l'écran 1 : la référence RGAA des messages de statut
 
 En contrôlant les numéros de règle sur le texte officiel (RGAA 4.1.2, [accessibilite.numerique.gouv.fr](https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/),
