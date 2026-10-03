@@ -15,7 +15,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-03, fin de nuit (session close : C7 comparé, plan E4 et tâches T1 à T6 faites, INC-007 corrigé)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-03, fin de nuit (session close : C7 comparé, plan E4 et tâches T1 à T6 faites, INC-007 corrigé et cité dans E3)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
@@ -25,7 +25,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 **Où on en est, en une phrase** : E1 v2 (5 pages) et E3 v1.0 (19 pages) sont rédigés et attendent ta relecture avant le gel du
 **jeudi 15/10** ; E4 a un plan et ses tâches T1 à T6 faites (**27 ✅, 9 ⚠️, 0 ❌** sur 36) ; C7 a sa première comparaison réelle
 (Foundry `gpt-5.4` contre OpenRouter Claude, prix et environnement relevés), il manque ta notation à l'aveugle ; la chaîne
-est **verte** sur `074ce5f` après un incident (INC-007) ; `develop` a **plus de 35 commits** d'avance sur `main` (36 à la clôture) ; la production sert
+est **verte** à la clôture (Tests et Livraison, dernier commit de la session) après un incident (INC-007) ; `develop` a **plus de 35 commits** d'avance sur `main` ; la production sert
 toujours le code du **19/08** (pas d'écran briefing). **Aucun code d'application avant le tag du 15/10** : tout ce qui
 reste avant est de ta main. Règle : **c'est Era qui envoie tout message** au formateur et à la promo ; l'assistant rédige.
 
