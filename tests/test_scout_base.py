@@ -8,9 +8,22 @@ vérifié par exécution réelle dans `evidence/C14/preuve-indicateurs-lot1.md`.
 from datetime import date
 from unittest.mock import patch
 
+import pytest
+
 from agents.scout import collect
 from indicateurs.socle import IndicateursValeur
 from indicateurs.risque import IndicateursRisqueValeur
+
+
+@pytest.fixture(autouse=True)
+def _le_rsi_ne_touche_pas_la_base(monkeypatch):
+    """Depuis le 03/10/2026 le scout joint aussi le RSI (`lire_rsi`), une troisieme lecture en base.
+
+    Quatre de ces tests ne remplacaient que les deux premieres : ils passaient sur le poste, ou un
+    `.env` donne une vraie base, et tombaient en CI (« DATABASE_URL absente »), pendant neuf pushs de
+    suite le 03/10. Un test du scout ne doit jamais dependre d'une base ; ceux qui parlent du RSI le
+    remplacent eux-memes, apres cette fixture, par leur propre valeur."""
+    monkeypatch.setattr("agents.scout.lire_rsi", lambda tickers: [])
 
 
 def socle_lvmh(**surcharges):
