@@ -1,0 +1,120 @@
+# =============================================================================
+# ALERTE LANGFUSE -> ISSUE « incident » : C11 (alerter), C20 (seuils), C21 (incidents)
+#
+# Audit du 02/10/2026 : RITA mesurait (traces Langfuse) mais n'alertait personne. Le palier
+# gratuit de Langfuse offre DEUX alertes, et trois canaux : Slack, webhook signé, GitHub
+# Actions. Pas de courriel. Le dépôt est déjà l'endroit où vivent les incidents
+# (evidence/C21, issues, PR) : une alerte y ouvre donc une issue, et la boucle que C21
+# demande (seuil franchi, issue ouverte, diagnostic, correctif par PR, post-mortem) commence
+# toute seule, avec une date.
+#
+# Deux déclencheurs :
+#   - repository_dispatch, type `alerte-langfuse` : ce que Langfuse envoie (URL de dispatch
+#     du dépôt + type d'événement + jeton, réglés dans l'interface Langfuse) ;
+#   - workflow_dispatch : le bouton « Run workflow », pour prouver la chaîne devant le jury
+#     sans attendre une vraie alerte. L'issue ouverte ainsi est conservée comme preuve.
+#
+# Une alerte qui se répète COMMENTE l'issue déjà ouverte au lieu d'en empiler une autre :
+# une alerte par incident, pas une par minute.
+#
+# Jeton : celui du dépôt (GITHUB_TOKEN), droit `issues: write` seulement. Aucun secret ici.
+# Le jeton personnel que Langfuse utilise pour appeler GitHub vit dans Langfuse, pas ici.
+# =============================================================================
+name: Alerte Langfuse vers issue incident
+
+on:
+  repository_dispatch:
+    types: [alerte-langfuse]
+  workflow_dispatch:
+    inputs:
+      alerte:
+        description: "Nom de l'alerte (test manuel de la chaîne)"
+        default: "test manuel de la chaine d'alerte"
+        required: true
+      detail:
+        description: "Détail libre (métrique, seuil, valeur observée)"
+        default: ""
+        required: false
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  ouvrir-ou-commenter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Préparer le titre et le corps de l'issue
+        id: contenu
+        env:
+          EVENEMENT: ${{ github.event_name }}
+          CHARGE_UTILE: ${{ toJSON(github.event.client_payload) }}
+          ALERTE_MANUELLE: ${{ inputs.alerte }}
+          DETAIL_MANUEL: ${{ inputs.detail }}
+          LIEN_EXECUTION: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENEMENT" = "workflow_dispatch" ]; then
+            nom="$ALERTE_MANUELLE"
+            source="déclenchement manuel (bouton Run workflow)"
+            detail="$DETAIL_MANUEL"
+          else
+            # Le nom de l'alerte, quel que soit le champ que Langfuse utilise ; sinon un nom générique.
+            nom=$(printf '%s' "$CHARGE_UTILE" | jq -r '.name // .alertName // .alert.name // .title // "alerte Langfuse"')
+            source="Langfuse (repository_dispatch, type alerte-langfuse)"
+            detail=""
+          fi
+          # Un titre STABLE par alerte : c'est lui qui permet de retrouver l'issue déjà ouverte.
+          titre="Incident : alerte Langfuse « ${nom} »"
+          echo "titre=${titre}" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Alerte reçue le $(date -u +'%Y-%m-%d %H:%M UTC')"
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Source | ${source} |"
+            echo "| Alerte | ${nom} |"
+            [ -n "$detail" ] && echo "| Détail | ${detail} |"
+            echo "| Exécution | ${LIEN_EXECUTION} |"
+            echo
+            if [ "$EVENEMENT" != "workflow_dispatch" ]; then
+              echo "<details><summary>Charge utile envoyée par Langfuse</summary>"
+              echo
+              echo '```json'
+              printf '%s' "$CHARGE_UTILE" | jq '.' || printf '%s' "$CHARGE_UTILE"
+              echo '```'
+              echo "</details>"
+              echo
+            fi
+            echo "## À faire (critères C21, dans cet ordre)"
+            echo
+            echo "- [ ] Reproduire : retrouver la trace dans Langfuse (projet rita, région UE), noter le request_id"
+            echo "- [ ] Cause racine : le symptôme avant la cause, puis la cause, écrits ici"
+            echo "- [ ] Correctif par PR vers develop, test écrit avant"
+            echo "- [ ] Post-mortem dans evidence/C21/INC-00x.md (modèle : _MODELE-postmortem.md), lien ici"
+            echo "- [ ] Seuil ou alerte à ajuster ? Décision écrite dans CONTINUITE.md"
+          } > corps.md
+
+      - name: Créer le label incident s'il manque
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: gh label create incident --color B60205 --description "Alerte de monitorage ou incident en production (C20, C21)" --force
+
+      - name: Ouvrir l'issue, ou commenter celle déjà ouverte pour la même alerte
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TITRE: ${{ steps.contenu.outputs.titre }}
+        run: |
+          set -euo pipefail
+          # `gh --jq` n'accepte pas `--arg` : on filtre avec jq lui-même, et sur le titre EXACT,
+          # parce que la recherche GitHub est floue (elle trouverait « alerte A » pour « alerte AB »).
+          existante=$(gh issue list --label incident --state open --search "\"$TITRE\" in:title" --json number,title             | jq -r --arg t "$TITRE" '[.[] | select(.title == $t)][0].number // empty')
+          if [ -n "$existante" ]; then
+            echo "Issue #$existante déjà ouverte pour cette alerte : on commente."
+            gh issue comment "$existante" --body-file corps.md
+          else
+            gh issue create --title "$TITRE" --label incident --body-file corps.md
+          fi
