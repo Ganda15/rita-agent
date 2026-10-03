@@ -91,51 +91,33 @@ def p6_purger_mcp_calls(cur, appliquer: bool) -> dict:
 # --- P2 -----------------------------------------------------------------------
 
 def p2_purger_positions_soldees(cur, appliquer: bool) -> dict:
-    """Supprime les positions soldées depuis plus de 3 ans.
+    """Supprime les positions closes depuis plus de 3 ans (T1 du registre, plan 66).
 
-    Une position « soldée » est une ligne de quantité nulle. La contrainte
-    `quantite_positive` l'interdit aujourd'hui — la procédure est donc écrite pour le jour
-    où l'historique des ventes sera géré. Elle ne trouve rien pour l'instant, et c'est
-    normal : mieux vaut une procédure prête qu'une procédure oubliée.
+    Une position close est une ligne dont `date_cloture` a été posée par l'import le jour où elle a
+    quitté le CSV. Avant le 03/10/2026, la procédure cherchait `quantite = 0`, que le schéma interdit :
+    elle ne trouvait jamais rien. La date de référence est la clôture, pas l'achat.
     """
     cur.execute("""
         SELECT count(*) FROM position
-        WHERE date_achat IS NOT NULL
-          AND date_achat < CURRENT_DATE - INTERVAL '%s years'
-          AND quantite = 0
+        WHERE date_cloture IS NOT NULL
+          AND date_cloture < CURRENT_DATE - INTERVAL '%s years'
     """ % RETENTION_POSITION_ANS)
     concernees = cur.fetchone()[0]
 
     if appliquer and concernees:
         cur.execute("""
             DELETE FROM position
-            WHERE date_achat IS NOT NULL
-              AND date_achat < CURRENT_DATE - INTERVAL '%s years'
-              AND quantite = 0
+            WHERE date_cloture IS NOT NULL
+              AND date_cloture < CURRENT_DATE - INTERVAL '%s years'
         """ % RETENTION_POSITION_ANS)
 
     return {"procedure": "P2",
-            "libelle": f"positions soldees > {RETENTION_POSITION_ANS} ans",
+            "libelle": f"positions closes depuis plus de {RETENTION_POSITION_ANS} ans",
             "concernees": concernees, "supprimees": concernees if appliquer else 0}
 
 
-# --- P3 -----------------------------------------------------------------------
-
-def p3_detecter_doublons(cur) -> list[tuple]:
-    """Détecte les doublons de positions — NE SUPPRIME JAMAIS.
-
-    Même ticker + même date d'achat + même PRU : c'est *probablement* un import en double.
-    Mais deux achats identiques le même jour existent (ordre fractionné par le courtier).
-    Supprimer automatiquement détruirait une position réelle. On signale, l'humain tranche.
-    """
-    cur.execute("""
-        SELECT ticker, date_achat, pru, count(*) AS nb, array_agg(id ORDER BY id)
-        FROM   position
-        GROUP  BY ticker, date_achat, pru
-        HAVING count(*) > 1
-        ORDER  BY nb DESC
-    """)
-    return cur.fetchall()
+# P3 (détection des doublons de positions) retirée le 03/10/2026 : l'index unique `uq_position_ligne`
+# les refuse à l'écriture (plan 66, D1). Une procédure qui signalait ce que la base interdit n'a plus d'objet.
 
 
 # --- orchestration ------------------------------------------------------------
@@ -146,13 +128,12 @@ def executer(dsn: str, appliquer: bool = False) -> dict:
             resultats = [p1_purger_audit(cur, appliquer),
                          p2_purger_positions_soldees(cur, appliquer),
                          p6_purger_mcp_calls(cur, appliquer)]
-            doublons = p3_detecter_doublons(cur)
         if appliquer:
             conn.commit()
         else:
             conn.rollback()          # ceinture et bretelles : rien ne persiste
 
-    return {"appliquer": appliquer, "purges": resultats, "doublons": doublons}
+    return {"appliquer": appliquer, "purges": resultats}
 
 
 if __name__ == "__main__":
@@ -176,13 +157,7 @@ if __name__ == "__main__":
         print(f"\n  {p['procedure']} - {p['libelle']}")
         print(f"      {p['concernees']} ligne(s) {verbe}")
 
-    print(f"\n  P3 - doublons de positions (detection seule)")
-    if not r["doublons"]:
-        print("      aucun doublon detecte")
-    else:
-        for ticker, date_achat, pru, nb, ids in r["doublons"]:
-            print(f"      !! {ticker} le {date_achat} a {pru} : {nb} lignes, ids={ids}")
-        print("      -> arbitrage MANUEL requis (un double achat reel est possible)")
+    print("\n  P3 retiree le 03/10/2026 : l index unique uq_position_ligne refuse les doublons a l ecriture")
 
     if not r["appliquer"]:
         print("\n  Pour executer reellement :  python -m db.rgpd_purge --appliquer")

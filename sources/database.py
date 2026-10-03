@@ -93,6 +93,7 @@ LEFT JOIN LATERAL (
     WHERE  c.ticker = p.ticker ORDER BY c.date_seance DESC LIMIT 1
 ) d ON TRUE
 LEFT JOIN   taux_du_jour t ON t.devise = p.devise
+WHERE       p.date_cloture IS NULL
 ORDER BY    performance_pct DESC NULLS LAST
 """
 
@@ -201,6 +202,12 @@ def volumes_anormaux(dsn: str | None = None, seuil: float = 2.0,
                      limite: int = 10) -> Extraction:
     """R3 — les valeurs dont le volume dépasse `seuil` fois leur moyenne 20 séances."""
     return _executer(SQL_VOLUMES, "volumes_anormaux", dsn, seuil=seuil, limite=limite)
+
+
+def positions_closes(dsn: str | None = None) -> int:
+    """Combien de positions sont closes (plan 66) : comptees par l'API, jamais servies."""
+    e = _executer("SELECT count(*) AS nb FROM position WHERE date_cloture IS NOT NULL", "positions_closes", dsn)
+    return int(e.lignes[0]["nb"]) if e.lignes else 0
 
 
 def positions_sans_taux(extraction: Extraction) -> int:

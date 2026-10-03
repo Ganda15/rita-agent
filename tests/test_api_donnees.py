@@ -33,6 +33,13 @@ ROUTES_PROTEGEES = [
 ]
 
 
+@pytest.fixture(autouse=True)
+def _aucune_position_close():
+    """Plan 66 : la route du portefeuille compte les positions closes ; sans base, zero."""
+    with patch("sources.database.positions_closes", return_value=0):
+        yield
+
+
 @pytest.fixture
 def client():
     return TestClient(app)
@@ -503,3 +510,14 @@ def test_indicateurs_portefeuille_disent_quand_ils_ne_sont_pas_complets(client):
         corps = client.get("/donnees/indicateurs-portefeuille", headers=CLE).json()
     assert corps["complet"] is False and corps["total_eur"] is None
     assert all(l["poids_pct"] is None for l in corps["lignes"])
+
+
+# --- plan 66 (03/10/2026) : les positions closes sont comptees, jamais servies ---------------------
+
+def test_portefeuille_dit_combien_de_positions_sont_closes_sans_les_servir(client):
+    lignes = [{"ticker": "MC.PA", "valorisation_eur": 1000, "taux_manquant": False}]
+    with patch("sources.database.portefeuille", return_value=Extraction("portefeuille", lignes, 1)), \
+         patch("sources.database.positions_closes", return_value=2):
+        corps = client.get("/donnees/portefeuille", headers=CLE).json()
+    assert corps["positions_closes"] == 2
+    assert corps["nb"] == 1 and len(corps["positions"]) == 1

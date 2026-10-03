@@ -64,7 +64,7 @@ couverture 93,66 % (seuil 90 %), `api/main.py` et `graph/workflow.py` à 100 %.
 | Suppression des **15** lignes factices (INC-006 : douze comptées le 02/10, quinze relues par l'API le 03/10) et capture avant suppression | Era ; export JSON d'avant suppression déjà fait : `inc-006-traces-factices-avant-suppression-2026-10-03.json` ; la suppression par l'agent a été refusée par la session | `capture-2026-10-03-inc-006-avant-suppression.png` |
 | Tableau « RITA C11 » : **construit par l'API le 03/10** (`dashboard-rita-c11-2026-10-03.json`) ; reste la capture | Era, Dashboards | `capture-2026-10-03-dashboard-rita-c11.png` |
 | Les 2 alertes (ERROR sur 1 jour ; aucune trace en 24 h), canal GitHub Actions | Era, Alerts ; seuils fixés après une semaine de traces | capture datée + lien de l'issue ouverte par le test manuel |
-| Test manuel de la chaîne (bouton Run workflow) : **impossible tant que `alerte-incident.yml` n'est pas sur `main`** (`workflow_dispatch` n'existe que pour la branche par défaut ; `gh workflow run` répond 404 le 03/10) | Era, après la prochaine PR `develop → main` | numéro de l'issue `incident` |
+| Test manuel de la chaîne (bouton Run workflow) : **fait le 03/10 à 13 h 50**, juste après la fusion de la PR #58 (le bouton n'existait pas avant : `workflow_dispatch` ne vaut que sur la branche par défaut). Run `37120911852` en succès, issue **#71** créée avec le label `incident`, puis fermée comme issue de démonstration | fait | https://github.com/Ganda15/rita-agent/issues/71 |
 | Variables Langfuse sur le serveur Hetzner | Era, serveur | une trace dont les métadonnées viennent du serveur |
 
 ## 📖 Glossaire

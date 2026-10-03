@@ -55,7 +55,8 @@ Un tag `livrable-E1-v2` se **pose** librement (nouveau nom) ; `livrable-E1-v1` n
 - Aucun push direct n'a été tenté pour voir GitHub le refuser : le hook local l'aurait refusé avant, et on ne
   contourne pas un hook pour une démonstration. La preuve est la liste des règles effectives, relue par l'API.
 - La capture d'écran de **Settings → Rules → Rulesets** est à faire par Era et à ranger ici :
-  `capture-2026-10-03-ruleset-main.png`.
+  `capture-2026-10-03-ruleset-main.png`. En attendant, la réponse complète de l'API pour les deux rulesets est dans
+  `rulesets-2026-10-03.json` (même dossier) : c'est une preuve lisible par machine, la capture est la preuve lisible par un jury.
 - La revue `Revue PR` (Claude) et le job `construire-et-publier` ne sont pas exigés : la première est
   non déterministe (elle publie parfois rien), le second ne vaut que sur un tag.
 

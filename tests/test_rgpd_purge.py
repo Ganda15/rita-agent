@@ -67,11 +67,15 @@ def test_p2_simulation_ne_lance_aucun_delete():
     assert not any("DELETE" in q for q in _requetes(cur))
 
 
-def test_p2_ne_vise_que_les_positions_soldees():
-    """Filtre quantite = 0 obligatoire — sinon on efface un portefeuille vivant."""
+def test_p2_ne_vise_que_les_positions_closes():
+    """Plan 66 : une position soldee est une ligne dont `date_cloture` est posee par l'import le jour ou
+    elle quitte le CSV. `quantite = 0` etait interdit par le schema : la procedure ne trouvait jamais rien."""
     cur = _curseur(0)
     rgpd_purge.p2_purger_positions_soldees(cur, appliquer=True)
-    assert "QUANTITE = 0" in _requetes(cur)[0]
+    requete = _requetes(cur)[0]
+    assert "DATE_CLOTURE IS NOT NULL" in requete
+    assert "DATE_CLOTURE <" in requete
+    assert "QUANTITE" not in requete, "la quantite d'une position close est celle qu'on detenait, pas zero"
 
 
 def test_p2_respecte_la_duree_du_registre():
@@ -80,28 +84,17 @@ def test_p2_respecte_la_duree_du_registre():
     assert f"{rgpd_purge.RETENTION_POSITION_ANS} YEARS" in _requetes(cur)[0]
 
 
-# --- P3 : détection seule -----------------------------------------------------
+# --- P3 retiree (plan 66) : la base refuse les doublons, plus besoin de les detecter ----------------
 
-def test_p3_ne_supprime_jamais_rien():
-    """Même en mode application : deux achats identiques le même jour sont possibles."""
-    cur = _curseur(doublons=[("MC.PA", "2023-04-18", 632.40, 2, [1, 8])])
-    doublons = rgpd_purge.p3_detecter_doublons(cur)
-
-    assert len(doublons) == 1
-    assert doublons[0][0] == "MC.PA"
-    assert not any("DELETE" in q for q in _requetes(cur))
+def test_p3_n_existe_plus_la_base_refuse_les_doublons():
+    assert not hasattr(rgpd_purge, "p3_detecter_doublons")
 
 
-def test_p3_groupe_sur_ticker_date_et_pru():
-    cur = _curseur()
-    rgpd_purge.p3_detecter_doublons(cur)
-    requete = _requetes(cur)[0]
-    assert "GROUP  BY TICKER, DATE_ACHAT, PRU" in requete
-    assert "HAVING COUNT(*) > 1" in requete
-
-
-def test_p3_sans_doublon_retourne_liste_vide():
-    assert rgpd_purge.p3_detecter_doublons(_curseur(doublons=[])) == []
+def test_l_orchestration_sans_p3_rend_les_trois_purges():
+    import inspect
+    source = inspect.getsource(rgpd_purge.executer)
+    assert "p3_detecter_doublons" not in source and "doublons" not in source
+    assert "p2_purger_positions_soldees" in source
 
 
 # --- garde-fou global ---------------------------------------------------------

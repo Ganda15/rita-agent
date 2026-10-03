@@ -44,6 +44,6 @@ SELECT
     -- Référentiels : ils ne grandissent pas, on les compte pour prouver
     -- qu'ils sont bien là (une base vide se repère immédiatement)
     (SELECT COUNT(*)          FROM valeur)       AS nb_valeurs,
-    (SELECT COUNT(*)          FROM position)     AS nb_positions,
+    (SELECT COUNT(*)          FROM position WHERE date_cloture IS NULL) AS nb_positions,  -- plan 66 : detenues seules
 
     CURRENT_DATE                                 AS aujourdhui;
