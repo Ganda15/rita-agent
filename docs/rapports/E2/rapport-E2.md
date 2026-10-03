@@ -196,7 +196,7 @@ Information missing, to complete later.
 | C8.4 documentation d'accès, installation, tests, dépendances, flux | ✅ | `docs/EXPLOITATION.md`, corrigé le 03/10 |
 | C8.5 documentation communiquée, accessible | 🔴 | aucune remise prouvée (#43) |
 
-**Décompte** : 6 ✅ · 12 🟠 · 2 🔴 sur 20 (le matin : 5, 11, 4).
+**Décompte** : 6 ✅ · 13 🟠 · 1 🔴 sur 20 (le matin du 03/10 : 5, 11, 4 ; le soir, C7.5 passe de 🔴 à 🟠 après le relevé des prix et de l'information environnementale). Le seul 🔴 restant est C8.5 : aucune remise de la documentation prouvée (#43).
 
 ---
 

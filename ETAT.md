@@ -15,45 +15,69 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-03, soir (première comparaison C7 faite, prix et environnement relevés)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-03, fin de nuit (session close : C7 comparé, plan E4 et tâches T1 à T6 faites, INC-007 corrigé)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
 
-## ▶️ PROCHAINE ACTION (réécrit le 03/10/2026 à la fin de la nuit ; les ▶️ plus bas sont datés et dépassés)
+## ▶️ PROCHAINE ACTION (réécrit le 03/10/2026 en fin de session ; les ▶️ plus bas sont datés et dépassés)
 
-**Où on en est, en une phrase** : les deux livrables du gel du 15/10 sont **rédigés et rendus en PDF** (E1 v2, 5 pages,
-corrigé après relecture extérieure ; E3 v1.0, 20 pages, 32 critères tenus sur 39) ; E2 a un squelette (v0.1), un banc C7 qui
-a tourné une fois sur le seul fournisseur disponible, et des preuves C8 ; `evidence/` couvre maintenant C7, C8, C9, C12,
-C13, C18. Les chantiers de code sont fermés jusqu'au gel. **Tout ce qui reste avant le 15/10 est de ta main** : relire,
-cliquer, envoyer, trancher. Règle posée le 03/10 : **c'est Era qui envoie tout message au formateur et à la promo ;
-l'assistant rédige le texte, jamais l'envoi.**
+**Où on en est, en une phrase** : E1 v2 (5 pages) et E3 v1.0 (19 pages) sont rédigés et attendent ta relecture avant le gel du
+**jeudi 15/10** ; E4 a un plan et ses tâches T1 à T6 faites (**27 ✅, 9 ⚠️, 0 ❌** sur 36) ; C7 a sa première comparaison réelle
+(Foundry `gpt-5.4` contre OpenRouter Claude, prix et environnement relevés), il manque ta notation à l'aveugle ; la chaîne
+est **verte** sur `074ce5f` après un incident (INC-007) ; `develop` a **35 commits** d'avance sur `main` ; la production sert
+toujours le code du **19/08** (pas d'écran briefing). **Aucun code d'application avant le tag du 15/10** : tout ce qui
+reste avant est de ta main. Règle : **c'est Era qui envoie tout message** au formateur et à la promo ; l'assistant rédige.
 
 **Dans l'ordre, pour Era** :
 
-1. **Relire** `docs/rapports/E1/rapport-E1.pdf` (5 pages) et `docs/rapports/E3/rapport-E3.pdf` (20 pages) ; corrections dans le chat.
-2. **Envoyer au formateur** le message rédigé le 03/10 (dans le chat et dans le journal 019, §32) : la question du périmètre C7
-   (trois fournisseurs du même modèle, ou un modèle d'un autre éditeur ?) et le guide d'exploitation en pièce jointe
-   (`docs/EXPLOITATION.pdf`, rendu le 03/10). Garder l'envoi et la réponse : `evidence/C8/envoi-<date>-formateur.*` (#43).
-3. **Trancher `memory_audit`** (écrire des empreintes ou retirer la table ; zone sous garde, plan d'abord).
-4. ~~Clés Foundry~~ posées le 03/10 (banc relancé, première comparaison faite). Reste, dans `.env` (jamais touché par l'assistant) : `ANTHROPIC_API_KEY` si tu veux Claude en direct ; ~~lire le type de déploiement~~ fait le 03/10 au soir : **Global Standard** (écrit dans `evidence/C7/prix-et-environnement-2026-10-03.md` §2.2 ; région de la sonde `x-ms-region = Sweden Central`, variable par construction). Anciennement : les trois lignes Foundry (`AZURE_FOUNDRY_ENDPOINT` finissant par `/openai/v1`, `AZURE_FOUNDRY_API_KEY`, `AZURE_FOUNDRY_DEPLOYMENT=gpt-5.4`) et, si tu veux Claude en direct, `ANTHROPIC_API_KEY` ; puis relancer le banc : une commande,
-   `C:\Python314\python.exe -X utf8 -m evals.benchmark_fournisseurs --jeu evidence\C7\jeu-d-essai-2026-10-03.json --repetitions 3 --plafond 5 --sortie evidence\C7`.
-5. **Noter le français** des **60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1, 2), sans ouvrir le fichier `-cle.csv` : c'est le quatrième passage, Foundry et OpenRouter mélangés, prompt avec les 13 indicateurs. Les fichiers `-avant-57`, `-v2-prompt-57` et `-v3-13-indicateurs` sont conservés, pas à noter.
-6. **Langfuse, clics** (`evidence/C11/preuve-langfuse-2026-10-03.md` §3) : supprimer les 15 traces factices du 02/10 (il reste
-   23 traces : 15 factices et 8 réelles), régler les 2 alertes, capture du tableau « RITA C11 » dans `evidence/C11/`.
-7. **C6** : capture du fil Discord du 16/08 avec ses réponses dans `evidence/C6/` ; note S40 écrite depuis
-   `docs/veille/_candidats-2026-S40.md`, datée du jour où elle est écrite.
-8. **Capture des rulesets** (Settings → Rules) dans `evidence/C19/` ; fichiers de clés en clair du Bureau : rotation puis suppression.
-9. Dire « bon pour le gel » : l'assistant ouvre la PR `develop → main`, puis les tags `livrable-E1-v2` et `livrable-E3-v1`
-   se posent le **15/10** (`docs/FILE-DE-VALIDATION.md`, Definition of Done `scripts/verifier_livrable.py`).
-10. **Lundi 05/10, tenir la revue hebdomadaire (15 min)** avec la trame `evidence/C16/revues/2026-10-05-revue-S41.md` : cocher les cartes à passer à Fait (5 proposées, preuves jointes), ranger au tableau les 7 issues ouvertes qui n'y sont pas, garder 2 cartes « En cours », choisir celles de la semaine, trancher ou reporter les 8 décisions ; puis coller la ligne du §7 en tête de ce fichier et commiter. C'est le seul moyen de fermer C16.1.
-11. **Trancher D1 à D5 du plan E4** (`docs/PLAN-E4-rapport.md` §8) : droits d'accès, outil de mesure (Lighthouse demande ton accord : `npx` télécharge un paquet), avancer la revue OWASP, commencer les documents avant le gel, épingler après le tag. Recommandations écrites à côté de chaque décision.
+1. **Lundi 05/10, la revue hebdomadaire (15 min)** avec la trame `evidence/C16/revues/2026-10-05-revue-S41.md` : cocher les
+   5 cartes proposées à Fait, ajouter au tableau les 7 issues ouvertes absentes, dire si la revue du 28/09 a eu lieu, garder
+   2 cartes « En cours », remplir le §6, coller la ligne du §7 ici, commiter. Seul moyen de fermer C16.1. Vérifier au passage
+   que le formateur a bien accès au tableau (C16.4, je ne peux pas le lire).
+2. **Relire** `docs/rapports/E1/rapport-E1.pdf` et `docs/rapports/E3/rapport-E3.pdf` ; corrections dans le chat. **Question à
+   trancher en relisant E3** : y ajouter une ligne sur INC-007 (dix exécutions rouges de la chaîne le 03/10, C12 et C13) et
+   sur les constats OWASP qui touchent l'API (C9) ? E3 n'en parle pas aujourd'hui. Recommandation : oui, une ligne dans
+   les limites, pour qu'un jury qui lit `evidence/C21/` ne trouve pas l'incident absent du rapport.
+3. **Noter les 60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1 ou 2), **sans ouvrir** le fichier `-cle.csv`.
+   C'est ce qui fait passer la recommandation C7 de « provisoire » à « argumentée ».
+4. **Envoyer au formateur** le message rédigé (journal 019, §32), adapté : le périmètre C7 est maintenant à deux éditeurs,
+   c'est une confirmation, plus une question ; joindre `docs/EXPLOITATION.pdf`. Garder l'envoi et la réponse dans
+   `evidence/C8/` (#43, le seul 🔴 de E2).
+5. **Décisions** (une ligne chacune suffit, dans le chat ou à la revue) : **D7** documentation `/docs` publique en production
+   (la règle de fermeture validée plaide pour la clé) ; **D6** lignes affichées d'emblée sur l'écran indicateurs (recommandé :
+   rien avant le gel) ; **`memory_audit`** (zone sous garde, plan d'abord) ; **#36** rafraîchir les données en ligne avant le
+   gel ou après ; libellé du **drawdown** (cité 0 fois sur 60 textes).
+6. 🌐 **GitHub** : activer les **alertes Dependabot** (Settings, Code security) ; capture des rulesets dans `evidence/C19/`.
+7. 🌐 **Langfuse** : supprimer les 15 traces factices du 02/10, régler les 2 alertes, capture du tableau « RITA C11 »
+   (`evidence/C11/preuve-langfuse-2026-10-03.md` §3).
+8. **C6** : capture du fil Discord du 16/08 dans `evidence/C6/` ; note de veille S40 ou S41 depuis `docs/veille/_candidats-2026-S40.md`.
+9. 💻 **Ton PC** : rotation puis suppression des fichiers de clés en clair du Bureau. Facultatif : `ANTHROPIC_API_KEY` dans le
+   fichier d'environnement si tu veux mesurer Claude en direct (troisième fournisseur du banc).
+10. Dire **« bon pour le gel »** : l'assistant ouvre la PR `develop → main`, puis les tags `livrable-E1-v2` et `livrable-E3-v1`
+    se posent le **15/10** (`docs/FILE-DE-VALIDATION.md`, `scripts/verifier_livrable.py`). La publication de l'image sur ce tag
+    sera la **première jamais exécutée** : à relever comme preuve C19 (tâche T8).
 
-**Plan E4 écrit le 03/10** : `docs/PLAN-E4-rapport.md` (36 critères, 12 tâches T1 à T12, calendrier jusqu'au tag `livrable-E4-v1`, démonstration, décisions D1 à D5). Nouveaux écarts trouvés en l'écrivant : l'écran 3 sans user story ni wireframe, aucun compte rendu daté de revue du lundi trouvé (C16), la première publication sur tag sera celle de `livrable-E1-v2` le 15/10.
+**Après le gel (du 15 au 25/10), dans l'ordre, test d'abord pour tout code** : #75 (S5 ticker borné, S6 panne des
+fournisseurs, S4 refus journalisés, S3 limite de débit, S1 en-têtes de sécurité), #73 (clé mémorisée trop tôt), #74
+(compression, cache, favicon, puis remesure Lighthouse), #76 (rôle `rita_api` en lecture, sur plan), #23 (épinglage), #35 ;
+**déploiement du code sur Hetzner**, mesure Lighthouse de la production, rotation de clé éprouvée, **contrôle du certificat
+(il expire le 18/11, avant le jury)** ; rapport E4 (T10 à T12), **pull request prête le vendredi 23/10**, tag
+`livrable-E4-v1` le 25/10. **Ensuite** : conclusion C7 (#33), E2 (#34), E5 (#41), tout envoyé le **05/11**.
 
-**Après le gel (du 15 au 25/10)** : rapport E4 (#28 : récit utilisateur de l'écran 2 #24, audit RGAA outillé #25, chiffres
-C15 rafraîchis), déploiement du code sur Hetzner, `search_articles` (#63), procédure #70, revue OWASP (#29), versions
-épinglées (#23), puis E4 gelé le 25/10. **Ensuite** : C7 (benchmark, #32 #33), E2 (#34), E5 (#41), tout envoyé le 05/11.
+**État des épreuves au 03/10 au soir** :
+
+| Épreuve | Décompte | Ce qui manque surtout |
+|---|---|---|
+| E1 | v2 rédigée, 5 pages | ta relecture ; gel le 15/10 |
+| E2 | 6 ✅ · 13 🟠 · 1 🔴 sur 20 | notation C7, remise de la documentation (C8.5, #43), Anthropic en direct |
+| E3 | 33 ✅ · 6 🟠 · 0 🔴 sur 39 | ta relecture ; INC-007 à mentionner ? ; gel le 15/10 |
+| E4 | 27 ✅ · 9 ⚠️ · 0 ❌ sur 36 | rapport à rédiger ; C16 (revues notées) ; C17.1, .2, .5, .8, .11 ; C19.4 au tag du 15/10 |
+| E5 | non recompté | rapport ; #70 restauration ; C20 et C21 |
+
+**Manques ouverts nés de cette session** : INC-007 (la chaîne rouge 1 h 20 sans alerte) ; seize indicateurs spécifiés, treize
+reçus par le briefing, drawdown jamais cité ; production sans en-têtes de sécurité et sans limite de débit ; API en rôle
+propriétaire en base ; écran 3 qui mémorise la clé trop tôt ; tableau Kanban décroché du travail réel (18 issues absentes).
 
 **Verrous** : le dépôt est privé (jury et formateur invités) ; `main` et les tags `livrable-*` sont protégés par GitHub ;
 zones sous garde (`db/schema.sql`, `guardrails/`, `evals/`) : rien sans plan validé ; aucun code sur le serveur avant le 15/10.
