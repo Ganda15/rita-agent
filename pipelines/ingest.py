@@ -38,13 +38,17 @@ from __future__ import annotations
 
 import argparse
 import functools
+import json
 import logging
 import os
 import re
+import subprocess
 import sys
 import time
 import unicodedata
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
+from datetime import datetime
+from pathlib import Path
 
 import psycopg2
 from psycopg2.extras import execute_values
@@ -551,6 +555,90 @@ def configurer_journal() -> None:
     logging.getLogger("httpx").setLevel(logging.WARNING)
 
 
+# =============================================================================
+# [7] LE MANIFESTE DE COLLECTE : un fichier de faits par exécution (chapitre « Données » §1.3,
+#     issue #64 ; sert C1 « toutes les données visées sont récupérées » et C20 « surveiller »)
+# =============================================================================
+#
+# Le journal raconte ; le manifeste compte. Par étape : lues, écrites, rejetées, erreur, détails ;
+# pour l'exécution : mode, période, durée, commit, version de Python. Rien d'autre : jamais un
+# texte d'article, jamais une clé. Il part dans `logs/` (ignoré par Git) à côté du journal du soir.
+
+VERSION_MANIFESTE = 1
+_CLE_DANS_URL = re.compile(r"(api_key=)[^&\s\"']+", re.IGNORECASE)
+
+
+def _sans_cle(texte: str | None) -> str | None:
+    """Une erreur recopiée peut contenir une URL, et FRED met la clé dans l'URL (mesuré le 02/10 :
+    6 journaux sur 40). On masque la valeur, on garde le reste du message."""
+    return None if texte is None else _CLE_DANS_URL.sub(r"\1***", texte)
+
+
+def _commit_courant() -> str | None:
+    """Le commit du code qui a tourné, ou None si Git n'est pas là (conteneur, poste sans Git)."""
+    try:
+        sortie = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True,
+                                text=True, timeout=5, cwd=Path(__file__).resolve().parent.parent)
+        return sortie.stdout.strip() or None
+    except Exception:  # noqa: BLE001, l'absence de Git n'est pas une erreur de collecte
+        return None
+
+
+def ecrire_manifeste(resultat: dict, dossier: Path | str, maintenant: datetime | None = None,
+                     periode: tuple[str, str] | None = None,
+                     etapes_demandees: list[str] | None = None) -> str:
+    """Écrit `manifeste-AAAA-MM-JJ-HHMMSS.json` dans `dossier` et rend son chemin.
+
+    Le nom porte l'heure : un rattrapage l'après-midi n'écrase pas la collecte du soir.
+    `maintenant` est le début de l'exécution ; la fin s'en déduit par `duree_s`.
+    """
+    debut = maintenant or datetime.now()
+    dossier = Path(dossier)
+    dossier.mkdir(parents=True, exist_ok=True)
+    etapes = []
+    for b in resultat["bilans"]:
+        d = asdict(b)
+        d["ok"] = b.ok
+        d["nom"] = d.pop("etape")
+        d["erreur"] = _sans_cle(d["erreur"])
+        d["details"] = [_sans_cle(x) for x in d["details"]]
+        etapes.append(d)
+    contenu = {
+        "version_manifeste": VERSION_MANIFESTE,
+        "debut": debut.isoformat(timespec="seconds"),
+        "duree_s": resultat.get("duree_s"),
+        "mode": "simulation" if resultat.get("simulation") else "execution",
+        "periode": list(periode) if periode else None,
+        "etapes_demandees": etapes_demandees or list(ETAPES),
+        "code": {"commit": _commit_courant(), "python": sys.version.split()[0]},
+        "etapes": etapes,
+        "etapes_ok": resultat.get("etapes_ok"),
+        "etapes_total": len(etapes),
+    }
+    chemin = dossier / f"manifeste-{debut:%Y-%m-%d-%H%M%S}.json"
+    chemin.write_text(json.dumps(contenu, ensure_ascii=False, indent=1), encoding="utf-8")
+    return str(chemin)
+
+
+def ecrire_manifeste_sans_casser(resultat: dict, dossier: Path | str, **kw) -> str | None:
+    """La collecte a réussi ; le manifeste est un bonus. Une panne d'écriture (disque plein,
+    dossier illisible) vaut une ligne WARNING, jamais une exception après 25 minutes de collecte."""
+    try:
+        return ecrire_manifeste(resultat, dossier, **kw)
+    except Exception as erreur:  # noqa: BLE001
+        logger.warning("manifeste non ecrit dans %s : %s", dossier, f"{type(erreur).__name__}: {erreur}"[:160])
+        return None
+
+
+def lire_dernier_manifeste(dossier: Path | str) -> dict | None:
+    """Le manifeste le plus récent du dossier, ou None s'il n'y en a aucun. Pour l'API et la
+    surveillance : « dernière collecte : 90 articles lus, 51 nouveaux, 39 rejetés »."""
+    fichiers = sorted(Path(dossier).glob("manifeste-*.json"))
+    if not fichiers:
+        return None
+    return json.loads(fichiers[-1].read_text(encoding="utf-8"))
+
+
 if __name__ == "__main__":                                # [1] point de lancement
     configurer_journal()
 
@@ -579,10 +667,15 @@ if __name__ == "__main__":                                # [1] point de lanceme
     if bool(args.du) != bool(args.au):
         parseur.error("--du et --au vont ensemble")
 
+    debut_execution = datetime.now()
     r = executer(args.dsn,
                  args.etapes.split(",") if args.etapes else None,
                  args.simulation,
                  periode=(args.du, args.au) if args.du else None)
+    chemin_manifeste = ecrire_manifeste_sans_casser(
+        r, Path(__file__).resolve().parent.parent / "logs", maintenant=debut_execution,
+        periode=(args.du, args.au) if args.du else None,
+        etapes_demandees=args.etapes.split(",") if args.etapes else None)
 
     mode = "SIMULATION (rien n'est ecrit)" if r["simulation"] else "EXECUTION"
     if args.du:
@@ -599,5 +692,6 @@ if __name__ == "__main__":                                # [1] point de lanceme
         for d in b.details:
             print(f"      - {d}")
     print(f"\n  Etapes reussies : {r['etapes_ok']}/{len(r['bilans'])}"
-          f"   Duree : {r['duree_s']} s\n")
+          f"   Duree : {r['duree_s']} s")
+    print(f"  Manifeste : {chemin_manifeste or 'non ecrit (voir WARNING)'}\n")
     sys.exit(code_de_sortie(r, args.strict))
