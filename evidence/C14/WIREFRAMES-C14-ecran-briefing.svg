@@ -93,12 +93,13 @@
 <rect x="44" y="700" width="512" height="34" rx="3" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.0"/>
 <text x="52" y="713" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;font-weight:700;fill:#374151;">c. Code inconnu (502 « absent »)</text>
 <text x="52" y="727" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#111827;">Valeur introuvable : « XX.PA » n&#x27;est pas dans l&#x27;univers suivi.</text>
-<rect x="44" y="738" width="512" height="34" rx="3" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.0"/>
-<text x="52" y="751" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;font-weight:700;fill:#374151;">d. Aucun modèle (502 autre)</text>
-<text x="52" y="765" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#111827;">Aucun fournisseur de modèle ne répond pour le moment. Réessayez plus tard.</text>
-<rect x="44" y="776" width="512" height="34" rx="3" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.0"/>
-<text x="52" y="789" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;font-weight:700;fill:#374151;">e. Autre erreur / aucune réponse</text>
-<text x="52" y="803" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#111827;">Erreur 500 — le serveur n&#x27;a pas pu répondre.   |   Le serveur ne répond pas…</text>
+<rect x="44" y="738" width="512" height="40" rx="3" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.0"/>
+<text x="52" y="751" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;font-weight:700;fill:#374151;">d. Aucun modèle (mesuré : 500, pas 502)</text>
+<text x="52" y="765" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#111827;">Erreur 500 — le serveur n&#x27;a pas pu répondre.</text>
+<text x="52" y="775" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8px;font-style:italic;fill:#1d4ed8;">→ le message « aucun fournisseur » prévu n&#x27;apparaît jamais (corrigé le 03/10)</text>
+<rect x="44" y="782" width="512" height="34" rx="3" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.0"/>
+<text x="52" y="795" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:8.5px;font-weight:700;fill:#374151;">e. Autre erreur / aucune réponse</text>
+<text x="52" y="809" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:9.5px;fill:#111827;">Erreur 500 — le serveur n&#x27;a pas pu répondre.   |   Le serveur ne répond pas…</text>
 <text x="610" y="482" text-anchor="start" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;fill:#111827;">État 4 : le briefing et le verdict du garde-fou</text>
 <rect x="610" y="490" width="540" height="380" rx="6" fill="#ffffff" stroke="#9ca3af" stroke-width="1.5"/>
 <rect x="610" y="490" width="540" height="26" rx="6" fill="#e5e7eb" stroke="#9ca3af" stroke-width="1.5"/>

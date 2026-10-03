@@ -9,6 +9,12 @@
 
 ---
 
+## 2026-10-03 (nuit, fin) : revue OWASP Top 10:2025, la configuration de production est le point faible
+
+**Manque découvert** : la revue OWASP (édition 2025, la seule en vigueur ; le dépôt citait encore la numérotation 2021) trouve la production **sans aucun en-tête de sécurité**, la documentation de l'API publique, **aucune limite de débit** sur un appel payant, des refus de clé **jamais journalisés**, et des alertes Dependabot désactivées. Une sonde montre aussi qu'un ticker de 5 000 caractères est accepté et que la panne de tous les fournisseurs rend un 500 (sûr, mais différent de ce que la spécification de l'écran 3 écrivait le matin même : corrigée). Le certificat expire le 18/11, avant le jury. Tenus : contrôle d'accès, TLS, injections SQL et HTML, intégrité de la livraison, aucun secret dans l'historique. Rien n'est corrigé avant le gel ; dix constats regroupés (carte #75).
+
+---
+
 ## 2026-10-03 (nuit, suite) : éco-conception et accessibilité mesurées ; un écran noté D
 
 **Manque découvert** : la première mesure d'éco-conception (Lighthouse et EcoIndex officiel) classe l'écran **indicateurs en D** (51 sur 100) quand il affiche les 111 valeurs : 1 860 éléments dans la page. Le poids n'est pas en cause (compression mesurée : 51 devient 52). Autres constats : aucune compression ni en-tête de cache, `favicon.ico` en 404, et la **production sert toujours les pages du 19/08**, sans l'écran briefing. Accessibilité automatique : 100 sur 100, zéro échec, clavier mesuré. Corrections regroupées (carte #74) après le tag du 15/10 ; la décision de réduire les lignes affichées reste à Era (D6).

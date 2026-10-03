@@ -119,6 +119,12 @@ de revue n'existe dans le dépôt (voir C16.1 et C16.4). Aucun ❌. Le rapport E
 - **C17.3 et R11 mieux étayés** : l'ordre de tabulation, le focus visible et le déplacement du focus sur le résultat sont **mesurés** (`clavier.json`) et non plus seulement lus.
 - **Total : 27 ✅, 9 ⚠️, 0 ❌.**
 
+## 7. Mise à jour du 03/10/2026, après la tâche T4
+
+- **C17.8 (préconisations OWASP Top 10 implémentées) reste ⚠️**, mais pour une autre raison : la revue écrite existe désormais (`evidence/C17/revue-owasp-top10-2025-2026-10-03.md`, édition 2025, entrée par entrée) ; elle montre que plusieurs préconisations ne sont **pas** implémentées (en-têtes de sécurité, limitation de débit, journalisation des refus d'authentification, chaîne d'approvisionnement). Le critère demande des préconisations implémentées : le cocher serait une fausse complétude.
+- **C17.5 (droits d'accès)** : la revue confirme le contrôle d'accès en production (403 sans clé et avec une fausse clé) et ajoute deux réserves (documentation publique, aucune limite aux essais).
+- **Total inchangé : 27 ✅, 9 ⚠️, 0 ❌.**
+
 ## 📖 Glossaire
 
 - **Critère** : phrase du référentiel que le jury coche.

@@ -117,7 +117,7 @@ mesuré ; l'avertissement « Aide à la lecture. Aucune recommandation d'achat o
 | I11 | Chaque changement de statut est annoncé par un lecteur d'écran ; la langue de la page est déclarée ; les zones de la page (en-tête, navigation nommée, contenu, pied) sont identifiées ; la page courante est signalée dans la navigation (bonne pratique, sans règle RGAA propre) | **RGAA 7.5**, **8.3**, **12.6** | `test_les_marqueurs_d_accessibilite_de_l_ecran_2` (`aria-live="polite"`, `role="status"`, `lang="fr"`, `aria-current="page"`) |
 | I12 | La page a un titre, une structure de titres et des champs étiquetés | **RGAA 8.5**, **9.1**, **11.1** | **lecture** de `indicateurs.html` (`<title>`, `h1`/`h2`, `label for`) ; aucun test dédié |
 | I13 | Le filtre agit sur les données déjà chargées et est relié au tableau qu'il modifie | utilisabilité | `aria-controls` : même test que I11 ; « sans appel réseau » : **lecture** du gestionnaire `change` |
-| I14 | Aucun contenu de l'API n'est interprété comme du HTML | **OWASP A03** | `test_l_ecran_indicateurs_n_utilise_jamais_innerhtml` |
+| I14 | Aucun contenu de l'API n'est interprété comme du HTML | **OWASP A05:2025** | `test_l_ecran_indicateurs_n_utilise_jamais_innerhtml` |
 | I15 | Les termes sont définis dans l'écran | utilisabilité | **lecture** : le bloc « Comment lire ce tableau ? » définit chaque colonne et « cotation périmée » |
 
 ---
@@ -140,7 +140,7 @@ ses motifs. L'écran dit aussi qu'**aucune donnée du portefeuille n'est envoyé
 | S2 | Visite suivante, même onglet | la demande s'ouvre directement |
 | S3 | Clé invalide ou révoquée | découverte **à la première demande** (403) et non à la connexion : message, clé oubliée, retour à la saisie |
 | S4 | Code inconnu | réponse 502 « absent » : « Valeur introuvable : « XX.PA » n'est pas dans l'univers suivi. » |
-| S5 | Aucun fournisseur de modèle disponible | réponse 502 autre : « Aucun fournisseur de modèle ne répond pour le moment. Réessayez plus tard. » |
+| S5 | Aucun fournisseur de modèle disponible | ~~réponse 502 autre : « Aucun fournisseur… »~~ **corrigé le 03/10 au soir, mesuré** : l'API répond **500** générique, l'écran affiche « Erreur 500 — le serveur n'a pas pu répondre. » ; le message dédié n'apparaît jamais (revue OWASP, constat S6) |
 | S6 | API arrêtée, ou autre code HTTP | « Le serveur ne répond pas… » ou « Erreur N — le serveur n'a pas pu répondre. » |
 | S7 | Texte retenu par le garde-fou | le verdict dit « Texte retenu par le garde-fou de sortie (motifs : …) » et le texte du modèle n'est pas diffusé |
 | S8 | La liste déroulante de l'univers ne se charge pas | l'écran reste utilisable, on tape le code à la main |
@@ -153,7 +153,7 @@ ses motifs. L'écran dit aussi qu'**aucune donnée du portefeuille n'est envoyé
 | R2 | La demande est un `POST /briefing?ticker=…` avec l'en-tête `X-API-Key` | contrat OpenAPI | `test_l_ecran_briefing_appelle_le_point_de_terminaison_du_modele_en_post_avec_la_cle` |
 | R3 | L'attente est dite : « de 5 à 15 secondes » | utilisabilité | `test_l_ecran_briefing_dit_que_la_redaction_prend_du_temps` |
 | R4 | Le verdict du garde-fou est un **texte** (« conforme » ou « retenu », avec les motifs) ; la couleur ne fait que le répéter | **RGAA 3.1** | `test_le_verdict_du_garde_fou_est_dit_en_texte_pas_seulement_en_couleur` ; navigateur réel : `test_l_ecran_briefing_affiche_le_texte_et_le_verdict` |
-| R5 | Le texte du modèle est inséré comme du texte, en paragraphes, jamais comme du HTML | **OWASP A03** | `test_le_texte_du_modele_est_rendu_en_paragraphes_sans_html`, `test_l_ecran_briefing_n_utilise_jamais_innerhtml` |
+| R5 | Le texte du modèle est inséré comme du texte, en paragraphes, jamais comme du HTML | **OWASP A05:2025** | `test_le_texte_du_modele_est_rendu_en_paragraphes_sans_html`, `test_l_ecran_briefing_n_utilise_jamais_innerhtml` |
 | R6 | Un code inconnu est dit en clair ; une clé refusée (403) est oubliée | utilisabilité | `test_un_ticker_inconnu_est_dit_en_clair_et_une_cle_refusee_est_oubliee`, `test_l_ecran_briefing_dit_quand_le_ticker_est_introuvable` (navigateur réel) ; les autres pannes (aucun modèle, serveur muet, autre code) : **lecture** |
 | R7 | La référence de la requête (`X-Request-ID`) est affichée pour le support | traçabilité (C11) | `test_l_identifiant_de_requete_est_montre_pour_le_support` ; navigateur réel : même test que R4 |
 | R8 | L'avertissement « Aucune recommandation d'achat ou de vente » est affiché | contrainte AMF | `test_l_avertissement_amf_est_sur_l_ecran_briefing` |
@@ -186,6 +186,10 @@ ses motifs. L'écran dit aussi qu'**aucune donnée du portefeuille n'est envoyé
 ### Mise à jour du 03/10/2026, tâche T3
 
 Trois vérifications passent de « lecture du code » à « **mesuré** » (`../C17/mesures-2026-10-03/clavier.json`, Lighthouse 13.5.0) : **I10** (zone qui défile atteignable au clavier, focus visible : contour de 2 px sur la région, 3 px ailleurs), **R11** (le focus est déplacé sur la région « Briefing » à l'arrivée du texte, après un envoi au clavier) et l'ordre de tabulation des trois écrans (logique, sans piège). Lighthouse confirme par ailleurs, sans échec, `lang`, le titre de page, les étiquettes de champ, la structure de titres et les noms accessibles (I11, I12, R11). Les autres lignes « lecture » restent « lecture ».
+
+### Correction du 03/10/2026 au soir, revue OWASP (tâche T4)
+
+Le scénario S5 de l'US-3 et l'état 3d du wireframe de l'écran 3 décrivaient une réponse 502 « aucun fournisseur ». Une sonde de `/briefing` avec les trois fournisseurs en panne montre une réponse **500** générique (sans fuite de l'adresse interne) : l'exception traverse le graphe et devient l'erreur interne du composant de journalisation. Le message dédié de l'écran est donc inatteignable. Le wireframe est redessiné ; la correction du comportement est la carte #75 (constat S6 de `../C17/revue-owasp-top10-2025-2026-10-03.md`). Les critères R6 et R11 n'en dépendent pas.
 
 ## 6. Erratum sur l'écran 1 : la référence RGAA des messages de statut
 
@@ -230,4 +234,4 @@ clavier · 7.5 messages de statut · 8.3 langue par défaut · 8.5 titre de page
 | **Lot 1, lot 3** | groupes d'indicateurs : le socle (cours, performances, moyennes, échangé, distance au plus haut) et le risque (volatilité, plus forte baisse, RSI) |
 | **Cotation périmée** | la valeur n'a plus coté depuis longtemps, probablement radiée : ses chiffres décrivent le passé |
 | **Tiret « — »** | « non calculable faute d'historique », jamais un zéro |
-| **OWASP A03** | risque d'injection : un contenu venu de l'extérieur interprété comme du code |
+| **OWASP A05:2025** (A03 dans l'édition 2021) | risque d'injection : un contenu venu de l'extérieur interprété comme du code |

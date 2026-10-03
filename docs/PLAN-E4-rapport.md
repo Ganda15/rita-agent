@@ -80,7 +80,7 @@ reprend ce qu'il lui faut et renvoie à E3 pour le détail, il ne s'y réduit pa
 | T1 | Recompter les 36 critères contre le dépôt d'aujourd'hui | skill `projet-rncp` | **fait le 03/10** : `docs/rapports/E4/recomptage-criteres-2026-10-03.md`, remplace celui du 26/09 |
 | T2 | User stories et wireframes des écrans 2 et 3 (#24) | `evidence/C14/`, `frontend/` | **fait le 03/10** : `evidence/C14/preuve-specifications-ecrans-2-et-3.md`, un wireframe `.drawio`, `.svg` et `.png` par écran ; écrit après le code, dit en tête ; a fait trouver le défaut #73 et une erreur de référence RGAA |
 | T3 | Mesurer l'éco-conception et l'accessibilité des trois pages (#25) | le front local | **fait le 03/10** : `evidence/C17/preuve-eco-conception-et-accessibilite-2026-10-03.md` (Lighthouse 13.5.0, EcoIndex officiel, clavier) ; le tableau **après** suivra la correction de la carte #74, après le 15/10 |
-| T4 | Revue OWASP Top 10 écrite (#29) | le code, `tests/` | `docs/` ou `evidence/C17/` : dix lignes, chacune avec son fichier ou son test |
+| T4 | Revue OWASP Top 10 écrite (#29) | le code, `tests/` | **fait le 03/10** : `evidence/C17/revue-owasp-top10-2025-2026-10-03.md`, édition 2025, dix entrées, dix constats S1 à S10 ; corrections après le 15/10 (carte #75) |
 | T5 | Droits d'accès : défense écrite (#26) | `api/main.py`, `db/roles.sql` | une page avec le modèle de menace |
 | T6 | Revues du lundi : 05/10, 12/10, 19/10 | tableau Kanban | `evidence/C16/revues/<date>.md` |
 | T7 | Épingler `requirements.txt` (#23) | `requirements.txt` | suite et chaîne vertes, sortie collée |
