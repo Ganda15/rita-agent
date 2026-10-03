@@ -31,9 +31,10 @@ Dernier décompte complet : **26/09, 21 ✅, 11 ⚠️, 4 ❌**. Depuis, quatre 
 | Règles de protection de `main` et des tags `livrable-*` (03/10) | C19 critère 4 (« une fois le packaging validé ») et critère 5 | `evidence/C19/preuve-protection-main-2026-10-03.md` |
 | Écran 3, le briefing (03/10) | C17 critères 2 et 3 (interfaces, composants) ; **ouvre un nouvel écart en C14** (voir §3) | `evidence/C10/preuve-ecran-briefing.md` |
 
-Au plus bas, **au moins 25 ✅ et au plus 11 ⚠️, 0 ❌**. Le décompte exact se refait à la tâche T1 (§5), avec la skill
-`projet-rncp`, avant d'écrire une ligne du rapport : un rapport qui annonce un chiffre non recompté est le défaut
-« documenté mais absent » du projet.
+**Recompté le 03/10 au soir (tâche T1) : 25 ✅, 11 ⚠️, 0 ❌**, critère par critère, avec la preuve vue ce soir :
+`docs/rapports/E4/recomptage-criteres-2026-10-03.md`. Le total ne bouge pas par rapport au calcul ci-dessus, mais deux lignes
+changent : C19 gagne un ✅ (documentation de la chaîne) et C16 en perd un (aucun compte rendu daté de revue). Le décompte se refait
+une dernière fois après T2 à T9, avant de figer la matrice de preuves du rapport.
 
 ## 3. Les écarts restants, carte par carte
 
@@ -76,7 +77,7 @@ reprend ce qu'il lui faut et renvoie à E3 pour le détail, il ne s'y réduit pa
 
 | T | Tâche | Entrée | Sortie, preuve |
 |---|---|---|---|
-| T1 | Recompter les 36 critères contre le dépôt d'aujourd'hui | skill `projet-rncp` | tableau daté, remplace celui du 26/09 |
+| T1 | Recompter les 36 critères contre le dépôt d'aujourd'hui | skill `projet-rncp` | **fait le 03/10** : `docs/rapports/E4/recomptage-criteres-2026-10-03.md`, remplace celui du 26/09 |
 | T2 | User stories et wireframes des écrans 2 et 3 (#24) | `evidence/C14/`, `frontend/` | deux fichiers dans `evidence/C14/`, un wireframe `.drawio` et `.png` par écran |
 | T3 | Mesurer l'éco-conception et l'accessibilité des trois pages (#25) | le front local | `evidence/C17/preuve-eco-conception.md`, tableau et capture |
 | T4 | Revue OWASP Top 10 écrite (#29) | le code, `tests/` | `docs/` ou `evidence/C17/` : dix lignes, chacune avec son fichier ou son test |
