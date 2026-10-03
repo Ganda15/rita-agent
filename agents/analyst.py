@@ -28,26 +28,19 @@ def _bloc_articles(passages: list[dict] | None) -> str:
             f"ci-dessous ; si deux articles se contredisent, dis-le au lieu de choisir en silence :\n" + "\n".join(lignes))
 
 
-def generate_briefing(ticker: str, price: float, change_pct: float,
+def construire_prompt(ticker: str, price: float, change_pct: float,
                       adtv20: float | None, currency: str,
                       fraicheur_jours: int = 0,
                       cotation_perimee: bool = False,
                       passages: list[dict] | None = None) -> str:
-    """Rédige un briefing français à partir des données lues en base et des articles.
+    """Le prompt du rédacteur, sans appel au modèle.
+
+    Extrait de `generate_briefing` le 03/10/2026 pour le banc C7 (`evals/benchmark_fournisseurs.py`) :
+    les fournisseurs se comparent sur le prompt réel, pas sur une copie qui dériverait. Mêmes arguments,
+    même texte ; `generate_briefing` l'appelle puis appelle le modèle.
 
     Args:
-        ticker: code boursier, ex. 'MC.PA'.
-        price: cours de la dernière séance collectée.
-        change_pct: performance sur 1 jour, en pourcentage.
-        adtv20: volume MOYEN sur 20 séances. `None` si l'historique est trop court.
-        currency: devise de la valeur, lue dans `valeur.devise`.
-        fraicheur_jours: âge de la cotation, en jours.
-        cotation_perimee: vrai au-delà de 40 jours — la valeur est probablement radiée.
-        passages: articles retrouvés par le RAG. Liste vide ou `None` = aucun article,
-            et le prompt interdit alors explicitement d'en inventer.
-
-    Returns:
-        Briefing en français, 3 à 5 phrases.
+        voir `generate_briefing`.
     """
     direction = "hausse" if change_pct >= 0 else "baisse"
     volume_moyen = f"{adtv20:,.0f}" if adtv20 is not None else "non disponible"
@@ -85,4 +78,30 @@ Règles strictes :
 - Ne présente JAMAIS le volume moyen 20 séances comme le volume du jour
 - Ton neutre, professionnel, accessible"""
 
+    return prompt
+
+
+def generate_briefing(ticker: str, price: float, change_pct: float,
+                      adtv20: float | None, currency: str,
+                      fraicheur_jours: int = 0,
+                      cotation_perimee: bool = False,
+                      passages: list[dict] | None = None) -> str:
+    """Rédige un briefing français à partir des données lues en base et des articles.
+
+    Args:
+        ticker: code boursier, ex. 'MC.PA'.
+        price: cours de la dernière séance collectée.
+        change_pct: performance sur 1 jour, en pourcentage.
+        adtv20: volume MOYEN sur 20 séances. `None` si l'historique est trop court.
+        currency: devise de la valeur, lue dans `valeur.devise`.
+        fraicheur_jours: âge de la cotation, en jours.
+        cotation_perimee: vrai au-delà de 40 jours — la valeur est probablement radiée.
+        passages: articles retrouvés par le RAG. Liste vide ou `None` = aucun article,
+            et le prompt interdit alors explicitement d'en inventer.
+
+    Returns:
+        Briefing en français, 3 à 5 phrases.
+    """
+    prompt = construire_prompt(ticker, price, change_pct, adtv20, currency,
+                               fraicheur_jours, cotation_perimee, passages)
     return generer_texte(prompt, max_tokens=500)

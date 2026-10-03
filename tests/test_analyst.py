@@ -125,3 +125,16 @@ def test_le_prompt_ne_pretend_jamais_que_les_articles_sont_recents():
     assert "Articles récents" not in prompt
     assert "Articles retrouvés" in prompt
     assert "vérifie leur date" in prompt
+
+
+# --- plan C7 (03/10/2026) : le prompt se construit sans appeler le modèle --------------------------
+
+def test_construire_prompt_est_exactement_ce_que_le_redacteur_envoie():
+    """Le banc C7 doit mesurer les fournisseurs sur le prompt réel, pas sur une copie qui dériverait."""
+    from agents.analyst import construire_prompt
+    arguments = dict(ticker="MC.PA", price=378.55, change_pct=-0.25, adtv20=1234.0, currency="EUR",
+                     fraicheur_jours=1, cotation_perimee=False, passages=[])
+    with patch("agents.analyst.generer_texte", return_value="ok") as generer:
+        generate_briefing(**arguments)
+    assert generer.call_args.args[0] == construire_prompt(**arguments)
+    assert generer.call_args.kwargs.get("max_tokens") == 500

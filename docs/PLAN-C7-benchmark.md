@@ -118,6 +118,8 @@ une heure de rédaction. Après le gel du 15/10, avant le 25/10 si E4 le permet,
 
 Tant que D1 à D3 ne sont pas tranchées, aucun appel payant n'est lancé.
 
+**Décision du 03/10/2026** : D1, D2, D3 = A (Era, « ok do it »). Première mesure le jour même, `evidence/C7/preuve-benchmark-2026-10-03.md` : un seul fournisseur mesurable (OpenRouter, 30 appels, 0,14 USD), les deux autres indisponibles faute de clés sur le poste ; la question du formateur reste à poser.
+
 ## 📖 Glossaire
 
 - **Banc (benchmark)** : la même épreuve donnée à plusieurs services, dans les mêmes conditions, pour les comparer.

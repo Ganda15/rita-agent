@@ -84,9 +84,10 @@ soumises au RGAA. Ce qui n'est pas fait : aucun audit outillé du PDF.
 
 ## 3. C7 : le choix du service de modèle
 
-**État au 3 octobre 2026 : aucune mesure comparative n'existe.** Ce que le projet possède : une cascade de trois
-fournisseurs branchée (`src/llm.py`), un seul opérationnel sur le poste de démonstration, et un **plan de banc**
-écrit le 03/10, `docs/PLAN-C7-benchmark.md`, qui fixe avant toute dépense : le besoin reformulé (§1 du plan), le
+**État au 3 octobre 2026 au soir : le banc existe et a tourné une fois, mais un seul fournisseur a pu être mesuré,
+donc aucune comparaison n'existe encore.** Ce que le projet possède : une cascade de trois fournisseurs branchée
+(`src/llm.py`), un seul opérationnel sur le poste de démonstration, un **plan de banc** validé (D1 à D3 = A),
+`docs/PLAN-C7-benchmark.md`, qui fixe avant toute dépense : le besoin reformulé (§1 du plan), le
 périmètre et les exclusions (§2), un jeu d'essai figé de dix prompts construits par le code réel (§3), les mesures et
 leur lecture, intervalles de Wilson pour les proportions (§4), l'information environnementale datée ou marquée
 inconnue (§5), les fichiers de preuve (§6), le coût et le calendrier (§7), et trois décisions attendues (§8).
@@ -99,7 +100,7 @@ Les sections suivantes seront remplies **après** la mesure, depuis `evidence/C7
 
 - 3.1 Le besoin et les contraintes : Information missing, to complete later (le plan en donne la version du 03/10).
 - 3.2 Services inclus, exclus, et pourquoi : Information missing, to complete later.
-- 3.3 Résultats mesurés : conformité AMF, fidélité aux faits, français, latence, coût, disponibilité : Information missing, to complete later.
+- 3.3 Résultats mesurés : **première mesure le 03/10** (`evidence/C7/preuve-benchmark-2026-10-03.md`) sur dix cas figés, trois répétitions : OpenRouter servant `anthropic/claude-sonnet-4.5`, 30 appels sur 30 réussis, 30 textes conformes AMF et 30 fidèles aux faits fournis (Wilson 95 % [0,89 ; 1,00] pour chaque taux), latence médiane 5,8 s et p95 7,0 s, 491 jetons en entrée et 212 en sortie en moyenne, 0,0047 USD par briefing au prix public du jour. Azure AI Foundry et Anthropic en direct : **indisponibles pour la mesure** (clés absentes du poste), pas notés. Qualité du français : à noter par Era à l'aveugle, fichier préparé. Comparaison : Information missing, to complete later.
 - 3.4 Environnement et prérequis techniques : Information missing, to complete later.
 - 3.5 Recommandation argumentée : Information missing, to complete later.
 
@@ -167,9 +168,9 @@ Information missing, to complete later.
 | C7.1 besoin reformulé | 🟠 | plan §1, à confirmer par la mesure |
 | C7.2 services inclus et exclus | 🟠 | plan §2 ; question au formateur ouverte |
 | C7.3 raisons d'exclusion | 🟠 | plan §2 |
-| C7.4 adéquation fonctionnelle mesurée | 🔴 | aucune mesure |
+| C7.4 adéquation fonctionnelle mesurée | 🟠 | un fournisseur mesuré sur dix cas figés (conformité, fidélité, latence, coût) ; les deux autres indisponibles ; français à noter |
 | C7.5 approche environnementale | 🔴 | aucune donnée vérifiée |
-| C7.6 prérequis et contraintes techniques | 🟠 | relevés dans le code (`src/llm.py`), à compléter par fournisseur |
+| C7.6 prérequis et contraintes techniques | 🟠 | relevés dans le code (`src/llm.py`) et dans la sonde du banc (clé, authentification), à compléter par fournisseur |
 | C7.7 recommandation argumentée | 🔴 | après la mesure |
 | C8.1 service accessible, authentification | ✅ | briefing réel du 03/10, clé en environnement |
 | C8.2 configuration conforme aux besoins | 🟠 | un fournisseur opérationnel sur trois |
@@ -177,7 +178,7 @@ Information missing, to complete later.
 | C8.4 documentation d'accès, installation, tests, dépendances, flux | ✅ | `docs/EXPLOITATION.md`, corrigé le 03/10 |
 | C8.5 documentation communiquée, accessible | 🔴 | aucune remise prouvée (#43) |
 
-**Décompte** : 5 ✅ · 11 🟠 · 4 🔴 sur 20.
+**Décompte** : 5 ✅ · 12 🟠 · 3 🔴 sur 20 (le matin : 5, 11, 4).
 
 ---
 
@@ -185,7 +186,7 @@ Information missing, to complete later.
 
 1. Captures du fil Discord du 16/08 et envoi daté au formateur (Era) : la seule preuve de partage possible.
 2. Note S40 écrite par Era depuis les candidats ; les semaines S37 à S39 restent déclarées sans séance.
-3. Décisions D1 à D3 du plan C7 et question au formateur ; puis le script du banc, test d'abord, et la mesure.
+3. Question au formateur sur le périmètre (D1) ; poser les clés Foundry et Anthropic sur le poste ; relancer le banc (une commande) pour avoir la comparaison ; noter le français à l'aveugle.
 4. Envoi du guide d'exploitation au formateur, preuve rangée (#43).
 5. Rédaction des sections C7 depuis `evidence/C7/`, relecture, PDF (`scripts/rendre_pdf.py`), tag `livrable-E2-v1`.
 
