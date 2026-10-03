@@ -45,3 +45,10 @@ data/positions-reelles*.csv
 htmlcov/
 coverage.xml
 data/chroma/
+
+# --- Journaux locaux et sorties d'outils (03/10/2026) ----------------------------
+# logs/ : 41 journaux de la collecte planifiee ; six contiennent la cle FRED en clair
+# (INC a traiter par rotation). graphify-out/ : cache de la skill /graphify, regenerable.
+# Ni l'un ni l'autre n'est une preuve : les preuves vivent dans evidence/.
+logs/
+graphify-out/
