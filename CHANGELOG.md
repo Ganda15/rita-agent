@@ -9,6 +9,12 @@
 
 ---
 
+## 2026-10-03 (nuit, très tard) : le tableau Kanban ne suit plus le travail réel
+
+**Manque découvert** en préparant la revue du 05/10 : sur 13 issues fermées en S40, **3 seulement** sont passées par le tableau ; **18 issues** créées le 03/10 n'y ont jamais été ajoutées ; la colonne « En cours » montre une carte quand au moins quatre chantiers sont ouverts ; et **la revue du 28/09 n'a laissé aucune trace**. Pour C16 (« respectés tout au long du projet »), c'est un écart à dire, pas à combler après coup. Trame de la revue du 05/10 : `evidence/C16/revues/2026-10-05-revue-S41.md`.
+
+---
+
 ## 2026-10-03 (nuit, tard) : la clé unique défendue ; l'API lit la base en propriétaire
 
 **Décision structurante** : la clé d'API unique est maintenue et défendue par écrit (un utilisateur, données de démonstration, comptes jugés plus risqués qu'utiles), avec ses coûts et les déclencheurs qui la feraient changer (`evidence/C17/preuve-droits-acces-2026-10-03.md`). **Manque découvert** en confrontant la matrice d'accès validée par le formateur au code : l'API et le scout se connectent avec le rôle propriétaire de la base au lieu d'un rôle en lecture (carte #76), et le rôle `rita_lecture` n'est utilisé nulle part.
