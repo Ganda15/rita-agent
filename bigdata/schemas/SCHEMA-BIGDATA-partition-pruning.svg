@@ -72,7 +72,7 @@
 <line class="rule" x1="40" y1="211" x2="860" y2="211"/>
 
 <text class="mono" x="40" y="230">data/bigdata/ohlcv/annee=YYYY/</text>
-<text class="note" x="40" y="245">28/07/2016 → 29/07/2026</text>
+<text class="note" x="40" y="245">29/07/2016 → 29/07/2026</text>
 <text class="note" x="40" y="258" font-size="8.6">soit 3 652 jours</text>
 
 <!-- barres : hauteur proportionnelle au nombre de lignes, max 27 783 -> 108 px -->
@@ -118,7 +118,7 @@
 <text x="628" y="221" font-family="Consolas,monospace" font-size="10" font-weight="700" fill="#FFFFFF" text-anchor="middle">WHERE annee = 2024</text>
 
 <text class="note" x="70" y="400">Les dix autres partitions ne sont pas <tspan font-style="italic">filtrées après lecture</tspan> : elles ne sont <tspan font-weight="700" fill="#14607F">jamais ouvertes</tspan>.</text>
-<text class="note" x="70" y="414"><tspan font-weight="700">Pourquoi 11 partitions pour 10 ans</tspan> : la fenêtre commence le 28 juillet, elle traverse donc 11 années civiles. 2016 (5 mois) + 2017→2025 (9 ans pleins) + 2026 (7 mois) = <tspan font-weight="700" fill="#14607F">10 ans</tspan>.</text>
+<text class="note" x="70" y="414"><tspan font-weight="700">Pourquoi 11 partitions pour 10 ans</tspan> : la fenêtre commence le 29 juillet, elle traverse donc 11 années civiles. 2016 (5 mois) + 2017→2025 (9 ans pleins) + 2026 (7 mois) = <tspan font-weight="700" fill="#14607F">10 ans</tspan>.</text>
 
 <!-- ══════════ ③ LA PREUVE ══════════ -->
 <text class="step" x="40" y="432">③ LA PREUVE — L'EXTRAIT DU PLAN PHYSIQUE DE SPARK</text>

@@ -43,7 +43,7 @@
         <mxCell id="path" value="data/bigdata/ohlcv/annee=YYYY/" style="text;html=1;align=left;fontSize=9.5;fontFamily=Courier New;fontColor=#16202B;" vertex="1" parent="1">
           <mxGeometry x="40" y="222" width="240" height="16" as="geometry" />
         </mxCell>
-        <mxCell id="dates" value="28/07/2016 → 29/07/2026&lt;br&gt;&lt;font style=&quot;font-size:8.6px&quot;&gt;soit 3 652 jours&lt;/font&gt;" style="text;html=1;align=left;fontSize=9.2;fontColor=#4A5766;" vertex="1" parent="1">
+        <mxCell id="dates" value="29/07/2016 → 29/07/2026&lt;br&gt;&lt;font style=&quot;font-size:8.6px&quot;&gt;soit 3 652 jours&lt;/font&gt;" style="text;html=1;align=left;fontSize=9.2;fontColor=#4A5766;" vertex="1" parent="1">
           <mxGeometry x="40" y="238" width="200" height="26" as="geometry" />
         </mxCell>
 
@@ -87,7 +87,7 @@
 
         <mxCell id="arrowq" style="edgeStyle=none;html=1;strokeColor=#14607F;strokeWidth=1.6;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="q" target="p2024"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <mxCell id="note2" value="Les dix autres partitions ne sont pas &lt;i&gt;filtrées après lecture&lt;/i&gt; : elles ne sont &lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;jamais ouvertes&lt;/font&gt;&lt;/b&gt;.&lt;br&gt;&lt;b&gt;Pourquoi 11 partitions pour 10 ans&lt;/b&gt; : la fenêtre commence le 28 juillet, elle traverse donc 11 années civiles. 2016 (5 mois) + 2017→2025 (9 ans pleins) + 2026 (7 mois) = &lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;10 ans&lt;/font&gt;&lt;/b&gt;." style="text;html=1;align=left;fontSize=9.2;fontColor=#4A5766;" vertex="1" parent="1">
+        <mxCell id="note2" value="Les dix autres partitions ne sont pas &lt;i&gt;filtrées après lecture&lt;/i&gt; : elles ne sont &lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;jamais ouvertes&lt;/font&gt;&lt;/b&gt;.&lt;br&gt;&lt;b&gt;Pourquoi 11 partitions pour 10 ans&lt;/b&gt; : la fenêtre commence le 29 juillet, elle traverse donc 11 années civiles. 2016 (5 mois) + 2017→2025 (9 ans pleins) + 2026 (7 mois) = &lt;b&gt;&lt;font color=&quot;#14607F&quot;&gt;10 ans&lt;/font&gt;&lt;/b&gt;." style="text;html=1;align=left;fontSize=9.2;fontColor=#4A5766;" vertex="1" parent="1">
           <mxGeometry x="70" y="390" width="790" height="28" as="geometry" />
         </mxCell>
 

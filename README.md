@@ -23,7 +23,7 @@ Simplon & Wild Code School · Eramalingam GANDAKUMAR · ganda70@gmail.com · 202
 
 | Épreuve | Compétences | État au 03/10/2026 | Documents | 🔒 Livrable figé |
 |---|---|---|---|---|
-| **E1** : Données | C1–C5 | ✅ **livré** le 13/08 (26 critères / 28). Version 2 prévue le **15/10** : 9 tables depuis le 27/09, dates de l'archive corrigées, faux succès de l'étape `ecb`, vue de valorisation sans taux supposé | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) (v1.3) · [preuves C1 à C5](evidence/) | **[`livrable-E1-v1`](https://github.com/Ganda15/rita-agent/tree/livrable-E1-v1)** |
+| **E1** : Données | C1–C5 | ✅ **livré** le 13/08 (26 critères / 28). **Version 2 rédigée le 03/10**, gel et tag `livrable-E1-v2` le **15/10** : dates de l'archive en date locale (INC-005), 10 tables, FRED stockée, vue sans taux supposé, clôture des positions, traçage UE, étape `ecb` en échec déclaré, 742 tests | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) (v2.0, 5 pages) · [preuves C1 à C5](evidence/) | **[`livrable-E1-v1`](https://github.com/Ganda15/rita-agent/tree/livrable-E1-v1)** |
 | **E2** : Veille & services IA | C6–C8 | 🟡 **le plus en retard**. C6 : protocole, 4 notes (S33 à S36), un partage ; C7 : benchmark **non commencé** ; C8 : trois fournisseurs en cascade, tracés depuis le 02/10. Rapport : 0 page, dû le 05/11 | [docs/veille/](docs/veille/) · [evidence/C6/](evidence/C6/) | aucun |
 | **E3** : API modèle & MLOps | C9–C13 | 🔨 **proche du gel** (15/10). API du modèle, garde-fous mesurés, 700 tests, CI avec portes d'évaluation, traces et tableau de bord Langfuse, chaîne d'alerte, journal des appels MCP. Rapport v0.1 en relecture | [rapport-E3.md](docs/rapports/E3/rapport-E3.md) · [evidence/C11/](evidence/C11/) · [evidence/C12/](evidence/C12/) | aucun |
 | **E4** : Application | C14–C19 | 🔨 **23 critères / 36** prouvés le 26/09 : 2 écrans, spécifications et schémas, pré-production Docker, intégration continue, `main` protégée par pull request et tests verts. Rapport : 0 page, gel le 25/10 | [evidence/C14/](evidence/C14/) · [evidence/C15/](evidence/C15/) · [evidence/C19/](evidence/C19/) | aucun |
@@ -51,7 +51,7 @@ recommandation d'achat ou de vente.
 | Tests | **186** (`pytest -q`) |
 | Base de données | **8 tables · 1 vue · 15 index · 9 contraintes CHECK** |
 | Données en base | **273 608 lignes** (276 168 lues − 2 560 doublons) |
-| Archive big data | **11 partitions Parquet · 14 Mo · 10 ans** (28/07/2016 → 29/07/2026) |
+| Archive big data | **11 partitions Parquet · 14 Mo · 10 ans** (29/07/2016 → 29/07/2026, dates locales de la place depuis INC-005) |
 | API | **OpenAPI 3.1.0 · 8 chemins** |
 
 ### Les 5 types de sources (C1)
