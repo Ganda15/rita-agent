@@ -122,7 +122,7 @@ Les sources sont sur GitHub, `Ganda15/rita-agent`, branche `develop` pour le tra
 
 L'API a deux clients dans le dépôt, et tous deux passent par HTTP avec la clé, jamais par les modules Python en direct :
 
-**L'interface web** (`frontend/`, HTML, CSS et JavaScript sans outil de construction) : deux écrans, le portefeuille valorisé et les indicateurs de marché. La clé est saisie par l'utilisateur, gardée en `sessionStorage` (mémoire de l'onglet, effacée à sa fermeture), jamais écrite dans le code. Un 403 affiche un message, une panne de l'API aussi. Dix points de terminaison sont intégrés. L'accessibilité est vérifiée dans le navigateur (critères RGAA cités dans la spécification US-1, `evidence/C14/`).
+**L'interface web** (`frontend/`, HTML, CSS et JavaScript sans outil de construction) : **trois écrans**, le portefeuille valorisé, les indicateurs de marché et, depuis le 3 octobre au soir, **le briefing** (`briefing.html`, `briefing.js`) : un champ pour le code de la valeur, avec l'univers suivi en liste déroulante, un appel `POST /briefing` avec la clé, le texte rendu en paragraphes par `textContent`, le cours et la variation au-dessus, le **verdict du garde-fou de sortie écrit en mots** (« texte conforme » ou « texte retenu », avec les motifs), et l'identifiant de requête affiché pour le support. Un ticker inconnu (502 de l'API) est dit « introuvable » ; une clé refusée est oubliée et redemandée ; l'attente de 5 à 15 s est annoncée dans la zone `aria-live`. La clé est saisie par l'utilisateur, gardée en `sessionStorage` (mémoire de l'onglet, effacée à sa fermeture), jamais écrite dans le code. Onze points de terminaison de données plus `/briefing` sont intégrés. L'accessibilité est vérifiée dans le navigateur (critères RGAA cités dans la spécification US-1, `evidence/C14/`). Preuve de l'écran 3 avec un briefing réel : `evidence/C10/preuve-ecran-briefing.md`.
 
 **La passerelle MCP** (`passerelle_mcp/serveur.py`) : MCP (*Model Context Protocol*) est le protocole qui décrit des outils à un modèle de langage. La passerelle expose trois outils en lecture seule (`rita_fraicheur`, `rita_portefeuille`, `rita_indicateurs`), avec l'annotation `read_only_hint`, et appelle l'API REST par HTTP avec `X-API-Key`. Le choix de passer par HTTP plutôt que par les modules est écrit dans le fichier : c'est ce qui fait de la passerelle un vrai client, soumis au garde-fou 403, et ce qui évite deux chemins d'accès aux données qui divergeraient. Le formateur a rendu le MCP obligatoire le 28 août 2026. Preuve : `evidence/C10/preuve-passerelle-mcp.md`.
 
@@ -132,8 +132,8 @@ Deux ajouts du 3 octobre viennent du chapitre « Données » validé par le form
 
 | Fichier | Tests | Ce qu'il prouve |
 |---|---|---|
-| `tests/test_frontend.py` | 55 | aucune clé dans le code servi, titre, formulaire, gestion du 403, « indisponible » quand un taux manque, attributs d'accessibilité |
-| `tests/test_smoke_ui.py` | 5 | un vrai navigateur (Playwright, Chrome installé en local, Chromium en CI) charge la page, zéro erreur JavaScript, une mauvaise clé est refusée à l'écran, un taux manquant s'affiche « indisponible » (API interceptée) |
+| `tests/test_frontend.py` | 72 | aucune clé dans le code servi, titre, formulaire, gestion du 403, « indisponible » quand un taux manque, attributs d'accessibilité ; écran 3 : `POST /briefing` avec la clé, verdict en mots, 502 dit « introuvable », paragraphes sans HTML, les trois écrans reliés |
+| `tests/test_smoke_ui.py` | 7 | un vrai navigateur (Playwright, Chrome installé en local, Chromium en CI) charge la page, zéro erreur JavaScript, une mauvaise clé est refusée à l'écran, un taux manquant s'affiche « indisponible », le briefing s'affiche avec son verdict et sa référence, un ticker inconnu est dit introuvable (API interceptée : aucun appel payant) |
 | `tests/test_passerelle_mcp.py` | 19 | les trois outils, leurs erreurs typées, l'appel HTTP avec clé, le double verrou de démonstration, le dépôt des refus |
 | `tests/test_audit_mcp.py`, `tests/test_audit_mcp_base.py` | 22 + 4 | le journal des appels : ne lève jamais, compte ses échecs, contrat fermé de `POST /audit/mcp` ; sur la base réelle en transaction annulée, le rôle lecture seule lit la table sans pouvoir y écrire |
 | `tests/test_hooks_claude.py` | 9 | les garde-fous de développement (section 4.3) |
@@ -144,7 +144,7 @@ Deux hooks de l'assistant de développement vivent dans `.claude/hooks/` : `bloq
 
 ### 4.4 Ce qui manque, C10
 
-- L'interface n'appelle pas `/briefing` : elle sert les deux écrans de données. Le briefing se demande par `curl`, par la passerelle MCP ou par la documentation interactive. Un troisième écran est conçu, pas construit.
+- La passerelle MCP n'offre pas d'outil de briefing : ses trois outils sont en lecture seule sur les données, par choix (un outil qui déclenche un appel payant au modèle demande une politique de coût d'abord).
 - L'écran des indicateurs n'a pas de récit utilisateur ni de maquette (carte #24) ; l'écran du portefeuille en a.
 - Qu'un client MCP compte comme « une application » au sens du critère est une lecture, à confirmer avec le formateur.
 - Le quatrième outil du chapitre « Données », `search_articles`, n'existe pas : décision du 3 octobre, il se construit après le gel du 15 octobre.
@@ -514,9 +514,9 @@ Les trois mesures de garde-fous ne dépendent que du code. La suite complète et
 | L'application de départ est installée et fonctionnelle en développement | ✅ | `docs/EXPLOITATION.md`, voies courte et longue |
 | La communication avec l'API fonctionne | ✅ | `test_frontend.py`, `test_smoke_ui.py`, `test_passerelle_mcp.py` |
 | Authentification et renouvellement intégrés selon la documentation | ✅ | clé saisie, `sessionStorage`, 403 traité ; pas de jeton expirant dans le contrat, donc pas de renouvellement |
-| Tous les points de terminaison concernés sont intégrés | 🟠 | dix routes de données ; `/briefing` non intégré à l'interface |
+| Tous les points de terminaison concernés sont intégrés | ✅ | onze routes de données et `/briefing` (écran 3, 3 octobre au soir) ; la passerelle MCP reste en lecture seule par choix |
 | Adaptations d'interface conformes aux spécifications | 🟠 | écran 1 spécifié (US-1) ; écran 2 sans récit utilisateur |
-| Tests d'intégration sur tous les points de terminaison exploités | ✅ | 55 + 5 + 19 tests, plus 26 sur le journal des appels |
+| Tests d'intégration sur tous les points de terminaison exploités | ✅ | 72 + 7 + 19 tests, plus 26 sur le journal des appels |
 | Les tests s'exécutent en totalité, résultats interprétés | ✅ | suite verte |
 | Sources versionnées sur le dépôt de l'application | ✅ | même dépôt |
 
@@ -558,15 +558,15 @@ Les trois mesures de garde-fous ne dépendent que du code. La suite complète et
 | Sources de la chaîne versionnées | ✅ | `.github/workflows/`, `.githooks/`, `scripts/verifier_livrable.py` |
 | Documentation d'installation, configuration, test de la chaîne, accessible | ✅ | `docs/CI-CD.md` §4 à §7 : secrets, permissions, installation sur un clone neuf, tests de la chaîne, quoi faire quand c'est rouge ; Markdown et PDF |
 
-**Décompte** : 32 ✅ · 7 🟠 · 0 🔴 sur 39 (le matin du 3 octobre, version 0.1 : 27, 11, 1).
+**Décompte** : 33 ✅ · 6 🟠 · 0 🔴 sur 39 (le matin du 3 octobre, version 0.1 : 27, 11, 1).
 
 ---
 
 ## 11. Ce qui n'est pas fait, et les risques
 
-**Pas fait au 3 octobre 2026 au soir** : les deux alertes dans l'interface Langfuse et la suppression des quinze traces factices (clics du propriétaire du compte) ; les captures d'écran de C11 ; le contrat `/v1` et le 422 pour un ticker inconnu ; la limite de débit ; le manifeste de version et les prompts en fichiers ; le retour arrière ; l'épinglage des dépendances ; le jeu de référence de briefings ; la validation de format des sorties ; le troisième écran (briefing) de l'interface ; la revue OWASP ligne par ligne. La documentation de la chaîne en un seul endroit, elle, est faite (`docs/CI-CD.md`).
+**Pas fait au 3 octobre 2026 au soir** : les deux alertes dans l'interface Langfuse et la suppression des quinze traces factices (clics du propriétaire du compte) ; les captures d'écran de C11 ; le contrat `/v1` et le 422 pour un ticker inconnu ; la limite de débit ; le manifeste de version et les prompts en fichiers ; le retour arrière ; l'épinglage des dépendances ; le jeu de référence de briefings ; la validation de format des sorties ; la revue OWASP ligne par ligne. Le troisième écran (briefing), lui, est construit le 3 octobre au soir, test d'abord. La documentation de la chaîne en un seul endroit, elle, est faite (`docs/CI-CD.md`).
 
-**Risques pour la démonstration** : le poste de démonstration n'a qu'un fournisseur de modèle qui répond (OpenRouter) ; une panne de ce fournisseur, et aucun briefing ne sort. La copie du serveur est figée au code du 20 août. Le dépôt est privé. Les métriques agrégées de Langfuse sont polluées par quinze traces factices tant qu'elles ne sont pas supprimées.
+**Risques pour la démonstration** : le poste de démonstration n'a qu'un fournisseur de modèle qui répond (OpenRouter) ; une panne de ce fournisseur, et aucun briefing ne sort, l'écran 3 le dit alors en clair (« aucun fournisseur ne répond »). La copie du serveur est figée au code du 20 août. Le dépôt est privé. Les métriques agrégées de Langfuse sont polluées par quinze traces factices tant qu'elles ne sont pas supprimées.
 
 **Ce que ce rapport ne prétend pas** : qu'un garde-fou à motifs lexicaux arrête une intention habilement formulée (70 %) ; qu'une mesure de recherche sur un jeu annoté par un modèle vaut une mesure humaine ; qu'une chaîne d'alerte exécutée une fois à la main a déjà attrapé une vraie panne.
 

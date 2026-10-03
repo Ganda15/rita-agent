@@ -66,6 +66,12 @@ pour la remise. **Manque découvert et corrigé** : INC-006 bis, la construction
 Langfuse ; verrou posé et testé, traces supprimées. **Décision** : Era envoie lui-même tout message au formateur et à la promo ;
 l'assistant rédige. Suite : 765 passed, 2 xfailed, 94,19 %.
 
+**Décision structurante (fin de nuit)** : le **troisième écran de l'interface, le briefing**, est construit sur décision d'Era (le rapport
+E3 le déclarait comme premier manque de C10 : le seul point de terminaison qui expose le modèle ne se demandait que par `curl`).
+19 tests écrits avant, API interceptée dans le navigateur, puis un briefing réel capturé pour la preuve. E3 passe à 33 critères tenus
+sur 39. Même nuit : carte #57 corrigée (les capitaux échangés sur 20 séances ne s'appellent plus « volume », 5 textes sur 30 du banc
+parlaient de « titres échangés », 0 après), banc C7 relancé sur le prompt corrigé.
+
 ---
 
 ## 2026-10-03 : reconnaissance complète, plan initial contre réalisé, pointeurs périmés
