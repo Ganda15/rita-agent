@@ -51,7 +51,7 @@ Registre des envois : `../../docs/veille/_JOURNAL-DES-ENVOIS.md` — vide, et il
 
 ## Ajout du 03/10/2026 : la synthèse mensuelle est dans le dépôt
 
-`../../docs/veille/Veille-C6-synthese-S33-a-S36.pdf` (18 pages, produite le 08/09/2026) rassemble les quatre notes S33 à S36. Elle vivait hors du dépôt, à la racine de `D:\KandaWork\RITA_PROJECT\` ; un évaluateur ne pouvait pas la trouver. Vérifié avant de la ranger : les 28 titres de section des quatre notes s'y retrouvent, et aucune note n'a été modifiée depuis le 08/09 (`git log`). Ce qu'elle prouve : la récurrence (quatre semaines, dont deux rédigées en rattrapage, et le PDF le dit). Ce qu'elle ne prouve pas : le partage et l'animation, qui restent sans capture. Si une note change avant le gel de E2, le PDF se regénère, il ne se retouche pas.
+`../../docs/veille/Veille-C6-synthese-S33-a-S36.pdf` (produite le 08/09/2026, regénérée le 03/10 depuis sa source `Veille-C6-synthese-S33-a-S36.md` après correction des étiquettes de semaine de S35 et S36) rassemble les quatre notes S33 à S36. Elle vivait hors du dépôt, à la racine de `D:\KandaWork\RITA_PROJECT\` ; un évaluateur ne pouvait pas la trouver. Vérifié avant de la ranger : les 28 titres de section des quatre notes s'y retrouvent, et aucune note n'a été modifiée depuis le 08/09 (`git log`). Ce qu'elle prouve : la récurrence (quatre semaines, dont deux rédigées en rattrapage, et le PDF le dit). Ce qu'elle ne prouve pas : le partage et l'animation, qui restent sans capture. Si une note change avant le gel de E2, le PDF se regénère, il ne se retouche pas.
 
 ## 📖 Glossaire
 
