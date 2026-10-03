@@ -29,8 +29,8 @@ criteres RNCP C1-C21 (2026-10-03).md` (7 ✅, 13 ⚠️, 1 ❌ : C7). Le classeu
 `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP.xlsx` existe depuis le 14/08 et n'a **aucune case
 cochée** : c'est ce que le formateur regarde la semaine du 05/10.
 
-**▶️ Ordre des prochaines actions** : 1) le push des 9 commits ci-dessous (toujours pas fait, `origin/develop` à
-`2022689`) ; 2) les fichiers de clés en clair du Bureau (Era seul : gestionnaire, suppression, rotation) ; 3) les clics
+**Push fait le 03/10 à la demande d'Era** : dix commits, `2022689..a1c14e6` sur `origin/develop`, suite verte avant
+(626 passed, 2 xfailed, 126 s), arbre propre après. **▶️ Ordre des prochaines actions** : 1) les fichiers de clés en clair du Bureau (Era seul : gestionnaire, suppression, rotation) ; 3) les clics
 Langfuse ; 4) le classeur Excel rempli depuis la note de vérification ; puis E1 v2 (tag `livrable-E1-v2` le 15/10) et
 le rapport E3. Pointeurs périmés à corriger dans les skills (Era, fichiers de méthode) : `boussole`, `projet-rncp`,
 `mlops-verifier`, `rita-rewrite` niveau utilisateur, table des skills de `CLAUDE.md` global.
@@ -40,8 +40,8 @@ le rapport E3. Pointeurs périmés à corriger dans les skills (Era, fichiers de
 🔎 **02/10, nuit : C11 construit de bout en bout dans le code ; il reste les clics dans Langfuse, et le push.**
 
 Tout le volet 4 du plan du soir est codé, testé avant d'être écrit, et expliqué dans le journal Obsidian 018
-(sections 2 à 13). **Rien n'est encore poussé** : 21 fichiers modifiés, 7 commits préparés dans le journal, en
-attente d'Era. Le dernier commit sur GitHub est `2022689` (registre RGPD).
+(sections 2 à 13). Poussé le 03/10 au matin (`2022689..a1c14e6`, dix commits) ; ce paragraphe disait « rien n'est
+encore poussé » jusque-là.
 
 | Fait cette nuit | Preuve |
 |---|---|
