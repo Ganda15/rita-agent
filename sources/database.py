@@ -78,9 +78,14 @@ WITH taux_du_jour AS (
 SELECT  v.ticker, v.nom_officiel, v.statut_qualite,
         p.quantite, p.pru, p.devise,
         d.date_seance AS date_cours, d.cloture AS cours,
-        ROUND(p.quantite * p.pru / COALESCE(t.valeur_pour_eur, 1), 2)      AS investi_eur,
-        ROUND(p.quantite * d.cloture / COALESCE(t.valeur_pour_eur, 1), 2)  AS valorisation_eur,
-        ROUND((d.cloture - p.pru) / p.pru * 100, 2)                        AS performance_pct
+        ROUND(p.quantite * p.pru / CASE WHEN p.devise = 'EUR' THEN 1 ELSE t.valeur_pour_eur END, 2)     AS investi_eur,
+        ROUND(p.quantite * d.cloture / CASE WHEN p.devise = 'EUR' THEN 1 ELSE t.valeur_pour_eur END, 2) AS valorisation_eur,
+        ROUND((d.cloture - p.pru) / p.pru * 100, 2)                        AS performance_pct,
+        -- Plan 65 (03/10/2026, cas D06 du chapitre Donnees) : l'euro se convertit par 1 sans lire
+        -- taux_change ; une devise etrangere sans taux rend NULL et le dit, au lieu de diviser par 1
+        -- et d'afficher un montant en dollars comme des euros. La ligne reste visible (LEFT JOIN).
+        CASE WHEN p.devise = 'EUR' THEN 1 ELSE t.valeur_pour_eur END       AS taux_pour_eur,
+        (p.devise <> 'EUR' AND t.valeur_pour_eur IS NULL)                  AS taux_manquant
 FROM        position p
 JOIN        valeur   v ON v.ticker = p.ticker
 LEFT JOIN LATERAL (
@@ -198,8 +203,19 @@ def volumes_anormaux(dsn: str | None = None, seuil: float = 2.0,
     return _executer(SQL_VOLUMES, "volumes_anormaux", dsn, seuil=seuil, limite=limite)
 
 
-def total_portefeuille(extraction: Extraction) -> Decimal:
-    """Somme des valorisations, en euros — donc additionnable, contrairement au CSV brut."""
+def positions_sans_taux(extraction: Extraction) -> int:
+    """Combien de lignes n'ont pas de taux de change (plan 65, cas D06)."""
+    return sum(1 for l in extraction.lignes if l.get("taux_manquant"))
+
+
+def total_portefeuille(extraction: Extraction) -> Decimal | None:
+    """Somme des valorisations, en euros, donc additionnable, contrairement au CSV brut.
+
+    `None` dès qu'une ligne n'a pas de taux (décision D1 d'Era, 03/10/2026) : un total partiel
+    présenté comme total est le même mensonge à une autre échelle. Avant, un `NULL` comptait 0.
+    """
+    if positions_sans_taux(extraction):
+        return None
     return sum((l["valorisation_eur"] or Decimal(0)) for l in extraction.lignes)
 
 

@@ -467,3 +467,39 @@ def test_macro_rend_les_observations_d_une_serie(client):
 
 def test_macro_refuse_une_serie_inconnue(client):
     assert client.get("/donnees/macro?serie=INCONNUE", headers=CLE).status_code == 422
+
+
+# --- plan 65 (cas D06, 03/10/2026) : un taux manquant ne devient jamais un chiffre --------------
+
+def test_portefeuille_total_indisponible_quand_un_taux_manque(client):
+    """Décision D1 d'Era (03/10) : un total partiel présenté comme total est le même mensonge à une
+    autre échelle. `total_eur` est null, et `positions_sans_taux` dit combien de lignes manquent."""
+    lignes = [{"valorisation_eur": 1000, "taux_manquant": False},
+              {"valorisation_eur": None, "taux_manquant": True}]
+    with patch("sources.database.portefeuille", return_value=Extraction("portefeuille", lignes, 2)):
+        r = client.get("/donnees/portefeuille", headers=CLE)
+    corps = r.json()
+    assert corps["total_eur"] is None
+    assert corps["positions_sans_taux"] == 1
+
+
+def test_portefeuille_sans_taux_manquant_garde_la_somme(client):
+    lignes = [{"valorisation_eur": 1000, "taux_manquant": False},
+              {"valorisation_eur": 500, "taux_manquant": False}]
+    with patch("sources.database.portefeuille", return_value=Extraction("portefeuille", lignes, 2)):
+        corps = client.get("/donnees/portefeuille", headers=CLE).json()
+    assert corps["total_eur"] == 1500 and corps["positions_sans_taux"] == 0
+
+
+def test_indicateurs_portefeuille_disent_quand_ils_ne_sont_pas_complets(client):
+    """Décision D2 d'Era (03/10) : si une valorisation manque, tous les poids sont null et la
+    réponse porte `complet: false` ; un poids sur un total partiel est faux pour chaque ligne."""
+    from indicateurs.portefeuille import LignePortefeuille, ResultatPoids
+    lignes = [LignePortefeuille("MC.PA", "LVMH", "EUR", 12.0, 5601.6, None),
+              LignePortefeuille("AAPL", "Apple", "USD", 6.0, None, None)]
+    with patch("indicateurs.portefeuille.lire_poids_detail",
+               return_value=ResultatPoids(lignes=lignes, total_eur=None, complet=False)), \
+         patch("indicateurs.portefeuille.lire_exposition", return_value=[]):
+        corps = client.get("/donnees/indicateurs-portefeuille", headers=CLE).json()
+    assert corps["complet"] is False and corps["total_eur"] is None
+    assert all(l["poids_pct"] is None for l in corps["lignes"])

@@ -138,8 +138,13 @@ def portefeuille() -> dict:
     par la clé d'API au niveau du routeur. Traitement T1 du registre.
     """
     e = database.portefeuille()
+    total = database.total_portefeuille(e)
+    # Plan 65 (03/10/2026, décision D1 d'Era) : une ligne sans taux de change rend le total
+    # indisponible (null) et `positions_sans_taux` dit combien ; un total partiel présenté
+    # comme total serait le même mensonge à une autre échelle.
     return {"nb": e.nb,
-            "total_eur": float(database.total_portefeuille(e)),
+            "total_eur": float(total) if total is not None else None,
+            "positions_sans_taux": database.positions_sans_taux(e),
             "positions": e.lignes}
 
 
@@ -222,11 +227,13 @@ def indicateurs_portefeuille() -> dict:
     additionner soi-même les valorisations reviendrait à refaire un calcul déjà fait,
     et deux calculs de la même chose finissent par diverger.
     """
-    lignes, total = indicateurs_portefeuille_module.lire_poids()
+    r = indicateurs_portefeuille_module.lire_poids_detail()
     return {
-        "nb": len(lignes),
-        "total_eur": total,
-        "lignes": [l.en_dict() for l in lignes],
+        "nb": len(r.lignes),
+        "total_eur": r.total_eur,
+        # Plan 65 (décision D2) : faux dès qu'une ligne n'a pas de taux ; tous les poids sont alors null.
+        "complet": r.complet,
+        "lignes": [l.en_dict() for l in r.lignes],
         "exposition": [e.en_dict() for e in indicateurs_portefeuille_module.lire_exposition()],
     }
 

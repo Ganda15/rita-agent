@@ -301,9 +301,14 @@ SELECT  v.ticker,
         p.devise,
         d.date_seance                                                      AS date_cours,
         d.cloture                                                          AS cours,
-        ROUND(p.quantite * p.pru / COALESCE(t.valeur_pour_eur, 1), 2)      AS investi_eur,
-        ROUND(p.quantite * d.cloture / COALESCE(t.valeur_pour_eur, 1), 2)  AS valorisation_eur,
-        ROUND((d.cloture - p.pru) / p.pru * 100, 2)                        AS performance_pct
+        ROUND(p.quantite * p.pru / CASE WHEN p.devise = 'EUR' THEN 1 ELSE t.valeur_pour_eur END, 2)     AS investi_eur,
+        ROUND(p.quantite * d.cloture / CASE WHEN p.devise = 'EUR' THEN 1 ELSE t.valeur_pour_eur END, 2) AS valorisation_eur,
+        ROUND((d.cloture - p.pru) / p.pru * 100, 2)                        AS performance_pct,
+        -- Plan 65 (03/10/2026, cas D06 du chapitre Donnees) : l'euro se convertit par 1 sans lire
+        -- taux_change ; une devise etrangere sans taux rend NULL et le dit, au lieu de diviser par 1
+        -- et d'afficher un montant en dollars comme des euros. La ligne reste visible (LEFT JOIN).
+        CASE WHEN p.devise = 'EUR' THEN 1 ELSE t.valeur_pour_eur END       AS taux_pour_eur,
+        (p.devise <> 'EUR' AND t.valeur_pour_eur IS NULL)                  AS taux_manquant
 FROM        position p
 JOIN        valeur   v ON v.ticker = p.ticker
 LEFT JOIN LATERAL (
@@ -320,6 +325,8 @@ ORDER BY    performance_pct DESC NULLS LAST;
 
 COMMENT ON VIEW v_portefeuille_valorise IS
     'Briefing quotidien, converti en euros. Deux LEFT JOIN volontaires : une position '
-    'sans cotation reste visible avec un cours NULL, et une devise sans taux reste a son '
-    'montant nominal via COALESCE. Un INNER JOIN les ferait disparaitre en silence — le '
-    'pire comportement possible pour un outil financier.';
+    'sans cotation reste visible avec un cours NULL ; une devise etrangere sans taux reste '
+    'visible avec des montants NULL et taux_manquant vrai (plan 65, 03/10/2026 : avant, '
+    'COALESCE(taux, 1) affichait un montant en devise comme des euros). L euro se convertit '
+    'par 1 sans lire taux_change. Un INNER JOIN ferait disparaitre la ligne en silence, '
+    'le pire comportement possible pour un outil financier.';

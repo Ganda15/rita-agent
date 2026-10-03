@@ -142,6 +142,13 @@ def test_r1_utilise_lateral_et_pas_distinct_on_sur_cotation():
 
 
 def test_r1_utilise_left_join_pour_ne_pas_masquer_une_position():
-    """Un INNER JOIN ferait disparaître du briefing une valeur suspendue de cotation."""
+    """Un INNER JOIN ferait disparaître du briefing une valeur suspendue de cotation.
+
+    Jusqu'au 03/10/2026 ce test exigeait aussi `COALESCE` : une devise sans taux restait « à son
+    montant nominal ». C'était la bonne réponse à la mauvaise question : ne pas faire disparaître
+    la ligne, oui ; afficher un montant en dollars comme des euros, non. Depuis le plan 65 (cas D06
+    du chapitre « Données »), la ligne reste (LEFT JOIN) et le montant devient NULL, `taux_manquant`
+    le dit. Les trois copies du SQL sont tenues alignées par `tests/test_vue_valorisation.py`."""
     assert "LEFT JOIN LATERAL" in database.SQL_PORTEFEUILLE
-    assert "COALESCE" in database.SQL_PORTEFEUILLE
+    assert "COALESCE(t.valeur_pour_eur, 1)" not in database.SQL_PORTEFEUILLE
+    assert "CASE WHEN p.devise = 'EUR' THEN 1 ELSE t.valeur_pour_eur END" in database.SQL_PORTEFEUILLE

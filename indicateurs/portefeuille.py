@@ -96,6 +96,41 @@ class ExpositionDevise:
         return asdict(self)
 
 
+@dataclass(frozen=True)
+class ResultatPoids:
+    """Les poids, le total, et si l'ensemble est complet.
+
+    Plan 65 (03/10/2026, décision D2 d'Era) : dès qu'une ligne n'a pas de taux de change, le total
+    est inconnu, donc chaque poids l'est ; `complet` vaut faux et l'API le transmet tel quel.
+    """
+
+    lignes: list[LignePortefeuille]
+    total_eur: float | None
+    complet: bool
+
+
+def lire_poids_detail() -> ResultatPoids:
+    """Les poids avec le total et le drapeau `complet`, tels que la requête les rend."""
+    lignes = socle._executer(_charger_requetes()["poids"])
+    total = socle._nombre(lignes[0]["total_eur"]) if lignes else None
+    complet = bool(lignes[0].get("complet", True)) if lignes else True
+    return ResultatPoids(
+        lignes=[
+            LignePortefeuille(
+                ticker=l["ticker"],
+                nom_officiel=l["nom_officiel"],
+                devise=l["devise"],
+                quantite=socle._nombre(l["quantite"]),
+                valorisation_eur=socle._nombre(l["valorisation_eur"]),
+                poids_pct=socle._nombre(l["poids_pct"]),
+            )
+            for l in lignes
+        ],
+        total_eur=total,
+        complet=complet,
+    )
+
+
 def lire_poids() -> tuple[list[LignePortefeuille], float | None]:
     """Le poids de chaque ligne, et le total du portefeuille en euros.
 
@@ -103,19 +138,8 @@ def lire_poids() -> tuple[list[LignePortefeuille], float | None]:
     additionner soi-même des `valorisation_eur` reviendrait à refaire le calcul que
     la vue a déjà fait, et deux calculs de la même chose finissent par diverger.
     """
-    lignes = socle._executer(_charger_requetes()["poids"])
-    total = socle._nombre(lignes[0]["total_eur"]) if lignes else None
-    return [
-        LignePortefeuille(
-            ticker=l["ticker"],
-            nom_officiel=l["nom_officiel"],
-            devise=l["devise"],
-            quantite=socle._nombre(l["quantite"]),
-            valorisation_eur=socle._nombre(l["valorisation_eur"]),
-            poids_pct=socle._nombre(l["poids_pct"]),
-        )
-        for l in lignes
-    ], total
+    r = lire_poids_detail()
+    return r.lignes, r.total_eur
 
 
 def lire_exposition() -> list[ExpositionDevise]:
@@ -138,13 +162,15 @@ if __name__ == "__main__":
     print("=" * 74)
     print("INDICATEURS - LOT 2 (portefeuille)")
     print("=" * 74)
-    print(f"  {len(lignes)} ligne(s) · total {total:,.2f} EUR".replace(",", " "))
+    total_txt = f"{total:,.2f} EUR".replace(",", " ") if total is not None else "indisponible (taux de change manquant)"
+    print(f"  {len(lignes)} ligne(s) · total {total_txt}")
     print()
     print(f"  {'ticker':<10} {'nom':<24} {'valorisation':>13} {'poids':>8}")
     print("  " + "-" * 58)
     for l in lignes:
-        print(f"  {l.ticker:<10} {l.nom_officiel[:24]:<24} "
-              f"{l.valorisation_eur:>13,.2f} {l.poids_pct:>7.2f} %".replace(",", " "))
+        valo = f"{l.valorisation_eur:>13,.2f}".replace(",", " ") if l.valorisation_eur is not None else f"{'indisponible':>13}"
+        poids = f"{l.poids_pct:>7.2f} %" if l.poids_pct is not None else f"{'n/d':>9}"
+        print(f"  {l.ticker:<10} {l.nom_officiel[:24]:<24} {valo} {poids}")
 
     somme = sum(l.poids_pct or 0 for l in lignes)
     print("  " + "-" * 58)
@@ -153,5 +179,6 @@ if __name__ == "__main__":
     print()
     print("  Exposition par devise DE COTATION (pas economique) :")
     for e in expositions:
-        print(f"    {e.devise}  {e.nb_lignes} ligne(s)  "
-              f"{e.valorisation_eur:>12,.2f} EUR  {e.exposition_pct:>6.2f} %".replace(",", " "))
+        valo = f"{e.valorisation_eur:>12,.2f} EUR".replace(",", " ") if e.valorisation_eur is not None else "indisponible"
+        part = f"{e.exposition_pct:>6.2f} %" if e.exposition_pct is not None else "n/d"
+        print(f"    {e.devise}  {e.nb_lignes} ligne(s)  {valo}  {part}")

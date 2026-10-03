@@ -78,3 +78,41 @@ def test_une_mauvaise_cle_est_refusee_a_l_ecran(page):
     statut = page.locator("#statut").inner_text().lower()
     assert statut, "le statut doit dire quelque chose après une clé refusée"
     assert "401" in statut or "refus" in statut or "invalide" in statut or "erreur" in statut
+
+
+def test_une_position_sans_taux_affiche_indisponible_a_l_ecran(page):
+    """Plan 65 (cas D06) dans un vrai navigateur : l'API est remplacée par des réponses figées
+    (interception des trois appels), parce que la base réelle n'a aucune position sans taux.
+    Une valorisation nulle doit s'afficher « indisponible », jamais « 0,00 € »."""
+    import json
+
+    def repondre(route, corps):
+        route.fulfill(status=200, content_type="application/json", body=json.dumps(corps))
+
+    portefeuille = {"nb": 2, "total_eur": None, "positions_sans_taux": 1, "positions": [
+        {"ticker": "MC.PA", "nom_officiel": "LVMH", "statut_qualite": "OK", "quantite": 12, "pru": 632.4,
+         "devise": "EUR", "cours": 466.8, "investi_eur": 7588.8, "valorisation_eur": 5601.6,
+         "performance_pct": -26.19, "taux_manquant": False},
+        {"ticker": "AAPL", "nom_officiel": "Apple", "statut_qualite": "OK", "quantite": 6, "pru": 178.45,
+         "devise": "USD", "cours": 212.5, "investi_eur": None, "valorisation_eur": None,
+         "performance_pct": 19.08, "taux_manquant": True}]}
+    indicateurs = {"nb": 2, "total_eur": None, "complet": False, "exposition": [], "lignes": [
+        {"ticker": "MC.PA", "nom_officiel": "LVMH", "devise": "EUR", "quantite": 12,
+         "valorisation_eur": 5601.6, "poids_pct": None},
+        {"ticker": "AAPL", "nom_officiel": "Apple", "devise": "USD", "quantite": 6,
+         "valorisation_eur": None, "poids_pct": None}]}
+    fraicheur = {"statut": "vert", "message": "Donnees du 02/10/2026", "retard_jours_ouvres": 0}
+    page.route("**/donnees/portefeuille*", lambda route: repondre(route, portefeuille))
+    page.route("**/donnees/indicateurs-portefeuille*", lambda route: repondre(route, indicateurs))
+    page.route("**/donnees/fraicheur*", lambda route: repondre(route, fraicheur))
+
+    page.fill("#cle", "cle-de-test-smoke-ui-32-caracteres-x")
+    page.click("#form-cle button[type=submit], #form-cle button")
+    page.wait_for_selector("#lignes tr", timeout=5000)
+
+    total = page.locator("#total").inner_text().lower()
+    assert "indisponible" in total and "1 position" in total, total
+    ligne_aapl = page.locator("#lignes tr", has_text="AAPL").inner_text().lower()
+    assert ligne_aapl.count("indisponible") == 2, ligne_aapl
+    assert "0,00" not in ligne_aapl
+    assert page.erreurs_js == []

@@ -407,3 +407,18 @@ def test_le_bandeau_n_utilise_pas_innerHTML():
     de l'OWASP Top 10. Le bandeau ne fait pas exception."""
     code = code_sans_commentaires("app.js")
     assert "innerHTML" not in code
+
+
+# --- plan 65 (cas D06, 03/10/2026) : « indisponible », jamais 0,00 EUR ---------------------------
+
+def test_un_montant_sans_taux_s_affiche_indisponible_jamais_zero():
+    """`euro.format(null)` écrit « 0,00 € » : un montant inconnu passerait pour un montant nul.
+    Le code doit traiter `taux_manquant` et écrire « indisponible »."""
+    code = code_sans_commentaires("app.js")
+    assert "taux_manquant" in code
+    assert "indisponible" in code
+
+
+def test_le_total_dit_combien_de_positions_sont_sans_taux():
+    code = code_sans_commentaires("app.js")
+    assert "positions_sans_taux" in code

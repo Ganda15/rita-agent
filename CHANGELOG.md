@@ -26,6 +26,14 @@ Classeur des 135 critères rempli (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER). Tablea
 **Manque découvert** : INC-006 comptait douze traces factices, il y en a quinze ; le bouton *Run workflow* n'existe qu'une fois
 `alerte-incident.yml` sur `main`.
 
+**Décision structurante (après-midi)** : première modification de `db/schema.sql` depuis le chapitre, sur plan validé par Era
+(`docs/PLAN-65-valorisation-taux-manquant.md`, D1 D2 D3 = A). La vue de valorisation ne remplace plus un taux manquant par 1 :
+montants `NULL` et `taux_manquant` ; total `null` avec `positions_sans_taux` ; poids tous `null` avec `complet: false` ;
+« indisponible » à l'écran. 23 tests écrits avant, dont trois sur la base réelle en transaction annulée et un dans un vrai
+navigateur ; migration rejouable jouée sur le poste (7 positions, aucune sans taux : les chiffres n'ont pas bougé). Compose
+et Hetzner restent à migrer. Quatre autres items du chapitre faits le même jour : #59 titre dans l'index, #60 démonstration
+vérifiée par la passerelle, #61 les 32 cas rapprochés des tests, #64 manifeste de collecte.
+
 ---
 
 ## 2026-10-03 : reconnaissance complète, plan initial contre réalisé, pointeurs périmés
