@@ -20,7 +20,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 
 ---
 
-🔀 **03/10, nuit : PR #72 `develop → main` ouverte** (2 commits : clôture des positions, plan 66, et l'état après la fusion de la PR 58). Ferme #66 et #69 à la fusion. `evals` vert, `pytest` et `Livraison` en cours au moment de l'ouverture. **À fusionner par Era** quand les trois checks sont verts : `gh pr merge 72 --merge` depuis `D:\KandaWork\RITA_PROJECTita-agent`.
+✅ **03/10, nuit : PR #72 `develop → main` fusionnée** (`43025f9`, 2 commits : clôture des positions, plan 66, et l'état après la fusion de la PR 58) ; #66 et #69 fermés. Quatre constats d'un contrôle extérieur du dépôt traités avant la fusion : cache `commit-graph` de Git reconstruit (plus d'avertissement) ; arbre déjà propre (les 19 fichiers étaient le commit `1a5ecd9`) ; `main` locale remise au niveau de GitHub (199 commits de retard, avance rapide) ; le job `revue` ajouté aux checks requis du ruleset `main protegee` (`pytest`, `evals`, `revue`), aucune protection classique n'existe (`evidence/C19/`).
 
 ✅ **03/10, après-midi : la liste « reste à Era » traitée.** PR #58 **fusionnée** (`d1cec3b` sur `main`, six issues fermées) ;
 bouton *Run workflow* testé pour de vrai juste après (issue #71 créée puis fermée comme démonstration) ; les trois migrations
