@@ -104,11 +104,15 @@ les limites du modèle : fenêtre de 1 050 000 jetons, entrée jusqu'à 922 000,
 requêtes et 250 000 jetons par fenêtre (l'en-tête ne dit pas la durée de la fenêtre ; la documentation Azure parle de
 quotas par minute).
 
-Ce qui reste à lire dans le portail : le **type de déploiement**. D'après la documentation Microsoft
-(https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/deployment-types, mise à jour du 12/08/2026) :
-un déploiement **Standard Global** « peut être traité dans n'importe quelle région Azure » (Sweden Central aujourd'hui,
-ailleurs demain) ; un déploiement **Data Zone EU** reste dans la frontière de données européenne ; `gpt-5.4` a été
-lancé en Standard Global et Data Zone US. Sur l'énergie de la région suédoise, Microsoft communique sur une alimentation
+**Type de déploiement, lu par Era dans le portail Foundry le 03/10 au soir : Global Standard.** D'après la documentation
+Microsoft (https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/deployment-types, mise à jour du
+12/08/2026), un déploiement **Global Standard** « peut être traité dans n'importe quelle région Azure » : Sweden Central
+pour la sonde du 03/10, une autre région possible demain, au choix d'Azure. Conséquence pour la preuve : la région
+n'est pas une propriété de la ressource, c'est le résultat d'un appel, et elle ne peut être connue que si le banc
+journalise `x-ms-region` à chaque appel. Conséquence pour les données : les prompts (cours, indicateurs, extraits
+d'actualité, aucune donnée personnelle) peuvent être traités hors de l'Union européenne ; un déploiement **Data Zone
+EU** les garderait dans la frontière de données européenne, pour un prix publié plus élevé, et `gpt-5.4` n'a été lancé
+qu'en Global Standard et Data Zone US. Sur l'énergie de la région suédoise, Microsoft communique sur une alimentation
 en électricité sans carbone, mais ses pages régionales refusent la lecture automatique (code 403 le 03/10) : **aucun
 chiffre régional n'est cité ici**, seuls les chiffres d'entreprise du tableau ci-dessus le sont.
 
@@ -138,8 +142,8 @@ plutôt que de choisir un chiffre.
   approche, et l'approche honnête ici consiste à montrer l'absence de donnée et l'ordre de grandeur contradictoire.
 - **Le coût (C7.4)** a maintenant un prix public pour les deux modèles ; la recommandation provisoire de la preuve §9
   (Foundry d'abord, OpenRouter en secours) tient au prix public comme en gratuité.
-- **Restent inconnus**, et dits tels : le type de déploiement Foundry (Era le lit dans le portail ; la région mesurée
-  par sonde est Sweden Central, mais le banc ne l'a pas journalisée), le point de sortie des appels OpenRouter (le
+- **Restent inconnus**, et dits tels : la région des 30 appels du banc (déploiement Global Standard, donc variable ;
+  la sonde a été traitée à Sweden Central, le banc n'a pas journalisé l'en-tête), le point de sortie des appels OpenRouter (le
   script pourrait le journaliser si l'API le renvoie), les limites de débit d'OpenRouter (non relevées), et toute
   empreinte par modèle. Amélioration possible du banc : lire `x-ms-region` à chaque appel Foundry et l'écrire dans le
   JSONL, pour que la région soit mesurée et non supposée.
