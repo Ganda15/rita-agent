@@ -77,6 +77,36 @@ prendront effet à la fusion.
 | 6. Chaîne en état de marche | 🟠 traces réelles sur le poste | 🟠 inchangé : alertes non réglées, conteneur et serveur pas encore |
 | 4. Accessibilité du vecteur | 🟠 | 🟠 inchangé : argument à écrire dans le rapport E3 (interface web standard, données exportables par l'API) |
 
+## 5. La première trace complète d'un briefing réel (03/10/2026, 14 h 48)
+
+Un seul appel réel, parce qu'il est payant : `POST /briefing?ticker=MC.PA` sur l'API démarrée sur le poste (détail de
+la réponse : `../C9/preuve-api-modele-2026-10-03.md`). La trace relue par l'API publique de Langfuse, identifiant
+`d52a3d2805b0cd251dec13b242ff3e62`, nom `briefing`, 10 observations :
+
+```
+briefing (racine)   span        12,33 s   metadata : ticker=MC.PA, conforme_amf=true, motifs_amf=[], request_id=10db04cd0b4b4e1ba9c298d3736b87c7
+  scout             span         1,36 s
+  rag               retriever    5,07 s
+    garde-fou-entree  span      < 1 ms
+  redacteur         span         5,88 s
+    briefing-llm      span       5,82 s
+      llm-foundry       generation  0,001 s  ERROR   claude-opus-4-8 (cle absente du poste)
+      llm-anthropic     generation  0,175 s  ERROR   claude-sonnet-5 (authentification impossible)
+      llm-openrouter    generation  5,637 s  DEFAULT anthropic/claude-sonnet-4.5, 616 jetons entree, 210 sortie, cout affiche 0
+  garde-fou-sortie  span       < 1 ms
+score : conforme_amf = 1 (BOOLEAN)
+```
+
+Trois choses que cette trace prouve, qui n'étaient que testées avec un faux client jusque-là : la structure racine plus
+une étape par nœud et par garde-fou, dans l'ordre de `tests/test_trace_chemin.py` ; le verdict AMF porté par la trace
+(métadonnée et note) ; le même `request_id` dans l'en-tête `X-Request-ID`, la ligne de journal `briefing servi :
+request_id=10db04cd… conforme_amf=True duree_ms=13829` et la trace.
+
+Ce qu'elle montre aussi, et qui reste à traiter : le coût affiché est 0 (nom de modèle au format OpenRouter absent de la
+grille de prix, déjà noté en §2) ; la recherche documentaire a pris 5 s sur ce premier appel d'un processus à peine
+démarré, à remesurer sur une semaine ; le projet compte 23 traces, dont 15 factices à supprimer (§3) avant toute
+lecture de p95.
+
 ## 📖 Glossaire
 
 - **API publique** : les adresses `https://cloud.langfuse.com/api/public/...`, appelées avec la paire de clés du projet ; tout ce que l'interface fait n'y est pas exposé (les alertes, par exemple).

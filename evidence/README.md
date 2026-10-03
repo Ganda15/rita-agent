@@ -24,7 +24,10 @@ capture d'écran horodatée, sortie de commande, fichier produit, lien vers un r
 | `C3/` | Règles d'agrégation et nettoyage | 3 preuves — déduplication, artefact de regroupement, pipeline d'agrégation | ✅ |
 | `C4/` | Base de données dans le respect du RGPD | `preuve-mcd-merise.md` + le MCD (`.png` et `.drawio`) · MPD dans `../db/schema.sql` · RGPD dans `../db/RGPD-registre-des-traitements.md` | ✅ |
 | `C5/` | API et tests | `preuve-api-jeu-de-donnees.md` (OpenAPI 3.1.0, 8 chemins) + `mesure-garde-fou-injection.md` | ✅ |
-| `C12/` | Tests automatisés du modèle | `cas-de-verification-chapitre-donnees.md` (03/10/2026) : les 32 cas du chapitre « Données » rapprochés des tests du dépôt, 23 ✅ 5 🟠 4 ❌, quatre tests écrits le jour même | 🟠 dossier ouvert le 03/10, le reste de C12 est prouvé dans le rapport E3 |
+| `C9/` | API exposant le modèle | `preuve-api-modele-2026-10-03.md` : un briefing réel servi (200, `request_id`, journal), contrat OpenAPI à 14 chemins, tests qui le tiennent, manques (502 au lieu de 422, pas de limite de débit) | ✅ créé le 03/10/2026 |
+| `C11/` | Monitorage du modèle | `README.md` (9 critères), `preuve-langfuse-2026-10-03.md` (tableau par l'API, INC-006 recompté, clics restants, première trace complète réelle du 03/10), définition du tableau et export des traces factices en JSON | ✅ depuis le 02/10/2026 |
+| `C12/` | Tests automatisés du modèle | `preuve-suite-de-tests-2026-10-03.md` (740 passed, 93,92 %, répartition par fichier, garde-fous mesurés, mutations) · `cas-de-verification-chapitre-donnees.md` (03/10/2026) : les 32 cas du chapitre « Données » rapprochés des tests du dépôt, 23 ✅ 5 🟠 4 ❌, quatre tests écrits le jour même | 🟠 dossier ouvert le 03/10, le reste de C12 est prouvé dans le rapport E3 |
+| `C13/` | Chaîne de livraison continue | `preuve-chaine-livraison-2026-10-03.md` : treize exécutions réelles d'une journée (deux pull requests, deux fusions, une alerte manuelle), rulesets GitHub, ce qui n'a jamais tourné (publication sur tag) | ✅ créé le 03/10/2026 |
 | `C6/` | Veille technique et réglementaire | protocole et notes dans `../docs/veille/` — **le dossier de preuves est vide** : rien n'a encore été partagé | 🔴 **1 note sur ~12 · 0 envoi** |
 
 **186 tests verts** (`pytest -q`). Base : 8 tables · 1 vue · 15 index · 9 contraintes `CHECK` ·

@@ -213,6 +213,7 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | Suite de tests, taille au 27/09 | **COLLECTÉ, non relancé par Claude** | `pytest --collect-only -q` → **580 tests collected**, 41 fichiers dans `tests/` ; le dernier passage complet (577 passed) est celui d'Era le 27/09 |
 | Clôture des positions (plan 66), 03/10 soir | **EXÉCUTÉ + TESTÉ** | migration rejouable jouée sur le poste, Compose (0 position : base de marché seule) et Hetzner (7 actives / 7) ; import réel rejoué sur le poste : 7 mises à jour, 0 insérée, 0 rouverte, 0 close ; touchés `146 passed`, suite `738 passed, 2 xfailed`, 93,91 % ; `evidence/C4/preuve-cloture-positions.md` |
 | Rapport E1 v2, 03/10 nuit | **IMPLÉMENTÉ + VÉRIFIÉ visuellement** | `docs/rapports/E1/rapport-E1.pdf` 5 pages (limite 5), 0 tiret long, chaque page rendue en PNG et lue ; carte #55 corrigée test d'abord (rouge `ok True` puis vert) ; suite `740 passed, 2 xfailed`, 93,92 % ; **non fait** : relecture d'Era, décision `memory_audit`, tag le 15/10 |
+| Rapport E3 v1.0, 03/10 nuit | **IMPLÉMENTÉ + VÉRIFIÉ visuellement** | `docs/rapports/E3/rapport-E3.pdf` 20 pages (limite 15 à 20), 0 tiret long ; première trace complète réelle `d52a3d28…` lue par l'API Langfuse (10 observations, score `conforme_amf` = 1) ; preuves C9, C12, C13 créées depuis des exécutions réelles ; 39 critères : 30 ✅ 9 🟠 0 🔴 ; **non fait** : relecture d'Era, clics Langfuse, capture, tag le 15/10 |
 
 ## J. En cours
 

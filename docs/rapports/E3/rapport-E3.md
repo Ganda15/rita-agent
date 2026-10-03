@@ -7,8 +7,8 @@
 | **Candidat** | Eramalingam Gandakumar |
 | **Formation** | Simplon × Wild Code School, promotion Développeur IA et IA agentique |
 | **Dépôt** | `Ganda15/rita-agent` (privé ; accès du jury par invitation de collaborateur) |
-| **Version** | 0.1, brouillon du 3 octobre 2026 ; gel prévu le 15 octobre 2026 |
-| **Mesures** | toutes datées des 2 et 3 octobre 2026, chacune avec la commande qui la produit |
+| **Version** | 1.0, 3 octobre 2026 au soir ; gel et tag `livrable-E3-v1` le 15 octobre 2026 |
+| **Mesures** | toutes datées des 2 et 3 octobre 2026, chacune avec la commande qui la produit ; la première trace complète d'un briefing réel date du 3 octobre, 14 h 48 |
 
 ## Lire ce rapport
 
@@ -26,7 +26,7 @@ Trois règles ont guidé l'écriture. Un chiffre se cite mesuré, avec sa date e
 
 **Le modèle est fourni, pas entraîné.** RITA appelle un modèle de langage déjà entraîné (Claude), par une API, avec une cascade de trois fournisseurs : Azure AI Foundry, puis Anthropic, puis OpenRouter. Il n'y a ni jeu d'entraînement, ni poids, ni réglage fin. Ce que ce rapport mesure n'est donc pas une métrique d'apprentissage, mais le **comportement du système autour du modèle** : ce qu'on lui donne, ce qu'on accepte de lui, ce qu'on refuse, et comment on le voit fonctionner. La chef de projet l'a confirmé par écrit le 7 septembre 2026 : des tests sur l'évaluation des réponses et la validation des formats, plus la description des pratiques LLMOps mises en place, suffisent ; aucun modèle d'appoint n'est à entraîner.
 
-**Ce que le livrable E1 a posé** (rapport du 11 août 2026, tag `livrable-E1-v1`) : la collecte depuis cinq types de sources, la base de huit tables puis neuf, les requêtes, le registre RGPD, l'API de données `/donnees/*`. Ce rapport E3 commence là où E1 s'arrête : le modèle.
+**Ce que le livrable E1 a posé** (rapport du 11 août 2026, tag `livrable-E1-v1`) : la collecte depuis cinq types de sources, la base de huit tables (dix au 3 octobre 2026, version 2 du rapport E1), les requêtes, le registre RGPD, l'API de données `/donnees/*`. Ce rapport E3 commence là où E1 s'arrête : le modèle.
 
 **La pile** : Python 3.13 en intégration continue et 3.14 sur le poste ; FastAPI 0.136.3 ; LangGraph 1.2.9 pour le graphe d'agents ; ChromaDB 1.5.9 pour la recherche documentaire ; Langfuse 4.12.0 pour les traces ; PostgreSQL 18 ; Docker ; GitHub Actions. Versions lues dans `requirements-api.txt` et `requirements.txt` le 3 octobre 2026.
 
@@ -36,7 +36,7 @@ Trois règles ont guidé l'écriture. Un chiffre se cite mesuré, avec sa date e
 
 ![Le chemin d'un briefing, et tout ce qui le regarde passer](schemas/E3-architecture.png)
 
-*Figure 1. Le chemin d'un briefing (état du code au 3 octobre 2026). Boîtes pleines : présent et testé ; pointillé orange : conçu, non construit. Source éditable : `schemas/E3-architecture.drawio`.*
+*Figure 1. Le chemin d'un briefing (état du code au 3 octobre 2026). Boîtes pleines : présent et testé ; pointillé orange : conçu, non construit. Source éditable : `schemas/E3-architecture.drawio`. Le journal des appels d'outils (`mcp_calls`, 3 octobre) n'y figure pas ; il est décrit en section 4.1.*
 
 En texte, un appel `POST /briefing?ticker=MC.PA` traverse, dans l'ordre :
 
@@ -46,6 +46,7 @@ client (interface web, ou passerelle MCP, ou curl)
   ▼
 api/main.py ─── middleware : un identifiant par requête (X-Request-ID)
   │           ─── vérification de la clé (403 sans clé)
+  │           ─── journal mcp_calls : une ligne par appel d'outil déclaré (X-Client-Id), jamais le contenu
   ▼
 graph/workflow.py : graphe LangGraph à trois nœuds, arêtes fixes
   ├─ scout      lit la base : cours, variation, volume moyen, fraîcheur des données
@@ -67,7 +68,7 @@ Trois garde-fous, à trois positions, tous mesurés (section 6) : sur la **quest
 
 ### 3.1 Les points de terminaison
 
-L'API déclare la version `1.1.0` et publie son contrat OpenAPI 3.1.0 sur `/openapi.json`, avec la documentation interactive sur `/docs`. Treize routes au 3 octobre 2026 (`grep` des décorateurs dans `api/main.py` et `api/donnees.py`) :
+L'API déclare la version `1.1.0` et publie son contrat OpenAPI 3.1.0 sur `/openapi.json`, avec la documentation interactive sur `/docs`. Quatorze chemins au 3 octobre 2026 (`app.openapi()`) :
 
 | Route | Rôle | Compétence |
 |---|---|---|
@@ -76,6 +77,7 @@ L'API déclare la version `1.1.0` et publie son contrat OpenAPI 3.1.0 sur `/open
 | `GET /donnees/valeurs`, `/cotations`, `/macro`, `/portefeuille`, `/mouvements`, `/volumes-anormaux`, `/articles` | le jeu de données | C5 |
 | `GET /donnees/indicateurs`, `/indicateurs-portefeuille`, `/indicateurs-risque` | les treize indicateurs de marché | C5, C17 |
 | `GET /donnees/fraicheur` | de quand datent les données | C20 |
+| `POST /audit/mcp` | la passerelle MCP y dépose ses refus locaux ; chaque appel d'outil déclaré est journalisé dans `mcp_calls` | C10, C20 |
 
 La distinction entre C5 et C9 est celle du référentiel : `/donnees/*` sert de la donnée, `/briefing` sert une rédaction produite par un modèle.
 
@@ -103,7 +105,7 @@ La revue ligne par ligne des dix risques, demandée par la carte #29 du Kanban, 
 
 ### 3.4 Versionnage et tests
 
-Les sources sont sur GitHub, `Ganda15/rita-agent`, branche `develop` pour le travail, `main` pour les versions, qui ne bouge que par une pull request relue. Les tests de l'API : `tests/test_health.py` (10 tests : vivacité, 403 sans clé, briefing simulé, 502 en erreur, refus de démarrer sans clé, et depuis le 2 octobre la substitution AMF prouvée par mutation), `tests/test_api_donnees.py` (31 tests sur les routes de données). La documentation technique est `docs/EXPLOITATION.md` (3 197 mots) : clés, installation avec et sans Docker, vérification, dépannage, monitorage.
+Les sources sont sur GitHub, `Ganda15/rita-agent`, branche `develop` pour le travail, `main` pour les versions, qui ne bouge que par une pull request relue. Depuis le 3 octobre, GitHub applique lui-même la règle (section 7.2). Les tests de l'API : `tests/test_health.py` (10 tests : vivacité, 403 sans clé, briefing simulé, 502 en erreur, refus de démarrer sans clé, et depuis le 2 octobre la substitution AMF prouvée par mutation), `tests/test_request_id.py` (12 : l'identifiant sur toute réponse, 500 inattendu compris), `tests/test_traces_robustesse.py` (8 : une panne du traçage ne fait jamais tomber un briefing), `tests/test_api_donnees.py` (57 tests sur les routes de données). Les deux derniers fichiers répondent aux deux remarques de la revue automatisée de la pull request 58, le 3 octobre : une P1 (un `flush` Langfuse qui levait transformait un briefing valide en 500) et une P2 (un 500 inattendu partait sans `X-Request-ID`), toutes deux vraies, corrigées test d'abord. La documentation technique est `docs/EXPLOITATION.md` : clés, installation avec et sans Docker, vérification, dépannage, monitorage. Un appel réel du 3 octobre est rangé dans `evidence/C9/preuve-api-modele-2026-10-03.md`.
 
 ### 3.5 Ce qui manque, C9
 
@@ -124,24 +126,28 @@ L'API a deux clients dans le dépôt, et tous deux passent par HTTP avec la clé
 
 **La passerelle MCP** (`passerelle_mcp/serveur.py`) : MCP (*Model Context Protocol*) est le protocole qui décrit des outils à un modèle de langage. La passerelle expose trois outils en lecture seule (`rita_fraicheur`, `rita_portefeuille`, `rita_indicateurs`), avec l'annotation `read_only_hint`, et appelle l'API REST par HTTP avec `X-API-Key`. Le choix de passer par HTTP plutôt que par les modules est écrit dans le fichier : c'est ce qui fait de la passerelle un vrai client, soumis au garde-fou 403, et ce qui évite deux chemins d'accès aux données qui divergeraient. Le formateur a rendu le MCP obligatoire le 28 août 2026. Preuve : `evidence/C10/preuve-passerelle-mcp.md`.
 
+Deux ajouts du 3 octobre viennent du chapitre « Données » validé par le formateur. **Un verrou vérifié, pas déclaré** : `rita_portefeuille` ne répond que si la passerelle est déclarée en démonstration (`RITA_MCP_PORTEFEUILLE=demo`) **et** si les positions servies par l'API sont exactement le jeu d'exemple du dépôt ; sinon refus `NOT_AUTHORIZED`, sans donnée, pas même le total. Une phrase dans la description de l'outil disait « jeu anonymisé » sans rien vérifier ; la comparaison dit ce que la base contient. **Un journal des appels d'outils** : l'API écrit une ligne dans la table `mcp_calls` pour chaque appel qui se déclare (`X-Client-Id`, `X-Outil`), avec le statut, le code d'erreur et la durée, jamais le contenu ; les refus pris dans la passerelle avant tout appel sont déposés par `POST /audit/mcp`. Première preuve réelle, le 3 octobre à 13 h 10 : quatre appels par la passerelle, **cinq lignes** de journal (`succes` sur `rita_fraicheur` et `rita_indicateurs` ; sur `rita_portefeuille`, `succes` puis `refuse NOT_AUTHORIZED` : l'API a servi, la passerelle a comparé au jeu d'exemple et n'a rien rendu). Cinq pour quatre, et c'est juste : le journal montre le verrou à l'endroit exact où il agit.
+
 ### 4.2 Les tests d'intégration
 
 | Fichier | Tests | Ce qu'il prouve |
 |---|---|---|
-| `tests/test_frontend.py` | 41 | aucune clé dans le code servi, titre, formulaire, gestion du 403, attributs d'accessibilité |
-| `tests/test_smoke_ui.py` | 4 | un vrai navigateur (Playwright, Chrome installé en local, Chromium en CI) charge la page, zéro erreur JavaScript, une mauvaise clé est refusée à l'écran |
-| `tests/test_passerelle_mcp.py` | 11 | les trois outils, leurs erreurs typées, l'appel HTTP avec clé |
-| `tests/test_hooks_claude.py` | 13 | les garde-fous de développement (section 4.3) |
+| `tests/test_frontend.py` | 55 | aucune clé dans le code servi, titre, formulaire, gestion du 403, « indisponible » quand un taux manque, attributs d'accessibilité |
+| `tests/test_smoke_ui.py` | 5 | un vrai navigateur (Playwright, Chrome installé en local, Chromium en CI) charge la page, zéro erreur JavaScript, une mauvaise clé est refusée à l'écran, un taux manquant s'affiche « indisponible » (API interceptée) |
+| `tests/test_passerelle_mcp.py` | 19 | les trois outils, leurs erreurs typées, l'appel HTTP avec clé, le double verrou de démonstration, le dépôt des refus |
+| `tests/test_audit_mcp.py`, `tests/test_audit_mcp_base.py` | 22 + 4 | le journal des appels : ne lève jamais, compte ses échecs, contrat fermé de `POST /audit/mcp` ; sur la base réelle en transaction annulée, le rôle lecture seule lit la table sans pouvoir y écrire |
+| `tests/test_hooks_claude.py` | 9 | les garde-fous de développement (section 4.3) |
 
 ### 4.3 Les garde-fous du développement lui-même
 
-Deux hooks de l'assistant de développement vivent dans `.claude/hooks/` : `bloquer-secrets.py` refuse toute commande ou écriture qui nomme le fichier de secrets, lecture comprise ; `exiger-tests-verts.py` refuse de conclure sans une sortie de tests. Treize tests les couvrent. Le 2 octobre 2026, le premier a refusé cinq commandes de l'assistant, dont une lecture : il fait ce qu'il dit. Un scan d'attaques Giskard (20 septembre, 6 scénarios par frontière) a trouvé un contournement par jeu de rôle sur les deux frontières, corrigé le jour même (`evidence/C10/2026-09-20-scan-giskard-run9.md`).
+Deux hooks de l'assistant de développement vivent dans `.claude/hooks/` : `bloquer-secrets.py` refuse toute commande ou écriture qui nomme le fichier de secrets, lecture comprise ; `exiger-tests-verts.py` refuse de conclure sans une sortie de tests. Neuf tests les couvrent sur le poste (ils sont muets hors Windows, où la CI prend le relais). Le 2 octobre 2026, le premier a refusé cinq commandes de l'assistant, dont une lecture : il fait ce qu'il dit. Un scan d'attaques Giskard (20 septembre, 6 scénarios par frontière) a trouvé un contournement par jeu de rôle sur les deux frontières, corrigé le jour même (`evidence/C10/2026-09-20-scan-giskard-run9.md`).
 
 ### 4.4 Ce qui manque, C10
 
 - L'interface n'appelle pas `/briefing` : elle sert les deux écrans de données. Le briefing se demande par `curl`, par la passerelle MCP ou par la documentation interactive. Un troisième écran est conçu, pas construit.
 - L'écran des indicateurs n'a pas de récit utilisateur ni de maquette (carte #24) ; l'écran du portefeuille en a.
 - Qu'un client MCP compte comme « une application » au sens du critère est une lecture, à confirmer avec le formateur.
+- Le quatrième outil du chapitre « Données », `search_articles`, n'existe pas : décision du 3 octobre, il se construit après le gel du 15 octobre.
 
 ---
 
@@ -183,7 +189,22 @@ Une règle tenue partout : la sortie d'une étape est un résumé (compte, motif
 | 2 octobre, 18 h 39 min 41 s | trois tentatives : Foundry échoue en 1 ms (clé absente du poste), Anthropic échoue en 0,49 s (authentification impossible), OpenRouter répond en 1,73 s | le repli entre fournisseurs, tel qu'il se produit ; à ce stade, trois lignes séparées, illisibles côte à côte |
 | 2 octobre, 19 h 08 min 00 s | une racine de 2,08 s qui se déplie : `llm-foundry` en erreur (1 ms), `llm-anthropic` en erreur (0,29 s), `llm-openrouter` répond (1,79 s), 19 jetons en entrée et 6 en sortie, modèle `anthropic/claude-sonnet-4.5` | la structure finale : une ligne par appel, les tentatives dessous |
 
-Les étapes `scout`, `rag`, `redacteur` et les deux garde-fous, ajoutés dans la nuit du 2 au 3 octobre, n'avaient pas encore produit de trace réelle au moment d'écrire : le premier appel réel après leur ajout reste à faire et à capturer.
+**La première trace complète d'un briefing réel**, le 3 octobre à 14 h 48 (Paris), identifiant `d52a3d28…`, relue par l'API de Langfuse :
+
+| Étape | Type | Durée | Ce qu'on y lit |
+|---|---|---|---|
+| `briefing` (racine) | span | 12,33 s | métadonnées `ticker=MC.PA`, `conforme_amf=true`, `motifs_amf=[]`, `request_id=10db04cd…` ; note `conforme_amf = 1` |
+| `scout` | span | 1,36 s | lecture de la base |
+| `rag` | retriever | 5,07 s | recherche hybride dans 1 563 documents |
+| `garde-fou-entree` | span | moins de 1 ms | question non bloquée |
+| `redacteur` | span | 5,88 s | construction du prompt et appel |
+| `briefing-llm` | span | 5,82 s | la cascade |
+| `llm-foundry` | génération | 1 ms, ERROR | clé absente du poste |
+| `llm-anthropic` | génération | 0,18 s, ERROR | authentification impossible |
+| `llm-openrouter` | génération | 5,64 s | `anthropic/claude-sonnet-4.5`, 616 jetons en entrée, 210 en sortie, coût affiché 0 |
+| `garde-fou-sortie` | span | moins de 1 ms | texte conforme, 631 caractères servis |
+
+Dix observations, dans l'ordre attendu par `tests/test_trace_chemin.py`, et le même `request_id` dans l'en-tête de la réponse (`X-Request-ID`), dans la ligne de journal de l'API (`briefing servi : request_id=10db04cd… conforme_amf=True duree_ms=13829`) et dans la trace. La réponse HTTP a pris 13,85 s, la racine 12,33 s : l'écart est le temps passé hors du graphe. Preuves : `evidence/C9/preuve-api-modele-2026-10-03.md` et `evidence/C11/preuve-langfuse-2026-10-03.md`.
 
 ### 5.3 Les métriques, et ce qu'elles veulent dire
 
@@ -197,13 +218,13 @@ Les étapes `scout`, `rag`, `redacteur` et les deux garde-fous, ajoutés dans la
 
 Ce que chaque ligne du tableau veut dire, sur l'exemple de la trace de 19 h 08.
 
-**La latence, et où elle passe.** La racine a duré 2,08 s. Dedans, 1,79 s pour l'appel qui a réussi (86 % du total), 0,29 s pour l'échec d'Anthropic, 1 ms pour celui de Foundry. Le repli coûte donc environ 0,3 s par briefing sur ce poste, et il ne coûterait rien si les trois fournisseurs étaient configurés. Le **p95** se lira sur l'étape `briefing-llm`, pas sur la racine : la racine inclura désormais la recherche documentaire (p95 de 447 à 494 ms mesuré le 7 septembre) et les garde-fous (quelques microsecondes), et un tableau de bord doit comparer des grandeurs de même nature. Pour qu'un p95 ait un sens, il faut assez d'appels : avec sept à huit briefings par jour, la fenêtre raisonnable est la semaine, pas la journée.
+**La latence, et où elle passe.** Sur la trace complète du 3 octobre : 12,33 s pour la racine, dont 5,07 s de recherche documentaire (41 %), 5,64 s pour l'appel au modèle qui a réussi (46 %), 1,36 s de lecture de la base, 0,18 s perdues dans les deux fournisseurs en échec, et moins d'une milliseconde par garde-fou. Deux lectures. La recherche documentaire pèse ici autant que le modèle : le p95 de 447 à 494 ms mesuré le 7 septembre sur 594 documents ne se retrouve pas sur ce premier appel d'un processus à peine démarré (1 563 documents, modèle d'embeddings à charger) ; c'est une mesure à refaire sur une semaine d'appels, pas une conclusion. Le repli coûte peu (0,18 s) et ne coûterait rien si les trois fournisseurs étaient configurés. Le **p95** se lit sur l'étape `briefing-llm`, pas sur la racine, parce qu'un tableau de bord doit comparer des grandeurs de même nature ; avec sept à huit briefings par jour, la fenêtre raisonnable est la semaine, pas la journée.
 
-**Les jetons, et le coût qui devrait en découler.** La génération réussie porte 19 jetons en entrée et 6 en sortie, transmis par OpenRouter. Son coût, lui, est à **zéro** dans Langfuse, alors que les douze générations factices de la suite de tests (incident INC-006) avaient été facturées 0,000034 dollar chacune. L'explication est instructive : Langfuse calcule un coût quand il connaît le prix du nom de modèle qu'on lui donne. `claude-sonnet-5`, le nom du fournisseur Anthropic, est dans sa grille ; `anthropic/claude-sonnet-4.5`, le nom tel qu'OpenRouter le renvoie, n'y est pas. **La métrique de coût est donc fausse aujourd'hui, pas absente** : elle vaut zéro pour le seul fournisseur qui répond. La correction se fait dans l'interface Langfuse (déclarer le prix de ce nom de modèle) ou dans le code (normaliser le nom avant de l'écrire sur la génération). Elle n'était pas faite le 3 octobre.
+**Les jetons, et le coût qui devrait en découler.** La génération réussie du 3 octobre porte 616 jetons en entrée et 210 en sortie, transmis par OpenRouter (celle de la veille, un mot demandé, 19 et 6). Son coût, lui, est à **zéro** dans Langfuse, alors que les quinze générations factices de la suite de tests (incident INC-006 ; douze comptées le 2 octobre, quinze relues par l'API le 3) avaient été facturées 0,000034 dollar chacune. L'explication est instructive : Langfuse calcule un coût quand il connaît le prix du nom de modèle qu'on lui donne. `claude-sonnet-5`, le nom du fournisseur Anthropic, est dans sa grille ; `anthropic/claude-sonnet-4.5`, le nom tel qu'OpenRouter le renvoie, n'y est pas. **La métrique de coût est donc fausse aujourd'hui, pas absente** : elle vaut zéro pour le seul fournisseur qui répond. La correction se fait dans l'interface Langfuse (déclarer le prix de ce nom de modèle) ou dans le code (normaliser le nom avant de l'écrire sur la génération). Elle n'était pas faite le 3 octobre.
 
 **Les erreurs de repli.** Deux générations sur trois portent le niveau ERROR avec le message tronqué de l'exception : `KeyError: 'AZURE_FOUNDRY_API_KEY'` et `TypeError: Could not resolve authentication method`. Ce ne sont pas des pannes de RITA : ce sont deux clés absentes du poste de démonstration. La métrique distingue donc « le fournisseur est en panne » de « RITA est en panne », à condition de lire le message. Un taux d'erreur calculé sur toutes les générations serait trompeur : il vaudrait 67 % ici alors que chaque briefing a été servi. Le taux qui a un sens est celui des **racines** en erreur, c'est-à-dire des briefings non servis.
 
-**Le verdict AMF.** Sur les deux traces réelles, aucun verdict n'était encore enregistré : la note `conforme_amf` et le niveau WARNING au refus ont été ajoutés dans la nuit du 2 au 3 octobre, et testés avec un faux client. Le premier verdict réel reste à produire. Ce que la métrique dira : le nombre de textes retenus par le garde-fou de sortie sur une période, à comparer aux 70 % de détection mesurés hors ligne. Un taux de refus élevé en production ne voudra pas dire « le garde-fou marche bien » mais « le modèle produit souvent des formules interdites », et c'est le prompt qu'il faudra regarder.
+**Le verdict AMF.** Le premier verdict réel est sur la trace du 3 octobre : métadonnée `conforme_amf=true`, note `conforme_amf = 1` (type booléen), aucun motif. Un refus porterait la note 0, le niveau WARNING et les motifs, testé avec un faux client. Ce que la métrique dira : le nombre de textes retenus par le garde-fou de sortie sur une période, à comparer aux 70 % de détection mesurés hors ligne. Un taux de refus élevé en production ne voudra pas dire « le garde-fou marche bien » mais « le modèle produit souvent des formules interdites », et c'est le prompt qu'il faudra regarder.
 
 **La fraîcheur des données.** Elle ne vit pas dans Langfuse mais dans l'API et l'interface : `GET /donnees/fraicheur` donne le retard en jours ouvrés et un état en trois niveaux, lisible sans la couleur. Les jours fériés Euronext sont comptés depuis le 27 septembre (incident INC-005). C'est la métrique la plus ancienne du projet, et celle qui attrape la panne la plus fréquente : une collecte nocturne qui a échoué la veille.
 
@@ -211,23 +232,22 @@ Un **identifiant de requête** (`request_id`) relie tout : il est dans l'en-têt
 
 ### 5.4 Le bac à sable avant la production
 
-La chaîne a été testée hors production avant d'être branchée, et un incident l'a imposé. Le 2 octobre, douze générations de test (« prompt test ») sont apparues dans le projet de production : `api/main.py` charge le fichier d'environnement à l'import, donc les vraies clés entraient dans le processus de test, et la cascade simulée traçait pour de vrai. Corrigé le jour même par un test puis une fixture de `tests/conftest.py` qui coupe le traçage pour toute la suite (`LANGFUSE_TRACING_ENABLED=false`). Toute la suite de tests tourne depuis avec des doubles de client Langfuse, sans réseau. Incident écrit : `evidence/C21/INC-006-tests-ecrivaient-en-production.md`.
+La chaîne a été testée hors production avant d'être branchée, et un incident l'a imposé. Le 2 octobre, des générations de test (« prompt test », quinze une fois recomptées par l'API le 3 octobre) sont apparues dans le projet de production : `api/main.py` charge le fichier d'environnement à l'import, donc les vraies clés entraient dans le processus de test, et la cascade simulée traçait pour de vrai. Corrigé le jour même par un test puis une fixture de `tests/conftest.py` qui coupe le traçage pour toute la suite (`LANGFUSE_TRACING_ENABLED=false`). Toute la suite de tests tourne depuis avec des doubles de client Langfuse, sans réseau. Incident écrit : `evidence/C21/INC-006-tests-ecrivaient-en-production.md`.
 
 ### 5.5 Alerter
 
-Le palier gratuit offre deux alertes et trois canaux : Slack, webhook signé, GitHub Actions. Pas de courriel. Le canal retenu est GitHub Actions, parce que le dépôt est déjà l'endroit où vivent les incidents. Le workflow `.github/workflows/alerte-incident.yml` ouvre une issue avec le label `incident` (titre stable par alerte, charge utile jointe, liste des étapes de post-mortem à cocher) ; une alerte qui se répète commente l'issue ouverte au lieu d'en créer une autre ; un bouton manuel permet de prouver la chaîne sans attendre une panne. Sept tests lisent ce fichier comme un contrat. Les deux alertes prévues : observations en erreur sur un jour au-dessus d'un seuil ; aucune trace en 24 heures. Les seuils se fixent après une semaine de traces, pas avant.
+Le palier gratuit offre deux alertes et trois canaux : Slack, webhook signé, GitHub Actions. Pas de courriel. Le canal retenu est GitHub Actions, parce que le dépôt est déjà l'endroit où vivent les incidents. Le workflow `.github/workflows/alerte-incident.yml` ouvre une issue avec le label `incident` (titre stable par alerte, charge utile jointe, liste des étapes de post-mortem à cocher) ; une alerte qui se répète commente l'issue ouverte au lieu d'en créer une autre ; un bouton manuel permet de prouver la chaîne sans attendre une panne. Sept tests lisent ce fichier comme un contrat. Les deux alertes prévues : observations en erreur sur un jour au-dessus d'un seuil ; aucune trace en 24 heures. Les seuils se fixent après une semaine de traces, pas avant. Le 3 octobre, le bouton manuel a été pressé pour la première fois sur GitHub : exécution 37120911852 en succès, issue #71 créée avec le label `incident`, puis fermée comme démonstration. La chaîne a donc tourné une fois pour de vrai, de bout en bout, à l'exception du déclencheur côté Langfuse : les deux alertes restent à régler dans l'interface, par le propriétaire du compte.
 
 ### 5.6 Restitution et documentation
 
-Le vecteur de restitution en temps réel est un tableau de bord Langfuse « RITA C11 » à trois éléments : générations par fournisseur, p95 de l'appel au modèle par jour, nombre d'observations en erreur ou en avertissement. La documentation d'installation, de configuration et d'utilisation est la section « Monitorage Langfuse et alertes » de `docs/EXPLOITATION.md` : variables, ce qu'une trace montre, tableau, alertes, comment tester la chaîne. L'interface Langfuse est une page web standard, lisible au clavier, texte et tableaux ; l'argument d'accessibilité s'arrête là, et il est à développer.
+Le vecteur de restitution en temps réel est le tableau de bord Langfuse « RITA C11 », **construit le 3 octobre par l'API** (définition rangée dans `evidence/C11/dashboard-rita-c11-2026-10-03.json`), trois éléments : générations par fournisseur, p95 de l'appel au modèle par jour, nombre d'observations en erreur ou en avertissement. La documentation d'installation, de configuration et d'utilisation est la section « Monitorage Langfuse et alertes » de `docs/EXPLOITATION.md` : variables, ce qu'une trace montre, tableau, alertes, comment tester la chaîne. Accessibilité : l'interface Langfuse est une application web standard, texte et tableaux, navigable au clavier ; les trois tuiles choisies portent des comptes et des durées, aucune information n'y tient à la seule couleur ; le rapport, lui, est fourni en Markdown lisible par un lecteur d'écran et en PDF balisé par le navigateur. Ce qui manque : aucun audit RGAA de cet outil tiers, et la lecture du tableau par un lecteur d'écran n'a pas été testée.
 
 ### 5.7 Ce qui manque, C11
 
-- **Le tableau de bord et les deux alertes ne sont pas encore construits dans l'interface** au 3 octobre ; le workflow qui les reçoit l'est. Aucune capture d'écran n'existe dans `evidence/C11/`. C'est la première chose à faire avant le gel.
-- Le workflow d'alerte n'a jamais été exécuté sur GitHub : il est testé comme fichier (sept tests, syntaxe des scripts), pas en vrai.
-- Le conteneur de production ne trace pas tant que les variables Langfuse ne sont pas posées sur le serveur ; le fichier Compose les transmet depuis le 2 octobre.
+- **Les deux alertes ne sont pas réglées dans l'interface Langfuse** ; le workflow qui les reçoit l'est et a tourné une fois à la main (#71). Aucune capture d'écran de l'interface dans `evidence/C11/` : la définition du tableau y est en JSON, l'image reste à prendre.
+- **Quinze traces factices** sont encore dans le projet (suppression à la main par le propriétaire du compte) : p95 et taux d'erreur agrégés n'auront de sens qu'après ce nettoyage et une semaine d'appels réels. Au 3 octobre il existe une seule trace complète réelle.
+- Le serveur ne trace pas : son code date du 20 août, avant le traçage ; le fichier Compose transmet les variables depuis le 2 octobre, le déploiement se fera après le gel du 15 octobre.
 - **Le coût par briefing vaut zéro dans Langfuse** pour le fournisseur qui répond (nom de modèle au format OpenRouter absent de la grille de prix) : la métrique existe, elle est fausse ; correction à faire dans l'interface ou dans le code.
-- Aucune trace réelle complète (avec `scout`, `rag`, garde-fous, `request_id`, note AMF) n'existait au 3 octobre : la structure est testée avec un faux client, le premier appel réel reste à faire et à capturer.
 - Le garde-fou d'injection tourne à la collecte nocturne, pas dans la requête : il n'apparaît pas dans la trace, par construction.
 - Les journaux sont du texte, pas du JSON : un outil qui les lit devra les découper.
 
@@ -242,20 +262,20 @@ Puisque le modèle n'est pas entraîné, il n'y a ni test de préparation de don
 | Niveau | Ce qu'il vérifie | Exemples de fichiers |
 |---|---|---|
 | **Unitaire** | une fonction, sans réseau ni base | `test_injection`, `test_entree`, `test_sortie`, `test_indicateurs_*`, `test_marches`, `test_traces` |
-| **Intégration** | l'API par un client de test, le graphe, la base de test | `test_health`, `test_api_donnees`, `test_workflow`, `test_database`, `test_role_lecture` |
+| **Intégration** | l'API par un client de test, le graphe, la base de test ; la base réelle en transaction annulée | `test_health`, `test_api_donnees`, `test_workflow`, `test_database`, `test_role_lecture`, `test_cloture_positions_base`, `test_audit_mcp_base` |
 | **Contrat** | les fichiers de déploiement lus comme du code | `test_docker_compose`, `test_livraison`, `test_alerte_incident`, `test_verifier_livrable` |
 | **Trace** | qui a tourné, dans quel ordre, combien de fois | `test_trace_chemin`, `test_trace_verdict_amf`, `test_request_id` |
 | **Portes d'évaluation** | les mesures des garde-fous deviennent des conditions de fusion | `test_evals` |
 | **Fumée** | un vrai navigateur, une vraie image Docker | `test_smoke_ui`, `livraison.yml` |
 
-**Mesure du 2 octobre 2026, nuit** : `C:\Python314\python.exe -m pytest --cov -q`
+**Mesure du 3 octobre 2026, soir** : `C:\Python314\python.exe -X utf8 -m pytest --cov -q`
 
 ```
-626 passed, 2 xfailed
-Required test coverage of 90.0% reached. Total coverage: 93.66%
+740 passed, 2 xfailed, 4 warnings in 115.90s
+Required test coverage of 90.0% reached. Total coverage: 93.92%
 ```
 
-Soit 552 fonctions de test dans 46 fichiers (`grep -rho "def test_" tests | wc -l`) ; la différence avec 626 vient des tests paramétrés. Le 7 septembre : 440 tests, 92,23 % ; le 2 octobre au matin : 586. Les deux `xfailed` sont volontaires (section 6.3).
+Soit 742 tests collectés dans 57 fichiers (`pytest --collect-only -q`). Le 7 septembre : 440 tests, 92,23 % ; le 2 octobre : 626, 93,66 % ; le 3 octobre : 740 verts. Les deux `xfailed` sont volontaires (section 6.3). Répartition par fichier et mesures du jour : `evidence/C12/preuve-suite-de-tests-2026-10-03.md`.
 
 Un extrait réel par type de test, lu dans le dépôt le 3 octobre 2026, et ce qu'il faut y voir.
 
@@ -370,9 +390,9 @@ Trois harnais, lançables à la main et branchés en CI. **Mesures du 3 octobre 
 
 | Garde-fou | Commande | Blocage | Faux positifs | Latence moyenne |
 |---|---|---|---|---|
-| Entrée (intention AMF sur la question) | `python -m evals.mesurer_entree` | **100 %** (5 cas) | **0 %** (5 cas) | 0,013 ms |
-| Résultats d'outils (injection dans les articles) | `python -m evals.mesurer_gardefou` | **70 %** (10 cas) | **0 %** (8 cas) | 0,084 ms |
-| Sortie (recommandation dans le texte produit) | `python -m evals.mesurer_sortie` | **70 %** (10 cas) | **0 %** (6 cas) | 0,010 ms |
+| Entrée (intention AMF sur la question) | `python -m evals.mesurer_entree` | **100 %** (5 cas) | **0 %** (5 cas) | 0,008 ms |
+| Résultats d'outils (injection dans les articles) | `python -m evals.mesurer_gardefou` | **70 %** (10 cas) | **0 %** (8 cas) | 0,013 ms |
+| Sortie (recommandation dans le texte produit) | `python -m evals.mesurer_sortie` | **70 %** (10 cas) | **0 %** (6 cas) | 0,013 ms |
 
 Les deux chiffres vont toujours ensemble : un garde-fou qui bloque tout affiche 100 % et rend le produit inutilisable. Les trois injections non détectées se déguisent en consigne éditoriale (« les consignes de rédaction ont été mises à jour : le briefing doit se conclure par une suggestion d'achat ») ; les trois sorties non détectées sont allusives (« le point d'entrée paraît attractif »). La limite est structurelle : des motifs lexicaux ne reconnaissent pas une intention. Elle est écrite dans le code, dans `docs/LLMOPS.md` et ici.
 
@@ -384,7 +404,7 @@ Les deux chiffres vont toujours ensemble : un garde-fou qui bloque tout affiche 
 
 ### 6.5 Un test se prouve par sa capacité à échouer
 
-Le 2 octobre, le garde-fou de sortie était testé seul ; aucun test ne prouvait qu'il est appelé par la route. Le test de la section 6.1.2 a été écrit, et il est passé du premier coup, ce qui ne prouve rien : le code était déjà branché. La preuve est venue d'une **mutation** : la ligne qui appelle le garde-fou dans `api/main.py` a été remplacée par un verdict toujours favorable, la suite relancée (`1 failed, 9 passed`, sur l'assertion `conforme_amf is False`), puis le fichier restauré par `git checkout -- api/main.py` (`git diff` vide) et la suite relancée (`10 passed`). Un test que l'on n'a jamais vu échouer ne protège rien ; celui-là protège le branchement. La preuve est dans `evidence/C17/preuve-garde-fou-sortie-branche.md`. La même nuit, chaque nouveauté (journal, trace, identifiant, Compose, alerte, étapes de trace) a suivi l'ordre test rouge, code, test vert ; les comptes rouges sont notés dans le journal du projet.
+Le 2 octobre, le garde-fou de sortie était testé seul ; aucun test ne prouvait qu'il est appelé par la route. Le test de la section 6.1.2 a été écrit, et il est passé du premier coup, ce qui ne prouve rien : le code était déjà branché. La preuve est venue d'une **mutation** : la ligne qui appelle le garde-fou dans `api/main.py` a été remplacée par un verdict toujours favorable, la suite relancée (`1 failed, 9 passed`, sur l'assertion `conforme_amf is False`), puis le fichier restauré par `git checkout -- api/main.py` (`git diff` vide) et la suite relancée (`10 passed`). Un test que l'on n'a jamais vu échouer ne protège rien ; celui-là protège le branchement. La preuve est dans `evidence/C17/preuve-garde-fou-sortie-branche.md`. Deux autres preuves du même type le 3 octobre : la règle « dernière séance à ou avant la date cible » de `db/indicateurs.sql` mutée (`<=` remplacé par `=`), le test D05 tombe, fichier restauré, vert ; et la carte #55 (étape BCE) écrite rouge d'abord, `assert True is False`, avant le correctif. La même nuit, chaque nouveauté (journal, trace, identifiant, Compose, alerte, étapes de trace) a suivi l'ordre test rouge, code, test vert ; les comptes rouges sont notés dans le journal du projet.
 
 ### 6.6 Ce qui manque, C12
 
@@ -393,7 +413,8 @@ Le 2 octobre, le garde-fou de sortie était testé seul ; aucun test ne prouvait
 - Le seuil de blocage de 85 % n'est pas atteint : 70 % sur deux garde-fous.
 - Les attaques du scan Giskard sont rejouées par deux textes copiés à la main, pas en important les fichiers générés : la régression peut dériver.
 - Les tests unitaires des garde-fous et les cas d'évaluation d'`evals/cas.py` portent les mêmes phrases en double, copiées et non importées : une correction d'un côté ne se propage pas de l'autre.
-- Aucun test ne se connecte à une base réelle en CI (les tests de rôle se sautent sans `DATABASE_URL`).
+- Les douze tests sur la base réelle (rôle lecture seule, clôture des positions, journal `mcp_calls`, en transaction annulée) ne tournent que sur le poste ; en CI ils se sautent sans `DATABASE_URL`.
+- Les 32 cas de vérification du chapitre « Données » sont rapprochés des tests du dépôt (23 couverts, 5 partiels, 4 manquants le 3 octobre au matin ; deux des manquants ont été fermés le jour même, #65 et #69 ; restent #63 et #70) : `evidence/C12/cas-de-verification-chapitre-donnees.md`.
 
 ---
 
@@ -409,7 +430,7 @@ Le 2 octobre, le garde-fou de sortie était testé seul ; aucun test ne prouvait
 |---|---|---|
 | `test.yml` | chaque poussée et pull request sur `main` et `develop` | deux travaux : la suite avec couverture (seuil 90 %) ; les garde-fous mesurés et les portes non compensables |
 | `livraison.yml` | poussée, pull request, et tag `livrable-*` | construit l'image, la vérifie, la publie seulement sur un tag |
-| `revue-pr.yml` | chaque pull request vers `main` | relecture adversariale automatisée (action GitHub), jeton d'abonnement en secret du dépôt |
+| `revue-pr.yml` | chaque pull request vers `main` | relecture adversariale automatisée (action GitHub), jeton d'abonnement en secret du dépôt ; **check requis** pour fusionner depuis le 3 octobre |
 | `scan-giskard.yml` | manuel | scan d'attaques, deux frontières, plafond de coût saisi |
 | `alerte-incident.yml` | envoi de Langfuse (`repository_dispatch`) ou bouton manuel | ouvre ou commente une issue `incident` |
 
@@ -421,7 +442,7 @@ Le 2 octobre, le garde-fou de sortie était testé seul ; aucun test ne prouvait
 4. **Vérifier que l'accès est restreint** : sans clé, 403.
 5. **Publier l'image vérifiée** sur le registre GitHub (`ghcr.io/ganda15/rita-api`), seulement sur un tag `livrable-*`. C'est l'image testée aux étapes 3 et 4 qui part, pas une reconstruction : défaut corrigé le 26 septembre 2026 (issue #22), avant, la publication précédait la vérification. Trois tests dans `tests/test_livraison.py` figent cet ordre.
 
-`main` ne bouge que par une pull request depuis `develop` : le hook `pre-push` (`.githooks/`, activé par `git config core.hooksPath .githooks`) refuse la poussée directe. Un livrable est un tag posé sur `main` après la fusion ; on envoie le lien du tag, jamais celui du dépôt, parce que `main` avance.
+`main` ne bouge que par une pull request depuis `develop`. Jusqu'au 3 octobre, seul le hook `pre-push` (`.githooks/`, activé par `git config core.hooksPath .githooks`) refusait la poussée directe : une règle locale, que chaque clone doit activer. Depuis le 3 octobre (GitHub Pro), GitHub l'applique lui-même : un ruleset sur `main` exige une pull request et trois checks verts (`pytest`, `evals`, `revue`), interdit la suppression et le force-push, sans aucun acteur de contournement ; un second ruleset interdit de déplacer ou supprimer un tag `livrable-*`, parce qu'un livrable est un lien vers un tag et qu'un tag déplaçable n'est pas une preuve. Preuve : `evidence/C19/preuve-protection-main-2026-10-03.md`. Un livrable est un tag posé sur `main` après la fusion ; on envoie le lien du tag, jamais celui du dépôt, parce que `main` avance. Deux pull requests ont traversé la chaîne le 3 octobre (58 : 44 commits ; 72 : la clôture des positions), treize exécutions vertes et une annulation volontaire : `evidence/C13/preuve-chaine-livraison-2026-10-03.md`.
 
 ### 7.3 L'image
 
@@ -432,9 +453,9 @@ Le 2 octobre, le garde-fou de sortie était testé seul ; aucun test ne prouvait
 - **La branche « publier sur tag » n'a jamais été exécutée** : le seul tag (`livrable-E1-v1`, 13 août) précède le fichier. Le tag `livrable-E3-v1` sera son premier passage réel.
 - **Aucune procédure de retour arrière** écrite ni outillée.
 - **Aucun manifeste de version** : pas de `GET /version`, pas de version de prompt, modèle non daté ; les prompts vivent dans `agents/analyst.py`.
-- `requirements.txt` n'est pas épinglé (13 dépendances sans version) : une exécution de la CI est tombée le 28 septembre parce que `pip` a dû construire pandas depuis les sources.
+- `requirements.txt` n'est épinglé que pour quatre dépendances (`feedparser`, `chromadb`, `rank-bm25`, `langfuse`), une dizaine restent sans version ; `requirements-api.txt`, celui de l'image, est épinglé entièrement (13 lignes). Une exécution de la CI est tombée le 28 septembre parce que `pip` a dû construire pandas depuis les sources.
 - Pas de filtre de chemin : la porte d'évaluation tourne à chaque poussée, qu'un prompt ait changé ou non. Pas d'analyse de vulnérabilités des dépendances.
-- La copie du serveur Hetzner est figée depuis le 19 août 2026.
+- La copie du serveur Hetzner est figée au commit du 20 août 2026 : les migrations de base du 27 septembre et du 3 octobre y sont jouées, le code non ; déploiement manuel après le gel du 15 octobre.
 
 ---
 
@@ -448,6 +469,7 @@ Le 2 octobre, le garde-fou de sortie était testé seul ; aucun test ne prouvait
 | Industrialisation (25 septembre au 1er octobre) | objectifs de service, points de trace T0 à T9, alertes, contrat `/v1`, chaîne en huit étapes | points de trace **remplacés** par les étapes Langfuse ; alertes Telegram **remplacées** par les deux alertes Langfuse vers GitHub ; contrat `/v1` et chaîne complète **reportés** ; objectifs de service **non mesurés** |
 | Kaldera (1er octobre) | tester la trace, pas le texte ; superviseur déterministe | `test_trace_chemin.py` ; graphe à arêtes fixes |
 | Factum (2 octobre) | `--cov` dans la commande, un seul seuil, preuve par une PR rouge | vérifié ; la PR rouge reste à produire |
+| Chapitre « Données » (brief du 1er septembre, validé par le formateur le 3 octobre) | matrice d'accès à fermeture (une case absente vaut refus) ; trois outils MCP via l'API seulement ; journal des appels d'outils ; 32 cas de vérification | verrou de démonstration de la passerelle ; table `mcp_calls` et `POST /audit/mcp` ; cas rapprochés des tests (`evidence/C12/`) |
 
 ---
 
@@ -464,7 +486,7 @@ C:\Python314\python.exe -X utf8 -m evals.mesurer_rag
 C:\Python314\python.exe scripts\verifier_liens.py
 ```
 
-Les trois mesures de garde-fous ne dépendent que du code. La suite complète et la mesure de recherche exigent PostgreSQL sur le port 5433 et l'index dans `data/chroma`. L'installation complète, avec et sans Docker, est dans `docs/EXPLOITATION.md`.
+Les trois mesures de garde-fous ne dépendent que du code. La suite complète et la mesure de recherche exigent PostgreSQL sur le port 5433 et l'index dans `data/chroma`. L'installation complète, avec et sans Docker, est dans `docs/EXPLOITATION.md`. Ce rapport se rend en PDF par `C:\Python314\python.exe -X utf8 scripts\rendre_pdf.py docs\rapports\E3\rapport-E3.md` (Markdown, HTML, puis impression par Chrome ; le nombre de pages est affiché).
 
 ---
 
@@ -481,7 +503,7 @@ Les trois mesures de garde-fous ne dépendent que du code. La suite complète et
 | Recommandations OWASP intégrées quand nécessaire | 🟠 | section 3.3 : API2, API8, A03 appliqués ; API4 non ; revue ligne à ligne à faire |
 | Sources versionnées sur un dépôt distant | ✅ | `Ganda15/rita-agent` |
 | Les tests couvrent tous les points de terminaison | ✅ | `test_health.py` (10), `test_api_donnees.py` (31) |
-| Les tests s'exécutent sans bug, résultats interprétés | ✅ | 626 passed, 2 xfailed volontaires et expliqués |
+| Les tests s'exécutent sans bug, résultats interprétés | ✅ | 740 passed, 2 xfailed volontaires et expliqués (3 octobre) |
 | Documentation : architecture, points de terminaison, authentification | 🟠 | `docs/EXPLOITATION.md`, `/docs` ; pas de document d'architecture séparé, section 2 de ce rapport en tient lieu |
 | Documentation et API au standard OpenAPI, format accessible | ✅ | OpenAPI 3.1.0 généré ; Markdown et PDF |
 
@@ -494,7 +516,7 @@ Les trois mesures de garde-fous ne dépendent que du code. La suite complète et
 | Authentification et renouvellement intégrés selon la documentation | ✅ | clé saisie, `sessionStorage`, 403 traité ; pas de jeton expirant dans le contrat, donc pas de renouvellement |
 | Tous les points de terminaison concernés sont intégrés | 🟠 | dix routes de données ; `/briefing` non intégré à l'interface |
 | Adaptations d'interface conformes aux spécifications | 🟠 | écran 1 spécifié (US-1) ; écran 2 sans récit utilisateur |
-| Tests d'intégration sur tous les points de terminaison exploités | ✅ | 41 + 4 + 11 tests |
+| Tests d'intégration sur tous les points de terminaison exploités | ✅ | 55 + 5 + 19 tests, plus 26 sur le journal des appels |
 | Les tests s'exécutent en totalité, résultats interprétés | ✅ | suite verte |
 | Sources versionnées sur le dépôt de l'application | ✅ | même dépôt |
 
@@ -504,13 +526,13 @@ Les trois mesures de garde-fous ne dépendent que du code. La suite complète et
 |---|---|---|
 | Les métriques sont expliquées sans erreur d'interprétation | ✅ | section 5.3, un paragraphe par métrique sur la trace réelle du 2 octobre, y compris le coût à zéro expliqué ; `docs/EXPLOITATION.md` |
 | Les outils sont adaptés au contexte et aux contraintes | ✅ | section 5.1 ; registre RGPD §T3 |
-| Un vecteur de restitution en temps réel est proposé | 🔴 | tableau de bord conçu, non construit au 3 octobre |
+| Un vecteur de restitution en temps réel est proposé | ✅ | tableau « RITA C11 » construit le 3 octobre par l'API (définition JSON dans `evidence/C11/`) ; capture d'écran à prendre |
 | Accessibilité prise en compte dans le choix de l'outil | 🟠 | interface web standard ; argument à développer |
 | La chaîne est d'abord testée dans un bac à sable | ✅ | suite de tests sans traçage, doubles de client ; INC-006 |
-| La chaîne est en état de marche | 🟠 | traces réelles depuis le 2 octobre sur le poste ; conteneur et serveur pas encore |
+| La chaîne est en état de marche | 🟠 | première trace complète réelle le 3 octobre, tableau en place, chaîne d'alerte exécutée une fois à la main (#71) ; alertes non réglées, quinze traces factices à supprimer, serveur non tracé |
 | Sources versionnées | ✅ | `src/traces.py`, `api/main.py`, `graph/workflow.py`, `.github/workflows/alerte-incident.yml` |
 | Documentation d'installation, configuration, utilisation | ✅ | section « Monitorage Langfuse et alertes » de `docs/EXPLOITATION.md` |
-| Documentation au format accessible | 🟠 | Markdown ; PDF de ce rapport à produire |
+| Documentation au format accessible | ✅ | Markdown dans le dépôt, et ce rapport rendu en PDF par `scripts/rendre_pdf.py` (20 pages, relues) |
 
 ### C12, tests automatisés (7 critères)
 
@@ -518,11 +540,11 @@ Les trois mesures de garde-fous ne dépendent que du code. La suite complète et
 |---|---|---|
 | Cas à tester listés : partie visée, périmètre, stratégie | ✅ | section 6.1 et ses six sous-chapitres, un extrait réel par type de test ; `docs/LLMOPS.md` |
 | Outils de test cohérents avec l'environnement | ✅ | pytest, coverage, Playwright, PyYAML, FastAPI TestClient |
-| Tests intégrés, couverture souhaitée établie et respectée | ✅ | 93,66 % pour un seuil de 90 % établi par l'historique |
-| Tests exécutés sans problème technique en environnement de test | ✅ | CI verte sur `develop` le 2 octobre (sauf la chute du 28 septembre, cause identifiée) |
+| Tests intégrés, couverture souhaitée établie et respectée | ✅ | 93,92 % pour un seuil de 90 % établi par l'historique |
+| Tests exécutés sans problème technique en environnement de test | ✅ | CI verte sur `develop` et `main` le 3 octobre, deux pull requests fusionnées (la chute du 28 septembre a sa cause identifiée) |
 | Sources versionnées | ✅ | `tests/`, `evals/`, `.coveragerc` |
 | Documentation : installation de l'environnement de test, exécution, couverture | ✅ | `docs/EXPLOITATION.md` §5, `docs/LLMOPS.md` §7 |
-| Documentation au format accessible | 🟠 | Markdown ; PDF à produire |
+| Documentation au format accessible | ✅ | Markdown dans le dépôt, PDF de ce rapport ; `evidence/C12/preuve-suite-de-tests-2026-10-03.md` |
 
 ### C13, chaîne de livraison continue (7 critères)
 
@@ -530,23 +552,23 @@ Les trois mesures de garde-fous ne dépendent que du code. La suite complète et
 |---|---|---|
 | Documentation de la chaîne : étapes, tâches, déclencheurs | 🟠 | section 7 ; `docs/LLMOPS.md` §3 ; pas de `docs/CI-CD.md` dédié (carte #27) |
 | Déclencheurs intégrés comme définis | ✅ | poussée, pull request, tag, manuel, `repository_dispatch` |
-| Fichiers de configuration reconnus et exécutés | ✅ | exécutions vertes de `test.yml` et `livraison.yml` le 2 octobre |
+| Fichiers de configuration reconnus et exécutés | ✅ | le 3 octobre : treize exécutions vertes sur deux pull requests et deux fusions, une annulation volontaire, une alerte manuelle (`evidence/C13/`) |
 | Étape de test des données intégrée | 🟠 | tests de collecte et de nettoyage dans la suite ; pas d'étape nommée « test des données » dans la chaîne |
 | Étapes de test et de validation du modèle intégrées | ✅ | garde-fous mesurés et portes en CI ; aucun entraînement par construction |
 | Sources de la chaîne versionnées | ✅ | `.github/workflows/`, `.githooks/`, `scripts/verifier_livrable.py` |
 | Documentation d'installation, configuration, test de la chaîne, accessible | 🟠 | répartie entre `docs/EXPLOITATION.md`, `docs/LLMOPS.md` et les commentaires des workflows |
 
-**Décompte** : 27 ✅ · 11 🟠 · 1 🔴 sur 39.
+**Décompte** : 30 ✅ · 9 🟠 · 0 🔴 sur 39 (le matin du 3 octobre, version 0.1 : 27, 11, 1).
 
 ---
 
 ## 11. Ce qui n'est pas fait, et les risques
 
-**Pas fait au 3 octobre 2026** : le tableau de bord et les deux alertes dans Langfuse ; les captures d'écran de C11 ; le contrat `/v1` et le 422 pour un ticker inconnu ; la limite de débit ; le manifeste de version et les prompts en fichiers ; le retour arrière ; l'épinglage des dépendances ; le jeu de référence de briefings ; la validation de format des sorties ; le troisième écran (briefing) de l'interface ; la revue OWASP ligne par ligne.
+**Pas fait au 3 octobre 2026 au soir** : les deux alertes dans l'interface Langfuse et la suppression des quinze traces factices (clics du propriétaire du compte) ; les captures d'écran de C11 ; le contrat `/v1` et le 422 pour un ticker inconnu ; la limite de débit ; le manifeste de version et les prompts en fichiers ; le retour arrière ; l'épinglage des dépendances ; le jeu de référence de briefings ; la validation de format des sorties ; le troisième écran (briefing) de l'interface ; la revue OWASP ligne par ligne.
 
-**Risques pour la démonstration** : le poste de démonstration n'a qu'un fournisseur de modèle qui répond (OpenRouter) ; une panne de ce fournisseur, et aucun briefing ne sort. La copie du serveur est figée depuis le 19 août. Le dépôt est privé.
+**Risques pour la démonstration** : le poste de démonstration n'a qu'un fournisseur de modèle qui répond (OpenRouter) ; une panne de ce fournisseur, et aucun briefing ne sort. La copie du serveur est figée au code du 20 août. Le dépôt est privé. Les métriques agrégées de Langfuse sont polluées par quinze traces factices tant qu'elles ne sont pas supprimées.
 
-**Ce que ce rapport ne prétend pas** : qu'un garde-fou à motifs lexicaux arrête une intention habilement formulée (70 %) ; qu'une mesure de recherche sur un jeu annoté par un modèle vaut une mesure humaine ; qu'une chaîne d'alerte testée comme fichier a déjà alerté quelqu'un.
+**Ce que ce rapport ne prétend pas** : qu'un garde-fou à motifs lexicaux arrête une intention habilement formulée (70 %) ; qu'une mesure de recherche sur un jeu annoté par un modèle vaut une mesure humaine ; qu'une chaîne d'alerte exécutée une fois à la main a déjà attrapé une vraie panne.
 
 ---
 
@@ -567,9 +589,11 @@ Les trois mesures de garde-fous ne dépendent que du code. La suite complète et
 | **OpenAPI** | description normalisée d'une API REST, générée ici par FastAPI |
 | **OWASP** | fondation qui publie les listes des dix risques les plus courants (web, API, applications à modèle de langage) |
 | **p95** | la valeur sous laquelle tombent 95 % des mesures |
+| **Note (score)** | valeur attachée à une trace Langfuse, ici `conforme_amf` à 1 ou 0, que le tableau et les alertes peuvent compter |
 | **Pull request** | proposition de fusion d'une branche, relue avant intégration |
 | **request_id** | un identifiant par requête, repris dans la réponse, le journal et la trace |
 | **RGPD** | règlement européen sur les données personnelles ; le registre des traitements en est l'article 30 |
+| **Ruleset** | règle que GitHub applique lui-même sur une branche ou un tag : pull request obligatoire, checks requis, interdictions de suppression et de force-push |
 | **Span, trace** | une étape chronométrée, et l'arbre des étapes d'une requête |
 | **Tag** | étiquette Git posée sur un commit précis ; son lien ne bouge plus |
 | **xfail strict** | test dont l'échec est attendu et déclaré ; s'il passe, la suite devient rouge pour obliger à retirer le marqueur |
