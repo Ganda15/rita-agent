@@ -203,6 +203,7 @@ docs/veille/
 ├── _MODELE-note-hebdomadaire.md       le gabarit
 ├── _JOURNAL-DES-ENVOIS.md             la trace des partages (§5.2)
 └── 2026-S33-injection-de-prompt.md    une note par semaine : AAAA-Sxx-sujet.md
+└── Veille-C6-synthese-S33-a-S36.pdf    synthèse mensuelle (18 pages, produite le 08/09/2026 depuis les quatre notes S33 à S36, rangée dans le dépôt le 03/10) : le format partageable, les notes Markdown restent la source
 ```
 
 Le numéro de semaine ISO rend la **récurrence lisible d'un coup d'œil** : un trou dans la
