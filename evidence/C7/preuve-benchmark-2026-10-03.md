@@ -1,8 +1,10 @@
 # Preuve C7 : première mesure du banc des fournisseurs (03/10/2026)
 
 > Plan : `../../docs/PLAN-C7-benchmark.md`, options D1 à D3 = A retenues par Era le 03/10 (« ok do it »).
-> **Deux passages le 03/10** : le premier sur le prompt d'avant la carte #57 (fichiers `*-avant-57.*`), le second,
-> qui fait foi, sur le prompt corrigé (§7). Les chiffres du §3 sont ceux du second.
+> **Trois passages le 03/10** : le premier sur le prompt d'avant la carte #57 (`*-avant-57.*`), le deuxième sur le
+> prompt corrigé (`*-v2-prompt-57.*`), le troisième, **qui fait foi**, sur le prompt qui porte les 13 indicateurs
+> (§8 ; jeu figé `jeu-d-essai-2026-10-03.json`, l'ancien jeu sans indicateurs est `-v1-sans-indicateurs`). Les chiffres
+> du §3 sont ceux du deuxième passage ; le §8 donne ceux du troisième et ce qui a changé.
 > Script : `evals/benchmark_fournisseurs.py`, écrit test d'abord (`tests/test_benchmark_fournisseurs.py`,
 > `tests/test_benchmark_outillage.py`). Brut : `resultats-2026-10-03.jsonl` (30 lignes), `resume-2026-10-03.json`,
 > jeu figé `jeu-d-essai-2026-10-03.json`. Notation du français à faire par Era : `notes-francais-2026-10-03.csv`
@@ -78,6 +80,35 @@ titres, 7 nomment les capitaux, et HSBA.L dit « près de 299 millions de livres
 restantes du mot « volume » désignent la liquidité en général, pas ce chiffre. Le premier passage est conservé dans
 les fichiers `*-avant-57.*` : un chiffre mesuré sur un prompt faux reste une mesure, datée, et elle montre ce que la
 correction a changé.
+
+## 8. Troisième passage : les 13 indicateurs dans le prompt
+
+Décision d'Era le 03/10 au soir : le scout calculait treize indicateurs et le rédacteur n'en recevait que quatre
+nombres (cours, variation du jour, capitaux moyens, devise). Le prompt reçoit désormais les neuf autres (performances
+1 semaine, 1 mois, depuis le 1er janvier, 1 an ; moyennes mobiles 20 et 50 ; distance au plus haut sur 1 an ;
+volatilité annualisée ; drawdown maximal ; RSI 14, rejoint au dictionnaire du scout ce soir), avec une règle en toutes
+lettres : des faits à décrire, jamais des signaux. Tests d'abord (prompt, scout, graphe, banc), jeu refigé avec les
+indicateurs, banc relancé : 0,18 USD.
+
+| Mesure | Deuxième passage (4 nombres) | Troisième passage (13 indicateurs) |
+|---|---|---|
+| Réussis, conformes AMF, fidèles | 30 / 30 chacun, Wilson [0,89 ; 1,00] | 30 / 30 chacun, Wilson [0,89 ; 1,00] |
+| Latence, médiane et p95 | 5,63 s et 7,39 s | 6,34 s et 7,30 s |
+| Jetons, entrée et sortie (moyenne) | 506 et 196 | 797 et 242 |
+| Coût par briefing (prix public du jour) | 0,0045 USD | 0,0060 USD |
+| Textes qui citent le RSI | 0 (il n'était pas fourni) | 30 sur 30 |
+| Textes qui citent la volatilité, une performance à 1 mois ou 1 an | 0 | 25 et 25 |
+| Textes qui citent une moyenne mobile ; le drawdown | 0 | 8 ; 0 |
+| Mots de signal (acheter, vendre, survente, surachat, sous-évalué, point d'entrée) | 0 | 0 |
+
+Lecture. Le modèle s'empare des indicateurs : le briefing dit maintenant « recul de 4,61 % sur la semaine et de
+13,77 % sur le mois », « 41,20 % en dessous de son plus haut annuel », « volatilité élevée (22,50 % annualisée) ».
+Aucun texte ne franchit la ligne AMF, et aucun mot de signal n'apparaît. Un point à surveiller, dit tel quel : sur
+MC.PA, « le RSI à 24,2 témoigne d'une forte pression vendeuse récente » est une lecture de l'indicateur, pas une
+recommandation ; le garde-fou de sortie l'accepte, et c'est le genre de formulation que le jeu d'évaluation du
+garde-fou devra contenir pour que la limite reste mesurée. Le coût monte d'un tiers (300 jetons d'entrée de plus),
+la latence d'une demi-seconde en médiane. Le drawdown n'est jamais repris : le mot ne parle pas à un particulier,
+le libellé du prompt pourra le dire autrement.
 
 ## 6. Commandes
 

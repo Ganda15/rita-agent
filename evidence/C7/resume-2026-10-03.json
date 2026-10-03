@@ -41,12 +41,12 @@
     0.8864829086095221,
     1.0
    ],
-   "latence_p50_s": 5.631,
-   "latence_p95_s": 7.389,
-   "jetons_entree_moyen": 506.4,
-   "jetons_sortie_moyen": 196.33333333333334,
-   "cout_total_usd": 0.133926,
-   "cout_moyen_usd": 0.0044642
+   "latence_p50_s": 6.338,
+   "latence_p95_s": 7.296,
+   "jetons_entree_moyen": 796.8,
+   "jetons_sortie_moyen": 241.93333333333334,
+   "cout_total_usd": 0.18058200000000002,
+   "cout_moyen_usd": 0.0060194
   }
  }
 }

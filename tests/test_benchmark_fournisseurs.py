@@ -153,3 +153,16 @@ def test_un_fournisseur_sans_appel_reussi_n_a_pas_de_taux():
                "duree_s": 0.2, "jetons_entree": 0, "jetons_sortie": 0, "cout_usd": 0.0}]
     r = banc.resumer(lignes)["anthropic"]
     assert r["reussis"] == 0 and r["intervalle_conformes"] is None
+
+
+def test_le_prompt_du_banc_porte_les_indicateurs_quand_le_jeu_les_a():
+    from agents.analyst import construire_prompt
+    cas = {**CAS, "indicateurs": {"rsi_14": 38.4, "ma20": 404.9}}
+    assert banc.prompt_du_cas(cas) == construire_prompt(**CAS, indicateurs=cas["indicateurs"])
+    assert "RSI 14 : 38.4" in banc.prompt_du_cas(cas)
+
+
+def test_un_jeu_fige_sans_indicateurs_reste_lisible(tmp_path):
+    chemin = tmp_path / "jeu.json"
+    chemin.write_text(json.dumps({"fige_le": "2026-10-03", "cas": [CAS]}), encoding="utf-8")
+    assert banc.charger_jeu(chemin)["cas"][0]["ticker"] == "MC.PA"

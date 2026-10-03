@@ -72,6 +72,11 @@ E3 le déclarait comme premier manque de C10 : le seul point de terminaison qui 
 sur 39. Même nuit : carte #57 corrigée (les capitaux échangés sur 20 séances ne s'appellent plus « volume », 5 textes sur 30 du banc
 parlaient de « titres échangés », 0 après), banc C7 relancé sur le prompt corrigé.
 
+**Décision structurante (fin de nuit, suite)** : **les 13 indicateurs entrent dans le prompt du rédacteur** (Era). Le scout les calculait,
+le modèle n'en recevait que quatre nombres. Bloc « faits à décrire, jamais des signaux », RSI joint au scout, tests d'abord ; banc C7
+refigé et relancé : conformité AMF intacte (30/30), 30 textes sur 30 citent le RSI, coût par briefing 0,0045 → 0,0060 USD. **Point
+à surveiller** : une lecture d'indicateur (« forte pression vendeuse ») passe le garde-fou ; à ajouter au jeu d'évaluation.
+
 ---
 
 ## 2026-10-03 : reconnaissance complète, plan initial contre réalisé, pointeurs périmés

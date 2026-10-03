@@ -49,10 +49,10 @@ api/main.py ─── middleware : un identifiant par requête (X-Request-ID)
   │           ─── journal mcp_calls : une ligne par appel d'outil déclaré (X-Client-Id), jamais le contenu
   ▼
 graph/workflow.py : graphe LangGraph à trois nœuds, arêtes fixes
-  ├─ scout      lit la base : cours, variation, volume moyen, fraîcheur des données
+  ├─ scout      lit la base : 13 indicateurs (cours, variation, capitaux moyens, performances, moyennes mobiles, volatilité, drawdown, RSI), fraîcheur
   ├─ rag        cherche les articles de la valeur (ChromaDB, hybride dense + BM25)
   │               └─ garde-fou d'entrée : refuse une question à intention AMF avant la base
-  └─ redacteur  construit le prompt et appelle src/llm.py
+  └─ redacteur  construit le prompt (les 13 indicateurs comme des faits, jamais des signaux ; les passages) et appelle src/llm.py
                   └─ cascade Foundry → Anthropic → OpenRouter, une génération tracée par essai
   ▼
 guardrails/sortie.py : relit le texte ; si recommandation, texte remplacé par un refus (HTTP 200, conforme_amf=false)

@@ -80,12 +80,14 @@ def construire_jeu(tickers: list[str], collecter=None, rechercher=None) -> dict:
         nom = (etat.get("indicateurs") or {}).get("nom_officiel") or t
         resultat = rechercher(f"actualite {nom.split()[0]}", ticker=t)
         passages = [p.en_dict() for p in getattr(resultat, "passages", [])] if resultat is not None else []
-        cas.append({c: etat.get(c) for c in CHAMPS_CAS if c != "passages"} | {"passages": passages})
+        cas.append({c: etat.get(c) for c in CHAMPS_CAS if c != "passages"}
+                   | {"passages": passages, "indicateurs": etat.get("indicateurs") or {}})
     return {"fige_le": dt.date.today().isoformat(), "cas": cas}
 
 
 def prompt_du_cas(cas: dict) -> str:
-    return construire_prompt(**{c: cas[c] for c in CHAMPS_CAS})
+    # `indicateurs` est facultatif : un jeu figé avant le 03/10 n'en a pas, et son prompt reste celui d'alors.
+    return construire_prompt(**{c: cas[c] for c in CHAMPS_CAS}, indicateurs=cas.get("indicateurs") or None)
 
 
 # ----------------------------------------------------------------------------- fidélité aux faits

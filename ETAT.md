@@ -38,7 +38,7 @@ l'assistant rédige le texte, jamais l'envoi.**
 3. **Trancher `memory_audit`** (écrire des empreintes ou retirer la table ; zone sous garde, plan d'abord).
 4. **Clés** Foundry et Anthropic dans `.env` (jamais touché par l'assistant), puis relancer le banc : une commande,
    `C:\Python314\python.exe -X utf8 -m evals.benchmark_fournisseurs --jeu evidence\C7\jeu-d-essai-2026-10-03.json --repetitions 3 --plafond 5 --sortie evidence\C7`.
-5. **Noter le français** des 30 textes de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1, 2), sans ouvrir le fichier `-cle.csv`. Ce CSV est celui du second passage (prompt corrigé de la carte #57) ; les fichiers `-avant-57` sont conservés, pas à noter.
+5. **Noter le français** des 30 textes de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1, 2), sans ouvrir le fichier `-cle.csv`. Ce CSV est celui du troisième passage (prompt avec les 13 indicateurs) ; les fichiers `-avant-57` et `-v2-prompt-57` sont conservés, pas à noter.
 6. **Langfuse, clics** (`evidence/C11/preuve-langfuse-2026-10-03.md` §3) : supprimer les 15 traces factices du 02/10 (il reste
    23 traces : 15 factices et 8 réelles), régler les 2 alertes, capture du tableau « RITA C11 » dans `evidence/C11/`.
 7. **C6** : capture du fil Discord du 16/08 avec ses réponses dans `evidence/C6/` ; note S40 écrite depuis
@@ -56,6 +56,8 @@ zones sous garde (`db/schema.sql`, `guardrails/`, `evals/`) : rien sans plan val
 
 
 ---
+
+📊 **03/10, nuit : les 13 indicateurs entrent dans le prompt du rédacteur** (décision d'Era). Le scout en calculait treize, le modèle n'en recevait que quatre nombres ; les neuf autres vivaient sur l'écran 2 sans l'atteindre, et le RSI n'était même pas joint au dictionnaire du scout. Tests d'abord (prompt, scout, graphe, banc), bloc « faits à décrire, jamais des signaux », volatilité sans signe, absent = « non disponible ». Banc C7 refigé et relancé (troisième passage, qui fait foi) : 30/30 conformes et fidèles, médiane 6,3 s, 797 jetons en entrée, 0,0060 USD par briefing ; 30 textes sur 30 citent le RSI, 25 la volatilité, aucun mot de signal. Point à surveiller écrit dans la preuve : « RSI à 24,2, forte pression vendeuse » est une lecture, pas un conseil, le garde-fou l'accepte ; à mettre dans le jeu d'évaluation. **La notation du français porte sur ce troisième jeu** (`notes-francais-2026-10-03.csv`).
 
 🖥️ **03/10, nuit : le troisième écran, le briefing, est construit** (décision d'Era, « do it »). `frontend/briefing.html` et `briefing.js` : champ ticker avec l'univers en liste déroulante, `POST /briefing` avec la clé, texte en paragraphes par `textContent`, verdict du garde-fou en mots, identifiant de requête affiché, 502 dit « introuvable », 403 redemande la clé, attente annoncée. 17 tests statiques et 2 tests navigateur écrits avant (API interceptée, aucun appel payant), puis un briefing réel capturé : `evidence/C10/ecran-briefing-2026-10-03.png`, `preuve-ecran-briefing.md`. Rapport E3 : C10 « tous les points de terminaison intégrés » passe à tenu, **33 ✅ · 6 🟠 · 0 🔴**, PDF regénéré. **Pour la démo de l'oral E3** : l'écran 3 avec une vraie valeur, puis la trace Langfuse de la même requête par sa référence.
 
