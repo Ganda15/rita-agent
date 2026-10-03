@@ -41,9 +41,24 @@ reste avant est de ta main. Règle : **c'est Era qui envoie tout message** au fo
    pas le message « aucun fournisseur »). PDF régénéré, 19 pages, décompte E3 inchangé (33, 6, 0).
 3. **Noter les 60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1 ou 2), **sans ouvrir** le fichier `-cle.csv`.
    C'est ce qui fait passer la recommandation C7 de « provisoire » à « argumentée ».
-4. **Envoyer au formateur** le message (brouillon réécrit le 03/10 au soir, **à copier depuis le journal Obsidian 019, §49** ; `docs/EXPLOITATION.pdf` régénéré le même soir, deux phrases périmées corrigées), adapté : le périmètre C7 est maintenant à deux éditeurs,
-   c'est une confirmation, plus une question ; joindre `docs/EXPLOITATION.pdf`. Garder l'envoi et la réponse dans
-   `evidence/C8/` (#43, le seul 🔴 de E2).
+4. **Envoyer au formateur** le message ci-dessous, à copier tel quel ; joindre `docs/EXPLOITATION.pdf` (régénéré le 03/10 au soir,
+   deux phrases périmées corrigées). Garder l'envoi et la réponse dans `evidence/C8/` (#43, le seul 🔴 de E2).
+
+   > **Objet** : RITA, deux points pour E2 (C7 et C8)
+   >
+   > Bonjour Elbby,
+   >
+   > Deux points sur le livrable E2, pour lesquels un retour, même court, m'aiderait.
+   >
+   > 1. C7, le choix du service de modèle. J'ai écrit le protocole avant de mesurer (`docs/PLAN-C7-benchmark.md`) et fait une première comparaison le 3 octobre : GPT-5.4 servi par Azure AI Foundry contre Claude Sonnet 4.5 servi par OpenRouter, sur dix cas tirés de mes données, trois répétitions chacun. Je mesure la conformité au garde-fou AMF, la fidélité aux chiffres fournis, la latence et le coût, avec des intervalles de confiance. J'ai aussi relevé les prix publics et ce que les fournisseurs publient sur l'environnement, c'est-à-dire très peu. Je note moi-même le français, à l'aveugle. Ma question : deux éditeurs comparés de cette façon, est-ce que cela répond au critère, ou attendez-vous un troisième service, par exemple Claude en direct chez Anthropic ?
+   >
+   > 2. C8, la documentation d'exploitation. Je vous joins le guide d'exploitation de RITA en PDF : accès et clés, installation avec ou sans Docker, tests, services externes, données, monitorage. Le critère demande qu'elle soit communiquée, votre accusé de réception me servira de preuve.
+   >
+   > Pour information, les rapports E1 (version 2) et E3 seront gelés le 15 octobre. Je vous enverrai le lien du tag à ce moment-là.
+   >
+   > Merci,
+   > Eramalingam
+
 5. **Décisions** (une ligne chacune suffit, dans le chat ou à la revue) : **D7** documentation `/docs` publique en production
    (la règle de fermeture validée plaide pour la clé) ; **D6** lignes affichées d'emblée sur l'écran indicateurs (recommandé :
    rien avant le gel) ; **`memory_audit`** (zone sous garde, plan d'abord) ; **#36** rafraîchir les données en ligne avant le
