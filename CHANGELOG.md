@@ -9,6 +9,17 @@
 
 ---
 
+## 2026-10-03 (soir) : C7, prix publics relevés, et un manque qui ne se comble pas
+
+**Manque découvert** : pour le critère C7.5 (approche environnementale), **aucun des deux éditeurs mesurés ne publie de chiffre par
+modèle**. OpenAI donne un seul chiffre moyen (0,34 Wh par requête, billet de juin 2025, sans méthode) ; Anthropic n'a ni page ni rapport.
+Seul l'hébergeur Microsoft publie des chiffres vérifiés, à l'échelle de l'entreprise (FY25 : 21,1 Mt CO2e, PUE 1,17, 100 % renouvelable
+direct). Décision : l'inconnu est écrit tel quel, avec un ordre de grandeur donné comme hypothèse (0,3 à 18 Wh par briefing selon la
+source), plutôt qu'une note inventée. Relevé daté et sourcé : `evidence/C7/prix-et-environnement-2026-10-03.md`. Prix publics : `gpt-5.4`
+2,50 et 15,00 USD par million, `claude-sonnet-4.5` 3,00 et 15,00 ; au prix public, 0,0047 contre 0,0060 USD par briefing.
+
+---
+
 ## 2026-10-03 (suite) : chapitre « Données » validé par le formateur et intégré, PR 58 relue par la revue automatisée
 
 **Décision structurante** : le chapitre « Données » (brief du 01/09, rendu le 07/09, écrit hors dépôt au commit `23318a6`) reçoit

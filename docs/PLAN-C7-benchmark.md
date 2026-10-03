@@ -92,6 +92,10 @@ juillet en donnait, sans source, et elles ne sont pas reprises. Prérequis techn
 authentification (clé en variable d'environnement), bibliothèque (`anthropic`, `httpx`), limites de débit publiées,
 format d'erreur, disponibilité d'un contrat de traitement des données.
 
+**Relevé fait le 03/10/2026 au soir** : `evidence/C7/prix-et-environnement-2026-10-03.md`. Résultat : prix publics
+datés pour les deux modèles ; chiffres d'entreprise vérifiés pour l'hébergeur Microsoft ; **inconnu** par modèle chez
+OpenAI comme chez Anthropic, et inconnue la région qui a servi les appels. Le plan tient : l'inconnu est écrit, pas comblé.
+
 ## 6. Ce qui sera écrit, et où (critère C7.7)
 
 - `evidence/C7/jeu-d-essai-<date>.json` : les dix prompts, l'instantané des faits.

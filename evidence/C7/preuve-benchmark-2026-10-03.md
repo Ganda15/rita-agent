@@ -125,7 +125,7 @@ reste indisponible (pas de clé). Coût du passage : 0,18 USD côté OpenRouter,
 | Fidélité aux faits fournis | 30 / 30, [0,89 ; 1,00] | 30 / 30, [0,89 ; 1,00] |
 | Latence, médiane et p95 | **3,21 s** et **10,69 s** (maximum 11,9 s) | 6,33 s et 7,20 s (maximum 7,3 s) |
 | Jetons, entrée et sortie (moyenne) | 644 et 204 | 797 et 243 |
-| Coût par briefing | **0 pour le projet** (ressource du candidat) ; prix public du modèle : non relevé, inconnu ici | 0,0060 USD au prix public du 03/10 |
+| Coût par briefing | **0 pour le projet** (ressource du candidat) ; **0,0047 USD au prix public** (2,50 et 15,00 USD par million, billet Microsoft du 05/03/2026, relevé le 03/10 dans `prix-et-environnement-2026-10-03.md`) | 0,0060 USD au prix public du 03/10 (3,00 et 15,00 USD par million) |
 | Longueur moyenne du texte | 714 caractères | 707 caractères |
 | Textes qui citent le RSI ; la volatilité | 29 ; 17 | 28 ; 22 |
 | Mots de signal | 0 | 0 |
@@ -133,8 +133,8 @@ reste indisponible (pas de clé). Coût du passage : 0,18 USD côté OpenRouter,
 **Lecture, sans conclure plus que les chiffres.** Sur ce que le banc mesure automatiquement, les deux services sont
 **indiscernables** : trente textes conformes et fidèles chacun, des intervalles identiques. Ce qui les distingue :
 la latence (Foundry deux fois plus rapide en médiane, mais une queue plus longue, un appel sur vingt dépasse 10 s,
-quand OpenRouter reste entre 5 et 7,3 s) ; le coût (zéro pour le projet contre 0,006 USD, le prix public de
-`gpt-5.4` restant à relever avant toute phrase sur le coût réel) ; et le style, que seule la notation à l'aveugle
+quand OpenRouter reste entre 5 et 7,3 s) ; le coût (zéro pour le projet contre 0,006 USD ; au prix public, 0,0047 contre 0,0060 USD par
+briefing, soit 22 % de moins pour `gpt-5.4`, surtout par les jetons : relevé daté dans `prix-et-environnement-2026-10-03.md`) ; et le style, que seule la notation à l'aveugle
 d'Era peut départager (fichier `notes-francais-2026-10-03.csv`, 60 textes mélangés, les deux services confondus).
 Les deux modèles lisent les 13 indicateurs de la même façon : HSBA.L chez Foundry, « sous ses moyennes mobiles à 20
 séances (15,18 GBP) et 50 séances (15,30 GBP), RSI 14 à 34,5 », sans un mot de conseil.
@@ -145,8 +145,15 @@ conformité et fidélité égales, médiane plus courte), OpenRouter en secours,
 latence qui gênerait la démonstration (un appel sur vingt au-delà de 10 s), ou la fin de la gratuité de la ressource.
 
 **Ce qui manque encore pour clore C7** : la notation du français (Era) ; Anthropic en direct, jamais mesuré faute de
-clé ; le prix public et l'information environnementale de `gpt-5.4`, à relever avec leur date ; la variance d'un jour
-à l'autre (tout est mesuré le 03/10).
+clé ; la variance d'un jour à l'autre (tout est mesuré le 03/10) ; la région qui a servi les appels (type de déploiement
+Foundry à lire dans le portail, point de sortie OpenRouter non journalisé).
+
+**Relevé le 03/10 au soir, après ce passage** (`prix-et-environnement-2026-10-03.md`) : le prix public des deux modèles, daté et sourcé ;
+l'information environnementale : Microsoft publie des chiffres d'entreprise vérifiés (FY25 : 21,1 millions de tonnes
+équivalent CO2, +62 % sur 2020 ; 100 % d'électricité renouvelable directe ; PUE 1,17), **aucun des deux éditeurs ne
+publie quoi que ce soit par modèle** (OpenAI : un seul chiffre moyen de 0,34 Wh par requête, sans méthode ; Anthropic :
+rien). C7.5 reste donc une approche par l'absence : l'ordre de grandeur va de 0,3 à 18 Wh par briefing selon la source,
+et le fichier le dit au lieu de choisir.
 
 ## 6. Commandes
 

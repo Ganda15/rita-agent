@@ -8,7 +8,7 @@
 | **Formation** | Simplon × Wild Code School, promotion Développeur IA et IA agentique |
 | **Dépôt** | `Ganda15/rita-agent` (privé ; accès du jury par invitation de collaborateur) |
 | **Version** | 0.1, squelette du 3 octobre 2026 ; format attendu 15 à 20 pages, oral 15 minutes, sans démonstration ; dû le 5 novembre 2026 |
-| **État** | C6 et C8 rédigés depuis les faits du dépôt ; **C7 : première comparaison mesurée le 03/10 au soir** (GPT par Azure AI Foundry contre Claude par OpenRouter, 30 appels chacun), recommandation provisoire ; restent la notation du français, Anthropic en direct et l'information environnementale ; plan validé D1 à D3 = A |
+| **État** | C6 et C8 rédigés depuis les faits du dépôt ; **C7 : première comparaison mesurée le 03/10 au soir** (GPT par Azure AI Foundry contre Claude par OpenRouter, 30 appels chacun), recommandation provisoire ; prix publics et information environnementale relevés le soir même (rien par modèle chez les deux éditeurs) ; restent la notation du français et Anthropic en direct ; plan validé D1 à D3 = A |
 
 ## Lire ce rapport
 
@@ -103,9 +103,16 @@ Les sections suivantes seront remplies **après** la mesure, depuis `evidence/C7
   Claude par Anthropic et OpenRouter) ; exclus : services à carte bancaire, modèle local, services sans conditions de
   traitement lisibles (plan §2) ; la question au formateur devient une confirmation.
 - 3.3 Résultats mesurés (`evidence/C7/preuve-benchmark-2026-10-03.md`, §9, quatrième passage du 03/10, prompt avec les 13 indicateurs) : sur ce que le banc mesure automatiquement, les deux services sont indiscernables, 30 appels sur 30 réussis, 30 textes conformes AMF et 30 fidèles aux faits chacun (Wilson 95 % [0,89 ; 1,00] pour chaque taux). Ce qui les distingue : la latence (Foundry médiane 3,2 s, p95 10,7 s ; OpenRouter 6,3 s et 7,2 s), les jetons (644 et 204 contre 797 et 243) et le coût (0 pour le projet contre 0,0060 USD par briefing au prix public du jour). Les trois passages précédents du même jour sont conservés et nommés dans la preuve (avant la carte #57 : 5 textes sur 30 appelaient des capitaux des « titres échangés » ; 0 après).
-- 3.4 Environnement et prérequis techniques : prérequis relevés dans le code (clé en variable d'environnement, point
-  compatible OpenAI pour Foundry avec `max_completion_tokens`, bibliothèque `anthropic` pour l'API directe, httpx pour
-  les deux autres) ; information environnementale et prix public de `gpt-5.4` : Information missing, to complete later.
+- 3.4 Environnement et prérequis techniques (`evidence/C7/prix-et-environnement-2026-10-03.md`, relevé du 03/10) : prérequis
+  relevés dans le code (clé en variable d'environnement, point compatible OpenAI pour Foundry avec `max_completion_tokens`,
+  bibliothèque `anthropic` pour l'API directe, httpx pour les deux autres). Prix publics datés : `gpt-5.4` 2,50 et 15,00 USD
+  par million de jetons (billet Microsoft du 05/03/2026), `claude-sonnet-4.5` 3,00 et 15,00 (API OpenRouter) ; au prix
+  public, 0,0047 contre 0,0060 USD par briefing. Environnement : Microsoft publie des chiffres d'entreprise vérifiés pour
+  FY25 (21,1 millions de tonnes équivalent CO2, +62 % sur 2020 ; 100 % d'électricité renouvelable directe ; PUE 1,17 ;
+  objectif carbone négatif 2030) ; **aucun des deux éditeurs ne publie de chiffre par modèle** (OpenAI : 0,34 Wh par
+  requête moyenne, sans méthode ; Anthropic : rien, page inexistante). La région qui a servi les appels est inconnue des
+  deux côtés (type de déploiement Foundry à lire dans le portail ; point de sortie OpenRouter non journalisé). Le rapport
+  donne l'ordre de grandeur (0,3 à 18 Wh par briefing selon la source) comme une hypothèse, pas comme une mesure.
 - 3.5 Recommandation, **provisoire** jusqu'à la notation du français : Foundry en premier (gratuit pour le projet,
   conformité et fidélité égales, médiane plus courte), OpenRouter en secours, soit l'ordre actuel de `LLM_ORDRE`. Ce
   qui ferait changer la décision : une note de français nettement plus basse pour Foundry, la queue de latence (un
@@ -177,8 +184,8 @@ Information missing, to complete later.
 | C7.2 services inclus et exclus | ✅ | plan §2 ; deux éditeurs mesurés, un troisième fournisseur indisponible, exclusions motivées |
 | C7.3 raisons d'exclusion | 🟠 | plan §2 |
 | C7.4 adéquation fonctionnelle mesurée | 🟠 | deux fournisseurs mesurés sur dix cas figés, trois répétitions (conformité, fidélité, latence, coût) ; français à noter à l'aveugle |
-| C7.5 approche environnementale | 🔴 | aucune donnée vérifiée |
-| C7.6 prérequis et contraintes techniques | 🟠 | relevés dans le code (`src/llm.py`) et dans la sonde du banc (clé, authentification), à compléter par fournisseur |
+| C7.5 approche environnementale | 🟠 | relevé daté du 03/10 (`evidence/C7/prix-et-environnement-2026-10-03.md`) : chiffres d'hébergeur vérifiés pour Microsoft, rien par modèle chez OpenAI ni Anthropic, écrit comme inconnu ; région de traitement à relever |
+| C7.6 prérequis et contraintes techniques | 🟠 | relevés dans le code (`src/llm.py`) et dans la sonde du banc (clé, authentification) ; prix publics et types de déploiement relevés ; limites de débit non relevées |
 | C7.7 recommandation argumentée | 🟠 | provisoire (preuve §9), à confirmer par la notation du français |
 | C8.1 service accessible, authentification | ✅ | briefing réel du 03/10, clé en environnement |
 | C8.2 configuration conforme aux besoins | 🟠 | un fournisseur opérationnel sur trois |
@@ -194,7 +201,7 @@ Information missing, to complete later.
 
 1. Captures du fil Discord du 16/08 et envoi daté au formateur (Era) : la seule preuve de partage possible.
 2. Note S40 écrite par Era depuis les candidats ; les semaines S37 à S39 restent déclarées sans séance.
-3. Noter le français à l'aveugle (60 textes, deux services confondus) ; relever le prix public et l'information environnementale de `gpt-5.4` ; confirmer le périmètre avec le formateur ; Anthropic en direct si une clé arrive.
+3. Noter le français à l'aveugle (60 textes, deux services confondus) ; lire dans le portail Foundry le type de déploiement et la région de la ressource ; confirmer le périmètre avec le formateur ; Anthropic en direct si une clé arrive.
 4. Envoi du guide d'exploitation au formateur, preuve rangée (#43).
 5. Rédaction des sections C7 depuis `evidence/C7/`, relecture, PDF (`scripts/rendre_pdf.py`), tag `livrable-E2-v1`.
 
