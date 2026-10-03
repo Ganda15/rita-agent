@@ -29,13 +29,14 @@ long (le prompt tient en moins de 1 000 jetons).
 
 | Service (fournisseur) | Modèle réellement appelé (configuration du 03/10) | État sur le poste de démonstration |
 |---|---|---|
-| Azure AI Foundry | `claude-opus-4-8` (déploiement Azure) | clé absente : **indisponible pour la mesure** tant qu'elle manque |
+| Azure AI Foundry | `gpt-5.4` (point compatible OpenAI, depuis le 03/10 au soir ; avant : `claude-opus-4-8` par le client Anthropic, jamais une clé) | clé à poser dans `.env` par Era ; dès lors **mesurable**, et c'est un modèle d'un autre éditeur |
 | Anthropic, API directe | `claude-sonnet-5` | authentification en échec le 03/10 : **indisponible pour la mesure** tant que ce n'est pas réglé |
 | OpenRouter | `anthropic/claude-sonnet-4.5` | opérationnel, un briefing réel servi le 03/10 |
 
-Deux choses à dire franchement. D'abord, les trois services servent **la même famille de modèles** : comparer
-trois fournisseurs d'un même modèle mesure le fournisseur (latence, coût, disponibilité, conditions), pas le
-modèle. Ensuite, une version différente du modèle chez deux fournisseurs ferait passer une différence de modèle
+Deux choses à dire franchement. D'abord, depuis le 03/10 au soir, les trois services ne servent plus la même
+famille de modèles : Foundry sert `gpt-5.4` (OpenAI), Anthropic et OpenRouter servent Claude. Le banc compare donc
+**deux éditeurs et trois fournisseurs** ; entre Anthropic en direct et OpenRouter, il mesure le fournisseur (latence,
+coût, disponibilité, conditions), pas le modèle. Ensuite, une version différente du modèle chez deux fournisseurs ferait passer une différence de modèle
 pour une différence de fournisseur : le banc note donc **le fournisseur et l'identifiant exact du modèle** à chaque
 appel, et ne compare que ce qui est comparable.
 

@@ -1,4 +1,9 @@
-"""Appel Claude à 3 fournisseurs en cascade (Foundry → Anthropic → OpenRouter).
+"""Appel au modèle, 3 fournisseurs en cascade (Foundry → Anthropic → OpenRouter).
+
+Depuis le 03/10/2026, Azure AI Foundry sert un point de terminaison **compatible OpenAI**
+(`.../openai/v1`, déploiement `gpt-5.4`, ressource d'Era, gratuite pour lui) : un modèle d'un
+autre éditeur que Claude, ce qui donne au banc C7 une vraie comparaison. Anthropic en direct et
+OpenRouter servent Claude.
 
 Depuis le 02/10/2026, chaque tentative est tracée dans Langfuse (`src/traces.py`, C11,
 carte #39) : fournisseur, modèle, prompt, sortie, usage en tokens, et l'erreur quand un
@@ -9,7 +14,7 @@ import os
 import sys
 
 import httpx
-from anthropic import Anthropic, AnthropicFoundry
+from anthropic import Anthropic
 
 from src import traces
 from src.traces import Reponse
@@ -31,7 +36,7 @@ def _modele_prevu(nom: str) -> str:
     fin par `Reponse.modele`.
     """
     return {
-        "foundry": os.getenv("AZURE_FOUNDRY_DEPLOYMENT", "claude-opus-4-8"),
+        "foundry": os.getenv("AZURE_FOUNDRY_DEPLOYMENT", "gpt-5.4"),
         "anthropic": os.getenv("ANTHROPIC_MODEL", "claude-sonnet-5"),
         "openrouter": os.getenv("OPENROUTER_MODEL", "anthropic/claude-sonnet-4.5"),
     }[nom]
@@ -45,17 +50,31 @@ def _usage_anthropic(reponse) -> dict | None:
 
 
 def _appel_foundry(prompt: str, max_tokens: int) -> Reponse:
-    client = AnthropicFoundry(
-        api_key=os.environ["AZURE_FOUNDRY_API_KEY"],
-        base_url=os.environ["AZURE_FOUNDRY_ENDPOINT"],
+    """Azure AI Foundry par son point compatible OpenAI (chat completions), comme OpenRouter.
+
+    `AZURE_FOUNDRY_ENDPOINT` se termine par `/openai/v1` ; le déploiement sert de nom de modèle.
+    Une variable absente lève `KeyError` : c'est « indisponible », la cascade passe au suivant.
+    Pas de dépendance `openai` : httpx suffit, et une bibliothèque de moins est une surface de moins."""
+    base = os.environ["AZURE_FOUNDRY_ENDPOINT"].rstrip("/")
+    reponse = httpx.post(
+        f"{base}/chat/completions",
+        headers={"Authorization": f"Bearer {os.environ['AZURE_FOUNDRY_API_KEY']}"},
+        json={
+            "model": _modele_prevu("foundry"),
+            "max_tokens": max_tokens,
+            "messages": [{"role": "user", "content": prompt}],
+        },
+        timeout=60.0,
     )
-    reponse = client.messages.create(
-        model=_modele_prevu("foundry"),
-        max_tokens=max_tokens,
-        messages=[{"role": "user", "content": prompt}],
+    reponse.raise_for_status()
+    corps = reponse.json()
+    usage = corps.get("usage") or {}
+    return Reponse(
+        texte=corps["choices"][0]["message"]["content"],
+        modele=corps.get("model"),
+        usage={"input": usage.get("prompt_tokens", 0), "output": usage.get("completion_tokens", 0)}
+        if usage else None,
     )
-    return Reponse(texte=reponse.content[0].text, modele=getattr(reponse, "model", None),
-                   usage=_usage_anthropic(reponse))
 
 
 def _appel_anthropic(prompt: str, max_tokens: int) -> Reponse:

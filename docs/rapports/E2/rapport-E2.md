@@ -114,7 +114,8 @@ disponibilité (un fournisseur répond, deux échouent) en comparaison de qualit
 ### 4.1 L'accès et la configuration
 
 Trois fournisseurs en cascade, dans l'ordre `foundry,anthropic,openrouter`, configurable par la variable
-`LLM_ORDRE` ; un modèle par fournisseur, configurable (`AZURE_FOUNDRY_DEPLOYMENT`, `ANTHROPIC_MODEL`,
+`LLM_ORDRE` ; depuis le 3 octobre au soir, Foundry est appelé par son point compatible OpenAI (déploiement `gpt-5.4`,
+ressource du candidat, gratuite), ce qui met un modèle d'un autre éditeur que Claude dans la cascade et dans le banc ; un modèle par fournisseur, configurable (`AZURE_FOUNDRY_DEPLOYMENT`, `ANTHROPIC_MODEL`,
 `OPENROUTER_MODEL`) ; les clés lues dans l'environnement, jamais dans le code, un hook refusant toute écriture d'un
 agent dans le fichier de secrets. Si le premier fournisseur échoue, le suivant est essayé, et chaque tentative est
 tracée.

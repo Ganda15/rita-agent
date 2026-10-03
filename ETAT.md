@@ -36,7 +36,7 @@ l'assistant rédige le texte, jamais l'envoi.**
    (trois fournisseurs du même modèle, ou un modèle d'un autre éditeur ?) et le guide d'exploitation en pièce jointe
    (`docs/EXPLOITATION.pdf`, rendu le 03/10). Garder l'envoi et la réponse : `evidence/C8/envoi-<date>-formateur.*` (#43).
 3. **Trancher `memory_audit`** (écrire des empreintes ou retirer la table ; zone sous garde, plan d'abord).
-4. **Clés** Foundry et Anthropic dans `.env` (jamais touché par l'assistant), puis relancer le banc : une commande,
+4. **Clés** dans `.env` (jamais touché par l'assistant) : les trois lignes Foundry (`AZURE_FOUNDRY_ENDPOINT` finissant par `/openai/v1`, `AZURE_FOUNDRY_API_KEY`, `AZURE_FOUNDRY_DEPLOYMENT=gpt-5.4`) et, si tu veux Claude en direct, `ANTHROPIC_API_KEY` ; puis relancer le banc : une commande,
    `C:\Python314\python.exe -X utf8 -m evals.benchmark_fournisseurs --jeu evidence\C7\jeu-d-essai-2026-10-03.json --repetitions 3 --plafond 5 --sortie evidence\C7`.
 5. **Noter le français** des 30 textes de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1, 2), sans ouvrir le fichier `-cle.csv`. Ce CSV est celui du troisième passage (prompt avec les 13 indicateurs) ; les fichiers `-avant-57` et `-v2-prompt-57` sont conservés, pas à noter.
 6. **Langfuse, clics** (`evidence/C11/preuve-langfuse-2026-10-03.md` §3) : supprimer les 15 traces factices du 02/10 (il reste
@@ -56,6 +56,8 @@ zones sous garde (`db/schema.sql`, `guardrails/`, `evals/`) : rien sans plan val
 
 
 ---
+
+☁️ **03/10, nuit : Azure AI Foundry devient le premier fournisseur, par son point compatible OpenAI** (décision d'Era : sa ressource Foundry sert `gpt-5.4`, gratuite pour lui, pour les tests et la démonstration ; OpenRouter reste le secours). `src/llm.py` : `_appel_foundry` en httpx (chat completions, `Bearer`, le déploiement comme nom de modèle), plus de client Anthropic-sur-Foundry, 4 tests écrits avant ; modèle d'environnement, guide d'exploitation, plan C7, preuve C8, rapports E2 et E3 à jour. Conséquence pour C7 : la cascade porte maintenant **deux éditeurs** (GPT par Foundry, Claude par Anthropic et OpenRouter), la question du périmètre au formateur devient une confirmation. **Bloqué par les clés** : les trois variables `AZURE_FOUNDRY_*` ne sont pas dans l'environnement du poste ; Era les pose dans `.env` (jamais touché par l'assistant), puis une sonde et le banc donnent la première vraie comparaison.
 
 📊 **03/10, nuit : les 13 indicateurs entrent dans le prompt du rédacteur** (décision d'Era). Le scout en calculait treize, le modèle n'en recevait que quatre nombres ; les neuf autres vivaient sur l'écran 2 sans l'atteindre, et le RSI n'était même pas joint au dictionnaire du scout. Tests d'abord (prompt, scout, graphe, banc), bloc « faits à décrire, jamais des signaux », volatilité sans signe, absent = « non disponible ». Banc C7 refigé et relancé (troisième passage, qui fait foi) : 30/30 conformes et fidèles, médiane 6,3 s, 797 jetons en entrée, 0,0060 USD par briefing ; 30 textes sur 30 citent le RSI, 25 la volatilité, aucun mot de signal. Point à surveiller écrit dans la preuve : « RSI à 24,2, forte pression vendeuse » est une lecture, pas un conseil, le garde-fou l'accepte ; à mettre dans le jeu d'évaluation. **La notation du français porte sur ce troisième jeu** (`notes-francais-2026-10-03.csv`).
 

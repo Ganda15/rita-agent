@@ -10,7 +10,7 @@
 
 | Pièce | Où | Ce que ça prouve pour C8 |
 |---|---|---|
-| Cascade de trois fournisseurs, clés lues dans l'environnement, modèle configurable par variable | `src/llm.py` (`LLM_ORDRE`, `AZURE_FOUNDRY_DEPLOYMENT`, `ANTHROPIC_MODEL`, `OPENROUTER_MODEL`), `.env.example` | l'accès et la configuration (C8.1, C8.2) |
+| Cascade de trois fournisseurs, clés lues dans l'environnement, modèle configurable par variable ; depuis le 03/10 au soir, Foundry par son point compatible OpenAI (`gpt-5.4`, gratuit pour le projet, 1ᵉʳ de la cascade) | `src/llm.py` (`LLM_ORDRE`, `AZURE_FOUNDRY_DEPLOYMENT`, `ANTHROPIC_MODEL`, `OPENROUTER_MODEL`), `.env.example` | l'accès et la configuration (C8.1, C8.2) |
 | Un briefing réel servi le 03/10 : OpenRouter répond en 5,6 s après deux fournisseurs en échec, 616 jetons entrée, 210 sortie | `../C9/preuve-api-modele-2026-10-03.md`, `../C11/preuve-langfuse-2026-10-03.md` §5 | le service est accessible et configuré ; le monitorage le montre (C8.1, C8.3) |
 | Chaque tentative tracée (fournisseur, modèle, jetons, erreur), tableau « RITA C11 », chaîne d'alerte exécutée une fois | `../C11/` | le monitorage disponible du service est en marche (C8.3), avec ses limites |
 | Guide d'exploitation : clés, installation avec et sans Docker, vérification, services externes, données, dépannage, monitorage | `../../docs/EXPLOITATION.md` | la documentation d'accès, d'installation, de tests, de dépendances, de flux de données (C8.4) |
