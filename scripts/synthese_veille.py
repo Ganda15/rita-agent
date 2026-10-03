@@ -13,7 +13,6 @@ Usage, depuis la racine :
 from __future__ import annotations
 
 import datetime as dt
-import re
 import sys
 from pathlib import Path
 
@@ -36,6 +35,20 @@ def titre_de(chemin: Path) -> str:
         if ligne.startswith("# "):
             return ligne[2:].strip()
     return chemin.stem
+
+
+def entete_sur_lignes_separees(texte: str) -> str:
+    """Les lignes d'en-tête d'une note (`**Auteur** : …`, `**Semaine** : …`) se suivent sans ligne vide ;
+    Markdown les fusionnerait en un seul paragraphe. Deux espaces en fin de ligne forcent le retour,
+    seulement avant le premier titre de section, et le fichier d'origine n'est pas touché."""
+    sortie, avant_section = [], True
+    for ligne in texte.split("\n"):
+        if ligne.startswith("## "):
+            avant_section = False
+        if avant_section and ligne.startswith("**") and not ligne.endswith("  "):
+            ligne += "  "
+        sortie.append(ligne)
+    return "\n".join(sortie)
 
 
 def assembler(debut: int, fin: int, aujourdhui: dt.date) -> Path:
@@ -77,7 +90,7 @@ def assembler(debut: int, fin: int, aujourdhui: dt.date) -> Path:
     ]
     for s, chemin in notes:
         texte = chemin.read_text(encoding="utf-8").strip("\n")
-        lignes += ['<div style="break-before:page"></div>', "", texte, ""]
+        lignes += ['<div style="break-before:page"></div>', "", entete_sur_lignes_separees(texte), ""]
     sortie = VEILLE / f"Veille-C6-synthese-S{debut}-a-S{fin}.md"
     sortie.write_text("\n".join(lignes) + "\n", encoding="utf-8")
     return sortie

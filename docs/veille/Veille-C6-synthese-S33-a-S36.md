@@ -28,9 +28,9 @@ corrigées le 03/10/2026 pour suivre le calendrier ISO, la période réellement 
 
 # Veille S33 — OWASP Top 10 2026 et la « lethal trifecta »
 
-**Auteur** : Eramalingam GANDAKUMAR
-**Semaine** : 2026-S33, du 10 au 16 août 2026 · **Créneau tenu** : vendredi 14 août 2026
-**Thématique** : sécurité des agents LLM — injection de prompt
+**Auteur** : Eramalingam GANDAKUMAR  
+**Semaine** : 2026-S33, du 10 au 16 août 2026 · **Créneau tenu** : vendredi 14 août 2026  
+**Thématique** : sécurité des agents LLM — injection de prompt  
 
 > **Méthode.** Chaque affirmation de cette note repose sur une vérification faite dans le code
 > du projet ou à la source primaire, et la commande de vérification est citée à côté du
@@ -177,9 +177,9 @@ applications LLM, ou en ajoutent-ils que RITA ne traite pas du tout ?
 
 # Veille S34 — le Top 10 agentique, et ce que mon 100 % ne mesurait pas
 
-**Auteur** : Eramalingam GANDAKUMAR
-**Semaine** : 2026-S34, du 17 au 23 août 2026 · **Créneau tenu** : lundi 17 août 2026, 09h00–10h00
-**Thématique** : sécurité des agents LLM — injection de prompt
+**Auteur** : Eramalingam GANDAKUMAR  
+**Semaine** : 2026-S34, du 17 au 23 août 2026 · **Créneau tenu** : lundi 17 août 2026, 09h00–10h00  
+**Thématique** : sécurité des agents LLM — injection de prompt  
 
 ## Résumé en clair
 
@@ -410,8 +410,8 @@ l'absence d'outil, l'absence de canal sortant, ou simplement le fait que ce soit
 
 # Veille S35 — Le seuil de 85 % du garde-fou RITA face à la littérature
 
-**Semaine** : 2026-S35, du 24 au 30 août 2026 · **Période réellement balayée** : du 17 au 25 août (relevé du 25/08, voir `_candidats-2026-S35.md` ; l'étiquette portait cette fenêtre jusqu'au 03/10/2026, corrigée sans changer le contenu) · **Créneau tenu** : rédigée en rattrapage le 08/09/2026
-**Thématique** : sécurité des agents LLM — injection de prompt
+**Semaine** : 2026-S35, du 24 au 30 août 2026 · **Période réellement balayée** : du 17 au 25 août (relevé du 25/08, voir `_candidats-2026-S35.md` ; l'étiquette portait cette fenêtre jusqu'au 03/10/2026, corrigée sans changer le contenu) · **Créneau tenu** : rédigée en rattrapage le 08/09/2026  
+**Thématique** : sécurité des agents LLM — injection de prompt  
 
 ## Résumé en clair
 
@@ -498,8 +498,8 @@ vérifier si elle s'applique au garde-fou de RITA.
 
 # Veille S36 — L'incident Claude Code, et LongGuard qui confirme le choix des expressions régulières
 
-**Semaine** : 2026-S36, du 31 août au 6 septembre 2026 · **Période réellement balayée** : du 24 au 31 août (relevé du 31/08, voir `_candidats-2026-S36.md` ; l'étiquette portait cette fenêtre jusqu'au 03/10/2026, corrigée sans changer le contenu) · **Créneau tenu** : rédigée en rattrapage le 08/09/2026
-**Thématique** : sécurité des agents LLM — injection de prompt
+**Semaine** : 2026-S36, du 31 août au 6 septembre 2026 · **Période réellement balayée** : du 24 au 31 août (relevé du 31/08, voir `_candidats-2026-S36.md` ; l'étiquette portait cette fenêtre jusqu'au 03/10/2026, corrigée sans changer le contenu) · **Créneau tenu** : rédigée en rattrapage le 08/09/2026  
+**Thématique** : sécurité des agents LLM — injection de prompt  
 
 ## Résumé en clair
 
