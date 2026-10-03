@@ -20,6 +20,15 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 
 ---
 
+✅ **03/10, après-midi : la liste « reste à Era » traitée.** PR #58 **fusionnée** (`d1cec3b` sur `main`, six issues fermées) ;
+bouton *Run workflow* testé pour de vrai juste après (issue #71 créée puis fermée comme démonstration) ; les trois migrations
+rejouables + `roles.sql` jouées sur la base Compose (conteneur démarré pour ça) et sur la base Hetzner (`/root/rita-agent`,
+code déployé encore à `1cefdae` du 20/08, données figées au 17/08) ; décisions #66 D1 à D4, #67, #63, #69 posées sur les
+issues et dans le ledger (options recommandées, « do it » d'Era). **Non fait, et pourquoi** : suppression des 15 traces
+Langfuse et réglage des 2 alertes (refusé à l'agent / pas d'API : clics d'Era) ; capture des rulesets (session GitHub
+d'Era ; l'API est dans `evidence/C19/rulesets-2026-10-03.json`) ; fichiers de clés du Bureau : **inventaire fait, rien
+ouvert, rien supprimé** (voir le message du 03/10), rotation à faire par Era.
+
 🧹 **03/10, fin de journée** : description GitHub remise sur la décision du 16/08 (« Tracking et l'Analyse », plus
 « Trading ») ; tableau des livrables du README réécrit (il disait encore « C11 non commencé », « E5 non commencé ») ;
 **plus aucune trace d'outil** (« revue Codex », « Claude Code ») dans les textes visibles du jury, 73 remplacements dans 32
@@ -30,7 +39,7 @@ les commits ne portent plus de ligne de co-signature. L'historique déjà pouss�
 utile à l'exécution. Rien à redire. »). Le chapitre est dans `docs/conception/donnees/` (README = tableau chapitre contre code au
 03/10) ; dix issues `conception-donnees` portent les écarts ouverts. **Ordre** : 1) sans zone sous garde, test d'abord : `titre`
 dans l'index (**#59 fait le 03/10**, 3 tests ; l'index du poste, 1 563 documents sans titre, se reconstruit à la collecte de 19 h), vérification de la démonstration dans la passerelle (**#60 fait le 03/10**, 5 tests : déclaration `RITA_MCP_PORTEFEUILLE=demo` et comparaison au jeu d'exemple), cartographie des 32 cas (**#61 fait le 03/10** : 23 ✅ 5 🟠 4 ❌, quatre tests écrits, deux issues ouvertes #69 D07 et #70 A08), manifeste de collecte (**#64 fait le 03/10**, 9 tests ; premier manifeste réel attendu à la collecte de 19 h dans `logs/`) ; vérification de la démonstration dans la passerelle, cartographie des 32 cas, manifeste de collecte ; 2) avec plan
-validé par Era : `COALESCE` de la vue (**#65 fait le 03/10** sur plan validé D1 D2 D3 = A : 23 tests, migration jouée sur le poste ; **reste à jouer sur Compose et Hetzner** : `db/migration-2026-10-03-vue-valorisation-taux.sql`), `mcp_calls` (**#62 fait le 03/10** sur plan validé D1 D2 D3 = A : 21 tests, migration jouée sur le poste, premières lignes réelles ; **reste Compose et Hetzner** : `db/migration-2026-10-03-mcp-calls.sql`), clôture des positions (**plan écrit le 03/10** : `docs/PLAN-66-cloture-positions.md`, quatre décisions D1 à D4 en attente d'Era ; découvert au passage : l'import des positions duplique tout à la seconde exécution) ; 3) décisions d'Era : quasi-doublons, `search_articles`.
+validé par Era : `COALESCE` de la vue (**#65 fait le 03/10** sur plan validé D1 D2 D3 = A : 23 tests, migration jouée sur le poste ; **jouée sur Compose et Hetzner le 03/10 après-midi**, sorties dans `evidence/C4/`), `mcp_calls` (**#62 fait le 03/10** sur plan validé D1 D2 D3 = A : 21 tests, migration jouée sur le poste, premières lignes réelles ; **jouée sur Compose et Hetzner le 03/10 après-midi**, sorties dans `evidence/C20/`), clôture des positions (**plan écrit le 03/10** : `docs/PLAN-66-cloture-positions.md`, quatre décisions D1 à D4 en attente d'Era ; découvert au passage : l'import des positions duplique tout à la seconde exécution) ; 3) décisions d'Era : quasi-doublons, `search_articles`.
 Rien de ce qui touche `db/schema.sql` ne se code sans ce plan.
 
 ▶️ **PR #58 `develop → main`** : ouverte le 03/10 au soir (31 commits), relue par la revue automatisée (2 remarques, **corrigées le 03/10** :

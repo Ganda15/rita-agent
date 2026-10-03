@@ -83,9 +83,22 @@ exemple : [('AI.PA', Decimal('6806.40'), Decimal('1')), ('BNP.PA', Decimal('1380
 Sept positions, aucune sans taux, `taux_pour_eur = 1` pour l'euro : les chiffres affichés n'ont pas bougé d'un
 centime, seul le cas absent change de comportement.
 
-**Reste à jouer** : la base Compose (`docker compose exec db psql ...`, démon Docker à lancer) et la base du serveur
-Hetzner (après la fusion sur `main`). Tant que ce n'est pas fait, l'API de ces deux environnements lira une vue
-sans `taux_manquant` : `positions_sans_taux` vaudra 0 et `complet` vrai, c'est-à-dire l'ancien comportement.
+**Joué le 03/10 après-midi sur les deux autres environnements** (sorties réelles) :
+
+```
+Compose (rita-postgres-preprod, poste) : migration-2026-09-27 ok · roles.sql ok · vue ok · mcp_calls ok
+tables=11 | colonnes_vue=13 | mcp_calls | macro_observation | rita_lecture lit=t ecrit=f
+```
+
+```
+Hetzner (rita-postgres-preprod, /root/rita-agent, code deploye 1cefdae du 20/08) : 4 fichiers copies, 4 ok
+tables=11 | positions=7 | cotations=275118 | colonnes_vue=13 | mcp_calls | macro_observation | role_lecture=1
+taux_manquant : f|7 · rita_lecture lit=t ecrit=f · API /health toujours 200 pendant et apres
+taux_change : derniere date 2026-08-17 pour les 5 devises (la copie du serveur est figee depuis le 17/08)
+```
+
+Sur le serveur, le **code** reste celui du 20/08 (`1cefdae`) : la vue a ses colonnes, mais l'API déployée ne lit pas encore
+`taux_manquant`. La mise à jour du code du serveur est un déploiement, pas une migration : à faire après le gel du 15/10.
 
 ## 6. Limites dites franchement
 

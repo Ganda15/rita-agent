@@ -73,8 +73,9 @@ que le verrou de #60 fait, et à quel endroit. Le ticker de l'appel 4 n'apparaî
 
 ## 5. Reste, dit franchement
 
-- La migration sur la base Compose (démon Docker à lancer) et sur Hetzner après la fusion ; tant que ce n'est pas
-  fait, l'API y répondra et la ligne ne s'écrira pas : `audit_mcp_echecs` montera, c'est le but du compteur.
+- ~~La migration sur la base Compose et sur Hetzner~~ **faite le 03/10 après-midi** : table `mcp_calls`, index et droits
+  présents sur les deux (`rita_lecture` lit, n'écrit pas). Le code du serveur (20/08) n'écrit pas encore dedans :
+  déploiement à faire après le gel du 15/10.
 - Aucune alerte ne lit encore ce journal : la requête de lecture est dans `docs/EXPLOITATION.md` ; brancher une
   règle (« plus de N refus par jour ») viendra avec les seuils C20, après une semaine de données.
 - Les refus pris par le cadre `mcp` lui-même (outil inconnu) ne passent pas par notre code : ils ne sont pas journalisés.
