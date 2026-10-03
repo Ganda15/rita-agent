@@ -156,7 +156,73 @@ def test_sans_ticker_aucun_parametre_n_est_envoye(monkeypatch):
 
 
 def test_une_reponse_valide_est_enveloppee_avec_success(monkeypatch):
-    _simuler(monkeypatch, reponse=_FausseReponse(200, {"nb": 7, "total_eur": 31448.2}))
-    resultat = asyncio.run(passerelle.rita_portefeuille())
+    # Sur `rita_fraicheur` : depuis le 03/10 (cas A04), `rita_portefeuille` a sa propre politique
+    # d'accès, testée plus bas ; ce test ne porte que sur l'enveloppe `success` / `data`.
+    _simuler(monkeypatch, reponse=_FausseReponse(200, {"nb": 7, "derniere_seance": "2026-10-02"}))
+    resultat = asyncio.run(passerelle.rita_fraicheur())
     assert resultat["success"] is True
     assert resultat["data"]["nb"] == 7
+
+
+# --- chapitre « Données » (validé le 03/10/2026), cas A04 : le portefeuille n'est servi qu'en
+# démonstration déclarée ET vérifiée (issue #60) --------------------------------------------
+#
+# Avant : `rita_portefeuille` rendait ce que l'API rendait, et sa description promettait un « jeu
+# de démonstration anonymisé » sans rien vérifier. Or la table `position` contient ce qu'on y a
+# importé : le jeu d'exemple, ou le portefeuille réel d'Era (données personnelles financières).
+# Règle de la matrice d'accès (§3.3) : application hôte MCP → portefeuille réel REFUS par défaut,
+# portefeuille fictif seulement « si connecté au jeu fictif vérifié ».
+
+def _jeu_demo_tel_que_l_api_le_rend():
+    from sources.positions import EXEMPLE, lire
+    positions = [{"ticker": p.ticker, "quantite": p.quantite, "pru": p.pru, "devise": p.devise}
+                 for p in lire(EXEMPLE).positions]
+    return {"nb": len(positions), "total_eur": 0.0, "positions": positions}
+
+
+def test_sans_declaration_d_environnement_le_portefeuille_est_refuse_sans_appeler_l_api(monkeypatch):
+    _simuler(monkeypatch, reponse=_FausseReponse(200, _jeu_demo_tel_que_l_api_le_rend()))
+    monkeypatch.delenv("RITA_MCP_PORTEFEUILLE", raising=False)
+    _FauxClient.dernier_appel = {}
+    r = asyncio.run(passerelle.rita_portefeuille())
+    assert r["success"] is False and r["error"]["code"] == "NOT_AUTHORIZED"
+    assert "RITA_MCP_PORTEFEUILLE" in r["error"]["message"], "le message dit quoi declarer"
+    assert _FauxClient.dernier_appel == {}, "refus par defaut : l'API n'est meme pas appelee"
+
+
+def test_un_environnement_declare_reel_est_refuse_aussi(monkeypatch):
+    _simuler(monkeypatch, reponse=_FausseReponse(200, _jeu_demo_tel_que_l_api_le_rend()))
+    monkeypatch.setenv("RITA_MCP_PORTEFEUILLE", "reel")
+    _FauxClient.dernier_appel = {}
+    r = asyncio.run(passerelle.rita_portefeuille())
+    assert r["success"] is False and r["error"]["code"] == "NOT_AUTHORIZED"
+    assert _FauxClient.dernier_appel == {}
+
+
+def test_en_demonstration_le_jeu_d_exemple_est_servi(monkeypatch):
+    _simuler(monkeypatch, reponse=_FausseReponse(200, _jeu_demo_tel_que_l_api_le_rend()))
+    monkeypatch.setenv("RITA_MCP_PORTEFEUILLE", "demo")
+    r = asyncio.run(passerelle.rita_portefeuille())
+    assert r["success"] is True
+    assert len(r["data"]["positions"]) == 10
+
+
+def test_en_demonstration_des_positions_qui_ne_sont_pas_le_jeu_d_exemple_sont_refusees(monkeypatch):
+    """Le cas A04 : la déclaration dit « démo » mais l'API sert autre chose (un portefeuille réel).
+    La passerelle le détecte en comparant aux positions du fichier d'exemple, et ne rend RIEN."""
+    reel = {"nb": 2, "total_eur": 12345.0,
+            "positions": [{"ticker": "MC.PA", "quantite": 3, "pru": 710.0, "devise": "EUR"},
+                          {"ticker": "TTE.PA", "quantite": 50, "pru": 52.1, "devise": "EUR"}]}
+    _simuler(monkeypatch, reponse=_FausseReponse(200, reel))
+    monkeypatch.setenv("RITA_MCP_PORTEFEUILLE", "demo")
+    r = asyncio.run(passerelle.rita_portefeuille())
+    assert r["success"] is False and r["error"]["code"] == "NOT_AUTHORIZED"
+    assert "data" not in r
+    assert "12345" not in str(r) and "710" not in str(r), "aucun chiffre du portefeuille ne fuit dans l'erreur"
+
+
+def test_les_autres_outils_ne_dependent_pas_de_la_declaration(monkeypatch):
+    _simuler(monkeypatch, reponse=_FausseReponse(200, {"derniere_seance": "2026-10-02"}))
+    monkeypatch.delenv("RITA_MCP_PORTEFEUILLE", raising=False)
+    assert asyncio.run(passerelle.rita_fraicheur())["success"] is True
+    assert asyncio.run(passerelle.rita_indicateurs("MC.PA"))["success"] is True

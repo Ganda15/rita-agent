@@ -23,6 +23,21 @@ c'est plus court et plus rapide. **On ne le fait pas**, pour trois raisons :
 Le coût est un aller-retour HTTP local — quelques millisecondes. C'est le prix de la
 preuve.
 
+## Le portefeuille : démonstration déclarée ET vérifiée (chapitre « Données », cas A04)
+
+Jusqu'au 03/10/2026, `rita_portefeuille` rendait ce que l'API rendait, et sa description
+promettait un « jeu de démonstration anonymisé » sans rien vérifier. Or la table `position`
+contient ce qu'on y a importé : le jeu d'exemple, ou le portefeuille réel d'Era, qui sont des
+données personnelles financières. La matrice d'accès du chapitre (§3.3) dit : application hôte
+MCP → portefeuille réel **REFUS par défaut**, portefeuille fictif seulement « si connecté au jeu
+fictif vérifié ». Deux verrous, donc :
+
+1. **Déclaré** : la variable `RITA_MCP_PORTEFEUILLE=demo` dans l'environnement de la passerelle.
+   Absente ou autre : refus `NOT_AUTHORIZED` **sans appeler l'API**.
+2. **Vérifié** : les positions rendues par l'API doivent être exactement celles du fichier
+   `data/positions-exemple.csv` (ticker, quantité). Sinon : refus, et **aucune donnée rendue**,
+   pas même le total. Une phrase dans une description n'est pas une preuve ; une comparaison l'est.
+
 ## Le contrat d'erreur
 
 Repris du brief Sorabel : chaque réponse porte `success`, et une erreur porte un **code
@@ -40,6 +55,8 @@ from dotenv import load_dotenv
 from mcp.server.mcpserver import MCPServer
 from mcp.types import ToolAnnotations
 
+from sources.positions import EXEMPLE, lire as lire_positions
+
 # ⚠️ Sans cette ligne, le serveur ne lit pas le `.env` : ni l'adresse de l'API, ni la
 # clé. C'est le défaut qui s'est répété trois fois dans ce dépôt — `db/importer.py`
 # le 17/08, `indicateurs/socle.py`, `monitorage/fraicheur.py` le 25/08.
@@ -52,12 +69,42 @@ URL_API = os.getenv("RITA_API_URL", "http://127.0.0.1:8000")
 # Au-delà, c'est que l'API ne répond pas — mieux vaut le dire que faire patienter.
 DELAI_SECONDES = 15.0
 
+# Le seul mot qui autorise `rita_portefeuille` (voir la docstring du module, cas A04).
+VARIABLE_PORTEFEUILLE = "RITA_MCP_PORTEFEUILLE"
+
+
+def _demonstration_declaree() -> bool:
+    return os.getenv(VARIABLE_PORTEFEUILLE, "").strip().lower() == "demo"
+
+
+def _empreinte(positions: list[dict[str, Any]]) -> set[tuple[str, float]]:
+    """Ce qui identifie un jeu de positions : les couples (ticker, quantité)."""
+    return {(str(p.get("ticker", "")).strip(), round(float(p.get("quantite", 0) or 0), 4))
+            for p in positions}
+
+
+def _est_le_jeu_de_demonstration(positions: list[dict[str, Any]]) -> bool:
+    """Vrai si l'API sert exactement le jeu d'exemple du dépôt, rien d'autre.
+
+    Comparaison stricte dans les deux sens : une position réelle en plus, ou une position
+    d'exemple en moins, et ce n'est plus le jeu de démonstration. Un fichier d'exemple
+    illisible vaut refus, jamais une autorisation par défaut.
+    """
+    if not positions:
+        return False
+    try:
+        attendu = {(p.ticker, round(float(p.quantite), 4)) for p in lire_positions(EXEMPLE).positions}
+    except Exception:  # noqa: BLE001, un doute sur la référence se résout par un refus
+        return False
+    return _empreinte(positions) == attendu
+
 serveur = MCPServer(
     name="rita",
     title="RITA — suivi et analyse de portefeuille",
     instructions=(
-        "Outils de lecture sur le portefeuille RITA (données de démonstration "
-        "anonymisées, valeurs françaises). RITA fournit des indicateurs — des faits "
+        "Outils de lecture sur RITA. Le portefeuille n'est servi qu'en démonstration "
+        "déclarée et vérifiée (jeu d'exemple du dépôt) ; un portefeuille réel ne sort "
+        "jamais par cette passerelle. RITA fournit des indicateurs, des faits "
         "chiffrés — et ne formule JAMAIS de recommandation d'achat ou de vente. "
         "Toujours vérifier la fraîcheur des données avant de commenter un chiffre."
     ),
@@ -155,13 +202,34 @@ async def rita_fraicheur() -> dict[str, Any]:
     name="rita_portefeuille",
     title="Portefeuille valorisé",
     description=(
-        "Les positions du portefeuille, valorisées et converties en euros, avec le "
-        "total. Jeu de démonstration anonymisé — ce n'est pas un portefeuille réel."
+        "Les positions du portefeuille de démonstration, valorisées et converties en "
+        "euros, avec le total. Servi seulement si la passerelle est déclarée en "
+        "démonstration (RITA_MCP_PORTEFEUILLE=demo) ET si les positions sont bien le jeu "
+        "d'exemple du dépôt ; sinon NOT_AUTHORIZED, sans aucune donnée."
     ),
     annotations=LECTURE_SEULE,
 )
 async def rita_portefeuille() -> dict[str, Any]:
-    return await _lire("/donnees/portefeuille")
+    # Verrou 1 : déclaré. Refus AVANT tout appel : l'API n'a même pas à répondre.
+    if not _demonstration_declaree():
+        return _erreur(
+            "NOT_AUTHORIZED",
+            f"Le portefeuille n'est servi qu'en demonstration declaree : poser "
+            f"{VARIABLE_PORTEFEUILLE}=demo dans l'environnement de la passerelle. Un portefeuille "
+            f"reel ne sort jamais par MCP (matrice d'acces du chapitre Donnees, section 3.3).",
+        )
+    reponse = await _lire("/donnees/portefeuille")
+    if not reponse.get("success"):
+        return reponse
+    # Verrou 2 : vérifié. Si ce n'est pas le jeu d'exemple, rien ne sort, pas même le total.
+    if not _est_le_jeu_de_demonstration(reponse["data"].get("positions") or []):
+        return _erreur(
+            "NOT_AUTHORIZED",
+            "Les positions servies par l'API ne sont pas le jeu de demonstration "
+            "(data/positions-exemple.csv) : refus, aucune donnee rendue. Importer le jeu "
+            "d'exemple dans cette base, ou retirer la declaration de demonstration.",
+        )
+    return reponse
 
 
 @serveur.tool(

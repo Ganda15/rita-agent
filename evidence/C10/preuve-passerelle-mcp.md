@@ -133,3 +133,33 @@ critère — et c'est **C15/C17** qui la portent.
 ⬜ **Reste à faire** : l'**audit** des appels (journal : identité, outil, décision, durée),
 prévu au design Sorabel et pas encore implémenté ici. Et le **4ᵉ outil**, `search_articles`,
 qui viendra avec le RAG — étapes 2 à 4 du plan.
+
+
+## Complément du 03/10/2026 : le portefeuille n'est servi qu'en démonstration déclarée et vérifiée (issue #60)
+
+**D'où ça vient.** Chapitre « Données » (rendu le 07/09, validé par le formateur le 03/10), matrice d'accès §3.3 et
+cas de vérification A04 : « accès au portefeuille réel depuis la démonstration : refus ou impossibilité structurelle ».
+Écart relevé par le chapitre : `rita_portefeuille` rendait ce que l'API rendait ; sa description promettait un « jeu de
+démonstration anonymisé » sans rien vérifier. Or la table `position` contient ce qu'on y a importé, le jeu d'exemple
+ou le portefeuille réel (données personnelles financières).
+
+**Ce qui change** (`passerelle_mcp/serveur.py`) : deux verrous.
+
+| Verrou | Règle | Si ça manque |
+|---|---|---|
+| Déclaré | `RITA_MCP_PORTEFEUILLE=demo` dans l'environnement de la passerelle (documenté dans `.env.example`) | `NOT_AUTHORIZED`, l'API n'est pas appelée |
+| Vérifié | les positions rendues par l'API sont exactement celles de `data/positions-exemple.csv` (couples ticker, quantité, dans les deux sens) | `NOT_AUTHORIZED`, aucune donnée rendue, pas même le total |
+
+Les deux autres outils (`rita_fraicheur`, `rita_indicateurs`) ne dépendent pas de la déclaration : ils ne touchent
+pas au portefeuille. Un fichier d'exemple illisible vaut refus, jamais une autorisation par défaut.
+
+**Preuve** : `tests/test_passerelle_mcp.py`, cinq tests écrits avant le code et vus rouges (trois échouaient : la
+passerelle servait là où elle devait refuser) : sans déclaration → refus sans appel ; déclaration `reel` → refus ;
+`demo` + jeu d'exemple → servi (10 positions) ; `demo` + positions qui ne sont pas le jeu d'exemple → refus et aucun
+chiffre dans l'erreur ; les autres outils ignorent la déclaration. Le test d'enveloppe existant passe désormais par
+`rita_fraicheur`.
+
+**Limite dite franchement** : la vérification compare à un fichier du dépôt ; si quelqu'un importait son portefeuille
+réel sous les mêmes tickers et quantités que l'exemple, la passerelle ne le verrait pas. Le verrou protège contre
+l'erreur de configuration (la base de démonstration qui contient en fait les vraies positions), pas contre une
+falsification volontaire du jeu d'exemple.
