@@ -258,6 +258,33 @@ CREATE INDEX idx_memory_audit_agent_date ON memory_audit (agent, horodatage DESC
 
 
 -- =============================================================================
+-- JOURNAL DES APPELS MCP : plan 62 (03/10/2026), chapitre « Données » §3.7, C20
+-- =============================================================================
+-- Écrit par l'API seule : la passerelle MCP ne touche jamais la base (elle remonte ses refus
+-- locaux par POST /audit/mcp). Huit champs, pas un de plus : tout champ supplémentaire doit
+-- répondre à un besoin explicite. Un journal technique reste une donnée personnelle quand il
+-- n'y a qu'un utilisateur : traitement T5 du registre, purge P6 à 90 jours.
+CREATE TABLE mcp_calls (
+    id                BIGSERIAL    PRIMARY KEY,
+    request_id        VARCHAR(64)  NOT NULL,
+    client_id         VARCHAR(40)  NOT NULL,
+    outil             VARCHAR(60)  NOT NULL,
+    statut            VARCHAR(10)  NOT NULL CHECK (statut IN ('succes', 'refuse', 'erreur')),
+    code_erreur       VARCHAR(40),
+    duree_ms          INTEGER      CHECK (duree_ms IS NULL OR duree_ms >= 0),
+    version_politique VARCHAR(40)  NOT NULL,
+    horodatage        TIMESTAMPTZ  NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_mcp_calls_horodatage ON mcp_calls (horodatage DESC);
+
+COMMENT ON TABLE mcp_calls IS
+    'Journal des appels MCP (C20, chapitre Donnees 3.7, plan 62). Aucun parametre brut, aucun '
+    'prompt, aucune cle, aucun chiffre de portefeuille : seulement qui, quel outil, quel resultat, '
+    'quand. Retention 90 jours (procedure P6). Ecrit par l API seule, jamais par la passerelle.';
+
+
+-- =============================================================================
 -- VUE — le briefing quotidien : la requête R1, empaquetée
 -- =============================================================================
 -- ⚠️ RÉÉCRITE LE 10/08/2026. La première version avait deux défauts, et ils venaient

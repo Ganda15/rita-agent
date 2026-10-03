@@ -169,6 +169,19 @@ des données ») et une mesure dans le code plutôt qu'une supposition :
 | **Sécurité** | `.gitignore` : `data/positions.csv`, `*bourse*.xlsm`, `*portefeuille*.csv` — **vérifié** par `git check-ignore` |
 | **Durée** | Conservé tant qu'il est la source de vérité du portefeuille |
 
+### T5 : Journal des appels MCP (table `mcp_calls`) : ✅ **ACTIF depuis le 2026-10-03** (plan 62)
+
+| Rubrique | Contenu |
+|---|---|
+| **Finalité** | Sécurité et surveillance des accès par un client automatique (la passerelle MCP) : qui a demandé quel outil, avec quel résultat, quand ; les refus compris (C20, chapitre « Données » §3.7) |
+| **Base légale** | Intérêt légitime du responsable : sécurité du service ; sans journal des refus, la règle de fermeture de la matrice d'accès est invérifiable |
+| **Catégories de données** | identifiant de requête · identité technique du client (`passerelle-mcp`) · nom de l'outil · statut (succès, refusé, erreur) · code d'erreur typé · durée · version de la politique d'accès · horodatage. **Jamais** : paramètres de l'appel, prompt, clé, positions ou totaux |
+| **⚠️ Pourquoi c'est personnel** | il n'y a qu'un utilisateur : un horodatage et un identifiant de requête disent quand le propriétaire a consulté quoi |
+| **Support** | Table `mcp_calls`, écrite par l'API seule (`db/audit_mcp.py`) ; la passerelle remonte ses refus par `POST /audit/mcp`, jamais par SQL |
+| **Durée de conservation** | **90 jours** (comme T2) : au-delà, un refus ancien n'aide plus un diagnostic |
+| **Sécurité** | rôle `rita_lecture` en lecture seule ; purge automatisée P6 (§2) ; une panne d'écriture est comptée et exposée par `/donnees/fraicheur` |
+| **Droits** | effacement sur demande par `request_id` ; accès : le propriétaire lit la table |
+
 ### Ce qui **n'est pas** un traitement de données personnelles
 
 | Donnée | Pourquoi |
@@ -190,6 +203,7 @@ des données ») et une mesure dans le code plutôt qu'une supposition :
 | **P3** | Détecter les **doublons de positions** (même ticker, même date d'achat, même PRU) | Mensuelle | ✅ détection ; ⚠️ suppression **manuelle** — un doublon peut être un vrai second achat |
 | **P4** | Vérifier qu'**aucun fichier personnel n'est suivi par Git** | **À chaque commit** (hook pre-commit) | ⬜ **à mettre en place** |
 | **P5** | Revoir le champ `resume` de `memory_audit` : contient-il des montants ? | Trimestrielle | ❌ **manuelle** — jugement humain requis |
+| **P6** | Purger `mcp_calls` au-delà de **90 jours** (T5) | Prévue hebdomadaire avec P1 ; lancement manuel aujourd'hui | ✅ script `db/rgpd_purge.py` (03/10/2026), même planification que P1 |
 
 **Mode par défaut du script : simulation.** Il affiche ce qu'il supprimerait sans rien
 supprimer. Le drapeau `--appliquer` est obligatoire pour agir. *Une purge qui s'exécute par

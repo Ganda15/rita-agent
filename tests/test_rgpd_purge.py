@@ -111,3 +111,31 @@ def test_le_defaut_est_la_simulation():
     import inspect
     params = inspect.signature(rgpd_purge.executer).parameters
     assert params["appliquer"].default is False
+
+
+# --- P6 : purge du journal des appels MCP (plan 62, T5 du registre) ---------------------------
+
+def test_p6_simulation_ne_lance_aucun_delete():
+    cur = _curseur(4)
+    r = rgpd_purge.p6_purger_mcp_calls(cur, appliquer=False)
+    assert r["procedure"] == "P6" and r["concernees"] == 4 and r["supprimees"] == 0
+    assert not any("DELETE" in q for q in _requetes(cur))
+
+
+def test_p6_application_lance_le_delete_sur_mcp_calls():
+    cur = _curseur(4)
+    r = rgpd_purge.p6_purger_mcp_calls(cur, appliquer=True)
+    assert r["supprimees"] == 4
+    assert any("DELETE FROM MCP_CALLS" in q for q in _requetes(cur))
+
+
+def test_p6_respecte_la_duree_du_registre():
+    cur = _curseur(1)
+    rgpd_purge.p6_purger_mcp_calls(cur, appliquer=False)
+    assert f"{rgpd_purge.RETENTION_MCP_CALLS_JOURS} DAYS" in _requetes(cur)[0]
+    assert rgpd_purge.RETENTION_MCP_CALLS_JOURS == 90
+
+
+def test_p6_fait_partie_de_l_orchestration():
+    import inspect
+    assert "p6_purger_mcp_calls" in inspect.getsource(rgpd_purge.executer)

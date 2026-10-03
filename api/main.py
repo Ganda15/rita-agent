@@ -20,10 +20,14 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Request, Security
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel, ConfigDict, Field
+from starlette.background import BackgroundTask, BackgroundTasks
+from typing import Literal
 from fastapi.security.api_key import APIKeyHeader
 from fastapi.staticfiles import StaticFiles
 
 from api.donnees import routeur as routeur_donnees
+from db import audit_mcp
 from graph.workflow import generer_briefing_complet
 from guardrails.sortie import verifier_sortie
 from src import traces
@@ -83,6 +87,7 @@ API_KEY_HEADER = APIKeyHeader(name="X-API-Key", auto_error=False)
 async def attribuer_un_identifiant_de_requete(request: Request, call_next):
     """Pose `X-Request-ID` sur TOUTE réponse, y compris 403 et 502 : une erreur sans
     identifiant est une erreur qu'on ne retrouve pas."""
+    debut = time.perf_counter()
     propose = request.headers.get("X-Request-ID", "")
     identifiant = propose if IDENTIFIANT_CLIENT_SAIN.match(propose) else uuid.uuid4().hex
     jeton = _request_id_courant.set(identifiant)
@@ -102,6 +107,18 @@ async def attribuer_un_identifiant_de_requete(request: Request, call_next):
     finally:
         _request_id_courant.reset(jeton)
     reponse.headers["X-Request-ID"] = identifiant
+    # Plan 62 (03/10/2026, décision D1) : un appel qui se déclare client automatique (`X-Client-Id`,
+    # la passerelle MCP) laisse une ligne dans `mcp_calls`, écrite APRÈS l'envoi de la réponse : le
+    # client ne paie pas l'écriture. Le navigateur d'Era ne se déclare pas : rien n'est écrit.
+    # `/audit/mcp` est exclu : la route écrit elle-même, sinon chaque refus ferait deux lignes.
+    client_id = request.headers.get("X-Client-Id", "")
+    if client_id and request.url.path != "/audit/mcp":
+        statut, code_erreur = audit_mcp.statut_depuis_code(reponse.status_code)
+        tache = BackgroundTask(
+            audit_mcp.enregistrer, request_id=identifiant, client_id=client_id,
+            outil=request.headers.get("X-Outil") or request.url.path, statut=statut,
+            code_erreur=code_erreur, duree_ms=int((time.perf_counter() - debut) * 1000))
+        reponse.background = BackgroundTasks([reponse.background, tache]) if reponse.background else tache
     return reponse
 
 
@@ -151,6 +168,31 @@ def verify_api_key(api_key: str = Security(API_KEY_HEADER)):
     if api_key is None or not secrets.compare_digest(api_key, cle_attendue()):
         raise HTTPException(status_code=403, detail="Cle d'API invalide ou absente")
     return api_key
+
+
+class EvenementMcp(BaseModel):
+    """Un refus survenu dans la passerelle MCP, avant tout appel métier (plan 62, décision D2).
+    Contrat fermé : aucun champ libre, aucun paramètre, aucun message. `extra="forbid"` refuse tout
+    ce qui n'est pas listé : un client qui tente d'y glisser un ticker reçoit 422."""
+    model_config = ConfigDict(extra="forbid")
+    outil: str = Field(min_length=1, max_length=60, pattern=r"^[A-Za-z0-9_.\-]+$")
+    statut: Literal["succes", "refuse", "erreur"]
+    code_erreur: str | None = Field(default=None, max_length=40, pattern=r"^[A-Z_]+$")
+    request_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{8,64}$")
+    duree_ms: int | None = Field(default=None, ge=0)
+
+
+@app.post("/audit/mcp", tags=["service"], summary="Journaliser un refus survenu dans la passerelle MCP")
+def journaliser_evenement_mcp(evenement: EvenementMcp, request: Request,
+                              api_key: str = Security(verify_api_key)) -> dict:
+    """La passerelle ne touche jamais la base : quand elle refuse un appel avant de l'exécuter
+    (portefeuille hors démonstration, par exemple), elle le dit ici et l'API écrit la ligne."""
+    ok = audit_mcp.enregistrer(
+        request_id=evenement.request_id or request_id_courant(),
+        client_id=request.headers.get("X-Client-Id", "inconnu"),
+        outil=evenement.outil, statut=evenement.statut,
+        code_erreur=evenement.code_erreur, duree_ms=evenement.duree_ms)
+    return {"enregistre": ok}
 
 
 @app.get("/health", tags=["service"], summary="Vérifier que le service répond")

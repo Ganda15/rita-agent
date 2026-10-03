@@ -34,6 +34,11 @@ navigateur ; migration rejouable jouée sur le poste (7 positions, aucune sans t
 et Hetzner restent à migrer. Quatre autres items du chapitre faits le même jour : #59 titre dans l'index, #60 démonstration
 vérifiée par la passerelle, #61 les 32 cas rapprochés des tests, #64 manifeste de collecte.
 
+**Décision structurante (soir)** : deuxième zone sous garde sur plan validé (`docs/PLAN-62-journal-mcp-calls.md`, D1 D2 D3 = A) :
+le journal des appels MCP `mcp_calls`, écrit par l'API seule, refus locaux remontés par `POST /audit/mcp`, traitement RGPD T5 et
+purge P6 à 90 jours ; 21 tests écrits avant dont quatre sur la base réelle ; migration jouée sur le poste et premières lignes
+réelles écrites par la passerelle. Et GitHub Pro activé par Era : `main` protégée côté serveur (ruleset, `evidence/C19/`).
+
 ---
 
 ## 2026-10-03 : reconnaissance complète, plan initial contre réalisé, pointeurs périmés

@@ -60,6 +60,14 @@ class _FauxClient:
             raise self._exception
         return self._reponse
 
+    dernier_post: dict = {}
+
+    async def post(self, url, headers=None, json=None):
+        _FauxClient.dernier_post = {"url": url, "headers": headers, "json": json}
+        if self._exception:
+            raise self._exception
+        return _FausseReponse(200, {"enregistre": True})
+
 
 def _simuler(monkeypatch, reponse=None, exception=None):
     monkeypatch.setenv("RITA_API_KEY", "cle-de-test-suffisamment-longue")
@@ -226,3 +234,39 @@ def test_les_autres_outils_ne_dependent_pas_de_la_declaration(monkeypatch):
     monkeypatch.delenv("RITA_MCP_PORTEFEUILLE", raising=False)
     assert asyncio.run(passerelle.rita_fraicheur())["success"] is True
     assert asyncio.run(passerelle.rita_indicateurs("MC.PA"))["success"] is True
+
+
+# --- plan 62 (03/10/2026) : chaque appel est identifiable, chaque refus local remonte ------------
+
+def test_chaque_appel_porte_l_identite_technique_et_le_nom_de_l_outil(monkeypatch):
+    """D1 : l'API ne journalise que les appels qui se declarent ; la passerelle se declare toujours."""
+    _simuler(monkeypatch, reponse=_FausseReponse(200, {"ok": True}))
+    asyncio.run(passerelle.rita_indicateurs("MC.PA"))
+    entetes = _FauxClient.dernier_appel["headers"]
+    assert entetes["X-Client-Id"] == "passerelle-mcp"
+    assert entetes["X-Outil"] == "rita_indicateurs"
+
+
+def test_un_refus_local_du_portefeuille_est_signale_a_l_api(monkeypatch):
+    """D2 : le refus par defaut (#60) ne laissait aucune trace ; il part maintenant vers POST /audit/mcp,
+    sans jamais lire la base ni appeler la route de donnees."""
+    _simuler(monkeypatch)
+    monkeypatch.delenv("RITA_MCP_PORTEFEUILLE", raising=False)
+    _FauxClient.dernier_appel = {}
+    _FauxClient.dernier_post = {}
+    r = asyncio.run(passerelle.rita_portefeuille())
+    assert r["success"] is False
+    assert _FauxClient.dernier_appel == {}, "aucun appel metier"
+    post = _FauxClient.dernier_post
+    assert post["url"].endswith("/audit/mcp")
+    assert post["json"]["outil"] == "rita_portefeuille" and post["json"]["statut"] == "refuse"
+    assert post["json"]["code_erreur"] == "NOT_AUTHORIZED"
+    assert post["headers"]["X-Client-Id"] == "passerelle-mcp"
+    assert "positions" not in post["json"] and "ticker" not in str(post["json"])
+
+
+def test_une_panne_du_signalement_ne_change_pas_la_reponse_a_l_utilisateur(monkeypatch):
+    _simuler(monkeypatch, exception=httpx.ConnectError("refused"))
+    monkeypatch.delenv("RITA_MCP_PORTEFEUILLE", raising=False)
+    r = asyncio.run(passerelle.rita_portefeuille())
+    assert r["success"] is False and r["error"]["code"] == "NOT_AUTHORIZED"

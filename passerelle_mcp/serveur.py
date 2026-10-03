@@ -46,7 +46,9 @@ un modèle qui lit « quelque chose s'est mal passé » réessaie au hasard.
 """
 from __future__ import annotations
 
+import logging
 import os
+import uuid
 from pathlib import Path
 from typing import Any
 
@@ -64,6 +66,11 @@ from sources.positions import EXEMPLE, lire as lire_positions
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 URL_API = os.getenv("RITA_API_URL", "http://127.0.0.1:8000")
+logger = logging.getLogger(__name__)
+
+# Identité TECHNIQUE posée par le système, jamais une autorisation fondée sur un nom fourni par
+# le modèle (chapitre « Données » §3.7). L'API journalise les appels qui la portent (plan 62).
+CLIENT_ID = "passerelle-mcp"
 
 # Délai volontairement court : ces trois outils lisent des données déjà calculées.
 # Au-delà, c'est que l'API ne répond pas — mieux vaut le dire que faire patienter.
@@ -142,14 +149,33 @@ def _erreur(code: str, message: str) -> dict[str, Any]:
     return {"success": False, "error": {"code": code, "message": message}}
 
 
-async def _lire(chemin: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
+def _entetes(outil: str) -> dict[str, str]:
+    """La clé (l'identité transmise à l'API) et, depuis le plan 62, qui appelle et pour quel outil."""
+    return {"X-API-Key": _cle_api(), "X-Client-Id": CLIENT_ID, "X-Outil": outil}
+
+
+async def _signaler_refus(outil: str, code: str) -> None:
+    """Un refus pris ici, avant tout appel métier, part quand même au journal : par l'API
+    (`POST /audit/mcp`), jamais par du SQL d'ici (plan 62, décision D2). Fail-safe : une panne
+    du signalement ne change pas la réponse à l'utilisateur, elle laisse une ligne WARNING."""
+    try:
+        async with httpx.AsyncClient(timeout=DELAI_SECONDES) as client:
+            await client.post(f"{URL_API}/audit/mcp", headers=_entetes(outil),
+                              json={"outil": outil, "statut": "refuse", "code_erreur": code,
+                                    "request_id": uuid.uuid4().hex})
+    except Exception as erreur:  # noqa: BLE001
+        logger.warning("refus MCP non signale a l'API : outil=%s code=%s : %s", outil, code,
+                       f"{type(erreur).__name__}: {erreur}"[:120])
+
+
+async def _lire(chemin: str, params: dict[str, Any] | None = None, outil: str = "") -> dict[str, Any]:
     """Appelle un point de terminaison de RITA et rend une réponse structurée.
 
     Toute la gestion d'erreur est ici, pas dupliquée dans chaque outil : trois outils
     qui traitent les erreurs chacun à leur façon, ce sont trois comportements qui
     divergeront.
     """
-    entetes = {"X-API-Key": _cle_api()}
+    entetes = _entetes(outil or chemin)
     url = f"{URL_API}{chemin}"
 
     try:
@@ -195,7 +221,7 @@ async def _lire(chemin: str, params: dict[str, Any] | None = None) -> dict[str, 
     annotations=LECTURE_SEULE,
 )
 async def rita_fraicheur() -> dict[str, Any]:
-    return await _lire("/donnees/fraicheur")
+    return await _lire("/donnees/fraicheur", outil="rita_fraicheur")
 
 
 @serveur.tool(
@@ -212,17 +238,19 @@ async def rita_fraicheur() -> dict[str, Any]:
 async def rita_portefeuille() -> dict[str, Any]:
     # Verrou 1 : déclaré. Refus AVANT tout appel : l'API n'a même pas à répondre.
     if not _demonstration_declaree():
+        await _signaler_refus("rita_portefeuille", "NOT_AUTHORIZED")
         return _erreur(
             "NOT_AUTHORIZED",
             f"Le portefeuille n'est servi qu'en demonstration declaree : poser "
             f"{VARIABLE_PORTEFEUILLE}=demo dans l'environnement de la passerelle. Un portefeuille "
             f"reel ne sort jamais par MCP (matrice d'acces du chapitre Donnees, section 3.3).",
         )
-    reponse = await _lire("/donnees/portefeuille")
+    reponse = await _lire("/donnees/portefeuille", outil="rita_portefeuille")
     if not reponse.get("success"):
         return reponse
     # Verrou 2 : vérifié. Si ce n'est pas le jeu d'exemple, rien ne sort, pas même le total.
     if not _est_le_jeu_de_demonstration(reponse["data"].get("positions") or []):
+        await _signaler_refus("rita_portefeuille", "NOT_AUTHORIZED")
         return _erreur(
             "NOT_AUTHORIZED",
             "Les positions servies par l'API ne sont pas le jeu de demonstration "
@@ -247,7 +275,7 @@ async def rita_portefeuille() -> dict[str, Any]:
 )
 async def rita_indicateurs(ticker: str | None = None) -> dict[str, Any]:
     """Indicateurs pour un ticker (ex. « MC.PA »), ou pour toutes les valeurs si omis."""
-    return await _lire("/donnees/indicateurs", {"ticker": ticker} if ticker else None)
+    return await _lire("/donnees/indicateurs", {"ticker": ticker} if ticker else None, outil="rita_indicateurs")
 
 
 def main() -> None:

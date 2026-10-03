@@ -24,7 +24,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 utile à l'exécution. Rien à redire. »). Le chapitre est dans `docs/conception/donnees/` (README = tableau chapitre contre code au
 03/10) ; dix issues `conception-donnees` portent les écarts ouverts. **Ordre** : 1) sans zone sous garde, test d'abord : `titre`
 dans l'index (**#59 fait le 03/10**, 3 tests ; l'index du poste, 1 563 documents sans titre, se reconstruit à la collecte de 19 h), vérification de la démonstration dans la passerelle (**#60 fait le 03/10**, 5 tests : déclaration `RITA_MCP_PORTEFEUILLE=demo` et comparaison au jeu d'exemple), cartographie des 32 cas (**#61 fait le 03/10** : 23 ✅ 5 🟠 4 ❌, quatre tests écrits, deux issues ouvertes #69 D07 et #70 A08), manifeste de collecte (**#64 fait le 03/10**, 9 tests ; premier manifeste réel attendu à la collecte de 19 h dans `logs/`) ; vérification de la démonstration dans la passerelle, cartographie des 32 cas, manifeste de collecte ; 2) avec plan
-validé par Era : `COALESCE` de la vue (**#65 fait le 03/10** sur plan validé D1 D2 D3 = A : 23 tests, migration jouée sur le poste ; **reste à jouer sur Compose et Hetzner** : `db/migration-2026-10-03-vue-valorisation-taux.sql`), `mcp_calls` (**plan écrit le 03/10** : `docs/PLAN-62-journal-mcp-calls.md`, trois décisions D1 à D3 en attente d'Era), clôture des positions ; 3) décisions d'Era : quasi-doublons, `search_articles`.
+validé par Era : `COALESCE` de la vue (**#65 fait le 03/10** sur plan validé D1 D2 D3 = A : 23 tests, migration jouée sur le poste ; **reste à jouer sur Compose et Hetzner** : `db/migration-2026-10-03-vue-valorisation-taux.sql`), `mcp_calls` (**#62 fait le 03/10** sur plan validé D1 D2 D3 = A : 21 tests, migration jouée sur le poste, premières lignes réelles ; **reste Compose et Hetzner** : `db/migration-2026-10-03-mcp-calls.sql`), clôture des positions ; 3) décisions d'Era : quasi-doublons, `search_articles`.
 Rien de ce qui touche `db/schema.sql` ne se code sans ce plan.
 
 ▶️ **PR #58 `develop → main`** : ouverte le 03/10 au soir (31 commits), relue par Codex (2 remarques, **corrigées le 03/10** :
@@ -48,8 +48,9 @@ cochée** : c'est ce que le formateur regarde la semaine du 05/10.
 (626 passed, 2 xfailed, 126 s), arbre propre après. **▶️ Ordre des prochaines actions** : 1) les fichiers de clés en clair du Bureau (Era seul : gestionnaire, suppression, rotation) ; 3) Langfuse : **tableau « RITA C11 » construit par l'API le 03/10** (3 tuiles), 15 traces factices exportées ;
 restent à Era les clics de suppression (refusée à l'agent), les 2 alertes (pas d'API) et les captures ; le bouton
 *Run workflow* attend la PR `develop → main` (`evidence/C11/preuve-langfuse-2026-10-03.md`) ; 4) **fait le 03/10** : le classeur Excel rempli critère par critère depuis la note (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER, preuve en commentaire de chaque cellule, sauvegarde SAUVEGARDE3 à côté) ; puis E1 v2 (tag `livrable-E1-v2` le 15/10) et
-le rapport E3. Pointeurs périmés à corriger dans les skills (Era, fichiers de méthode) : `boussole`, `projet-rncp`,
-`mlops-verifier`, `rita-rewrite` niveau utilisateur, table des skills de `CLAUDE.md` global.
+le rapport E3. Pointeurs des skills et table de `CLAUDE.md` global : **corrigés le 03/10**. **`main` protégée côté serveur depuis le 03/10**
+(GitHub Pro activé par Era, ruleset : PR obligatoire, `pytest` et `evals` verts ; `evidence/C19/`) : capture d'écran de
+*Settings → Rules* à ranger par Era.
 
 ---
 

@@ -40,6 +40,7 @@ from fastapi import APIRouter, HTTPException, Query
 #
 # Renommer la route aurait été l'autre solution ; l'alias est plus sûr, car le nom
 # de la fonction de route apparaît ailleurs (tests, OpenAPI).
+from db import audit_mcp
 from indicateurs import portefeuille as indicateurs_portefeuille_module
 from indicateurs import risque as indicateurs_risque_module
 from indicateurs import socle
@@ -310,4 +311,8 @@ def fraicheur() -> dict:
     Le seuil vert tolère 1 jour parce que la séance du jour n'entre en base
     qu'après la collecte de 19h00 — la Bourse clôture à 17h35.
     """
-    return monitorage_fraicheur.lire().en_dict()
+    reponse = monitorage_fraicheur.lire().en_dict()
+    # Plan 62 (décision D3) : une panne du journal des appels MCP se voit ici, le vecteur C20 que
+    # l'écran et l'outil MCP lisent déjà ; zéro est la valeur normale.
+    reponse["audit_mcp_echecs"] = audit_mcp.echecs()
+    return reponse
