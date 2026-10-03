@@ -168,6 +168,13 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 
 | Quoi | Statut | Preuve |
 |---|---|---|
+| Suite de tests, 02/10 nuit | **TESTÉ** | `C:\Python314\python.exe -m pytest --cov -q` → `626 passed, 2 xfailed`, couverture 93,66 % (seuil 90 %) |
+| Garde-fou de sortie branché sur `/briefing` | **PROUVÉ PAR MUTATION** | ligne 131 désactivée → `1 failed, 9 passed` ; restaurée → `10 passed` ; `evidence/C17/preuve-garde-fou-sortie-branche.md` |
+| Trace complète : racine `briefing`, `scout`, `rag`, `garde-fou-entree`, `redacteur`, `briefing-llm`, `llm-*`, `garde-fou-sortie`, chacun une fois, dans l'ordre | **TESTÉ** | `tests/test_trace_chemin.py` (8) ; contexte OpenTelemetry mesuré traversant LangGraph (exporteur en mémoire, 02/10) |
+| `request_id` : réponse, journal, trace | **TESTÉ** | `tests/test_request_id.py` (11) |
+| Compose transmet `LANGFUSE_*` au conteneur | **TESTÉ** (PyYAML) | `tests/test_docker_compose.py` ; `docker compose config` non lancé : démon arrêté sur le poste |
+| Alerte Langfuse → issue `incident` | **TESTÉ** (contrat du fichier) | `tests/test_alerte_incident.py` (7) ; `bash -n` sur les 3 scripts ; **jamais exécuté sur GitHub** avant le push |
+| Liens du dépôt | **VÉRIFIÉ** | `scripts\verifier_liens.py` : 82 internes, 84 externes, 0 cassé (02/10 nuit) |
 | Suite de tests locale, Python 3.14.6 | **TESTÉ** | `C:\Python314\python.exe -m pytest -q` → `433 passed, 2 xfailed, 2 warnings in 39.31s` (06/09) |
 | `chromadb` charge sous 3.14 | **EXÉCUTÉ** | `import chromadb` → `chromadb OK 1.5.9 python 3.14.6` (06/09) |
 | Corpus à jour, base = index | **EXÉCUTÉ** | `SELECT count(*) FROM article` → **538** · `_collection().count()` → **538** · `max(publie_le)` = 2026-09-05 18:29 (06/09) |
@@ -221,8 +228,11 @@ deux fois du risque. Décision assumée et tracée.
   Ce n'est pas un correctif qui a baissé le score, c'est le corpus qui a doublé (plus de distracteurs) ;
   mesuré avec et sans le correctif dense, résultat identique à la décimale. L'hybride reste devant.
 
-**Au 27/09, rien n'est en cours dans le code** : arbre propre, `develop` = `origin/develop`, 0 PR ouverte.
-Le chantier ouvert est un chantier d'écriture : le rapport E4 (#28), 0 page.
+~~**Au 27/09, rien n'est en cours dans le code** : arbre propre, `develop` = `origin/develop`, 0 PR ouverte.~~
+
+**Au 02/10, nuit : 21 fichiers modifiés non commités, 7 commits préparés** (journal Obsidian 018, section 13),
+`origin/develop` toujours à `2022689`. Le push est la prochaine action d'Era. Les chantiers d'écriture ouverts :
+rapport E3 (#37, 0 page, gel le 15/10), rapport E4 (#28, 0 page, gel le 25/10).
 
 ## K. Reste à faire
 
@@ -235,8 +245,16 @@ Le chantier ouvert est un chantier d'écriture : le rapport E4 (#28), 0 page.
 - Message au formateur (si non parti).
 - Réécrire l'argument d'éco-conception C15 sur 1,01 Go. Carte #25.
 - Épingler `requirements.txt` (13 dépendances sans version). Carte #23.
-- ~~C7, C11, C16 à zéro~~ : **C16 en place le 26/09** (2 ✅ + 2 ⚠️). Restent **C7** (protocole de benchmark
-  #32, conclusion #33) et **C11** (monitorage du modèle #38, traces de `src/llm.py` #39).
+- ~~C7, C11, C16 à zéro~~ : **C16 en place le 26/09** (2 ✅ + 2 ⚠️). **C11 codé de bout en bout le 02/10**
+  (#38, #39 : traces complètes, `request_id`, Compose, alerte vers issue, `evidence/C11/`) ; restent les clics d'Era
+  dans Langfuse (tableau, 2 alertes, suppression des 12 lignes, captures) et les variables sur le serveur.
+  Reste **C7** (protocole de benchmark #32, conclusion #33).
+- **Décisions d'Era (02/10)** : rotation de la clé FRED (présente en clair dans 6 journaux locaux) ; second projet
+  Langfuse `rita-dev` pour le poste ; `memory_audit` : écrire des empreintes ou retirer (D).
+- **Volet 5 à 9 du plan du 02/10** (`ETAT.md`) : enveloppe `<donnees_externes>` branchée dans le prompt ; tests de
+  seuil de l'entrée ; cas Giskard rejoués ; dossiers de preuves C9, C12, C13, C18 ; `evidence/README.md` (figé au 11/08)
+  à réindexer ; hygiène (`README.md`, `CLAUDE.md`, commentaire de `test.yml`, `requirements.txt`, 422, retour arrière) ;
+  tags `livrable-E1-v2` puis `livrable-E3-v1` le 15/10.
 - **Les trois rapports à rédiger puis geler** : E4 (#28, tâche principale), E3 (#37), E2 (#34). Au 27/09,
   `docs/rapports/` ne contient que E1.
 - **Rapport E1 à corriger** (carte #56) : les dates de l'archive y sont décalées d'un jour depuis INC-005.
