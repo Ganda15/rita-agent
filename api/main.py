@@ -19,6 +19,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Request, Security
+from fastapi.responses import JSONResponse
 from fastapi.security.api_key import APIKeyHeader
 from fastapi.staticfiles import StaticFiles
 
@@ -87,6 +88,17 @@ async def attribuer_un_identifiant_de_requete(request: Request, call_next):
     jeton = _request_id_courant.set(identifiant)
     try:
         reponse = await call_next(request)
+    except Exception as erreur:  # noqa: BLE001
+        # Revue Codex de la PR #58 (03/10/2026) : une exception imprévue traversait ce bloc et
+        # Starlette fabriquait un 500 SANS identifiant, précisément la panne qu'on doit retrouver.
+        # On la journalise avec l'identifiant (type et message, jamais vers le client) et on
+        # répond nous-mêmes, l'en-tête posé.
+        logger.error("erreur interne : request_id=%s chemin=%s %s", identifiant,
+                     request.url.path, f"{type(erreur).__name__}: {erreur}"[:300])
+        reponse = JSONResponse(
+            status_code=500,
+            content={"detail": f"Erreur interne. Identifiant de requete : {identifiant}"},
+        )
     finally:
         _request_id_courant.reset(jeton)
     reponse.headers["X-Request-ID"] = identifiant

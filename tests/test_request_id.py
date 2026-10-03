@@ -176,3 +176,22 @@ def test_sous_uvicorn_les_lignes_info_de_l_api_sont_visibles():
     sortie = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True,
                             timeout=120, env={**__import__("os").environ, "LANGFUSE_TRACING_ENABLED": "false"})
     assert sortie.stdout.strip().splitlines()[-1] == "True True", sortie.stderr[-500:]
+
+
+# --- 5. une erreur inattendue (500) porte aussi l'identifiant ------------------
+# Revue Codex de la PR #58 (03/10/2026), remarque P2 : quand une route levait une exception
+# non prévue, `call_next` la propageait à travers le `finally` du middleware et la ligne qui
+# pose l'en-tête n'était jamais atteinte. Le 500 fabriqué par Starlette partait sans
+# `X-Request-ID` : précisément la panne qu'on a le plus besoin de retrouver dans les journaux.
+
+def test_une_erreur_inattendue_500_porte_aussi_l_identifiant(caplog):
+    client_tolerant = TestClient(app, raise_server_exceptions=False)
+    with patch("api.main.generer_briefing_complet", side_effect=RuntimeError("panne imprevue")), \
+         caplog.at_level(logging.ERROR, logger="api.main"):
+        reponse = client_tolerant.post("/briefing?ticker=MC.PA", headers={"X-API-Key": CLE_DE_TEST})
+    assert reponse.status_code == 500
+    identifiant = reponse.headers.get("X-Request-ID", "")
+    assert IDENTIFIANT_GENERE.match(identifiant), "le 500 doit porter l'identifiant comme les autres"
+    assert "panne imprevue" not in reponse.text, "le detail d'une exception interne ne sort jamais au client"
+    erreurs = [r.getMessage() for r in caplog.records if r.levelno == logging.ERROR]
+    assert erreurs and identifiant in erreurs[0], "la ligne ERROR doit porter le meme identifiant"
