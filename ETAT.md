@@ -31,7 +31,7 @@ cochée** : c'est ce que le formateur regarde la semaine du 05/10.
 
 **Push fait le 03/10 à la demande d'Era** : dix commits, `2022689..a1c14e6` sur `origin/develop`, suite verte avant
 (626 passed, 2 xfailed, 126 s), arbre propre après. **▶️ Ordre des prochaines actions** : 1) les fichiers de clés en clair du Bureau (Era seul : gestionnaire, suppression, rotation) ; 3) les clics
-Langfuse ; 4) le classeur Excel rempli depuis la note de vérification ; puis E1 v2 (tag `livrable-E1-v2` le 15/10) et
+Langfuse ; 4) **fait le 03/10** : le classeur Excel rempli critère par critère depuis la note (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER, preuve en commentaire de chaque cellule, sauvegarde SAUVEGARDE3 à côté) ; puis E1 v2 (tag `livrable-E1-v2` le 15/10) et
 le rapport E3. Pointeurs périmés à corriger dans les skills (Era, fichiers de méthode) : `boussole`, `projet-rncp`,
 `mlops-verifier`, `rita-rewrite` niveau utilisateur, table des skills de `CLAUDE.md` global.
 
@@ -1238,7 +1238,7 @@ fabriquée, donc irrecevable pour C6.
 
 | Quoi | Où |
 |---|---|
-| Rédaction par compétences (modèle Simplon, à rendre) | `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP.xlsx` |
+| Rédaction par compétences (modèle Simplon, à rendre) | `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP.xlsx` : 135 critères, colonne « Critère validé » remplie le 03/10 (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER : les 7 de C7 et le tableau de bord C11), preuve datée en commentaire de chaque cellule ; colonne « Rédaction » : 9 compétences sur 21 |
 | ⤷ rempli pour | C1 C2 C3 C4 C5 C8 C9 C12 C13 — les autres **volontairement vides** |
 | Boussole (tâche principale + pile de détours) | `C:\Users\kanda\Desktop\RITA PROJET PRO\BOUSSOLE-RITA.md` : **archivé depuis le 14/08** (bannière du fichier : « n'est plus la source »). L'état vivant est ce fichier-ci. La skill `boussole` pointe encore vers l'archive : à corriger (relevé le 03/10) |
 | Journal (19 entrées, JOURNAL-000 à JOURNAL-018) | Obsidian `Projets/RITA/07-Journal/` (coffre `C:\Users\kanda\Documents\Formation-IA\Formation-IA\`) : la 018 du 02/10 au soir compte 18 sections ; index à jour le 03/10 |
