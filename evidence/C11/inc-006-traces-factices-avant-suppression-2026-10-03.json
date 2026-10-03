@@ -1,0 +1,129 @@
+{
+ "exporte_le": "2026-10-03T00:17:39.176790+00:00",
+ "projet": "rita (Langfuse Cloud UE)",
+ "critere": "input == 'prompt test' (generations de la suite de tests, INC-006)",
+ "nombre": 15,
+ "note": "INC-006 en comptait douze (18:25 a 18:38, heure de Paris) ; une troisieme serie de trois a 18:42 porte le total a quinze.",
+ "traces": [
+  {
+   "id": "d234f7b8dbc096d344817a562c500f16",
+   "timestamp": "2026-10-02T16:25:25.964000+00:00",
+   "name": "briefing-llm",
+   "input": "prompt test",
+   "output": null,
+   "observations": 1
+  },
+  {
+   "id": "bdbd53c23b57978b90217898c4e7dce9",
+   "timestamp": "2026-10-02T16:25:25.965000+00:00",
+   "name": "briefing-llm",
+   "input": "prompt test",
+   "output": "ok anthropic",
+   "observations": 1
+  },
+  {
+   "id": "15c4c64ebb99756f08b3ed0320d88038",
+   "timestamp": "2026-10-02T16:25:26.143000+00:00",
+   "name": "briefing-llm",
+   "input": "prompt test",
+   "output": null,
+   "observations": 1
+  },
+  {
+   "id": "46cb9f2ff696b1255ca6b2aff6613af4",
+   "timestamp": "2026-10-02T16:28:30.882000+00:00",
+   "name": "briefing-llm",
+   "input": "prompt test",
+   "output": null,
+   "observations": 1
+  },
+  {
+   "id": "b255f980b8c1738377069f9e1056aa40",
+   "timestamp": "2026-10-02T16:28:30.882000+00:00",
+   "name": "briefing-llm",
+   "input": "prompt test",
+   "output": "ok anthropic",
+   "observations": 1
+  },
+  {
+   "id": "dfff38b7a0fb794d80cf66d44a00d1d3",
+   "timestamp": "2026-10-02T16:28:31.056000+00:00",
+   "name": "briefing-llm",
+   "input": "prompt test",
+   "output": null,
+   "observations": 1
+  },
+  {
+   "id": "e81a37bfe67d760b8e7937ec8c82b847",
+   "timestamp": "2026-10-02T16:32:41.306000+00:00",
+   "name": "briefing-llm",
+   "input": "prompt test",
+   "output": null,
+   "observations": 1
+  },
+  {
+   "id": "6d39be803751c171689e06b4c9477647",
+   "timestamp": "2026-10-02T16:32:41.307000+00:00",
+   "name": "briefing-llm",
+   "input": "prompt test",
+   "output": "ok anthropic",
+   "observations": 1
+  },
+  {
+   "id": "22ad0e1965e88ce32db28105746bee74",
+   "timestamp": "2026-10-02T16:32:41.646000+00:00",
+   "name": "briefing-llm",
+   "input": "prompt test",
+   "output": null,
+   "observations": 1
+  },
+  {
+   "id": "3ed864162a26fd8d6b50c67bf4da4e67",
+   "timestamp": "2026-10-02T16:38:50.518000+00:00",
+   "name": "briefing-llm",
+   "input": "prompt test",
+   "output": null,
+   "observations": 1
+  },
+  {
+   "id": "fec4b93e79cd59ec4441963324be3e88",
+   "timestamp": "2026-10-02T16:38:50.518000+00:00",
+   "name": "briefing-llm",
+   "input": "prompt test",
+   "output": "ok anthropic",
+   "observations": 1
+  },
+  {
+   "id": "4a73443f68bceb277ee9be72bcfb705f",
+   "timestamp": "2026-10-02T16:38:50.763000+00:00",
+   "name": "briefing-llm",
+   "input": "prompt test",
+   "output": null,
+   "observations": 1
+  },
+  {
+   "id": "02259560211cfc67bdea58024bd3acd3",
+   "timestamp": "2026-10-02T16:42:48.413000+00:00",
+   "name": "briefing-llm",
+   "input": "prompt test",
+   "output": null,
+   "observations": 1
+  },
+  {
+   "id": "27220d647e65ff797923c5fb3c4fc7e2",
+   "timestamp": "2026-10-02T16:42:48.414000+00:00",
+   "name": "briefing-llm",
+   "input": "prompt test",
+   "output": "ok anthropic",
+   "observations": 1
+  },
+  {
+   "id": "fe36a8a3a8662525a642dc6dbe39911b",
+   "timestamp": "2026-10-02T16:42:48.686000+00:00",
+   "name": "briefing-llm",
+   "input": "prompt test",
+   "output": null,
+   "observations": 1
+  }
+ ]
+}

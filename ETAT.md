@@ -30,8 +30,9 @@ criteres RNCP C1-C21 (2026-10-03).md` (7 ✅, 13 ⚠️, 1 ❌ : C7). Le classeu
 cochée** : c'est ce que le formateur regarde la semaine du 05/10.
 
 **Push fait le 03/10 à la demande d'Era** : dix commits, `2022689..a1c14e6` sur `origin/develop`, suite verte avant
-(626 passed, 2 xfailed, 126 s), arbre propre après. **▶️ Ordre des prochaines actions** : 1) les fichiers de clés en clair du Bureau (Era seul : gestionnaire, suppression, rotation) ; 3) les clics
-Langfuse ; 4) **fait le 03/10** : le classeur Excel rempli critère par critère depuis la note (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER, preuve en commentaire de chaque cellule, sauvegarde SAUVEGARDE3 à côté) ; puis E1 v2 (tag `livrable-E1-v2` le 15/10) et
+(626 passed, 2 xfailed, 126 s), arbre propre après. **▶️ Ordre des prochaines actions** : 1) les fichiers de clés en clair du Bureau (Era seul : gestionnaire, suppression, rotation) ; 3) Langfuse : **tableau « RITA C11 » construit par l'API le 03/10** (3 tuiles), 15 traces factices exportées ;
+restent à Era les clics de suppression (refusée à l'agent), les 2 alertes (pas d'API) et les captures ; le bouton
+*Run workflow* attend la PR `develop → main` (`evidence/C11/preuve-langfuse-2026-10-03.md`) ; 4) **fait le 03/10** : le classeur Excel rempli critère par critère depuis la note (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER, preuve en commentaire de chaque cellule, sauvegarde SAUVEGARDE3 à côté) ; puis E1 v2 (tag `livrable-E1-v2` le 15/10) et
 le rapport E3. Pointeurs périmés à corriger dans les skills (Era, fichiers de méthode) : `boussole`, `projet-rncp`,
 `mlops-verifier`, `rita-rewrite` niveau utilisateur, table des skills de `CLAUDE.md` global.
 

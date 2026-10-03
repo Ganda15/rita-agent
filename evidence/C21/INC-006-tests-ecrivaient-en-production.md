@@ -89,8 +89,13 @@ dans Langfuse pendant ces exécutions (à confirmer par Era dans l'interface : s
 ## 7. Ce que ça change pour la suite
 
 - **Fait** : la suite de tests ne peut plus tracer, quelles que soient les variables du poste.
-- **À faire par Era** : supprimer les douze lignes dans l'interface Langfuse (projet `rita`), et
+- **À faire par Era** : supprimer les lignes factices dans l'interface Langfuse (projet `rita`), et
   garder une capture avant suppression dans `evidence/C11/`.
+  **Complément du 03/10** : relues par l'API, elles sont **quinze**, pas douze : une troisième série de trois
+  à 18 h 42 (heure de Paris) manquait au décompte du 02/10 au soir. Export d'avant suppression :
+  `evidence/C11/inc-006-traces-factices-avant-suppression-2026-10-03.json`. La suppression par l'agent a été
+  refusée par la session Claude Code (suppression de masse chez un tiers) ; les clics sont dans
+  `evidence/C11/preuve-langfuse-2026-10-03.md`, section 3.1.
 - **À décider** : un second projet Langfuse `rita-dev` pour le poste de développement, afin que
   même un appel réel fait à la main pendant le travail n'entre pas dans les mesures de production.
   Coût : zéro (le palier gratuit accepte plusieurs projets). Non fait au 02/10.
