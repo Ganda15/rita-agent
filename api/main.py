@@ -8,20 +8,48 @@ Deux familles de points de terminaison, et la distinction est celle du référen
 Documentation interactive : http://127.0.0.1:8000/docs
 Contrat OpenAPI :           http://127.0.0.1:8000/openapi.json
 """
+import contextvars
+import logging
 import os
+import re
 import secrets
+import time
+import uuid
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, HTTPException, Security
+from fastapi import Depends, FastAPI, HTTPException, Request, Security
 from fastapi.security.api_key import APIKeyHeader
 from fastapi.staticfiles import StaticFiles
 
 from api.donnees import routeur as routeur_donnees
 from graph.workflow import generer_briefing_complet
 from guardrails.sortie import verifier_sortie
+from src import traces
 
 load_dotenv()
+
+# Sans configuration, Python n'écrit que les avertissements : la ligne « briefing servi »
+# (INFO) serait invisible sous uvicorn. `basicConfig` ne fait rien si quelqu'un a déjà
+# configuré la racine (pytest, un script) : on ne marche sur les pieds de personne.
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
+logger = logging.getLogger(__name__)
+
+# --- Un identifiant par requête (C20, Mardik 2, Kaldera-A2A) ------------------------------
+# Le même identifiant se lit dans l'en-tête `X-Request-ID` de la réponse, dans chaque ligne
+# de journal de la requête, et comme identifiant de la trace Langfuse. Sans lui, un journal,
+# une trace et un incident ne se rejoignent jamais.
+#
+# Un identifiant fourni par le client est repris SEULEMENT s'il est sain : 8 à 64 caractères
+# parmi lettres, chiffres, `-` et `_`. Sinon un tiers choisirait ce qui s'écrit dans nos
+# journaux (retours à la ligne, balises : injection de journal). On le remplace sans bruit.
+IDENTIFIANT_CLIENT_SAIN = re.compile(r"^[A-Za-z0-9_-]{8,64}$")
+_request_id_courant: contextvars.ContextVar[str] = contextvars.ContextVar("request_id", default="")
+
+
+def request_id_courant() -> str:
+    """L'identifiant de la requête en cours, ou une chaîne vide hors requête."""
+    return _request_id_courant.get()
 
 DESCRIPTION = """
 API de **RITA** — *Retrieval Intelligence pour le Tracking et l'Analyse*.
@@ -48,6 +76,21 @@ app = FastAPI(
 )
 
 API_KEY_HEADER = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+
+@app.middleware("http")
+async def attribuer_un_identifiant_de_requete(request: Request, call_next):
+    """Pose `X-Request-ID` sur TOUTE réponse, y compris 403 et 502 : une erreur sans
+    identifiant est une erreur qu'on ne retrouve pas."""
+    propose = request.headers.get("X-Request-ID", "")
+    identifiant = propose if IDENTIFIANT_CLIENT_SAIN.match(propose) else uuid.uuid4().hex
+    jeton = _request_id_courant.set(identifiant)
+    try:
+        reponse = await call_next(request)
+    finally:
+        _request_id_courant.reset(jeton)
+    reponse.headers["X-Request-ID"] = identifiant
+    return reponse
 
 
 LONGUEUR_MINIMALE_CLE = 16
@@ -119,16 +162,43 @@ def briefing(ticker: str, api_key: str = Security(verify_api_key)):
     Relève de **C9** (exposer un modèle), pas de C5 : la sortie est une rédaction, pas de
     la donnée. Le garde-fou AMF s'applique — aucune recommandation d'achat ou de vente.
     """
-    resultat = generer_briefing_complet(ticker)
-    if resultat["error"]:
-        raise HTTPException(status_code=502, detail=resultat["error"])
+    request_id = request_id_courant()
+    debut = time.perf_counter()
+    # Une racine de trace par briefing (C11) : tout ce qui suit, y compris l'appel au modèle,
+    # se range dessous, et le verdict du garde-fou y est posé. Sans clés Langfuse, `racine`
+    # vaut None et rien ne change (src/traces.py). L'identifiant de requête devient celui
+    # de la trace : journal et trace se retrouvent par le même identifiant.
+    with traces.briefing(ticker, request_id=request_id) as racine:
+        resultat = generer_briefing_complet(ticker)
+        if resultat["error"]:
+            logger.warning("briefing en erreur 502 : request_id=%s ticker=%r",
+                           request_id, ticker)
+            raise HTTPException(status_code=502, detail=resultat["error"])
 
-    # Garde-fou de SORTIE (C17) — l'interdit AMF s'applique au texte produit, pas
-    # seulement au prompt. Le prompt demande déjà « aucune recommandation » ; un prompt
-    # est une consigne, pas un contrôle. Ajouté le 17/08/2026 : il était invoqué par le
-    # docstring de guardrails/injection.py sans exister. Fail-closed : en cas de doute,
-    # on ne diffuse pas.
-    verdict = verifier_sortie(resultat["briefing"])
+        # Garde-fou de SORTIE (C17) — l'interdit AMF s'applique au texte produit, pas
+        # seulement au prompt. Le prompt demande déjà « aucune recommandation » ; un prompt
+        # est une consigne, pas un contrôle. Ajouté le 17/08/2026 : il était invoqué par le
+        # docstring de guardrails/injection.py sans exister. Fail-closed : en cas de doute,
+        # on ne diffuse pas.
+        with traces.etape("garde-fou-sortie") as span_sortie:
+            verdict = verifier_sortie(resultat["briefing"])
+            traces.noter_garde_fou(span_sortie, not verdict["conforme"], verdict["motifs_detectes"])
+        traces.noter_verdict_amf(racine, resultat["ticker"], verdict["conforme"],
+                                 verdict["motifs_detectes"], request_id=request_id)
+
+    # Un refus laisse UNE ligne dans le journal (audit du 02/10/2026) : sans elle, personne ne sait
+    # que le garde-fou a servi, ni pour quel motif. Jamais le texte refusé : il serait relu et
+    # recopié. `%r` entoure la valeur de guillemets et neutralise les retours à la ligne, pour
+    # qu'une valeur saisie par un tiers ne puisse pas forger de fausses lignes de journal.
+    if not verdict["conforme"]:
+        logger.warning("briefing refuse par le garde-fou de sortie : request_id=%s ticker=%r motifs=%s",
+                       request_id, resultat["ticker"], ",".join(verdict["motifs_detectes"]))
+
+    # Une ligne INFO par briefing servi : identifiant, valeur, verdict, durée. Jamais le texte.
+    # C'est la matière première du monitorage (C20) : combien, pour qui, en combien de temps.
+    logger.info("briefing servi : request_id=%s ticker=%r conforme_amf=%s duree_ms=%d",
+                request_id, resultat["ticker"], verdict["conforme"],
+                int((time.perf_counter() - debut) * 1000))
 
     return {
         "ticker": resultat["ticker"],

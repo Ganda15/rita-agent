@@ -79,6 +79,102 @@ def client_traces():
 
 
 @contextmanager
+def briefing(ticker: str, request_id: str | None = None):
+    """Racine du trace d'UN briefing complet, ouverte à la frontière de l'API.
+
+    `request_id` : l'identifiant de la requête HTTP (en-tête `X-Request-ID`). Il sert de
+    graine à l'identifiant de trace Langfuse : le même identifiant se lit dans la réponse,
+    dans la ligne de journal et dans la trace. Une ligne « briefing refusé » dans le journal
+    retrouve ainsi SA trace, et pas une autre. Il est aussi copié en métadonnées, cherchable.
+
+    Pourquoi ici et pas dans `appel` : le garde-fou de sortie s'exécute APRÈS l'appel au
+    modèle (api/main.py). Quand le verdict existe, le span `briefing-llm` est déjà fermé et
+    ne peut plus le porter. Une racine ouverte plus haut le peut, et elle contient tout :
+    le contexte OpenTelemetry traverse LangGraph (mesuré le 02/10/2026 avec un exporteur en
+    mémoire), donc `briefing-llm` et ses tentatives se rangent dessous sans rien changer.
+
+    Le flush vient APRÈS la fermeture de la racine, même si la route lève une erreur : un
+    span encore ouvert n'est pas exporté. Rend `None` si le traçage est coupé.
+    """
+    client = client_traces()
+    if client is None:
+        yield None
+        return
+    options: dict = {"metadata": {"ticker": ticker}}
+    if request_id:
+        options["metadata"]["request_id"] = request_id
+        # Un identifiant de trace Langfuse fait 32 hexadécimaux : la graine le dérive de façon
+        # déterministe, donc le même `request_id` donne toujours la même trace.
+        options["trace_context"] = {"trace_id": client.create_trace_id(seed=request_id)}
+    try:
+        with client.start_as_current_observation(as_type="span", name="briefing", **options) as racine:
+            yield racine
+    finally:
+        client.flush()
+
+
+def noter_verdict_amf(racine, ticker: str, conforme: bool, motifs: list[str],
+                      request_id: str | None = None) -> None:
+    """Pose le verdict du garde-fou de sortie sur la racine du trace.
+
+    Trois façons de le lire dans Langfuse : les métadonnées (le détail des motifs), le niveau
+    WARNING quand le texte est refusé (filtrable), et une note booléenne `conforme_amf`
+    (1 ou 0) qu'un tableau peut compter et qu'une alerte peut surveiller.
+
+    **Jamais le texte refusé ici** : il reste dans la génération, pour comprendre pourquoi un
+    motif a déclenché, mais la racine, celle qu'on regarde en premier, ne le répète pas.
+    """
+    if racine is None:
+        return
+    details: dict = {"metadata": {"ticker": ticker, "conforme_amf": conforme, "motifs_amf": motifs}}
+    if request_id:
+        details["metadata"]["request_id"] = request_id  # la mise à jour ne doit pas l'effacer
+    if not conforme:
+        details["level"] = "WARNING"
+        details["status_message"] = "refus AMF : " + ",".join(motifs)
+    racine.update(**details)
+    racine.score_trace(name="conforme_amf", value=1.0 if conforme else 0.0, data_type="BOOLEAN")
+
+
+@contextmanager
+def etape(nom: str, genre: str = "span", **metadonnees):
+    """Un span par étape du chemin (scout, rag, garde-fous, rédacteur), sous la racine.
+
+    Pourquoi : la racine disait « un briefing a pris 4 s » sans dire où. Avec une étape par
+    nœud, la trace se lit comme le graphe : qui a tourné, dans quel ordre, combien de temps.
+    C'est aussi le test de trace du brief Kaldera : le texte d'un modèle varie, pas la trace.
+    `genre` suit le vocabulaire Langfuse (`span`, `retriever`). No-op sans client.
+    """
+    client = client_traces()
+    if client is None:
+        yield None
+        return
+    options: dict = {"as_type": genre, "name": nom}
+    if metadonnees:
+        options["metadata"] = metadonnees
+    with client.start_as_current_observation(**options) as span:
+        yield span
+
+
+def terminer_etape(span, **champs) -> None:
+    """Complète une étape (sortie, métadonnées, niveau). Jamais un texte de briefing ici :
+    la sortie d'une étape est un résumé (compte, motif, durée), pas le contenu."""
+    if span is not None and champs:
+        span.update(**champs)
+
+
+def noter_garde_fou(span, bloque: bool, motifs: list[str]) -> None:
+    """Le verdict d'un garde-fou sur son span : bloqué ou non, et les motifs. Niveau WARNING
+    si bloqué, pour filtrer les refus d'un clic. Le texte examiné ne passe jamais ici."""
+    if span is None:
+        return
+    champs: dict = {"metadata": {"bloque": bloque, "motifs": motifs}}
+    if bloque:
+        champs["level"] = "WARNING"
+    span.update(**champs)
+
+
+@contextmanager
 def appel(prompt: str):
     """Ouvre le trace d'UN appel au rédacteur : un span racine `briefing-llm`.
 
