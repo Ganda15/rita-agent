@@ -9,6 +9,12 @@
 
 ---
 
+## 2026-10-03 (nuit, tard) : la clé unique défendue ; l'API lit la base en propriétaire
+
+**Décision structurante** : la clé d'API unique est maintenue et défendue par écrit (un utilisateur, données de démonstration, comptes jugés plus risqués qu'utiles), avec ses coûts et les déclencheurs qui la feraient changer (`evidence/C17/preuve-droits-acces-2026-10-03.md`). **Manque découvert** en confrontant la matrice d'accès validée par le formateur au code : l'API et le scout se connectent avec le rôle propriétaire de la base au lieu d'un rôle en lecture (carte #76), et le rôle `rita_lecture` n'est utilisé nulle part.
+
+---
+
 ## 2026-10-03 (nuit, fin) : revue OWASP Top 10:2025, la configuration de production est le point faible
 
 **Manque découvert** : la revue OWASP (édition 2025, la seule en vigueur ; le dépôt citait encore la numérotation 2021) trouve la production **sans aucun en-tête de sécurité**, la documentation de l'API publique, **aucune limite de débit** sur un appel payant, des refus de clé **jamais journalisés**, et des alertes Dependabot désactivées. Une sonde montre aussi qu'un ticker de 5 000 caractères est accepté et que la panne de tous les fournisseurs rend un 500 (sûr, mais différent de ce que la spécification de l'écran 3 écrivait le matin même : corrigée). Le certificat expire le 18/11, avant le jury. Tenus : contrôle d'accès, TLS, injections SQL et HTML, intégrité de la livraison, aucun secret dans l'historique. Rien n'est corrigé avant le gel ; dix constats regroupés (carte #75).

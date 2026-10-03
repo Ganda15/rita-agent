@@ -81,7 +81,7 @@ reprend ce qu'il lui faut et renvoie à E3 pour le détail, il ne s'y réduit pa
 | T2 | User stories et wireframes des écrans 2 et 3 (#24) | `evidence/C14/`, `frontend/` | **fait le 03/10** : `evidence/C14/preuve-specifications-ecrans-2-et-3.md`, un wireframe `.drawio`, `.svg` et `.png` par écran ; écrit après le code, dit en tête ; a fait trouver le défaut #73 et une erreur de référence RGAA |
 | T3 | Mesurer l'éco-conception et l'accessibilité des trois pages (#25) | le front local | **fait le 03/10** : `evidence/C17/preuve-eco-conception-et-accessibilite-2026-10-03.md` (Lighthouse 13.5.0, EcoIndex officiel, clavier) ; le tableau **après** suivra la correction de la carte #74, après le 15/10 |
 | T4 | Revue OWASP Top 10 écrite (#29) | le code, `tests/` | **fait le 03/10** : `evidence/C17/revue-owasp-top10-2025-2026-10-03.md`, édition 2025, dix entrées, dix constats S1 à S10 ; corrections après le 15/10 (carte #75) |
-| T5 | Droits d'accès : défense écrite (#26) | `api/main.py`, `db/roles.sql` | une page avec le modèle de menace |
+| T5 | Droits d'accès : défense écrite (#26) | `api/main.py`, `db/roles.sql` | **fait le 03/10** : `evidence/C17/preuve-droits-acces-2026-10-03.md` (choix, modèle de menace, matrice validée confrontée au code, coût, rotation, déclencheurs) ; écart E1 trouvé (API en rôle propriétaire, carte #76) |
 | T6 | Revues du lundi : 05/10, 12/10, 19/10 | tableau Kanban | `evidence/C16/revues/<date>.md` |
 | T7 | Épingler `requirements.txt` (#23) | `requirements.txt` | suite et chaîne vertes, sortie collée |
 | T8 | Première publication sur tag : relever le run du tag `livrable-E1-v2` (15/10) | `gh run list` | `evidence/C19/preuve-publication-sur-tag.md` |

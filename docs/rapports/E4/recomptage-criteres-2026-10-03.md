@@ -125,6 +125,11 @@ de revue n'existe dans le dépôt (voir C16.1 et C16.4). Aucun ❌. Le rapport E
 - **C17.5 (droits d'accès)** : la revue confirme le contrôle d'accès en production (403 sans clé et avec une fausse clé) et ajoute deux réserves (documentation publique, aucune limite aux essais).
 - **Total inchangé : 27 ✅, 9 ⚠️, 0 ❌.**
 
+## 8. Mise à jour du 03/10/2026, après la tâche T5
+
+- **C17.5 (droits d'accès) reste ⚠️**, pour une raison nouvelle et plus précise : le choix d'une clé unique est défendu par écrit et vérifié en production (`evidence/C17/preuve-droits-acces-2026-10-03.md`), mais la matrice d'accès validée par le formateur donne à l'API la **lecture seule**, alors qu'elle se connecte avec le **rôle propriétaire** (écart E1, carte #76). Conforme au besoin, pas encore à la spécification.
+- **Total inchangé : 27 ✅, 9 ⚠️, 0 ❌.**
+
 ## 📖 Glossaire
 
 - **Critère** : phrase du référentiel que le jury coche.
