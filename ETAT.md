@@ -15,7 +15,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-03** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-03, nuit (session ouverte, carte #57 corrigée, banc C7 relancé)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
@@ -38,7 +38,7 @@ l'assistant rédige le texte, jamais l'envoi.**
 3. **Trancher `memory_audit`** (écrire des empreintes ou retirer la table ; zone sous garde, plan d'abord).
 4. **Clés** Foundry et Anthropic dans `.env` (jamais touché par l'assistant), puis relancer le banc : une commande,
    `C:\Python314\python.exe -X utf8 -m evals.benchmark_fournisseurs --jeu evidence\C7\jeu-d-essai-2026-10-03.json --repetitions 3 --plafond 5 --sortie evidence\C7`.
-5. **Noter le français** des 30 textes de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1, 2), sans ouvrir le fichier `-cle.csv`.
+5. **Noter le français** des 30 textes de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1, 2), sans ouvrir le fichier `-cle.csv`. Ce CSV est celui du second passage (prompt corrigé de la carte #57) ; les fichiers `-avant-57` sont conservés, pas à noter.
 6. **Langfuse, clics** (`evidence/C11/preuve-langfuse-2026-10-03.md` §3) : supprimer les 15 traces factices du 02/10 (il reste
    23 traces : 15 factices et 8 réelles), régler les 2 alertes, capture du tableau « RITA C11 » dans `evidence/C11/`.
 7. **C6** : capture du fil Discord du 16/08 avec ses réponses dans `evidence/C6/` ; note S40 écrite depuis
@@ -135,7 +135,7 @@ encore poussé » jusque-là.
 | Une alerte Langfuse ouvre une issue `incident` (workflow `alerte-incident.yml`, bouton manuel, label créé, alerte répétée commentée) ; section « Monitorage Langfuse et alertes » dans `docs/EXPLOITATION.md` | `tests/test_alerte_incident.py` (7) |
 | `evidence/C11/README.md` (9 critères : 5 tenus, 1 partiel, 3 à faire) ; **INC-006** écrit ; index C21 à jour (critères 3 et 5 ✅ depuis INC-005) | `evidence/C11/`, `evidence/C21/` |
 
-**Mesures** (03/10 soir) : `C:\Python314\python.exe -X utf8 -m pytest --cov -q` : **740 passed, 2 xfailed** (742 collectés, 57 fichiers) · couverture **93,92 %** (seuil 90) · garde-fous : entrée 100 % / 0 % FP, injection 70 % / 0 %, sortie 70 % / 0 %. *(02/10 : `C:\Python314\python.exe -m pytest -q` : **626 passed, 2 xfailed** (586 ce matin) · couverture **93,66 %**)*
+**Mesures** (03/10 nuit) : `C:\Python314\python.exe -X utf8 -m pytest --cov -q` : **765 passed, 2 xfailed** (767 collectés, 59 fichiers) · couverture **94,19 %** (seuil 90) · garde-fous : entrée 100 % / 0 % FP, injection 70 % / 0 %, sortie 70 % / 0 %. *(02/10 : `C:\Python314\python.exe -m pytest -q` : **626 passed, 2 xfailed** (586 ce matin) · couverture **93,66 %**)*
 (seuil 90 %), `api/main.py` et `graph/workflow.py` à 100 % · `scripts\verifier_liens.py` : 82 liens internes, 84 externes,
 **0 cassé**.
 
