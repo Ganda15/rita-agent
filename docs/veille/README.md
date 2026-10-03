@@ -37,6 +37,22 @@ presse.
 | **Sortie** | une note datée dans ce dossier, une par semaine |
 | **Rappel** | aucune tâche planifiée : une tâche `veille-hebdo-securite-llm` avait été annoncée ici, elle **n'a jamais existé** sur le poste (vérifié le 24/08 et le 03/10/2026, `Get-ScheduledTask` ; incident INC-004). Le relevé se fait à la main, le lundi ou en rattrapage, et chaque relevé porte sa date |
 
+**État réel de la récurrence au 03/10/2026**, lu dans ce dossier (un trou se voit, on ne le bouche pas) :
+
+| Semaine ISO | Candidats relevés | Note écrite | Quand, et comment |
+|---|---|---|---|
+| S33 (10 au 16/08) | ✅ | ✅ | créneau tenu le vendredi 14/08 |
+| S34 (17 au 23/08) | ✅ | ✅ | créneau tenu le lundi 17/08 |
+| S35 (24 au 30/08) | ✅ (relevé du 25/08) | ✅ | rédigée en rattrapage le 08/09, l'en-tête le dit |
+| S36 (31/08 au 06/09) | ✅ (relevé du 31/08) | ✅ | rédigée en rattrapage le 08/09, l'en-tête le dit |
+| S37 (07 au 13/09) | ✅ (relevé du 08/09) | 🔴 aucune | carte #31 |
+| S38, S39 (14 au 27/09) | 🔴 aucun | 🔴 aucune | carte #31 : deux semaines sans séance, à dire tel quel |
+| S40 (28/09 au 04/10) | ✅ (relevé du 28/09, fenêtre élargie au 14/09) | 🔴 à écrire par Era | carte #30 |
+
+Synthèse des quatre notes : `Veille-C6-synthese-S33-a-S36.pdf` (§6). Partage : un seul, Discord le 16/08, sans
+capture des réponses à ce jour (`_JOURNAL-DES-ENVOIS.md`, `../../evidence/C6/README.md`).
+
+
 ⚠️ **Ce que le relevé fait, et ce qu'il ne fait pas.** Il **prépare le terrain** : les nouveautés
 des sources ci-dessous sont relevées (au besoin avec l'assistant de développement, qui lit les
 flux et les pages) et déposées dans `_candidats-AAAA-Sxx.md`, avec la période balayée, la date
