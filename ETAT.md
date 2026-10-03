@@ -20,23 +20,32 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 
 ---
 
-## ▶️ PROCHAINE ACTION (écrit le 03/10/2026 en fin de session ; les ▶️ plus bas sont datés et dépassés)
+## ▶️ PROCHAINE ACTION (réécrit le 03/10/2026 à la fin de la nuit ; les ▶️ plus bas sont datés et dépassés)
 
-**Où on en est, en une phrase** : les deux livrables du gel du 15/10 sont **rédigés et rendus en PDF**, pas encore relus
-par Era ni tagués ; E1 v2 (5 pages) et E3 v1.0 (20 pages, 32 critères tenus sur 39). Les chantiers de code sont fermés
-jusqu'au gel. Ce qui reste est de la **relecture et des clics**, puis une pull request et deux tags.
+**Où on en est, en une phrase** : les deux livrables du gel du 15/10 sont **rédigés et rendus en PDF** (E1 v2, 5 pages,
+corrigé après relecture extérieure ; E3 v1.0, 20 pages, 32 critères tenus sur 39) ; E2 a un squelette (v0.1), un banc C7 qui
+a tourné une fois sur le seul fournisseur disponible, et des preuves C8 ; `evidence/` couvre maintenant C7, C8, C9, C12,
+C13, C18. Les chantiers de code sont fermés jusqu'au gel. **Tout ce qui reste avant le 15/10 est de ta main** : relire,
+cliquer, envoyer, trancher. Règle posée le 03/10 : **c'est Era qui envoie tout message au formateur et à la promo ;
+l'assistant rédige le texte, jamais l'envoi.**
 
 **Dans l'ordre, pour Era** :
 
-1. **Relire** `docs/rapports/E1/rapport-E1.pdf` (5 pages) et `docs/rapports/E3/rapport-E3.pdf` (20 pages), page par
-   page ; noter les corrections dans le chat. Un rapport que le candidat n'a pas relu n'est pas le sien.
-2. **Trancher `memory_audit`** (écrire des empreintes ou retirer la table) : une phrase du rapport E1, une du rapport E3
-   et deux lignes du registre RGPD en dépendent.
-3. **Langfuse, clics** (`evidence/C11/preuve-langfuse-2026-10-03.md` §3) : supprimer les 15 traces factices, régler les
-   2 alertes, prendre la capture du tableau « RITA C11 » et la ranger dans `evidence/C11/`.
-4. **Capture des rulesets** (Settings → Rules) dans `evidence/C19/` ; fichiers de clés en clair du Bureau : rotation puis suppression.
-5. Dire « bon pour le gel » : l'assistant ouvre la PR `develop → main`, puis les tags `livrable-E1-v2` et
-   `livrable-E3-v1` se posent le **15/10** (`docs/FILE-DE-VALIDATION.md`, Definition of Done `scripts/verifier_livrable.py`).
+1. **Relire** `docs/rapports/E1/rapport-E1.pdf` (5 pages) et `docs/rapports/E3/rapport-E3.pdf` (20 pages) ; corrections dans le chat.
+2. **Envoyer au formateur** le message rédigé le 03/10 (dans le chat et dans le journal 019, §32) : la question du périmètre C7
+   (trois fournisseurs du même modèle, ou un modèle d'un autre éditeur ?) et le guide d'exploitation en pièce jointe
+   (`docs/EXPLOITATION.pdf`, rendu le 03/10). Garder l'envoi et la réponse : `evidence/C8/envoi-<date>-formateur.*` (#43).
+3. **Trancher `memory_audit`** (écrire des empreintes ou retirer la table ; zone sous garde, plan d'abord).
+4. **Clés** Foundry et Anthropic dans `.env` (jamais touché par l'assistant), puis relancer le banc : une commande,
+   `C:\Python314\python.exe -X utf8 -m evals.benchmark_fournisseurs --jeu evidence\C7\jeu-d-essai-2026-10-03.json --repetitions 3 --plafond 5 --sortie evidence\C7`.
+5. **Noter le français** des 30 textes de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1, 2), sans ouvrir le fichier `-cle.csv`.
+6. **Langfuse, clics** (`evidence/C11/preuve-langfuse-2026-10-03.md` §3) : supprimer les 15 traces factices du 02/10 (il reste
+   23 traces : 15 factices et 8 réelles), régler les 2 alertes, capture du tableau « RITA C11 » dans `evidence/C11/`.
+7. **C6** : capture du fil Discord du 16/08 avec ses réponses dans `evidence/C6/` ; note S40 écrite depuis
+   `docs/veille/_candidats-2026-S40.md`, datée du jour où elle est écrite.
+8. **Capture des rulesets** (Settings → Rules) dans `evidence/C19/` ; fichiers de clés en clair du Bureau : rotation puis suppression.
+9. Dire « bon pour le gel » : l'assistant ouvre la PR `develop → main`, puis les tags `livrable-E1-v2` et `livrable-E3-v1`
+   se posent le **15/10** (`docs/FILE-DE-VALIDATION.md`, Definition of Done `scripts/verifier_livrable.py`).
 
 **Après le gel (du 15 au 25/10)** : rapport E4 (#28 : récit utilisateur de l'écran 2 #24, audit RGAA outillé #25, chiffres
 C15 rafraîchis), déploiement du code sur Hetzner, `search_articles` (#63), procédure #70, revue OWASP (#29), versions

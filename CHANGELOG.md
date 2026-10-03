@@ -56,6 +56,16 @@ carte #27 ; PR 72 fusionnée, `revue` ajouté aux checks requis. Suite : 740 pas
 agrégées de Langfuse sont polluées par quinze traces factices tant qu'elles ne sont pas supprimées ; la CI saute 28 tests (Spark, base réelle) ;
 la publication d'image sur tag n'a jamais tourné. **Reste à Era** : relecture des deux PDF, décision `memory_audit`, clics Langfuse, puis PR et tags le 15/10.
 
+**Fait (nuit, après la clôture)** : deux relectures extérieures (E1, E2) vérifiées ligne à ligne ; E1 v2 corrigé de trois phrases
+fausses ; C6 remis à la vérité (synthèse dans le dépôt et reproductible, étiquettes ISO, protocole : aucune tâche planifiée, relevé
+manuel, `sources/rss.py` n'est pas l'outil de veille, état réel S37 à S40) ; les scores C7 du brouillon de juillet identifiés comme
+exemples de gabarit, jamais mesurés ; **banc C7 écrit test d'abord et exécuté une fois** (un seul fournisseur mesurable : OpenRouter
+30/30, Wilson [0,89 ; 1,00], 5,8 s, 0,0047 USD par briefing ; Foundry et Anthropic sans clé sur le poste) ; `evidence/C7/` et
+`evidence/C8/` créés ; rapport E2 v0.1 ; guide d'exploitation corrigé (cascade, Foundry, taux manquant, FRED, flux) et rendu en PDF
+pour la remise. **Manque découvert et corrigé** : INC-006 bis, la construction du jeu d'essai a écrit 22 traces parasites dans
+Langfuse ; verrou posé et testé, traces supprimées. **Décision** : Era envoie lui-même tout message au formateur et à la promo ;
+l'assistant rédige. Suite : 765 passed, 2 xfailed, 94,19 %.
+
 ---
 
 ## 2026-10-03 : reconnaissance complète, plan initial contre réalisé, pointeurs périmés
