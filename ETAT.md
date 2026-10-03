@@ -20,6 +20,12 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 
 ---
 
+▶️ **PR #58 `develop → main` ouverte le 03/10 au soir** (31 commits : C11 de bout en bout, INC-006, rapport E3 v0.1, états).
+Prochaine action, à la reprise : lire les commentaires de la revue automatisée sur
+https://github.com/Ganda15/rita-agent/pull/58 ; chaque remarque vraie = un correctif et un test poussés sur `develop` ;
+puis `gh pr merge 58 --merge` quand les checks sont verts. Aucun tag : ce n'est pas un livrable. Une fois sur `main`,
+le bouton *Run workflow* d'`alerte-incident.yml` existe et le test manuel de la chaîne d'alerte devient possible.
+
 🧭 **03/10, matin : reconnaissance complète, rien construit, deux notes Obsidian et deux lignes corrigées ici.**
 
 Era a demandé de tout retrouver sans question. Lu et confronté : dépôt, GitHub, coffre, classeurs Excel, disque D:,
