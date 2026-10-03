@@ -20,6 +20,34 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 
 ---
 
+## ▶️ PROCHAINE ACTION (écrit le 03/10/2026 en fin de session ; les ▶️ plus bas sont datés et dépassés)
+
+**Où on en est, en une phrase** : les deux livrables du gel du 15/10 sont **rédigés et rendus en PDF**, pas encore relus
+par Era ni tagués ; E1 v2 (5 pages) et E3 v1.0 (20 pages, 32 critères tenus sur 39). Les chantiers de code sont fermés
+jusqu'au gel. Ce qui reste est de la **relecture et des clics**, puis une pull request et deux tags.
+
+**Dans l'ordre, pour Era** :
+
+1. **Relire** `docs/rapports/E1/rapport-E1.pdf` (5 pages) et `docs/rapports/E3/rapport-E3.pdf` (20 pages), page par
+   page ; noter les corrections dans le chat. Un rapport que le candidat n'a pas relu n'est pas le sien.
+2. **Trancher `memory_audit`** (écrire des empreintes ou retirer la table) : une phrase du rapport E1, une du rapport E3
+   et deux lignes du registre RGPD en dépendent.
+3. **Langfuse, clics** (`evidence/C11/preuve-langfuse-2026-10-03.md` §3) : supprimer les 15 traces factices, régler les
+   2 alertes, prendre la capture du tableau « RITA C11 » et la ranger dans `evidence/C11/`.
+4. **Capture des rulesets** (Settings → Rules) dans `evidence/C19/` ; fichiers de clés en clair du Bureau : rotation puis suppression.
+5. Dire « bon pour le gel » : l'assistant ouvre la PR `develop → main`, puis les tags `livrable-E1-v2` et
+   `livrable-E3-v1` se posent le **15/10** (`docs/FILE-DE-VALIDATION.md`, Definition of Done `scripts/verifier_livrable.py`).
+
+**Après le gel (du 15 au 25/10)** : rapport E4 (#28 : récit utilisateur de l'écran 2 #24, audit RGAA outillé #25, chiffres
+C15 rafraîchis), déploiement du code sur Hetzner, `search_articles` (#63), procédure #70, revue OWASP (#29), versions
+épinglées (#23), puis E4 gelé le 25/10. **Ensuite** : C7 (benchmark, #32 #33), E2 (#34), E5 (#41), tout envoyé le 05/11.
+
+**Verrous** : le dépôt est privé (jury et formateur invités) ; `main` et les tags `livrable-*` sont protégés par GitHub ;
+zones sous garde (`db/schema.sql`, `guardrails/`, `evals/`) : rien sans plan validé ; aucun code sur le serveur avant le 15/10.
+
+
+---
+
 📚 **03/10, nuit : `evidence/C18/` créé et `docs/CI-CD.md` écrit (carte #27 fermée)**. Preuve C18 depuis l'API GitHub : 268 exécutions du workflow Tests depuis le 28/07, 97 vertes sur les 100 dernières, les 3 rouges expliquées (19/08 couverture dépendante de la machine, 20/09 dépendance manquante attrapée par la CI, 28/09 pandas construit depuis les sources), ce que la CI saute (16 tests Spark, 12 tests base réelle). `docs/CI-CD.md` : cinq workflows, tous les déclencheurs, étapes, secrets et permissions, installation sur un clone neuf, test de la chaîne, quoi faire quand c'est rouge. Les six critères C18 passent à ✅ ; dans le rapport E3, les deux critères C13 de documentation aussi : **32 ✅ · 7 🟠 · 0 🔴**.
 
 📝 **03/10, nuit : rapport E3 version 1.0 rédigé** (`docs/rapports/E3/rapport-E3.md`, 9 600 mots environ, rendu en PDF de 20 pages par le nouveau `scripts/rendre_pdf.py`, pages relues). Depuis la v0.1 du matin : première trace Langfuse complète d'un vrai briefing (03/10 14 h 48, 10 observations, note `conforme_amf = 1`, même `request_id` dans la réponse, le journal et la trace), tableau « RITA C11 » construit, chaîne d'alerte exécutée une fois (#71), journal `mcp_calls` (cinq lignes pour quatre appels), verrou de démonstration de la passerelle, rulesets GitHub (`pytest`, `evals`, `revue` requis), 742 tests, 93,92 %, les deux remarques de la revue de la PR 58. Bilan des 39 critères : **30 ✅ · 9 🟠 · 0 🔴** (v0.1 : 27, 11, 1). Trois dossiers de preuves créés depuis des exécutions réelles : `evidence/C9/`, `evidence/C12/preuve-suite-de-tests-2026-10-03.md`, `evidence/C13/` ; `evidence/README.md` réindexé. **Reste à Era avant le 15/10** : relire les 20 pages ; clics Langfuse (15 traces factices, 2 alertes, capture du tableau) ; décision `memory_audit` ; puis PR `develop → main`, tags `livrable-E1-v2` et `livrable-E3-v1` (`docs/FILE-DE-VALIDATION.md`). **Non fait** : capture d'écran de l'interface Langfuse (session d'Era), déploiement du code sur Hetzner (après le gel), 422 pour un ticker inconnu, limite de débit.
@@ -94,7 +122,7 @@ encore poussé » jusque-là.
 | Une alerte Langfuse ouvre une issue `incident` (workflow `alerte-incident.yml`, bouton manuel, label créé, alerte répétée commentée) ; section « Monitorage Langfuse et alertes » dans `docs/EXPLOITATION.md` | `tests/test_alerte_incident.py` (7) |
 | `evidence/C11/README.md` (9 critères : 5 tenus, 1 partiel, 3 à faire) ; **INC-006** écrit ; index C21 à jour (critères 3 et 5 ✅ depuis INC-005) | `evidence/C11/`, `evidence/C21/` |
 
-**Mesures** : `C:\Python314\python.exe -m pytest -q` : **626 passed, 2 xfailed** (586 ce matin) · couverture **93,66 %**
+**Mesures** (03/10 soir) : `C:\Python314\python.exe -X utf8 -m pytest --cov -q` : **740 passed, 2 xfailed** (742 collectés, 57 fichiers) · couverture **93,92 %** (seuil 90) · garde-fous : entrée 100 % / 0 % FP, injection 70 % / 0 %, sortie 70 % / 0 %. *(02/10 : `C:\Python314\python.exe -m pytest -q` : **626 passed, 2 xfailed** (586 ce matin) · couverture **93,66 %**)*
 (seuil 90 %), `api/main.py` et `graph/workflow.py` à 100 % · `scripts\verifier_liens.py` : 82 liens internes, 84 externes,
 **0 cassé**.
 
@@ -1205,11 +1233,11 @@ fabriquée, donc irrecevable pour C6.
 
 | Épreuve | Compét. | État | Tag Git |
 |---|---|---|---|
-| **E1** — Données | C1–C5 | ✅ **livré** — 26 critères / 28 | `livrable-E1-v1` |
-| **E2** — Veille & services IA | C6–C8 | 🔴 C6 et C7 **non commencés** · C8 partiel | — |
-| **E3** — API modèle & MLOps | C9–C13 | 🔨 C9/C12/C13 partiels · C10 et C11 **non commencés** | — |
-| **E4** — Application | C14–C19 | 🔨 **démarré le 16/08** — 1er écran livré | — |
-| **E5** — Monitorage | C20–C21 | 🔨 **démarré le 25/08** — fraîcheur des données livrée (C20) · C21 : 5 incidents réels vécus, **à formaliser en post-mortems** | — |
+| **E1** — Données | C1–C5 | ✅ **livré** le 13/08 (26 / 28) · **v2 rédigée le 03/10** (5 pages, dates locales, 10 tables, vue sans taux supposé, clôture des positions, Langfuse UE, 742 tests) : à relire, tag le 15/10 | `livrable-E1-v1` → `livrable-E1-v2` le 15/10 |
+| **E2** — Veille & services IA | C6–C8 | 🔴 **le plus en retard** : C6 4 notes (S33 à S36), un seul partage ; C7 **à zéro** (7 critères) ; C8 cascade et doc faites, monitorage du service réel depuis le 02/10 ; rapport 0 page, dû le 05/11 | — |
+| **E3** — API modèle & MLOps | C9–C13 | 🟢 **rapport v1.0 rédigé le 03/10** (20 pages, PDF) : **32 ✅ · 7 🟠 · 0 🔴** sur 39 ; première trace Langfuse complète d'un vrai briefing, tableau « RITA C11 », alerte exécutée (#71), preuves C9 C12 C13 ; restent les clics Langfuse et la relecture | `livrable-E3-v1` le 15/10 |
+| **E4** — Application | C14–C19 | 🔨 23 ✅ 13 ⚠️ 0 ❌ au 26/09, **C18 passé à 6/6 le 03/10** (`evidence/C18/`, `docs/CI-CD.md`) ; rapport 0 page ; écran 2 sans récit utilisateur (#24), RGAA non outillé (#25) ; gel le 25/10 | `livrable-E4-v1` le 25/10 |
+| **E5** — Monitorage | C20–C21 | 🔨 C20 : fraîcheur, `request_id`, journal `mcp_calls`, chaîne d'alerte exécutée une fois ; C21 : 6 post-mortems, INC-005 et INC-006 ; rapport 0 page ; aucune alerte réelle encore partie ; dû le 05/11 | — |
 
 ## Ce qui existe vraiment, compétence par compétence
 
@@ -1218,18 +1246,18 @@ fabriquée, donc irrecevable pour C6.
 | **C1** | 7 sources, les 5 types, script en 6 points · ✅ **dépôt accessible au relecteur (24/08)** · *big data validé par le formateur, sans remarque négative* | — |
 | **C2** | 3 requêtes SQL, optimisation LATERAL mesurée ×2000 | — |
 | **C3** | `pipelines/ingest.py`, 15 tests, règles justifiées par mesure · ✅ **dépôt accessible (24/08)** | — |
-| **C4** | MCD Merise 6 entités, MPD 8 tables, registre RGPD, purge testée | — |
-| **C5** | **9 endpoints** authentifiés + `/health` public, OpenAPI 3.1.0, auth **au niveau routeur** (une route ajoutée est protégée par défaut), **45 tests** | — |
+| **C4** | MCD Merise 6 entités, MPD **10 tables** et 1 vue (03/10), 12 CHECK, registre RGPD T1 à T5 et purges P1 à P6, clôture datée des positions (plan 66), migrations rejouables jouées sur poste, Compose et Hetzner | `memory_audit` sans écrivain (décision Era) ; purges non planifiées |
+| **C5** | **11 routes `/donnees/*`** + `/health` + `/briefing` + `/audit/mcp` = 14 chemins OpenAPI 3.1.0, auth au niveau routeur, **57 tests** sur les routes de données ; total `null` quand un taux manque, positions closes comptées jamais servies | `evidence/C5/` daté du 11/08 : à rafraîchir |
 | **C6** | protocole **complet** (15/08), gabarit, récurrence, registre, note S33 (14/08), **partage promo lancé le 16/08 sur Discord** | ⚠️ ~11 notes à venir · 🟠 réponses Discord à capturer · 🔴 envoi **formateur** non fait (congé) |
 | **C7** | **rien** — aucun benchmark de services IA | tout |
 | **C8** | cascade 3 fournisseurs testée, clé en `.env` · **doc d'exploitation écrite le 19/08** (`docs/EXPLOITATION.md`) : accès, installation avec et sans Docker, dépendances, données, dépannage | 🔴 **monitorage du service** · la doc reste à **communiquer** aux parties prenantes (5ᵉ critère) |
 | **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection · ✅ **dépôt accessible (24/08)** | revue OWASP · doc d'architecture |
 | **C10** | 🔨 **19/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **10 points de terminaison** intégrés. **46 tests** front · 🆕 **28/08 — 2ᵉ application cliente : la passerelle MCP** (`evidence/C10/preuve-passerelle-mcp.md`), qui consomme l'API en HTTP avec la même authentification | tri/recherche · audit RGAA outillé · doc d'architecture · ⚠️ confirmer qu'un client MCP compte comme « une application » |
-| **C11** | 🔨 **02/10** : Langfuse Cloud UE ; une trace par briefing avec une étape par nœud et par garde-fou, verdict AMF et note `conforme_amf`, `request_id` partagé avec le journal, variables transmises au conteneur, alerte vers issue `incident` (workflow). 37 tests sur le traçage. `evidence/C11/README.md` : 5 critères tenus, 1 partiel, 3 à faire | tableau « RITA C11 » et 2 alertes dans l'interface (Era) · captures · variables sur le serveur · argument d'accessibilité dans le rapport E3 |
+| **C11** | ✅ **03/10** : Langfuse Cloud UE ; **première trace complète d'un vrai briefing** (10 observations, note `conforme_amf = 1`, même `request_id` réponse / journal / trace) ; tableau « RITA C11 » construit par l'API ; chaîne d'alerte exécutée une fois (#71) ; `evidence/C11/` | 2 alertes à régler, 15 traces factices à supprimer, capture d'écran (clics d'Era) ; coût à zéro pour le modèle OpenRouter ; serveur non tracé avant le déploiement |
 | **C20** | 🔨 **25/08** — `GET /donnees/fraicheur` + bandeau : l'application sait dire de quand datent ses données (retard en **jours ouvrés**, statut vert/orange/rouge, accessible sans la couleur). 23 tests. Preuve : `evidence/C20/preuve-fraicheur.md` | métriques applicatives (Prometheus) · journaux structurés · alertes · dashboard |
 | **C21** | 🔨 **02/10 : 6 post-mortems** ; INC-005 (27/09) a traversé toute la chaîne (issues #47 à #53, PR #54), INC-006 (02/10) en commit direct, dit tel quel ; critères 3 et 5 ✅ depuis le 27/09 · **25/08 : 4 post-mortems rédigés** dans `evidence/C21/` + gabarit aligné sur les 5 critères officiels. Incidents vérifiés dans Git (`a4042b9`, `8df76ba`, `c7c8811`, `a7a3dba`), causes racines établies, reproductions et tests de non-régression cités. **3 critères sur 5 satisfaits** · ✅ **27/09 : INC-005** est le premier incident traité de bout en bout par la chaîne **issues (#47 à #53) → branche `qualite-donnees` → pull request**, tests rouges puis verts, sauvegarde avant reconstruction | critères 3 et 5 désormais **prouvés sur un incident réel** (pas reconstitués) ; reste à le refaire au moins une fois pour montrer que c'est la méthode, pas l'exception |
-| **C12** | **319 tests** (2 xfailed volontaires — entrée et sortie), 15 cas d'éval, seuils non compensables en CI · **couverture 92 %**, seuil **90 %** verrouillé en CI (19/08, `db/importer.py` et `evals/mesurer_sortie.py` fermés 0→100 %) · procédure documentée | DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
-| **C13** | GitHub Actions (2 jobs, porte garde-fous) · **empaquetage Docker 18/08** — image 595 Mo, non-root, lecture seule · **volet LIVRAISON 19/08** (`7570bc9`) : publie sur GHCR uniquement sur tag `livrable-*`, démarre l'image et vérifie `/health` + 403 · ✅ **DÉPLOYÉ 19/08** sur Hetzner CX23, **HTTPS 20/08** (Caddy + Let's Encrypt via sslip.io) — `https://178-104-184-125.sslip.io/`, vérifié depuis l'extérieur, PostgreSQL 18 aligné partout, pare-feu `ufw` actif (22/80/443/8001) | 🔴 `db/importer.py` **ne tourne pas dans l'image** (pyarrow exclu) · certificat à surveiller fin octobre (renouvellement auto avant le 18/11) |
+| **C12** | **740 passed, 2 xfailed** (742 collectés, 57 fichiers, 03/10), couverture **93,92 %**, seuil 90 % en CI ; 32 cas du chapitre « Données » rapprochés des tests ; preuves par mutation (02/10, 03/10 ×2) ; `evidence/C12/` | 70 % contre 85 % sur deux garde-fous (xfail strict) ; pas de validation de format des sorties ; 28 tests sautés en CI (Spark, base réelle) |
+| **C13** | 5 workflows ; `main` protégée par ruleset (PR + `pytest`, `evals`, `revue` requis, ni suppression ni force-push), tags `livrable-*` figés ; 24 PR fusionnées, 13 exécutions vertes le 03/10 ; `docs/CI-CD.md` (03/10) ; `evidence/C13/` | publication sur tag **jamais exécutée** (première le 15/10) ; pas de retour arrière ; déploiement serveur manuel |
 | **C14** | 🔨 **18/08** — wireframes des 4 états (`evidence/C14/`), spécification US-1 : contexte, 5 scénarios, 11 critères d'acceptation dont 6 avec numéro de règle RGAA. Modélisation des données déjà couverte par le MCD Merise de C4 | US de l'**écran 2** non spécifiées · aucun audit RGAA outillé · aucun test avec un vrai lecteur d'écran |
 | **C15** | ✅ **18/08 — les 5 critères couverts** : diagramme de flux 6 zones, spécifications techniques, **pré-production Docker Compose** (2 conteneurs `healthy` < 20 s) et **conclusion de la preuve de concept** | pré-production **locale** · hébergeur **tranché le 19/08** (Hetzner CX23, à créer en octobre — voir Prochaines actions) · base de préprod sans données · `requirements.txt` toujours non épinglé |
 | **C16** | 🔨 **26/09** : Kanban GitHub (35 issues, 22 PR fusionnées au 02/10), formateur en lecture, revue du lundi annoncée | les comptes rendus datés de la revue du lundi (5 entrées, du 05/10 au 02/11) : aucun au 02/10 |

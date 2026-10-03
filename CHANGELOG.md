@@ -48,6 +48,14 @@ import réel rejoué : 7 mises à jour, 0 insérée, 0 close. Suite 738 passed, 
 avant ce plan, l'import dupliquait le portefeuille à chaque exécution. **Manque qui reste** : la date de clôture est celle de
 l'import, pas celle de la vente ; P2 n'est pas planifiée.
 
+**Fait (nuit, fin de journée)** : les deux livrables du gel du 15/10 sont rédigés, non envoyés : **rapport E1 v2** (5 pages, dates
+locales INC-005, 10 tables, vue sans taux supposé, clôture des positions, Langfuse UE, carte #55 corrigée test d'abord) et **rapport E3 v1.0**
+(20 pages par le nouveau `scripts/rendre_pdf.py`, 32 critères tenus sur 39 contre 27 le matin). Première trace Langfuse complète d'un vrai
+briefing (03/10 14 h 48). Quatre dossiers de preuves créés depuis des exécutions réelles : C9, C12, C13, C18 ; `docs/CI-CD.md` ferme la
+carte #27 ; PR 72 fusionnée, `revue` ajouté aux checks requis. Suite : 740 passed, 2 xfailed, 93,92 %. **Manques découverts** : les métriques
+agrégées de Langfuse sont polluées par quinze traces factices tant qu'elles ne sont pas supprimées ; la CI saute 28 tests (Spark, base réelle) ;
+la publication d'image sur tag n'a jamais tourné. **Reste à Era** : relecture des deux PDF, décision `memory_audit`, clics Langfuse, puis PR et tags le 15/10.
+
 ---
 
 ## 2026-10-03 : reconnaissance complète, plan initial contre réalisé, pointeurs périmés
