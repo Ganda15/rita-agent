@@ -48,3 +48,32 @@ def test_la_migration_rejouable_existe_et_cree_la_table_si_absente():
     migration = (RACINE / "db" / "migration-2026-10-03-mcp-calls.sql").read_text(encoding="utf-8")
     assert "CREATE TABLE IF NOT EXISTS mcp_calls" in migration
     assert "CREATE INDEX IF NOT EXISTS idx_mcp_calls_horodatage" in migration
+
+
+# --- plan 66 (03/10/2026, D1 a D4 = A) : la cloture des positions ---------------------------------
+
+def test_la_position_a_une_date_de_cloture_nullable_posterieure_a_l_achat():
+    table = _table("position")
+    assert re.search(r"^\s+date_cloture\s+DATE,", table, re.M), "NULL = detenue"
+    assert "CONSTRAINT cloture_apres_achat" in table
+    assert "date_cloture >= date_achat" in table
+
+
+def test_une_ligne_de_portefeuille_a_une_cle_unique_ticker_pru_date_achat():
+    """D1 : deux achats du meme titre a des prix differents restent deux lignes ; la meme ligne deux
+    fois est refusee par la base, plus par une procedure P3 qui ne faisait que signaler."""
+    assert "CREATE UNIQUE INDEX uq_position_ligne ON position (ticker, pru, COALESCE(date_achat, DATE '1900-01-01'));" in SCHEMA
+
+
+def test_le_commentaire_de_la_cloture_dit_qui_la_pose_et_quand_elle_purge():
+    i = SCHEMA.index("COMMENT ON COLUMN position.date_cloture IS")
+    c = SCHEMA[i:SCHEMA.index("';", i)].lower()     # la fin de la chaîne, pas un ';' dedans
+    assert "import" in c and "csv" in c
+    assert "trois ans" in c or "3 ans" in c
+
+
+def test_la_migration_de_la_cloture_est_rejouable_et_refuse_d_agir_sur_des_doublons():
+    m = (RACINE / "db" / "migration-2026-10-03-cloture-positions.sql").read_text(encoding="utf-8")
+    assert "ADD COLUMN IF NOT EXISTS date_cloture" in m
+    assert "CREATE UNIQUE INDEX IF NOT EXISTS uq_position_ligne" in m
+    assert "RAISE EXCEPTION" in m and "HAVING count(*) > 1" in m, "compter les doublons avant de poser l index"

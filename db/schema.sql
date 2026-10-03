@@ -160,15 +160,29 @@ CREATE TABLE position (
     pru             NUMERIC(14,4) NOT NULL,
     devise          CHAR(3)       NOT NULL DEFAULT 'EUR' REFERENCES devise (code),
     date_achat      DATE,
+    -- Plan 66 (03/10/2026) : NULL = detenue ; posee par l'import le jour ou la ligne quitte le CSV.
+    -- Une position n'est jamais supprimee par l'import : elle est close, puis purgee par P2 (3 ans).
+    date_cloture    DATE,
     importe_le      TIMESTAMPTZ   NOT NULL DEFAULT now(),
 
     CONSTRAINT quantite_positive CHECK (quantite > 0),
-    CONSTRAINT pru_positif       CHECK (pru > 0)
+    CONSTRAINT pru_positif       CHECK (pru > 0),
+    CONSTRAINT cloture_apres_achat CHECK (date_cloture IS NULL OR date_achat IS NULL OR date_cloture >= date_achat)
 );
 
 COMMENT ON TABLE position IS
     'DONNEES PERSONNELLES (RGPD) : situation financiere de l utilisateur. '
     'Purge et procedures de tri decrites dans db/RGPD-registre-des-traitements.md.';
+
+-- La cle d'une ligne de portefeuille : ce que le CSV identifie (plan 66, D1). Deux achats du meme
+-- titre a des prix differents restent deux lignes ; la meme ligne deux fois est refusee par la base.
+-- COALESCE parce que date_achat peut manquer et que deux NULL ne sont pas egaux pour un index.
+CREATE UNIQUE INDEX uq_position_ligne ON position (ticker, pru, COALESCE(date_achat, DATE '1900-01-01'));
+
+COMMENT ON COLUMN position.date_cloture IS
+    'NULL tant que la ligne est dans le CSV ; posee par l import (db/importer.py) le jour ou elle en '
+    'disparait : c est la seule date de vente que le projet connaisse. Purge P2 trois ans apres (T1). '
+    'Une ligne revenue dans le CSV rouvre la meme ligne (date_cloture remise a NULL).';
 
 -- Requête Q2 : « la performance de chaque ligne du portefeuille ».
 CREATE INDEX idx_position_ticker ON position (ticker);
@@ -348,6 +362,7 @@ LEFT JOIN LATERAL (
     LIMIT  1
 ) d ON TRUE
 LEFT JOIN   taux_du_jour t ON t.devise = p.devise
+WHERE       p.date_cloture IS NULL          -- plan 66 : une position close ne se valorise plus
 ORDER BY    performance_pct DESC NULLS LAST;
 
 COMMENT ON VIEW v_portefeuille_valorise IS

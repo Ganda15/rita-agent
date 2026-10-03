@@ -39,6 +39,15 @@ le journal des appels MCP `mcp_calls`, écrit par l'API seule, refus locaux remo
 purge P6 à 90 jours ; 21 tests écrits avant dont quatre sur la base réelle ; migration jouée sur le poste et premières lignes
 réelles écrites par la passerelle. Et GitHub Pro activé par Era : `main` protégée côté serveur (ruleset, `evidence/C19/`).
 
+**Décision structurante (nuit)** : troisième zone sous garde sur plan validé (`docs/PLAN-66-cloture-positions.md`, D1 à D4 = A) :
+une ligne de portefeuille a une clé (ticker, PRU, date d'achat) que la base fait respecter ; une ligne retirée du CSV est close à la
+date de l'import, jamais supprimée, et rouvre si elle revient ; les closes ne sortent ni par l'API ni par MCP (R1 bis pour le
+propriétaire) ; un CSV vide ne clôt rien. P2 devient applicable (`date_cloture`), P3 est retirée, T1 réécrit. Le cas D07 (#69) est
+signalé à l'import. 29 tests écrits avant, dont quatre sur la base réelle ; migration jouée sur le poste, Compose et Hetzner ;
+import réel rejoué : 7 mises à jour, 0 insérée, 0 close. Suite 738 passed, 2 xfailed, 93,91 %. **Manque découvert et corrigé** :
+avant ce plan, l'import dupliquait le portefeuille à chaque exécution. **Manque qui reste** : la date de clôture est celle de
+l'import, pas celle de la vente ; P2 n'est pas planifiée.
+
 ---
 
 ## 2026-10-03 : reconnaissance complète, plan initial contre réalisé, pointeurs périmés

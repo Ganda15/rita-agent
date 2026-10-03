@@ -165,37 +165,83 @@ def importer_cotations(cur, limite_annees: int | None = None) -> dict:
     return {"lues": lues, "dedoublonnees": retirees, "inserees": len(lignes)}
 
 
-def importer_positions(cur) -> int:
-    """Importe le portefeuille en résolvant les alias vers le ticker canonique."""
+CLE_DATE_PAR_DEFAUT = "1900-01-01"   # ce que l'index unique met a la place d'une date d'achat absente
+CLE_LIGNE = "(ticker, pru, COALESCE(date_achat, DATE '1900-01-01'))"
+
+
+def importer_positions(cur) -> dict:
+    """Réconcilie la table `position` avec le CSV : le CSV dit ce qui est détenu (plan 66, D1 à D4 = A).
+
+    1. Les lignes présentes sont **upsertées** sur la clé (ticker, PRU, date d'achat) : une quantité
+       modifiée se met à jour, une ligne revenue se rouvre (`date_cloture = NULL`), rien ne se duplique.
+       Avant : un `INSERT` sans clé, qui dupliquait tout le portefeuille à la seconde exécution.
+    2. Les lignes absentes du CSV sont **closes**, datées du jour : la vente est datée du jour où on la
+       constate, le CSV n'a pas de date de vente. Jamais supprimées : P2 les purge trois ans après.
+    3. Garde-fou (D4) : un CSV sans aucune ligne valide ne clôt rien et le dit ; moins de la moitié des
+       positions actives : on clôt quand même mais on avertit (vente massive ou fichier partiel ?).
+    4. Cas D07 (#69) : une position dont la devise du PRU diffère de celle de la valeur cotée est
+       importée mais signalée en WARNING et comptée ; la comparaison PRU / cours se lit alors dans la
+       devise de la position, pas en euros.
+    """
     from sources.positions import lire
 
     portefeuille = lire()
-    lignes, ignorees = [], []
+    lignes, ignorees, devises_differentes = [], [], 0
 
     for p in portefeuille.positions:
-        cur.execute("SELECT ticker FROM valeur WHERE ticker = %s", (p.ticker,))
-        if cur.fetchone():
-            cible = p.ticker
-        else:
-            cur.execute("SELECT ticker FROM alias_valeur WHERE alias = %s", (p.nom,))
+        cur.execute("SELECT ticker, devise FROM valeur WHERE ticker = %s", (p.ticker,))
+        trouve = cur.fetchone()
+        if not trouve:
+            cur.execute("SELECT v.ticker, v.devise FROM alias_valeur a JOIN valeur v ON v.ticker = a.ticker "
+                        "WHERE a.alias = %s", (p.nom,))
             trouve = cur.fetchone()
             if not trouve:
                 ignorees.append(p.ticker)
                 continue
-            cible = trouve[0]
+        cible, devise_valeur = trouve[0], trouve[1]
+        if devise_valeur and p.devise and p.devise != devise_valeur:
+            devises_differentes += 1
+            logger.warning("position %s : PRU en %s, valeur cotee en %s (cas D07) : la performance se lit "
+                           "dans la devise de la position", cible, p.devise, devise_valeur)
         lignes.append((cible, p.quantite, p.pru, p.devise, p.date_achat or None))
 
+    bilan = {"lignes": len(lignes), "inserees": 0, "mises_a_jour": 0, "rouvertes": 0, "closes": 0,
+             "ignorees": len(ignorees), "devises_differentes": devises_differentes, "avertissement": None}
     if ignorees:
-        logger.warning("%d position(s) sans valeur correspondante : %s",
-                       len(ignorees), ignorees)
+        logger.warning("%d position(s) sans valeur correspondante : %s", len(ignorees), ignorees)
+    if not lignes:
+        bilan["avertissement"] = ("aucune ligne valide dans le CSV : aucune position close (un fichier "
+                                  "deplace ou corrompu ne vend pas un portefeuille)")
+        logger.warning(bilan["avertissement"])
+        return bilan
 
-    if lignes:
-        execute_values(cur, """
-            INSERT INTO position (ticker, quantite, pru, devise, date_achat)
-            VALUES %s
-        """, lignes)
+    cles = tuple((l[0], l[2], l[4] or CLE_DATE_PAR_DEFAUT) for l in lignes)
 
-    return len(lignes)
+    cur.execute("SELECT count(*) FROM position WHERE date_cloture IS NULL")
+    actives_avant = int(cur.fetchone()[0])
+    cur.execute(f"SELECT count(*) FROM position WHERE date_cloture IS NOT NULL AND {CLE_LIGNE} IN %s", (cles,))
+    bilan["rouvertes"] = int(cur.fetchone()[0])
+
+    resultats = execute_values(cur, f"""
+        INSERT INTO position (ticker, quantite, pru, devise, date_achat)
+        VALUES %s
+        ON CONFLICT {CLE_LIGNE} DO UPDATE
+            SET quantite = EXCLUDED.quantite, devise = EXCLUDED.devise,
+                date_cloture = NULL, importe_le = now()
+        RETURNING (xmax = 0) AS inseree
+    """, lignes, fetch=True)
+    inserees = sum(1 for r in (resultats or []) if r and r[0])
+    bilan["inserees"], bilan["mises_a_jour"] = inserees, len(lignes) - inserees
+
+    cur.execute(f"UPDATE position SET date_cloture = CURRENT_DATE "
+                f"WHERE date_cloture IS NULL AND {CLE_LIGNE} NOT IN %s", (cles,))
+    bilan["closes"] = cur.rowcount if isinstance(cur.rowcount, int) and cur.rowcount >= 0 else 0
+
+    if actives_avant and len(lignes) < actives_avant / 2:
+        bilan["avertissement"] = (f"le CSV porte {len(lignes)} ligne(s) pour {actives_avant} position(s) active(s) : "
+                                  f"{bilan['closes']} close(s). Vente massive ou fichier partiel ? Verifier le CSV.")
+        logger.warning(bilan["avertissement"])
+    return bilan
 
 
 def importer(dsn: str, limite_annees: int | None = None) -> dict:
@@ -207,7 +253,9 @@ def importer(dsn: str, limite_annees: int | None = None) -> dict:
             stats = importer_cotations(cur, limite_annees)
             stats["valeurs"] = len(valeurs)
             stats["alias"] = len(alias)
-            stats["positions"] = importer_positions(cur)
+            positions = importer_positions(cur)
+            stats["positions"] = positions["lignes"]
+            stats["positions_detail"] = positions
         conn.commit()
 
     return stats
@@ -230,4 +278,8 @@ if __name__ == "__main__":
     print(f"Cotations lues     : {r['lues']:,}")
     print(f"  dedoublonnees    : {r['dedoublonnees']:,}")
     print(f"  inserees         : {r['inserees']:,}")
-    print(f"Positions          : {r['positions']}")
+    d = r["positions_detail"]
+    print(f"Positions          : {r['positions']}  (inserees {d['inserees']}, mises a jour {d['mises_a_jour']}, "
+          f"rouvertes {d['rouvertes']}, closes {d['closes']}, devises differentes {d['devises_differentes']})")
+    if d["avertissement"]:
+        print(f"  !! {d['avertissement']}")

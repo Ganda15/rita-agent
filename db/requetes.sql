@@ -108,7 +108,22 @@ LEFT JOIN LATERAL (
     LIMIT  1
 ) d ON TRUE
 LEFT JOIN   taux_du_jour t ON t.devise = p.devise
+WHERE       p.date_cloture IS NULL          -- plan 66 : une position close ne se valorise plus
 ORDER BY    performance_pct DESC NULLS LAST;
+
+
+-- #############################################################################
+-- R1 bis : LES POSITIONS CLOSES, pour le proprietaire seul (plan 66, decision D3)
+-- #############################################################################
+-- Une position close (sa ligne a quitte le CSV) reste trois ans en table pour comparer une
+-- performance, puis P2 la purge. Elle ne sort ni par l'API ni par MCP : cette requete est la
+-- seule porte. Montants nominaux dans la devise de la position : aucun taux suppose.
+SELECT  p.ticker, v.nom_officiel, p.quantite, p.pru, p.devise, p.date_achat, p.date_cloture,
+        ROUND(p.quantite * p.pru, 2) AS investi_nominal
+FROM        position p
+JOIN        valeur   v ON v.ticker = p.ticker
+WHERE       p.date_cloture IS NOT NULL
+ORDER BY    p.date_cloture DESC, p.ticker;
 
 
 -- #############################################################################

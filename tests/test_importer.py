@@ -177,53 +177,103 @@ def test_importer_cotations_respecte_la_limite_d_annees(monkeypatch, sans_execut
     assert r["inserees"] == 1      # seule la ligne 2026 passe le filtre
 
 
-# --- importer_positions : la résolution des alias ---------------------------------
+# --- importer_positions : la résolution des alias, puis la réconciliation (plan 66) --------------
+#
+# Depuis le 03/10/2026, `importer_positions` rend un bilan (dict) et fait trois choses : upsert des
+# lignes du CSV sur la clé (ticker, PRU, date d'achat), clôture datée des lignes absentes, garde-fous.
+# Le curseur simulé répond, dans l'ordre : les recherches de ticker/alias (une ou deux par position),
+# puis le compte des actives, puis le compte des rouvertures.
+
+def _cur_positions(*recherches, actives=7, rouvertes=0, closes=0):
+    cur = MagicMock()
+    cur.fetchone.side_effect = list(recherches) + [(actives,), (rouvertes,)]
+    cur.rowcount = closes
+    return cur
+
+
+def _requetes(cur):
+    return [str(c.args[0]).upper() for c in cur.execute.call_args_list]
+
 
 def test_importer_positions_resout_directement_par_ticker(sans_execute_values):
-    cur = MagicMock()
-    cur.fetchone.return_value = ("MC.PA",)     # trouvé directement dans `valeur`
-
-    with patch("sources.positions.lire",
-               return_value=_Portefeuille([_Position("MC.PA", "LVMH")])):
-        n = importer.importer_positions(cur)
-
-    assert n == 1
+    cur = _cur_positions(("MC.PA", "EUR"))          # trouvé directement dans `valeur`
+    with patch("sources.positions.lire", return_value=_Portefeuille([_Position("MC.PA", "LVMH")])):
+        bilan = importer.importer_positions(cur)
+    assert bilan["lignes"] == 1
     lignes = sans_execute_values.call_args.args[2]
     assert lignes[0][0] == "MC.PA"
 
 
 def test_importer_positions_resout_par_alias_quand_le_ticker_a_change(sans_execute_values):
     """Cas CGG : la position porte l'ancien libellé, pas le ticker canonique VIRI.PA."""
-    cur = MagicMock()
-    cur.fetchone.side_effect = [None, ("VIRI.PA",)]  # 1er SELECT (ticker) rien, 2e (alias) trouvé
-
-    with patch("sources.positions.lire",
-               return_value=_Portefeuille([_Position("CGG", "CGG BS")])):
-        n = importer.importer_positions(cur)
-
-    assert n == 1
-    lignes = sans_execute_values.call_args.args[2]
-    assert lignes[0][0] == "VIRI.PA"      # résolu vers le ticker canonique, pas "CGG"
+    cur = _cur_positions(None, ("VIRI.PA", "EUR"))   # 1er SELECT (ticker) rien, 2e (alias) trouvé
+    with patch("sources.positions.lire", return_value=_Portefeuille([_Position("CGG", "CGG BS")])):
+        bilan = importer.importer_positions(cur)
+    assert bilan["lignes"] == 1
+    assert sans_execute_values.call_args.args[2][0][0] == "VIRI.PA"
 
 
 def test_importer_positions_ignore_sans_correspondance(sans_execute_values):
+    cur = _cur_positions(None, None)                 # ni ticker ni alias trouvé
+    with patch("sources.positions.lire", return_value=_Portefeuille([_Position("FANTOME", "Inconnue")])):
+        bilan = importer.importer_positions(cur)
+    assert bilan["lignes"] == 0 and bilan["ignorees"] == 1
+    sans_execute_values.assert_not_called()
+
+
+def test_importer_positions_portefeuille_vide_n_insere_rien_et_ne_clot_rien(sans_execute_values):
+    """D4 : un CSV sans ligne valide ne vend pas un portefeuille ; il le dit."""
     cur = MagicMock()
-    cur.fetchone.side_effect = [None, None]    # ni ticker ni alias trouvé
-
-    with patch("sources.positions.lire",
-               return_value=_Portefeuille([_Position("FANTOME", "Inconnue")])):
-        n = importer.importer_positions(cur)
-
-    assert n == 0
-    sans_execute_values.assert_not_called()
-
-
-def test_importer_positions_portefeuille_vide_n_insere_rien(sans_execute_values):
     with patch("sources.positions.lire", return_value=_Portefeuille([])):
-        n = importer.importer_positions(MagicMock())
-
-    assert n == 0
+        bilan = importer.importer_positions(cur)
+    assert bilan["lignes"] == 0 and bilan["closes"] == 0
+    assert "aucune position close" in bilan["avertissement"]
     sans_execute_values.assert_not_called()
+    assert not any("UPDATE POSITION" in q for q in _requetes(cur))
+
+
+def test_les_lignes_presentes_sont_upsertees_sur_la_cle_et_rouvertes(sans_execute_values):
+    """D1 et D2 : ON CONFLICT sur (ticker, pru, date d'achat) ; une ligne revenue rouvre la même ligne."""
+    cur = _cur_positions(("MC.PA", "EUR"), rouvertes=1)
+    sans_execute_values.return_value = [(False,)]           # une mise à jour, aucune insertion
+    with patch("sources.positions.lire", return_value=_Portefeuille([_Position("MC.PA", "LVMH", date_achat="2023-04-18")])):
+        bilan = importer.importer_positions(cur)
+    sql = sans_execute_values.call_args.args[1].upper()
+    assert "ON CONFLICT (TICKER, PRU, COALESCE(DATE_ACHAT, DATE '1900-01-01')) DO UPDATE" in sql
+    assert "DATE_CLOTURE = NULL" in sql
+    assert bilan["rouvertes"] == 1 and bilan["mises_a_jour"] == 1 and bilan["inserees"] == 0
+
+
+def test_les_lignes_absentes_du_csv_sont_closes_a_la_date_du_jour(sans_execute_values):
+    """Jamais supprimées : closes, datées du jour où le CSV ne les porte plus."""
+    cur = _cur_positions(("MC.PA", "EUR"), actives=3, closes=2)
+    with patch("sources.positions.lire", return_value=_Portefeuille([_Position("MC.PA", "LVMH")])):
+        bilan = importer.importer_positions(cur)
+    cloture = [q for q in _requetes(cur) if "UPDATE POSITION" in q]
+    assert len(cloture) == 1
+    assert "SET DATE_CLOTURE = CURRENT_DATE" in cloture[0]
+    assert "WHERE DATE_CLOTURE IS NULL" in cloture[0] and "NOT IN" in cloture[0]
+    assert not any("DELETE" in q for q in _requetes(cur)), "l'import ne supprime jamais"
+    assert bilan["closes"] == 2
+
+
+def test_moins_de_la_moitie_des_actives_clot_quand_meme_mais_avertit(sans_execute_values):
+    cur = _cur_positions(("MC.PA", "EUR"), actives=7, closes=6)
+    with patch("sources.positions.lire", return_value=_Portefeuille([_Position("MC.PA", "LVMH")])):
+        bilan = importer.importer_positions(cur)
+    assert bilan["closes"] == 6
+    assert "fichier partiel" in bilan["avertissement"]
+
+
+def test_une_devise_de_pru_differente_de_la_cotation_est_importee_mais_signalee(sans_execute_values, caplog):
+    """Cas D07 (#69, décision a) : PRU en USD sur une valeur cotée en EUR."""
+    import logging
+    cur = _cur_positions(("MC.PA", "EUR"))
+    with patch("sources.positions.lire", return_value=_Portefeuille([_Position("MC.PA", "LVMH", devise="USD")])), \
+         caplog.at_level(logging.WARNING, logger="db.importer"):
+        bilan = importer.importer_positions(cur)
+    assert bilan["lignes"] == 1 and bilan["devises_differentes"] == 1
+    assert any("D07" in r.getMessage() for r in caplog.records)
 
 
 # --- importer() : l'orchestration ---------------------------------------------------
@@ -236,7 +286,9 @@ def test_importer_assemble_les_statistiques_et_commit(monkeypatch):
     monkeypatch.setattr(importer, "importer_valeurs", MagicMock())
     monkeypatch.setattr(importer, "importer_cotations",
                          MagicMock(return_value={"lues": 10, "dedoublonnees": 1, "inserees": 9}))
-    monkeypatch.setattr(importer, "importer_positions", MagicMock(return_value=7))
+    bilan_positions = {"lignes": 7, "inserees": 0, "mises_a_jour": 7, "rouvertes": 0, "closes": 0,
+                       "ignorees": 0, "devises_differentes": 0, "avertissement": None}
+    monkeypatch.setattr(importer, "importer_positions", MagicMock(return_value=bilan_positions))
 
     with patch("db.importer.psycopg2.connect") as connect:
         r = importer.importer("postgresql://test", limite_annees=3)
@@ -244,7 +296,7 @@ def test_importer_assemble_les_statistiques_et_commit(monkeypatch):
     connect.assert_called_once_with("postgresql://test")
     connect.return_value.__enter__.return_value.commit.assert_called_once()
     assert r == {"lues": 10, "dedoublonnees": 1, "inserees": 9,
-                 "valeurs": 1, "alias": 1, "positions": 7}
+                 "valeurs": 1, "alias": 1, "positions": 7, "positions_detail": bilan_positions}
 
 
 # --- 27/09/2026 : issues #53, #47 et #48 ----------------------------------------

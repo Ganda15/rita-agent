@@ -146,6 +146,8 @@ def portefeuille() -> dict:
     return {"nb": e.nb,
             "total_eur": float(total) if total is not None else None,
             "positions_sans_taux": database.positions_sans_taux(e),
+            # Plan 66 (decision D3) : les positions closes sont comptees ici, jamais servies.
+            "positions_closes": database.positions_closes(),
             "positions": e.lignes}
 
 

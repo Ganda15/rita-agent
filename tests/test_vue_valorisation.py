@@ -30,7 +30,7 @@ def _bloc(texte: str, debut: str, fin: str) -> str:
 
 COPIES = {
     "vue": _bloc(SCHEMA, "CREATE VIEW v_portefeuille_valorise", "COMMENT ON VIEW v_portefeuille_valorise"),
-    "R1": _bloc(REQUETES, "-- R1 ", "-- R2 "),
+    "R1": _bloc(REQUETES, "-- R1 ", "-- R1 bis "),   # R1 bis (positions closes) est une autre requête
     "SQL_PORTEFEUILLE": database.SQL_PORTEFEUILLE,
 }
 CONVERSION = "CASE WHEN p.devise = 'EUR' THEN 1 ELSE t.valeur_pour_eur END"
@@ -147,3 +147,24 @@ def test_en_base_avec_un_taux_present_la_conversion_est_juste(curseur):
                     (ticker,))
     investi, taux_manquant = curseur.fetchone()
     assert float(investi) == 160.0 and taux_manquant is False
+
+
+# --- plan 66 (03/10/2026) : une position close ne se valorise plus ---------------------------------
+
+FRAICHEUR = (RACINE / "db" / "fraicheur.sql").read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("nom", COPIES)
+def test_chaque_copie_ne_valorise_que_les_positions_detenues(nom):
+    assert "p.date_cloture IS NULL" in COPIES[nom], nom
+
+
+def test_la_fraicheur_ne_compte_que_les_positions_detenues():
+    assert re.search(r"FROM position\s+WHERE date_cloture IS NULL\)\s+AS nb_positions", FRAICHEUR)
+
+
+def test_une_requete_r1_bis_sert_les_positions_closes_au_proprietaire_seul():
+    """D3 : les closes ne sortent ni par l'API ni par MCP ; une requete dans db/requetes.sql suffit."""
+    bloc = _bloc(REQUETES, "-- R1 bis ", "-- R2 ")
+    assert "date_cloture IS NOT NULL" in bloc
+    assert "COALESCE(t.valeur_pour_eur, 1)" not in bloc

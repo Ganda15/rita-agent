@@ -53,7 +53,7 @@ divulgation cause un préjudice réel, donc à protéger sérieusement.
 | **Support** | Table `position` (PostgreSQL) · fichier CSV source |
 | **Destinataires** | Aucun. Données locales. |
 | **Transfert hors UE** | Non |
-| **Durée de conservation** | Position **active** : tant qu'elle est détenue · position **soldée** : 3 ans (utile aux comparaisons de performance), puis suppression |
+| **Durée de conservation** | Position **active** : tant que sa ligne est dans le CSV · position **soldée** : **3 ans après `date_cloture`**, puis suppression (P2). **Depuis le 03/10/2026 (plan 66)** : une ligne retirée du CSV **est** l'acte de vente ; l'import la clôt à la date du jour (la seule date de vente que le projet connaisse, donc en retard du délai entre la vente et l'import suivant) ; une ligne revenue rouvre la même position ; un CSV vide ne clôt rien |
 | **Sécurité** (art. 32) | Fichier source **jamais versionné** (`.gitignore`, vérifié par `git check-ignore`) · base non exposée au réseau · chemin par variable d'environnement `POSITIONS_CSV` |
 
 ### T2 — Journal des accès à la mémoire des agents
@@ -199,8 +199,8 @@ des données ») et une mesure dans le code plutôt qu'une supposition :
 | # | Procédure | Fréquence | Automatisé |
 |---|---|---|---|
 | **P1** | Purger `memory_audit` au-delà de **90 jours** | Prévue hebdomadaire ; **lancement manuel aujourd'hui** (aucun planificateur : APScheduler n'est dans aucun fichier de dépendances). La table étant vide, la purge ne supprime rien | ⚠️ script prêt et testé, planification absente |
-| **P2** | Supprimer les positions **soldées depuis plus de 3 ans** | Prévue mensuelle ; **lancement manuel aujourd'hui** | ⚠️ script prêt et testé, planification absente |
-| **P3** | Détecter les **doublons de positions** (même ticker, même date d'achat, même PRU) | Mensuelle | ✅ détection ; ⚠️ suppression **manuelle** — un doublon peut être un vrai second achat |
+| **P2** | Supprimer les positions **closes depuis plus de 3 ans** (`date_cloture`, plan 66) | Prévue mensuelle ; **lancement manuel aujourd'hui** | ✅ **applicable depuis le 03/10/2026** (avant : visait `quantite = 0`, interdit par le schéma) ; planification absente |
+| **P3** | ~~Détecter les doublons de positions~~ **retirée le 03/10/2026** : l'index unique `uq_position_ligne` (ticker, PRU, date d'achat) les refuse à l'écriture | sans objet | ✅ remplacée par une contrainte de la base |
 | **P4** | Vérifier qu'**aucun fichier personnel n'est suivi par Git** | **À chaque commit** (hook pre-commit) | ⬜ **à mettre en place** |
 | **P5** | Revoir le champ `resume` de `memory_audit` : contient-il des montants ? | Trimestrielle | ❌ **manuelle** — jugement humain requis |
 | **P6** | Purger `mcp_calls` au-delà de **90 jours** (T5) | Prévue hebdomadaire avec P1 ; lancement manuel aujourd'hui | ✅ script `db/rgpd_purge.py` (03/10/2026), même planification que P1 |
