@@ -64,9 +64,9 @@ navigateur. Les noms de champs sont ceux de l'API, suffixes compris.
 
 | Écran | Appels | Champs utilisés |
 |---|---|---|
-| Portefeuille | `GET /donnees/portefeuille`, `GET /donnees/indicateurs-portefeuille`, `GET /donnees/fraicheur`, en parallèle | `valorisation_eur`, `investi_eur`, `performance_pct`, `date_cours` (par ligne), `positions_sans_taux` ; `poids_pct`, `complet`, `nb`, `total_eur`, `exposition` |
+| Portefeuille | `GET /donnees/portefeuille`, `GET /donnees/indicateurs-portefeuille`, `GET /donnees/fraicheur`, en parallèle | cartes : `total_eur` (« non calculable » s'il vaut `null`), `nb`, `positions_sans_taux`, `positions_closes` ; par ligne : `valorisation_eur`, `investi_eur`, `performance_pct`, `date_cours` ; poids : `poids_pct`, `complet`, `exposition`. **Aucune performance globale** : l'API n'en fournit pas, et le navigateur n'en recalcule pas |
 | Indicateurs | `GET /donnees/indicateurs`, `GET /donnees/indicateurs-risque` ; au choix d'une valeur, `GET /donnees/cotations?ticker=…&limite=179` | `perf_1j_pct`, `perf_1s_pct`, `perf_1m_pct`, `perf_ytd_pct`, `perf_1a_pct` ; `rsi_14`, `volatilite_annualisee_pct`, `drawdown_max_1a_pct` ; le nombre de valeurs est lu dans la réponse, jamais écrit en dur |
-| Briefing | `POST /briefing?ticker=…` (un seul envoi par clic) ; après la réponse, `GET /donnees/cotations?ticker=…&limite=179` | les champs actuels, plus `diagnostic` (§ 6) |
+| Briefing | `POST /briefing?ticker=…` (un seul envoi par clic) ; après la réponse, `GET /donnees/indicateurs?ticker=…` et `GET /donnees/cotations?ticker=…&limite=179` | les champs actuels, plus `diagnostic` (§ 6) ; la carte « 1 mois » vient de `perf_1m_pct` (`/donnees/indicateurs` accepte `?ticker=`) |
 
 **La courbe du cours et ses moyennes**
 - `GET /donnees/cotations` renvoie les séances **de la plus récente à la plus ancienne** : elles sont remises dans l'ordre
@@ -81,9 +81,13 @@ navigateur. Les noms de champs sont ceux de l'API, suffixes compris.
 Le badge de l'écran portefeuille porte la fraîcheur **du jeu de données** (`/donnees/fraicheur`) ; chaque ligne garde la date de **son** cours.
 
 **Date et fraîcheur d'un cours**, pour la valeur affichée, jamais recopiées de la fraîcheur globale du jeu :
-« Cours : vendredi 2 octobre · âge : 2 jours calendaires · aucune séance manquée (calendrier Euronext) ». Le compte des
-séances manquées vient de `monitorage/fraicheur.py` (calendrier Euronext, jours fériés compris) ; pour une valeur cotée
-hors Euronext (Londres, New York), seul l'âge calendaire est donné, et l'écran le dit.
+« Cours : vendredi 2 octobre · âge : 2 jours calendaires · 0 jour de bourse écoulé depuis (calendrier Euronext) ». Le
+compte vient de `jours_ouvres_ecoules()` (`monitorage/fraicheur.py:72`), dont la **convention** est écrite à côté du
+chiffre : jours de bourse Euronext **strictement après** la date du cours, **jusqu'à aujourd'hui inclus**. Le lundi matin,
+le lundi compte donc déjà, alors que sa clôture n'existe pas encore : ce compte dit un écart de calendrier, **pas une
+cotation manquante**. Établir une cotation réellement manquante demanderait un autre calcul (heure de clôture de la place),
+hors de cette refonte. Pour une valeur cotée hors Euronext (Londres, New York), seul l'âge calendaire est donné, et l'écran
+le dit.
 
 ## 6. L'évolution de l'API : `diagnostic` et `503`
 
@@ -91,7 +95,11 @@ C'est **la seule** évolution de l'API ; les treize autres chemins ne changent p
 `generer_texte()` (`src/llm.py`) ne renvoie aujourd'hui que le texte, le fournisseur et le modèle doivent donc remonter
 par l'appel au modèle, le graphe, puis la réponse de l'API.
 
-Exemple, avec les valeurs du briefing AIR.PA du 04/10/2026 (titre et lien abrégés) :
+Exemple construit sur le briefing AIR.PA du 04/10/2026. **Observés** : `fournisseur`, `modele` et l'unique tentative,
+lus dans la trace Langfuse de cette requête (référence `872bb913…`, trace `9d0ffddc…`, 14 h 54 UTC : une seule génération,
+`llm-foundry`, modèle `gpt-5.4-2026-03-05`) ; `date_cours` et l'âge, depuis le texte servi. **Illustratifs** : `duree_ms`
+(la racine de la trace mesure 11,47 s, le traitement complet de l'API n'a pas été mesuré pour cette requête) et le
+détail des sources (titre et lien abrégés) :
 
 ```
 "diagnostic": {
@@ -101,7 +109,7 @@ Exemple, avec les valeurs du briefing AIR.PA du 04/10/2026 (titre et lien abrég
   "duree_ms": 11469,
   "date_cours": "2026-10-02",
   "age_calendaire_jours": 2,
-  "seances_manquees": 0,
+  "jours_bourse_ecoules": 0,
   "calendrier": "Euronext",
   "sources": [{"titre": "…", "source": "La Tribune", "publie_le": "2026-10-02", "lien": "https://…"}]
 }
@@ -109,17 +117,22 @@ Exemple, avec les valeurs du briefing AIR.PA du 04/10/2026 (titre et lien abrég
 
 | Champ | Définition exacte |
 |---|---|
-| `fournisseur`, `modele` | ceux qui ont **réellement** produit le texte, pas la préférence configurée |
+| `fournisseur`, `modele` | ceux qui ont **réellement** produit le texte, pas la préférence configurée ; `modele` vaut `null` si le fournisseur ne le renvoie pas (jamais le nom configuré à sa place) |
 | `tentatives` | un élément par fournisseur essayé, dans l'ordre : nom et réussite ; **jamais de message d'erreur** (il reste dans le journal du serveur) |
-| `duree_ms` | durée du **traitement complet** de la requête par l'API, pas celle du seul appel au modèle |
-| `date_cours`, `age_calendaire_jours`, `seances_manquees`, `calendrier` | la fraîcheur du cours de cette valeur (§ 5) ; `seances_manquees` vaut `null` hors Euronext |
-| `sources` | les passages **réellement fournis au modèle** pour ce texte : titre, source, date, lien ; **jamais le texte de l'article** |
+| `duree_ms` | durée du **traitement complet** de la requête par l'API, pas celle du seul appel au modèle ; entier **supérieur ou égal à 0** |
+| `date_cours`, `age_calendaire_jours`, `jours_bourse_ecoules`, `calendrier` | la fraîcheur du cours de cette valeur (§ 5) ; `jours_bourse_ecoules` et `calendrier` valent `null` hors Euronext |
+| `sources` | les articles dont un passage a été **réellement fourni au modèle** pour ce texte, **un élément par article** (dédoublonnés par lien, dans l'ordre de pertinence) : titre, source, date, lien ; **jamais le texte de l'article** ; `[]` si aucun passage n'a été fourni ; `lien` vaut `null` si son schéma n'est pas `http` ou `https` (le lien n'est alors pas rendu cliquable) |
 
 Ces informations appartiennent à **une requête** : aucun état partagé entre deux briefings simultanés.
 
-**Erreur nouvelle** : quand tous les fournisseurs échouent, l'API répond **`503`** avec le code `AUCUN_FOURNISSEUR`.
-Toute autre panne imprévue reste un `500` générique, sans détail pour le client. Ces deux comportements entrent au
-contrat OpenAPI.
+**Erreur nouvelle** : quand tous les fournisseurs échouent, l'API répond **`503`** avec ce corps exact :
+
+```
+{"detail": {"code": "AUCUN_FOURNISSEUR", "message": "Aucun fournisseur de modèle n'a répondu."}}
+```
+
+et l'en-tête `X-Request-ID`, comme toute réponse. Toute autre panne imprévue reste un `500` générique, sans détail pour
+le client. Ces deux comportements entrent au contrat OpenAPI.
 
 ## 7. Les états d'affichage
 
@@ -167,14 +180,14 @@ décrit dans `tentatives`.
 
 | Niveau | Ce qu'il prouve | Outil |
 |---|---|---|
-| API | `diagnostic` présent et conforme au § 6 ; `tentatives` sans message d'erreur ; `sources` égales aux passages fournis ; `duree_ms` positif ; **deux requêtes réellement simultanées** (valeurs et métadonnées différentes) ne se mélangent pas ; tous les fournisseurs en panne donnent `503` `AUCUN_FOURNISSEUR` ; autre exception : `500` sans détail ; contrat OpenAPI à jour | `pytest`, `TestClient`, fournisseurs simulés (aucun appel payant) |
+| API | `diagnostic` présent et conforme au § 6 ; `tentatives` sans message d'erreur ; `sources` égales aux articles des passages fournis (un par article, `[]` sans passage, lien non `http(s)` mis à `null`) ; `modele` à `null` quand il n'est pas connu ; `duree_ms` supérieur ou égal à 0 ; **deux requêtes réellement simultanées** (valeurs et métadonnées différentes) ne se mélangent pas ; tous les fournisseurs en panne donnent `503` `AUCUN_FOURNISSEUR` ; autre exception : `500` sans détail ; contrat OpenAPI à jour | `pytest`, `TestClient`, fournisseurs simulés (aucun appel payant) |
 | Graphiques | séries de **0, 1, 19, 20, 49, 50 et 179** séances ; dates dans le désordre, valeurs manquantes, cours constants ; moyennes comparées à des valeurs calculées indépendamment ; anneau non dessiné si les poids sont nuls ; l'alternative textuelle contient les mêmes chiffres que le dessin | Playwright (`page.evaluate`) |
 | Écrans, API interceptée | **chaque état du § 7**, dont le refus du garde-fou, le portefeuille incomplet, le double clic (un seul envoi), la réponse tardive ignorée, la clé gardée seulement après une réponse réussie ; un nom ou un titre contenant du HTML reste du texte | Playwright |
 | Parcours avec la vraie API | un parcours complet dans le navigateur à travers l'API réelle de l'application, fournisseurs et lectures de base remplacés par des jeux contrôlés : il prouve que l'écran comprend la vraie réponse (champs, en-têtes, formats) | Playwright, `uvicorn` |
 | Configuration mixte | si seul l'écran briefing est livré : les écrans portefeuille et indicateurs actuels fonctionnent avec le `style.css` et le `commun.js` nouveaux | Playwright |
 | Statique | aucune clé dans le code ; aucune insertion de chaîne HTML ; pas de forme de recommandation (formes impératives, « signal d'achat », « survendu »…), mais les phrases qui **expliquent** l'interdit restent permises (le piège est documenté dans `tests/test_frontend.py`, test du RSI) | `tests/test_frontend.py` |
 | Accessibilité | Lighthouse accessibilité **100 comme seuil de non-régression**, pas comme preuve d'accessibilité complète ([le score exclut les contrôles manuels](https://developer.chrome.com/docs/lighthouse/accessibility/scoring)) ; contrôles manuels : clavier, focus après un résultat ou une erreur, zoom 200 %, alternatives des graphiques ; les essais au lecteur d'écran réellement faits sont notés, avec leurs limites | Lighthouse, manuel |
-| Éco-conception | EcoIndex calculé **en local avec le code officiel** (même méthode et même nom que le 03/10, pas une analyse du site public), **avant et après**, sur le **même scénario** : même jeu de données, même état d'écran (valeur choisie avec sa courbe, briefing affiché), même taille de fenêtre, même cache, mêmes versions d'outils ([méthode EcoIndex](https://www.ecoindex.fr/en/how-it-works/)) | outils de `evidence/C17/mesures-2026-10-03/outils/` |
+| Éco-conception | EcoIndex calculé **en local avec le code officiel** (même méthode et même nom que le 03/10, pas une analyse du site public), **avant et après**, sur un **parcours qui existe dans les deux versions** : les trois écrans chargés avec la même clé et le même jeu de données, un briefing affiché, même taille de fenêtre, même cache, mêmes versions d'outils. Les interactions **nouvelles** (courbe d'une valeur choisie, panneau « Comprendre ce résultat ») sont mesurées **à part**, sans comparaison avec l'ancienne version, qui ne les a pas ([méthode EcoIndex](https://www.ecoindex.fr/en/how-it-works/)) | outils de `evidence/C17/mesures-2026-10-03/outils/` |
 
 **Ce que doit contenir la preuve finale** (un nouveau rapport daté dans `evidence/C17/`, celui du 03/10 est conservé tel
 quel) : le commit testé, les commandes lancées, leurs sorties, **la liste des tests sautés**. Un test navigateur sauté
@@ -194,12 +207,14 @@ serveur tôt dans la fenêtre, rapport E4, préparation de l'oral.
   doivent concorder.
 - **Une version distincte** : la refonte sera livrée sous sa propre version, sans réécrire ce que décrivent les rapports
   gelés.
-- **Ouverture conditionnelle** : si le travail prioritaire se termine tôt **et** qu'une estimation réaliste (tests,
-  preuves et répétition compris) tient, l'écran briefing peut être commencé avant ; sinon, non.
+- **Aucune exception** : toute proposition de démarrage anticipé fera l'objet d'une décision distincte. La présente
+  spécification ne prévoit aucune exception à la décision A.
+- **Au moment d'écrire le plan d'implémentation**, le code est relu : des correctifs comme #73 ou #75 S6 auront peut-être
+  été faits entre-temps, et ne seront pas refaits.
 
 **Ordre de construction, le moment venu** (un pas = un commit et une chaîne verte) :
 
-1. mesure **« avant »** des écrans actuels, sur le scénario du § 9 ;
+1. mesure **« avant »** des écrans actuels, sur le parcours commun du § 9 ;
 2. API : `diagnostic`, `503 AUCUN_FOURNISSEUR`, contrat OpenAPI ;
 3. `commun.js` : clé (#73), en-tête, erreurs, envoi unique ;
 4. `graphiques.js` : fonctions et cas limites ;
@@ -220,7 +235,10 @@ daté de secours en cas de panne de réseau ou de fournisseur pendant l'oral. Le
 - Deux définitions de la fraîcheur coexistent dans le code (jours calendaires pour le prompt du rédacteur, jours de
   séance pour le monitorage) ; l'écran les affiche séparément, l'harmonisation du prompt est un correctif distinct.
 - La date de réalisation est inconnue : rien de ce document ne doit être présenté comme fait avant ses preuves.
-- Les maquettes portent des **valeurs illustratives**, sauf la ligne AIR.PA (briefing réel du 04/10).
+- Les maquettes portent des **valeurs illustratives**. Viennent du briefing réel AIR.PA du 04/10 : le texte, le cours
+  (189,30), les variations sur une séance, une semaine, un mois et depuis le 1er janvier, les moyennes 20 et 50 séances
+  (194,48 et 202,27), le fournisseur et le modèle (trace Langfuse de la requête). Sont **schématiques ou inventés** : les
+  courbes, le RSI de 41, les autres lignes de la carte des performances, tout le portefeuille (jeu d'exemple).
 
 ## 12. Maquettes proposées (non implémentées)
 
@@ -230,17 +248,22 @@ daté de secours en cas de panne de réseau ou de fournisseur pendant l'oral. Le
 
 ![Les écrans portefeuille et indicateurs](maquettes/maquette-3-portefeuille-et-indicateurs.png)
 
-La troisième maquette a été corrigée après validation : la colonne des petites courbes, abandonnée au § 3, en est retirée.
+Les maquettes ont été corrigées après validation pour dire la même chose que ce document : colonne des petites courbes
+retirée (§ 3) ; verdict écrit « aucune recommandation d'achat ou de vente détectée » ; légende séparée Cours, MM20, MM50 ;
+période en séances au lieu de « 6 mois » ; cartes du portefeuille nourries par des champs réels ; jauge du RSI neutre,
+sans couleur qui suggère un « bon » RSI.
 
 ## 13. Comment cette conception a été faite
 
 Le 04/10/2026, par étapes validées une à une par Era : intention, choix du niveau d'information (A et deux éléments de B),
 jeu de graphiques, technique de dessin, maquettes (style, puis écran briefing, puis les deux autres), puis quatre sections
-de conception. **Trois relectures extérieures** ont été vérifiées point par point contre le code avant d'être intégrées ;
-toutes étaient justes. Elles ont corrigé, entre autres : l'ordre des cotations avant le calcul des moyennes, un champ mal
+de conception. **Quatre relectures extérieures** ont été vérifiées point par point contre le code avant d'être intégrées ;
+toutes étaient justes, une avec une nuance (le fournisseur et le modèle de l'exemple étaient bien établis, par la trace,
+mais la preuve n'était pas citée). Elles ont corrigé, entre autres : l'ordre des cotations avant le calcul des moyennes, un champ mal
 attribué (`positions_sans_taux`), un anneau qui aurait affiché 100 % sur un portefeuille incomplet, un `500` qui ne veut
-pas toujours dire « fournisseurs en panne », une contradiction entre SVG en chaîne et `textContent`, et un calendrier qui
-contredisait le plan E4.
+pas toujours dire « fournisseurs en panne », une contradiction entre SVG en chaîne et `textContent`, un calendrier qui
+contredisait le plan E4, des chiffres de maquette sans champ réel derrière, et un « séances manquées » que la fonction
+de fraîcheur ne permet pas d'affirmer.
 
 ## 📖 Glossaire
 
