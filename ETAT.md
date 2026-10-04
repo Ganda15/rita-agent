@@ -110,6 +110,14 @@ puis tuile renommée « Tentatives par fournisseur (échecs compris) » : la bar
 échecs (`evidence/C11/README.md`) ; tableau et alertes vérifiés à l'écran après la correction ;
 restent l'axe à zéro (aucun réglage dans l'API, éditeur de la tuile à regarder) et les deux captures datées à ranger. E1 et ses deux schémas disaient
 278 457 cotations, la base en compte 278 473 (dernier cours le 02/10) : corrigé le 04/10.
+**Décidé par Era le 05/10, après le gel du 15/10, dans cet ordre** : 1) corriger les indicateurs existants, test
+d'abord (RSI d'une série plate #78, pire baisse positive en hausse continue #79, libellé « depuis le 1er janvier » #80) ; 2) vérifier
+la fidélité du texte aux faits fournis (chiffres, devises, dates) ; 3) expliquer les 13 indicateurs à l'écran ; 4) un
+seul nouvel indicateur, l'ATR en % (#83), spécification d'abord dans `docs/indicateurs/CONCEPTION.md` ; comparaison à un indice
+(après résolution du décalage cours ajustés des dividendes contre indice de prix), ADX, concentration et corrélations,
+fondamentaux : après la certification. **Règle « UE seule », choix du projet posé par Era le 05/10** (pas une exigence du
+référentiel, qui demande le respect du RGPD) : non tenue au 05/10 par T6 (fournisseurs du modèle, #82) et T7 (Google News, #81),
+inscrits au registre ; à prouver dans E2 (C7, choix des services d'IA) quand il sera repris.
 **Rapport E4, à son écriture (figures déjà prêtes, relues le 04/10)** : § 1 « Analyser le besoin » (C14), la planche
 `evidence/C14/WIREFRAMES-C14-ecran-portefeuille.png` à côté du récit utilisateur du portefeuille (valeurs
 d'illustration, vérifiées différentes des positions réelles) ; § 2 « Cadre technique » (C15),

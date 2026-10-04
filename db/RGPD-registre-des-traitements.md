@@ -11,7 +11,9 @@
 **Base réglementaire** : RGPD (Règlement Général sur la Protection des Données,
 UE 2016/679), **article 30** — registre des activités de traitement.
 
-**Dernière mise à jour** : 2026-10-02 *(T3 devient un traitement actif : Langfuse Cloud, région UE ; P1 et P2 corrigées ; état de `memory_audit` ajouté à T2)*
+**Dernière mise à jour** : 2026-10-05 *(règle « UE seule » posée par Era ; T1 corrigé : les noms des sociétés détenues partent vers Google News ; T6, fournisseurs du modèle, et T7, requêtes Google News, inscrits ; traces de test supprimées le 04/10)*
+
+*Mise à jour précédente : 2026-10-02 (T3 devient un traitement actif : Langfuse Cloud, région UE ; P1 et P2 corrigées ; état de `memory_audit` ajouté à T2).*
 
 ---
 
@@ -23,8 +25,20 @@ RITA est un **projet personnel mono-utilisateur**. Era est à la fois :
 - la **personne concernée** — celui dont les données sont traitées.
 
 Cette situation **n'exonère de rien** : dès qu'un traitement automatisé porte sur des
-données personnelles, le RGPD s'applique. Mais elle simplifie beaucoup de choses — pas de
-sous-traitant à encadrer, pas de demande d'accès d'un tiers à instruire.
+données personnelles, le RGPD s'applique. Elle simplifie une chose : il n'y a pas de demande
+d'accès d'un tiers à instruire. Elle ne dispense pas d'encadrer les destinataires extérieurs
+(Langfuse en T3, les fournisseurs du modèle en T6, Google en T7).
+
+> 🇪🇺 **Règle du projet, posée par Era le 2026-10-05 : aucune donnée personnelle ne quitte l'Union
+> européenne.** C'est un **choix du projet**, pas une exigence du référentiel : C4 demande une base
+> « dans le respect du RGPD », un registre complet et des procédures de tri (règlement d'examen, p. 20-21).
+> Elle est plus stricte que le RGPD, qui autorise des transferts encadrés (clauses contractuelles
+> types, Data Privacy Framework) : un transfert licite peut quand même la violer. Choisie, elle doit
+> être prouvée, et elle pèse sur le choix des services d'IA (C7). Une
+> région « UE » n'est pas une personne morale : il faut vérifier qui traite, où, et avec quels
+> sous-traitants. **Au 2026-10-05, trois traitements ne la respectent pas ou pas de façon prouvée** :
+> T6 (fournisseurs du modèle), T7 (Google News), et T3 tant que le DPA de Langfuse n'est pas lu.
+> Corrections après le gel du 15/10 (§ 5).
 
 > ⚠️ **Ce que ça change si RITA devient multi-utilisateur** : il faudra une base légale
 > explicite (le consentement), une information des utilisateurs, une procédure de réponse
@@ -51,8 +65,8 @@ divulgation cause un préjudice réel, donc à protéger sérieusement.
 | **Catégories de données** | Ticker détenu · quantité · prix de revient unitaire (PRU) · date d'achat · devise |
 | **Ce que ça révèle** | La **situation financière** : composition du patrimoine, montants investis, plus ou moins-values |
 | **Support** | Table `position` (PostgreSQL) · fichier CSV source |
-| **Destinataires** | Aucun. Données locales. |
-| **Transfert hors UE** | Non |
+| **Destinataires** | Aucun pour les quantités, PRU et dates : elles restent locales. **Les noms des sociétés détenues, eux, partent chaque soir vers Google News** (T7, relevé le 2026-10-05 ; ce registre disait « aucun » à tort) |
+| **Transfert hors UE** | Table et fichier : non. Noms des sociétés détenues : **probable**, voir T7 |
 | **Durée de conservation** | Position **active** : tant que sa ligne est dans le CSV · position **soldée** : **3 ans après `date_cloture`**, puis suppression (P2). **Depuis le 03/10/2026 (plan 66)** : une ligne retirée du CSV **est** l'acte de vente ; l'import la clôt à la date du jour (la seule date de vente que le projet connaisse, donc en retard du délai entre la vente et l'import suivant) ; une ligne revenue rouvre la même position ; un CSV vide ne clôt rien |
 | **Sécurité** (art. 32) | Fichier source **jamais versionné** (`.gitignore`, vérifié par `git check-ignore`) · base non exposée au réseau · chemin par variable d'environnement `POSITIONS_CSV` |
 
@@ -113,7 +127,7 @@ avant le 28/09).
 | **Transfert hors UE** | Les données sont hébergées dans l'UE. **Une entité américaine figure parmi les sous-traitants du groupe** : le transfert au titre de l'entité reste **à confirmer par la lecture du DPA**, pas encore faite par Era. Tant que ce n'est pas fait, ne pas écrire « aucun transfert » |
 | **Durée de conservation** | 30 jours (palier gratuit), moins que les 90 jours de T2. Suppression possible à la demande par l'interface ou par l'API (quelques minutes selon l'éditeur) |
 | **Mesure de réduction** | Rien à masquer aujourd'hui. **Condition écrite** : si une position, un PRU ou une quantité entre un jour dans le prompt, brancher la fonction de masquage du SDK Langfuse avant de tracer le nœud concerné |
-| **Incident du 2026-10-02** | Douze générations de test (texte « prompt test ») ont été écrites dans le projet de production par la suite de tests. Aucune donnée personnelle dedans. Cause corrigée le jour même ; suppression des douze lignes à faire par Era dans l'interface |
+| **Incident du 2026-10-02** | Des générations de test (texte « prompt test ») ont été écrites dans le projet de production par la suite de tests. Aucune donnée personnelle dedans. Cause corrigée le jour même ; **traces supprimées le 2026-10-04** (relecture par l'API : 0 « prompt test ») |
 
 #### Décision prise avant l'activation (historique du 14/08 et du 28/09)
 
@@ -182,6 +196,34 @@ des données ») et une mesure dans le code plutôt qu'une supposition :
 | **Sécurité** | rôle `rita_lecture` en lecture seule ; purge automatisée P6 (§2) ; une panne d'écriture est comptée et exposée par `/donnees/fraicheur` |
 | **Droits** | effacement sur demande par `request_id` ; accès : le propriétaire lit la table |
 
+### T6 : Rédaction du briefing par un modèle fourni : ✅ **ACTIF**, inscrit le 2026-10-05 (non conforme à la règle UE seule)
+
+| Rubrique | Contenu (état relu dans le code le 2026-10-05) |
+|---|---|
+| **Finalité** | Rédiger en français le briefing d'une valeur demandée par l'utilisateur (`POST /briefing`) |
+| **Base légale** | Intérêt légitime |
+| **Catégories de données** | Le prompt : ticker demandé, cours, variation, ADTV20, devise, fraîcheur, les 13 indicateurs, passages de presse (`agents/analyst.py`). **Aucune position, aucun PRU, aucune quantité.** Ce qui est personnel malgré tout : **la valeur demandée et l'heure de la demande** disent ce qui intéresse l'unique utilisateur, et chaque appel est rattaché à son compte chez le fournisseur |
+| **Destinataires** | Dans l'ordre de la cascade (`src/llm.py`, `LLM_ORDRE`) : 1. **Microsoft Azure AI Foundry**, déploiement **Global Standard** (lu dans le portail par Era le 03/10, `evidence/C7/prix-et-environnement-2026-10-03.md`) : selon Microsoft, un tel déploiement peut traiter un appel dans n'importe quelle région Azure ; 2. **Anthropic** (API directe), société établie aux États-Unis ; 3. **OpenRouter**, point d'entrée général `https://openrouter.ai/api/v1/chat/completions` (`src/llm.py:24`), sans garantie de région |
+| **Transfert hors UE** | **Possible** pour Azure (déploiement mondial), **probable** pour Anthropic et OpenRouter. Contrats de traitement (DPA) des trois fournisseurs **non lus**. **Non conforme à la règle UE seule** (§ 0) |
+| **Durée de conservation** | Selon chaque fournisseur, **non vérifiée** |
+| **Lien avec T3** | Le même prompt et la même réponse sont tracés dans Langfuse (T3) |
+| **Inventaire champ par champ** | À faire : carte #68 (tableau champ, origine, destinataire, durée, et un test qui échoue si le prompt contient un champ hors liste) |
+| **Correction prévue** (après le gel du 15/10, carte #82) | Ne garder que des fournisseurs approuvés : déploiement Azure limité à l'UE (zone de données ou région, à vérifier dans le portail et le contrat), routage UE d'OpenRouter (éligibilité et contrat à vérifier) ou modèle local. **Aucun repli vers un fournisseur non approuvé** : sans fournisseur approuvé, l'écran montre les faits et dit « briefing indisponible » (réponse 503 `AUCUN_FOURNISSEUR` prévue par `docs/conception/frontend/refonte-2026-10.md`, § 6) |
+
+### T7 : Recherche d'actualités sur les valeurs détenues (Google News) : ✅ **ACTIF depuis le 2026-08-28**, inscrit le 2026-10-05 (non conforme à la règle UE seule)
+
+| Rubrique | Contenu (état relu dans le code le 2026-10-05) |
+|---|---|
+| **Finalité** | Collecter chaque soir les articles de presse sur les sociétés du portefeuille |
+| **Base légale** | Intérêt légitime |
+| **Catégories de données** | **Le nom de chaque société présente dans la table `position`** (positions closes comprises : `SELECT DISTINCT v.nom_officiel FROM position p JOIN valeur v`, `pipelines/ingest.py:283-289`), placé dans l'adresse d'une requête Google News avec le mot « bourse » et une fenêtre de dates (`sources/rss.py:56-89`) ; l'adresse IP du poste |
+| **Ce que ça révèle** | **La composition du portefeuille**, sans les quantités ni les montants |
+| **Destinataire** | Google, service Google News (`news.google.com`) ; entité qui traite et lieu de traitement **non vérifiés** |
+| **Transfert hors UE** | **Probable, non vérifié. Non conforme à la règle UE seule** (§ 0) |
+| **Fréquence** | Chaque soir à 19 h (collecte planifiée) : une requête par société détenue (10 flux le 03/10 : 3 généraux et 7 par société) |
+| **Écart de méthode** | Codé le 28/08 (commit `66ea9f9`) **sans inscription préalable** dans ce registre, alors que la procédure M1 demande d'inscrire un traitement **avant** de le coder. Relevé le 05/10 par une relecture extérieure, confirmé dans le code |
+| **Correction prévue** (après le gel du 15/10, carte #81) | Remplacer les requêtes dérivées des positions par une liste de veille qui n'en dépend pas (par exemple les 111 valeurs suivies), interrogée auprès de sources approuvées ; à défaut, supprimer ces flux |
+
 ### Ce qui **n'est pas** un traitement de données personnelles
 
 | Donnée | Pourquoi |
@@ -232,7 +274,7 @@ utilisateur.
 | **Rectification** | 16 | `UPDATE position SET quantite = ... WHERE id = ...;` |
 | **Effacement** | 17 | `DELETE FROM position WHERE id = ...;` puis purge du CSV source |
 | **Portabilité** | 20 | `\copy (SELECT * FROM position) TO 'export.csv' CSV HEADER` — format ouvert |
-| **Limitation** | 18 | Sans objet : traitement local, aucun destinataire |
+| **Limitation** | 18 | Sans objet tant que la personne concernée est le responsable ; les destinataires extérieurs sont listés en T3, T6 et T7 |
 | **Opposition** | 21 | Sans objet : la personne concernée est le responsable de traitement |
 
 ---
@@ -241,12 +283,14 @@ utilisateur.
 
 | # | Action | Criticité |
 |---|---|---|
-| 1 | ~~Choisir l'outil de monitorage avant d'activer le traçage (T3)~~ **Fait : Langfuse Cloud UE choisi le 28/09, activé le 02/10.** Reste : lire le DPA et confirmer l'encadrement du transfert, puis supprimer les douze lignes de test | 🟠 moyenne |
+| 1 | ~~Choisir l'outil de monitorage avant d'activer le traçage (T3)~~ **Fait : Langfuse Cloud UE choisi le 28/09, activé le 02/10 ; traces de test supprimées le 04/10.** Reste : lire le DPA et vérifier, au regard de la règle UE seule, le rôle de l'entité américaine du groupe | 🟠 moyenne |
 | 2 | **Hook Git `pre-commit`** interdisant l'ajout d'un fichier personnel (P4) | 🟠 moyenne |
 | 3 | Brancher P1 et P2 sur APScheduler (aujourd'hui : lancement manuel) | 🟠 moyenne |
 | 4 | Chiffrer la sauvegarde de la base si elle sort de la machine | 🟡 basse tant que tout est local |
+| 5 | **T7 (carte #81) : arrêter d'envoyer à Google News les noms des sociétés détenues** (liste de veille indépendante des positions, sources approuvées) | 🔴 haute : révèle chaque soir la composition du portefeuille hors de l'UE |
+| 6 | **T6 (cartes #82 et #68) : n'appeler que des fournisseurs de modèle approuvés UE**, sans repli vers un fournisseur non approuvé ; lire les trois contrats de traitement | 🔴 haute : chaque briefing part aujourd'hui sans garantie de région |
 
-> Un registre qui ne signale aucune faiblesse n'est pas crédible. Ces quatre points sont
+> Un registre qui ne signale aucune faiblesse n'est pas crédible. Ces six points sont
 > ouverts, et ils seront présentés comme tels.
 
 ---
@@ -275,3 +319,5 @@ utilisateur.
 | **Mode simulation** (*dry-run*) | Le script montre ce qu'il ferait, sans le faire | Comportement par défaut de `rgpd_purge.py` |
 | **Hook pre-commit** | Script Git qui s'exécute **avant** d'enregistrer un commit | Empêcherait d'ajouter un fichier personnel |
 | **PRU** | *Prix de Revient Unitaire* — prix moyen d'achat d'un titre | Donnée personnelle : révèle la plus-value |
+| **Règle UE seule** | Aucune donnée personnelle hors de l'Union européenne, même encadrée | Règle d'Era (05/10), plus stricte que le RGPD |
+| **Global Standard** (Azure) | Type de déploiement qui peut traiter un appel dans n'importe quelle région Azure | Celui du déploiement Foundry de RITA au 03/10 (T6) |

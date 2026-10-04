@@ -343,8 +343,11 @@ Fichiers connus de Spark : <b>11</b>  →  un seul est ouvert · 27 648 lignes e
 <h2><span class="n">7</span> Conformité RGPD <span class="tag">C4</span></h2>
 
 <p>Une seule table porte des <strong>données à caractère personnel</strong> : <code>position</code> (quantités, prix de revient,
-dates d'achat et de clôture). Le fichier source n'est <strong>jamais</strong> versionné (règle d'exclusion Git), et le portefeuille
-n'est jamais envoyé au modèle de langage : le rédacteur ne reçoit que des agrégats. Les données financières ne sont pas des
+dates d'achat et de clôture). Le fichier source n'est <strong>jamais</strong> versionné (règle d'exclusion Git), et ni quantité ni prix de revient
+n'est envoyé au modèle de langage. <strong>Règle du projet depuis le 05/10 : aucune donnée personnelle hors de l'UE.</strong>
+Deux flux ne la respectent pas, inscrits au registre le 05/10 et corrigés après le gel : les noms des sociétés détenues
+partent chaque soir vers Google News (T7), et chaque briefing part vers des fournisseurs de modèle sans garantie de
+région (T6). Les données financières ne sont pas des
 données « sensibles » de l'article 9 ; ce sont des données personnelles ordinaires, base légale <strong>intérêt légitime</strong>
 (article 6) pour un usage strictement personnel.</p>
 
@@ -358,6 +361,8 @@ données « sensibles » de l'article 9 ; ce sont des données personnelles ordi
   <tr><td>T3</td><td>Traces d'exécution <strong>Langfuse Cloud, région UE</strong> (sous-traitant allemand ; DPA identifié, lecture à faire)</td><td>selon l'éditeur</td></tr>
   <tr><td>T4</td><td>Fichier CSV source</td><td>hors dépôt, local</td></tr>
   <tr><td>T5</td><td>Journal des appels MCP (<code>mcp_calls</code>, identifiants techniques seuls)</td><td>90 jours</td></tr>
+  <tr><td>T6</td><td>Rédaction par un modèle fourni (Azure mondial, Anthropic, OpenRouter) : <strong>hors UE possible</strong></td><td>selon fournisseur, non vérifiée</td></tr>
+  <tr><td>T7</td><td>Requêtes Google News par société détenue : <strong>hors UE probable</strong></td><td>sans objet (requêtes)</td></tr>
 </table>
 <p style="font-size:7.6pt">La v1 déclarait un <strong>transfert hors UE</strong> (LangSmith, États-Unis). Le traçage a été
 remplacé le 02/10 par un hébergement européen. Une entité américaine du groupe figure parmi les sous-traitants : le transfert reste à confirmer par la lecture du DPA (registre, T3).</p>
@@ -428,7 +433,7 @@ python -m pytest -q                                <b># 740 passed, 2 xfailed, 9
   <tr><td><strong>C1</strong></td><td>5 types de sources · script en 6 étapes, planifié chaque soir, manifeste par exécution · 40 journaux</td><td class="mono">sources/ · pipelines/ingest.py · evidence/C1/</td></tr>
   <tr><td><strong>C2</strong></td><td>4 requêtes SQL + 3 requêtes Spark SQL, optimisations mesurées</td><td class="mono">db/requetes.sql · bigdata/query_spark.py · evidence/C2/</td></tr>
   <tr><td><strong>C3</strong></td><td>analyse exploratoire · dédoublonnage · normalisation · INC-005 et place de cotation</td><td class="mono">bigdata/explorer.py · sources/marches.py · evidence/C3/ · evidence/C21/INC-005</td></tr>
-  <tr><td><strong>C4</strong></td><td>MCD + MPD · 12 contraintes · registre T1 à T5 · purges P1 à P6 · migrations rejouables</td><td class="mono">evidence/C4/ · db/schema.sql · db/RGPD-registre-des-traitements.md</td></tr>
+  <tr><td><strong>C4</strong></td><td>MCD + MPD · 12 contraintes · registre T1 à T7 · purges P1 à P6 · migrations rejouables</td><td class="mono">evidence/C4/ · db/schema.sql · db/RGPD-registre-des-traitements.md</td></tr>
   <tr><td><strong>C5</strong></td><td>11 points de terminaison · OpenAPI 3.1.0 · autorisation testée</td><td class="mono">api/donnees.py · evidence/C5/</td></tr>
 </table>
 <p style="font-size:7.6pt"><strong>Schémas</strong> : C1 et C3 dans <code>docs/rapports/E1/schemas/</code> (générés depuis le code, vérifiés par un test) · C2 dans <code>bigdata/schemas/</code> (partitionnement, trois requêtes) · C4 au § 5 (à jour), première version du 01/08 dans <code>evidence/C4/MCD-MERISE-RITA.png</code>, passage aux tables dans <code>docs/conception/donnees/schema-modele-donnees.svg</code> (conception du 07/09) · C5 dans <code>docs/rapports/E3/schemas/</code>.</p>
