@@ -99,7 +99,15 @@ fournisseurs, S4 refus journalisés, S3 limite de débit, S1 en-têtes de sécur
 déclaré dans E1) ; pas d'alerte de silence (deux alertes seulement au palier gratuit) ; seuil de latence à revoir après une
 semaine de traces ; DPA Langfuse identifié mais non lu (transfert à confirmer) ; le docstring de `db/rgpd_purge.py` dit
 encore P1 et P2 « automatisés » alors que le registre et E1 disent « lancement manuel » (après le gel) ; la skill
-`tester` du dépôt cite encore « 477 passed, 19/09 ».
+`tester` du dépôt cite encore « 477 passed, 19/09 » ; l'encadré « D'où vient ce texte ? » de l'écran 3 ne cite pas les
+13 indicateurs désormais transmis au rédacteur (après le gel) ; deux mesures de fraîcheur coexistent (âge calendaire
+pour le prompt, jours de bourse pour le monitorage) : à documenter côte à côte, ce n'est pas en soi un défaut ; la
+tournure « vérifier si le rebond du jour se prolonge » est à ajouter au jeu d'évaluation comme cas limite, avec son
+résultat attendu écrit et une phrase de comparaison purement descriptive en regard, pour mesurer à la fois les
+recommandations manquées et les refus inutiles (`evals/` : zone sous garde, plan d'abord) ; la tuile « Générations par
+fournisseur » du tableau C11 compte `briefing-llm` (données du 02/10) : filtre à corriger.
+**Recommandé le 04/10, à confirmer par Era** : les mentions historiques d'un guide d'étude dans `CHANGELOG.md` et `evidence/C21/INC-005` restent
+telles quelles (elles racontent comment un défaut a été trouvé ; la préparation personnelle, elle, vit hors du dépôt).
 Restent ceux du 03/10 : aucune alerte quand la chaîne est rouge (INC-007) ; seize indicateurs spécifiés, treize reçus par
 le briefing, drawdown jamais cité ; production sans en-têtes de sécurité ni limite de débit, API en rôle propriétaire en base, écran 3
 qui mémorise la clé trop tôt, tableau Kanban décroché du travail réel.

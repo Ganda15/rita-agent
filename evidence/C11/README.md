@@ -13,12 +13,12 @@ palier gratuit (50 000 unités par mois, 30 jours de conservation, 2 alertes). D
 | 1 | Les **métriques** du monitorage sont expliquées sans erreur d'interprétation | ✅ écrit | `docs/EXPLOITATION.md`, section « Monitorage Langfuse et alertes » : latence par étape, erreurs de repli, verdict AMF (note `conforme_amf`), jetons. À reprendre dans le rapport E3 |
 | 2 | Le ou les **outils** sont adaptés au contexte et aux contraintes | ✅ décidé et mesuré | Langfuse retenu contre LangSmith et l'auto-hébergement : aucune donnée personnelle dans le prompt, région UE, pas de gRPC (bloqué sur le poste), 4 Go sur le serveur ; `CONTINUITE.md` D et E, registre §T3 |
 | 3 | Au moins un **vecteur de restitution en temps réel** (tableau de bord) | ✅ construit le 03/10 | Tableau « RITA C11 », trois tuiles (générations par fournisseur, p95 de `briefing-llm`, observations ERROR ou WARNING), créé par l'API publique : `dashboard-rita-c11-2026-10-03.json`, `preuve-langfuse-2026-10-03.md`. Capture d'écran encore à faire par Era |
-| 4 | Les enjeux d'**accessibilité** sont pris en compte dans le choix de l'outil | 🟠 à écrire | Interface web standard, texte et tableaux ; à argumenter dans le rapport E3, rien d'écrit ici |
+| 4 | Les enjeux d'**accessibilité** sont pris en compte dans le choix de l'outil | 🟠 argumenté le 04/10 | Rapport E3 v1.1, § 5.6 : texte et tableaux, clavier, rien par la seule couleur, export CSV de chaque tuile, alerte en texte ; reste partiel : examinée après le choix de l'outil, sans déclaration de l'éditeur ni test au lecteur d'écran |
 | 5 | La chaîne est d'abord testée dans un **bac à sable** | ✅ mesuré | Toute la suite de tests tourne avec le traçage coupé (`tests/conftest.py`) et des doubles de client ; l'incident [INC-006](../C21/INC-006-tests-ecrivaient-en-production.md) a précisément établi cette séparation |
 | 6 | La chaîne est **en état de marche** : les métriques sont évaluées et restituées | ✅ partiel | Traces réelles depuis le 02/10 18:39 (captures d'Era) ; les deux alertes ont sonné pour de vrai le 04/10 et ouvert l'issue #77 (`preuve-alertes-2026-10-04.md`) ; reste partiel parce que le serveur Hetzner n'envoie encore aucune trace |
 | 7 | Les **sources** sont versionnées sur un dépôt distant | ✅ | `src/traces.py`, `api/main.py`, `graph/workflow.py`, `.github/workflows/alerte-incident.yml`, dépôt `Ganda15/rita-agent` |
 | 8 | La **documentation technique** couvre l'installation, la configuration et l'utilisation | ✅ partiel | `docs/EXPLOITATION.md`, section « Monitorage Langfuse et alertes » (variables, tableau, alertes, test de la chaîne) |
-| 9 | La documentation est communiquée dans un format **accessible** | 🟠 à faire | Markdown dans le dépôt ; le rapport E3 en PDF reste à produire |
+| 9 | La documentation est communiquée dans un format **accessible** | ✅ 04/10 | Markdown dans le dépôt ; rapport E3 v1.1 en PDF de 20 pages (`docs/rapports/E3/rapport-E3.pdf`), relu page par page |
 
 **Bilan honnête au 03/10 : 6 critères tenus, 1 partiel, 2 à faire** (le 02/10 : 5, 1, 3). Les deux manquants sont
 l'accessibilité à argumenter et le PDF du rapport E3 ; les alertes (critère 6) restent à régler dans l'interface, voir
@@ -27,6 +27,15 @@ l'accessibilité à argumenter et le PDF du rapport E3 ; les alertes (critère 6
 **Mise à jour du 04/10 :** les alertes sont réglées et ont sonné (`preuve-alertes-2026-10-04.md`), les 15 traces
 factices sont supprimées. Le décompte ne change pas : le critère 6 reste partiel tant que le serveur ne trace pas, et
 les critères 4 et 9 attendent le rapport E3.
+
+**État au 04/10 au soir : 7 critères tenus, 2 partiels, 0 à faire.** Le critère 9 est tenu (rapport E3 v1.1 en PDF) ;
+le critère 4 est argumenté mais reste partiel ; le critère 6 reste partiel (serveur non tracé). Les deux alertes sont
+revenues à l'état normal (constaté dans l'interface le 04/10 au soir lors d'une relecture ; capture d'Era à ranger).
+**Défaut trouvé dans le tableau de bord** : la tuile « Générations par fournisseur » (filtre `type = GENERATION`,
+regroupée par nom) compte aussi `briefing-llm`, qui n'est pas un fournisseur : le 02/10, la première instrumentation
+l'enregistrait comme génération (6 observations, lues par l'API) ; depuis le 03/10 (commit `334a934`) c'est une étape.
+Correctif : limiter la tuile aux noms `llm-foundry`, `llm-anthropic`, `llm-openrouter` (décision d'Era : clic dans
+l'interface ou mise à jour par l'API).
 
 ## Ce qu'une trace montre (depuis le 02/10 au soir)
 
