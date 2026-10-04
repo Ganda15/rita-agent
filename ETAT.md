@@ -105,8 +105,9 @@ pour le prompt, jours de bourse pour le monitorage) : à documenter côte à cô
 tournure « vérifier si le rebond du jour se prolonge » est à ajouter au jeu d'évaluation comme cas limite, avec son
 résultat attendu écrit et une phrase de comparaison purement descriptive en regard, pour mesurer à la fois les
 recommandations manquées et les refus inutiles (`evals/` : zone sous garde, plan d'abord) ; la tuile « Générations par
-fournisseur » du tableau C11 compte `briefing-llm` (données du 02/10) : filtre à corriger.
-**Recommandé le 04/10, à confirmer par Era** : les mentions historiques d'un guide d'étude dans `CHANGELOG.md` et `evidence/C21/INC-005` restent
+fournisseur » du tableau C11 comptait `briefing-llm` (données du 02/10) : filtre corrigé par l'API le 04/10 au soir
+(`evidence/C11/tuile-generations-par-fournisseur-2026-10-04.json`).
+**Décidé par Era le 04/10** : les mentions historiques d'un guide d'étude dans `CHANGELOG.md` et `evidence/C21/INC-005` restent
 telles quelles (elles racontent comment un défaut a été trouvé ; la préparation personnelle, elle, vit hors du dépôt).
 Restent ceux du 03/10 : aucune alerte quand la chaîne est rouge (INC-007) ; seize indicateurs spécifiés, treize reçus par
 le briefing, drawdown jamais cité ; production sans en-têtes de sécurité ni limite de débit, API en rôle propriétaire en base, écran 3

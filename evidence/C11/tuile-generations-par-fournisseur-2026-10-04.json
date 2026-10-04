@@ -1,0 +1,93 @@
+{
+  "widget_id": "cmurna0aj0b06ad0di29tnlcc",
+  "avant": {
+    "id": "cmurna0aj0b06ad0di29tnlcc",
+    "createdAt": "2026-10-03T00:19:25.051Z",
+    "updatedAt": "2026-10-03T00:19:25.051Z",
+    "name": "Générations par fournisseur",
+    "description": "Nombre d'appels au modèle par étape llm-<fournisseur> : montre le repli Foundry, Anthropic, OpenRouter (C11, métrique « erreurs de repli »).",
+    "view": "observations",
+    "dimensions": [
+      {
+        "field": "name"
+      }
+    ],
+    "metrics": [
+      {
+        "measure": "count",
+        "agg": "count"
+      }
+    ],
+    "filters": [
+      {
+        "column": "type",
+        "operator": "=",
+        "value": "GENERATION",
+        "type": "string"
+      }
+    ],
+    "chartType": "VERTICAL_BAR",
+    "chartConfig": {
+      "type": "VERTICAL_BAR"
+    }
+  },
+  "apres": {
+    "id": "cmurna0aj0b06ad0di29tnlcc",
+    "createdAt": "2026-10-03T00:19:25.051Z",
+    "updatedAt": "2026-10-04T16:29:40.972Z",
+    "name": "Générations par fournisseur",
+    "description": "Nombre d'appels au modèle par étape llm-<fournisseur> : montre le repli Foundry, Anthropic, OpenRouter (C11, métrique « erreurs de repli »).",
+    "view": "observations",
+    "dimensions": [
+      {
+        "field": "name"
+      }
+    ],
+    "metrics": [
+      {
+        "measure": "count",
+        "agg": "count"
+      }
+    ],
+    "filters": [
+      {
+        "column": "type",
+        "operator": "=",
+        "value": "GENERATION",
+        "type": "string"
+      },
+      {
+        "column": "name",
+        "operator": "any of",
+        "value": [
+          "llm-foundry",
+          "llm-anthropic",
+          "llm-openrouter"
+        ],
+        "type": "stringOptions"
+      }
+    ],
+    "chartType": "VERTICAL_BAR",
+    "chartConfig": {
+      "type": "VERTICAL_BAR"
+    }
+  },
+  "filtres_envoyes": [
+    {
+      "column": "type",
+      "operator": "=",
+      "value": "GENERATION",
+      "type": "string"
+    },
+    {
+      "column": "name",
+      "operator": "any of",
+      "value": [
+        "llm-foundry",
+        "llm-anthropic",
+        "llm-openrouter"
+      ],
+      "type": "stringOptions"
+    }
+  ]
+}

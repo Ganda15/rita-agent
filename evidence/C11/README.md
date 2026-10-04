@@ -34,8 +34,10 @@ revenues à l'état normal (constaté dans l'interface le 04/10 au soir lors d'u
 **Défaut trouvé dans le tableau de bord** : la tuile « Générations par fournisseur » (filtre `type = GENERATION`,
 regroupée par nom) compte aussi `briefing-llm`, qui n'est pas un fournisseur : le 02/10, la première instrumentation
 l'enregistrait comme génération (6 observations, lues par l'API) ; depuis le 03/10 (commit `334a934`) c'est une étape.
-Correctif : limiter la tuile aux noms `llm-foundry`, `llm-anthropic`, `llm-openrouter` (décision d'Era : clic dans
-l'interface ou mise à jour par l'API).
+**Corrigé le 04/10 au soir** (décision d'Era) par l'API : `PATCH /api/public/unstable/dashboard-widgets/{id}` (format lu
+dans l'OpenAPI de Langfuse), réponse 200 ; seul le champ `filters` change : `type = GENERATION` **et** `name` parmi
+`llm-foundry`, `llm-anthropic`, `llm-openrouter` ; type de graphique, regroupement et mesures relus inchangés. Avant et
+après : `tuile-generations-par-fournisseur-2026-10-04.json`.
 
 ## Ce qu'une trace montre (depuis le 02/10 au soir)
 
