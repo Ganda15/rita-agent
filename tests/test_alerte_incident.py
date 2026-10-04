@@ -8,7 +8,11 @@ issue ouverte, diagnostic, correctif par PR » est la boucle que C21 demande.
 
 Le fichier de workflow est un contrat : on le teste comme du code, comme livraison.yml.
 """
+import json
+import os
 import re
+import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -82,3 +86,61 @@ def test_aucun_secret_n_est_ecrit_dans_le_workflow():
 def test_le_document_d_exploitation_decrit_la_chaine_d_alerte():
     doc = (RACINE / "docs/EXPLOITATION.md").read_text(encoding="utf-8")
     assert "alerte-incident.yml" in doc and "Langfuse" in doc
+
+
+# --- Le nom de l'alerte (04/10/2026) -----------------------------------------------------
+# Les deux premières vraies alertes (issue #77, exécutions 37194357268 et 37194875460) sont
+# arrivées sous le nom générique « alerte Langfuse » : le workflow cherchait le nom dans
+# `.name`, `.alertName`, `.title`, alors que Langfuse l'envoie dans `.payload.message.title`,
+# précédé de la gravité (« [ALERT] RITA : ... »). Conséquence : deux alertes différentes
+# commentaient la même issue. Charge utile ci-dessous : celle reçue le 04/10 à 10:17 UTC,
+# copiée de l'issue #77 (champs utiles seulement).
+CHARGE_LANGFUSE_04_10 = {
+    "apiVersion": "v1",
+    "id": "c7c224ff-b0df-4491-907e-fef302110178",
+    "payload": {
+        "filters": [{"column": "name", "operator": "any of", "type": "stringOptions",
+                     "value": ["briefing-llm"]}],
+        "message": {
+            "body": "`p95(observations.latency)` is **above** `15` over the last **1d**",
+            "title": "[ALERT] RITA : appel au modèle trop lent",
+        },
+        "severity": "ALERT",
+        "view": "observations",
+        "window": "1d",
+    },
+    "type": "monitor-alert",
+}
+
+
+def _script_contenu(etapes):
+    _, steps = etapes
+    (etape,) = [e for e in steps if e.get("id") == "contenu"]
+    return etape["run"]
+
+
+def test_le_nom_de_l_alerte_est_lu_dans_le_message_envoye_par_langfuse(etapes):
+    """Contrôle statique, valable sur tout poste : le chemin où Langfuse met vraiment le nom."""
+    assert ".payload.message.title" in _script_contenu(etapes)
+
+
+@pytest.mark.skipif(not (shutil.which("bash") and shutil.which("jq")),
+                    reason="bash et jq requis (présents sur le runner GitHub, pas sur ce poste)")
+@pytest.mark.parametrize("charge, nom_attendu", [
+    (CHARGE_LANGFUSE_04_10, "RITA : appel au modèle trop lent"),
+    ({}, "alerte Langfuse"),
+])
+def test_l_etape_construit_un_titre_par_alerte_sans_la_gravite(etapes, tmp_path, charge, nom_attendu):
+    """On exécute le vrai script de l'étape, avec la vraie charge utile. La gravité est retirée
+    du titre : sinon une même alerte qui changerait d'état ouvrirait une autre issue."""
+    sortie = tmp_path / "sortie.txt"
+    env = {**os.environ, "EVENEMENT": "repository_dispatch", "CHARGE_UTILE": json.dumps(charge),
+           "ALERTE_MANUELLE": "", "DETAIL_MANUEL": "", "LIEN_EXECUTION": "https://exemple.invalid/run",
+           "GITHUB_OUTPUT": str(sortie)}
+    subprocess.run(["bash", "-c", _script_contenu(etapes)], cwd=tmp_path, env=env, check=True)
+    assert f"titre=Incident : alerte Langfuse « {nom_attendu} »" in sortie.read_text(encoding="utf-8")
+    corps = (tmp_path / "corps.md").read_text(encoding="utf-8")
+    assert f"| Alerte | {nom_attendu} |" in corps
+    if charge:
+        assert "| Gravité | ALERT |" in corps
+        assert "p95(observations.latency)" in corps.split("<details>")[0], "le détail doit se lire sans déplier"
