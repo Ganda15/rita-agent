@@ -78,11 +78,14 @@ src/        appel du modèle (llm.py)
 tests/      pytest — 30 fichiers
 ```
 
-## Chiffres à ne jamais réinventer — les vérifier avant de les citer
+## Chiffres à ne jamais réinventer : les vérifier avant de les citer
 
-**458** tests collectés (19/09/2026) · **8** tables · **1** vue · **15** index · **273 608** lignes ·
-**111** valeurs · **112** alias · **7** positions · **11** partitions Parquet ·
-OpenAPI **3.1.0** · **8** chemins documentés
+**824** tests collectés · **10** tables · **1** vue · **19** objets d'index (8 explicites) · **12** contraintes `CHECK` ·
+**273 608** lignes importées en juillet, **278 473** cotations au 02/10 · **111** valeurs · **112** alias ·
+**7** positions · **11** partitions Parquet · OpenAPI **3.1.0** · **14** chemins documentés, dont **11** de données
+
+Mesurés le 04/10/2026 : `pytest --collect-only -q`, requêtes SQL en lecture sur la base locale, `app.openapi()`.
+Ces chiffres vieillissent : une date ancienne veut dire « à remesurer », pas « à recopier ».
 
 ## Règles de travail
 
