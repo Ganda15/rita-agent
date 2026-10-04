@@ -19,7 +19,7 @@
 <text x="377" y="121" font-size="14" font-weight="700" fill="#0B2A5B">Modèle, prompt et graphe : 90</text>
 <text x="377" y="140.0" font-size="11.5" fill="#111827">prompt du rédacteur (13 indicateurs),</text>
 <text x="377" y="155.5" font-size="11.5" fill="#111827">cascade de fournisseurs, graphe,</text>
-<text x="377" y="171.0" font-size="11.5" fill="#111827">indicateurs calculés en SQL</text>
+<text x="377" y="171.0" font-size="11.5" fill="#111827">indicateurs calculés en SQL et en Python</text>
 <text x="377" y="186.5" font-size="11.5" fill="#111827">aucun entraînement : rien à valider</text>
 <rect x="680" y="100" width="320" height="104" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
 <rect x="680" y="100" width="7" height="104" fill="#1565C0"/>

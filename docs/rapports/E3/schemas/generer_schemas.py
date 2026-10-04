@@ -446,7 +446,7 @@ TESTS = Schema(
     sous_titre="Rapport E3, section 6 · 805 tests collectés par pytest le 4 octobre 2026, regroupés par ce qu'ils protègent",
     boites=[
         Boite("d", 40, 100, 300, 104, "Données : 283", ["collecte (ingest, sources), nettoyage,", "import, schéma, vue de valorisation,", "RGPD (purge, registre), fraîcheur", "→ étape CI « Tester les données »"], "lavis"),
-        Boite("m", 360, 100, 300, 104, "Modèle, prompt et graphe : 90", ["prompt du rédacteur (13 indicateurs),", "cascade de fournisseurs, graphe,", "indicateurs calculés en SQL", "aucun entraînement : rien à valider"], "lavis"),
+        Boite("m", 360, 100, 300, 104, "Modèle, prompt et graphe : 90", ["prompt du rédacteur (13 indicateurs),", "cascade de fournisseurs, graphe,", "indicateurs calculés en SQL et en Python", "aucun entraînement : rien à valider"], "lavis"),
         Boite("g", 680, 100, 320, 104, "Garde-fous et évaluations : 95", ["entrée, injection, sortie : taux mesurés", "portes : faux positifs ≤ 15 %, latence < 250 ms,", "blocage ≥ 85 % déclaré non atteint (xfail strict)", "scan Giskard, banc C7"], "lavis"),
         Boite("r", 1020, 100, 340, 104, "Recherche documentaire : 68", ["index, filtre par valeur, hybride", "dense + BM25, refus hors corpus", "mesure par ablation (evals/mesurer_rag)"], "lavis"),
         Boite("a", 40, 222, 300, 90, "API : 128", ["toutes les routes, 403 sans clé,", "identifiant de requête (500 compris),", "journal des appels MCP, rôle lecture"], "normal"),
