@@ -15,19 +15,25 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-03, fin de nuit (session close : C7 comparé, plan E4 et tâches T1 à T6 faites, INC-007 corrigé et cité dans E3)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-04, après-midi (E3 v1.1 à 35 sur 39, E1 v2.1 vérifié contre le code et la base puis corrigé, alertes Langfuse en service, guide d'étude E1 commencé)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
 
-## ▶️ PROCHAINE ACTION (réécrit le 03/10/2026 en fin de session ; les ▶️ plus bas sont datés et dépassés)
+## ▶️ PROCHAINE ACTION (réécrit le 04/10/2026 ; les ▶️ plus bas sont datés et dépassés)
 
-**Où on en est, en une phrase** : E1 v2 (5 pages) et E3 v1.0 (19 pages) sont rédigés et attendent ta relecture avant le gel du
-**jeudi 15/10** ; E4 a un plan et ses tâches T1 à T6 faites (**27 ✅, 9 ⚠️, 0 ❌** sur 36) ; C7 a sa première comparaison réelle
-(Foundry `gpt-5.4` contre OpenRouter Claude, prix et environnement relevés), il manque ta notation à l'aveugle ; la chaîne
-est **verte** à la clôture (Tests et Livraison, dernier commit de la session) après un incident (INC-007) ; `develop` a **plus de 35 commits** d'avance sur `main` ; la production sert
-toujours le code du **19/08** (pas d'écran briefing). **Aucun code d'application avant le tag du 15/10** : tout ce qui
-reste avant est de ta main. Règle : **c'est Era qui envoie tout message** au formateur et à la promo ; l'assistant rédige.
+**Où on en est, en une phrase** : E1 v2.1 (5 pages) et E3 v1.1 (20 pages, **35 ✅ · 4 🟠 · 0 🔴** sur 39) sont complets côté
+assistant et vérifiés contre le code et la base ; ils attendent ta relecture avant le gel du **jeudi 15/10** ; le guide
+d'étude E1 a commencé (récit et script anglais, dans Obsidian) ; les deux alertes Langfuse sont en service ; la chaîne est
+**verte** (`33dbd62` : 793 passed en CI, 820 passed sur le poste) ; la production sert toujours le code du **19/08**.
+**Aucun code d'application avant le tag du 15/10.** Règle : **c'est Era qui envoie tout message** au formateur et à la
+promo ; l'assistant rédige.
+
+**Tâche principale de la prochaine session** : le guide d'étude et l'oral, **E1 d'abord** (skill `coach-soutenance` :
+Phase 2 bis, la version française parlée ; Phase 4, les questions du jury ; Phase 5, la répétition), puis **E3 avec sa
+démo**, puis le guide complet de RITA. Oral blanc E1 + E3 : **29-30/10**. Fichiers : Obsidian
+`Projets/RITA/03-Oraux/oral-E1-v2 (2026-10-04).md` et
+`Projets/RITA/09-EN-personnel/STUDY - E1 v2, the data part with code, files and schemas (2026-10-04).md`.
 
 **Dans l'ordre, pour Era** :
 
@@ -35,13 +41,13 @@ reste avant est de ta main. Règle : **c'est Era qui envoie tout message** au fo
    5 cartes proposées à Fait, ajouter au tableau les 7 issues ouvertes absentes, dire si la revue du 28/09 a eu lieu, garder
    2 cartes « En cours », remplir le §6, coller la ligne du §7 ici, commiter. Seul moyen de fermer C16.1. Vérifier au passage
    que le formateur a bien accès au tableau (C16.4, je ne peux pas le lire).
-2. **Relire** `docs/rapports/E1/rapport-E1.pdf` et `docs/rapports/E3/rapport-E3.pdf` ; corrections dans le chat. **Fait le 03/10
-   à ta demande** : E3 mentionne INC-007 (§7.4, page 15) ; la revue OWASP 2025 y est citée (§3.3), API8 passe à « partiel »
-   (aucun en-tête de sécurité en production), et le risque de démonstration dit vrai (panne des fournisseurs = « Erreur 500 »,
-   pas le message « aucun fournisseur »). PDF régénéré, 19 pages, décompte E3 inchangé (33, 6, 0).
-3. **Noter les 60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1 ou 2), **sans ouvrir** le fichier `-cle.csv`.
+2. **Relire** `docs/rapports/E1/rapport-E1.pdf` (v2.1 du 04/10 : cinq affirmations fausses corrigées, voir l'entrée
+   du 04/10 plus bas) et `docs/rapports/E3/rapport-E3.pdf` (v1.1 du 04/10, 20 pages) ; corrections dans le chat.
+3. **Lire à voix haute le script anglais de E1**, chronomètre en main (fichier Obsidian ci-dessus) ; marquer les phrases
+   que tu ne dirais pas ainsi.
+4. **Noter les 60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1 ou 2), **sans ouvrir** le fichier `-cle.csv`.
    C'est ce qui fait passer la recommandation C7 de « provisoire » à « argumentée ».
-4. **Envoyer au formateur** le message ci-dessous, à copier tel quel ; joindre `docs/EXPLOITATION.pdf` (régénéré le 03/10 au soir,
+5. **Envoyer au formateur** le message ci-dessous, à copier tel quel ; joindre `docs/EXPLOITATION.pdf` (régénéré le 03/10 au soir,
    deux phrases périmées corrigées). Garder l'envoi et la réponse dans `evidence/C8/` (#43, le seul 🔴 de E2).
 
    > **Objet** : RITA, deux points pour E2 (C7 et C8)
@@ -59,19 +65,25 @@ reste avant est de ta main. Règle : **c'est Era qui envoie tout message** au fo
    > Merci,
    > Eramalingam
 
-5. **Décisions** (une ligne chacune suffit, dans le chat ou à la revue) : **D7** documentation `/docs` publique en production
+   **Point 3 proposé le 04/10, à ajouter si tu es d'accord** (avant « Pour information ») :
+
+   > 3. E1, la forme. Le rapport E1 est à 5 pages, la limite. Puis-je joindre les schémas (collecte, nettoyage, requêtes big data) en annexe hors du décompte, ou tout doit-il tenir dans les 5 pages ? Et à l'oral E1, sans démonstration, puis-je montrer des schémas et des extraits de code à l'écran ?
+
+6. **Décisions** (une ligne chacune suffit, dans le chat ou à la revue) : **D7** documentation `/docs` publique en production
    (la règle de fermeture validée plaide pour la clé) ; **D6** lignes affichées d'emblée sur l'écran indicateurs (recommandé :
    rien avant le gel) ; **`memory_audit`** (zone sous garde, plan d'abord) ; **#36** rafraîchir les données en ligne avant le
    gel ou après ; libellé du **drawdown** (cité 0 fois sur 60 textes).
-6. 🌐 **GitHub** : activer les **alertes Dependabot** (Settings, Code security) ; capture des rulesets dans `evidence/C19/`.
-7. 🌐 **Langfuse** : supprimer les 15 traces factices du 02/10, régler les 2 alertes, capture du tableau « RITA C11 »
-   (`evidence/C11/preuve-langfuse-2026-10-03.md` §3).
-8. **C6** : capture du fil Discord du 16/08 dans `evidence/C6/` ; note de veille S40 ou S41 depuis `docs/veille/_candidats-2026-S40.md`.
-9. 💻 **Ton PC** : rotation puis suppression des fichiers de clés en clair du Bureau. Facultatif : `ANTHROPIC_API_KEY` dans le
+7. 🌐 **GitHub** : activer les **alertes Dependabot** (Settings, Code security) ; capture des rulesets dans `evidence/C19/`.
+8. 🌐 **Langfuse** : **capture de la liste des alertes revenues à l'état normal** (l'alerte 1 doit repasser à OK après le
+   04/10 vers 15 h 18 UTC) et **capture du tableau « RITA C11 »** (`evidence/C11/README.md`, deux lignes « à faire »).
+   Fait le 04/10 : traces factices supprimées, deux alertes réglées et mises à l'épreuve.
+9. **C6** : capture du fil Discord du 16/08 dans `evidence/C6/` ; note de veille S40 ou S41 depuis `docs/veille/_candidats-2026-S40.md`.
+10. 💻 **Ton PC** : rotation puis suppression des fichiers de clés en clair du Bureau. Facultatif : `ANTHROPIC_API_KEY` dans le
    fichier d'environnement si tu veux mesurer Claude en direct (troisième fournisseur du banc).
-10. Dire **« bon pour le gel »** : l'assistant ouvre la PR `develop → main`, puis les tags `livrable-E1-v2` et `livrable-E3-v1`
+11. Dire **« bon pour le gel »** : l'assistant ouvre la PR `develop → main`, puis les tags `livrable-E1-v2` et `livrable-E3-v1`
     se posent le **15/10** (`docs/FILE-DE-VALIDATION.md`, `scripts/verifier_livrable.py`). La publication de l'image sur ce tag
     sera la **première jamais exécutée** : à relever comme preuve C19 (tâche T8).
+
 
 **Après le gel (du 15 au 25/10), dans l'ordre, test d'abord pour tout code** : #75 (S5 ticker borné, S6 panne des
 fournisseurs, S4 refus journalisés, S3 limite de débit, S1 en-têtes de sécurité), #73 (clé mémorisée trop tôt), #74
@@ -80,25 +92,44 @@ fournisseurs, S4 refus journalisés, S3 limite de débit, S1 en-têtes de sécur
 (il expire le 18/11, avant le jury)** ; rapport E4 (T10 à T12), **pull request prête le vendredi 23/10**, tag
 `livrable-E4-v1` le 25/10. **Ensuite** : conclusion C7 (#33), E2 (#34), E5 (#41), tout envoyé le **05/11**.
 
-**État des épreuves au 03/10 au soir** :
+**État des épreuves au 04/10** :
 
 | Épreuve | Décompte | Ce qui manque surtout |
 |---|---|---|
-| E1 | v2 rédigée, 5 pages | ta relecture ; gel le 15/10 |
+| E1 | v2.1, 5 pages, vérifiée contre le code et la base le 04/10 | ta relecture ; question de l'annexe au formateur ; gel le 15/10 |
 | E2 | 6 ✅ · 13 🟠 · 1 🔴 sur 20 | notation C7, remise de la documentation (C8.5, #43), Anthropic en direct |
-| E3 | 33 ✅ · 6 🟠 · 0 🔴 sur 39 | ta relecture ; INC-007 à mentionner ? ; gel le 15/10 |
+| E3 | 35 ✅ · 4 🟠 · 0 🔴 sur 39 | ta relecture ; les 4 🟠 se ferment après le gel (#73, #75, accessibilité de l'outil, serveur non tracé) ; gel le 15/10 |
 | E4 | 27 ✅ · 9 ⚠️ · 0 ❌ sur 36 | rapport à rédiger ; C16 (revues notées) ; C17.1, .2, .5, .8, .11 ; C19.4 au tag du 15/10 |
 | E5 | non recompté | rapport ; #70 restauration ; C20 et C21 |
 
-**Manques ouverts nés de cette session** : INC-007 (la chaîne rouge 1 h 20 sans alerte) ; seize indicateurs spécifiés, treize
-reçus par le briefing, drawdown jamais cité ; production sans en-têtes de sécurité et sans limite de débit ; API en rôle
-propriétaire en base ; écran 3 qui mémorise la clé trop tôt ; tableau Kanban décroché du travail réel (18 issues absentes).
+**Manques ouverts nés du 04/10** : aucune contrainte ne borne la clôture entre bas et haut (23 lignes hors bornes en base,
+déclaré dans E1) ; pas d'alerte de silence (deux alertes seulement au palier gratuit) ; seuil de latence à revoir après une
+semaine de traces ; DPA Langfuse identifié mais non lu (transfert à confirmer) ; le docstring de `db/rgpd_purge.py` dit
+encore P1 et P2 « automatisés » alors que le registre et E1 disent « lancement manuel » (après le gel) ; la skill
+`tester` du dépôt cite encore « 477 passed, 19/09 ».
+Restent ceux du 03/10 : aucune alerte quand la chaîne est rouge (INC-007) ; seize indicateurs spécifiés, treize reçus par
+le briefing, drawdown jamais cité ; production sans en-têtes de sécurité ni limite de débit, API en rôle propriétaire en base, écran 3
+qui mémorise la clé trop tôt, tableau Kanban décroché du travail réel.
 
 **Verrous** : le dépôt est privé (jury et formateur invités) ; `main` et les tags `livrable-*` sont protégés par GitHub ;
 zones sous garde (`db/schema.sql`, `guardrails/`, `evals/`) : rien sans plan validé ; aucun code sur le serveur avant le 15/10.
 
 
 ---
+
+🏁 **04/10 : E1 et E3 complétés, puis vérifiés contre le code.** Demande d'Era à 8 h 32 : finir E1 et E3, vérifier
+les schémas par critère, puis le guide d'étude et l'oral, en anglais d'abord. **E3** : étape « Tester les données » dans la
+chaîne (`002a0b7`), `docs/ARCHITECTURE.md` et trois schémas (`067fb25`), 15 traces factices supprimées par Era (API : 7
+traces, 0 « prompt test »), **deux alertes Langfuse réglées et mises à l'épreuve** (erreurs de fournisseur : vraie, 4
+erreurs du 03/10 faute de clé Foundry, la cascade a servi ; latence : **fausse alerte**, seuil saisi en secondes alors que
+Langfuse compte en millisecondes, corrigé à 15 000), titre des issues d'alerte réparé test d'abord (`f42697d`), preuve C11
+(`bed00b6`), **rapport E3 v1.1 : 35 ✅ · 4 🟠 · 0 🔴**, 20 pages (`8a6037b`). **E1** : deux schémas générés depuis le
+code et tenus par 12 tests (`854bc21`) ; en cherchant les lignes exactes pour le guide, **cinq affirmations fausses**
+trouvées et revérifiées en base : un index partiel sur les volumes qui n'existe pas (cité deux fois), un `HAVING` qui est
+un `WHERE`, un transfert Langfuse dit « fermé » au lieu de « à confirmer », une contrainte `CHECK` sur les clôtures qui
+n'existe pas ; **E1 v2.1**, 5 pages (`65aa70b`, `33dbd62`). `CLAUDE.md` et `AGENTS.md` remesurés (`638b65c`, `7e630d7`).
+Guide d'étude E1 : récit en huit parties et script anglais, dans Obsidian (JOURNAL-020). CI verte sur `33dbd62` : 793
+passed, 29 skipped, 2 xfailed, 94,70 % ; poste : 820 passed, 2 skipped, 2 xfailed.
 
 🏁 **03/10, nuit : Foundry répond, et le banc C7 compare enfin deux éditeurs.** Clé posée par Era ; un 400 « `max_tokens` unsupported » corrigé en `max_completion_tokens` (test d'abord) ; briefing réel SAN.PA servi par Foundry en 5,6 s sans repli (trace à une génération). **Quatrième passage du banc** : Foundry `gpt-5.4` et OpenRouter `claude-sonnet-4.5` indiscernables sur les contrôles automatiques (30/30 conformes et fidèles chacun, Wilson [0,89 ; 1,00]) ; Foundry médiane 3,2 s mais p95 10,7 s, OpenRouter 6,3 s et 7,2 s ; coût 0 pour le projet contre 0,0060 USD. Recommandation **provisoire** : Foundry en premier, OpenRouter en secours (l'ordre actuel), à confirmer par la notation du français d'Era (`notes-francais-2026-10-03.csv`, **60 textes**, deux services confondus). E2 : 6 ✅ 12 🟠 2 🔴. Preuve §9.
 

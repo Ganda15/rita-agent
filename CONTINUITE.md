@@ -93,6 +93,9 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | **Quasi-doublons d'articles (D08, #67) : la règle reste** (lien ; titre normalisé + jour), les 14 cas sont acceptés ; réouverture si les quasi-doublons dépassent 5 % du corpus, mesuré par le manifeste de collecte | élargir la règle risquait d'écraser des articles légitimement proches ; 14 sur plus de 1 500 ne faussent ni le RAG ni les mesures | 03/10 | `pipelines/ingest.py` | issue #67 | Oui, sur mesure |
 | **`search_articles` (#63) confirmé dans le périmètre du chapitre §3.3, construit après le gel E3 du 15/10** ; d'ici là RITA dit trois outils MCP, pas quatre | ne pas annoncer ce qui n'existe pas ; ne pas rouvrir E3 à dix jours du gel | 03/10 | `passerelle_mcp/`, API | issue #63 | Oui |
 | **Devise du PRU différente de celle du cours (D07, #69) : l'import marque la position et journalise un WARNING** ; la vue ne change pas | la comparaison PRU / cours reste dans la devise de la position ; le contrôle appartient à l'écriture, pas à la lecture | 03/10 | `db/importer.py` | test D07 dans `tests/test_importer.py`, `evidence/C4/preuve-cloture-positions.md` | Oui |
+| **Schémas des rapports générés depuis le code** (E1 : `docs/rapports/E1/schemas/generer_schemas.py`, chiffres lus dans `db/schema.sql`, le garde-fou, la mesure `evals/`, le registre RGPD) et **tenus par un test anti-dérive** (`tests/test_schemas_e1.py`, 12 tests) | le schéma de collecte dessiné le 11/08 disait encore « 100 % de blocage » et « 8 tables » le 04/10 ; un schéma calculé fait tomber la suite quand il n'est plus vrai | 04/10 | `docs/rapports/E1/schemas/` | commit `854bc21` ; mutation « 10 tables » → « 8 tables » : 1 test rouge, régénéré : 12 verts | Oui |
+| **Les deux alertes Langfuse** : erreurs de fournisseur (observations ERROR > 0 sur 1 jour) et latence (p95 de `briefing-llm` > 15 000 ms sur 1 jour) ; **l'alerte de silence prévue (« aucune trace en 24 h ») est abandonnée**, faute de place au palier gratuit | la latence se voit dans les traces réelles et dégrade la démonstration ; deux alertes seulement au palier gratuit | 04/10 | Langfuse, `.github/workflows/alerte-incident.yml` | `evidence/C11/preuve-alertes-2026-10-04.md` ; issue #77 | Oui, seuil de latence à revoir après une semaine |
+| **Le schéma C1 du 11/08 reste dans `evidence/C1/` tel quel**, comme preuve datée ; une note renvoie au schéma tenu à jour | une preuve ne se reconstitue jamais après coup (`AGENTS.md`, zones sous garde) | 04/10 | `evidence/C1/README.md` | commit `854bc21` | Non |
 
 ## E. Alternatives rejetées
 
@@ -136,6 +139,8 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 
 ## G. Questions ouvertes
 
+- 🆕 **E1 : annexe de schémas hors des 5 pages, et support visuel à l'oral E1** (04/10) : le règlement ne dit rien des
+  annexes. Question rédigée dans `ETAT.md` (point 3 du message au formateur). **Era envoie, le formateur tranche.**
 - ~~**Garde-fou d'entrée sur l'intention (AMF)** — posé le 06/09~~ → **tranché le 18/09 : regex seul**,
   construit, câblé, mesuré (D, I, commit `6cf48fd`). Reste ouvert, en dessous : **la limite est-elle
   acceptable ?** Écrire 3 paraphrases contre les 6 motifs (action 9 d'`ETAT.md`) avant de conclure.
@@ -178,6 +183,11 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 
 | Quoi | Statut | Preuve |
 |---|---|---|
+| Rapport E3 v1.1, 04/10 | **FAIT + VÉRIFIÉ (PDF 20 pages regardé)** | `docs/rapports/E3/rapport-E3.md` et `.pdf`, commit `8a6037b` : **35 ✅ · 4 🟠 · 0 🔴** sur 39 ; cinq schémas intégrés ; deux chiffres faux corrigés (57 tests de données, 29 sautés en CI expliqués) ; **non fait** : relecture d'Era |
+| Rapport E1 v2.1, 04/10 | **FAIT + VÉRIFIÉ contre la base** | `docs/rapports/E1/rapport-E1.html` et `.pdf` (5 pages), commits `65aa70b` et `33dbd62` ; cinq affirmations fausses corrigées, chacune revérifiée en SQL (aucun index sur `volume`, pas de `CHECK` sur la clôture, 23 lignes hors bornes) ; **non fait** : relecture d'Era |
+| Alertes Langfuse, 04/10 | **EXÉCUTÉ + MESURÉ** | `evidence/C11/preuve-alertes-2026-10-04.md` ; alerte 1 vraie (4 erreurs du 03/10), alerte 2 fausse puis corrigée (millisecondes) ; titre des issues réparé test d'abord, commit `f42697d`, 2 tests qui jouent le vrai script en CI ; **non constaté** : retour à OK |
+| Étape « Tester les données » dans la CI (C13), 04/10 | **TESTÉ en CI** | `.github/workflows/test.yml`, `tests/test_ci_donnees.py`, commit `002a0b7` ; 260 passed, 3 skipped dans chaque exécution depuis |
+| Suite de tests, 04/10 | **TESTÉ** | poste : `820 passed, 2 skipped, 2 xfailed` (824 collectés) ; CI sur `33dbd62` : `793 passed, 29 skipped, 2 xfailed`, couverture 94,70 % |
 | Suite de tests, 02/10 nuit | **TESTÉ** | `C:\Python314\python.exe -m pytest --cov -q` → `626 passed, 2 xfailed`, couverture 93,66 % (seuil 90 %) |
 | Garde-fou de sortie branché sur `/briefing` | **PROUVÉ PAR MUTATION** | ligne 131 désactivée → `1 failed, 9 passed` ; restaurée → `10 passed` ; `evidence/C17/preuve-garde-fou-sortie-branche.md` |
 | Trace complète : racine `briefing`, `scout`, `rag`, `garde-fou-entree`, `redacteur`, `briefing-llm`, `llm-*`, `garde-fou-sortie`, chacun une fois, dans l'ordre | **TESTÉ** | `tests/test_trace_chemin.py` (8) ; contexte OpenTelemetry mesuré traversant LangGraph (exporteur en mémoire, 02/10) |
@@ -233,6 +243,11 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 
 ## J. En cours
 
+**Au 04/10, après-midi : le guide d'étude et l'oral, E1 d'abord** (skill `coach-soutenance`). Phases 1 (le récit en huit
+parties) et 2 (le script anglais) faites et rangées dans Obsidian (`03-Oraux/oral-E1-v2 (2026-10-04).md`,
+`09-EN-personnel/STUDY - E1 v2 ...`). Prochaine étape : la lecture chronométrée par Era, puis la version française.
+Arbre propre, `develop` = `origin/develop` à `33dbd62` (plus `ETAT`, `CONTINUITE`, `CHANGELOG` à pousser).
+
 **Le jeu annoté est arbitré — mais par Claude, pas par Era.** Le 07/09, Era a demandé
 explicitement que Claude tranche (« you decide, i confiance a toi ») après avoir été alerté
 deux fois du risque. Décision assumée et tracée.
@@ -265,6 +280,11 @@ rapport E3 (#37, 0 page, gel le 15/10), rapport E4 (#28, 0 page, gel le 25/10).
 
 ## K. Reste à faire
 
+- 🆕 (04/10) **Constater le retour à OK des deux alertes** et **capturer le tableau « RITA C11 »** (Era, Langfuse).
+- 🆕 (04/10) **Borner la clôture entre bas et haut ?** Contrainte `CHECK` à ajouter dans `db/schema.sql` (zone sous garde :
+  plan d'abord) ou limite assumée ; 23 lignes hors bornes en base le 04/10. **Era tranche, après le gel.**
+- 🆕 (04/10) Docstring de `db/rgpd_purge.py` : P1 et P2 dits « automatisés », le registre dit « lancement manuel » ;
+  skill `tester` du dépôt : « 477 passed, 19/09 ». À corriger après le gel.
 - **Relire les 54 questions du jeu annoté** (écrites le 06/09, statut *proposées*) — fiche : `evals\RELECTURE-2026-09-06.md`. Jugement d'Era, non délégable : un jeu annoté non relu rend la mesure circulaire. → puis recalibrer le seuil → mesurer D1/H1 → reranker.
 - **Valider le format de la sortie du modèle** (C12, consigne du 07/09). Mesuré absent le 07/09 : aucune occurrence de `pydantic`/`BaseModel`/`json.loads` hors `.venv` et `tests` ; `pydantic` n'existe que dans `requirements-future.txt`.
 - ✅ **Descriptif LLMOps/AgentOps ÉCRIT le 07/09** : `docs\LLMOPS.md`. Couvre les 4 harnais de mesure avec leurs sorties réelles, les portes bloquantes de la CI, l'établissement du seuil de couverture (C12), le statut exact du jeu annoté, et 5 manques déclarés. Reste à l'intégrer au rapport E3.

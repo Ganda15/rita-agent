@@ -9,6 +9,37 @@
 
 ---
 
+## 2026-10-04 : cinq affirmations fausses dans E1, trouvées en ouvrant le code
+
+**Manque découvert** : en cherchant la ligne exacte de chaque fichier cité pour le guide d'étude, cinq affirmations du
+rapport E1 se sont révélées fausses, et toutes avaient passé deux relectures : un index partiel sur les volumes (cité deux
+fois) qui n'existe ni en base ni dans l'historique Git ; un `HAVING` dans la requête R3, qui est un `WHERE` ; un transfert
+Langfuse dit « fermé » alors que le registre dit « à confirmer par la lecture du DPA » ; une contrainte `CHECK` censée
+refuser les clôtures hors de [bas, haut], qui n'existe pas (23 lignes hors bornes en base ; la vraie décision était
+STLAP.PA marquée `INCOHERENT`). Chaque point revérifié en SQL avant correction ; E1 v2.1, 5 pages. Leçon : un rapport
+se vérifie contre le code et la base, pas par relecture.
+
+---
+
+## 2026-10-04 : les alertes Langfuse en service, et une fausse alerte qui a servi
+
+**Décision structurante** : les deux alertes du palier gratuit surveillent les erreurs de fournisseur et la latence de
+l'appel au modèle ; l'alerte de silence prévue est abandonnée faute de place. **Manque découvert** : la seconde a sonné à
+tort, le seuil saisi en secondes alors que Langfuse compte la latence en millisecondes ; vu en mesurant les vrais appels
+(p95 6,04 s), corrigé à 15 000. La première a vu une vraie dégradation (deux fournisseurs sans clé le 03/10, la cascade a
+servi). Le workflow nommait mal les issues d'alerte : réparé, test d'abord. `evidence/C11/preuve-alertes-2026-10-04.md`.
+
+---
+
+## 2026-10-04 : schémas générés depuis le code, et E3 à 35 critères sur 39
+
+**Décision structurante** : les schémas des rapports sont générés depuis le code et un test refuse un schéma qui ne
+correspond plus (`tests/test_schemas_e1.py`). Le schéma de collecte du 11/08 annonçait encore 100 % de blocage et 8
+tables ; il reste dans `evidence/C1/` comme preuve datée. Le rapport E3 passe en v1.1 : **35 ✅ · 4 🟠 · 0 🔴**
+(document d'architecture, étape de test des données dans la chaîne, cinq schémas).
+
+---
+
 ## 2026-10-03 (nuit, très tard) : le tableau Kanban ne suit plus le travail réel
 
 **Manque découvert** en préparant la revue du 05/10 : sur 13 issues fermées en S40, **3 seulement** sont passées par le tableau ; **18 issues** créées le 03/10 n'y ont jamais été ajoutées ; la colonne « En cours » montre une carte quand au moins quatre chantiers sont ouverts ; et **la revue du 28/09 n'a laissé aucune trace**. Pour C16 (« respectés tout au long du projet »), c'est un écart à dire, pas à combler après coup. Trame de la revue du 05/10 : `evidence/C16/revues/2026-10-05-revue-S41.md`.
