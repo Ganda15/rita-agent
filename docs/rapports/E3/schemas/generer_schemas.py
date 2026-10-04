@@ -152,7 +152,7 @@ ARCHI = Schema(
         Boite("api", 340, 118, 290, 120, "api/main.py : l'API (C9)", ["middleware : un request_id par requête (X-Request-ID)", "clé X-API-Key, 16 car. min., temps constant, 403", "aucune clé par défaut (INC-001, OWASP API2)", "14 chemins ; /briefing est le seul qui parle au modèle", "journal : servi, refusé, 502 (request_id, jamais le texte)"], "lavis"),
 
         Boite("zg", 340, 262, 290, 330, "graph/workflow.py : LangGraph, 3 nœuds, arêtes fixes", genre="zone"),
-        Boite("scout", 356, 290, 258, 58, "scout", ["lit PostgreSQL : 13 indicateurs par valeur", "fraîcheur en jours ouvrés, cotation périmée"], "normal"),
+        Boite("scout", 356, 290, 258, 58, "scout", ["lit PostgreSQL : 13 indicateurs par valeur", "âge du dernier cours en jours calendaires, cotation périmée"], "normal"),
         Boite("rag", 356, 362, 258, 86, "rag", ["garde-fou d'ENTRÉE : intention AMF, 7 motifs,", "  100 % / 0 % (03/10), avant tout accès à la base", "ChromaDB : filtre ticker puis hybride dense + BM25", "refus OUT_OF_CORPUS si rien ne cite la valeur"], "normal"),
         Boite("red", 356, 462, 258, 58, "redacteur", ["agents/analyst.py : prompt (interdit AMF écrit)", "src/llm.py : la cascade"], "normal"),
         Boite("casc", 356, 532, 258, 48, "Foundry (gpt-5.4) → Anthropic → OpenRouter", ["une génération tracée par essai ; repli ≈ 0,3 s"], "lavis"),

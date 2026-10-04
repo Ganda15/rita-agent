@@ -34,7 +34,7 @@
 <rect x="356" y="290" width="258" height="58" fill="#FFFFFF" stroke="#14607F" stroke-width="1.2"/>
 <text x="364" y="306" font-size="10.5" font-weight="700" fill="#16202B">scout</text>
 <text x="364" y="321" font-size="9" fill="#4A5766">lit PostgreSQL : 13 indicateurs par valeur</text>
-<text x="364" y="334" font-size="9" fill="#4A5766">fraîcheur en jours ouvrés, cotation périmée</text>
+<text x="364" y="334" font-size="9" fill="#4A5766">âge du dernier cours en jours calendaires, cotation périmée</text>
 <rect x="356" y="362" width="258" height="86" fill="#FFFFFF" stroke="#14607F" stroke-width="1.2"/>
 <text x="364" y="378" font-size="10.5" font-weight="700" fill="#16202B">rag</text>
 <text x="364" y="393" font-size="9" fill="#4A5766">garde-fou d&#x27;ENTRÉE : intention AMF, 7 motifs,</text>
