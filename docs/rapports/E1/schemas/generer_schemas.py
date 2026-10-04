@@ -90,7 +90,7 @@ def collecte() -> Schema:
             Boite("lect", 576, 626, 388, 58, "Lecture, sans écriture", ["le scout lit la base pour chaque briefing ;", "Spark lit le Parquet sans passer par la base"], "normal"),
 
             Boite("zd", 1030, 90, 430, 640, "3. DESTINATION ET CONFORMITÉ", genre="zone"),
-            Boite("pg", 1046, 118, 398, 120, "PostgreSQL 18 (Merise, C4)", [f"{f['tables']} tables, {f['vues']} vue, {f['check']} contraintes CHECK", "écrit par la collecte et l'import, seulement", "278 457 cotations (29/07/2016 au 02/10/2026)", "1 563 articles ; séries FRED stockées", "servi par l'API /donnees/* (C5)"], "stock"),
+            Boite("pg", 1046, 118, 398, 120, "PostgreSQL 18 (Merise, C4)", [f"{f['tables']} tables, {f['vues']} vue, {f['check']} contraintes CHECK", "écrit par la collecte et l'import, seulement", "278 473 cotations (29/07/2016 au 02/10/2026)", "1 563 articles ; séries FRED stockées", "servi par l'API /donnees/* (C5)"], "stock"),
             Boite("chroma", 1046, 254, 398, 58, "Index ChromaDB (étape indexation)", ["articles vectorisés pour la recherche documentaire", "reconstruit après chaque collecte"], "stock"),
             Boite("rgpd", 1046, 470, 398, 126, "RGPD (registre art. 30, db/rgpd_purge.py)", [f"traitements {t_premier} à {t_dernier}, procédures de tri {p_premier} à {p_dernier}", "une seule table personnelle : position", "fichier source hors de Git, jamais envoyé au modèle", "purge en simulation par défaut ;", "lancement manuel, écrit comme tel"], "normal"),
 
@@ -128,7 +128,7 @@ def nettoyage() -> Schema:
             Boite("brut", 40, 100, 300, 104, "1. Le jeu brut", ["dix ans de cotations, 111 valeurs", "Parquet, 11 partitions par année", "276 168 lignes analysées", "0 valeur manquante"], "stock"),
             Boite("eda", 380, 100, 330, 104, "2. Analyse exploratoire (juillet)", ["compter avant de modéliser :", "doublons, bornes, volumes, extrêmes,", "libellés ; preuves dans evidence/C3/", "chaque défaut → une décision de schéma"], "lavis"),
             Boite("agr", 750, 100, 330, 104, "3. Agrégation en un seul jeu", ["dates ISO 8601 dans le fuseau de la place", "devises ISO 4217, nombres français convertis", "codes ISIN complétés", "puis chargement par db/importer.py"], "lavis"),
-            Boite("res", 1120, 100, 340, 104, "4. Le jeu propre, en base", ["276 168 lues → 2 560 doublons écartés", "→ 273 608 insérées (juillet 2026)", "→ 278 457 cotations au 02/10/2026", "après 40 collectes du soir"], "stock"),
+            Boite("res", 1120, 100, 340, 104, "4. Le jeu propre, en base", ["276 168 lues → 2 560 doublons écartés", "→ 273 608 insérées (juillet 2026)", "→ 278 473 cotations au 02/10/2026", "après 40 collectes du soir"], "stock"),
 
             Boite("zr", 40, 230, 1420, 400, "DÉFAUT MESURÉ  →  DÉCISION  →  FICHIER QUI L'APPLIQUE", genre="zone"),
             Boite("d1", 56, 258, 440, 58, "5 120 lignes en double (2 560 paires), surtout VIRI.PA", ["sans règle : l'import échoue sur la clé primaire"], "normal"),

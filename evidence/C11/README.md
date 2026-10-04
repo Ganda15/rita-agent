@@ -38,6 +38,14 @@ l'enregistrait comme génération (6 observations, lues par l'API) ; depuis le 0
 dans l'OpenAPI de Langfuse), réponse 200 ; seul le champ `filters` change : `type = GENERATION` **et** `name` parmi
 `llm-foundry`, `llm-anthropic`, `llm-openrouter` ; type de graphique, regroupement et mesures relus inchangés. Avant et
 après : `tuile-generations-par-fournisseur-2026-10-04.json`.
+**Renommée le même soir** après une relecture : les barres comptent des **tentatives** d'appel, réussies et en échec,
+pas des briefings servis. Mesure par l'API sur 7 jours : Foundry 5 (2 réussies, 3 en échec), Anthropic 3 (0 réussie,
+3 en échec, clés absentes le 02 et le 03/10), OpenRouter 3 (3 réussies). La tuile s'appelle désormais « Tentatives par
+fournisseur (échecs compris) », avec une description qui renvoie à la tuile des erreurs (PATCH 200, relu ; filtres,
+regroupement et mesures inchangés). **Non obtenu** : les étiquettes de valeur sur les barres (`show_value_labels`)
+ont été envoyées, l'API a répondu 200 mais ne les a pas gardées ; l'axe commence toujours à 3 et l'API publique n'a
+aucun réglage d'axe (schéma OpenAPI lu) : l'éditeur de la tuile dans l'interface reste à regarder pour un axe à zéro.
+Avant et après : `tuile-renommage-2026-10-04.json`.
 
 ## Ce qu'une trace montre (depuis le 02/10 au soir)
 
@@ -79,7 +87,7 @@ couverture 93,66 % (seuil 90 %), `api/main.py` et `graph/workflow.py` à 100 %.
 | Suppression des **15** lignes factices (INC-006) : **faite par Era le 04/10**, constatée par l'API à 11:44:47 (7 traces, 0 « prompt test ») | fait | `preuve-alertes-2026-10-04.md`, section 1 ; export d'avant : `inc-006-traces-factices-avant-suppression-2026-10-03.json` |
 | Tableau « RITA C11 » : **construit par l'API le 03/10** (`dashboard-rita-c11-2026-10-03.json`) ; reste la capture | Era, Dashboards | `capture-2026-10-03-dashboard-rita-c11.png` |
 | Les 2 alertes, canal GitHub Actions : **faites le 04/10** (ERROR sur 1 jour ; p95 de `briefing-llm` au-dessus de 15 000 ms sur 1 jour). L'alerte « aucune trace en 24 h » prévue au départ a été remplacée par la latence : deux alertes seulement au palier gratuit | fait ; seuil de latence à revoir après une semaine | `preuve-alertes-2026-10-04.md`, `capture-2026-10-04-alerte-latence-seuil-15000.webp`, issue #77 |
-| Retour à OK des deux alertes | à constater (alerte 1 : après le 04/10 vers 15:18 UTC) | capture de la liste des alertes |
+| Retour à OK des deux alertes | constaté le 04/10 au soir dans l'interface ; capture encore à ranger | capture de la liste des alertes |
 | Test manuel de la chaîne (bouton Run workflow) : **fait le 03/10 à 13 h 50**, juste après la fusion de la PR #58 (le bouton n'existait pas avant : `workflow_dispatch` ne vaut que sur la branche par défaut). Run `37120911852` en succès, issue **#71** créée avec le label `incident`, puis fermée comme issue de démonstration | fait | https://github.com/Ganda15/rita-agent/issues/71 |
 | Variables Langfuse sur le serveur Hetzner | Era, serveur | une trace dont les métadonnées viennent du serveur |
 

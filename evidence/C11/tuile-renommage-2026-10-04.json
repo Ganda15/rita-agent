@@ -1,0 +1,93 @@
+{
+  "widget_id": "cmurna0aj0b06ad0di29tnlcc",
+  "avant": {
+    "id": "cmurna0aj0b06ad0di29tnlcc",
+    "createdAt": "2026-10-03T00:19:25.051Z",
+    "updatedAt": "2026-10-04T16:29:40.972Z",
+    "name": "Générations par fournisseur",
+    "description": "Nombre d'appels au modèle par étape llm-<fournisseur> : montre le repli Foundry, Anthropic, OpenRouter (C11, métrique « erreurs de repli »).",
+    "view": "observations",
+    "dimensions": [
+      {
+        "field": "name"
+      }
+    ],
+    "metrics": [
+      {
+        "measure": "count",
+        "agg": "count"
+      }
+    ],
+    "filters": [
+      {
+        "column": "type",
+        "operator": "=",
+        "value": "GENERATION",
+        "type": "string"
+      },
+      {
+        "column": "name",
+        "operator": "any of",
+        "value": [
+          "llm-foundry",
+          "llm-anthropic",
+          "llm-openrouter"
+        ],
+        "type": "stringOptions"
+      }
+    ],
+    "chartType": "VERTICAL_BAR",
+    "chartConfig": {
+      "type": "VERTICAL_BAR"
+    }
+  },
+  "apres": {
+    "id": "cmurna0aj0b06ad0di29tnlcc",
+    "createdAt": "2026-10-03T00:19:25.051Z",
+    "updatedAt": "2026-10-04T16:49:46.395Z",
+    "name": "Tentatives par fournisseur (échecs compris)",
+    "description": "Une barre = tentatives d'appel au modèle par l'étape llm-<fournisseur>, réussies et en échec (level ERROR) ; ce n'est pas un nombre de briefings servis. À lire avec la tuile des observations ERROR ou WARNING. Montre le repli Foundry, Anthropic, OpenRouter (C11).",
+    "view": "observations",
+    "dimensions": [
+      {
+        "field": "name"
+      }
+    ],
+    "metrics": [
+      {
+        "measure": "count",
+        "agg": "count"
+      }
+    ],
+    "filters": [
+      {
+        "column": "type",
+        "operator": "=",
+        "value": "GENERATION",
+        "type": "string"
+      },
+      {
+        "column": "name",
+        "operator": "any of",
+        "value": [
+          "llm-foundry",
+          "llm-anthropic",
+          "llm-openrouter"
+        ],
+        "type": "stringOptions"
+      }
+    ],
+    "chartType": "VERTICAL_BAR",
+    "chartConfig": {
+      "type": "VERTICAL_BAR"
+    }
+  },
+  "champs_envoyes": {
+    "name": "Tentatives par fournisseur (échecs compris)",
+    "description": "Une barre = tentatives d'appel au modèle par l'étape llm-<fournisseur>, réussies et en échec (level ERROR) ; ce n'est pas un nombre de briefings servis. À lire avec la tuile des observations ERROR ou WARNING. Montre le repli Foundry, Anthropic, OpenRouter (C11).",
+    "chartConfig": {
+      "type": "VERTICAL_BAR",
+      "show_value_labels": true
+    }
+  }
+}

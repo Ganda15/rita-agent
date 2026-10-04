@@ -105,8 +105,11 @@ pour le prompt, jours de bourse pour le monitorage) : à documenter côte à cô
 tournure « vérifier si le rebond du jour se prolonge » est à ajouter au jeu d'évaluation comme cas limite, avec son
 résultat attendu écrit et une phrase de comparaison purement descriptive en regard, pour mesurer à la fois les
 recommandations manquées et les refus inutiles (`evals/` : zone sous garde, plan d'abord) ; la tuile « Générations par
-fournisseur » du tableau C11 comptait `briefing-llm` (données du 02/10) : filtre corrigé par l'API le 04/10 au soir
-(`evidence/C11/tuile-generations-par-fournisseur-2026-10-04.json`).
+fournisseur » du tableau C11 comptait `briefing-llm` (données du 02/10) : filtre corrigé par l'API le 04/10 au soir,
+puis tuile renommée « Tentatives par fournisseur (échecs compris) » : la barre Anthropic ne comptait que des
+échecs (`evidence/C11/README.md`) ; tableau et alertes vérifiés à l'écran après la correction ;
+restent l'axe à zéro (aucun réglage dans l'API, éditeur de la tuile à regarder) et les deux captures datées à ranger. E1 et ses deux schémas disaient
+278 457 cotations, la base en compte 278 473 (dernier cours le 02/10) : corrigé le 04/10.
 **Décidé par Era le 04/10** : les mentions historiques d'un guide d'étude dans `CHANGELOG.md` et `evidence/C21/INC-005` restent
 telles quelles (elles racontent comment un défaut a été trouvé ; la préparation personnelle, elle, vit hors du dépôt).
 Restent ceux du 03/10 : aucune alerte quand la chaîne est rouge (INC-007) ; seize indicateurs spécifiés, treize reçus par
@@ -123,7 +126,7 @@ zones sous garde (`db/schema.sql`, `guardrails/`, `evals/`) : rien sans plan val
 les schémas par critère. **E3** : étape « Tester les données » dans la
 chaîne (`002a0b7`), `docs/ARCHITECTURE.md` et trois schémas (`067fb25`), 15 traces factices supprimées par Era (API : 7
 traces, 0 « prompt test »), **deux alertes Langfuse réglées et mises à l'épreuve** (erreurs de fournisseur : vraie, 4
-erreurs du 03/10 faute de clé Foundry, la cascade a servi ; latence : **fausse alerte**, seuil saisi en secondes alors que
+erreurs du 03/10, deux Foundry et deux Anthropic, faute de clés, la cascade a servi ; latence : **fausse alerte**, seuil saisi en secondes alors que
 Langfuse compte en millisecondes, corrigé à 15 000), titre des issues d'alerte réparé test d'abord (`f42697d`), preuve C11
 (`bed00b6`), **rapport E3 v1.1 : 35 ✅ · 4 🟠 · 0 🔴**, 20 pages (`8a6037b`). **E1** : deux schémas générés depuis le
 code et tenus par 12 tests (`854bc21`) ; en cherchant les lignes exactes pour le guide, **cinq affirmations fausses**
