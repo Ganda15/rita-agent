@@ -43,17 +43,18 @@
 <rect x="56" y="330" width="440" height="58" fill="#FFFFFF" stroke="#14607F" stroke-width="1.2"/>
 <text x="64" y="346" font-size="10.5" font-weight="700" fill="#16202B">1 533 clôtures hors de [bas, haut], dont 1 142 STLAP.PA</text>
 <text x="64" y="361" font-size="9" fill="#4A5766">sans règle : des variations aberrantes au briefing</text>
-<rect x="520" y="330" width="520" height="58" fill="#ECF3F7" stroke="#14607F" stroke-width="1.2"/>
-<text x="528" y="346" font-size="10.5" font-weight="700" fill="#16202B">Refus en base par une contrainte CHECK</text>
-<text x="528" y="361" font-size="9" fill="#4A5766">la donnée fausse est refusée, jamais corrigée en silence (12 CHECK)</text>
+<rect x="520" y="330" width="520" height="58" fill="#FBF1EC" stroke="#9E4318" stroke-width="1.2" stroke-dasharray="6,4"/>
+<text x="528" y="346" font-size="10.5" font-weight="700" fill="#9E4318">STLAP.PA marquée INCOHERENT : exclue des requêtes, gardée</text>
+<text x="528" y="361" font-size="9" fill="#4A5766">aucune contrainte ne borne la clôture (db/schema.sql refuse haut &lt; bas) :</text>
+<text x="528" y="374" font-size="9" fill="#4A5766">23 lignes hors bornes en base le 04/10, limite déclarée</text>
 <rect x="1064" y="330" width="380" height="58" fill="#F7F9FB" stroke="#D5DCE4" stroke-width="1.2"/>
-<text x="1072" y="346" font-size="10.5" font-weight="700" fill="#4A5766">db/schema.sql</text>
-<text x="1072" y="361" font-size="9" fill="#4A5766">les règles vivent en base, pas dans chaque script</text>
+<text x="1072" y="346" font-size="10.5" font-weight="700" fill="#4A5766">db/importer.py (QUALITE), sources/database.py</text>
+<text x="1072" y="361" font-size="9" fill="#4A5766">les requêtes ne lisent que statut_qualite = &#x27;OK&#x27;</text>
 <rect x="56" y="402" width="440" height="58" fill="#FFFFFF" stroke="#14607F" stroke-width="1.2"/>
 <text x="64" y="418" font-size="10.5" font-weight="700" fill="#16202B">Cours maximal 7 156 748 (ALJXR.PA)</text>
 <text x="64" y="433" font-size="9" fill="#4A5766">regroupement d&#x27;actions rétro-ajusté (prix ÷ 36 millions)</text>
 <rect x="520" y="402" width="520" height="58" fill="#FBF1EC" stroke="#9E4318" stroke-width="1.2" stroke-dasharray="6,4"/>
-<text x="528" y="418" font-size="10.5" font-weight="700" fill="#9E4318">Valeur conservée, mécanisme identifié</text>
+<text x="528" y="418" font-size="10.5" font-weight="700" fill="#9E4318">Marquée INCOHERENT, conservée, mécanisme identifié</text>
 <text x="528" y="433" font-size="9" fill="#4A5766">la table operation_sur_titre est conçue, pas construite</text>
 <rect x="1064" y="402" width="380" height="58" fill="#F7F9FB" stroke="#D5DCE4" stroke-width="1.2"/>
 <text x="1072" y="418" font-size="10.5" font-weight="700" fill="#4A5766">evidence/C3/preuve-artefact-reverse-split.md</text>
@@ -101,5 +102,5 @@
 <line x1="1040" y1="503.0" x2="1064" y2="503.0" stroke="#4A5766" stroke-width="1.3" marker-end="url(#fl)"/>
 <line x1="496" y1="581.0" x2="520" y2="581.0" stroke="#4A5766" stroke-width="1.3" marker-end="url(#fl)"/>
 <line x1="1040" y1="581.0" x2="1064" y2="581.0" stroke="#4A5766" stroke-width="1.3" marker-end="url(#fl)"/>
-<text x="40" y="804" font-size="9" fill="#4A5766">Blanc : défaut mesuré. Bleu clair : décision appliquée. Pointillé orange : décision conçue, non construite. Gris : fichier ou preuve à ouvrir. Chiffres de juillet et du 02/10 : rapport E1, section 4.</text>
+<text x="40" y="804" font-size="9" fill="#4A5766">Blanc : défaut mesuré. Bleu clair : décision appliquée. Pointillé orange : limite déclarée, ou décision conçue non construite. Gris : fichier ou preuve à ouvrir. Chiffres de juillet et du 02/10 : rapport E1, section 4.</text>
 </svg>

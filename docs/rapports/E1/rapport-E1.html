@@ -196,7 +196,7 @@ décision de conception précise, et c'est la justification de la structure rete
 <table>
   <tr><th style="width:30%">Défaut mesuré</th><th style="width:30%">Conséquence si ignoré</th><th>Décision prise</th></tr>
   <tr><td><strong>5 120 doublons</strong>, surtout sur VIRI.PA</td><td>l'import échoue sur violation de clé primaire</td><td>dédoublonnage <strong>avant</strong> insertion, sur le couple (ticker, date)</td></tr>
-  <tr><td><strong>1 533 clôtures hors intervalle</strong> haut/bas, dont 1 142 pour STLAP.PA</td><td>des variations aberrantes remontent au briefing</td><td>contrainte <code>CHECK</code> en base : la donnée fausse est <strong>refusée</strong>, pas corrigée en silence</td></tr>
+  <tr><td><strong>1 533 clôtures hors intervalle</strong> haut/bas, dont 1 142 pour STLAP.PA</td><td>des variations aberrantes remontent au briefing</td><td>STLAP.PA marquée <code>INCOHERENT</code> : exclue des requêtes, <strong>gardée</strong> avec sa cause. Aucune contrainte ne borne la clôture (la base refuse seulement haut &lt; bas) : 23 lignes hors bornes en base le 04/10, limite déclarée</td></tr>
   <tr><td>Cours maximum à <strong>7 156 748</strong> (ALJXR.PA)</td><td>toute moyenne devient illisible</td><td>valeur conservée : regroupement d'actions rétro-ajusté (prix divisé par 36 millions, volume multiplié d'autant), mécanisme identifié, table <code>operation_sur_titre</code> conçue non construite</td></tr>
   <tr><td>Libellés de portefeuille différents des tickers</td><td>une position ne se rattache à aucun cours</td><td>entité <strong>ALIAS</strong> au modèle (§&nbsp;5), 112 alias</td></tr>
 </table>

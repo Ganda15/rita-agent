@@ -120,7 +120,6 @@ def collecte() -> Schema:
 # Schéma 2 : C3, du jeu brut au jeu propre : défaut mesuré, décision, fichier qui l'applique
 # =============================================================================
 def nettoyage() -> Schema:
-    f = faits()
     return Schema(
         nom="E1-nettoyage", largeur=1500, hauteur=820,
         titre="RITA : nettoyer et agréger, chaque défaut mesuré devient une règle",
@@ -137,11 +136,11 @@ def nettoyage() -> Schema:
             Boite("f1", 1064, 258, 380, 58, "db/importer.py", ["preuve : evidence/C3/preuve-dedoublonnage-cgg.md"], "note"),
 
             Boite("d2", 56, 330, 440, 58, "1 533 clôtures hors de [bas, haut], dont 1 142 STLAP.PA", ["sans règle : des variations aberrantes au briefing"], "normal"),
-            Boite("r2", 520, 330, 520, 58, "Refus en base par une contrainte CHECK", [f"la donnée fausse est refusée, jamais corrigée en silence ({f['check']} CHECK)"], "lavis"),
-            Boite("f2", 1064, 330, 380, 58, "db/schema.sql", ["les règles vivent en base, pas dans chaque script"], "note"),
+            Boite("r2", 520, 330, 520, 58, "STLAP.PA marquée INCOHERENT : exclue des requêtes, gardée", ["aucune contrainte ne borne la clôture (db/schema.sql refuse haut < bas) :", "23 lignes hors bornes en base le 04/10, limite déclarée"], "manque"),
+            Boite("f2", 1064, 330, 380, 58, "db/importer.py (QUALITE), sources/database.py", ["les requêtes ne lisent que statut_qualite = 'OK'"], "note"),
 
             Boite("d3", 56, 402, 440, 58, "Cours maximal 7 156 748 (ALJXR.PA)", ["regroupement d'actions rétro-ajusté (prix ÷ 36 millions)"], "normal"),
-            Boite("r3", 520, 402, 520, 58, "Valeur conservée, mécanisme identifié", ["la table operation_sur_titre est conçue, pas construite"], "manque"),
+            Boite("r3", 520, 402, 520, 58, "Marquée INCOHERENT, conservée, mécanisme identifié", ["la table operation_sur_titre est conçue, pas construite"], "manque"),
             Boite("f3", 1064, 402, 380, 58, "evidence/C3/preuve-artefact-reverse-split.md", ["statut_qualite : exclure sans supprimer"], "note"),
 
             Boite("d4", 56, 474, 440, 58, "Libellés du portefeuille différents des tickers", ["« CGG BS », « CGG RGPT » : aucune position rattachée"], "normal"),
@@ -163,7 +162,7 @@ def nettoyage() -> Schema:
             Fleche("d4", "r4"), Fleche("r4", "f4"),
             Fleche("d5", "r5"), Fleche("r5", "f5"),
         ],
-        legende="Blanc : défaut mesuré. Bleu clair : décision appliquée. Pointillé orange : décision conçue, non construite. Gris : fichier ou preuve à ouvrir. Chiffres de juillet et du 02/10 : rapport E1, section 4.",
+        legende="Blanc : défaut mesuré. Bleu clair : décision appliquée. Pointillé orange : limite déclarée, ou décision conçue non construite. Gris : fichier ou preuve à ouvrir. Chiffres de juillet et du 02/10 : rapport E1, section 4.",
     )
 
 
