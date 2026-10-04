@@ -9,6 +9,26 @@
 
 ---
 
+## 2026-10-05 : règle UE seule, deux flux de données personnelles découverts, architecture du briefing décidée
+
+**Décisions structurantes** : (1) **règle « UE seule »**, posée par Era : aucune donnée personnelle ne quitte l'UE ;
+choix du projet, plus strict que le RGPD et que le référentiel (C4 demande le respect du RGPD, règlement d'examen
+p. 20-21) ; (2) **architecture du briefing pour le périmètre actuel** : trois étapes fixes, une seule étape de
+génération avec repli de fournisseur ; le brouillon de mai prévoyait cinq rôles, dont deux seulement appelaient un
+modèle ; sentiment et fondamentaux non livrés ; décision écrite avec son contexte rétrospectif, à rouvrir après le brief
+multi-agents (`CONTINUITE.md` D).
+
+**Manques découverts**, sur relecture extérieure vérifiée dans le code : le registre disait pour T1 « Destinataires :
+aucun » alors que, depuis le 28/08 (`66ea9f9`), la collecte du soir envoie à **Google News** le nom de chaque société
+de la table `position`, positions closes comprises, sans inscription préalable (procédure M1) ; chaque briefing part
+vers un déploiement Azure **Global Standard**, puis Anthropic, puis le point général d'OpenRouter, sans garantie de
+région. Inscrits comme T6 et T7, non conformes, corrigés après le gel (#81, #82, avec #68). Trois défauts latents
+d'indicateurs, aucun chiffre affiché faux au 05/10 (0 RSI à 100, 0 pire baisse positive) : RSI d'une série plate (#78),
+pire baisse positive en hausse continue (#79), libellé « depuis le 1er janvier » (#80, choix écrit dans la
+spécification). Ordre décidé : corriger, vérifier la fidélité du texte, expliquer, puis l'ATR en % (#83).
+
+---
+
 ## 2026-10-04 : cinq affirmations fausses dans E1, trouvées en ouvrant le code
 
 **Manque découvert** : en cherchant la ligne exacte de chaque fichier cité pour le guide d'étude, cinq affirmations du

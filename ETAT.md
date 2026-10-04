@@ -15,7 +15,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-04, après-midi (E3 v1.1 à 35 sur 39, E1 v2.1 vérifié contre le code et la base puis corrigé, alertes Langfuse en service)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-05, nuit (schémas refaits et relus contre le code, vingt figures placées, guides d'étude E1 et E3, décision d'architecture du briefing, règle UE seule et registre RGPD corrigé, cartes #78 à #83)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
@@ -28,7 +28,21 @@ assistant et vérifiés contre le code et la base ; ils attendent ta relecture a
 **Aucun code d'application avant le tag du 15/10.** Règle : **c'est Era qui envoie tout message** au formateur et à la
 promo ; l'assistant rédige.
 
-**Tâche principale de la prochaine session** : personnelle, hors dépôt. Oral blanc E1 + E3 : **29-30/10**.
+**Nuit du 04 au 05/10, ce qui a changé** (commits `5440a34` à `981cdc7`, CI verte à chaque poussée : 793 passed, 29
+skipped, 2 xfailed) : les **sept schémas** E1 et E3 refaits (texte foncé, une couleur par rôle et par sens de flèche,
+légende dessinée), **textes et flèches relus contre le code** (le scraping apporte des cours, pas des articles ; 22 PR
+vers `main` ; l'alerte #77 a réellement sonné) ; **vingt figures** relues et placées (E1 y renvoie, les planches E4
+attendent le rapport E4) ; tuile Langfuse renommée « Tentatives par fournisseur (échecs compris) » ; 278 473 cotations ;
+E3 : retour des alertes à la normale constaté ; **décision d'architecture** pour le périmètre actuel (`CONTINUITE.md`
+D : trois étapes fixes, une génération avec repli de fournisseur, à rouvrir après le brief multi-agents) ; **règle UE
+seule**, choix du projet d'Era : registre RGPD corrigé (T1 disait « aucun destinataire »), T6 et T7 inscrits non
+conformes (#82, #81) ; trois défauts latents d'indicateurs (#78, #79, #80) et l'ATR en % (#83). Guides d'étude E1 (mis à
+jour) et E3 (nouveau) : Obsidian `09-EN-personnel`, jamais dans le dépôt.
+
+**Tâche principale de la prochaine session** : le **dernier brief de la formation** (semaine du 05/10 : multi-agents et
+industrialisation du fil rouge) ; demander d'abord à Era ce qu'il en veut, puis relier ses leçons à RITA (passerelle de
+`CONTINUITE.md`) et rouvrir la question des agents. En parallèle, avant le gel du 15/10 : relecture d'E1 et d'E3 par Era,
+simulation du jury E1 (phase 5, la question 1 est posée), les deux captures Langfuse. Oral blanc E1 + E3 : **29-30/10**.
 
 **Dans l'ordre, pour Era** :
 
