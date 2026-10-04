@@ -256,7 +256,7 @@ Le vecteur de restitution en temps réel est le tableau de bord Langfuse « RITA
 
 - **La capture du tableau de bord** manque dans `evidence/C11/` : sa définition y est en JSON, l'image reste à prendre. La seule capture de l'interface rangée est celle de l'alerte de latence corrigée.
 - Les quinze traces factices du 2 octobre sont supprimées depuis le 4 octobre (relecture par l'API : 7 traces réelles, 0 « prompt test ») ; il reste peu d'appels réels : p95 et taux d'erreur agrégés n'auront de sens qu'après une semaine d'usage.
-- Deux alertes seulement au palier gratuit, toutes deux prises : pas d'alerte de silence. Le retour des deux alertes à l'état normal reste à constater.
+- Deux alertes seulement au palier gratuit, toutes deux prises : pas d'alerte de silence. Le retour des deux alertes à l'état normal a été constaté dans l'interface le 4 octobre au soir ; sa capture reste à ranger.
 - Le serveur ne trace pas : son code date du 20 août, avant le traçage ; le fichier Compose transmet les variables depuis le 2 octobre, le déploiement se fera après le gel du 15 octobre.
 - **Le coût par briefing vaut zéro dans Langfuse** pour le fournisseur qui répond (nom de modèle au format OpenRouter absent de la grille de prix) : la métrique existe, elle est fausse ; correction à faire dans l'interface ou dans le code.
 - Le garde-fou d'injection tourne à la collecte nocturne, pas dans la requête : il n'apparaît pas dans la trace, par construction.
@@ -580,7 +580,7 @@ Les mesures de garde-fous ne dépendent que du code ; la suite complète et la m
 
 ## 11. Ce qui n'est pas fait, et les risques
 
-**Pas fait au 4 octobre 2026** : la capture du tableau de bord ; le constat du retour des alertes à la normale ; une alerte de silence ; le contrat `/v1` et le 422 ; la limite de débit ; le manifeste de version ; le retour arrière ; l'épinglage des dépendances ; le jeu de référence de briefings ; la validation de format des sorties ; les corrections de la revue OWASP (#75) ; une alerte quand la chaîne est rouge (INC-007).
+**Pas fait au 4 octobre 2026** : la capture du tableau de bord, et celle des alertes revenues à la normale (retour constaté le 4 octobre au soir, image pas encore rangée) ; une alerte de silence ; le contrat `/v1` et le 422 ; la limite de débit ; le manifeste de version ; le retour arrière ; l'épinglage des dépendances ; le jeu de référence de briefings ; la validation de format des sorties ; les corrections de la revue OWASP (#75) ; une alerte quand la chaîne est rouge (INC-007).
 
 **Risques pour la démonstration** : deux fournisseurs répondent sur le poste (Foundry, puis OpenRouter) ; Anthropic n'a pas de clé. Si les deux tombent, l'API répond une erreur 500 générique, sans fuite, et l'écran 3 affiche « Erreur 500 » au lieu du message prévu (#75, après le gel). Le serveur sert le code du 20 août. Le dépôt est privé. Les métriques agrégées de Langfuse reposent encore sur peu d'appels réels.
 
