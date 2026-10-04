@@ -15,7 +15,7 @@ palier gratuit (50 000 unités par mois, 30 jours de conservation, 2 alertes). D
 | 3 | Au moins un **vecteur de restitution en temps réel** (tableau de bord) | ✅ construit le 03/10 | Tableau « RITA C11 », trois tuiles (générations par fournisseur, p95 de `briefing-llm`, observations ERROR ou WARNING), créé par l'API publique : `dashboard-rita-c11-2026-10-03.json`, `preuve-langfuse-2026-10-03.md`. Capture d'écran encore à faire par Era |
 | 4 | Les enjeux d'**accessibilité** sont pris en compte dans le choix de l'outil | 🟠 à écrire | Interface web standard, texte et tableaux ; à argumenter dans le rapport E3, rien d'écrit ici |
 | 5 | La chaîne est d'abord testée dans un **bac à sable** | ✅ mesuré | Toute la suite de tests tourne avec le traçage coupé (`tests/conftest.py`) et des doubles de client ; l'incident [INC-006](../C21/INC-006-tests-ecrivaient-en-production.md) a précisément établi cette séparation |
-| 6 | La chaîne est **en état de marche** : les métriques sont évaluées et restituées | ✅ partiel | Traces réelles depuis le 02/10 18:39 (captures d'Era) ; en conteneur depuis la transmission des variables par `docker-compose.yml` (02/10, non encore déployé sur le serveur) |
+| 6 | La chaîne est **en état de marche** : les métriques sont évaluées et restituées | ✅ partiel | Traces réelles depuis le 02/10 18:39 (captures d'Era) ; les deux alertes ont sonné pour de vrai le 04/10 et ouvert l'issue #77 (`preuve-alertes-2026-10-04.md`) ; reste partiel parce que le serveur Hetzner n'envoie encore aucune trace |
 | 7 | Les **sources** sont versionnées sur un dépôt distant | ✅ | `src/traces.py`, `api/main.py`, `graph/workflow.py`, `.github/workflows/alerte-incident.yml`, dépôt `Ganda15/rita-agent` |
 | 8 | La **documentation technique** couvre l'installation, la configuration et l'utilisation | ✅ partiel | `docs/EXPLOITATION.md`, section « Monitorage Langfuse et alertes » (variables, tableau, alertes, test de la chaîne) |
 | 9 | La documentation est communiquée dans un format **accessible** | 🟠 à faire | Markdown dans le dépôt ; le rapport E3 en PDF reste à produire |
@@ -23,6 +23,10 @@ palier gratuit (50 000 unités par mois, 30 jours de conservation, 2 alertes). D
 **Bilan honnête au 03/10 : 6 critères tenus, 1 partiel, 2 à faire** (le 02/10 : 5, 1, 3). Les deux manquants sont
 l'accessibilité à argumenter et le PDF du rapport E3 ; les alertes (critère 6) restent à régler dans l'interface, voir
 `preuve-langfuse-2026-10-03.md`.
+
+**Mise à jour du 04/10 :** les alertes sont réglées et ont sonné (`preuve-alertes-2026-10-04.md`), les 15 traces
+factices sont supprimées. Le décompte ne change pas : le critère 6 reste partiel tant que le serveur ne trace pas, et
+les critères 4 et 9 attendent le rapport E3.
 
 ## Ce qu'une trace montre (depuis le 02/10 au soir)
 
@@ -50,7 +54,7 @@ l'API et comme identifiant de la trace. La sortie d'une étape est un résumé, 
 | `request_id` dans la réponse, le journal et la trace | `api/main.py` (middleware), `src/traces.py` | `tests/test_request_id.py` (11 tests) |
 | Lignes de journal : servi, refusé, erreur 502 | `api/main.py` | `tests/test_journal_refus_amf.py` (2), `tests/test_request_id.py` |
 | Variables transmises au conteneur | `docker-compose.yml` | `tests/test_docker_compose.py` (3 tests ajoutés) |
-| Alerte Langfuse vers une issue `incident` | `.github/workflows/alerte-incident.yml` | `tests/test_alerte_incident.py` (7 tests) |
+| Alerte Langfuse vers une issue `incident` | `.github/workflows/alerte-incident.yml` | `tests/test_alerte_incident.py` (10 tests depuis le 04/10, dont 2 qui jouent le vrai script sur la charge utile de Langfuse) |
 | La suite de tests ne trace jamais | `tests/conftest.py` | `tests/test_llm.py::test_la_suite_de_tests_n_envoie_jamais_de_trace` |
 
 Suite complète le 02/10 au soir : `C:\Python314\python.exe -m pytest -q` : **626 passed, 2 xfailed** ;
@@ -61,9 +65,10 @@ couverture 93,66 % (seuil 90 %), `api/main.py` et `graph/workflow.py` à 100 %.
 | Manque | Qui | Preuve attendue ici |
 |---|---|---|
 | Capture de la première trace réelle (02/10 18:39) et de la hiérarchie complète après le 02/10 au soir | Era, interface Langfuse | `capture-2026-10-02-premiere-trace.png`, `capture-trace-complete.png` |
-| Suppression des **15** lignes factices (INC-006 : douze comptées le 02/10, quinze relues par l'API le 03/10) et capture avant suppression | Era ; export JSON d'avant suppression déjà fait : `inc-006-traces-factices-avant-suppression-2026-10-03.json` ; la suppression par l'agent a été refusée par la session | `capture-2026-10-03-inc-006-avant-suppression.png` |
+| Suppression des **15** lignes factices (INC-006) : **faite par Era le 04/10**, constatée par l'API à 11:44:47 (7 traces, 0 « prompt test ») | fait | `preuve-alertes-2026-10-04.md`, section 1 ; export d'avant : `inc-006-traces-factices-avant-suppression-2026-10-03.json` |
 | Tableau « RITA C11 » : **construit par l'API le 03/10** (`dashboard-rita-c11-2026-10-03.json`) ; reste la capture | Era, Dashboards | `capture-2026-10-03-dashboard-rita-c11.png` |
-| Les 2 alertes (ERROR sur 1 jour ; aucune trace en 24 h), canal GitHub Actions | Era, Alerts ; seuils fixés après une semaine de traces | capture datée + lien de l'issue ouverte par le test manuel |
+| Les 2 alertes, canal GitHub Actions : **faites le 04/10** (ERROR sur 1 jour ; p95 de `briefing-llm` au-dessus de 15 000 ms sur 1 jour). L'alerte « aucune trace en 24 h » prévue au départ a été remplacée par la latence : deux alertes seulement au palier gratuit | fait ; seuil de latence à revoir après une semaine | `preuve-alertes-2026-10-04.md`, `capture-2026-10-04-alerte-latence-seuil-15000.webp`, issue #77 |
+| Retour à OK des deux alertes | à constater (alerte 1 : après le 04/10 vers 15:18 UTC) | capture de la liste des alertes |
 | Test manuel de la chaîne (bouton Run workflow) : **fait le 03/10 à 13 h 50**, juste après la fusion de la PR #58 (le bouton n'existait pas avant : `workflow_dispatch` ne vaut que sur la branche par défaut). Run `37120911852` en succès, issue **#71** créée avec le label `incident`, puis fermée comme issue de démonstration | fait | https://github.com/Ganda15/rita-agent/issues/71 |
 | Variables Langfuse sur le serveur Hetzner | Era, serveur | une trace dont les métadonnées viennent du serveur |
 
