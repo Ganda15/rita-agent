@@ -15,7 +15,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-04, après-midi (E3 v1.1 à 35 sur 39, E1 v2.1 vérifié contre le code et la base puis corrigé, alertes Langfuse en service, guide d'étude E1 commencé)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-04, après-midi (E3 v1.1 à 35 sur 39, E1 v2.1 vérifié contre le code et la base puis corrigé, alertes Langfuse en service)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
@@ -23,17 +23,12 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 ## ▶️ PROCHAINE ACTION (réécrit le 04/10/2026 ; les ▶️ plus bas sont datés et dépassés)
 
 **Où on en est, en une phrase** : E1 v2.1 (5 pages) et E3 v1.1 (20 pages, **35 ✅ · 4 🟠 · 0 🔴** sur 39) sont complets côté
-assistant et vérifiés contre le code et la base ; ils attendent ta relecture avant le gel du **jeudi 15/10** ; le guide
-d'étude E1 a commencé (récit et script anglais, dans Obsidian) ; les deux alertes Langfuse sont en service ; la chaîne est
+assistant et vérifiés contre le code et la base ; ils attendent ta relecture avant le gel du **jeudi 15/10** ; les deux alertes Langfuse sont en service ; la chaîne est
 **verte** (`33dbd62` : 793 passed en CI, 820 passed sur le poste) ; la production sert toujours le code du **19/08**.
 **Aucun code d'application avant le tag du 15/10.** Règle : **c'est Era qui envoie tout message** au formateur et à la
 promo ; l'assistant rédige.
 
-**Tâche principale de la prochaine session** : le guide d'étude et l'oral, **E1 d'abord** (skill `coach-soutenance` :
-Phase 2 bis, la version française parlée ; Phase 4, les questions du jury ; Phase 5, la répétition), puis **E3 avec sa
-démo**, puis le guide complet de RITA. Oral blanc E1 + E3 : **29-30/10**. Fichiers : Obsidian
-`Projets/RITA/03-Oraux/oral-E1-v2 (2026-10-04).md` et
-`Projets/RITA/09-EN-personnel/STUDY - E1 v2, the data part with code, files and schemas (2026-10-04).md`.
+**Tâche principale de la prochaine session** : personnelle, hors dépôt. Oral blanc E1 + E3 : **29-30/10**.
 
 **Dans l'ordre, pour Era** :
 
@@ -43,11 +38,9 @@ démo**, puis le guide complet de RITA. Oral blanc E1 + E3 : **29-30/10**. Fichi
    que le formateur a bien accès au tableau (C16.4, je ne peux pas le lire).
 2. **Relire** `docs/rapports/E1/rapport-E1.pdf` (v2.1 du 04/10 : cinq affirmations fausses corrigées, voir l'entrée
    du 04/10 plus bas) et `docs/rapports/E3/rapport-E3.pdf` (v1.1 du 04/10, 20 pages) ; corrections dans le chat.
-3. **Lire à voix haute le script anglais de E1**, chronomètre en main (fichier Obsidian ci-dessus) ; marquer les phrases
-   que tu ne dirais pas ainsi.
-4. **Noter les 60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1 ou 2), **sans ouvrir** le fichier `-cle.csv`.
+3. **Noter les 60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1 ou 2), **sans ouvrir** le fichier `-cle.csv`.
    C'est ce qui fait passer la recommandation C7 de « provisoire » à « argumentée ».
-5. **Envoyer au formateur** le message ci-dessous, à copier tel quel ; joindre `docs/EXPLOITATION.pdf` (régénéré le 03/10 au soir,
+4. **Envoyer au formateur** le message ci-dessous, à copier tel quel ; joindre `docs/EXPLOITATION.pdf` (régénéré le 03/10 au soir,
    deux phrases périmées corrigées). Garder l'envoi et la réponse dans `evidence/C8/` (#43, le seul 🔴 de E2).
 
    > **Objet** : RITA, deux points pour E2 (C7 et C8)
@@ -69,18 +62,18 @@ démo**, puis le guide complet de RITA. Oral blanc E1 + E3 : **29-30/10**. Fichi
 
    > 3. E1, la forme. Le rapport E1 est à 5 pages, la limite. Puis-je joindre les schémas (collecte, nettoyage, requêtes big data) en annexe hors du décompte, ou tout doit-il tenir dans les 5 pages ? Et à l'oral E1, sans démonstration, puis-je montrer des schémas et des extraits de code à l'écran ?
 
-6. **Décisions** (une ligne chacune suffit, dans le chat ou à la revue) : **D7** documentation `/docs` publique en production
+5. **Décisions** (une ligne chacune suffit, dans le chat ou à la revue) : **D7** documentation `/docs` publique en production
    (la règle de fermeture validée plaide pour la clé) ; **D6** lignes affichées d'emblée sur l'écran indicateurs (recommandé :
    rien avant le gel) ; **`memory_audit`** (zone sous garde, plan d'abord) ; **#36** rafraîchir les données en ligne avant le
    gel ou après ; libellé du **drawdown** (cité 0 fois sur 60 textes).
-7. 🌐 **GitHub** : activer les **alertes Dependabot** (Settings, Code security) ; capture des rulesets dans `evidence/C19/`.
-8. 🌐 **Langfuse** : **capture de la liste des alertes revenues à l'état normal** (l'alerte 1 doit repasser à OK après le
+6. 🌐 **GitHub** : activer les **alertes Dependabot** (Settings, Code security) ; capture des rulesets dans `evidence/C19/`.
+7. 🌐 **Langfuse** : **capture de la liste des alertes revenues à l'état normal** (l'alerte 1 doit repasser à OK après le
    04/10 vers 15 h 18 UTC) et **capture du tableau « RITA C11 »** (`evidence/C11/README.md`, deux lignes « à faire »).
    Fait le 04/10 : traces factices supprimées, deux alertes réglées et mises à l'épreuve.
-9. **C6** : capture du fil Discord du 16/08 dans `evidence/C6/` ; note de veille S40 ou S41 depuis `docs/veille/_candidats-2026-S40.md`.
-10. 💻 **Ton PC** : rotation puis suppression des fichiers de clés en clair du Bureau. Facultatif : `ANTHROPIC_API_KEY` dans le
+8. **C6** : capture du fil Discord du 16/08 dans `evidence/C6/` ; note de veille S40 ou S41 depuis `docs/veille/_candidats-2026-S40.md`.
+9. 💻 **Ton PC** : rotation puis suppression des fichiers de clés en clair du Bureau. Facultatif : `ANTHROPIC_API_KEY` dans le
    fichier d'environnement si tu veux mesurer Claude en direct (troisième fournisseur du banc).
-11. Dire **« bon pour le gel »** : l'assistant ouvre la PR `develop → main`, puis les tags `livrable-E1-v2` et `livrable-E3-v1`
+10. Dire **« bon pour le gel »** : l'assistant ouvre la PR `develop → main`, puis les tags `livrable-E1-v2` et `livrable-E3-v1`
     se posent le **15/10** (`docs/FILE-DE-VALIDATION.md`, `scripts/verifier_livrable.py`). La publication de l'image sur ce tag
     sera la **première jamais exécutée** : à relever comme preuve C19 (tâche T8).
 
@@ -118,7 +111,7 @@ zones sous garde (`db/schema.sql`, `guardrails/`, `evals/`) : rien sans plan val
 ---
 
 🏁 **04/10 : E1 et E3 complétés, puis vérifiés contre le code.** Demande d'Era à 8 h 32 : finir E1 et E3, vérifier
-les schémas par critère, puis le guide d'étude et l'oral, en anglais d'abord. **E3** : étape « Tester les données » dans la
+les schémas par critère. **E3** : étape « Tester les données » dans la
 chaîne (`002a0b7`), `docs/ARCHITECTURE.md` et trois schémas (`067fb25`), 15 traces factices supprimées par Era (API : 7
 traces, 0 « prompt test »), **deux alertes Langfuse réglées et mises à l'épreuve** (erreurs de fournisseur : vraie, 4
 erreurs du 03/10 faute de clé Foundry, la cascade a servi ; latence : **fausse alerte**, seuil saisi en secondes alors que
@@ -128,7 +121,7 @@ code et tenus par 12 tests (`854bc21`) ; en cherchant les lignes exactes pour le
 trouvées et revérifiées en base : un index partiel sur les volumes qui n'existe pas (cité deux fois), un `HAVING` qui est
 un `WHERE`, un transfert Langfuse dit « fermé » au lieu de « à confirmer », une contrainte `CHECK` sur les clôtures qui
 n'existe pas ; **E1 v2.1**, 5 pages (`65aa70b`, `33dbd62`). `CLAUDE.md` et `AGENTS.md` remesurés (`638b65c`, `7e630d7`).
-Guide d'étude E1 : récit en huit parties et script anglais, dans Obsidian (JOURNAL-020). CI verte sur `33dbd62` : 793
+CI verte sur `33dbd62` : 793
 passed, 29 skipped, 2 xfailed, 94,70 % ; poste : 820 passed, 2 skipped, 2 xfailed.
 
 🏁 **03/10, nuit : Foundry répond, et le banc C7 compare enfin deux éditeurs.** Clé posée par Era ; un 400 « `max_tokens` unsupported » corrigé en `max_completion_tokens` (test d'abord) ; briefing réel SAN.PA servi par Foundry en 5,6 s sans repli (trace à une génération). **Quatrième passage du banc** : Foundry `gpt-5.4` et OpenRouter `claude-sonnet-4.5` indiscernables sur les contrôles automatiques (30/30 conformes et fidèles chacun, Wilson [0,89 ; 1,00]) ; Foundry médiane 3,2 s mais p95 10,7 s, OpenRouter 6,3 s et 7,2 s ; coût 0 pour le projet contre 0,0060 USD. Recommandation **provisoire** : Foundry en premier, OpenRouter en secours (l'ordre actuel), à confirmer par la notation du français d'Era (`notes-francais-2026-10-03.csv`, **60 textes**, deux services confondus). E2 : 6 ✅ 12 🟠 2 🔴. Preuve §9.
@@ -347,7 +340,7 @@ de session dans `CLAUDE.md`.
 
 ---
 
-🔎 **27/09 : le guide d'étude « marchés et finance » a fait tomber cinq défauts de données, tous corrigés (INC-005).**
+🔎 **27/09 : une relecture des chiffres contre la base a fait tomber cinq défauts de données, tous corrigés (INC-005).**
 Cause unique : la place de cotation n'était modélisée nulle part (Paris, euros, UTC, sans férié, supposés partout).
 
 | Défaut | Mesuré | Corrigé | Carte |
@@ -375,8 +368,7 @@ passées à « Fait » par l'automatisation. Même défaut sur l'étape `ecb`, a
 4 éléments retenus, chacun rangé à sa semaine de `docs/PLAN-12-SEMAINES.md` : Wilson (S40, protocole
 du benchmark C7) · traces et alerte de `src/llm.py` (S43, C11/C20) · journal d'audit de `/briefing`
 (S43, C20) · trous des garde-fous (S44, C17 ; correctif testé sur une copie : 571 passed, 0 faux
-positif sur 2 592 textes réels, 0/8 hors échantillon). Le reste est parqué. Détail : Obsidian
-`Projets/RITA/08-Etude/ETUDE - Livre Packt ... (2026-09-26).md`.
+positif sur 2 592 textes réels, 0/8 hors échantillon). Le reste est parqué.
 ⚠️ **Retard mesuré sur le plan** : S38 (monitorage instrumenté) et S39 (E4 rédigé) non faits ;
 `docs/rapports/` ne contient que E1.
 
@@ -685,8 +677,7 @@ document d'une question est refusé pour **0,0013**. **Non déplacé** — ajust
 neuf questions est la faute décrite par *Confidently Wrong* (veille S35). *Ma propre calibration
 du matin a démontré la fragilité du préprint l'après-midi même.*
 
-📓 Trace en 4 endroits : `CHANGELOG.md` · Obsidian `JOURNAL-012` · Obsidian
-`STUDY — 2 September 2026` (EN, séparé) · les messages de commit.
+📓 Trace en 3 endroits : `CHANGELOG.md` · Obsidian `JOURNAL-012` · les messages de commit.
 
 ▶️ **Prochaines actions — dans l'ordre, révisé le 06/09 :**
 1. ~~🔴 Trancher le runtime~~ — **fermé par la mesure du 06/09** (voir en tête) : indexation OK
@@ -774,7 +765,7 @@ Suite **401 passed, 2 xfailed** · couverture **92,52 %** · 0 lien cassé.
   **Vérifié sur les 7 valeurs détenues avant de corriger** : seul `MC.PA` cassait, le premier
   mot n'en dégrade aucune. ⚠️ Le premier mot est acceptable **ici et seulement ici** — le
   filtre par ticker a déjà prouvé la pertinence, la question ne fait que **classer**. Pour
-  *étiqueter* un article, « CREDIT » resterait dangereux (§10a du guide d'étude).
+  *étiqueter* un article, « CREDIT » resterait dangereux.
 - 🔴 **Le prompt annonçait « Articles récents » au-dessus d'une dépêche de 2023.** Le RAG
   classe par **pertinence**, jamais par date. C'était **une affirmation fausse produite par le
   code lui-même** — la pire espèce, elle ne vient d'aucune source à mettre en doute.
@@ -1027,11 +1018,6 @@ chemins absolus, code de sortie propre) : **il n'a jamais été installé**.
   le rapport, et pytest fera **échouer la suite** le jour où le taux repassera au-dessus.
   Ne toujours **pas** baisser le seuil : l'arbitrage reste la question ouverte de S35.
 - Le **garde-fou de sortie mesure aussi 70 %** — motifs écrits d'abord, cas d'évasion ensuite.
-- Deux guides d'étude en anglais. ⚠️ **Déplacés dans Obsidian le 18/08** : ils étaient dans
-  `docs/etude/`, c'est-à-dire de la **préparation dans le dépôt de livrables** — contraire à
-  la règle du 11/08. Ils vivent désormais dans
-  `Projets/RITA/09-EN-personnel/` (« Prompt injection and agent security » pour les concepts,
-  « 17 August 2026 » pour la méthode).
 
 📅 **Le plan des 12 semaines est écrit : `docs/PLAN-12-SEMAINES.md`.**
 Le formateur est en congé → on ne l'attend pas : **produire → geler → mettre en file

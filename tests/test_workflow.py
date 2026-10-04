@@ -169,7 +169,7 @@ def test_le_redacteur_recoit_les_passages_trouves_par_le_rag():
 
 
 def test_la_question_du_rag_utilise_le_nom_court_pas_la_raison_sociale():
-    """Récidive du défaut LVMH (§10a du guide d'étude), mesurée le 30/08.
+    """Récidive du défaut LVMH, mesurée le 30/08.
 
     `valeur.nom_officiel` vaut « LVMH MOET VUITTON » ; la presse écrit « LVMH ».
     Interrogé avec la raison sociale, le moteur refusait TOUT :

@@ -8,8 +8,8 @@
 
 ## 1. La bonne nouvelle d'abord — l'oral n'est pas dans les 12 semaines
 
-**Entre le 05/11 (livrables) et le 30/11 (jury) il y a 25 jours.** Le guide d'étude, les
-scripts d'oral et les répétitions se préparent **là**, pas maintenant.
+**Entre le 05/11 (livrables) et le 30/11 (jury) il y a 25 jours.** L'oral se prépare **là**,
+hors dépôt, pas maintenant.
 
 ➡️ **Les 12 semaines qui viennent sont de la production pure.** Ne pas y mélanger la
 préparation de soutenance : c'est le meilleur moyen de ne finir ni l'une ni l'autre.
@@ -106,11 +106,11 @@ prend la semaine libre.** S'il échoue, le plan échoue — c'est le risque assu
 |---|---|---|---|
 | **S40** | 29/09–04/10 | **E3 d'abord** (C, D) | Langfuse Cloud UE activé (DPA lu), traces de `src/llm.py` + 2 alertes (#39), une vue temps réel C11 (#38) · squelette du rapport E3 depuis `docs/LLMOPS.md` et `evidence/` · E1 : dates corrigées (#56) · veille S40 (#30) |
 | **S41** | 05–11/10 | **E3** (C) | Rapport E3 rédigé, C9 à C13, revue OWASP en section (#29), `db/importer.py` dans l'image (#35) · **Hetzner rafraîchi et automatisé** (#36) : la démo de l'oral tourne sur des données du jour · **E3 en fin de rédaction** (gel le 15/10, voir S42) · script E1 rafraîchi (580 tests, 1 359 documents, calendrier des places) |
-| **S42** | 12–18/10 | **E3 gelé jeudi 15/10** · **E4** (A) + prépa oral | **Gel du 15/10** : tag `livrable-E3-v1` (et `livrable-E1-v2`), envoyés à Elbby · Rapport E4 rédigé (#28) depuis la vérification du 26/09 ; #23, #27 · préparation de l'oral E1 + E3 commence (`coach-soutenance`) : c'est la période de 2,5 semaines demandée |
+| **S42** | 12–18/10 | **E3 gelé jeudi 15/10** · **E4** (A) | **Gel du 15/10** : tag `livrable-E3-v1` (et `livrable-E1-v2`), envoyés à Elbby · Rapport E4 rédigé (#28) depuis la vérification du 26/09 ; #23, #27 |
 | **S43** | 19–25/10 | **E4 gelé** + **B** minimal | Tag `livrable-E4-v1`, envoyé · benchmark C7 minimal, protocole + une mesure (#32, #33) · première répétition E1 + E3 |
 | **S44** | 26/10–01/11 | **oral blanc 1** (29-30/10) | Passage E1 + E3, retours notés dans le journal · rapport E2 (#34 : veille, C7, C8 #43) · rapport E5 (#40, #41 minimal, les cinq incidents) |
 | **S45** | 02–05/11 | **gel** | Relecture, `verifier_liens.py`, tests verts, **envoi des cinq le 05/11** |
-| 06–11/11 | | répétition | Deux passages complets de 90 min, `coach-soutenance` |
+| 06–11/11 | | préparation de l'oral | hors dépôt |
 | **12–13/11** | | **oral blanc 2** | Situation réelle, 90 min, les cinq |
 | 14–29/11 | | étude | Révision seule, plus de code |
 | **30/11–01/12** | | **jury** | |
