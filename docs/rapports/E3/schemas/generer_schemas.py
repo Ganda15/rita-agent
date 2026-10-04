@@ -4,8 +4,14 @@ Pourquoi un générateur plutôt que deux fichiers dessinés à la main : la rè
 `.drawio` éditable (pour corriger) ET une image lisible (pour voir), et deux fichiers tenus à la
 main divergent à la première retouche. Ici, une liste de boîtes et de flèches produit les deux ;
 le `.png` est ensuite rendu depuis le `.svg` par Chrome sans fenêtre (commande dans le README du
-dossier). Mêmes couleurs que les schémas de C4 et des rapports : encre #16202B, accent #14607F,
-lavis #ECF3F7, signal #9E4318.
+dossier).
+
+Charte refaite le 04/10/2026 à la demande d'Era, sur un modèle qu'il a fourni : le texte gris en
+9 px ne se lisait pas une fois le schéma réduit à la largeur d'une page, et des boîtes presque
+toutes bleues ne disaient pas leur rôle. Désormais : texte presque noir et nettement plus grand,
+traits épais ; une couleur par RÔLE de boîte (bande à gauche, bordure, fond) ; une couleur par
+SENS de flèche (flux, écriture, lecture, erreur, manuel, données personnelles) ; une légende
+dessinée en bas de chaque schéma, avec un échantillon de chaque couleur employée.
 
 Lancer :  C:\\Python314\\python.exe docs\\rapports\\E3\\schemas\\generer_schemas.py
 """
@@ -17,8 +23,35 @@ from pathlib import Path
 
 ICI = Path(__file__).parent
 
-INK, SOFT, ACCENT, WASH, RULE = "#16202B", "#4A5766", "#14607F", "#ECF3F7", "#D5DCE4"
-FLAG, FLAG_WASH, STORE = "#9E4318", "#FBF1EC", "#D8E3EA"
+NAVY, INK, SOFT, ACCENT, RULE = "#0B2A5B", "#111827", "#1F2937", "#1565C0", "#94A3B8"
+POLICE = "Segoe UI,Calibri,Arial,sans-serif"
+
+# Tailles, en pixels du schéma (largeur 1400 à 1500, réduite ensuite à la largeur d'une page).
+T_TITRE, T_SOUS_TITRE, T_ZONE, T_BOITE, T_LIGNE, T_ETIQUETTE, T_LEGENDE = 30, 15, 13.5, 14, 11.5, 12.5, 12.5
+INTERLIGNE, Y_TITRE_BOITE, Y_PREMIERE_LIGNE = 15.5, 21, 40
+DECALAGE = 16      # le contenu descend sous un titre devenu plus grand
+BANDE, TRAIT_BOITE, TRAIT_FLECHE = 7, 2, 3
+
+# Une couleur par rôle de boîte : (bande et bordure, fond, titre).
+ROLES = {
+    "normal": ("#1E293B", "#FFFFFF", NAVY),        # élément : source, client, étape, défaut mesuré
+    "lavis":  ("#1565C0", "#E3F0FD", NAVY),        # le cœur : code qui traite, décision appliquée
+    "garde":  ("#C2410C", "#FFF1E6", "#9A3412"),   # garde-fou, contrôle
+    "stock":  ("#6D28D9", "#F1EAFE", "#4C1D95"),   # réserve de données, service externe, artefact
+    "manque": ("#D32F2F", "#FDECEC", "#C62828"),   # conçu non construit, limite, défaut connu (pointillé)
+    "note":   ("#475569", "#F1F5F9", NAVY),        # preuve, fichier à ouvrir, contexte
+}
+# Une couleur par sens de flèche : (couleur, pointillé).
+SENS = {
+    "flux":     (NAVY, ""),            # passage, appel, enchaînement
+    "ecriture": ("#1565C0", ""),       # écrit en base ou dans un index
+    "lecture":  ("#15803D", ""),       # lecture seule
+    "erreur":   ("#D32F2F", "9,6"),    # réponse d'erreur, refus
+    "manuel":   ("#64748B", "9,6"),    # manuel, ou pas encore exécuté
+    "perso":    ("#A21CAF", "9,6"),    # données personnelles (RGPD)
+}
+LEGENDE_H = 40     # hauteur ajoutée sous le schéma pour la ligne de source
+LIGNE_LEGENDE = 28 # une ligne de légende de plus quand elle ne tient pas en largeur
 
 
 @dataclass
@@ -30,7 +63,7 @@ class Boite:
     h: int
     titre: str
     lignes: list[str] = field(default_factory=list)
-    genre: str = "normal"   # normal | lavis | stock | manque | zone | note
+    genre: str = "normal"   # normal | lavis | garde | stock | manque | zone | note
 
 
 @dataclass
@@ -42,6 +75,12 @@ class Fleche:
     # points de sortie et d'entrée : "d" droite, "g" gauche, "h" haut, "b" bas
     sortie: str = "d"
     entree: str = "g"
+    sens: str = ""          # flux | ecriture | lecture | erreur | manuel | perso ; vide : flux, ou manuel si pointillé
+    pos: float = 0.5        # où poser l'étiquette le long de la flèche (0 départ, 1 arrivée)
+
+    @property
+    def genre(self) -> str:
+        return self.sens or ("manuel" if self.pointille else "flux")
 
 
 @dataclass
@@ -50,28 +89,16 @@ class Schema:
     titre: str
     sous_titre: str
     largeur: int
-    hauteur: int
+    hauteur: int            # la légende dessinée occupe le bas de cette hauteur
     boites: list[Boite]
     fleches: list[Fleche]
-    legende: str
+    legende: str                                              # la source des chiffres, en une ligne
+    cles_boites: dict[str, str] = field(default_factory=dict)   # rôle → ce qu'il veut dire ICI
+    cles_fleches: dict[str, str] = field(default_factory=dict)  # sens → ce qu'il veut dire ICI
 
-
-STYLES_SVG = {
-    "normal": dict(fill="#FFFFFF", stroke=ACCENT, dash=""),
-    "lavis": dict(fill=WASH, stroke=ACCENT, dash=""),
-    "stock": dict(fill=STORE, stroke="none", dash=""),
-    "manque": dict(fill=FLAG_WASH, stroke=FLAG, dash="6,4"),
-    "zone": dict(fill="none", stroke=RULE, dash="7,5"),
-    "note": dict(fill="#F7F9FB", stroke=RULE, dash=""),
-}
-STYLES_DRAWIO = {
-    "normal": f"rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor={ACCENT};align=left;spacingLeft=8;fontSize=9;verticalAlign=top;",
-    "lavis": f"rounded=0;whiteSpace=wrap;html=1;fillColor={WASH};strokeColor={ACCENT};align=left;spacingLeft=8;fontSize=9;verticalAlign=top;",
-    "stock": f"rounded=0;whiteSpace=wrap;html=1;fillColor={STORE};strokeColor=none;align=left;spacingLeft=8;fontSize=9;verticalAlign=top;",
-    "manque": f"rounded=0;whiteSpace=wrap;html=1;fillColor={FLAG_WASH};strokeColor={FLAG};dashed=1;align=left;spacingLeft=8;fontSize=9;verticalAlign=top;",
-    "zone": f"rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor={RULE};dashed=1;align=left;verticalAlign=top;fontSize=9;fontColor={SOFT};spacingLeft=6;",
-    "note": f"rounded=0;whiteSpace=wrap;html=1;fillColor=#F7F9FB;strokeColor={RULE};align=left;spacingLeft=8;fontSize=8.5;fontColor={SOFT};verticalAlign=top;",
-}
+    @property
+    def hauteur_totale(self) -> int:
+        return self.hauteur + DECALAGE + LEGENDE_H + LIGNE_LEGENDE * (len({l for *_, l in _disposer_legende(self)}) - 1)
 
 
 def _ancre(b: Boite, cote: str) -> tuple[float, float]:
@@ -83,56 +110,146 @@ def _ancre(b: Boite, cote: str) -> tuple[float, float]:
             "h": (b.x + b.w * f, b.y), "b": (b.x + b.w * f, b.y + b.h)}[lettre]
 
 
+def _largeur_texte(texte: str, taille: float) -> float:
+    """Estimation pour espacer la légende (la vraie mesure se fait au rendu, dans un navigateur)."""
+    return len(texte) * taille * 0.5
+
+
+def _disposer_legende(s: Schema) -> list[tuple[str, str, str, float, int]]:
+    """(type, clé, libellé, x, ligne) de chaque entrée ; passe à la ligne avant le bord droit."""
+    places, x, ligne = [], 124.0, 0
+    entrees = [("boite", k, v) for k, v in s.cles_boites.items()] + [("fleche", k, v) for k, v in s.cles_fleches.items()]
+    for genre, cle, libelle in entrees:
+        largeur = (36 if genre == "boite" else 50) + _largeur_texte(libelle, T_LEGENDE)
+        if x + largeur > s.largeur - 40 and x > 124:
+            x, ligne = 124.0, ligne + 1
+        places.append((genre, cle, libelle, x, ligne))
+        x += largeur + 30
+    return places or [("rien", "", "", 124.0, 0)]
+
+
+def _legende_svg(s: Schema) -> list[str]:
+    e = html.escape
+    out, y0 = [], s.hauteur - 8
+    nb = len({l for *_, l in _disposer_legende(s)})
+    out.append(f'<rect x="40" y="{s.hauteur - 34}" width="{s.largeur - 80}" height="1.5" fill="{RULE}"/>')
+    out.append(f'<text x="40" y="{y0 + 5}" font-size="{T_LEGENDE + 1}" font-weight="700" fill="{NAVY}">Légende</text>')
+    for genre, cle, libelle, x, ligne in _disposer_legende(s):
+        y = y0 + ligne * LIGNE_LEGENDE
+        if genre == "boite":
+            trait, fond, _ = ROLES[cle]
+            dash = ' stroke-dasharray="5,3"' if cle == "manque" else ""
+            out.append(f'<rect x="{x}" y="{y - 9}" width="28" height="18" fill="{fond}" stroke="{trait}" stroke-width="{TRAIT_BOITE}"{dash}/>')
+            out.append(f'<rect x="{x}" y="{y - 9}" width="6" height="18" fill="{trait}"/>')
+            out.append(f'<text x="{x + 36}" y="{y + 5}" font-size="{T_LEGENDE}" fill="{INK}">{e(libelle)}</text>')
+        elif genre == "fleche":
+            couleur, dash = SENS[cle]
+            d = f' stroke-dasharray="{dash}"' if dash else ""
+            out.append(f'<line x1="{x}" y1="{y}" x2="{x + 40}" y2="{y}" stroke="{couleur}" stroke-width="{TRAIT_FLECHE}"{d} marker-end="url(#fl-{cle})"/>')
+            out.append(f'<text x="{x + 50}" y="{y + 5}" font-size="{T_LEGENDE}" fill="{INK}">{e(libelle)}</text>')
+    out.append(f'<text x="40" y="{s.hauteur + 26 + (nb - 1) * LIGNE_LEGENDE}" font-size="{T_LEGENDE}" fill="{SOFT}">{e(s.legende)}</text>')
+    return out
+
+
 def svg(s: Schema) -> str:
     e = html.escape
+    marqueurs = "".join(
+        f'<marker id="fl-{nom}" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="{couleur}"/></marker>'
+        for nom, (couleur, _) in SENS.items())
     out = ['<?xml version="1.0" encoding="UTF-8"?>',
-           f'<svg xmlns="http://www.w3.org/2000/svg" width="{s.largeur}" height="{s.hauteur}" viewBox="0 0 {s.largeur} {s.hauteur}" font-family="Segoe UI,Calibri,Arial,sans-serif">',
-           f'<defs><marker id="fl" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0 0,10 4,0 8" fill="{SOFT}"/></marker></defs>',
-           f'<rect width="{s.largeur}" height="{s.hauteur}" fill="#FFFFFF"/>',
-           f'<rect x="40" y="18" width="{s.largeur - 80}" height="3" fill="{ACCENT}"/>',
-           f'<text x="40" y="46" font-family="Georgia,serif" font-size="19" font-weight="600" fill="{INK}">{e(s.titre)}</text>',
-           f'<text x="40" y="66" font-family="Georgia,serif" font-size="11" font-style="italic" fill="{SOFT}">{e(s.sous_titre)}</text>']
+           f'<svg xmlns="http://www.w3.org/2000/svg" width="{s.largeur}" height="{s.hauteur_totale}" viewBox="0 0 {s.largeur} {s.hauteur_totale}" font-family="{POLICE}">',
+           f'<defs>{marqueurs}</defs>',
+           f'<rect width="{s.largeur}" height="{s.hauteur_totale}" fill="#FFFFFF"/>',
+           f'<rect x="40" y="16" width="{s.largeur - 80}" height="5" fill="{ACCENT}"/>',
+           f'<text x="40" y="54" font-size="{T_TITRE}" font-weight="700" fill="{NAVY}">{e(s.titre)}</text>',
+           f'<text x="40" y="80" font-size="{T_SOUS_TITRE}" fill="{SOFT}">{e(s.sous_titre)}</text>']
+    out.append(f'<g transform="translate(0,{DECALAGE})">')
     par_id = {b.id: b for b in s.boites}
+    # Les zones d'abord (fond), puis les boîtes, puis les flèches, puis les titres de zone.
     for b in s.boites:
-        st = STYLES_SVG[b.genre]
-        dash = f' stroke-dasharray="{st["dash"]}"' if st["dash"] else ""
-        out.append(f'<rect x="{b.x}" y="{b.y}" width="{b.w}" height="{b.h}" fill="{st["fill"]}" stroke="{st["stroke"]}" stroke-width="1.2"{dash}/>')
-        couleur_titre = SOFT if b.genre in ("zone", "note") else (FLAG if b.genre == "manque" else INK)
-        taille = 9.5 if b.genre == "zone" else 10.5
-        out.append(f'<text x="{b.x + 8}" y="{b.y + 16}" font-size="{taille}" font-weight="700" fill="{couleur_titre}">{e(b.titre)}</text>')
+        if b.genre == "zone":
+            out.append(f'<rect x="{b.x}" y="{b.y}" width="{b.w}" height="{b.h}" fill="#F8FAFC" stroke="{RULE}" stroke-width="1.5" stroke-dasharray="8,6"/>')
+    for b in s.boites:
+        if b.genre == "zone":
+            continue
+        trait, fond, titre = ROLES[b.genre]
+        dash = ' stroke-dasharray="8,5"' if b.genre == "manque" else ""
+        out.append(f'<rect x="{b.x}" y="{b.y}" width="{b.w}" height="{b.h}" fill="{fond}" stroke="{trait}" stroke-width="{TRAIT_BOITE}"{dash}/>')
+        out.append(f'<rect x="{b.x}" y="{b.y}" width="{BANDE}" height="{b.h}" fill="{trait}"/>')
+        tx = b.x + BANDE + 10
+        out.append(f'<text x="{tx}" y="{b.y + Y_TITRE_BOITE}" font-size="{T_BOITE}" font-weight="700" fill="{titre}">{e(b.titre)}</text>')
         for i, l in enumerate(b.lignes):
-            out.append(f'<text x="{b.x + 8}" y="{b.y + 31 + i * 13}" font-size="9" fill="{SOFT}">{e(l)}</text>')
+            out.append(f'<text x="{tx}" y="{b.y + Y_PREMIERE_LIGNE + i * INTERLIGNE}" font-size="{T_LIGNE}" fill="{INK}">{e(l)}</text>')
     for f in s.fleches:
         a, bb = par_id[f.de], par_id[f.vers]
         x1, y1 = _ancre(a, f.sortie)
         x2, y2 = _ancre(bb, f.entree)
-        dash = ' stroke-dasharray="5,4"' if f.pointille else ""
-        out.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{SOFT}" stroke-width="1.3" marker-end="url(#fl)"{dash}/>')
+        couleur, dash = SENS[f.genre]
+        d = f' stroke-dasharray="{dash}"' if dash else ""
+        out.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{couleur}" stroke-width="{TRAIT_FLECHE}" marker-end="url(#fl-{f.genre})"{d}/>')
         if f.etiquette:
-            mx, my = (x1 + x2) / 2, (y1 + y2) / 2 - 5
-            out.append(f'<text x="{mx}" y="{my}" font-size="8.5" fill="{SOFT}" text-anchor="middle">{e(f.etiquette)}</text>')
-    out.append(f'<text x="40" y="{s.hauteur - 16}" font-size="9" fill="{SOFT}">{e(s.legende)}</text>')
+            mx, my = x1 + (x2 - x1) * f.pos, y1 + (y2 - y1) * f.pos
+            out.append(f'<text x="{mx:.1f}" y="{my + 4:.1f}" font-size="{T_ETIQUETTE}" font-weight="700" fill="{couleur}" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">{e(f.etiquette)}</text>')
+    # Titres de zone en dernier, avec un liseré blanc : une flèche qui passe dessous ne les coupe pas.
+    for b in s.boites:
+        if b.genre == "zone":
+            out.append(f'<text x="{b.x + 14}" y="{b.y + 22}" font-size="{T_ZONE}" font-weight="700" fill="{NAVY}" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">{e(b.titre)}</text>')
+    out += _legende_svg(s)
+    out.append("</g>")
     out.append("</svg>")
     return "\n".join(out)
+
+
+def _style_boite(genre: str) -> str:
+    if genre == "zone":
+        return f"rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor={RULE};strokeWidth=1.5;dashed=1;align=left;verticalAlign=top;fontSize={T_ZONE};fontStyle=1;fontColor={NAVY};spacingLeft=12;"
+    trait, fond, _ = ROLES[genre]
+    return (f"rounded=0;whiteSpace=wrap;html=1;fillColor={fond};strokeColor={trait};strokeWidth={TRAIT_BOITE};"
+            + ("dashed=1;" if genre == "manque" else "")
+            + f"align=left;spacingLeft=14;fontSize={T_LIGNE};fontColor={INK};verticalAlign=top;")
 
 
 def drawio(s: Schema) -> str:
     e = html.escape
     cells = ['<mxCell id="0" />', '<mxCell id="1" parent="0" />',
-             f'<mxCell id="topline" value="" style="line;strokeWidth=2.5;html=1;strokeColor={ACCENT};" vertex="1" parent="1"><mxGeometry x="40" y="14" width="{s.largeur - 80}" height="10" as="geometry" /></mxCell>',
-             f'<mxCell id="ttl" value="{e(s.titre)}" style="text;html=1;align=left;fontSize=17;fontStyle=1;fontColor={INK};fontFamily=Georgia;" vertex="1" parent="1"><mxGeometry x="40" y="28" width="{s.largeur - 100}" height="24" as="geometry" /></mxCell>',
-             f'<mxCell id="sub" value="{e(s.sous_titre)}" style="text;html=1;align=left;fontSize=10.5;fontStyle=2;fontColor={SOFT};fontFamily=Georgia;" vertex="1" parent="1"><mxGeometry x="40" y="52" width="{s.largeur - 100}" height="16" as="geometry" /></mxCell>']
-    for b in s.boites:
-        corps = "<br>".join(f'<font style="font-size:8.5px;color:{SOFT}">{e(l)}</font>' for l in b.lignes)
-        valeur = f"<b>{e(b.titre)}</b>" + ("<br>" + corps if corps else "")
-        cells.append(f'<mxCell id="{b.id}" value="{e(valeur)}" style="{STYLES_DRAWIO[b.genre]}" vertex="1" parent="1"><mxGeometry x="{b.x}" y="{b.y}" width="{b.w}" height="{b.h}" as="geometry" /></mxCell>')
+             f'<mxCell id="topline" value="" style="line;strokeWidth=5;html=1;strokeColor={ACCENT};" vertex="1" parent="1"><mxGeometry x="40" y="12" width="{s.largeur - 80}" height="10" as="geometry" /></mxCell>',
+             f'<mxCell id="ttl" value="{e(s.titre)}" style="text;html=1;align=left;fontSize={T_TITRE};fontStyle=1;fontColor={NAVY};" vertex="1" parent="1"><mxGeometry x="40" y="26" width="{s.largeur - 100}" height="36" as="geometry" /></mxCell>',
+             f'<mxCell id="sub" value="{e(s.sous_titre)}" style="text;html=1;align=left;fontSize={T_SOUS_TITRE};fontColor={SOFT};" vertex="1" parent="1"><mxGeometry x="40" y="64" width="{s.largeur - 100}" height="22" as="geometry" /></mxCell>']
+    for b in sorted(s.boites, key=lambda b: b.genre != "zone"):
+        if b.genre == "zone":
+            valeur = e(b.titre)
+        else:
+            _, _, titre = ROLES[b.genre]
+            corps = "<br>".join(f'<font style="font-size:{T_LIGNE}px;color:{INK}">{e(l)}</font>' for l in b.lignes)
+            valeur = e(f'<b><font style="font-size:{T_BOITE}px;color:{titre}">{e(b.titre)}</font></b>' + ("<br>" + corps if corps else ""))
+        cells.append(f'<mxCell id="{b.id}" value="{valeur}" style="{_style_boite(b.genre)}" vertex="1" parent="1"><mxGeometry x="{b.x}" y="{b.y + DECALAGE}" width="{b.w}" height="{b.h}" as="geometry" /></mxCell>')
+        if b.genre != "zone":
+            cells.append(f'<mxCell id="{b.id}-bande" value="" style="rounded=0;html=1;fillColor={ROLES[b.genre][0]};strokeColor=none;" vertex="1" parent="1"><mxGeometry x="{b.x}" y="{b.y + DECALAGE}" width="{BANDE}" height="{b.h}" as="geometry" /></mxCell>')
     for i, f in enumerate(s.fleches):
-        style = f"edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor={SOFT};strokeWidth=1.3;endArrow=classic;" + ("dashed=1;" if f.pointille else "")
+        couleur, dash = SENS[f.genre]
+        style = (f"edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor={couleur};strokeWidth={TRAIT_FLECHE};endArrow=block;endFill=1;"
+                 f"fontColor={couleur};fontStyle=1;fontSize={T_ETIQUETTE};labelBackgroundColor=#FFFFFF;" + ("dashed=1;" if dash else ""))
         cells.append(f'<mxCell id="f{i}" value="{e(f.etiquette)}" style="{style}" edge="1" parent="1" source="{f.de}" target="{f.vers}"><mxGeometry relative="1" as="geometry" /></mxCell>')
-    cells.append(f'<mxCell id="leg" value="{e(s.legende)}" style="text;html=1;align=left;fontSize=9;fontColor={SOFT};" vertex="1" parent="1"><mxGeometry x="40" y="{s.hauteur - 30}" width="{s.largeur - 80}" height="20" as="geometry" /></mxCell>')
-    return ('<mxfile host="app.diagrams.net" modified="2026-10-03T00:00:00.000Z" agent="RITA" version="24.0.0" type="device">\n'
+    # Légende dessinée : mêmes échantillons que le .svg
+    y0 = s.hauteur - 17 + DECALAGE
+    nb = len({l for *_, l in _disposer_legende(s)})
+    cells.append(f'<mxCell id="leg-r" value="" style="line;strokeWidth=1.5;html=1;strokeColor={RULE};" vertex="1" parent="1"><mxGeometry x="40" y="{s.hauteur - 38 + DECALAGE}" width="{s.largeur - 80}" height="8" as="geometry" /></mxCell>')
+    cells.append(f'<mxCell id="leg-t" value="Légende" style="text;html=1;align=left;fontSize={T_LEGENDE + 1};fontStyle=1;fontColor={NAVY};" vertex="1" parent="1"><mxGeometry x="40" y="{y0 - 4}" width="80" height="24" as="geometry" /></mxCell>')
+    for genre, cle, libelle, x, ligne in _disposer_legende(s):
+        y = y0 + ligne * LIGNE_LEGENDE
+        largeur = _largeur_texte(libelle, T_LEGENDE) + 16
+        if genre == "boite":
+            cells.append(f'<mxCell id="leg-b-{cle}" value="" style="{_style_boite(cle)}" vertex="1" parent="1"><mxGeometry x="{x:.0f}" y="{y}" width="28" height="18" as="geometry" /></mxCell>')
+            cells.append(f'<mxCell id="leg-bt-{cle}" value="{e(libelle)}" style="text;html=1;align=left;fontSize={T_LEGENDE};fontColor={INK};" vertex="1" parent="1"><mxGeometry x="{x + 34:.0f}" y="{y - 3}" width="{largeur:.0f}" height="24" as="geometry" /></mxCell>')
+        elif genre == "fleche":
+            couleur, dash = SENS[cle]
+            style = f"endArrow=block;endFill=1;html=1;strokeColor={couleur};strokeWidth={TRAIT_FLECHE};" + ("dashed=1;" if dash else "")
+            cells.append(f'<mxCell id="leg-f-{cle}" value="" style="{style}" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="{x:.0f}" y="{y + 9}" as="sourcePoint" /><mxPoint x="{x + 40:.0f}" y="{y + 9}" as="targetPoint" /></mxGeometry></mxCell>')
+            cells.append(f'<mxCell id="leg-ft-{cle}" value="{e(libelle)}" style="text;html=1;align=left;fontSize={T_LEGENDE};fontColor={INK};" vertex="1" parent="1"><mxGeometry x="{x + 48:.0f}" y="{y - 3}" width="{largeur:.0f}" height="24" as="geometry" /></mxCell>')
+    cells.append(f'<mxCell id="leg" value="{e(s.legende)}" style="text;html=1;align=left;fontSize={T_LEGENDE};fontColor={SOFT};" vertex="1" parent="1"><mxGeometry x="40" y="{s.hauteur + 10 + DECALAGE + (nb - 1) * LIGNE_LEGENDE}" width="{s.largeur - 80}" height="24" as="geometry" /></mxCell>')
+    return ('<mxfile host="app.diagrams.net" modified="2026-10-04T00:00:00.000Z" agent="RITA" version="24.0.0" type="device">\n'
             f'  <diagram id="{s.nom}" name="{e(s.titre)}">\n'
-            f'    <mxGraphModel dx="1400" dy="900" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="{s.largeur}" pageHeight="{s.hauteur}" math="0" shadow="0">\n'
+            f'    <mxGraphModel dx="1400" dy="900" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="{s.largeur}" pageHeight="{s.hauteur_totale}" math="0" shadow="0">\n'
             '      <root>\n        ' + "\n        ".join(cells) + '\n      </root>\n    </mxGraphModel>\n  </diagram>\n</mxfile>\n')
 
 
@@ -140,99 +257,105 @@ def drawio(s: Schema) -> str:
 # Schéma 1 : l'architecture autour du modèle (chemin d'une requête, le 03/10/2026)
 # =============================================================================
 ARCHI = Schema(
-    nom="E3-architecture", largeur=1500, hauteur=900,
+    nom="E3-architecture", largeur=1500, hauteur=910,
     titre="RITA : le chemin d'un briefing, et tout ce qui le regarde passer",
     sous_titre="Rapport E3, section 2 · état du code au 4 octobre 2026 · un seul utilisateur, un modèle fourni, aucune action",
     boites=[
-        Boite("zc", 40, 90, 250, 300, "CLIENTS (C10)", genre="zone"),
-        Boite("web", 56, 118, 218, 72, "Interface web", ["frontend/, HTML, CSS, JS sans build", "3 écrans : portefeuille, indicateurs, briefing", "clé saisie, sessionStorage, 403 affiché"], "normal"),
-        Boite("mcp", 56, 204, 218, 72, "Passerelle MCP", ["passerelle_mcp/serveur.py", "3 outils en lecture seule", "appelle l'API par HTTP, avec la clé"], "normal"),
-        Boite("curl", 56, 290, 218, 72, "curl, /docs (OpenAPI 3.1.0)", ["POST /briefing?ticker=MC.PA", "le seul chemin vers le modèle", "aucun texte libre : un ticker"], "normal"),
+        Boite("zc", 40, 90, 274, 310, "CLIENTS (C10)", genre="zone"),
+        Boite("web", 56, 118, 242, 82, "Interface web", ["frontend/, HTML, CSS, JS sans build", "3 écrans : portefeuille, indicateurs, briefing", "clé saisie, sessionStorage, 403 affiché"], "normal"),
+        Boite("mcp", 56, 210, 242, 82, "Passerelle MCP", ["passerelle_mcp/serveur.py", "3 outils en lecture seule", "appelle l'API par HTTP, avec la clé"], "normal"),
+        Boite("curl", 56, 302, 242, 82, "curl, /docs (OpenAPI 3.1.0)", ["POST /briefing?ticker=MC.PA", "le seul chemin vers le modèle", "aucun texte libre : un ticker"], "normal"),
 
-        Boite("api", 340, 118, 290, 120, "api/main.py : l'API (C9)", ["middleware : un request_id par requête (X-Request-ID)", "clé X-API-Key, 16 car. min., temps constant, 403", "aucune clé par défaut (INC-001, OWASP API2)", "14 chemins ; /briefing est le seul qui parle au modèle", "journal : servi, refusé, 502 (request_id, jamais le texte)"], "lavis"),
+        Boite("api", 340, 118, 358, 120, "api/main.py : l'API (C9)", ["middleware : un request_id par requête (X-Request-ID)", "clé X-API-Key, 16 car. min., temps constant, 403", "aucune clé par défaut (INC-001, OWASP API2)", "14 chemins ; /briefing est le seul qui parle au modèle", "journal : servi, refusé, 502 (request_id, jamais le texte)"], "lavis"),
 
-        Boite("zg", 340, 262, 290, 330, "graph/workflow.py : LangGraph, 3 nœuds, arêtes fixes", genre="zone"),
-        Boite("scout", 356, 290, 258, 58, "scout", ["lit PostgreSQL : 13 indicateurs par valeur", "âge du dernier cours en jours calendaires, cotation périmée"], "normal"),
-        Boite("rag", 356, 362, 258, 86, "rag", ["garde-fou d'ENTRÉE : intention AMF, 7 motifs,", "  100 % / 0 % (03/10), avant tout accès à la base", "ChromaDB : filtre ticker puis hybride dense + BM25", "refus OUT_OF_CORPUS si rien ne cite la valeur"], "normal"),
-        Boite("red", 356, 462, 258, 58, "redacteur", ["agents/analyst.py : prompt (interdit AMF écrit)", "src/llm.py : la cascade"], "normal"),
-        Boite("casc", 356, 532, 258, 48, "Foundry (gpt-5.4) → Anthropic → OpenRouter", ["une génération tracée par essai ; repli ≈ 0,3 s"], "lavis"),
+        Boite("zg", 340, 262, 358, 368, "LangGraph (graph/workflow.py), arêtes fixes", genre="zone"),
+        Boite("scout", 356, 292, 326, 66, "scout", ["lit PostgreSQL : 13 indicateurs par valeur", "âge du dernier cours en jours calendaires, cotation périmée"], "normal"),
+        Boite("rag", 356, 372, 326, 98, "rag", ["garde-fou d'ENTRÉE : intention AMF, 7 motifs,", "  100 % / 0 % (03/10), avant tout accès à la base", "ChromaDB : filtre ticker puis hybride dense + BM25", "refus OUT_OF_CORPUS si rien ne cite la valeur"], "normal"),
+        Boite("red", 356, 484, 326, 66, "redacteur", ["agents/analyst.py : prompt (interdit AMF écrit)", "src/llm.py : la cascade"], "normal"),
+        Boite("casc", 356, 564, 326, 52, "Foundry (gpt-5.4) → Anthropic → OpenRouter", ["une génération tracée par essai ; repli ≈ 0,3 s"], "lavis"),
 
-        Boite("sortie", 340, 612, 290, 70, "guardrails/sortie.py : garde-fou de SORTIE (C17)", ["9 motifs, 70 % / 0 % (03/10) ; échec fermé", "texte remplacé par un refus, HTTP 200, conforme_amf=false"], "lavis"),
-        Boite("rep", 340, 700, 290, 56, "Réponse JSON", ["ticker, prix, variation, briefing, conforme_amf,", "motifs_amf ; en-tête X-Request-ID"], "normal"),
+        Boite("sortie", 340, 648, 358, 70, "guardrails/sortie.py : garde-fou de SORTIE (C17)", ["9 motifs, 70 % / 0 % (03/10) ; échec fermé", "texte remplacé par un refus, HTTP 200, conforme_amf=false"], "garde"),
+        Boite("rep", 340, 736, 358, 66, "Réponse JSON", ["ticker, prix, variation, briefing, conforme_amf,", "motifs_amf ; en-tête X-Request-ID"], "normal"),
 
-        Boite("pg", 700, 290, 190, 58, "PostgreSQL 18 (E1)", ["10 tables, 1 vue, dix ans de cotations", "écrit par le seul pipeline"], "stock"),
-        Boite("chroma", 700, 362, 190, 58, "ChromaDB (index)", ["articles vectorisés, reconstruit chaque nuit", "1 359 documents (27/09)"], "stock"),
-        Boite("nuit", 700, 612, 220, 100, "Collecte nocturne, 19 h", ["pipelines/ingest.py, tâche planifiée Windows", "yfinance, RSS, scraping, FRED, BCE", "garde-fou d'INJECTION sur les articles :", "  12 motifs, 70 % / 0 % (03/10)", "40 journaux du 24/08 au 02/10"], "normal"),
+        Boite("pg", 730, 292, 260, 66, "PostgreSQL 18 (E1)", ["10 tables, 1 vue, dix ans de cotations", "écrit par le seul pipeline"], "stock"),
+        Boite("chroma", 730, 372, 240, 66, "ChromaDB (index)", ["articles vectorisés, reconstruit chaque nuit", "1 359 documents (27/09)"], "stock"),
+        Boite("nuit", 730, 648, 260, 114, "Collecte nocturne, 19 h", ["pipelines/ingest.py, tâche planifiée Windows", "yfinance, RSS, scraping, FRED, BCE", "garde-fou d'INJECTION sur les articles :", "  12 motifs, 70 % / 0 % (03/10)", "40 journaux du 24/08 au 02/10"], "normal"),
 
-        Boite("zo", 1040, 90, 380, 600, "OBSERVABILITÉ (C11, C20)", genre="zone"),
-        Boite("lf", 1056, 118, 348, 196, "Langfuse Cloud, région UE (Irlande)", ["une trace par briefing, identifiant = request_id :", "  briefing  (verdict AMF, note conforme_amf)", "  ├─ scout", "  ├─ rag ─ garde-fou-entree", "  ├─ redacteur ─ briefing-llm ─ llm-<fournisseur>", "  └─ garde-fou-sortie", "jetons, erreur du repli, niveau WARNING au refus", "première trace réelle : 02/10 18:39 ; palier gratuit"], "lavis"),
-        Boite("fr", 1056, 416, 348, 58, "GET /donnees/fraicheur + bandeau", ["retard en jours ouvrés, 3 états, lisible sans couleur", "la panne la plus fréquente : la collecte d'hier"], "normal"),
-        Boite("al", 1056, 330, 348, 70, "Alertes (2, palier gratuit) → GitHub Actions", ["erreurs de fournisseur ; p95 de l'appel au modèle", "alerte-incident.yml ouvre une issue « incident »", "réglées le 04/10, ont sonné : issue #77"], "normal"),
-        Boite("tb", 1056, 490, 348, 56, "Tableau de bord « RITA C11 » (03/10, par l'API)", ["générations par fournisseur · p95 de briefing-llm", "observations en ERROR ou WARNING"], "lavis"),
-        Boite("cout", 1056, 562, 348, 56, "Coût par briefing", ["à zéro pour OpenRouter : nom de modèle absent", "de la grille de prix Langfuse ; à corriger"], "manque"),
+        Boite("zo", 1030, 90, 420, 570, "OBSERVABILITÉ (C11, C20)", genre="zone"),
+        Boite("lf", 1046, 118, 388, 176, "Langfuse Cloud, région UE (Irlande)", ["une trace par briefing, identifiant = request_id :", "  briefing  (verdict AMF, note conforme_amf)", "  ├─ scout", "  ├─ rag ─ garde-fou-entree", "  ├─ redacteur ─ briefing-llm ─ llm-<fournisseur>", "  └─ garde-fou-sortie", "jetons, erreur du repli, niveau WARNING au refus", "première trace réelle : 02/10 18:39 ; palier gratuit"], "lavis"),
+        Boite("fr", 1046, 416, 388, 66, "GET /donnees/fraicheur + bandeau", ["retard en jours ouvrés, 3 états, lisible sans couleur", "la panne la plus fréquente : la collecte d'hier"], "normal"),
+        Boite("al", 1046, 318, 388, 82, "Alertes (2, palier gratuit) → GitHub Actions", ["erreurs de fournisseur ; p95 de l'appel au modèle", "alerte-incident.yml ouvre une issue « incident »", "réglées le 04/10, ont sonné : issue #77"], "normal"),
+        Boite("tb", 1046, 498, 388, 66, "Tableau de bord « RITA C11 » (03/10, par l'API)", ["tentatives par fournisseur, échecs compris · p95 de briefing-llm", "observations en ERROR ou WARNING"], "lavis"),
+        Boite("cout", 1046, 580, 388, 66, "Coût par briefing", ["à zéro pour OpenRouter : nom de modèle absent", "de la grille de prix Langfuse ; à corriger"], "manque"),
 
-        Boite("sand", 700, 728, 220, 70, "Bac à sable", ["la suite de tests ne trace jamais", "(conftest.py, INC-006) ; doubles de client", "805 tests, 94,70 % (04/10)"], "note"),
-        Boite("test", 700, 814, 220, 56, "Tests en CI à chaque poussée", ["test.yml : données, puis suite + couverture ≥ 90 %,", "garde-fous mesurés, portes xfail strict"], "note"),
+        Boite("sand", 1030, 680, 420, 82, "Bac à sable", ["la suite de tests ne trace jamais", "(conftest.py, INC-006) ; doubles de client", "805 tests, 94,70 % (04/10)"], "note"),
+        Boite("test", 1030, 776, 420, 82, "Tests en CI à chaque poussée", ["test.yml : données, puis suite + couverture ≥ 90 %,", "puis garde-fous mesurés, portes xfail strict"], "note"),
     ],
     fleches=[
-        Fleche("web", "api", "HTTP + clé"), Fleche("mcp", "api", "HTTP + clé"), Fleche("curl", "api"),
+        Fleche("web", "api"), Fleche("mcp", "api"), Fleche("curl", "api"),
         Fleche("api", "scout", sortie="b", entree="h"),
         Fleche("scout", "rag", sortie="b", entree="h"), Fleche("rag", "red", sortie="b", entree="h"), Fleche("red", "casc", sortie="b", entree="h"),
         Fleche("casc", "sortie", sortie="b", entree="h"), Fleche("sortie", "rep", sortie="b", entree="h"),
-        Fleche("pg", "scout", "lecture", sortie="g", entree="d"), Fleche("chroma", "rag", "lecture", sortie="g", entree="d"),
-        Fleche("nuit", "pg", "écrit", sortie="h:0.95", entree="b:0.97"), Fleche("nuit", "chroma", "indexe", sortie="h:0.45", entree="b:0.5"),
+        Fleche("pg", "scout", sortie="g", entree="d", sens="lecture"), Fleche("chroma", "rag", sortie="g", entree="d", sens="lecture"),
+        Fleche("nuit", "pg", "écrit", sortie="h:0.95", entree="b:0.95", sens="ecriture"), Fleche("nuit", "chroma", "indexe", sortie="h:0.45", entree="b:0.5", sens="ecriture"),
         Fleche("api", "lf", "trace (racine et générations)", sortie="d", entree="g"),
-        Fleche("lf", "al", sortie="b", entree="h", pointille=True),
+        Fleche("lf", "al", "déclenche", sortie="b", entree="h"),
     ],
-    legende="Boîtes pleines : code présent et testé au 04/10/2026. Boîtes pointillées orange : conçu, non construit. Mesures datées dans le rapport, section 6.",
+    legende="État du code au 04/10/2026. Mesures datées dans le rapport E3, section 6.",
+    cles_boites={"normal": "composant présent et testé", "lavis": "cœur du traitement", "garde": "garde-fou",
+                 "stock": "réserve de données", "manque": "à corriger ou non construit", "note": "tests"},
+    cles_fleches={"flux": "appel, passage", "ecriture": "écriture", "lecture": "lecture seule"},
 )
 
 # =============================================================================
 # Schéma 2 : la chaîne de livraison (C13), ce qui tourne et ce qui manque
 # =============================================================================
 CHAINE = Schema(
-    nom="E3-chaine-livraison", largeur=1400, hauteur=760,
+    nom="E3-chaine-livraison", largeur=1400, hauteur=746,
     titre="RITA : la chaîne de livraison continue, du poste au serveur",
     sous_titre="Rapport E3, section 7 · cinq workflows GitHub Actions · état au 4 octobre 2026",
     boites=[
-        Boite("zp", 40, 90, 260, 260, "POSTE D'ERA", genre="zone"),
-        Boite("dev", 56, 118, 228, 70, "Branche develop", ["un commit = une intention", "tests écrits avant le code (TDD)", "git push origin develop"], "normal"),
-        Boite("hook", 56, 202, 228, 60, "Hook pre-push (.githooks/)", ["refuse la poussée directe sur main", "activé une fois par clone"], "lavis"),
-        Boite("dod", 56, 276, 228, 60, "scripts/verifier_livrable.py", ["Definition of Done : tests, liens,", "ETAT et CHANGELOG, arbre propre"], "normal"),
+        Boite("zp", 40, 90, 260, 284, "POSTE D'ERA", genre="zone"),
+        Boite("dev", 56, 118, 228, 82, "Branche develop", ["un commit = une intention", "tests écrits avant le code (TDD)", "git push origin develop"], "normal"),
+        Boite("hook", 56, 214, 228, 66, "Hook pre-push (.githooks/)", ["refuse la poussée directe sur main", "activé une fois par clone"], "lavis"),
+        Boite("dod", 56, 294, 228, 66, "scripts/verifier_livrable.py", ["Definition of Done : tests, liens,", "ETAT et CHANGELOG, arbre propre"], "normal"),
 
-        Boite("zgh", 340, 90, 620, 500, "GITHUB (dépôt privé Ganda15/rita-agent)", genre="zone"),
-        Boite("test", 356, 118, 280, 100, "test.yml : à chaque poussée et PR", ["job pytest : 1. TEST DES DONNÉES (260 verts, 5 s)", "  2. suite + couverture ≥ 90 % (.coveragerc)", "job evals : garde-fous mesurés,", "  portes non compensables (xfail strict à 85 %)", "778 passed, 29 skipped, 94,70 % (04/10)"], "lavis"),
-        Boite("pr", 664, 118, 280, 100, "revue-pr.yml : chaque PR vers main", ["relecture adversariale automatisée", "(action officielle, jeton d'abonnement en secret)", "grille de lecture : AGENTS.md et les règles du dépôt", "24 PR fusionnées au 04/10"], "lavis"),
-        Boite("main", 356, 236, 280, 56, "Branche main", ["ne bouge que par une PR depuis develop", "un livrable = un tag livrable-E<n>-v<k>"], "normal"),
-        Boite("liv", 356, 310, 588, 120, "livraison.yml : poussée, PR, et tag livrable-*", ["1. tests, porte de livraison (rien n'est construit si rouge)", "2. construction de l'image, jamais publiée ici", "3. l'image construite démarre et répond sur /health", "4. l'accès est restreint : 403 sans clé", "5. publication sur ghcr.io/ganda15/rita-api, seulement sur un tag (issue #22 : avant, la publication précédait la vérification)"], "lavis"),
-        Boite("gisk", 664, 236, 280, 56, "scan-giskard.yml : manuel", ["scan d'attaques, deux frontières", "plafond de coût saisi ; run 9 le 20/09"], "normal"),
-        Boite("alerte", 664, 524, 280, 60, "alerte-incident.yml", ["reçu de Langfuse (repository_dispatch)", "ou bouton manuel ; ouvre ou commente", "une issue « incident » ; label créé"], "normal"),
-        Boite("ghcr", 356, 446, 588, 70, "Image sur GHCR", ["python:3.13-slim, deux étapes, non-root (UID 10001)", "ghcr.io/ganda15/rita-api:livrable-E<n>-v<k>", "jamais publiée pour de vrai au 03/10"], "stock"),
+        Boite("zgh", 340, 90, 620, 610, "GITHUB (dépôt privé Ganda15/rita-agent)", genre="zone"),
+        Boite("test", 356, 118, 280, 112, "test.yml : à chaque poussée et PR", ["job pytest : 1. TEST DES DONNÉES (260 verts, 5 s)", "  2. suite + couverture ≥ 90 % (.coveragerc)", "job evals : garde-fous mesurés,", "  portes non compensables (xfail strict à 85 %)", "778 passed, 29 skipped, 94,70 % (04/10)"], "lavis"),
+        Boite("pr", 664, 118, 280, 112, "revue-pr.yml : chaque PR vers main", ["relecture adversariale automatisée", "(action officielle, jeton d'abonnement en secret)", "grille : AGENTS.md et les règles du dépôt", "22 PR fusionnées vers main au 04/10"], "lavis"),
+        Boite("main", 356, 250, 280, 66, "Branche main", ["ne bouge que par une PR depuis develop", "un livrable = un tag livrable-E<n>-v<k>"], "normal"),
+        Boite("liv", 356, 336, 588, 128, "livraison.yml : poussée, PR, et tag livrable-*", ["1. tests, porte de livraison (rien n'est construit si rouge)", "2. construction de l'image, jamais publiée ici", "3. l'image construite démarre et répond sur /health", "4. l'accès est restreint : 403 sans clé", "5. publication sur ghcr.io/ganda15/rita-api, seulement sur un tag", "   (issue #22 : avant, la publication précédait la vérification)"], "lavis"),
+        Boite("gisk", 664, 250, 280, 66, "scan-giskard.yml : manuel", ["scan d'attaques, deux frontières", "plafond de coût saisi ; run 9 le 20/09"], "normal"),
+        Boite("alerte", 664, 586, 280, 98, "alerte-incident.yml", ["reçu de Langfuse (repository_dispatch)", "ou bouton manuel ; ouvre ou commente", "une issue « incident » ; label créé", "a sonné pour de vrai le 04/10 (#77)"], "normal"),
+        Boite("ghcr", 356, 484, 588, 82, "Image sur GHCR", ["python:3.13-slim, deux étapes, non-root (UID 10001)", "ghcr.io/ganda15/rita-api:livrable-E<n>-v<k>", "jamais publiée pour de vrai au 03/10"], "stock"),
 
-        Boite("zs", 1000, 90, 360, 260, "SERVEUR HETZNER (CX23, 4 Go, HTTPS Caddy)", genre="zone"),
+        Boite("zs", 1000, 90, 360, 290, "SERVEUR HETZNER (CX23, 4 Go, HTTPS Caddy)", genre="zone"),
         Boite("srv", 1016, 118, 328, 86, "docker compose (manuel, par SSH)", ["pull de l'image taguée, up -d --force-recreate api", "conteneur en lecture seule, no-new-privileges", "variables Langfuse transmises depuis le 02/10"], "normal"),
-        Boite("gel", 1016, 220, 328, 56, "Copie figée depuis le 19/08/2026", ["première livraison de cette chaîne à faire", "les variables Langfuse ne sont pas encore posées"], "manque"),
-        Boite("lfs", 1016, 290, 328, 44, "Langfuse Cloud UE ← traces du serveur", ["dès que les variables y sont"], "note"),
+        Boite("gel", 1016, 218, 328, 66, "Copie figée depuis le 19/08/2026", ["première livraison de cette chaîne à faire", "les variables Langfuse ne sont pas encore posées"], "manque"),
+        Boite("lfs", 1016, 298, 328, 66, "Langfuse Cloud UE", ["traces du poste depuis le 02/10 ;", "du serveur dès que les variables y sont"], "note"),
 
-        Boite("zm", 1000, 380, 360, 210, "CONÇU, NON CONSTRUIT (Mardik ③, Industrialisation)", genre="zone"),
-        Boite("rb", 1016, 408, 328, 44, "rollback.yml : retour arrière", ["tag précédent redéployé, jamais reconstruit"], "manque"),
-        Boite("man", 1016, 462, 328, 44, "Manifeste de version, GET /version", ["modèle daté, prompt_version, config, index"], "manque"),
-        Boite("filtre", 1016, 516, 328, 44, "Filtre de chemin + gate sur le vrai modèle", ["porte payante seulement si prompt ou jeu changent"], "manque"),
+        Boite("zm", 1000, 400, 360, 216, "CONÇU, NON CONSTRUIT (brief Mardik ③)", genre="zone"),
+        Boite("rb", 1016, 428, 328, 50, "rollback.yml : retour arrière", ["tag précédent redéployé, jamais reconstruit"], "manque"),
+        Boite("man", 1016, 490, 328, 50, "Manifeste de version, GET /version", ["modèle daté, prompt_version, config, index"], "manque"),
+        Boite("filtre", 1016, 552, 328, 50, "Filtre de chemin + gate sur le vrai modèle", ["porte payante seulement si prompt ou jeu changent"], "manque"),
 
-        Boite("note", 40, 380, 260, 100, "Ce que la chaîne coche pour C13", ["test → construction → démarrage vérifié →", "accès vérifié → publication sur tag,", "exécuté par la plateforme à chaque poussée.", "Un Dockerfile seul ne coche aucun critère."], "note"),
-        Boite("rouge", 40, 500, 260, 90, "La CI a refusé, et c'était juste", ["28/09 : pandas reconstruit (#23, non épinglé)", "03/10 : dix exécutions rouges, tests liés au", "poste (INC-007), corrigé le jour même", "aucune alerte sur une exécution rouge"], "note"),
+        Boite("note", 40, 400, 260, 100, "Ce que la chaîne coche pour C13", ["test → construction → démarrage vérifié →", "accès vérifié → publication sur tag,", "exécuté par la plateforme à chaque poussée.", "Un Dockerfile seul ne coche aucun critère."], "note"),
+        Boite("rouge", 40, 516, 260, 98, "La CI a refusé, et c'était juste", ["28/09 : pandas reconstruit (#23, non épinglé)", "03/10 : dix exécutions rouges, tests liés au", "poste (INC-007), corrigé le jour même", "aucune alerte sur une exécution rouge"], "note"),
     ],
     fleches=[
         Fleche("dev", "test", "push", sortie="d", entree="g"),
-        Fleche("test", "pr", "puis la PR", sortie="d", entree="g"),
+        Fleche("test", "pr", "PR", sortie="d", entree="g"),
         Fleche("pr", "main", "fusion relue", sortie="b", entree="h"),
         Fleche("main", "liv", "tag livrable-*", sortie="b", entree="h"),
         Fleche("liv", "ghcr", "étape 5", sortie="b", entree="h"),
         Fleche("ghcr", "srv", "pull", sortie="d:0.3", entree="g:0.5", pointille=True),
-        Fleche("hook", "main", "refuse le direct", sortie="d", entree="g", pointille=True),
-        Fleche("lfs", "alerte", "alerte", sortie="g", entree="d", pointille=True),
+        Fleche("hook", "main", "refus", sortie="d", entree="g", sens="erreur"),
+        Fleche("lfs", "alerte", sortie="g", entree="d"),
     ],
-    legende="Boîtes pleines : existe et tourne (dates mesurées). Pointillé orange : conçu, non construit. Flèches pointillées : manuel ou non encore exécuté.",
+    legende="Dates mesurées au 04/10/2026. Détail : rapport E3, section 7.",
+    cles_boites={"normal": "étape ou poste", "lavis": "workflow qui tourne", "stock": "artefact publié",
+                 "manque": "conçu, non construit", "note": "à retenir"},
+    cles_fleches={"flux": "enchaînement automatique", "manuel": "manuel ou pas encore exécuté", "erreur": "refus"},
 )
 
 
@@ -240,33 +363,39 @@ CHAINE = Schema(
 # Schéma 3 : C10, une demande de briefing depuis l'écran, et ses refus
 # =============================================================================
 INTEGRATION = Schema(
-    nom="E3-integration-briefing", largeur=1400, hauteur=560,
+    nom="E3-integration-briefing", largeur=1400, hauteur=680,
     titre="RITA : une demande de briefing, de l'écran au modèle et retour",
     sous_titre="Rapport E3, section 4 · écran 3 (frontend/briefing.html, briefing.js) · état au 4 octobre 2026",
     boites=[
-        Boite("u", 40, 100, 200, 120, "1. L'utilisateur", ["saisit la clé (champ masqué)", "choisit un code dans la liste", "  (GET /donnees/valeurs, facultatif)", "envoie : bouton ou touche Entrée"], "normal"),
-        Boite("e", 280, 100, 250, 120, "2. L'écran envoie", ["POST /briefing?ticker=MC.PA", "en-tête X-API-Key (sessionStorage)", "annonce l'attente : 5 à 15 s", "  (zone de statut, aria-live)"], "lavis"),
-        Boite("a", 570, 100, 250, 120, "3. L'API vérifie", ["clé : 16 car. min., temps constant", "identifiant de requête X-Request-ID", "puis le graphe : scout, rag, redacteur"], "lavis"),
-        Boite("m", 860, 100, 250, 120, "4. Le modèle écrit", ["cascade Foundry → Anthropic → OpenRouter", "puis garde-fou de SORTIE", "  (texte retenu si recommandation)"], "lavis"),
-        Boite("ok", 1150, 100, 210, 120, "5. L'écran affiche", ["le verdict EN MOTS", "le texte par textContent", "la référence de requête", "focus posé sur le résultat"], "normal"),
+        # Le parcours normal, de gauche à droite.
+        Boite("u", 40, 104, 236, 128, "1. L'utilisateur", ["saisit la clé (champ masqué)", "choisit un code dans la liste,", "remplie par GET /donnees/valeurs", "envoie : bouton ou touche Entrée"], "normal"),
+        Boite("e", 302, 104, 256, 128, "2. L'écran envoie", ["POST /briefing?ticker=MC.PA", "en-tête X-API-Key", "annonce l'attente : 5 à 15 s", "  (zone de statut, aria-live)"], "lavis"),
+        Boite("a", 584, 104, 262, 128, "3. L'API vérifie", ["clé : 16 car. min., temps constant", "identifiant X-Request-ID", "puis le graphe :", "  scout, rag, redacteur"], "lavis"),
+        Boite("m", 872, 104, 262, 128, "4. Le modèle écrit", ["cascade de fournisseurs :", "  Foundry → Anthropic → OpenRouter", "puis garde-fou de SORTIE", "  (texte retenu si recommandation)"], "lavis"),
+        Boite("ok", 1160, 104, 200, 128, "5. L'écran affiche", ["le verdict EN MOTS", "le texte (textContent)", "la référence de requête", "focus sur le résultat"], "normal"),
 
-        Boite("z", 40, 260, 1320, 190, "LES RÉPONSES QUI NE SONT PAS UN BRIEFING, ET CE QUE L'ÉCRAN EN FAIT", genre="zone"),
-        Boite("e403", 56, 290, 300, 70, "403 : clé refusée", ["la clé est oubliée (sessionStorage)", "retour à la saisie, message en clair"], "normal"),
-        Boite("e502", 376, 290, 300, 70, "502 : valeur absente de la base", ["« Valeur introuvable : … n'est pas", "dans l'univers suivi »"], "normal"),
-        Boite("e500", 696, 290, 300, 70, "500 : aucun fournisseur ne répond", ["mesuré le 03/10 : « Erreur 500 » générique,", "sans fuite ; message dédié prévu (#75)"], "manque"),
-        Boite("enet", 1016, 290, 328, 70, "Aucune réponse du serveur", ["pas de code HTTP à lire : try/catch,", "« Le serveur ne répond pas »"], "normal"),
-        Boite("ecle", 56, 372, 620, 62, "Défaut connu : la clé est mémorisée avant d'avoir servi (#73)", ["les écrans 1 et 2 attendent un appel réussi ; l'écran 3 non. Correction après le gel du 15/10, test d'abord."], "manque"),
-        Boite("emcp", 696, 372, 648, 62, "Le deuxième client : la passerelle MCP", ["mêmes routes, même clé ; trois outils en lecture seule ; aucun outil ne donne accès à /briefing"], "note"),
+        # Les réponses qui ne sont pas un briefing, dans l'ordre où elles peuvent arriver.
+        Boite("z", 40, 262, 1320, 266, "LES RÉPONSES QUI NE SONT PAS UN BRIEFING, ET CE QUE L'ÉCRAN EN FAIT", genre="zone"),
+        Boite("enet", 56, 340, 307, 88, "Pas de réponse du serveur", ["exception attrapée (try/catch) :", "« Le serveur ne répond pas.", "  Vérifiez que l'API est démarrée. »"], "normal"),
+        Boite("e403", 383, 340, 307, 88, "403 : clé refusée", ["la clé est oubliée (sessionStorage)", "retour à la saisie,", "message en clair"], "normal"),
+        Boite("e502", 710, 340, 307, 88, "502 : valeur absente de la base", ["« Valeur introuvable : … n'est pas", "  dans l'univers suivi. »"], "normal"),
+        Boite("e500", 1037, 340, 307, 88, "500 : aucun fournisseur ne répond", ["mesuré le 03/10 : « Erreur 500 »", "générique, sans fuite ;", "message dédié prévu (#75)"], "manque"),
+        Boite("ecle", 56, 444, 634, 68, "Défaut connu : la clé est mémorisée avant d'avoir servi (#73)", ["les écrans 1 et 2 attendent un appel réussi ; l'écran 3 non.", "Correction après le gel du 15/10, test d'abord."], "manque"),
+        Boite("emcp", 710, 444, 634, 68, "Le deuxième client : la passerelle MCP", ["mêmes routes, même clé ; trois outils en lecture seule ;", "aucun outil ne donne accès à /briefing"], "note"),
 
-        Boite("t", 40, 470, 1320, 50, "Preuves", ["tests/test_frontend.py (72, statiques) · tests/test_smoke_ui.py (7, vrai navigateur, /briefing intercepté) · tests/test_health.py, test_api_donnees.py (l'API) · evidence/C10/"], "note"),
+        Boite("t", 40, 548, 1320, 60, "Preuves", ["tests/test_frontend.py (72, statiques) · tests/test_smoke_ui.py (7, vrai navigateur, /briefing intercepté) · tests/test_health.py, test_api_donnees.py (l'API) · evidence/C10/"], "note"),
     ],
     fleches=[
         Fleche("u", "e"), Fleche("e", "a"), Fleche("a", "m"), Fleche("m", "ok"),
-        Fleche("a", "e403", "sans clé", sortie="b:0.2", entree="h:0.8", pointille=True),
-        Fleche("a", "e502", "", sortie="b:0.5", entree="h:0.6", pointille=True),
-        Fleche("m", "e500", "", sortie="b:0.3", entree="h:0.6", pointille=True),
+        Fleche("e", "enet", "réseau coupé", sortie="b:0.3", entree="h:0.62", sens="erreur", pos=0.72),
+        Fleche("a", "e403", "clé absente ou fausse", sortie="b:0.2", entree="h:0.75", sens="erreur", pos=0.72),
+        Fleche("a", "e502", "valeur inconnue", sortie="b:0.8", entree="h:0.35", sens="erreur", pos=0.72),
+        Fleche("m", "e500", "aucun fournisseur", sortie="b:0.6", entree="h:0.4", sens="erreur", pos=0.72),
     ],
-    legende="Boîtes pleines : comportement présent et testé. Pointillé orange : écart connu, corrigé après le gel. Flèches pointillées : réponses d'erreur.",
+    legende="Comportement présent et testé au 04/10/2026, relu contre frontend/briefing.js et api/main.py. Preuves : evidence/C10/.",
+    cles_boites={"normal": "côté écran ou réponse gérée", "lavis": "côté serveur", "manque": "écart connu, corrigé après le gel",
+                 "note": "preuve ou contexte"},
+    cles_fleches={"flux": "parcours normal", "erreur": "réponse d'erreur"},
 )
 
 # =============================================================================
@@ -285,7 +414,7 @@ MONITORAGE = Schema(
         Boite("lf", 500, 118, 300, 120, "Langfuse Cloud, région UE", ["reçoit les traces (palier gratuit)", "calcule latence, volumes, erreurs", "accès : compte du propriétaire", "reçoit des chiffres de marché, jamais une position"], "stock"),
 
         Boite("zr", 840, 90, 520, 170, "RESTITUTION", genre="zone"),
-        Boite("tb", 856, 118, 488, 64, "Tableau de bord « RITA C11 » (créé par l'API, 03/10)", ["générations par fournisseur (le repli se voit) · latence p95 de", "l'appel au modèle · observations en ERROR ou WARNING"], "lavis"),
+        Boite("tb", 856, 118, 488, 64, "Tableau de bord « RITA C11 » (créé par l'API, 03/10)", ["tentatives par fournisseur, échecs compris (le repli se voit) ·", "latence p95 de l'appel au modèle · observations en ERROR ou WARNING"], "lavis"),
         Boite("bd", 856, 190, 488, 56, "Bandeau de fraîcheur, écran 1 · export CSV des tuiles", ["lisible sans la couleur ; CSV pour un lecteur d'écran ou un tableur"], "normal"),
 
         Boite("za", 840, 280, 520, 140, "ALERTE", genre="zone"),
@@ -302,14 +431,17 @@ MONITORAGE = Schema(
         Fleche("al", "gh"),
         Fleche("fr", "bd", "", sortie="d:0.5", entree="g:0.8"),
     ],
-    legende="Boîtes pleines : présent et prouvé. Pointillé orange : à faire. Gris : service externe. Preuves : evidence/C11/ (alertes : preuve-alertes-2026-10-04.md).",
+    legende="Preuves : evidence/C11/ (alertes : preuve-alertes-2026-10-04.md).",
+    cles_boites={"lavis": "collecte et restitution principales", "normal": "présent et prouvé",
+                 "stock": "service externe", "manque": "à faire", "note": "bac à sable"},
+    cles_fleches={"flux": "envoi des mesures ou de l'alerte"},
 )
 
 # =============================================================================
 # Schéma 5 : C12, la stratégie de test
 # =============================================================================
 TESTS = Schema(
-    nom="E3-strategie-tests", largeur=1400, hauteur=560,
+    nom="E3-strategie-tests", largeur=1400, hauteur=580,
     titre="RITA : ce qui est testé, par quoi, et où",
     sous_titre="Rapport E3, section 6 · 805 tests collectés par pytest le 4 octobre 2026, regroupés par ce qu'ils protègent",
     boites=[
@@ -322,16 +454,18 @@ TESTS = Schema(
         Boite("i", 680, 222, 320, 90, "Interface : 79", ["72 statiques (aucune clé, textContent,", "accessibilité) · 7 dans un vrai", "navigateur (Playwright)"], "normal"),
         Boite("l", 1020, 222, 340, 90, "Livraison et outillage : 26", ["ordre de livraison.yml, Compose,", "Definition of Done, hooks de l'assistant"], "normal"),
 
-        Boite("zw", 40, 334, 1320, 120, "OÙ ILS TOURNENT", genre="zone"),
-        Boite("p", 56, 362, 300, 76, "Poste", ["C:\\Python314\\python.exe -m pytest --cov", "805 : 803 verts, 2 xfail (base réelle", "en transactions annulées)"], "normal"),
-        Boite("c1", 376, 362, 300, 76, "CI, job pytest", ["1. test des données : 260 verts, 3 sautés", "2. suite : 778 verts, 29 sautés (sans base),", "2 xfail ; couverture 94,70 % (seuil 90)"], "lavis"),
-        Boite("c2", 696, 362, 320, 76, "CI, job evals", ["mesure des garde-fous à chaque poussée", "portes non compensables : bloque", "la fusion si elle régresse"], "lavis"),
-        Boite("mg", 1036, 362, 308, 76, "Manuel, payant", ["scan Giskard (200 scénarios, 20/09)", "banc C7 (60 appels réels, 03/10)", "plafond de coût saisi"], "note"),
+        Boite("zw", 40, 334, 1320, 134, "OÙ ILS TOURNENT", genre="zone"),
+        Boite("p", 56, 368, 300, 84, "Poste", ["C:\\Python314\\python.exe -m pytest --cov", "805 : 803 verts, 2 xfail (base réelle", "en transactions annulées)"], "normal"),
+        Boite("c1", 376, 368, 300, 84, "CI, job pytest", ["1. test des données : 260 verts, 3 sautés", "2. suite : 778 verts, 29 sautés (sans base),", "2 xfail ; couverture 94,70 % (seuil 90)"], "lavis"),
+        Boite("c2", 696, 368, 320, 84, "CI, job evals", ["mesure des garde-fous à chaque poussée", "portes non compensables : bloque", "la fusion si elle régresse"], "lavis"),
+        Boite("mg", 1036, 368, 308, 84, "Manuel, payant", ["scan Giskard (200 scénarios, 20/09)", "banc C7 (60 appels réels, 03/10)", "plafond de coût saisi"], "note"),
 
-        Boite("lim", 40, 470, 1320, 46, "Limites", ["aucun schéma sur le texte produit ni sur les flux RSS · pas de jeu de référence de briefings · 29 tests ne tournent qu'avec une base (poste) · garde-fous à 70 % sur deux positions"], "manque"),
+        Boite("lim", 40, 484, 1320, 50, "Limites", ["aucun schéma sur le texte produit ni sur les flux RSS · pas de jeu de référence de briefings · 29 tests ne tournent qu'avec une base (poste) · garde-fous à 70 % sur deux positions"], "manque"),
     ],
     fleches=[],
-    legende="Chiffres : pytest --collect-only (805), CI run 37190015570 (04/10). Bleu : protège le comportement du modèle. Blanc : protège l'application autour.",
+    legende="Chiffres : pytest --collect-only (805), CI run 37190015570 (04/10).",
+    cles_boites={"lavis": "protège le comportement du modèle", "normal": "protège l'application autour",
+                 "note": "manuel, payant", "manque": "limites"},
 )
 
 

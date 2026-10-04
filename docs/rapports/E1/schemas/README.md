@@ -6,8 +6,8 @@ est celui des schémas E3 (`../../E3/schemas/generer_schemas.py`, même module i
 
 | Fichier | Contenu | Critère | Section du rapport | Taille de rendu |
 |---|---|---|---|---|
-| `E1-collecte` | les sources par type exigé, la collecte du soir, le garde-fou d'injection, l'import, la base et le RGPD | C1 | 3 | 1500,860 |
-| `E1-nettoyage` | chaque défaut mesuré à l'analyse exploratoire, la décision prise et le fichier qui l'applique | C3 | 4 | 1500,820 |
+| `E1-collecte` | les sources par type exigé, la collecte du soir, le garde-fou d'injection, l'import, la base et le RGPD | C1 | 3 | 1500,964 |
+| `E1-nettoyage` | chaque défaut mesuré à l'analyse exploratoire, la décision prise et le fichier qui l'applique | C3 | 4 | 1500,876 |
 
 Les autres critères d'E1 ont déjà leur schéma : C2 dans `../../../../bigdata/schemas/` (les trois requêtes
 Spark SQL, l'élagage des partitions), C4 dans le rapport (MCD) et dans `../../../../evidence/C4/`
@@ -40,8 +40,13 @@ C:\Python314\python.exe -X utf8 docs\rapports\E1\schemas\generer_schemas.py
 Puis le rendu PNG, un schéma à la fois (Chrome exige un `--user-data-dir`, sinon il échoue sans message) :
 
 ```
-"C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --disable-gpu --hide-scrollbars --user-data-dir=%TEMP%\chrome-rendu --window-size=1500,860 --screenshot=docs\rapports\E1\schemas\E1-collecte.png file:///D:/KandaWork/RITA_PROJECT/rita-agent/docs/rapports/E1/schemas/E1-collecte.svg
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --disable-gpu --hide-scrollbars --user-data-dir=%TEMP%\chrome-rendu --window-size=1500,964 --screenshot=docs\rapports\E1\schemas\E1-collecte.png file:///D:/KandaWork/RITA_PROJECT/rita-agent/docs/rapports/E1/schemas/E1-collecte.svg
 ```
 
-Même commande pour `E1-nettoyage` avec `--window-size=1500,820`. Les deux PNG ont été regardés le
-04/10/2026 avant d'être rangés : aucune flèche ne traverse une boîte, aucun texte n'est coupé.
+Même commande pour `E1-nettoyage` avec `--window-size=1500,876`. Les deux PNG ont été regardés le
+04/10/2026 au soir, après la refonte de la charte : aucune flèche ne traverse une boîte ni un titre, aucun texte n'est coupé.
+**Charte (refaite le 04/10/2026, à la demande d'Era)** : texte presque noir et plus grand, traits épais ; une couleur
+par rôle de boîte (bande à gauche) et par sens de flèche ; une légende dessinée en bas de chaque schéma, qui ne montre
+que les couleurs employées et ce qu'elles veulent dire dans ce schéma. Le 04/10, le texte de chaque boîte a été
+mesuré dans Chrome (largeur réelle de chaque ligne) : aucun ne dépasse de sa boîte.
+
