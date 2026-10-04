@@ -15,15 +15,19 @@ La preuve se constitue **au fil de l'eau**, jamais reconstituée après coup.
 Une preuve = ce qu'un évaluateur peut ouvrir seul et comprendre sans explication orale :
 capture d'écran horodatée, sortie de commande, fichier produit, lien vers un run CI.
 
-## État au 11/08/2026
+## Les dossiers, chacun avec sa date
+
+Chaque ligne dit de quand elle date. Les lignes `C1/` à `C5/` décrivent les preuves constituées jusqu'au
+11/08/2026 (livrable E1, version 1) ; leurs chiffres d'aujourd'hui sont donnés entre parenthèses. Les lignes
+suivantes ont été créées ou complétées du 02 au 04/10/2026.
 
 | Dossier | Compétence | Preuve | État |
 |---|---|---|---|
 | `C1/` | Extraction depuis plusieurs types de sources | 10 preuves — une par source + big data séparée + analyse exploratoire | ✅ **7 sources · les 5 types** |
-| `C2/` | Requêtes SQL d'extraction | `preuve-requetes-sql.md` — 3 requêtes, sorties réelles, jointures et optimisations mesurées | ✅ |
+| `C2/` | Requêtes SQL d'extraction | `preuve-requetes-sql.md` : 3 requêtes, sorties réelles, jointures et optimisations mesurées (4 au 04/10 : R1 bis, positions closes, ajoutée le 03/10 dans `../db/requetes.sql`) | ✅ |
 | `C3/` | Règles d'agrégation et nettoyage | 3 preuves — déduplication, artefact de regroupement, pipeline d'agrégation | ✅ |
 | `C4/` | Base de données dans le respect du RGPD | `preuve-mcd-merise.md` + le MCD (`.png` et `.drawio`) · MPD dans `../db/schema.sql` · RGPD dans `../db/RGPD-registre-des-traitements.md` | ✅ |
-| `C5/` | API et tests | `preuve-api-jeu-de-donnees.md` (OpenAPI 3.1.0, 8 chemins) + `mesure-garde-fou-injection.md` | ✅ |
+| `C5/` | API et tests | `preuve-api-jeu-de-donnees.md` (OpenAPI 3.1.0, 8 chemins au 11/08 ; 14 au 04/10, dont 11 de données) + `mesure-garde-fou-injection.md` | ✅ |
 | `C9/` | API exposant le modèle | `preuve-api-modele-2026-10-03.md` : un briefing réel servi (200, `request_id`, journal), contrat OpenAPI à 14 chemins, tests qui le tiennent, manques (502 au lieu de 422, pas de limite de débit) | ✅ créé le 03/10/2026 |
 | `C11/` | Monitorage du modèle | `README.md` (9 critères), `preuve-langfuse-2026-10-03.md` (tableau par l'API, INC-006 recompté, clics restants, première trace complète réelle du 03/10), définition du tableau et export des traces factices en JSON | ✅ depuis le 02/10/2026 |
 | `C12/` | Tests automatisés du modèle | `preuve-suite-de-tests-2026-10-03.md` (740 passed, 93,92 %, répartition par fichier, garde-fous mesurés, mutations) · `cas-de-verification-chapitre-donnees.md` (03/10/2026) : les 32 cas du chapitre « Données » rapprochés des tests du dépôt, 23 ✅ 5 🟠 4 ❌, quatre tests écrits le jour même | 🟠 dossier ouvert le 03/10, le reste de C12 est prouvé dans le rapport E3 |
@@ -37,8 +41,11 @@ capture d'écran horodatée, sortie de commande, fichier produit, lien vers un r
 | `C17/` | Éco-conception et accessibilité des trois écrans | `preuve-eco-conception-et-accessibilite-2026-10-03.md` : Lighthouse 13.5.0 (accessibilité 100 sur 100, zéro échec), parcours au clavier mesuré, EcoIndex officiel (A, A et D), compression mesurée ; dossier `mesures-2026-10-03/` (rapports, résumés, scripts, entrées rejouables) ; `revue-owasp-top10-2025-2026-10-03.md` : revue OWASP Top 10:2025 entrée par entrée, sondes de production, dix constats ; `preuve-droits-acces-2026-10-03.md` : défense de la clé unique, matrice validée confrontée au code | 🟠 mesuré et revu le 03/10 ; corrections après le 15/10 (cartes #74, #75, #76) |
 | `C7/` | Banc des fournisseurs de modèle | `preuve-benchmark-2026-10-03.md` : quatre passages le 03/10, dont la première comparaison (Foundry `gpt-5.4` contre OpenRouter `claude-sonnet-4.5`, 30 appels chacun, intervalles de Wilson, latence, coût) ; `prix-et-environnement-2026-10-03.md` : prix publics datés et information environnementale (rien par modèle chez les deux éditeurs, écrit inconnu) ; `indicateurs-cites-dans-les-textes-2026-10-03.md` : 16 indicateurs spécifiés, 13 reçus par le prompt, 9,3 cités par texte, drawdown cité 0 fois sur 60 ; jeu figé, brut en JSONL, résumés JSON, notation à l'aveugle à remplir par Era | 🟠 créé le 03/10/2026, comparaison le soir même |
 
-**186 tests verts** (`pytest -q`). Base : 8 tables · 1 vue · 15 index · 9 contraintes `CHECK` ·
-273 608 lignes importées.
+**Mesuré le 04/10/2026.** Tests : 824 collectés (`pytest --collect-only -q`) ; en intégration continue, 793 passed,
+29 skipped, 2 xfailed. Base locale, lue en SQL : 10 tables · 1 vue · 19 objets d'index (8 explicites) ·
+12 contraintes `CHECK` · 6 clés étrangères · 278 473 cotations de 111 valeurs (29/07/2016 au 02/10/2026) ·
+112 alias · 1 598 articles. Import initial de juillet 2026 : 273 608 lignes. (Le 11/08, ce paragraphe disait :
+186 tests, 8 tables, 15 index, 9 contraintes `CHECK`.)
 
 ### Les schémas, et où ils sont
 

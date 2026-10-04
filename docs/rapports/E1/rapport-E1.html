@@ -78,7 +78,7 @@ footer.sign{ margin-top:4pt; padding-top:3.5pt; border-top:.75pt solid var(--rul
     <div><dt>Candidat</dt><dd>Eramalingam Gandakumar<small>erama70@outlook.com<br>ganda70@gmail.com</small></dd></div>
     <div><dt>Organisme</dt><dd>Simplon × Wild Code School<small>Session 2026</small></dd></div>
     <div><dt>Dépôt du code</dt><dd>Ganda15/rita-agent<small>github.com · tag <code>livrable-E1-v2</code> à poser le 15/10</small></dd></div>
-    <div><dt>Date</dt><dd>3 octobre 2026<small>version 2.0, gel prévu le 15 octobre 2026</small></dd></div>
+    <div><dt>Date</dt><dd>4 octobre 2026<small>version 2.1, gel prévu le 15 octobre 2026</small></dd></div>
   </dl>
 </header>
 
@@ -279,7 +279,7 @@ plus quatre tables techniques qui n'ont pas leur place dans un modèle métier (
 <code>macro_observation</code> pour FRED, <code>memory_audit</code> et <code>mcp_calls</code>, journaux d'audit) ; <strong>1 vue</strong>
 (<code>v_portefeuille_valorise</code>, 13 colonnes), <strong>12 contraintes <code>CHECK</code></strong>, 6 clés étrangères et
 <strong>19 objets d'index</strong> dont 8 explicites. Chaque index répond à une requête nommée : la clé <code>(ticker, date_seance)</code>
-sert la dernière cotation de R1 ; l'index partiel sur les volumes non nuls sert R3 ; l'index unique
+sert la dernière cotation de R1 ; l'index unique
 <code>(ticker, PRU, date d'achat)</code> fait respecter la clé d'une ligne de portefeuille. Les évolutions passent par des
 <strong>migrations rejouables</strong> (quatre fichiers, 27/09 et 03/10), jouées sur le poste, la base Compose et le serveur.</p>
 <p><strong>PostgreSQL</strong> a été retenu pour trois raisons liées au modèle : les contraintes <code>CHECK</code> imposent en
@@ -297,7 +297,7 @@ les optimisations mesurables (§&nbsp;6) ; <code>LATERAL</code> résout la requ�
       <td><code>LEFT JOIN LATERAL</code> : la dernière cotation est cherchée par ticker via l'index, sans trier la table ; vue mesurée le 03/10 : <strong>0,24 ms</strong> pour 7 lignes</td></tr>
   <tr><td><strong>R1 bis, positions closes</strong></td><td>mêmes jointures, <code>date_cloture IS NOT NULL</code>, montants nominaux ; réservée au propriétaire, ne sort ni par l'API ni par MCP</td><td>même chemin d'accès</td></tr>
   <tr><td><strong>R2, plus fortes variations</strong></td><td>fenêtrage <code>LAG()</code> partitionné par ticker, filtré sur une fenêtre de dates</td><td>filtrage sur la date <strong>avant</strong> le calcul de fenêtre</td></tr>
-  <tr><td><strong>R3, volumes anormaux</strong></td><td>moyenne mobile <code>AVG() OVER (ROWS BETWEEN)</code>, <code>HAVING</code> sur l'écart</td><td>index partiel : seules les lignes de volume non nul sont indexées</td></tr>
+  <tr><td><strong>R3, volumes anormaux</strong></td><td>moyenne mobile <code>AVG() OVER (ROWS BETWEEN)</code> sans le jour courant ; <code>WHERE</code> moyenne non nulle (les séances à volume nul restent en base) et ratio &gt; 2</td><td>restriction aux 60 derniers jours dans un CTE <strong>avant</strong> la fenêtre : environ 40 lignes par valeur au lieu de 2 560</td></tr>
 </table>
 
 <div class="callout warn">
@@ -354,12 +354,12 @@ données « sensibles » de l'article 9 ; ce sont des données personnelles ordi
   <tr><th>N°</th><th>Traitement</th><th>Conservation</th></tr>
   <tr><td>T1</td><td>Portefeuille ; une ligne retirée du CSV est close par l'import</td><td>3 ans après <code>date_cloture</code></td></tr>
   <tr><td>T2</td><td>Journal d'accès des agents (<code>memory_audit</code>, sans écrivain)</td><td>90 jours</td></tr>
-  <tr><td>T3</td><td>Traces d'exécution <strong>Langfuse Cloud, région UE</strong> (sous-traitant allemand, DPA relevé)</td><td>selon l'éditeur</td></tr>
+  <tr><td>T3</td><td>Traces d'exécution <strong>Langfuse Cloud, région UE</strong> (sous-traitant allemand ; DPA identifié, lecture à faire)</td><td>selon l'éditeur</td></tr>
   <tr><td>T4</td><td>Fichier CSV source</td><td>hors dépôt, local</td></tr>
   <tr><td>T5</td><td>Journal des appels MCP (<code>mcp_calls</code>, identifiants techniques seuls)</td><td>90 jours</td></tr>
 </table>
 <p style="font-size:7.6pt">La v1 déclarait un <strong>transfert hors UE</strong> (LangSmith, États-Unis). Le traçage a été
-remplacé le 02/10 par un hébergement européen : le point ouvert est fermé.</p>
+remplacé le 02/10 par un hébergement européen. Une entité américaine du groupe figure parmi les sous-traitants : le transfert reste à confirmer par la lecture du DPA (registre, T3).</p>
 </div>
 <div>
 <h3>Procédures de tri (<code>db/rgpd_purge.py</code>)</h3>
@@ -430,12 +430,13 @@ python -m pytest -q                                <b># 740 passed, 2 xfailed, 9
   <tr><td><strong>C4</strong></td><td>MCD + MPD · 12 contraintes · registre T1 à T5 · purges P1 à P6 · migrations rejouables</td><td class="mono">evidence/C4/ · db/schema.sql · db/RGPD-registre-des-traitements.md</td></tr>
   <tr><td><strong>C5</strong></td><td>11 points de terminaison · OpenAPI 3.1.0 · autorisation testée</td><td class="mono">api/donnees.py · evidence/C5/</td></tr>
 </table>
+<p style="font-size:7.6pt"><strong>Schémas</strong> : C1 et C3 dans <code>docs/rapports/E1/schemas/</code> (générés depuis le code, vérifiés par un test) · C2 dans <code>bigdata/schemas/</code> · C4 au § 5 et dans <code>evidence/C4/</code> · C5 dans <code>docs/rapports/E3/schemas/</code>.</p>
 
 <div class="callout">
   <span class="lab">Ce qui a changé depuis la version 1 (13 août)</span>
   Dates de l'archive en date locale de la place (INC-005) · 10 tables au lieu de 8, FRED stockée, journal des appels MCP ·
   la vue de valorisation ne remplace plus un taux manquant par 1 · clôture datée des positions, clé de ligne, P2 enfin
-  applicable, P3 retirée · traçage européen (Langfuse UE) à la place d'un transfert hors UE · étape BCE en échec déclaré quand
+  applicable, P3 retirée · traçage hébergé en UE (Langfuse) à la place de LangSmith aux États-Unis · étape BCE en échec déclaré quand
   rien n'est reçu · collecte planifiée chaque soir, manifeste par exécution · 742 tests contre 186. Le périmètre et le cadrage
   acceptés par le formateur n'ont pas bougé.
 </div>
@@ -450,8 +451,8 @@ python -m pytest -q                                <b># 740 passed, 2 xfailed, 9
 </div>
 
 <footer class="sign">
-  <span>RITA, livrable E1 · bloc BC01 · compétences C1 à C5 · version 2.0</span>
-  <span>Eramalingam Gandakumar · 3 octobre 2026</span>
+  <span>RITA, livrable E1 · bloc BC01 · compétences C1 à C5 · version 2.1</span>
+  <span>Eramalingam Gandakumar · 4 octobre 2026</span>
 </footer>
 
 </body>
