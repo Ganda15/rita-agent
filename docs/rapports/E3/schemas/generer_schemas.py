@@ -1,4 +1,4 @@
-"""Les deux schémas du rapport E3, générés depuis une seule description : .drawio ET .svg.
+"""Les cinq schémas du rapport E3, générés depuis une seule description : .drawio ET .svg.
 
 Pourquoi un générateur plutôt que deux fichiers dessinés à la main : la règle du dépôt veut un
 `.drawio` éditable (pour corriger) ET une image lisible (pour voir), et deux fichiers tenus à la
@@ -142,25 +142,25 @@ def drawio(s: Schema) -> str:
 ARCHI = Schema(
     nom="E3-architecture", largeur=1500, hauteur=900,
     titre="RITA : le chemin d'un briefing, et tout ce qui le regarde passer",
-    sous_titre="Rapport E3, section 2 · état du code au 3 octobre 2026 · un seul utilisateur, un modèle fourni, aucune action",
+    sous_titre="Rapport E3, section 2 · état du code au 4 octobre 2026 · un seul utilisateur, un modèle fourni, aucune action",
     boites=[
         Boite("zc", 40, 90, 250, 300, "CLIENTS (C10)", genre="zone"),
-        Boite("web", 56, 118, 218, 72, "Interface web", ["frontend/, HTML, CSS, JS sans build", "2 écrans : portefeuille, indicateurs", "clé saisie, sessionStorage, 403 affiché"], "normal"),
+        Boite("web", 56, 118, 218, 72, "Interface web", ["frontend/, HTML, CSS, JS sans build", "3 écrans : portefeuille, indicateurs, briefing", "clé saisie, sessionStorage, 403 affiché"], "normal"),
         Boite("mcp", 56, 204, 218, 72, "Passerelle MCP", ["passerelle_mcp/serveur.py", "3 outils en lecture seule", "appelle l'API par HTTP, avec la clé"], "normal"),
         Boite("curl", 56, 290, 218, 72, "curl, /docs (OpenAPI 3.1.0)", ["POST /briefing?ticker=MC.PA", "le seul chemin vers le modèle", "aucun texte libre : un ticker"], "normal"),
 
-        Boite("api", 340, 118, 290, 120, "api/main.py : l'API (C9)", ["middleware : un request_id par requête (X-Request-ID)", "clé X-API-Key, 16 car. min., temps constant, 403", "aucune clé par défaut (INC-001, OWASP API2)", "13 routes ; /briefing est la seule qui parle au modèle", "journal : servi, refusé, 502 (request_id, jamais le texte)"], "lavis"),
+        Boite("api", 340, 118, 290, 120, "api/main.py : l'API (C9)", ["middleware : un request_id par requête (X-Request-ID)", "clé X-API-Key, 16 car. min., temps constant, 403", "aucune clé par défaut (INC-001, OWASP API2)", "14 chemins ; /briefing est le seul qui parle au modèle", "journal : servi, refusé, 502 (request_id, jamais le texte)"], "lavis"),
 
         Boite("zg", 340, 262, 290, 330, "graph/workflow.py : LangGraph, 3 nœuds, arêtes fixes", genre="zone"),
-        Boite("scout", 356, 290, 258, 58, "scout", ["lit PostgreSQL : cours, variation, ADTV20", "fraîcheur en jours ouvrés, cotation périmée"], "normal"),
+        Boite("scout", 356, 290, 258, 58, "scout", ["lit PostgreSQL : 13 indicateurs par valeur", "fraîcheur en jours ouvrés, cotation périmée"], "normal"),
         Boite("rag", 356, 362, 258, 86, "rag", ["garde-fou d'ENTRÉE : intention AMF, 7 motifs,", "  100 % / 0 % (03/10), avant tout accès à la base", "ChromaDB : filtre ticker puis hybride dense + BM25", "refus OUT_OF_CORPUS si rien ne cite la valeur"], "normal"),
         Boite("red", 356, 462, 258, 58, "redacteur", ["agents/analyst.py : prompt (interdit AMF écrit)", "src/llm.py : la cascade"], "normal"),
-        Boite("casc", 356, 532, 258, 48, "Foundry → Anthropic → OpenRouter", ["une génération tracée par essai ; repli ≈ 0,3 s"], "lavis"),
+        Boite("casc", 356, 532, 258, 48, "Foundry (gpt-5.4) → Anthropic → OpenRouter", ["une génération tracée par essai ; repli ≈ 0,3 s"], "lavis"),
 
         Boite("sortie", 340, 612, 290, 70, "guardrails/sortie.py : garde-fou de SORTIE (C17)", ["9 motifs, 70 % / 0 % (03/10) ; échec fermé", "texte remplacé par un refus, HTTP 200, conforme_amf=false"], "lavis"),
         Boite("rep", 340, 700, 290, 56, "Réponse JSON", ["ticker, prix, variation, briefing, conforme_amf,", "motifs_amf ; en-tête X-Request-ID"], "normal"),
 
-        Boite("pg", 700, 290, 190, 58, "PostgreSQL 18 (E1)", ["9 tables, 1 vue, 273 608 lignes (11/08)", "écrit par le seul pipeline"], "stock"),
+        Boite("pg", 700, 290, 190, 58, "PostgreSQL 18 (E1)", ["10 tables, 1 vue, dix ans de cotations", "écrit par le seul pipeline"], "stock"),
         Boite("chroma", 700, 362, 190, 58, "ChromaDB (index)", ["articles vectorisés, reconstruit chaque nuit", "1 359 documents (27/09)"], "stock"),
         Boite("nuit", 700, 612, 220, 100, "Collecte nocturne, 19 h", ["pipelines/ingest.py, tâche planifiée Windows", "yfinance, RSS, scraping, FRED, BCE", "garde-fou d'INJECTION sur les articles :", "  12 motifs, 70 % / 0 % (03/10)", "40 journaux du 24/08 au 02/10"], "normal"),
 
@@ -168,11 +168,11 @@ ARCHI = Schema(
         Boite("lf", 1056, 118, 348, 196, "Langfuse Cloud, région UE (Irlande)", ["une trace par briefing, identifiant = request_id :", "  briefing  (verdict AMF, note conforme_amf)", "  ├─ scout", "  ├─ rag ─ garde-fou-entree", "  ├─ redacteur ─ briefing-llm ─ llm-<fournisseur>", "  └─ garde-fou-sortie", "jetons, erreur du repli, niveau WARNING au refus", "première trace réelle : 02/10 18:39 ; palier gratuit"], "lavis"),
         Boite("fr", 1056, 416, 348, 58, "GET /donnees/fraicheur + bandeau", ["retard en jours ouvrés, 3 états, lisible sans couleur", "la panne la plus fréquente : la collecte d'hier"], "normal"),
         Boite("al", 1056, 330, 348, 70, "Alertes (2, palier gratuit) → GitHub Actions", [".github/workflows/alerte-incident.yml", "ouvre ou commente une issue « incident »", "bouton manuel pour prouver la chaîne"], "normal"),
-        Boite("tb", 1056, 490, 348, 56, "Tableau de bord « RITA C11 »", ["générations par fournisseur · p95 de briefing-llm", "observations en ERROR ou WARNING"], "manque"),
+        Boite("tb", 1056, 490, 348, 56, "Tableau de bord « RITA C11 » (03/10, par l'API)", ["générations par fournisseur · p95 de briefing-llm", "observations en ERROR ou WARNING"], "lavis"),
         Boite("cout", 1056, 562, 348, 56, "Coût par briefing", ["à zéro pour OpenRouter : nom de modèle absent", "de la grille de prix Langfuse ; à corriger"], "manque"),
 
-        Boite("sand", 700, 728, 220, 70, "Bac à sable", ["la suite de tests ne trace jamais", "(conftest.py, INC-006) ; doubles de client", "626 tests, 93,66 % (02/10)"], "note"),
-        Boite("test", 700, 814, 220, 56, "Tests en CI à chaque poussée", ["test.yml : suite + couverture ≥ 90 %,", "garde-fous mesurés, portes xfail strict"], "note"),
+        Boite("sand", 700, 728, 220, 70, "Bac à sable", ["la suite de tests ne trace jamais", "(conftest.py, INC-006) ; doubles de client", "805 tests, 94,70 % (04/10)"], "note"),
+        Boite("test", 700, 814, 220, 56, "Tests en CI à chaque poussée", ["test.yml : données, puis suite + couverture ≥ 90 %,", "garde-fous mesurés, portes xfail strict"], "note"),
     ],
     fleches=[
         Fleche("web", "api", "HTTP + clé"), Fleche("mcp", "api", "HTTP + clé"), Fleche("curl", "api"),
@@ -184,7 +184,7 @@ ARCHI = Schema(
         Fleche("api", "lf", "trace (racine et générations)", sortie="d", entree="g"),
         Fleche("lf", "al", sortie="b", entree="h", pointille=True),
     ],
-    legende="Boîtes pleines : code présent et testé au 03/10/2026. Boîtes pointillées orange : conçu, non construit. Mesures datées dans le rapport, section 6.",
+    legende="Boîtes pleines : code présent et testé au 04/10/2026. Boîtes pointillées orange : conçu, non construit. Mesures datées dans le rapport, section 6.",
 )
 
 # =============================================================================
@@ -193,7 +193,7 @@ ARCHI = Schema(
 CHAINE = Schema(
     nom="E3-chaine-livraison", largeur=1400, hauteur=760,
     titre="RITA : la chaîne de livraison continue, du poste au serveur",
-    sous_titre="Rapport E3, section 7 · cinq workflows GitHub Actions · état au 3 octobre 2026",
+    sous_titre="Rapport E3, section 7 · cinq workflows GitHub Actions · état au 4 octobre 2026",
     boites=[
         Boite("zp", 40, 90, 260, 260, "POSTE D'ERA", genre="zone"),
         Boite("dev", 56, 118, 228, 70, "Branche develop", ["un commit = une intention", "tests écrits avant le code (TDD)", "git push origin develop"], "normal"),
@@ -201,8 +201,8 @@ CHAINE = Schema(
         Boite("dod", 56, 276, 228, 60, "scripts/verifier_livrable.py", ["Definition of Done : tests, liens,", "ETAT et CHANGELOG, arbre propre"], "normal"),
 
         Boite("zgh", 340, 90, 620, 500, "GITHUB (dépôt privé Ganda15/rita-agent)", genre="zone"),
-        Boite("test", 356, 118, 280, 100, "test.yml : à chaque poussée et PR", ["job pytest : suite + couverture ≥ 90 %", "  (seuil dans .coveragerc, --cov sur la commande)", "job evals : garde-fous mesurés,", "  portes non compensables (xfail strict à 85 %)", "626 passed, 93,66 % le 02/10"], "lavis"),
-        Boite("pr", 664, 118, 280, 100, "revue-pr.yml : chaque PR vers main", ["relecture adversariale automatisée", "(action officielle, jeton d'abonnement en secret)", "grille de lecture : AGENTS.md et les règles du dépôt", "22 PR fusionnées au 02/10"], "lavis"),
+        Boite("test", 356, 118, 280, 100, "test.yml : à chaque poussée et PR", ["job pytest : 1. TEST DES DONNÉES (260 verts, 5 s)", "  2. suite + couverture ≥ 90 % (.coveragerc)", "job evals : garde-fous mesurés,", "  portes non compensables (xfail strict à 85 %)", "778 passed, 29 skipped, 94,70 % (04/10)"], "lavis"),
+        Boite("pr", 664, 118, 280, 100, "revue-pr.yml : chaque PR vers main", ["relecture adversariale automatisée", "(action officielle, jeton d'abonnement en secret)", "grille de lecture : AGENTS.md et les règles du dépôt", "24 PR fusionnées au 04/10"], "lavis"),
         Boite("main", 356, 236, 280, 56, "Branche main", ["ne bouge que par une PR depuis develop", "un livrable = un tag livrable-E<n>-v<k>"], "normal"),
         Boite("liv", 356, 310, 588, 120, "livraison.yml : poussée, PR, et tag livrable-*", ["1. tests, porte de livraison (rien n'est construit si rouge)", "2. construction de l'image, jamais publiée ici", "3. l'image construite démarre et répond sur /health", "4. l'accès est restreint : 403 sans clé", "5. publication sur ghcr.io/ganda15/rita-api, seulement sur un tag (issue #22 : avant, la publication précédait la vérification)"], "lavis"),
         Boite("gisk", 664, 236, 280, 56, "scan-giskard.yml : manuel", ["scan d'attaques, deux frontières", "plafond de coût saisi ; run 9 le 20/09"], "normal"),
@@ -220,7 +220,7 @@ CHAINE = Schema(
         Boite("filtre", 1016, 516, 328, 44, "Filtre de chemin + gate sur le vrai modèle", ["porte payante seulement si prompt ou jeu changent"], "manque"),
 
         Boite("note", 40, 380, 260, 100, "Ce que la chaîne coche pour C13", ["test → construction → démarrage vérifié →", "accès vérifié → publication sur tag,", "exécuté par la plateforme à chaque poussée.", "Un Dockerfile seul ne coche aucun critère."], "note"),
-        Boite("rouge", 40, 500, 260, 90, "Chute réelle de la CI, 28/09", ["requirements.txt non épinglé : pip a", "construit pandas depuis les sources.", "Cause identifiée, correction en attente (#23)."], "note"),
+        Boite("rouge", 40, 500, 260, 90, "La CI a refusé, et c'était juste", ["28/09 : pandas reconstruit (#23, non épinglé)", "03/10 : dix exécutions rouges, tests liés au", "poste (INC-007), corrigé le jour même", "aucune alerte sur une exécution rouge"], "note"),
     ],
     fleches=[
         Fleche("dev", "test", "push", sortie="d", entree="g"),
@@ -236,6 +236,105 @@ CHAINE = Schema(
 )
 
 
+# =============================================================================
+# Schéma 3 : C10, une demande de briefing depuis l'écran, et ses refus
+# =============================================================================
+INTEGRATION = Schema(
+    nom="E3-integration-briefing", largeur=1400, hauteur=560,
+    titre="RITA : une demande de briefing, de l'écran au modèle et retour",
+    sous_titre="Rapport E3, section 4 · écran 3 (frontend/briefing.html, briefing.js) · état au 4 octobre 2026",
+    boites=[
+        Boite("u", 40, 100, 200, 120, "1. L'utilisateur", ["saisit la clé (champ masqué)", "choisit un code dans la liste", "  (GET /donnees/valeurs, facultatif)", "envoie : bouton ou touche Entrée"], "normal"),
+        Boite("e", 280, 100, 250, 120, "2. L'écran envoie", ["POST /briefing?ticker=MC.PA", "en-tête X-API-Key (sessionStorage)", "annonce l'attente : 5 à 15 s", "  (zone de statut, aria-live)"], "lavis"),
+        Boite("a", 570, 100, 250, 120, "3. L'API vérifie", ["clé : 16 car. min., temps constant", "identifiant de requête X-Request-ID", "puis le graphe : scout, rag, redacteur"], "lavis"),
+        Boite("m", 860, 100, 250, 120, "4. Le modèle écrit", ["cascade Foundry → Anthropic → OpenRouter", "puis garde-fou de SORTIE", "  (texte retenu si recommandation)"], "lavis"),
+        Boite("ok", 1150, 100, 210, 120, "5. L'écran affiche", ["le verdict EN MOTS", "le texte par textContent", "la référence de requête", "focus posé sur le résultat"], "normal"),
+
+        Boite("z", 40, 260, 1320, 190, "LES RÉPONSES QUI NE SONT PAS UN BRIEFING, ET CE QUE L'ÉCRAN EN FAIT", genre="zone"),
+        Boite("e403", 56, 290, 300, 70, "403 : clé refusée", ["la clé est oubliée (sessionStorage)", "retour à la saisie, message en clair"], "normal"),
+        Boite("e502", 376, 290, 300, 70, "502 : valeur absente de la base", ["« Valeur introuvable : … n'est pas", "dans l'univers suivi »"], "normal"),
+        Boite("e500", 696, 290, 300, 70, "500 : aucun fournisseur ne répond", ["mesuré le 03/10 : « Erreur 500 » générique,", "sans fuite ; message dédié prévu (#75)"], "manque"),
+        Boite("enet", 1016, 290, 328, 70, "Aucune réponse du serveur", ["pas de code HTTP à lire : try/catch,", "« Le serveur ne répond pas »"], "normal"),
+        Boite("ecle", 56, 372, 620, 62, "Défaut connu : la clé est mémorisée avant d'avoir servi (#73)", ["les écrans 1 et 2 attendent un appel réussi ; l'écran 3 non. Correction après le gel du 15/10, test d'abord."], "manque"),
+        Boite("emcp", 696, 372, 648, 62, "Le deuxième client : la passerelle MCP", ["mêmes routes, même clé ; trois outils en lecture seule ; aucun outil ne donne accès à /briefing"], "note"),
+
+        Boite("t", 40, 470, 1320, 50, "Preuves", ["tests/test_frontend.py (72, statiques) · tests/test_smoke_ui.py (7, vrai navigateur, /briefing intercepté) · tests/test_health.py, test_api_donnees.py (l'API) · evidence/C10/"], "note"),
+    ],
+    fleches=[
+        Fleche("u", "e"), Fleche("e", "a"), Fleche("a", "m"), Fleche("m", "ok"),
+        Fleche("a", "e403", "sans clé", sortie="b:0.2", entree="h:0.8", pointille=True),
+        Fleche("a", "e502", "", sortie="b:0.5", entree="h:0.6", pointille=True),
+        Fleche("m", "e500", "", sortie="b:0.3", entree="h:0.6", pointille=True),
+    ],
+    legende="Boîtes pleines : comportement présent et testé. Pointillé orange : écart connu, corrigé après le gel. Flèches pointillées : réponses d'erreur.",
+)
+
+# =============================================================================
+# Schéma 4 : C11, la chaîne de monitorage du modèle
+# =============================================================================
+MONITORAGE = Schema(
+    nom="E3-monitorage", largeur=1400, hauteur=560,
+    titre="RITA : surveiller le modèle, collecte, alerte et restitution",
+    sous_titre="Rapport E3, section 5 · src/traces.py, Langfuse Cloud (région UE), GitHub Actions · état au 4 octobre 2026",
+    boites=[
+        Boite("zc", 40, 90, 420, 330, "COLLECTE", genre="zone"),
+        Boite("br", 56, 118, 388, 120, "Chaque briefing (POST /briefing)", ["une trace racine « briefing », identifiant = X-Request-ID", "une étape par nœud : scout, rag, redacteur", "une génération par tentative de fournisseur :", "  durée, jetons, modèle réel, erreur du repli", "un score conforme_amf (verdict du garde-fou)"], "lavis"),
+        Boite("jr", 56, 252, 388, 70, "Journal de l'API", ["une ligne par briefing servi ou refusé, avec", "l'identifiant de requête ; jamais le texte"], "normal"),
+        Boite("fr", 56, 336, 388, 70, "Fraîcheur des données", ["GET /donnees/fraicheur : retard en jours ouvrés", "la panne la plus fréquente : la collecte d'hier"], "normal"),
+
+        Boite("lf", 500, 118, 300, 120, "Langfuse Cloud, région UE", ["reçoit les traces (palier gratuit)", "calcule latence, volumes, erreurs", "accès : compte du propriétaire", "reçoit des chiffres de marché, jamais une position"], "stock"),
+
+        Boite("zr", 840, 90, 520, 170, "RESTITUTION", genre="zone"),
+        Boite("tb", 856, 118, 488, 64, "Tableau de bord « RITA C11 » (créé par l'API, 03/10)", ["générations par fournisseur (le repli se voit) · latence p95 de", "l'appel au modèle · observations en ERROR ou WARNING"], "lavis"),
+        Boite("bd", 856, 190, 488, 56, "Bandeau de fraîcheur, écran 1 · export CSV des tuiles", ["lisible sans la couleur ; CSV pour un lecteur d'écran ou un tableur"], "normal"),
+
+        Boite("za", 840, 280, 520, 140, "ALERTE", genre="zone"),
+        Boite("al", 856, 308, 230, 98, "2 règles Langfuse", ["ERROR sur 24 h", "aucune trace en 24 h", "à régler par le", "propriétaire du compte"], "manque"),
+        Boite("gh", 1110, 308, 234, 98, "alerte-incident.yml", ["repository_dispatch", "ouvre ou commente une", "issue « incident »", "testé à la main : #71"], "normal"),
+
+        Boite("sb", 40, 440, 660, 70, "Bac à sable : la suite de tests ne trace jamais", ["tests/conftest.py coupe le traçage (INC-006) ; le banc C7 aussi (LANGFUSE_TRACING_ENABLED=false) ;", "doubles de client dans tests/test_traces*.py, test_trace_chemin.py (l'ordre exact des étapes)"], "note"),
+        Boite("lim", 720, 440, 640, 70, "Ce qui manque", ["alertes non réglées · quinze traces factices du 02/10 à supprimer ·", "serveur de production pas encore tracé (code du 19/08) · coût OpenRouter à zéro"], "manque"),
+    ],
+    fleches=[
+        Fleche("br", "lf"),
+        Fleche("lf", "tb", "", sortie="d:0.3", entree="g"),
+        Fleche("lf", "al", "", sortie="d:0.8", entree="g:0.3", pointille=True),
+        Fleche("al", "gh"),
+        Fleche("fr", "bd", "", sortie="d:0.5", entree="g:0.8"),
+    ],
+    legende="Boîtes pleines : présent et prouvé. Pointillé orange : à faire. Gris : service externe. Preuves : evidence/C11/.",
+)
+
+# =============================================================================
+# Schéma 5 : C12, la stratégie de test
+# =============================================================================
+TESTS = Schema(
+    nom="E3-strategie-tests", largeur=1400, hauteur=560,
+    titre="RITA : ce qui est testé, par quoi, et où",
+    sous_titre="Rapport E3, section 6 · 805 tests collectés par pytest le 4 octobre 2026, regroupés par ce qu'ils protègent",
+    boites=[
+        Boite("d", 40, 100, 300, 104, "Données : 283", ["collecte (ingest, sources), nettoyage,", "import, schéma, vue de valorisation,", "RGPD (purge, registre), fraîcheur", "→ étape CI « Tester les données »"], "lavis"),
+        Boite("m", 360, 100, 300, 104, "Modèle, prompt et graphe : 90", ["prompt du rédacteur (13 indicateurs),", "cascade de fournisseurs, graphe,", "indicateurs calculés en SQL", "aucun entraînement : rien à valider"], "lavis"),
+        Boite("g", 680, 100, 320, 104, "Garde-fous et évaluations : 95", ["entrée, injection, sortie : taux mesurés", "portes : faux positifs ≤ 15 %, latence < 250 ms,", "blocage ≥ 85 % déclaré non atteint (xfail strict)", "scan Giskard, banc C7"], "lavis"),
+        Boite("r", 1020, 100, 340, 104, "Recherche documentaire : 68", ["index, filtre par valeur, hybride", "dense + BM25, refus hors corpus", "mesure par ablation (evals/mesurer_rag)"], "lavis"),
+        Boite("a", 40, 222, 300, 90, "API : 128", ["toutes les routes, 403 sans clé,", "identifiant de requête (500 compris),", "journal des appels MCP, rôle lecture"], "normal"),
+        Boite("o", 360, 222, 300, 90, "Monitorage : 36", ["une trace par briefing, l'ordre exact", "des étapes, verdict AMF, panne du", "traçage sans effet sur le briefing"], "normal"),
+        Boite("i", 680, 222, 320, 90, "Interface : 79", ["72 statiques (aucune clé, textContent,", "accessibilité) · 7 dans un vrai", "navigateur (Playwright)"], "normal"),
+        Boite("l", 1020, 222, 340, 90, "Livraison et outillage : 26", ["ordre de livraison.yml, Compose,", "Definition of Done, hooks de l'assistant"], "normal"),
+
+        Boite("zw", 40, 334, 1320, 120, "OÙ ILS TOURNENT", genre="zone"),
+        Boite("p", 56, 362, 300, 76, "Poste", ["C:\\Python314\\python.exe -m pytest --cov", "805 : 803 verts, 2 xfail (base réelle", "en transactions annulées)"], "normal"),
+        Boite("c1", 376, 362, 300, 76, "CI, job pytest", ["1. test des données : 260 verts, 3 sautés", "2. suite : 778 verts, 29 sautés (sans base),", "2 xfail ; couverture 94,70 % (seuil 90)"], "lavis"),
+        Boite("c2", 696, 362, 320, 76, "CI, job evals", ["mesure des garde-fous à chaque poussée", "portes non compensables : bloque", "la fusion si elle régresse"], "lavis"),
+        Boite("mg", 1036, 362, 308, 76, "Manuel, payant", ["scan Giskard (200 scénarios, 20/09)", "banc C7 (60 appels réels, 03/10)", "plafond de coût saisi"], "note"),
+
+        Boite("lim", 40, 470, 1320, 46, "Limites", ["aucun schéma sur le texte produit ni sur les flux RSS · pas de jeu de référence de briefings · 29 tests ne tournent qu'avec une base (poste) · garde-fous à 70 % sur deux positions"], "manque"),
+    ],
+    fleches=[],
+    legende="Chiffres : pytest --collect-only (805), CI run 37190015570 (04/10). Bleu : protège le comportement du modèle. Blanc : protège l'application autour.",
+)
+
+
 def ecrire(s: Schema) -> None:
     (ICI / f"{s.nom}.svg").write_text(svg(s), encoding="utf-8", newline="\n")
     (ICI / f"{s.nom}.drawio").write_text(drawio(s), encoding="utf-8", newline="\n")
@@ -243,5 +342,5 @@ def ecrire(s: Schema) -> None:
 
 
 if __name__ == "__main__":
-    ecrire(ARCHI)
-    ecrire(CHAINE)
+    for schema in (ARCHI, CHAINE, INTEGRATION, MONITORAGE, TESTS):
+        ecrire(schema)

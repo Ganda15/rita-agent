@@ -4,7 +4,7 @@
 <rect width="1400" height="760" fill="#FFFFFF"/>
 <rect x="40" y="18" width="1320" height="3" fill="#14607F"/>
 <text x="40" y="46" font-family="Georgia,serif" font-size="19" font-weight="600" fill="#16202B">RITA : la chaîne de livraison continue, du poste au serveur</text>
-<text x="40" y="66" font-family="Georgia,serif" font-size="11" font-style="italic" fill="#4A5766">Rapport E3, section 7 · cinq workflows GitHub Actions · état au 3 octobre 2026</text>
+<text x="40" y="66" font-family="Georgia,serif" font-size="11" font-style="italic" fill="#4A5766">Rapport E3, section 7 · cinq workflows GitHub Actions · état au 4 octobre 2026</text>
 <rect x="40" y="90" width="260" height="260" fill="none" stroke="#D5DCE4" stroke-width="1.2" stroke-dasharray="7,5"/>
 <text x="48" y="106" font-size="9.5" font-weight="700" fill="#4A5766">POSTE D&#x27;ERA</text>
 <rect x="56" y="118" width="228" height="70" fill="#FFFFFF" stroke="#14607F" stroke-width="1.2"/>
@@ -24,17 +24,17 @@
 <text x="348" y="106" font-size="9.5" font-weight="700" fill="#4A5766">GITHUB (dépôt privé Ganda15/rita-agent)</text>
 <rect x="356" y="118" width="280" height="100" fill="#ECF3F7" stroke="#14607F" stroke-width="1.2"/>
 <text x="364" y="134" font-size="10.5" font-weight="700" fill="#16202B">test.yml : à chaque poussée et PR</text>
-<text x="364" y="149" font-size="9" fill="#4A5766">job pytest : suite + couverture ≥ 90 %</text>
-<text x="364" y="162" font-size="9" fill="#4A5766">  (seuil dans .coveragerc, --cov sur la commande)</text>
+<text x="364" y="149" font-size="9" fill="#4A5766">job pytest : 1. TEST DES DONNÉES (260 verts, 5 s)</text>
+<text x="364" y="162" font-size="9" fill="#4A5766">  2. suite + couverture ≥ 90 % (.coveragerc)</text>
 <text x="364" y="175" font-size="9" fill="#4A5766">job evals : garde-fous mesurés,</text>
 <text x="364" y="188" font-size="9" fill="#4A5766">  portes non compensables (xfail strict à 85 %)</text>
-<text x="364" y="201" font-size="9" fill="#4A5766">626 passed, 93,66 % le 02/10</text>
+<text x="364" y="201" font-size="9" fill="#4A5766">778 passed, 29 skipped, 94,70 % (04/10)</text>
 <rect x="664" y="118" width="280" height="100" fill="#ECF3F7" stroke="#14607F" stroke-width="1.2"/>
 <text x="672" y="134" font-size="10.5" font-weight="700" fill="#16202B">revue-pr.yml : chaque PR vers main</text>
 <text x="672" y="149" font-size="9" fill="#4A5766">relecture adversariale automatisée</text>
 <text x="672" y="162" font-size="9" fill="#4A5766">(action officielle, jeton d&#x27;abonnement en secret)</text>
 <text x="672" y="175" font-size="9" fill="#4A5766">grille de lecture : AGENTS.md et les règles du dépôt</text>
-<text x="672" y="188" font-size="9" fill="#4A5766">22 PR fusionnées au 02/10</text>
+<text x="672" y="188" font-size="9" fill="#4A5766">24 PR fusionnées au 04/10</text>
 <rect x="356" y="236" width="280" height="56" fill="#FFFFFF" stroke="#14607F" stroke-width="1.2"/>
 <text x="364" y="252" font-size="10.5" font-weight="700" fill="#16202B">Branche main</text>
 <text x="364" y="267" font-size="9" fill="#4A5766">ne bouge que par une PR depuis develop</text>
@@ -92,10 +92,11 @@
 <text x="48" y="437" font-size="9" fill="#4A5766">exécuté par la plateforme à chaque poussée.</text>
 <text x="48" y="450" font-size="9" fill="#4A5766">Un Dockerfile seul ne coche aucun critère.</text>
 <rect x="40" y="500" width="260" height="90" fill="#F7F9FB" stroke="#D5DCE4" stroke-width="1.2"/>
-<text x="48" y="516" font-size="10.5" font-weight="700" fill="#4A5766">Chute réelle de la CI, 28/09</text>
-<text x="48" y="531" font-size="9" fill="#4A5766">requirements.txt non épinglé : pip a</text>
-<text x="48" y="544" font-size="9" fill="#4A5766">construit pandas depuis les sources.</text>
-<text x="48" y="557" font-size="9" fill="#4A5766">Cause identifiée, correction en attente (#23).</text>
+<text x="48" y="516" font-size="10.5" font-weight="700" fill="#4A5766">La CI a refusé, et c&#x27;était juste</text>
+<text x="48" y="531" font-size="9" fill="#4A5766">28/09 : pandas reconstruit (#23, non épinglé)</text>
+<text x="48" y="544" font-size="9" fill="#4A5766">03/10 : dix exécutions rouges, tests liés au</text>
+<text x="48" y="557" font-size="9" fill="#4A5766">poste (INC-007), corrigé le jour même</text>
+<text x="48" y="570" font-size="9" fill="#4A5766">aucune alerte sur une exécution rouge</text>
 <line x1="284" y1="153.0" x2="356" y2="168.0" stroke="#4A5766" stroke-width="1.3" marker-end="url(#fl)"/>
 <text x="320.0" y="155.5" font-size="8.5" fill="#4A5766" text-anchor="middle">push</text>
 <line x1="636" y1="168.0" x2="664" y2="168.0" stroke="#4A5766" stroke-width="1.3" marker-end="url(#fl)"/>

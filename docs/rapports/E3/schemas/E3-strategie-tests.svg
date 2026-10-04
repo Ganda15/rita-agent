@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="560" viewBox="0 0 1400 560" font-family="Segoe UI,Calibri,Arial,sans-serif">
+<defs><marker id="fl" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0 0,10 4,0 8" fill="#4A5766"/></marker></defs>
+<rect width="1400" height="560" fill="#FFFFFF"/>
+<rect x="40" y="18" width="1320" height="3" fill="#14607F"/>
+<text x="40" y="46" font-family="Georgia,serif" font-size="19" font-weight="600" fill="#16202B">RITA : ce qui est testé, par quoi, et où</text>
+<text x="40" y="66" font-family="Georgia,serif" font-size="11" font-style="italic" fill="#4A5766">Rapport E3, section 6 · 805 tests collectés par pytest le 4 octobre 2026, regroupés par ce qu&#x27;ils protègent</text>
+<rect x="40" y="100" width="300" height="104" fill="#ECF3F7" stroke="#14607F" stroke-width="1.2"/>
+<text x="48" y="116" font-size="10.5" font-weight="700" fill="#16202B">Données : 283</text>
+<text x="48" y="131" font-size="9" fill="#4A5766">collecte (ingest, sources), nettoyage,</text>
+<text x="48" y="144" font-size="9" fill="#4A5766">import, schéma, vue de valorisation,</text>
+<text x="48" y="157" font-size="9" fill="#4A5766">RGPD (purge, registre), fraîcheur</text>
+<text x="48" y="170" font-size="9" fill="#4A5766">→ étape CI « Tester les données »</text>
+<rect x="360" y="100" width="300" height="104" fill="#ECF3F7" stroke="#14607F" stroke-width="1.2"/>
+<text x="368" y="116" font-size="10.5" font-weight="700" fill="#16202B">Modèle, prompt et graphe : 90</text>
+<text x="368" y="131" font-size="9" fill="#4A5766">prompt du rédacteur (13 indicateurs),</text>
+<text x="368" y="144" font-size="9" fill="#4A5766">cascade de fournisseurs, graphe,</text>
+<text x="368" y="157" font-size="9" fill="#4A5766">indicateurs calculés en SQL</text>
+<text x="368" y="170" font-size="9" fill="#4A5766">aucun entraînement : rien à valider</text>
+<rect x="680" y="100" width="320" height="104" fill="#ECF3F7" stroke="#14607F" stroke-width="1.2"/>
+<text x="688" y="116" font-size="10.5" font-weight="700" fill="#16202B">Garde-fous et évaluations : 95</text>
+<text x="688" y="131" font-size="9" fill="#4A5766">entrée, injection, sortie : taux mesurés</text>
+<text x="688" y="144" font-size="9" fill="#4A5766">portes : faux positifs ≤ 15 %, latence &lt; 250 ms,</text>
+<text x="688" y="157" font-size="9" fill="#4A5766">blocage ≥ 85 % déclaré non atteint (xfail strict)</text>
+<text x="688" y="170" font-size="9" fill="#4A5766">scan Giskard, banc C7</text>
+<rect x="1020" y="100" width="340" height="104" fill="#ECF3F7" stroke="#14607F" stroke-width="1.2"/>
+<text x="1028" y="116" font-size="10.5" font-weight="700" fill="#16202B">Recherche documentaire : 68</text>
+<text x="1028" y="131" font-size="9" fill="#4A5766">index, filtre par valeur, hybride</text>
+<text x="1028" y="144" font-size="9" fill="#4A5766">dense + BM25, refus hors corpus</text>
+<text x="1028" y="157" font-size="9" fill="#4A5766">mesure par ablation (evals/mesurer_rag)</text>
+<rect x="40" y="222" width="300" height="90" fill="#FFFFFF" stroke="#14607F" stroke-width="1.2"/>
+<text x="48" y="238" font-size="10.5" font-weight="700" fill="#16202B">API : 128</text>
+<text x="48" y="253" font-size="9" fill="#4A5766">toutes les routes, 403 sans clé,</text>
+<text x="48" y="266" font-size="9" fill="#4A5766">identifiant de requête (500 compris),</text>
+<text x="48" y="279" font-size="9" fill="#4A5766">journal des appels MCP, rôle lecture</text>
+<rect x="360" y="222" width="300" height="90" fill="#FFFFFF" stroke="#14607F" stroke-width="1.2"/>
+<text x="368" y="238" font-size="10.5" font-weight="700" fill="#16202B">Monitorage : 36</text>
+<text x="368" y="253" font-size="9" fill="#4A5766">une trace par briefing, l&#x27;ordre exact</text>
+<text x="368" y="266" font-size="9" fill="#4A5766">des étapes, verdict AMF, panne du</text>
+<text x="368" y="279" font-size="9" fill="#4A5766">traçage sans effet sur le briefing</text>
+<rect x="680" y="222" width="320" height="90" fill="#FFFFFF" stroke="#14607F" stroke-width="1.2"/>
+<text x="688" y="238" font-size="10.5" font-weight="700" fill="#16202B">Interface : 79</text>
+<text x="688" y="253" font-size="9" fill="#4A5766">72 statiques (aucune clé, textContent,</text>
+<text x="688" y="266" font-size="9" fill="#4A5766">accessibilité) · 7 dans un vrai</text>
+<text x="688" y="279" font-size="9" fill="#4A5766">navigateur (Playwright)</text>
+<rect x="1020" y="222" width="340" height="90" fill="#FFFFFF" stroke="#14607F" stroke-width="1.2"/>
+<text x="1028" y="238" font-size="10.5" font-weight="700" fill="#16202B">Livraison et outillage : 26</text>
+<text x="1028" y="253" font-size="9" fill="#4A5766">ordre de livraison.yml, Compose,</text>
+<text x="1028" y="266" font-size="9" fill="#4A5766">Definition of Done, hooks de l&#x27;assistant</text>
+<rect x="40" y="334" width="1320" height="120" fill="none" stroke="#D5DCE4" stroke-width="1.2" stroke-dasharray="7,5"/>
+<text x="48" y="350" font-size="9.5" font-weight="700" fill="#4A5766">OÙ ILS TOURNENT</text>
+<rect x="56" y="362" width="300" height="76" fill="#FFFFFF" stroke="#14607F" stroke-width="1.2"/>
+<text x="64" y="378" font-size="10.5" font-weight="700" fill="#16202B">Poste</text>
+<text x="64" y="393" font-size="9" fill="#4A5766">C:\Python314\python.exe -m pytest --cov</text>
+<text x="64" y="406" font-size="9" fill="#4A5766">805 : 803 verts, 2 xfail (base réelle</text>
+<text x="64" y="419" font-size="9" fill="#4A5766">en transactions annulées)</text>
+<rect x="376" y="362" width="300" height="76" fill="#ECF3F7" stroke="#14607F" stroke-width="1.2"/>
+<text x="384" y="378" font-size="10.5" font-weight="700" fill="#16202B">CI, job pytest</text>
+<text x="384" y="393" font-size="9" fill="#4A5766">1. test des données : 260 verts, 3 sautés</text>
+<text x="384" y="406" font-size="9" fill="#4A5766">2. suite : 778 verts, 29 sautés (sans base),</text>
+<text x="384" y="419" font-size="9" fill="#4A5766">2 xfail ; couverture 94,70 % (seuil 90)</text>
+<rect x="696" y="362" width="320" height="76" fill="#ECF3F7" stroke="#14607F" stroke-width="1.2"/>
+<text x="704" y="378" font-size="10.5" font-weight="700" fill="#16202B">CI, job evals</text>
+<text x="704" y="393" font-size="9" fill="#4A5766">mesure des garde-fous à chaque poussée</text>
+<text x="704" y="406" font-size="9" fill="#4A5766">portes non compensables : bloque</text>
+<text x="704" y="419" font-size="9" fill="#4A5766">la fusion si elle régresse</text>
+<rect x="1036" y="362" width="308" height="76" fill="#F7F9FB" stroke="#D5DCE4" stroke-width="1.2"/>
+<text x="1044" y="378" font-size="10.5" font-weight="700" fill="#4A5766">Manuel, payant</text>
+<text x="1044" y="393" font-size="9" fill="#4A5766">scan Giskard (200 scénarios, 20/09)</text>
+<text x="1044" y="406" font-size="9" fill="#4A5766">banc C7 (60 appels réels, 03/10)</text>
+<text x="1044" y="419" font-size="9" fill="#4A5766">plafond de coût saisi</text>
+<rect x="40" y="470" width="1320" height="46" fill="#FBF1EC" stroke="#9E4318" stroke-width="1.2" stroke-dasharray="6,4"/>
+<text x="48" y="486" font-size="10.5" font-weight="700" fill="#9E4318">Limites</text>
+<text x="48" y="501" font-size="9" fill="#4A5766">aucun schéma sur le texte produit ni sur les flux RSS · pas de jeu de référence de briefings · 29 tests ne tournent qu&#x27;avec une base (poste) · garde-fous à 70 % sur deux positions</text>
+<text x="40" y="544" font-size="9" fill="#4A5766">Chiffres : pytest --collect-only (805), CI run 37190015570 (04/10). Bleu : protège le comportement du modèle. Blanc : protège l&#x27;application autour.</text>
+</svg>
