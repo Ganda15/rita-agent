@@ -163,7 +163,7 @@ rattrapés par les plages de dates que chaque étape accepte. </p>
   <tr><td><strong>Base de données</strong></td><td class="mono">sources/database.py</td>
     <td>Relecture programmatique du stock constitué, en requêtes paramétrées, par le nœud scout. Un rôle <code>rita_lecture</code> (SELECT seul) existe pour tout outil d'agent qui lirait la base directement ; au 3 octobre aucun ne le fait, la passerelle MCP passe par l'API.</td></tr>
   <tr><td><strong>Big data</strong></td><td class="mono">bigdata/extract_spark.py</td>
-    <td>Lecture d'un jeu Parquet partitionné par année via Spark, voir §&nbsp;6.2.</td></tr>
+    <td>Lecture d'un jeu Parquet partitionné par année via Spark, voir §&nbsp;6.2 ; figure : <code>bigdata/schemas/SCHEMA-BIGDATA-partition-pruning.png</code>.</td></tr>
 </table>
 
 <h3>Structure du script d'extraction</h3>
@@ -322,6 +322,7 @@ octets). Trois requêtes : volumétrie annuelle, amplitude moyenne par valeur, m
 
 <pre>PartitionFilters: [isnotnull(annee), (<b>annee = 2024</b>)]
 Fichiers connus de Spark : <b>11</b>  →  un seul est ouvert · 27 648 lignes extraites</pre>
+<p style="font-size:8pt">Les trois requêtes, ce que chacune lit (11, puis 3, puis 2 partitions sur 11) et ce qui coûte : <code>bigdata/schemas/SCHEMA-BIGDATA-3-requetes-sparksql.png</code>, volumes de juillet 2026.</p>
 
 <table>
   <tr><th style="width:22%"></th><th style="width:39%">PostgreSQL</th><th>Spark SQL</th></tr>
@@ -430,7 +431,7 @@ python -m pytest -q                                <b># 740 passed, 2 xfailed, 9
   <tr><td><strong>C4</strong></td><td>MCD + MPD · 12 contraintes · registre T1 à T5 · purges P1 à P6 · migrations rejouables</td><td class="mono">evidence/C4/ · db/schema.sql · db/RGPD-registre-des-traitements.md</td></tr>
   <tr><td><strong>C5</strong></td><td>11 points de terminaison · OpenAPI 3.1.0 · autorisation testée</td><td class="mono">api/donnees.py · evidence/C5/</td></tr>
 </table>
-<p style="font-size:7.6pt"><strong>Schémas</strong> : C1 et C3 dans <code>docs/rapports/E1/schemas/</code> (générés depuis le code, vérifiés par un test) · C2 dans <code>bigdata/schemas/</code> · C4 au § 5 et dans <code>evidence/C4/</code> · C5 dans <code>docs/rapports/E3/schemas/</code>.</p>
+<p style="font-size:7.6pt"><strong>Schémas</strong> : C1 et C3 dans <code>docs/rapports/E1/schemas/</code> (générés depuis le code, vérifiés par un test) · C2 dans <code>bigdata/schemas/</code> (partitionnement, trois requêtes) · C4 au § 5 (à jour), première version du 01/08 dans <code>evidence/C4/MCD-MERISE-RITA.png</code>, passage aux tables dans <code>docs/conception/donnees/schema-modele-donnees.svg</code> (conception du 07/09) · C5 dans <code>docs/rapports/E3/schemas/</code>.</p>
 
 <div class="callout">
   <span class="lab">Ce qui a changé depuis la version 1 (13 août)</span>

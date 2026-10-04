@@ -15,10 +15,19 @@
 |---|---|
 | `chapitre-donnees-version-courte-2026-09-07.pdf` | 12 pages, autoportant : cartographie, MCD/MPD et indexation, matrice d'accès, 32 cas de vérification, schémas. **À lire d'abord.** |
 | `chapitre-donnees-version-complete-2026-09-07.pdf` | 40 pages, développé et sourcé (annexes : preuves de certification, historique, liens). Fait foi en cas de doute. |
-| `schema-architecture-donnees.svg`, `schema-modele-donnees.svg` | les deux schémas du rendu (flux des trois familles de données ; modèle conceptuel). Le MCD Merise de référence reste `evidence/C4/MCD-MERISE-RITA.png`. |
+| `schema-architecture-donnees.svg`, `schema-modele-donnees.svg` | les deux schémas du rendu : l'architecture des données (préparer, puis consulter et rédiger, avec ce qui est observé et ce qui est proposé) ; le modèle des **tables** (clés primaires et étrangères, vue de valorisation). Le MCD Merise de référence reste `evidence/C4/MCD-MERISE-RITA.png` (01/08) et sa version à jour, dans le rapport E1, § 5. |
 
 Le chapitre emploie quatre statuts : **Observé** (dans le code au commit étudié), **Documenté** (rapporté par
 un document daté), **Proposé** (conception, rien de réalisé), **À vérifier** (manque ou décision attendue).
+
+**Relu le 04/10/2026 contre `db/schema.sql` et la base.** Le modèle des tables est celui du 07/09 : il ne montre ni
+`position.date_cloture` (03/10), ni `macro_observation` (27/09), ni `mcp_calls` (03/10), et sa note « devise sans taux
+≠ taux 1 » est réglée depuis le 03/10 (la vue rend `taux_manquant` au lieu d'un taux supposé). Ses cardinalités sont
+celles des tables (0,N : une clé étrangère n'oblige pas une valeur à avoir un alias ou une cotation) ; le MCD donne
+celles du métier (1,n). Dans les données du 04/10, aucune valeur n'est sans alias ni sans cotation, et aucune devise
+n'est sans taux. L'architecture des données est une conception datée : les noms des trois outils MCP
+(`rita_fraicheur`, `rita_indicateurs`, `rita_portefeuille`) sont ceux de `passerelle_mcp/serveur.py`, les éléments
+marqués « Proposé » ne sont pas construits.
 
 ## Ce que le chapitre décide, et ce que le code en fait au 03/10/2026
 
