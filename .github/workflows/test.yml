@@ -23,6 +23,20 @@ jobs:
           playwright install --with-deps chromium
       - name: Installer giskard-llm (pur Python) pour tester la déclaration du juge OpenRouter
         run: pip install "giskard-llm[openai]" giskard-checks
+      - name: Tester les données (collecte, nettoyage, import, RGPD)
+        # Critère C13 (rapport E3) : l'étape de test des données est une étape nommée, et elle passe
+        # AVANT la suite complète, pour qu'un défaut de données arrête la chaîne en premier et se lise
+        # comme tel. Ces tests tournent aussi dans la suite complète, avec la couverture : quelques
+        # secondes de plus, pour une étape qu'on peut lire seule. Les tests qui exigent une base se
+        # sautent en CI (pas de DATABASE_URL), comme dans la suite complète.
+        run: >-
+          pytest -q --no-cov
+          tests/test_ingest.py tests/test_importer.py tests/test_cotations.py tests/test_ecb.py
+          tests/test_fred.py tests/test_rss.py tests/test_scraper.py tests/test_positions.py
+          tests/test_schema.py tests/test_marches.py tests/test_fraicheur.py
+          tests/test_manifeste_collecte.py tests/test_journal_pipeline.py tests/test_rattrapage.py
+          tests/test_cas_chapitre_donnees.py tests/test_vue_valorisation.py tests/test_rgpd_purge.py
+          tests/test_rgpd_registre.py tests/test_database.py
       - name: Lancer les tests et mesurer la couverture
         # Le seuil vit dans `.coveragerc` (`fail_under = 80`), pas ici : un seuil
         # écrit dans le workflow serait invisible depuis la machine de développement,

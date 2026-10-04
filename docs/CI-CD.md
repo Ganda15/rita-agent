@@ -48,7 +48,10 @@ Le workflow de revue annule une exécution en cours quand un nouveau commit arri
 
 Travail `pytest` : récupérer le dépôt · Python 3.13 · `pip install -r requirements.txt` · installer Playwright et
 Chromium (le test de fumée ouvre un vrai navigateur ; sur le poste c'est le Chrome installé) · installer `giskard-llm`
-et `giskard-checks` (un test vérifie la déclaration du juge) · `pytest -v --cov --cov-report=term-missing`.
+et `giskard-checks` (un test vérifie la déclaration du juge) · **tester les données** (depuis le 04/10/2026 : une étape
+nommée qui lance seuls les 19 fichiers de tests de collecte, nettoyage, import, schéma et RGPD, avant la suite complète,
+pour qu'un défaut de données arrête la chaîne en premier ; 263 tests, environ 6 secondes ; figée par
+`tests/test_ci_donnees.py`) · `pytest -v --cov --cov-report=term-missing`.
 
 Travail `evals` : récupérer le dépôt · Python 3.13 · dépendances · `python -m evals.mesurer_gardefou` ·
 `pytest tests/test_evals.py -v` (les portes non compensables : faux positifs au plus 15 %, latence sous 250 ms ; le
