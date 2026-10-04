@@ -167,7 +167,7 @@ ARCHI = Schema(
         Boite("zo", 1040, 90, 380, 600, "OBSERVABILITÉ (C11, C20)", genre="zone"),
         Boite("lf", 1056, 118, 348, 196, "Langfuse Cloud, région UE (Irlande)", ["une trace par briefing, identifiant = request_id :", "  briefing  (verdict AMF, note conforme_amf)", "  ├─ scout", "  ├─ rag ─ garde-fou-entree", "  ├─ redacteur ─ briefing-llm ─ llm-<fournisseur>", "  └─ garde-fou-sortie", "jetons, erreur du repli, niveau WARNING au refus", "première trace réelle : 02/10 18:39 ; palier gratuit"], "lavis"),
         Boite("fr", 1056, 416, 348, 58, "GET /donnees/fraicheur + bandeau", ["retard en jours ouvrés, 3 états, lisible sans couleur", "la panne la plus fréquente : la collecte d'hier"], "normal"),
-        Boite("al", 1056, 330, 348, 70, "Alertes (2, palier gratuit) → GitHub Actions", [".github/workflows/alerte-incident.yml", "ouvre ou commente une issue « incident »", "bouton manuel pour prouver la chaîne"], "normal"),
+        Boite("al", 1056, 330, 348, 70, "Alertes (2, palier gratuit) → GitHub Actions", ["erreurs de fournisseur ; p95 de l'appel au modèle", "alerte-incident.yml ouvre une issue « incident »", "réglées le 04/10, ont sonné : issue #77"], "normal"),
         Boite("tb", 1056, 490, 348, 56, "Tableau de bord « RITA C11 » (03/10, par l'API)", ["générations par fournisseur · p95 de briefing-llm", "observations en ERROR ou WARNING"], "lavis"),
         Boite("cout", 1056, 562, 348, 56, "Coût par briefing", ["à zéro pour OpenRouter : nom de modèle absent", "de la grille de prix Langfuse ; à corriger"], "manque"),
 
@@ -289,20 +289,20 @@ MONITORAGE = Schema(
         Boite("bd", 856, 190, 488, 56, "Bandeau de fraîcheur, écran 1 · export CSV des tuiles", ["lisible sans la couleur ; CSV pour un lecteur d'écran ou un tableur"], "normal"),
 
         Boite("za", 840, 280, 520, 140, "ALERTE", genre="zone"),
-        Boite("al", 856, 308, 230, 98, "2 règles Langfuse", ["ERROR sur 24 h", "aucune trace en 24 h", "à régler par le", "propriétaire du compte"], "manque"),
-        Boite("gh", 1110, 308, 234, 98, "alerte-incident.yml", ["repository_dispatch", "ouvre ou commente une", "issue « incident »", "testé à la main : #71"], "normal"),
+        Boite("al", 856, 308, 230, 98, "2 règles Langfuse (04/10)", ["ERROR > 0 sur 1 jour", "p95 de briefing-llm", "  > 15 000 ms sur 1 jour", "toutes deux ont sonné"], "normal"),
+        Boite("gh", 1110, 308, 234, 98, "alerte-incident.yml", ["repository_dispatch", "ouvre ou commente une", "issue « incident » par alerte", "à la main : #71 ; réel : #77"], "normal"),
 
         Boite("sb", 40, 440, 660, 70, "Bac à sable : la suite de tests ne trace jamais", ["tests/conftest.py coupe le traçage (INC-006) ; le banc C7 aussi (LANGFUSE_TRACING_ENABLED=false) ;", "doubles de client dans tests/test_traces*.py, test_trace_chemin.py (l'ordre exact des étapes)"], "note"),
-        Boite("lim", 720, 440, 640, 70, "Ce qui manque", ["alertes non réglées · quinze traces factices du 02/10 à supprimer ·", "serveur de production pas encore tracé (code du 19/08) · coût OpenRouter à zéro"], "manque"),
+        Boite("lim", 720, 440, 640, 70, "Ce qui manque", ["serveur de production pas encore tracé (code du 19/08) · coût OpenRouter à zéro ·", "pas d'alerte de silence (deux alertes au palier gratuit) · seuils à revoir après une semaine"], "manque"),
     ],
     fleches=[
         Fleche("br", "lf"),
         Fleche("lf", "tb", "", sortie="d:0.3", entree="g"),
-        Fleche("lf", "al", "", sortie="d:0.8", entree="g:0.3", pointille=True),
+        Fleche("lf", "al", "", sortie="d:0.8", entree="g:0.3"),
         Fleche("al", "gh"),
         Fleche("fr", "bd", "", sortie="d:0.5", entree="g:0.8"),
     ],
-    legende="Boîtes pleines : présent et prouvé. Pointillé orange : à faire. Gris : service externe. Preuves : evidence/C11/.",
+    legende="Boîtes pleines : présent et prouvé. Pointillé orange : à faire. Gris : service externe. Preuves : evidence/C11/ (alertes : preuve-alertes-2026-10-04.md).",
 )
 
 # =============================================================================
