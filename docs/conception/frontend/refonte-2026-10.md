@@ -242,6 +242,12 @@ daté de secours en cas de panne de réseau ou de fournisseur pendant l'oral. Le
 
 ## 12. Maquettes proposées (non implémentées)
 
+Trois planches, chacune marquée « maquette proposée, non implémentée » ; elles ne fixent aucune date de début
+(décision A, § 10). Ce qui y est réel et ce qui est illustratif est dit au § 11. Une précision pour la planche du
+briefing : « 11,5 s au total » est la durée de la trace Langfuse de cette requête, pas le traitement complet de l'API (§ 6).
+Elles ne prouvent pas que l'application actuelle fonctionne : ce sont les captures et les tests de `evidence/C10/`,
+`evidence/C14/` et `evidence/C17/` qui le font.
+
 ![Les trois styles comparés ; retenu : A](maquettes/maquette-1-style-visuel.png)
 
 ![L'écran briefing : flux vertical retenu](maquettes/maquette-2-ecran-briefing.png)

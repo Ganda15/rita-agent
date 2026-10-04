@@ -114,7 +114,11 @@ restent l'axe à zéro (aucun réglage dans l'API, éditeur de la tuile à regar
 `evidence/C14/WIREFRAMES-C14-ecran-portefeuille.png` à côté du récit utilisateur du portefeuille (valeurs
 d'illustration, vérifiées différentes des positions réelles) ; § 2 « Cadre technique » (C15),
 `docs/conception/donnees/schema-architecture-donnees.svg` comme conception de septembre, observé et proposé
-séparés, et `E3-architecture` pour l'application actuelle.
+séparés, et `E3-architecture` pour l'application actuelle ; § 1 aussi, la planche
+`evidence/C14/WIREFRAMES-C14-ecran-briefing.png` à côté du récit utilisateur du briefing, avec sa légende « redessinée
+après l'implémentation, le 03/10 », et un renvoi depuis § 4 « Développer » (C17) ; en améliorations futures, un
+renvoi aux maquettes de la refonte (`docs/conception/frontend/refonte-2026-10.md`, § 12), jamais présentées comme
+l'application actuelle. Le flux C15 du 18/08 reste une preuve historique (`evidence/C15/`).
 **Décidé par Era le 04/10** : les mentions historiques d'un guide d'étude dans `CHANGELOG.md` et `evidence/C21/INC-005` restent
 telles quelles (elles racontent comment un défaut a été trouvé ; la préparation personnelle, elle, vit hors du dépôt).
 Restent ceux du 03/10 : aucune alerte quand la chaîne est rouge (INC-007) ; seize indicateurs spécifiés, treize reçus par

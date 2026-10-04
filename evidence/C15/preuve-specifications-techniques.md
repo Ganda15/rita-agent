@@ -10,6 +10,13 @@
 |---|---|
 | [`FLUX-DONNEES-C15-application-RITA.png`](FLUX-DONNEES-C15-application-RITA.png) | le diagramme de flux — à regarder |
 | [`FLUX-DONNEES-C15-application-RITA.svg`](FLUX-DONNEES-C15-application-RITA.svg) | la source, vectorielle |
+
+> **Relu le 04/10/2026 : ce diagramme est une preuve datée du 18/08, conservée telle quelle.** Depuis : 10 tables, 1 vue et
+> 19 objets d'index (au lieu de 8, 1 et 15) ; 278 473 cotations et 1 563 articles ; le graphe a trois nœuds (`scout`,
+> `rag`, `redacteur`) au lieu de deux ; le garde-fou d'entrée est un contrôle d'intention AMF (7 motifs), et le garde-fou
+> d'injection (12 motifs) s'applique aux articles collectés ; les flux RSS sont 3 généraux plus 1 par valeur détenue. Le
+> plafond de pagination de 1 000 (`LIMITE_MAX`, `api/donnees.py`) est toujours vrai. L'architecture actuelle de
+> l'application : `docs/rapports/E3/schemas/E3-architecture.png` ; une version vérifiée de ce flux ira au rapport E4, § 2.
 | [`../C14/preuve-specifications-wireframes.md`](../C14/preuve-specifications-wireframes.md) | le besoin dont découle cette architecture |
 | [`../../requirements.txt`](../../requirements.txt) | les dépendances réelles |
 
