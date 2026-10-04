@@ -44,7 +44,9 @@ capture d'écran horodatée, sortie de commande, fichier produit, lien vers un r
 
 | Schéma | Couvre | Emplacement |
 |---|---|---|
-| Flux de collecte multi-source | **C1** | [`C1/SCHEMA-C1-collecte-multisource.png`](C1/SCHEMA-C1-collecte-multisource.png) |
+| Collecte multi-source, tenue à jour (04/10) | **C1** | [`../docs/rapports/E1/schemas/E1-collecte.png`](../docs/rapports/E1/schemas/E1-collecte.png), générée depuis le code |
+| Flux de collecte multi-source, preuve datée du 11/08 | **C1** | [`C1/SCHEMA-C1-collecte-multisource.png`](C1/SCHEMA-C1-collecte-multisource.png) (chiffres d'août, voir `C1/README.md`) |
+| Nettoyage : défaut mesuré, décision, fichier (04/10) | **C3** | [`../docs/rapports/E1/schemas/E1-nettoyage.png`](../docs/rapports/E1/schemas/E1-nettoyage.png), générée depuis le code |
 | *Partition pruning* Parquet + Spark | **C1** | [`../bigdata/schemas/`](../bigdata/schemas/) |
 | Les 3 requêtes Spark SQL | **C2** | [`../bigdata/schemas/`](../bigdata/schemas/) |
 | MCD Merise | **C4** | [`C4/MCD-MERISE-RITA.png`](C4/MCD-MERISE-RITA.png) |

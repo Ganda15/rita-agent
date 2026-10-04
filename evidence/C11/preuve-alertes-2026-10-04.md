@@ -38,7 +38,7 @@ exécutent le vrai script de l'étape sur la charge utile reçue ; ils tournent 
 | Condition | au-dessus de 0, sur 1 jour |
 
 **Elle a sonné le 04/10 à 10:07 UTC** : exécution GitHub `37194357268`, issue
-[#77](https://github.com/Ganda15/rita-agent/issues/77). Charge utile reçue :
+#77 du dépôt (onglet Issues, label `incident`). Charge utile reçue :
 `count(observations.count) is above 0 over the last 1d`, titre `[ALERT] RITA : fournisseur en erreur`.
 
 **Était-ce une vraie erreur ?** Oui. Lecture par l'API des observations de niveau ERROR entre le 03/10 10:07 UTC et
