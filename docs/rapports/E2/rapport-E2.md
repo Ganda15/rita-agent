@@ -7,7 +7,7 @@
 | **Candidat** | Eramalingam Gandakumar |
 | **Formation** | Simplon × Wild Code School, promotion Développeur IA et IA agentique |
 | **Dépôt** | `Ganda15/rita-agent` (privé ; accès du jury par invitation de collaborateur) |
-| **Version** | 0.1, squelette du 3 octobre 2026 ; format attendu 15 à 20 pages, oral 15 minutes, sans démonstration ; dû le 5 novembre 2026 |
+| **Version** | 0.2 du 5 octobre 2026 (squelette du 3 octobre ; § 4.3, § 4.4 et critères C8 remis d'accord le 5 octobre) ; format attendu 15 à 20 pages, oral 15 minutes, sans démonstration ; dû le 5 novembre 2026 |
 | **État** | C6 et C8 rédigés depuis les faits du dépôt ; **C7 : première comparaison mesurée le 03/10 au soir** (GPT par Azure AI Foundry contre Claude par OpenRouter, 30 appels chacun), recommandation provisoire ; prix publics et information environnementale relevés le soir même (rien par modèle chez les deux éditeurs) ; restent la notation du français et Anthropic en direct ; plan validé D1 à D3 = A |
 
 ## Lire ce rapport
@@ -154,17 +154,21 @@ registre RGPD (carte #68) : Information missing, to complete later.
 Langfuse Cloud, région Union européenne. Chaque briefing donne une trace : une racine, une étape par nœud et par
 garde-fou, une génération par fournisseur essayé avec modèle, jetons et erreur ; le verdict AMF est une note sur la
 trace ; le même identifiant de requête est dans la réponse, le journal et la trace. Un tableau de bord à trois tuiles
-existe ; une chaîne d'alerte vers une issue GitHub a été exécutée une fois à la main. Limites, dites telles quelles :
-le coût affiché vaut zéro pour le modèle servi par OpenRouter (nom absent de la grille de prix), quinze traces
-factices polluent les agrégats jusqu'à leur suppression, les deux alertes ne sont pas réglées. Détail : rapport E3 §5,
-`evidence/C11/`.
+existe, dont « Tentatives par fournisseur (échecs compris) », renommée le 04/10. Deux alertes sont réglées depuis le
+04/10 : observations en erreur, plus de 0 sur un jour ; p95 de l'appel au modèle, plus de 15 000 ms sur un jour. Elles
+ont sonné le jour même et ouvert une issue GitHub (#77) ; une fausse alerte, due à un seuil saisi « 15 » alors que
+Langfuse compte en millisecondes, a été corrigée. Les quinze traces factices ont été supprimées le 04/10. Limite, dite
+telle quelle : le coût affiché vaut zéro pour le modèle servi par OpenRouter (nom absent de la grille de prix).
+Détail : rapport E3 §5, `evidence/C11/preuve-alertes-2026-10-04.md`.
 
 ### 4.4 La documentation, et sa remise
 
-`docs/EXPLOITATION.md` : clés, installation avec et sans Docker, vérification, services externes, données, dépannage,
-monitorage. Corrigé le 03/10 : la table des clés plaçait OpenRouter en deuxième, le code le place troisième ; le
-fournisseur Foundry y manquait. **La remise aux parties prenantes n'est pas prouvée** : le guide n'a été envoyé à
-personne (carte #43). La preuve attendue : un envoi daté au formateur et sa réponse, rangés dans `evidence/C8/`.
+`docs/EXPLOITATION.md` et son PDF : clés, installation avec et sans Docker, vérification, services externes, données
+et lieux de traitement, dépannage, monitorage. Corrigé le 03/10 (la table des clés plaçait OpenRouter en deuxième, le
+code le place troisième ; le fournisseur Foundry y manquait), puis remis d'accord le 05/10 (`f34486c`, PDF de 11
+pages) : alertes et tableau de bord réglés le 04/10, lieux de traitement des données (registre T3, T6, T7), volumes
+mesurés en base. **La remise aux parties prenantes n'est pas encore prouvée** : le guide n'a été envoyé à personne
+(carte #43). La preuve attendue : un envoi daté au formateur et sa réponse, rangés dans `evidence/C8/`.
 Information missing, to complete later.
 
 ---
@@ -191,9 +195,9 @@ Information missing, to complete later.
 | C7.6 prérequis et contraintes techniques | 🟠 | relevés dans le code (`src/llm.py`) et dans la sonde du banc (clé, authentification) ; prix publics et types de déploiement relevés ; limites de débit non relevées |
 | C7.7 recommandation argumentée | 🟠 | provisoire (preuve §9), à confirmer par la notation du français |
 | C8.1 service accessible, authentification | ✅ | briefing réel du 03/10, clé en environnement |
-| C8.2 configuration conforme aux besoins | 🟠 | un fournisseur opérationnel sur trois |
-| C8.3 monitorage opérationnel | 🟠 | trace complète et tableau ; coût faux, traces factices, alertes non réglées |
-| C8.4 documentation d'accès, installation, tests, dépendances, flux | ✅ | `docs/EXPLOITATION.md`, corrigé le 03/10 |
+| C8.2 configuration conforme aux besoins | 🟠 | deux fournisseurs opérationnels sur trois (03/10) ; lieux de traitement non conformes à la règle UE seule du projet (registre, T6) |
+| C8.3 monitorage opérationnel | 🟠 | trace complète, tableau, deux alertes réglées et déclenchées le 04/10 ; coût faux pour OpenRouter |
+| C8.4 documentation d'accès, installation, tests, dépendances, flux | ✅ | `docs/EXPLOITATION.md`, remis d'accord le 05/10 |
 | C8.5 documentation communiquée, accessible | 🔴 | aucune remise prouvée (#43) |
 
 **Décompte** : 6 ✅ · 13 🟠 · 1 🔴 sur 20 (le matin du 03/10 : 5, 11, 4 ; le soir, C7.5 passe de 🔴 à 🟠 après le relevé des prix et de l'information environnementale). Le seul 🔴 restant est C8.5 : aucune remise de la documentation prouvée (#43).
@@ -205,7 +209,7 @@ Information missing, to complete later.
 1. Captures du fil Discord du 16/08 et envoi daté au formateur (Era) : la seule preuve de partage possible.
 2. Note S40 écrite par Era depuis les candidats ; les semaines S37 à S39 restent déclarées sans séance.
 3. Noter le français à l'aveugle (60 textes, deux services confondus) ; refaire un passage complet avec l'origine journalisée (déploiement Global Standard, région variable) ; confirmer le périmètre avec le formateur ; Anthropic en direct si une clé arrive.
-4. Envoi du guide d'exploitation au formateur, preuve rangée (#43).
+4. Envoi au formateur du guide d'exploitation remis d'accord le 05/10, preuve rangée (#43).
 5. Rédaction des sections C7 depuis `evidence/C7/`, relecture, PDF (`scripts/rendre_pdf.py`), tag `livrable-E2-v1`.
 
 ## 📖 Glossaire

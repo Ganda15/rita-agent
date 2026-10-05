@@ -56,9 +56,15 @@ Nadège et Elena aideront particulièrement à la présentation.
    ce qui reste) : texte préparé dans la conversation du 05/10 ; (b) lui envoyer **en message privé le lien du
    document de compétences**. **Corrections faites le 05/10 au soir** (35 lignes relues contre le dépôt et GitHub) :
    **110 OK, 24 PARTIELLEMENT, 1 A AJOUTER** sur 135, contre 100, 28 et 7 avant ; partie E1 (C1 à C5) : 28 sur 28.
-   Fichier de travail : `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP_05_10_26_corrige.xlsx` (le fichier
-   ouvert dans Excel n'a pas été touché). **Lien pour le formateur, collaborateur du dépôt** : branche à part
-   `classeur-competences`, dossier `docs/competences/` (classeur et README daté). **Cette branche ne se fusionne pas
+   Puis, le même soir : colonne « Rédaction » réécrite pour les 9 compétences rédigées (C1 à C5, C8, C9, C12, C13,
+   d'après les rapports E1, E2, E3 et la CI du 05/10 : **Era doit la relire et la dire avec ses mots**), 17 notes du
+   03/10 périmées corrigées (dont 12 en E1), notes « format accessible » appuyées sur la mesure des PDF balisés, C16
+   lignes 115 et 117 échangées ; idée d'une synthèse courte prise dans la grille d'un camarade (contenu non repris).
+   Fichiers : `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP_05_10_26_v2.xlsx` (le détaillé, fichier de
+   travail) et `Era-Synthese-competences-RNCP.xlsx` (la synthèse, même contenu, colonnes pour les remarques du
+   formateur). **Liens** : GitHub, branche à part `classeur-competences`, dossier `docs/competences/` (les deux
+   classeurs et un README daté) ; Google Drive, synthèse convertie en Google Sheets (compte ganda70), à partager en
+   « Commentateur » avant l'envoi. **Cette branche ne se fusionne pas
    dans `main` sans décision** : un tag `livrable-*` est figé, le classeur y resterait pour toujours. Décider avant la
    PR du 15/10 s'il fait partie de la remise au jury, et sous quelle forme (question à poser au formateur). Le seul
    « A AJOUTER » est C8.5 : il passe à OK quand le formateur accuse réception du guide d'exploitation corrigé
@@ -1470,7 +1476,7 @@ fabriquée, donc irrecevable pour C6.
 
 | Quoi | Où |
 |---|---|
-| Rédaction par compétences (modèle Simplon, à rendre) | `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP_05_10_26_corrige.xlsx` (copie pour le formateur : branche `classeur-competences`, `docs/competences/`) : 135 critères, colonne « Critère validé » remplie le 03/10 puis corrigée le 05/10 sur 35 lignes : **110 OK, 24 PARTIELLEMENT, 1 A AJOUTER** (C8.5, en attente de l'accusé de réception du formateur), preuve datée en commentaire de chaque cellule ; colonne « Rédaction » : 9 compétences sur 21 |
+| Rédaction par compétences (modèle Simplon, à rendre) | `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP_05_10_26_v2.xlsx`, et sa synthèse `Era-Synthese-competences-RNCP.xlsx` (copies pour le formateur : branche `classeur-competences`, `docs/competences/`, et Google Drive) : 135 critères, colonne « Critère validé » remplie le 03/10 puis corrigée le 05/10 sur 35 lignes, rédaction et notes remises d'accord le même soir : **110 OK, 24 PARTIELLEMENT, 1 A AJOUTER** (C8.5, en attente de l'accusé de réception du formateur), preuve datée en commentaire de chaque cellule ; colonne « Rédaction » : 9 compétences sur 21 |
 | ⤷ rempli pour | C1 C2 C3 C4 C5 C8 C9 C12 C13 — les autres **volontairement vides** |
 | Boussole (tâche principale + pile de détours) | `C:\Users\kanda\Desktop\RITA PROJET PRO\BOUSSOLE-RITA.md` : **archivé depuis le 14/08** (bannière du fichier : « n'est plus la source »). L'état vivant est ce fichier-ci. La skill `boussole` pointe encore vers l'archive : à corriger (relevé le 03/10) |
 | Journal (19 entrées, JOURNAL-000 à JOURNAL-018) | Obsidian `Projets/RITA/07-Journal/` (coffre `C:\Users\kanda\Documents\Formation-IA\Formation-IA\`) : la 018 du 02/10 au soir compte 18 sections ; index à jour le 03/10 |
