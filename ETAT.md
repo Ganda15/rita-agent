@@ -44,8 +44,18 @@ industrialisation du fil rouge) ; demander d'abord à Era ce qu'il en veut, puis
 `CONTINUITE.md`) et rouvrir la question des agents. En parallèle, avant le gel du 15/10 : relecture d'E1 et d'E3 par Era,
 simulation du jury E1 (phase 5, la question 1 est posée), les deux captures Langfuse. Oral blanc E1 + E3 : **29-30/10**.
 
+**Retour du formateur, rencontre du 05/10 (dix minutes)** : trois étapes de traitement acceptées, système à garder
+simple à expliquer ; E1 tenu à 5 pages, annexe permise ; RGPD : faire d'abord fonctionner, régions européennes,
+choisir la région du modèle dans Azure (détail et réserves : `CONTINUITE.md` D, 05/10). **Examens blancs à partir du
+26/10 environ**, deux sessions (l'une sur E1-E3 ou E1-E2, l'autre sur tout) : **périmètre et dates à confirmer** ;
+Nadège et Elena aideront particulièrement à la présentation.
+
 **Dans l'ordre, pour Era** :
 
+0. **Demandé par le formateur le 05/10** : (a) lui envoyer par message où en est RITA (code, développement fait,
+   ce qui reste) : texte préparé dans la conversation du 05/10 ; (b) lui envoyer **en message privé le lien du
+   document de compétences** (`D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP.xlsx`, à mettre en ligne)
+   **une fois les corrections faites** ; garder envoi et réponse dans `evidence/C8/` s'ils touchent C8.
 1. **Lundi 05/10, la revue hebdomadaire (15 min)** avec la trame `evidence/C16/revues/2026-10-05-revue-S41.md` : cocher les
    5 cartes proposées à Fait, ajouter au tableau les 7 issues ouvertes absentes, dire si la revue du 28/09 a eu lieu, garder
    2 cartes « En cours », remplir le §6, coller la ligne du §7 ici, commiter. Seul moyen de fermer C16.1. Vérifier au passage
