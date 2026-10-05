@@ -11,7 +11,8 @@
 **Base réglementaire** : RGPD (Règlement Général sur la Protection des Données,
 UE 2016/679), **article 30** — registre des activités de traitement.
 
-**Dernière mise à jour** : 2026-10-05 *(règle « UE seule » posée par Era ; T1 corrigé : les noms des sociétés détenues partent vers Google News ; T6, fournisseurs du modèle, et T7, requêtes Google News, inscrits ; traces de test supprimées le 04/10)*
+**Dernière mise à jour** : 2026-10-05 *(règle « UE seule » posée par Era ; T1 corrigé : les noms des sociétés détenues partent vers Google News ; T6, fournisseurs du modèle, et T7, requêtes Google News, inscrits ; traces de test supprimées le 04/10 ; le même jour, garanties contractuelles des destinataires relues : identifiées,
+vérification propre à RITA incomplète, voir § 5)*
 
 *Mise à jour précédente : 2026-10-02 (T3 devient un traitement actif : Langfuse Cloud, région UE ; P1 et P2 corrigées ; état de `memory_audit` ajouté à T2).*
 
@@ -37,7 +38,8 @@ d'accès d'un tiers à instruire. Elle ne dispense pas d'encadrer les destinatai
 > être prouvée, et elle pèse sur le choix des services d'IA (C7). Une
 > région « UE » n'est pas une personne morale : il faut vérifier qui traite, où, et avec quels
 > sous-traitants. **Au 2026-10-05, trois traitements ne la respectent pas ou pas de façon prouvée** :
-> T6 (fournisseurs du modèle), T7 (Google News), et T3 tant que le DPA de Langfuse n'est pas lu.
+> T6 (fournisseurs du modèle), T7 (Google News), et T3 : le contrat de Langfuse lui-même permet un traitement hors de
+> la région choisie (DPA ClickHouse, § 6.1).
 > Corrections après le gel du 15/10 (§ 5).
 
 > ⚠️ **Ce que ça change si RITA devient multi-utilisateur** : il faudra une base légale
@@ -124,7 +126,7 @@ avant le 28/09).
 | **Catégories de données** | Le prompt envoyé au modèle et sa réponse : ticker, cours, variation, ADTV20, devise, fraîcheur, passages de presse. **Aucune position, aucun PRU, aucune quantité** (mesuré le 28/09 dans `agents/analyst.py`). Malgré cela, les tickers demandés révèlent les valeurs d'intérêt de l'utilisateur. S'y ajoutent le modèle, le fournisseur, l'usage en jetons et le message d'erreur (tronqué à 300 caractères) |
 | **Destinataire** | **Langfuse GmbH** (Allemagne), sous-traitant, au sein du groupe ClickHouse. L'addendum applicable est le « ClickHouse Customer Data Processing Addendum » (en vigueur le 10/04/2026) ; contact : privacy@clickhouse.com. Hébergement : AWS `eu-west-1` (Irlande) |
 | **Sous-traitants ultérieurs** | Selon la liste publiée par l'éditeur (en vigueur le 10/08/2026) : ClickHouse GmbH (Allemagne), ClickHouse BV (Pays-Bas) et **ClickHouse, Inc. (États-Unis)** |
-| **Transfert hors UE** | Les données sont hébergées dans l'UE. **Une entité américaine figure parmi les sous-traitants du groupe** : le transfert au titre de l'entité reste **à confirmer par la lecture du DPA**, pas encore faite par Era. Tant que ce n'est pas fait, ne pas écrire « aucun transfert » |
+| **Transfert hors UE** | Les données sont hébergées dans l'UE. **Une entité américaine figure parmi les sous-traitants du groupe.** Relu le 2026-10-05 dans le DPA (https://clickhouse.com/legal/agreements/data-processing-addendum) : **§ 6.1**, pour Langfuse Cloud, les données restent dans la région choisie « except as reasonably necessary to provide the Services or as necessary to comply with the law » ; **§ 6.2**, un transfert hors de l'EEE sans décision d'adéquation est encadré par les clauses contractuelles types. Donc : garantie contractuelle identifiée, **transfert possible par contrat**, conformité RGPD de ce transfert **non vérifiée** (AITD non faite, § 5) ; **non conforme à la règle UE seule** (§ 0), par contrat |
 | **Durée de conservation** | 30 jours (palier gratuit), moins que les 90 jours de T2. Suppression possible à la demande par l'interface ou par l'API (quelques minutes selon l'éditeur) |
 | **Mesure de réduction** | Rien à masquer aujourd'hui. **Condition écrite** : si une position, un PRU ou une quantité entre un jour dans le prompt, brancher la fonction de masquage du SDK Langfuse avant de tracer le nœud concerné |
 | **Incident du 2026-10-02** | Des générations de test (texte « prompt test ») ont été écrites dans le projet de production par la suite de tests. Aucune donnée personnelle dedans. Cause corrigée le jour même ; **traces supprimées le 2026-10-04** (relecture par l'API : 0 « prompt test ») |
@@ -204,7 +206,8 @@ des données ») et une mesure dans le code plutôt qu'une supposition :
 | **Base légale** | Intérêt légitime |
 | **Catégories de données** | Le prompt : ticker demandé, cours, variation, ADTV20, devise, fraîcheur, les 13 indicateurs, passages de presse (`agents/analyst.py`). **Aucune position, aucun PRU, aucune quantité.** Ce qui est personnel malgré tout : **la valeur demandée et l'heure de la demande** disent ce qui intéresse l'unique utilisateur, et chaque appel est rattaché à son compte chez le fournisseur |
 | **Destinataires** | Dans l'ordre de la cascade (`src/llm.py`, `LLM_ORDRE`) : 1. **Microsoft Azure AI Foundry**, déploiement **Global Standard** (lu dans le portail par Era le 03/10, `evidence/C7/prix-et-environnement-2026-10-03.md`) : selon Microsoft, un tel déploiement peut traiter un appel dans n'importe quelle région Azure ; 2. **Anthropic** (API directe), société établie aux États-Unis ; 3. **OpenRouter**, point d'entrée général `https://openrouter.ai/api/v1/chat/completions` (`src/llm.py:24`), sans garantie de région |
-| **Transfert hors UE** | **Possible** pour Azure (déploiement mondial), **probable** pour Anthropic et OpenRouter. Contrats de traitement (DPA) des trois fournisseurs **non lus**. **Non conforme à la règle UE seule** (§ 0) |
+| **Transfert hors UE** | **Possible** pour Azure (déploiement mondial), **probable** pour Anthropic et OpenRouter. **Non conforme à la règle UE seule** (§ 0) |
+| **Garanties contractuelles** (relues le 2026-10-05) | **OpenRouter** (https://openrouter.ai/data-processing-agreement) : § 13.2, clauses contractuelles types, module 2 ; l'option « EU-only » (annexe A) ne s'applique **que si elle est choisie** et passe par l'« EU API », et ne couvre que les « API Payloads » (prompts, réponses), **pas** les données de compte, de facturation ni d'authentification : elle ne suffit donc pas à la règle UE seule. **Microsoft** : clauses contractuelles types proposées par son DPA pour Azure, selon la page officielle (https://learn.microsoft.com/en-us/compliance/regulatory/offering-eu-model-clauses), non relue en détail. **Anthropic** : DPA avec clauses types intégré à ses conditions commerciales pour l'API, selon sa page officielle (https://privacy.claude.com/en/articles/7996862-how-do-i-view-and-sign-your-data-processing-addendum-dpa), non relue en détail. **Vérification propre à RITA incomplète** (§ 5) |
 | **Durée de conservation** | Selon chaque fournisseur, **non vérifiée** |
 | **Lien avec T3** | Le même prompt et la même réponse sont tracés dans Langfuse (T3) |
 | **Inventaire champ par champ** | À faire : carte #68 (tableau champ, origine, destinataire, durée, et un test qui échoue si le prompt contient un champ hors liste) |
@@ -283,14 +286,26 @@ utilisateur.
 
 | # | Action | Criticité |
 |---|---|---|
-| 1 | ~~Choisir l'outil de monitorage avant d'activer le traçage (T3)~~ **Fait : Langfuse Cloud UE choisi le 28/09, activé le 02/10 ; traces de test supprimées le 04/10.** Reste : lire le DPA et vérifier, au regard de la règle UE seule, le rôle de l'entité américaine du groupe | 🟠 moyenne |
+| 1 | ~~Choisir l'outil de monitorage avant d'activer le traçage (T3)~~ **Fait : Langfuse Cloud UE choisi le 28/09, activé le 02/10 ; traces de test supprimées le 04/10 ; DPA relu le 05/10 (§ 6.1 et § 6.2).** Reste : décider si T3 est gardé malgré la règle UE seule (le contrat permet un traitement hors région), ou remplacé (auto-hébergement, autre outil) | 🟠 moyenne |
 | 2 | **Hook Git `pre-commit`** interdisant l'ajout d'un fichier personnel (P4) | 🟠 moyenne |
 | 3 | Brancher P1 et P2 sur APScheduler (aujourd'hui : lancement manuel) | 🟠 moyenne |
 | 4 | Chiffrer la sauvegarde de la base si elle sort de la machine | 🟡 basse tant que tout est local |
 | 5 | **T7 (carte #81) : arrêter d'envoyer à Google News les noms des sociétés détenues** (liste de veille indépendante des positions, sources approuvées) | 🔴 haute : révèle chaque soir la composition du portefeuille hors de l'UE |
-| 6 | **T6 (cartes #82 et #68) : n'appeler que des fournisseurs de modèle approuvés UE**, sans repli vers un fournisseur non approuvé ; lire les trois contrats de traitement | 🔴 haute : chaque briefing part aujourd'hui sans garantie de région |
+| 6 | **T6 (cartes #82 et #68) : n'appeler que des fournisseurs de modèle approuvés UE**, sans repli vers un fournisseur non approuvé ; relire en entier les contrats de Microsoft et d'Anthropic | 🔴 haute : chaque briefing part aujourd'hui sans garantie de région |
+| 7 | **Transferts hors UE (T3, T6)** : pour chaque destinataire, vérifier la certification au Data Privacy Framework ; à défaut, faire l'**analyse d'impact du transfert (AITD)** exigée par la CNIL pour les clauses types ; documenter contrats applicables, données envoyées, sous-traitants, lieux et durées | 🟠 moyenne pour le RGPD ; sans effet sur la règle UE seule, qui interdit le transfert de toute façon |
 
-> Un registre qui ne signale aucune faiblesse n'est pas crédible. Ces six points sont
+> 🟠 **Statut des transferts au 2026-10-05 : garanties contractuelles identifiées ; vérification propre à RITA
+> incomplète.** Trouver une clause (DPA, clauses contractuelles types) montre qu'une garantie existe, pas que la
+> configuration de RITA, ses données réellement envoyées, ses destinataires et leurs sous-traitants, les lieux et les
+> durées de traitement la respectent. Avant de conclure qu'un transfert est conforme au RGPD, il faut documenter : les
+> contrats qui s'appliquent réellement, les données envoyées (carte #68), les destinataires et sous-traitants, les lieux,
+> les durées, et **l'analyse d'impact du transfert (AITD)** quand il repose sur des clauses types : la CNIL l'exige
+> dans ce cas (guide AITD, p. 7 : https://www.cnil.fr/sites/cnil/files/2025-02/guide_aitd_pdf.pdf). Exception : un
+> destinataire américain **certifié** au Data Privacy Framework relève de la décision d'adéquation (art. 45), sans
+> AITD ; la certification se vérifie, elle ne se suppose pas. **Et un transfert licite au regard du RGPD violerait
+> quand même la règle UE seule du projet.**
+
+> Un registre qui ne signale aucune faiblesse n'est pas crédible. Ces sept points sont
 > ouverts, et ils seront présentés comme tels.
 
 ---
@@ -314,6 +329,7 @@ utilisateur.
 | **Données sensibles** (art. 9) | Catégories particulières : santé, opinions, origine… | Les données financières **n'en font pas partie** |
 | **AIPD / DPIA** | *Analyse d'Impact relative à la Protection des Données* — étude obligatoire si risque élevé | Non requise en mono-utilisateur |
 | **CCT / SCC** | *Clauses Contractuelles Types* — contrat encadrant un transfert hors UE | Encadrerait un transfert vers l'entité américaine du groupe ClickHouse, si le DPA le prévoit (à confirmer) |
+| **AITD** (analyse d'impact des transferts) | Étude écrite des lois du pays de destination et des protections à ajouter | Exigée par la CNIL quand un transfert repose sur des clauses types (T3, T6) |
 | **Data Privacy Framework** | Accord UE–États-Unis autorisant certains transferts (2023) | Base possible du transfert T3 vers une entité américaine, à confirmer par le DPA |
 | **Purge** | Suppression programmée des données trop anciennes | P1 et P2 |
 | **Mode simulation** (*dry-run*) | Le script montre ce qu'il ferait, sans le faire | Comportement par défaut de `rgpd_purge.py` |
