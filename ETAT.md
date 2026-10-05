@@ -54,8 +54,15 @@ Nadège et Elena aideront particulièrement à la présentation.
 
 0. **Demandé par le formateur le 05/10** : (a) lui envoyer par message où en est RITA (code, développement fait,
    ce qui reste) : texte préparé dans la conversation du 05/10 ; (b) lui envoyer **en message privé le lien du
-   document de compétences** (`D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP.xlsx`, à mettre en ligne)
-   **une fois les corrections faites** ; garder envoi et réponse dans `evidence/C8/` s'ils touchent C8.
+   document de compétences**. **Corrections faites le 05/10 au soir** (35 lignes relues contre le dépôt et GitHub) :
+   **110 OK, 24 PARTIELLEMENT, 1 A AJOUTER** sur 135, contre 100, 28 et 7 avant ; partie E1 (C1 à C5) : 28 sur 28.
+   Fichier de travail : `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP_05_10_26_corrige.xlsx` (le fichier
+   ouvert dans Excel n'a pas été touché). **Lien pour le formateur, collaborateur du dépôt** : branche à part
+   `classeur-competences`, dossier `docs/competences/` (classeur et README daté). **Cette branche ne se fusionne pas
+   dans `main` sans décision** : un tag `livrable-*` est figé, le classeur y resterait pour toujours. Décider avant la
+   PR du 15/10 s'il fait partie de la remise au jury, et sous quelle forme (question à poser au formateur). Le seul
+   « A AJOUTER » est C8.5 : il passe à OK quand le formateur accuse réception du guide d'exploitation corrigé
+   (`f34486c`, #43). Garder envoi et réponse dans `evidence/C8/` s'ils touchent C8.
 1. **Lundi 05/10, la revue hebdomadaire (15 min)** avec la trame `evidence/C16/revues/2026-10-05-revue-S41.md` : cocher les
    5 cartes proposées à Fait, ajouter au tableau les 7 issues ouvertes absentes, dire si la revue du 28/09 a eu lieu, garder
    2 cartes « En cours », remplir le §6, coller la ligne du §7 ici, commiter. Seul moyen de fermer C16.1. Vérifier au passage
@@ -262,7 +269,7 @@ cochée** : c'est ce que le formateur regarde la semaine du 05/10.
 **Push fait le 03/10 à la demande d'Era** : dix commits, `2022689..a1c14e6` sur `origin/develop`, suite verte avant
 (626 passed, 2 xfailed, 126 s), arbre propre après. **▶️ Ordre des prochaines actions** : 1) les fichiers de clés en clair du Bureau (Era seul : gestionnaire, suppression, rotation) ; 3) Langfuse : **tableau « RITA C11 » construit par l'API le 03/10** (3 tuiles), 15 traces factices exportées ;
 restent à Era les clics de suppression (refusée à l'agent), les 2 alertes (pas d'API) et les captures ; le bouton
-*Run workflow* attend la PR `develop → main` (`evidence/C11/preuve-langfuse-2026-10-03.md`) ; 4) **fait le 03/10** : le classeur Excel rempli critère par critère depuis la note (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER, preuve en commentaire de chaque cellule, sauvegarde SAUVEGARDE3 à côté) ; puis E1 v2 (tag `livrable-E1-v2` le 15/10) et
+*Run workflow* attend la PR `develop → main` (`evidence/C11/preuve-langfuse-2026-10-03.md`) ; 4) **fait le 03/10** : le classeur Excel rempli critère par critère depuis la note (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER, preuve en commentaire de chaque cellule, sauvegarde SAUVEGARDE3 à côté ; recompté le 05/10 dans le fichier enregistré le 03/10 à 15:08 : 100 OK, 28 PARTIELLEMENT, 7 A AJOUTER) ; puis E1 v2 (tag `livrable-E1-v2` le 15/10) et
 le rapport E3. Pointeurs des skills et table de `CLAUDE.md` global : **corrigés le 03/10**. **`main` protégée côté serveur depuis le 03/10**
 (GitHub Pro activé par Era, ruleset : PR obligatoire, `pytest` et `evals` verts ; **tags `livrable-*` figés** par un second ruleset le soir ; `evidence/C19/`) : capture d'écran de
 *Settings → Rules* à ranger par Era.
@@ -1463,7 +1470,7 @@ fabriquée, donc irrecevable pour C6.
 
 | Quoi | Où |
 |---|---|
-| Rédaction par compétences (modèle Simplon, à rendre) | `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP.xlsx` : 135 critères, colonne « Critère validé » remplie le 03/10 (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER : les 7 de C7 et le tableau de bord C11), preuve datée en commentaire de chaque cellule ; colonne « Rédaction » : 9 compétences sur 21 |
+| Rédaction par compétences (modèle Simplon, à rendre) | `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP_05_10_26_corrige.xlsx` (copie pour le formateur : branche `classeur-competences`, `docs/competences/`) : 135 critères, colonne « Critère validé » remplie le 03/10 puis corrigée le 05/10 sur 35 lignes : **110 OK, 24 PARTIELLEMENT, 1 A AJOUTER** (C8.5, en attente de l'accusé de réception du formateur), preuve datée en commentaire de chaque cellule ; colonne « Rédaction » : 9 compétences sur 21 |
 | ⤷ rempli pour | C1 C2 C3 C4 C5 C8 C9 C12 C13 — les autres **volontairement vides** |
 | Boussole (tâche principale + pile de détours) | `C:\Users\kanda\Desktop\RITA PROJET PRO\BOUSSOLE-RITA.md` : **archivé depuis le 14/08** (bannière du fichier : « n'est plus la source »). L'état vivant est ce fichier-ci. La skill `boussole` pointe encore vers l'archive : à corriger (relevé le 03/10) |
 | Journal (19 entrées, JOURNAL-000 à JOURNAL-018) | Obsidian `Projets/RITA/07-Journal/` (coffre `C:\Users\kanda\Documents\Formation-IA\Formation-IA\`) : la 018 du 02/10 au soir compte 18 sections ; index à jour le 03/10 |
