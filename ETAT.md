@@ -15,7 +15,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-06, nuit (retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
@@ -54,10 +54,28 @@ le passage d'`ubuntu-latest` à Ubuntu 26 le **19/10**, dans la PR du gel ou jus
 « Rédaction »** du classeur et la dire avec ses mots, puis partager la synthèse Drive en « Commentateur » et envoyer
 les deux liens, le message d'état et `docs/EXPLOITATION.pdf` au formateur.
 
-**Tâche principale de la prochaine session** : le **dernier brief de la formation** (semaine du 05/10 : multi-agents et
-industrialisation du fil rouge) ; demander d'abord à Era ce qu'il en veut, puis relier ses leçons à RITA (passerelle de
-`CONTINUITE.md`) et rouvrir la question des agents. En parallèle, avant le gel du 15/10 : relecture d'E1 et d'E3 par Era,
-simulation du jury E1 (phase 5, la question 1 est posée), les deux captures Langfuse. Oral blanc E1 + E3 : **29-30/10**.
+**📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.2, partie
+C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :
+
+| Quand | Quoi |
+|---|---|
+| **06-12/10** (en parallèle du brief) | Era relit E1 et E3 et la colonne « Rédaction » du classeur ; envoi des liens au formateur ; décisions C8.2 et #84 (l'épinglage d'Ubuntu peut entrer dans la PR du gel) |
+| **13/10, cible** (15/10 au plus tard) | **gel d'E1 et d'E3** : PR `develop → main`, Definition of Done verte (`scripts/verifier_livrable.py`), tags `livrable-E1-v2` et `livrable-E3-v1`. **Après le gel, plus aucune fonctionnalité nouvelle dans RITA** |
+| **13-25/10** | écrire **E4** (15 à 20 pages) et **E5** (2 à 5 pages), finir **E2** (C7) ; les corrections de code d'après le gel seulement si un rapport ou le jury en a besoin, le reste écrit dans « ce qui n'est pas fait » |
+| **à partir du 26/10** | examens blancs ; **passer l'oral d'E1 et d'E3 en français** en premier (oral blanc des 29-30/10) |
+| **05/11** | tous les livrables tagués et envoyés |
+
+Le **gel** fixe le contenu d'un livrable : fusion dans `main`, tag que GitHub interdit de déplacer ; toute correction
+ensuite passe par une nouvelle version taguée, jamais en silence (règle du 02/10 : geler 2 à 3 semaines avant l'oral).
+Idée prise dans la grille d'un camarade : arrêter de construire à date fixe, puis seulement écrire, et donner une date
+à chaque critère non fini.
+
+**Le dernier brief** (multi-agents et industrialisation) : Era le fait **seul** cette semaine, dans un dossier
+`kadera_v2` (chemin à donner) ; l'assistant n'y écrit rien et le relit à la fin de la semaine, puis écrit la passerelle
+vers RITA dans `CONTINUITE.md`. D'ici là, RITA reste à trois étapes.
+
+**Tâche principale de la prochaine session** : avancer RITA vers le gel du **13/10** (relecture d'E1 et d'E3 par Era,
+décisions C8.2 et #84, envoi au formateur), en parallèle du brief. Puis E4, E5 et E2. Oral blanc E1 + E3 : **29-30/10**.
 
 **Retour du formateur, rencontre du 05/10 (dix minutes)** : trois étapes de traitement acceptées, système à garder
 simple à expliquer ; E1 tenu à 5 pages, annexe permise ; RGPD : faire d'abord fonctionner, régions européennes,
