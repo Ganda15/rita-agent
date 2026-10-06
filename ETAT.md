@@ -15,7 +15,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-05, nuit (schémas refaits et relus contre le code, vingt figures placées, guides d'étude E1 et E3, décision d'architecture du briefing, règle UE seule et registre RGPD corrigé, cartes #78 à #83)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-06, nuit (retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
@@ -38,6 +38,21 @@ D : trois étapes fixes, une génération avec repli de fournisseur, à rouvrir 
 seule**, choix du projet d'Era : registre RGPD corrigé (T1 disait « aucun destinataire »), T6 et T7 inscrits non
 conformes (#82, #81) ; trois défauts latents d'indicateurs (#78, #79, #80) et l'ATR en % (#83). Guides d'étude E1 (mis à
 jour) et E3 (nouveau) : Obsidian `09-EN-personnel`, jamais dans le dépôt.
+
+**05/10 au soir et nuit du 06/10, ce qui a changé** (commits `0dc32fe` à `77b449f` sur `develop`, `07a7ecb` et `987eaf2`
+sur la branche `classeur-competences` ; CI verte : 793 passed, 29 skipped, 2 xfailed, couverture 94,70 % ; le soir,
+une panne de GitHub Actions a annulé deux exécutions sans lancer une étape, relancées à 23 h 56 et vertes) : retour du
+formateur consigné ; contrats d'OpenRouter et de Langfuse relus (garanties identifiées, vérification propre à RITA
+incomplète) ; guide d'exploitation remis d'accord (`f34486c`), cartes #24, #25, #55 fermées ; **classeur des
+compétences** : statuts corrigés (110 OK, 24 partiels, 1 à faire), colonne « Rédaction » des 9 compétences rédigées
+réécrite, 17 notes périmées corrigées, synthèse courte à la même source ; GitHub (branche à part) et Google Drive
+(synthèse seule, doublons et ancien fichier mis à la corbeille) ; E2 v0.2 (§ 4.3, § 4.4, critères C8).
+
+**Trois décisions qui attendent Era** : (1) **C8.2** est 🟠 dans E2 mais OK dans le classeur (ligne 54) ; avec la règle UE
+seule non tenue, partiel des deux côtés serait cohérent (109, 25, 1) ; (2) **carte #84** : épingler `ubuntu-24.04` avant
+le passage d'`ubuntu-latest` à Ubuntu 26 le **19/10**, dans la PR du gel ou juste après ; (3) **relire la colonne
+« Rédaction »** du classeur et la dire avec ses mots, puis partager la synthèse Drive en « Commentateur » et envoyer
+les deux liens, le message d'état et `docs/EXPLOITATION.pdf` au formateur.
 
 **Tâche principale de la prochaine session** : le **dernier brief de la formation** (semaine du 05/10 : multi-agents et
 industrialisation du fil rouge) ; demander d'abord à Era ce qu'il en veut, puis relier ses leçons à RITA (passerelle de

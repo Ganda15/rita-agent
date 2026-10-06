@@ -9,6 +9,25 @@
 
 ---
 
+## 2026-10-06 : le classeur des compétences se contredisait ; l'image de la CI change le 19/10
+
+**Manques découverts.** (1) Le classeur des compétences, à envoyer au formateur, portait encore les statuts du 03/10
+(100 OK, 28 partiels, 7 à ajouter ; `ETAT.md` disait 93, 34, 8). Sa colonne « Rédaction » datait des 13 et 14/08 et
+contredisait ses propres statuts (C8, C9, C12, C13 : « monitorage non opérationnel », « couverture non mesurée »,
+« aucune étape de packaging ») ; 17 notes du 03/10 étaient périmées, dont 12 en E1 (9 tables au lieu de 10, 16 objets
+d'index au lieu de 19, 3 requêtes au lieu de 4, la base de données absente des cinq types de sources). Corrigé le
+05/10 au soir, chaque fait revérifié contre le rapport E1 et le dépôt : 110 OK, 24 partiels, 1 à faire ; la rédaction
+des 9 compétences reste à relire par Era. (2) GitHub annonce le passage d'`ubuntu-latest` à Ubuntu 26 le 19/10,
+quatre jours après le gel ; les cinq workflows l'utilisent : carte #84, décision d'Era. (3) Le rapport E2 disait les
+alertes non réglées et les traces factices présentes, faux depuis le 04/10 : corrigé (v0.2).
+
+**Décision de rangement.** Le classeur vit sur une branche à part (`classeur-competences`), jamais fusionnée sans
+décision, pour qu'aucun tag `livrable-*` ne le fige ; sa place dans la remise au jury est une question à poser au
+formateur. Une synthèse courte, même contenu, sert la lecture rapide ; l'idée vient de la grille d'un camarade, dont
+le contenu n'est pas repris.
+
+---
+
 ## 2026-10-05 : règle UE seule, deux flux de données personnelles découverts, architecture du briefing décidée
 
 **Décisions structurantes** : (1) **règle « UE seule »**, posée par Era : aucune donnée personnelle ne quitte l'UE ;
