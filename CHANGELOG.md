@@ -9,6 +9,26 @@
 
 ---
 
+## 2026-10-10 (nuit du 9 au 10) : Docker Hub a bloqué la livraison ; premier fournisseur du modèle en zone UE ; gel fixé au 15/10
+
+**Manques découverts.** (1) Le 09/10, la construction de l'image dans la chaîne de livraison a échoué trois fois de
+suite sans lien avec le code : Docker Hub refusait le téléchargement sans compte de l'image de base (429 deux fois,
+puis 504). Or le tag du gel publie l'image pour la première fois. Corrigé le même soir, test d'abord : image de base
+tirée de la galerie publique d'Amazon, même empreinte (carte #85, `232c209`). (2) Le 08/10, une seule ouverture à 0
+renvoyée par Boursorama pour OR.PA, refusée par la contrainte `prix_positifs`, a annulé tout le scraping du soir :
+une valeur fausse fait perdre toutes les autres. Carte proposée pour après le gel, pas encore décidée. (3) Le
+classeur des compétences disait C8.2 OK, E2 le dit partiel : mis d'accord (109 OK, 25 partiels, 1 à faire),
+fichiers prêts, pas encore poussés sur la branche.
+
+**Décisions structurantes** (détail : `CONTINUITE.md` D). (1) Gel d'E1 et d'E3 fixé au jeudi 15/10. (2) Azure AI
+Foundry passe en Data Zone Standard EU (`gpt-5.4-dzs-eu`), trois appels réels en Sweden Central ; les anciens
+déploiements Global Standard sont supprimés par Era ; C8.2 reste partiel tant que les replis Anthropic et OpenRouter
+sont hors UE. (3) Après le gel, ces replis seront remplacés par Mistral Large 3 via son adresse européenne (carte
+#82) ; clé sondée le 10/10, contrat à lire avant de dire la cascade conforme. (4) Image des machines de la CI
+épinglée sur `ubuntu-24.04` avant le passage du 19/10 (carte #84).
+
+---
+
 ## 2026-10-06 : le classeur des compétences se contredisait ; l'image de la CI change le 19/10
 
 **Manques découverts.** (1) Le classeur des compétences, à envoyer au formateur, portait encore les statuts du 03/10

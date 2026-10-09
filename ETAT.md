@@ -15,7 +15,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-10, 1 h (nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3 prêt, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
@@ -24,7 +24,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 
 **Où on en est, en une phrase** : E1 v2.1 (5 pages) et E3 v1.1 (20 pages, **35 ✅ · 4 🟠 · 0 🔴** sur 39) sont complets côté
 assistant et vérifiés contre le code et la base ; ils attendent ta relecture avant le gel du **jeudi 15/10** ; les deux alertes Langfuse sont en service ; la chaîne est
-**verte** (`33dbd62` : 793 passed en CI, 820 passed sur le poste) ; la production sert toujours le code du **19/08**.
+**verte** (`c7d0f2e`, 10/10 : 804 passed en CI, Livraison verte) ; la production sert toujours le code du **19/08**.
 **Aucun code d'application avant le tag du 15/10.** Règle : **c'est Era qui envoie tout message** au formateur et à la
 promo ; l'assistant rédige.
 
@@ -48,8 +48,7 @@ compétences** : statuts corrigés (110 OK, 24 partiels, 1 à faire), colonne «
 réécrite, 17 notes périmées corrigées, synthèse courte à la même source ; GitHub (branche à part) et Google Drive
 (synthèse seule, doublons et ancien fichier mis à la corbeille) ; E2 v0.2 (§ 4.3, § 4.4, critères C8).
 
-**Trois décisions qui attendent Era** : (1) **C8.2** est 🟠 dans E2 mais OK dans le classeur (ligne 54) ; avec la règle UE
-seule non tenue, partiel des deux côtés serait cohérent (109, 25, 1) ; (2) ~~carte #84~~ faite le 09/10 (`21cf8f1`, preuve
+**Trois décisions qui attendent Era** : (1) ~~C8.2~~ tranchée le 09/10 : partiel des deux côtés (classeur v3 : 109, 25, 1) ; (2) ~~carte #84~~ faite le 09/10 (`21cf8f1`, preuve
 `evidence/C18/preuve-image-runner-epinglee-2026-10-09.md`) ; (3) **relire la colonne
 « Rédaction »** du classeur et la dire avec ses mots, puis partager la synthèse Drive en « Commentateur » et envoyer
 les deux liens, le message d'état et `docs/EXPLOITATION.pdf` au formateur.
@@ -61,7 +60,27 @@ et OpenRouter restent à retirer après le gel ; collecte du 08/10 : 2 étapes s
 ouverture à 0 pour OR.PA, refusée par la contrainte `prix_positifs`, ce qui a annulé tout le scraping du soir ; `cygrpc`
 de nouveau bloqué par Smart App Control), collecte du 09/10 normale (6 sur 6). Douze avertissements nouveaux en CI
 (`pydantic` 2.14 dans la bibliothèque `giskard`, carte #23). À faire par Era dans le portail : supprimer `gpt-5.4-3`
-(Global Standard créé par erreur), puis `gpt-5.4-2` (l'ancien Global Standard).
+(Global Standard créé par erreur), puis `gpt-5.4-2` (l'ancien Global Standard). **Fait par Era**, vérifié la nuit suivante (voir ci-dessous).
+
+**Nuit du 9 au 10/10, ce qui a changé** (commits `645696f` à `c7d0f2e` ; CI verte : 804 passed, 29 skipped,
+2 xfailed, couverture 94,70 % ; Livraison verte) : les deux déploiements Global Standard sont supprimés (404
+`DeploymentNotFound` sur les deux), seul `gpt-5.4-dzs-eu` répond. **Carte #85** : Docker Hub a refusé trois
+constructions de l'image de suite (429, 429, 504) alors que les tests passaient ; l'image de base vient désormais de
+la galerie publique d'Amazon, même empreinte, test d'abord (`232c209`, preuve
+`evidence/C19/preuve-image-de-base-galerie-amazon-2026-10-10.md`). **C8.2 partiel dans le classeur aussi** (v3 :
+109 OK, 25 partiels, 1 à faire), fichiers prêts, pas encore en place (voir le paragraphe suivant). **Mistral UE**
+choisi par Era pour remplacer les replis hors UE **après le gel** (carte #82, `CONTINUITE.md` D) ; sonde de la clé
+le 10/10 : `mistral-large-2512` répond en 0,53 s par l'adresse européenne ; aucun code de RITA touché. **Note
+d'étude** de la colonne « Rédaction » (les 9 paragraphes, leur sens en anglais, les questions probables du jury,
+une ligne « Ma version » à remplir) : Obsidian `09-EN-personnel`, jamais dans le dépôt.
+
+**Le classeur v3 : où il est, ce qu'il reste à faire (Era)**. Le détaillé est
+`D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP_09_10_26.xlsx` ; la synthèse v3 et le README de la
+branche sont dans `D:\KandaWork\RITA_PROJECT\classeur-v3-pour-branche\`. La synthèse posée à côté (v2) est ouverte
+dans Excel depuis le 09/10 au matin : la fermer, puis la remplacer par celle du dossier. Ensuite : (1) sur la branche
+`classeur-competences`, remplacer les trois fichiers de `docs/competences/` par ceux du dossier, commit, push ;
+(2) dans la synthèse Google Sheets, recopier la ligne 61 de la synthèse v3 (C61 « ◐ Partiel » et la note D61) ;
+(3) relire la colonne « Rédaction » avec la note d'étude et écrire sa version.
 
 **📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.2, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :
@@ -84,8 +103,11 @@ Idée prise dans la grille d'un camarade : arrêter de construire à date fixe, 
 `kadera_v2` (chemin à donner) ; l'assistant n'y écrit rien et le relit à la fin de la semaine, puis écrit la passerelle
 vers RITA dans `CONTINUITE.md`. D'ici là, RITA reste à trois étapes.
 
-**Tâche principale de la prochaine session** : avancer RITA vers le gel du **jeudi 15/10** (relecture d'E1 et d'E3 par
-Era, colonne « Rédaction » du classeur, envoi au formateur ; C8.2 et #84 tranchés le 09/10), en parallèle du brief. Puis E4, E5 et E2. Oral blanc E1 + E3 : **29-30/10**.
+**Tâche principale de la prochaine session** : avancer RITA vers le gel du **jeudi 15/10**. Era relit E1 (5 pages) et
+E3 (20 pages), dit la colonne « Rédaction » avec ses mots (note d'étude du 10/10), met le classeur v3 en place, puis
+envoie au formateur les liens, le message d'état et `docs/EXPLOITATION.pdf` (#43). Le 15/10 : PR `develop → main`,
+Definition of Done, tags `livrable-E1-v2` et `livrable-E3-v1`. Ensuite E4, E5 et E2 (15-25/10), et la carte #82
+(Mistral UE). Oral blanc E1 + E3 : **29-30/10**.
 
 **Retour du formateur, rencontre du 05/10 (dix minutes)** : trois étapes de traitement acceptées, système à garder
 simple à expliquer ; E1 tenu à 5 pages, annexe permise ; RGPD : faire d'abord fonctionner, régions européennes,
