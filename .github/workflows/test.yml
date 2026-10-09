@@ -8,7 +8,7 @@ on:
 
 jobs:
   pytest:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
@@ -46,7 +46,7 @@ jobs:
   # Porte de qualité : la mesure des garde-fous bloque le merge si elle régresse.
   # Standard Velmo 2.0 — une porte d'évaluation à chaque transition de branche.
   evals:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
