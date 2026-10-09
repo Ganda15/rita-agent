@@ -65,7 +65,7 @@ et `bigdata/` (hors image livrée), avec le pourquoi dans le fichier.
 
 1. **Tests, porte de livraison** : `python scripts/verifier_livrable.py --ci` (suite et couverture, portes
    d'évaluation, liens internes). Rien n'est construit si une ligne est rouge.
-2. **Construire l'image** (`Dockerfile`, deux étapes, `python:3.13-slim`), chargée dans Docker, pas publiée.
+2. **Construire l'image** (`Dockerfile`, deux étapes, `python:3.13-slim` tirée de la galerie publique d'Amazon depuis le 09/10, carte #85), chargée dans Docker, pas publiée.
 3. **Vérifier que l'image démarre et répond** : le conteneur construit est lancé, `/health` doit répondre.
 4. **Vérifier que l'accès est restreint** : sans clé, 403.
 5. **Publier l'image vérifiée** sur le registre GitHub, **seulement** si la référence est un tag `livrable-*`. C'est

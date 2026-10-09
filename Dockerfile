@@ -14,7 +14,10 @@
 # nécessaires pour bâtir psycopg2, mais **inutiles pour l'exécuter**. Les laisser
 # dans l'image finale, ce serait des centaines de mégaoctets transportés à chaque
 # déploiement et une surface d'attaque de plus. Ils restent ici.
-FROM python:3.13-slim AS constructeur
+# Image de base tirée de la galerie publique d'Amazon, où Docker publie ses images officielles : même image que
+# `python:3.13-slim` de Docker Hub (même empreinte le 09/10/2026), sans la limite des téléchargements anonymes
+# qui a fait échouer trois constructions de suite ce soir-là (carte #85).
+FROM public.ecr.aws/docker/library/python:3.13-slim AS constructeur
 
 # Compilateur requis par psycopg2-binary sur certaines plateformes, et libpq pour
 # les en-têtes PostgreSQL.
@@ -34,7 +37,7 @@ RUN pip install --no-cache-dir --prefix=/installation -r requirements-api.txt
 
 
 # --- Étape 2 : exécution -----------------------------------------------------
-FROM python:3.13-slim AS execution
+FROM public.ecr.aws/docker/library/python:3.13-slim AS execution
 
 # `libpq5` seule — la bibliothèque cliente PostgreSQL à l'exécution, sans les
 # en-têtes ni le compilateur de l'étape précédente.

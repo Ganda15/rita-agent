@@ -461,7 +461,7 @@ Le 2 octobre, le test de la section 6.1.2 est passé du premier coup, ce qui ne 
 
 ### 7.3 L'image
 
-`Dockerfile` en deux étapes (`python:3.13-slim`), utilisateur `rita` sans shell (UID 10001), `HEALTHCHECK`. Le fichier Compose de pré-production monte le conteneur en lecture seule avec `no-new-privileges`, deux volumes nommés (index ChromaDB, cache des embeddings) ; les variables Langfuse y passent depuis le 2 octobre, vides par défaut. Dix tests lisent ce fichier.
+`Dockerfile` en deux étapes (`python:3.13-slim`, tirée depuis le 09/10 de la galerie publique d'Amazon, même image que sur Docker Hub, qui avait refusé trois constructions ce soir-là, carte #85), utilisateur `rita` sans shell (UID 10001), `HEALTHCHECK`. Le fichier Compose de pré-production monte le conteneur en lecture seule avec `no-new-privileges`, deux volumes nommés (index ChromaDB, cache des embeddings) ; les variables Langfuse y passent depuis le 2 octobre, vides par défaut. Dix tests lisent ce fichier.
 
 ### 7.4 Ce qui manque, C13
 
