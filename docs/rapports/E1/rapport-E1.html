@@ -346,7 +346,7 @@ Fichiers connus de Spark : <b>11</b>  →  un seul est ouvert · 27 648 lignes e
 dates d'achat et de clôture). Le fichier source n'est <strong>jamais</strong> versionné (règle d'exclusion Git), et ni quantité ni prix de revient
 n'est envoyé au modèle de langage. <strong>Règle du projet depuis le 05/10 : aucune donnée personnelle hors de l'UE.</strong>
 Deux flux ne la respectent pas, inscrits au registre le 05/10 et corrigés après le gel : les noms des sociétés détenues
-partent chaque soir vers Google News (T7), et chaque briefing part vers des fournisseurs de modèle sans garantie de
+partent chaque soir vers Google News (T7), et si Azure, traité en zone UE depuis le 09/10, échoue, le briefing bascule vers deux fournisseurs sans garantie de
 région (T6). Les données financières ne sont pas des
 données « sensibles » de l'article 9 ; ce sont des données personnelles ordinaires, base légale <strong>intérêt légitime</strong>
 (article 6) pour un usage strictement personnel.</p>
@@ -361,7 +361,7 @@ données « sensibles » de l'article 9 ; ce sont des données personnelles ordi
   <tr><td>T3</td><td>Traces d'exécution <strong>Langfuse Cloud, région UE</strong> (sous-traitant allemand ; DPA relu le 05/10 : traitement hors région permis par contrat)</td><td>30 jours (palier gratuit)</td></tr>
   <tr><td>T4</td><td>Fichier CSV source</td><td>hors dépôt, local</td></tr>
   <tr><td>T5</td><td>Journal des appels MCP (<code>mcp_calls</code>, identifiants techniques seuls)</td><td>90 jours</td></tr>
-  <tr><td>T6</td><td>Rédaction par un modèle fourni (Azure mondial, Anthropic, OpenRouter) : <strong>hors UE possible</strong></td><td>selon fournisseur, non vérifiée</td></tr>
+  <tr><td>T6</td><td>Rédaction par un modèle fourni (Azure en zone UE depuis le 09/10, replis Anthropic et OpenRouter) : <strong>hors UE possible</strong> par les replis</td><td>selon fournisseur, non vérifiée</td></tr>
   <tr><td>T7</td><td>Requêtes Google News par société détenue : <strong>hors UE probable</strong></td><td>sans objet (requêtes)</td></tr>
 </table>
 <p style="font-size:7.6pt">La v1 déclarait un <strong>transfert hors UE</strong> (LangSmith, États-Unis). Le traçage a été

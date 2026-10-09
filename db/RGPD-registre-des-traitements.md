@@ -11,7 +11,8 @@
 **Base réglementaire** : RGPD (Règlement Général sur la Protection des Données,
 UE 2016/679), **article 30** — registre des activités de traitement.
 
-**Dernière mise à jour** : 2026-10-05 *(règle « UE seule » posée par Era ; T1 corrigé : les noms des sociétés détenues partent vers Google News ; T6, fournisseurs du modèle, et T7, requêtes Google News, inscrits ; traces de test supprimées le 04/10 ; le même jour, garanties contractuelles des destinataires relues : identifiées,
+**Dernière mise à jour** : 2026-10-09 *(Azure AI Foundry passé en Data Zone Standard EU par Era, région mesurée
+Sweden Central sur trois appels réels, T6 partiellement corrigé ; avant, le 2026-10-05 : règle « UE seule » posée par Era ; T1 corrigé : les noms des sociétés détenues partent vers Google News ; T6, fournisseurs du modèle, et T7, requêtes Google News, inscrits ; traces de test supprimées le 04/10 ; le même jour, garanties contractuelles des destinataires relues : identifiées,
 vérification propre à RITA incomplète, voir § 5)*
 
 *Mise à jour précédente : 2026-10-02 (T3 devient un traitement actif : Langfuse Cloud, région UE ; P1 et P2 corrigées ; état de `memory_audit` ajouté à T2).*
@@ -38,7 +39,8 @@ d'accès d'un tiers à instruire. Elle ne dispense pas d'encadrer les destinatai
 > être prouvée, et elle pèse sur le choix des services d'IA (C7). Une
 > région « UE » n'est pas une personne morale : il faut vérifier qui traite, où, et avec quels
 > sous-traitants. **Au 2026-10-05, trois traitements ne la respectent pas ou pas de façon prouvée** :
-> T6 (fournisseurs du modèle), T7 (Google News), et T3 : le contrat de Langfuse lui-même permet un traitement hors de
+> T6 (fournisseurs du modèle : depuis le 09/10, Azure, premier de la cascade, traite en Data Zone EU, mais les replis
+> Anthropic et OpenRouter restent sans garantie de région), T7 (Google News), et T3 : le contrat de Langfuse lui-même permet un traitement hors de
 > la région choisie (DPA ClickHouse, § 6.1).
 > Corrections après le gel du 15/10 (§ 5).
 
@@ -198,15 +200,15 @@ des données ») et une mesure dans le code plutôt qu'une supposition :
 | **Sécurité** | rôle `rita_lecture` en lecture seule ; purge automatisée P6 (§2) ; une panne d'écriture est comptée et exposée par `/donnees/fraicheur` |
 | **Droits** | effacement sur demande par `request_id` ; accès : le propriétaire lit la table |
 
-### T6 : Rédaction du briefing par un modèle fourni : ✅ **ACTIF**, inscrit le 2026-10-05 (non conforme à la règle UE seule)
+### T6 : Rédaction du briefing par un modèle fourni : ✅ **ACTIF**, inscrit le 2026-10-05 (non conforme à la règle UE seule ; premier fournisseur en zone UE depuis le 2026-10-09)
 
 | Rubrique | Contenu (état relu dans le code le 2026-10-05) |
 |---|---|
 | **Finalité** | Rédiger en français le briefing d'une valeur demandée par l'utilisateur (`POST /briefing`) |
 | **Base légale** | Intérêt légitime |
 | **Catégories de données** | Le prompt : ticker demandé, cours, variation, ADTV20, devise, fraîcheur, les 13 indicateurs, passages de presse (`agents/analyst.py`). **Aucune position, aucun PRU, aucune quantité.** Ce qui est personnel malgré tout : **la valeur demandée et l'heure de la demande** disent ce qui intéresse l'unique utilisateur, et chaque appel est rattaché à son compte chez le fournisseur |
-| **Destinataires** | Dans l'ordre de la cascade (`src/llm.py`, `LLM_ORDRE`) : 1. **Microsoft Azure AI Foundry**, déploiement **Global Standard** (lu dans le portail par Era le 03/10, `evidence/C7/prix-et-environnement-2026-10-03.md`) : selon Microsoft, un tel déploiement peut traiter un appel dans n'importe quelle région Azure ; 2. **Anthropic** (API directe), société établie aux États-Unis ; 3. **OpenRouter**, point d'entrée général `https://openrouter.ai/api/v1/chat/completions` (`src/llm.py:24`), sans garantie de région |
-| **Transfert hors UE** | **Possible** pour Azure (déploiement mondial), **probable** pour Anthropic et OpenRouter. **Non conforme à la règle UE seule** (§ 0) |
+| **Destinataires** | Dans l'ordre de la cascade (`src/llm.py`, `LLM_ORDRE`) : 1. **Microsoft Azure AI Foundry**, déploiement **`gpt-5.4-dzs-eu`, Data Zone Standard, zone EUR**, depuis le 2026-10-09 (créé par Era dans le portail ; même modèle `gpt-5.4`) : les appels sont traités dans la zone de données de l'UE ; région mesurée sur trois appels réels faits par le code de RITA : Sweden Central (`evidence/C8/preuve-deploiement-zone-eu-2026-10-09.md`). Jusqu'au 09/10, déploiement **Global Standard** (lu dans le portail le 03/10, `evidence/C7/prix-et-environnement-2026-10-03.md`), qui pouvait traiter un appel dans n'importe quelle région Azure ; 2. **Anthropic** (API directe), société établie aux États-Unis ; 3. **OpenRouter**, point d'entrée général `https://openrouter.ai/api/v1/chat/completions` (`src/llm.py:24`), sans garantie de région |
+| **Transfert hors UE** | **Azure : traitement dans la zone UE** depuis le 2026-10-09 (Data Zone Standard EU ; Microsoft reste une société américaine, contrat non relu en détail). **Probable** pour Anthropic et OpenRouter, appelés seulement si Azure échoue. **Toujours non conforme à la règle UE seule** (§ 0) tant que ces deux replis existent |
 | **Garanties contractuelles** (relues le 2026-10-05) | **OpenRouter** (https://openrouter.ai/data-processing-agreement) : § 13.2, clauses contractuelles types, module 2 ; l'option « EU-only » (annexe A) ne s'applique **que si elle est choisie** et passe par l'« EU API », et ne couvre que les « API Payloads » (prompts, réponses), **pas** les données de compte, de facturation ni d'authentification : elle ne suffit donc pas à la règle UE seule. **Microsoft** : clauses contractuelles types proposées par son DPA pour Azure, selon la page officielle (https://learn.microsoft.com/en-us/compliance/regulatory/offering-eu-model-clauses), non relue en détail. **Anthropic** : DPA avec clauses types intégré à ses conditions commerciales pour l'API, selon sa page officielle (https://privacy.claude.com/en/articles/7996862-how-do-i-view-and-sign-your-data-processing-addendum-dpa), non relue en détail. **Vérification propre à RITA incomplète** (§ 5) |
 | **Durée de conservation** | Selon chaque fournisseur, **non vérifiée** |
 | **Lien avec T3** | Le même prompt et la même réponse sont tracés dans Langfuse (T3) |
@@ -291,7 +293,7 @@ utilisateur.
 | 3 | Brancher P1 et P2 sur APScheduler (aujourd'hui : lancement manuel) | 🟠 moyenne |
 | 4 | Chiffrer la sauvegarde de la base si elle sort de la machine | 🟡 basse tant que tout est local |
 | 5 | **T7 (carte #81) : arrêter d'envoyer à Google News les noms des sociétés détenues** (liste de veille indépendante des positions, sources approuvées) | 🔴 haute : révèle chaque soir la composition du portefeuille hors de l'UE |
-| 6 | **T6 (cartes #82 et #68) : n'appeler que des fournisseurs de modèle approuvés UE**, sans repli vers un fournisseur non approuvé ; relire en entier les contrats de Microsoft et d'Anthropic | 🔴 haute : chaque briefing part aujourd'hui sans garantie de région |
+| 6 | **T6 (cartes #82 et #68) : n'appeler que des fournisseurs de modèle approuvés UE**, sans repli vers un fournisseur non approuvé ; **fait le 2026-10-09 pour le premier fournisseur** (Azure en Data Zone EU, région mesurée) ; reste : retirer les replis Anthropic et OpenRouter (`LLM_ORDRE=foundry`, test et réponse 503 déjà spécifiés), relire en entier le contrat de Microsoft | 🟠 moyenne : un briefing ne sort de l'UE que si Azure échoue |
 | 7 | **Transferts hors UE (T3, T6)** : pour chaque destinataire, vérifier la certification au Data Privacy Framework ; à défaut, faire l'**analyse d'impact du transfert (AITD)** exigée par la CNIL pour les clauses types ; documenter contrats applicables, données envoyées, sous-traitants, lieux et durées | 🟠 moyenne pour le RGPD ; sans effet sur la règle UE seule, qui interdit le transfert de toute façon |
 
 > 🟠 **Statut des transferts au 2026-10-05 : garanties contractuelles identifiées ; vérification propre à RITA
@@ -336,4 +338,5 @@ utilisateur.
 | **Hook pre-commit** | Script Git qui s'exécute **avant** d'enregistrer un commit | Empêcherait d'ajouter un fichier personnel |
 | **PRU** | *Prix de Revient Unitaire* — prix moyen d'achat d'un titre | Donnée personnelle : révèle la plus-value |
 | **Règle UE seule** | Aucune donnée personnelle hors de l'Union européenne, même encadrée | Règle d'Era (05/10), plus stricte que le RGPD |
-| **Global Standard** (Azure) | Type de déploiement qui peut traiter un appel dans n'importe quelle région Azure | Celui du déploiement Foundry de RITA au 03/10 (T6) |
+| **Global Standard** (Azure) | Type de déploiement qui peut traiter un appel dans n'importe quelle région Azure | Celui du déploiement Foundry de RITA jusqu'au 09/10 (T6) |
+| **Data Zone Standard** (Azure) | Type de déploiement qui traite les appels dans une zone de données, ici l'UE | Celui de RITA depuis le 09/10, `gpt-5.4-dzs-eu` (T6) |

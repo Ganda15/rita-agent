@@ -49,10 +49,19 @@ réécrite, 17 notes périmées corrigées, synthèse courte à la même source 
 (synthèse seule, doublons et ancien fichier mis à la corbeille) ; E2 v0.2 (§ 4.3, § 4.4, critères C8).
 
 **Trois décisions qui attendent Era** : (1) **C8.2** est 🟠 dans E2 mais OK dans le classeur (ligne 54) ; avec la règle UE
-seule non tenue, partiel des deux côtés serait cohérent (109, 25, 1) ; (2) **carte #84** : épingler `ubuntu-24.04` avant
-le passage d'`ubuntu-latest` à Ubuntu 26 le **19/10**, dans la PR du gel ou juste après ; (3) **relire la colonne
+seule non tenue, partiel des deux côtés serait cohérent (109, 25, 1) ; (2) ~~carte #84~~ faite le 09/10 (`21cf8f1`, preuve
+`evidence/C18/preuve-image-runner-epinglee-2026-10-09.md`) ; (3) **relire la colonne
 « Rédaction »** du classeur et la dire avec ses mots, puis partager la synthèse Drive en « Commentateur » et envoyer
 les deux liens, le message d'état et `docs/EXPLOITATION.pdf` au formateur.
+
+**09/10, ce qui a changé** : carte #84 faite (image des machines de la CI épinglée sur `ubuntu-24.04`, test d'abord,
+CI verte sur `Image: ubuntu-24.04`) ; **Azure AI Foundry en Data Zone Standard EU** (`gpt-5.4-dzs-eu`, créé par Era,
+trois appels réels en Sweden Central, `evidence/C8/preuve-deploiement-zone-eu-2026-10-09.md`) : T6 partiellement corrigé, les replis Anthropic
+et OpenRouter restent à retirer après le gel ; collecte du 08/10 : 2 étapes sur 6 en échec (Boursorama a rendu une
+ouverture à 0 pour OR.PA, refusée par la contrainte `prix_positifs`, ce qui a annulé tout le scraping du soir ; `cygrpc`
+de nouveau bloqué par Smart App Control), collecte du 09/10 normale (6 sur 6). Douze avertissements nouveaux en CI
+(`pydantic` 2.14 dans la bibliothèque `giskard`, carte #23). À faire par Era dans le portail : supprimer `gpt-5.4-3`
+(Global Standard créé par erreur), puis `gpt-5.4-2` (l'ancien Global Standard).
 
 **📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.2, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :

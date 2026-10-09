@@ -7,7 +7,7 @@
 | **Candidat** | Eramalingam Gandakumar |
 | **Formation** | Simplon × Wild Code School, promotion Développeur IA et IA agentique |
 | **Dépôt** | `Ganda15/rita-agent` (privé ; accès du jury par invitation de collaborateur) |
-| **Version** | 0.2 du 5 octobre 2026 (squelette du 3 octobre ; § 4.3, § 4.4 et critères C8 remis d'accord le 5 octobre) ; format attendu 15 à 20 pages, oral 15 minutes, sans démonstration ; dû le 5 novembre 2026 |
+| **Version** | 0.3 du 9 octobre 2026 (squelette du 3 octobre ; § 4.3, § 4.4 et critères C8 remis d'accord le 5 octobre ; déploiement Azure en zone UE le 9 octobre) ; format attendu 15 à 20 pages, oral 15 minutes, sans démonstration ; dû le 5 novembre 2026 |
 | **État** | C6 et C8 rédigés depuis les faits du dépôt ; **C7 : première comparaison mesurée le 03/10 au soir** (GPT par Azure AI Foundry contre Claude par OpenRouter, 30 appels chacun), recommandation provisoire ; prix publics et information environnementale relevés le soir même (rien par modèle chez les deux éditeurs) ; restent la notation du français et Anthropic en direct ; plan validé D1 à D3 = A |
 
 ## Lire ce rapport
@@ -113,7 +113,8 @@ Les sections suivantes seront remplies **après** la mesure, depuis `evidence/C7
   requête moyenne, sans méthode ; Anthropic : rien, page inexistante). Région de traitement : le banc journalise désormais l'origine de chaque appel (test d'abord) ; sur 10
   appels, `x-ms-region = Sweden Central` 10 fois sur 10 pour Foundry (le quatrième passage, 30 appels, n'a pas d'origine ; déploiement
   **Global Standard**, lu dans le portail : Azure peut traiter chaque appel dans n'importe quelle région, les prompts,
-  sans donnée personnelle, peuvent donc sortir de l'Union européenne) ; OpenRouter a servi Claude par Amazon Bedrock 10 fois sur 10, région non nommée. Limites de débit lues
+  sans donnée personnelle, pouvaient donc sortir de l'Union européenne ; depuis le 9 octobre, un déploiement **Data Zone
+  Standard EU** du même modèle, `gpt-5.4-dzs-eu`, les garde dans la zone UE : Sweden Central sur trois appels réels) ; OpenRouter a servi Claude par Amazon Bedrock 10 fois sur 10, région non nommée. Limites de débit lues
   dans les en-têtes Foundry : 2 500 requêtes et 250 000 jetons par fenêtre ; sortie du modèle plafonnée à 128 000 jetons. Le rapport
   donne l'ordre de grandeur (0,3 à 18 Wh par briefing selon la source) comme une hypothèse, pas comme une mesure.
 - 3.5 Recommandation, **provisoire** jusqu'à la notation du français : Foundry en premier (gratuit pour le projet,
@@ -132,7 +133,7 @@ automatiques en jugement de qualité : le style se note à l'aveugle, par le can
 
 Trois fournisseurs en cascade, dans l'ordre `foundry,anthropic,openrouter`, configurable par la variable
 `LLM_ORDRE` ; depuis le 3 octobre au soir, Foundry est appelé par son point compatible OpenAI (déploiement `gpt-5.4`,
-ressource du candidat, gratuite), ce qui met un modèle d'un autre éditeur que Claude dans la cascade et dans le banc ; un modèle par fournisseur, configurable (`AZURE_FOUNDRY_DEPLOYMENT`, `ANTHROPIC_MODEL`,
+ressource du candidat, gratuite ; en Data Zone Standard EU depuis le 9 octobre, `gpt-5.4-dzs-eu`), ce qui met un modèle d'un autre éditeur que Claude dans la cascade et dans le banc ; un modèle par fournisseur, configurable (`AZURE_FOUNDRY_DEPLOYMENT`, `ANTHROPIC_MODEL`,
 `OPENROUTER_MODEL`) ; les clés lues dans l'environnement, jamais dans le code, un hook refusant toute écriture d'un
 agent dans le fichier de secrets. Si le premier fournisseur échoue, le suivant est essayé, et chaque tentative est
 tracée.
@@ -195,7 +196,7 @@ Information missing, to complete later.
 | C7.6 prérequis et contraintes techniques | 🟠 | relevés dans le code (`src/llm.py`) et dans la sonde du banc (clé, authentification) ; prix publics et types de déploiement relevés ; limites de débit non relevées |
 | C7.7 recommandation argumentée | 🟠 | provisoire (preuve §9), à confirmer par la notation du français |
 | C8.1 service accessible, authentification | ✅ | briefing réel du 03/10, clé en environnement |
-| C8.2 configuration conforme aux besoins | 🟠 | deux fournisseurs opérationnels sur trois (03/10) ; lieux de traitement non conformes à la règle UE seule du projet (registre, T6) |
+| C8.2 configuration conforme aux besoins | 🟠 | deux fournisseurs opérationnels sur trois (03/10) ; Azure en zone UE depuis le 09/10, mais les replis Anthropic et OpenRouter restent hors de la règle UE seule du projet (registre, T6) |
 | C8.3 monitorage opérationnel | 🟠 | trace complète, tableau, deux alertes réglées et déclenchées le 04/10 ; coût faux pour OpenRouter |
 | C8.4 documentation d'accès, installation, tests, dépendances, flux | ✅ | `docs/EXPLOITATION.md`, remis d'accord le 05/10 |
 | C8.5 documentation communiquée, accessible | 🔴 | aucune remise prouvée (#43) |
@@ -208,7 +209,7 @@ Information missing, to complete later.
 
 1. Captures du fil Discord du 16/08 et envoi daté au formateur (Era) : la seule preuve de partage possible.
 2. Note S40 écrite par Era depuis les candidats ; les semaines S37 à S39 restent déclarées sans séance.
-3. Noter le français à l'aveugle (60 textes, deux services confondus) ; refaire un passage complet avec l'origine journalisée (déploiement Global Standard, région variable) ; confirmer le périmètre avec le formateur ; Anthropic en direct si une clé arrive.
+3. Noter le français à l'aveugle (60 textes, deux services confondus) ; refaire un passage complet avec l'origine journalisée (sur le déploiement Data Zone EU depuis le 09/10) ; confirmer le périmètre avec le formateur ; Anthropic en direct si une clé arrive.
 4. Envoi au formateur du guide d'exploitation remis d'accord le 05/10, preuve rangée (#43).
 5. Rédaction des sections C7 depuis `evidence/C7/`, relecture, PDF (`scripts/rendre_pdf.py`), tag `livrable-E2-v1`.
 
