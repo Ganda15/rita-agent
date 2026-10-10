@@ -296,6 +296,9 @@ utilisateur.
 | 5 | **T7 (carte #81) : arrêter d'envoyer à Google News les noms des sociétés détenues** (liste de veille indépendante des positions, sources approuvées) | 🔴 haute : révèle chaque soir la composition du portefeuille hors de l'UE |
 | 6 | **T6 (cartes #82 et #68) : n'appeler que des fournisseurs de modèle approuvés UE**, sans repli vers un fournisseur non approuvé ; **fait le 2026-10-09 pour le premier fournisseur** (Azure en Data Zone EU, région mesurée) ; reste : retirer les replis Anthropic et OpenRouter (`LLM_ORDRE=foundry`, test et réponse 503 déjà spécifiés), relire en entier le contrat de Microsoft | 🟠 moyenne : un briefing ne sort de l'UE que si Azure échoue |
 | 7 | **Transferts hors UE (T3, T6)** : pour chaque destinataire, vérifier la certification au Data Privacy Framework ; à défaut, faire l'**analyse d'impact du transfert (AITD)** exigée par la CNIL pour les clauses types ; documenter contrats applicables, données envoyées, sous-traitants, lieux et durées | 🟠 moyenne pour le RGPD ; sans effet sur la règle UE seule, qui interdit le transfert de toute façon |
+| 8 | **T6, Azure** : Microsoft documente des cas limités de transfert hors de son EU Data Boundary, dont l'accès à distance de son personnel (https://learn.microsoft.com/en-us/privacy/eudb/eu-data-boundary-learn) ; un accès à distance depuis un pays tiers est un transfert (CEPD, lignes directrices 05/2021, § 9). Lire ces cas avant de dire T6 conforme à la règle UE seule | 🟠 moyenne |
+| 9 | **T1, jeu de démonstration** : la base contient des positions inventées sur des sociétés réellement cotées (déclaration d'Era du 2026-10-10 : il ne détient pas ces titres) ; aligner la fiche T1 et la description du fichier réel `data/positions.csv` | 🟡 basse |
+| 10 | **yfinance (Yahoo, États-Unis)** : la requête du soir envoie les 111 tickers suivis et l'adresse IP du poste ; elle ne révèle pas les positions ; à inscrire (ce qui part, où, sous quelle lecture du CEPD) | 🟡 basse |
 
 > 🟠 **Statut des transferts au 2026-10-05 : garanties contractuelles identifiées ; vérification propre à RITA
 > incomplète.** Trouver une clause (DPA, clauses contractuelles types) montre qu'une garantie existe, pas que la
@@ -308,7 +311,7 @@ utilisateur.
 > AITD ; la certification se vérifie, elle ne se suppose pas. **Et un transfert licite au regard du RGPD violerait
 > quand même la règle UE seule du projet.**
 
-> Un registre qui ne signale aucune faiblesse n'est pas crédible. Ces sept points sont
+> Un registre qui ne signale aucune faiblesse n'est pas crédible. Ces points (le premier est fait) sont
 > ouverts, et ils seront présentés comme tels.
 
 ---

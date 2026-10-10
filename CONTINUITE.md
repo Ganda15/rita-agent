@@ -108,6 +108,10 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | **Les replis du modèle hors UE (Anthropic, OpenRouter) seront remplacés par Mistral Large 3 via son adresse européenne** (`api.eu.mistral.ai`), après le gel (fenêtre 15-25/10, carte #82) ; adresse écrite dans le code, appel par httpx sans SDK, test d'abord | règle UE seule : les deux replis n'ont aucune garantie de région ; aucun code d'application avant le tag du 15/10. Avant de dire la cascade conforme : lire le contrat de traitement de Mistral, sa liste de sous-traitants et l'usage des données d'API pour l'entraînement selon l'offre d'Era, puis passer Mistral dans le banc C7 | 09/10 | `src/llm.py` (après le gel), registre T6, E2 | carte #82 (deux commentaires) ; sonde jetable du 10/10 : `/models` 200, `mistral-large-2512` disponible, appel 200 en 0,53 s ; Mistral ne renvoie aucun en-tête de région, le lieu de traitement se prouvera par le contrat | Oui, par Era ; à construire après le gel |
 | **`memory_audit` : retirer la table ou lui donner un écrivain se décide après le gel du 15/10** (choix C d'Era, carte #86) | aucun code d'application ni changement de schéma (zone sous garde) avant le tag ; l'écrivain toucherait l'étape d'indexation, que Smart App Control bloque sur le poste ; retirer la table ferait passer « 10 tables » à 9 dans une dizaine de documents à cinq jours du gel. E1 v2.2 le dit (§ 5 et § 10) | 10/10 | `docs/rapports/E1/rapport-E1.html` | carte #86 | Oui, par Era ; à trancher dans la fenêtre 15-25/10 |
 | **RGPD : faire d'abord fonctionner, corriger ensuite** (conseil du formateur, 05/10) ; régions européennes proches des utilisateurs, pour la latence et la gouvernance ; avec Azure, choisir la région du modèle | cohérent avec le plan (cartes #81, #82 après le gel) ; le travail de conformité est une base réutilisable, à revoir si un fournisseur, un flux ou un contrat change. **Propos attribués, à vérifier** : les noms de régions cités (« Europe Ouest, Belgique », Claude en Suède ou en France) restent des exemples jusqu'à lecture des options du portail Azure ; « Anthropic devrait respecter » est une hypothèse ; le routage d'OpenRouter n'est pas confirmé ; l'accès aux données hors UE et leur usage pour l'entraînement sont ses inquiétudes, à établir fournisseur par fournisseur | 05/10 | registre RGPD T3, T6, T7 ; `src/llm.py` | rencontre du 05/10, notes d'Era | Oui |
+| **Mistral Large 4 sans réflexion** (`mistral-large-4-0`, `reasoning_effort: "none"`) remplace Large 3 comme second fournisseur, sur la branche `mistral-ue` (PR #88, fusion en squash après le gel) | mesuré sur un vrai briefing (MC.PA, même prompt qu'Azure) : Large 3 invente une date de séance, Large 4 non ; coût voisin (0,10 contre 0,08 centime) | 10/10 | `src/llm.py` | `evidence/C8/preuve-briefing-mistral-2026-10-10.md` (branche), commits `2a7f18c`, `b3c76b5` | oui, sur le banc C7 |
+| **Azure GPT-5.4 reste premier de la cascade** (gratuit pour Era) ; Mistral sert aux preuves ; l'ordre se tranche sur les chiffres du banc C7 | coût négligeable dans tous les cas (moins de 1 € par mois pour 210 briefings) ; la qualité de Large 4 n'est mesurée que sur une valeur | 10/10 | `LLM_ORDRE` | ce fichier, § G | oui, après le banc C7 |
+| **Règle UE seule gardée stricte** ; pas réécrite en « transferts encadrés par le RGPD » ; Google News par position corrigé par #81 après le gel | E1 et E3 décrivent la règle stricte ; la seule source qui révèle les positions est Google News (vérifié dans le code le 10/10) | 10/10 | registre § 0, `pipelines/ingest.py` | registre T7 ; CEPD, lignes directrices 05/2021, § 9 | non, sans décision d'Era |
+| **Jeu de démonstration : positions inventées sur des sociétés réellement cotées**, choisies dans la liste suivie ; Era ne détient pas ces titres | déclaration d'Era, seule source possible de ce fait ; le fichier de preuve C17 lui correspond 7 sur 7 | 10/10 | `data/positions-exemple.csv` | déclaration d'Era du 10/10 | à aligner avec T1 (§ G) |
 
 ## E. Alternatives rejetées
 
@@ -129,6 +133,10 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | Coder les 4 éléments retenus du livre Packt tout de suite | Hors plan, alors que S38 et S39 sont en retard et que E4 est à 0 page ; chaque élément est rangé dans sa semaine (S40, S43, S44) | 26/09 |
 | **LangSmith** pour le traçage (le choix de la SPEC de juillet) | Région UE disponible, mais l'éditeur déclare n'avoir aucune entité juridique en UE pour contracter, et l'auto-hébergement est réservé au plan Enterprise : aucune porte de sortie. Le palier gratuit (5 000 traces, 1 siège) aurait suffi, ce n'est pas le prix qui tranche | 28/09 |
 | **Langfuse auto-hébergé** (la voie « gouvernance » du formateur) | Mesuré impossible : v3 = web, worker, Postgres, ClickHouse, Redis, S3, sur un CX23 de 2 vCPU partagés et 4 Go déjà occupés ; entretien à la charge du projet à cinq semaines du rendu. À rouvrir seulement si une donnée personnelle entre dans le prompt | 28/09 |
+| Garder Mistral Large 3 (`mistral-large-2512`) | invente une date de séance absente du prompt (briefing MC.PA du 10/10) | 10/10 |
+| Mistral Large 4 avec sa réflexion par défaut | sous la limite de 500 jetons, la réflexion consomme tout : liste de blocs sans texte, 500 au lieu d'un briefing, 20 s | 10/10 |
+| Mistral Medium 3.5 | le plus rapide (1,3 s) mais trois fois plus cher que Large 4, et le même défaut de date | 10/10 |
+| Réécrire la règle UE seule en « transferts encadrés par le RGPD » | aurait rendu Google News, yfinance, FRED et Langfuse conformes par contrat, mais E1 et E3 décrivent la règle stricte | 10/10 |
 
 ## F. Modifications d'Era (après la baseline)
 
@@ -181,6 +189,13 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
   dans `CLAUDE.md` ? **Era tranche.**
 - Historique du Planificateur de tâches toujours désactivé (`wevtutil`, fenêtre administrateur) : la
   collecte tourne 9 soirs sur 9 depuis le 19/09, mais une prochaine coupure ne laisserait pas de trace.
+- 🆕 **Le fichier réel `data/positions.csv` du 31/07 était-il une simulation ?** Era n'a pas encore investi (10/10) ;
+  une note du 31/07 parlait de ses « vraies quantités et prix de revient ». À trancher avant de réécrire T1 du
+  registre. **Era tranche.**
+- 🆕 **Contrat de Mistral** (sous-traitants, lieu, entraînement) et **cas de transfert documentés par Microsoft hors de
+  son EU Data Boundary** : à lire avant de dire T6 conforme (registre, § 5, points 6 et 8).
+- 🆕 **Prix de Mistral dans Langfuse** : le déclarer est un réglage du projet Langfuse d'Era ; sans lui, le coût
+  affiché reste 0. **Era décide.**
 
 ## H. Hypothèses
 
@@ -252,6 +267,9 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | Indicateurs du briefing, 16 spécifiés / 13 reçus / 9,3 cités, 03/10 soir | **MESURÉ** | `evidence/C7/indicateurs-cites-dans-les-textes-2026-10-03.md` ; 3 absents du prompt (volume relatif R3, poids de ligne, exposition par devise) ; drawdown cité 0 fois sur 60 ; **non décidé** : libellé du drawdown, ajout des absents (RGPD d'abord) |
 | Plan E4, 03/10 soir | **PROPOSÉ, décisions D1 à D5 attendues** | `docs/PLAN-E4-rapport.md` : 36 critères, 10 écarts, T1 à T12, calendrier jusqu'au 25/10 ; **non fait** : tout le rapport, les mesures, la revue OWASP, les user stories des écrans 2 et 3 |
 | Foundry compatible OpenAI (`gpt-5.4`), 03/10 nuit | **EXÉCUTÉ + MESURÉ** | clé posée par Era ; `max_completion_tokens` (400 mesuré) ; briefing réel par Foundry 5,6 s, trace à une génération ; banc 4e passage : Foundry et OpenRouter 30/30 chacun, 3,2 s / 10,7 s contre 6,3 s / 7,2 s, 0 contre 0,006 USD ; recommandation provisoire Foundry puis OpenRouter ; prix publics et environnement relevés le soir même (`evidence/C7/prix-et-environnement-2026-10-03.md` : 0,0047 contre 0,0060 USD par briefing au prix public ; rien par modèle chez les deux éditeurs, écrit inconnu) ; région mesurée par sonde (`x-ms-region = Sweden Central`, non journalisée par le banc) ; déploiement Global Standard (lu par Era dans le portail, région variable) ; origine de chaque appel journalisée depuis le soir (803 passed ; Sweden Central 10/10 pour Foundry, Amazon Bedrock 10/10 pour OpenRouter, `evidence/C7/passage-origine-2026-10-03/`) ; **non fait** : notation du français (60 textes), Anthropic direct, origine des 60 appels du quatrième passage |
+| Incident de clé Mistral, 10/10 | **CORRIGÉ + VÉRIFIÉ** (clés supprimées par Era, modèle propre sur GitHub) | `0a3f3f8` lu sur `origin/mistral-ue` ; `CHANGELOG.md`, entrée du 10/10 (nuit) |
+| Cascade réelle de `develop` dans README, CLAUDE et le guide ; 500 au lieu de 502, 10/10 | **FAIT + VÉRIFIÉ** (diff, `tests/test_alerte_incident.py` 8 passed, PDF regardé) | `000ca50` |
+| Mistral Large 4 sans réflexion, 10/10 | **TESTÉ + EXÉCUTÉ** (847 passed, briefing réel 200, AMF conforme) | `2a7f18c`, `b3c76b5`, preuve C8 (branche) |
 
 ## J. En cours
 
@@ -403,6 +421,10 @@ rapport E3 (#37, 0 page, gel le 15/10), rapport E4 (#28, 0 page, gel le 25/10).
 - **SAC peut re-bloquer `cygrpc`** : l'indexation retomberait en échec visible ; repli Docker à jour.
 - **Certificat Let's Encrypt** valide jusqu'au 18/11/2026 — Caddy renouvelle seul ~30 j avant ; à vérifier vers le 20/10.
 - **Défaut récurrent du projet** : « documenté mais absent » — 6 occurrences en août. Antidote : preuve collée avant tout ✅.
+- **Deux clés Mistral lisibles dans l'historique de la PR #88** (supprimées le 10/10, donc inutilisables) : la fusion
+  en squash les tient hors de `develop` et de `main`, pas hors de GitHub.
+- **Prix soldé de Large 4** (0,68 $ et 2,09 $ par million de jetons, aucune date de fin) : au prix normal, environ
+  0,2 centime par briefing.
 
 ## M. Reporté volontairement
 
@@ -416,6 +438,9 @@ rapport E3 (#37, 0 page, gel le 15/10), rapport E4 (#28, 0 page, gel le 25/10).
 | Scan Giskard complet (100 scénarios, fr + en) | Coût estimé 9 $, à confirmer par Era ; le run 9 a déjà donné un contournement réel | à la décision d'Era |
 | Question « ticker à un seul article » dans le jeu annoté | Le cas décrit par la revue automatisée est réel en principe, absent du jeu ; l'ablation du 20/09 n'a rien montré | à la relecture du jeu annoté |
 | Mot de passe `postgres` dans Bitwarden | Réinitialisé le 19/09 ; perdu une fois déjà | à faire par Era |
+| Ligne yfinance au registre : requête du soir vers Yahoo (111 tickers suivis + adresse IP) ; outil non officiel, « intended for research and educational purposes » et « personal use only » (README de yfinance, lignes 22 et 26) | avec #81, après le gel | 25/10 |
+| Hook Git qui refuse un `.env.example` contenant autre chose que des valeurs de gabarit (incident du 10/10) | carte à créer ; aucun code avant le tag | après le gel |
+| Banc C7 Azure contre Mistral Large 4 sur 10 valeurs | décide l'ordre de la cascade | fenêtre 15-25/10 |
 
 ## N. Passerelle vers le fil rouge
 

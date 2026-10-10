@@ -15,7 +15,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-10, 10 h 30 (E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-10, soir (incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
@@ -132,6 +132,38 @@ PDF) : chaque fait changé les 09 et 10/10 cherché par son ancienne valeur dans
 collectés), le classeur v4 (memory_audit « décision en attente », quatre fichiers), `Dockerfile.tests` (encore
 Docker Hub : test d'abord, rouge, vert, mutation). Code gelé laissé tel quel et inscrit sur #82 : `src/llm.py:39`
 (déploiement par défaut `gpt-5.4`, supprimé le 09/10), `src/llm.py:79` et `tests/test_llm.py:109` (« Global Standard »).
+
+**10/10, après-midi et soir, ce qui a changé** (`develop` : `000ca50`, pas encore poussé ; branche `mistral-ue`,
+PR #88 en brouillon : `0a3f3f8` poussé, CI verte ; `2a7f18c` et `b3c76b5` pas encore poussés) :
+- **Incident, clé Mistral** : la vraie clé d'Era a été écrite dans `.env.example` et poussée (`5fae28e`), puis une
+  deuxième dans le commit de correction (`8587a21`). Era a supprimé les deux clés chez Mistral et en a créé une neuve,
+  dans `.env` seulement (empreinte différente des deux, vérifiée sans afficher la clé) ; sur GitHub, le modèle n'a plus
+  que des valeurs de gabarit (`0a3f3f8`, lu sur `origin/mistral-ue`). Les deux clés restent lisibles dans l'historique
+  de la PR #88, révoquées donc inutilisables ; fusion en squash après le gel. Méthode désormais : commit local,
+  vérification sans afficher de valeur, puis push.
+- **`develop`, `000ca50`** : `README.md`, `CLAUDE.md` et `docs/EXPLOITATION.md` décrivent la cascade réelle de
+  `develop` (Azure `gpt-5.4` d'abord, Claude par Anthropic puis OpenRouter en secours) ; une panne de tous les
+  fournisseurs répond **500** (`api/main.py:96-105`), le 502 est réservé aux données manquantes du scout ; PDF du
+  guide régénéré, 11 pages, page 8 regardée.
+- **Premiers vrais briefings Mistral** (MC.PA, même prompt qu'Azure octet pour octet) : Large 3 invente une date de
+  séance absente du prompt ; Large 4 avec sa réflexion par défaut rend une liste de blocs sans texte (500) ; **Large 4
+  sans réflexion** (`reasoning_effort: "none"`) : 3,09 s, 0,10 centime, garde-fou AMF conforme, aucune date inventée.
+  **Décision d'Era : Large 4.** Code et tests d'abord (5 rouges puis verts, suite **847 passed** sur la branche),
+  preuve `evidence/C8/preuve-briefing-mistral-2026-10-10.md` (sur la branche). Langfuse compte 0 $ pour Mistral : le
+  prix du modèle n'est pas dans sa grille.
+- **Ordre de la cascade** : Azure GPT-5.4 reste premier (gratuit pour Era) pour les essais de tous les jours ; Mistral
+  sert aux preuves ; l'ordre se tranchera sur le banc C7 après le gel.
+- **Règle UE seule gardée stricte** (choix d'Era) ; Google News par position se corrige par #81 après le gel, telle
+  qu'écrite. Vérifié dans le code : FRED, yfinance, BCE et Boursorama ne révèlent pas les positions ; seule Google News
+  les révèle (`pipelines/ingest.py:283-289`). Un transfert se juge par le texte du CEPD (lignes directrices 05/2021,
+  § 9 : un accès à distance depuis un pays tiers est un transfert) ; Microsoft documente des transferts limités hors
+  de son EU Data Boundary : T6 n'est pas entièrement prouvé côté Azure (registre, § 5).
+- **Jeu de démonstration** : positions inventées sur des sociétés réellement cotées, choisies dans la liste suivie ;
+  Era ne détient pas ces titres (sa déclaration du 10/10). Le fichier de preuve
+  `evidence/C17/mesures-2026-10-03/entrees/donnees_portefeuille.json` lui correspond 7 sur 7 : aucune position réelle
+  dans Git.
+- **À faire par Era** : `.env` ligne 25, `MISTRAL_MODEL=mistral-large-4-0` ; pousser `mistral-ue` puis `develop` et
+  lire la CI ; dire si le fichier réel `data/positions.csv` du 31/07 était une simulation (alignement de T1).
 
 **📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.2, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :
