@@ -133,7 +133,7 @@ collectés), le classeur v4 (memory_audit « décision en attente », quatre fic
 Docker Hub : test d'abord, rouge, vert, mutation). Code gelé laissé tel quel et inscrit sur #82 : `src/llm.py:39`
 (déploiement par défaut `gpt-5.4`, supprimé le 09/10), `src/llm.py:79` et `tests/test_llm.py:109` (« Global Standard »).
 
-**10/10, après-midi et soir, ce qui a changé** (`develop` : `000ca50`, pas encore poussé ; branche `mistral-ue`,
+**10/10, après-midi et soir, ce qui a changé** (`develop` : `000ca50` à `3fea202`, quatre commits pas encore poussés ; branche `mistral-ue`,
 PR #88 en brouillon : `0a3f3f8` poussé, CI verte ; `2a7f18c` et `b3c76b5` pas encore poussés) :
 - **Incident, clé Mistral** : la vraie clé d'Era a été écrite dans `.env.example` et poussée (`5fae28e`), puis une
   deuxième dans le commit de correction (`8587a21`). Era a supprimé les deux clés chez Mistral et en a créé une neuve,
@@ -163,14 +163,16 @@ PR #88 en brouillon : `0a3f3f8` poussé, CI verte ; `2a7f18c` et `b3c76b5` pas e
   Era ne détient pas ces titres (sa déclaration du 10/10). Le fichier de preuve
   `evidence/C17/mesures-2026-10-03/entrees/donnees_portefeuille.json` : ses 7 positions sont toutes dans le jeu d'exemple
   (12 lignes dans le fichier, 10 gardées par le lecteur, 7 importées, 3 hors univers) : aucune position réelle dans Git.
-- **Défaut trouvé en vérifiant : le verrou de démonstration MCP ne s'ouvre jamais.** Le vrai code du verrou, lancé sur la
+- **Défaut trouvé en vérifiant : le verrou de démonstration MCP refuse le jeu de démonstration importé dans
+  l'environnement actuel.** Le vrai code du verrou, lancé sur la
   base du 03/10, rend `False` : il compare aux 10 lignes du fichier, l'import n'en garde que 7. Le refus du 03/10 (E3,
   section 4.1 ; preuve C20) ne venait donc pas d'un portefeuille réel. Échec fermé, sans fuite ; le test vert simule
   une réponse de 10 positions. **E3 passe en v1.3** (une phrase en 4.1, toujours 20 pages, page 5 regardée ; copies
   OneDrive v1.3 en français et en anglais), erratum `evidence/C20/erratum-verrou-demonstration-2026-10-10.md` (l'ancienne
   preuve n'est pas réécrite). Correction après le gel, carte à créer.
 - **À faire par Era** : `.env` ligne 25, `MISTRAL_MODEL=mistral-large-4-0` ; pousser `mistral-ue` puis `develop` et
-  lire la CI ; dire si le fichier réel `data/positions.csv` du 31/07 était une simulation (alignement de T1).
+  lire la CI ; documenter comment le fichier local non versionné `data/positions.csv` du 31/07 a été constitué
+  (Era n'a jamais investi).
 
 **📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.2, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :
@@ -229,7 +231,7 @@ Nadège et Elena aideront particulièrement à la présentation.
    2 cartes « En cours », remplir le §6, coller la ligne du §7 ici, commiter. Seul moyen de fermer C16.1. Vérifier au passage
    que le formateur a bien accès au tableau (C16.4, je ne peux pas le lire).
 2. **Relire** `docs/rapports/E1/rapport-E1.pdf` (v2.2 du 10/10 ; la v2.1 du 04/10 avait corrigé cinq affirmations fausses, voir l'entrée
-   du 04/10 plus bas) et `docs/rapports/E3/rapport-E3.pdf` (v1.2 du 10/10, 20 pages) ; corrections dans le chat.
+   du 04/10 plus bas) et `docs/rapports/E3/rapport-E3.pdf` (v1.3 du 10/10, 20 pages) ; corrections dans le chat.
 3. **Noter les 60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1 ou 2), **sans ouvrir** le fichier `-cle.csv`.
    C'est ce qui fait passer la recommandation C7 de « provisoire » à « argumentée ».
 4. **Envoyer au formateur** le message ci-dessous, à copier tel quel ; joindre `docs/EXPLOITATION.pdf` (régénéré le 03/10 au soir,
@@ -283,7 +285,7 @@ fournisseurs, S4 refus journalisés, S3 limite de débit, S1 en-têtes de sécur
 |---|---|---|
 | E1 | v2.2 du 10/10, 5 pages (date, chiffres des tests datés, `memory_audit` reporté, texte alternatif du schéma) ; vérifiée contre le code et la base le 04/10 | ta relecture ; question de l'annexe au formateur ; gel le 15/10 |
 | E2 | 6 ✅ · 13 🟠 · 1 🔴 sur 20 | notation C7, remise de la documentation (C8.5, #43), Anthropic en direct |
-| E3 | v1.2 du 10/10, 20 pages · 35 ✅ · 4 🟠 · 0 🔴 sur 39 | ta relecture ; les 4 🟠 se ferment après le gel (#73, #75, accessibilité de l'outil, serveur non tracé) ; gel le 15/10 |
+| E3 | v1.3 du 10/10, 20 pages · 35 ✅ · 4 🟠 · 0 🔴 sur 39 | ta relecture ; les 4 🟠 se ferment après le gel (#73, #75, accessibilité de l'outil, serveur non tracé) ; gel le 15/10 |
 | E4 | 27 ✅ · 9 ⚠️ · 0 ❌ sur 36 | rapport à rédiger ; C16 (revues notées) ; C17.1, .2, .5, .8, .11 ; C19.4 au tag du 15/10 |
 | E5 | non recompté | rapport ; #70 restauration ; C20 et C21 |
 

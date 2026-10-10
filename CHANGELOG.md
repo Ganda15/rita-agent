@@ -31,8 +31,8 @@ inventées sur des sociétés réellement cotées, Era ne détient pas ces titre
 transferts limités hors de son EU Data Boundary, que le CEPD compte comme transferts (T6 pas entièrement prouvé,
 registre § 5) ; le registre ne décrivait pas la requête du soir vers Yahoo (yfinance) ; sur `develop`, `README.md`,
 `CLAUDE.md` et le guide d'exploitation disaient « Claude » pour le modèle et « 502 » pour une panne de fournisseur
-(500 en vrai), corrigés (`000ca50`). **Le verrou de démonstration de la passerelle MCP ne s'ouvre jamais** : il compare
-aux 10 lignes du fichier d'exemple, l'import n'en garde que 7 ; le refus du 3 octobre présenté dans E3 et dans la preuve
+(500 en vrai), corrigés (`000ca50`). **Le verrou MCP refuse actuellement le jeu de démonstration importé** : il attend
+10 positions, alors que l'import et l'API en exposent 7 ; le refus du 3 octobre présenté dans E3 et dans la preuve
 C20 ne venait pas d'un portefeuille réel. E3 passe en v1.3 (toujours 20 pages), erratum C20 daté, correction après le
 gel.
 

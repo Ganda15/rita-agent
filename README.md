@@ -25,7 +25,7 @@ Simplon & Wild Code School · Eramalingam GANDAKUMAR · ganda70@gmail.com · 202
 |---|---|---|---|---|
 | **E1** : Données | C1–C5 | ✅ **livré** le 13/08 (26 critères / 28). **Version 2 rédigée le 03/10**, gel et tag `livrable-E1-v2` le **15/10** : dates de l'archive en date locale (INC-005), 10 tables, FRED stockée, vue sans taux supposé, clôture des positions, traçage UE, étape `ecb` en échec déclaré, 835 tests (10/10) | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) (v2.2, 5 pages) · [preuves C1 à C5](evidence/) | **[`livrable-E1-v1`](https://github.com/Ganda15/rita-agent/tree/livrable-E1-v1)** |
 | **E2** : Veille & services IA | C6–C8 | 🟡 **le plus en retard**. C6 : protocole, 4 notes (S33 à S36) et leur synthèse PDF, un partage sans capture, S37 à S40 sans note ; C7 : plan du banc validé et **première mesure le 03/10** (`evidence/C7/`), un seul fournisseur mesurable, comparaison impossible tant que les deux autres clés manquent ; C8 : cascade de trois fournisseurs, un seul opérationnel sur le poste, briefing réel tracé le 03/10, remise non prouvée (#43). Rapport : v0.1 du 03/10 (`docs/rapports/E2/`), C7 vide par construction, dû le 05/11 | [docs/veille/](docs/veille/) · [evidence/C6/](evidence/C6/) | aucun |
-| **E3** : API modèle & MLOps | C9–C13 | 🔨 **proche du gel** (15/10). API du modèle, garde-fous mesurés, 835 tests (10/10), CI avec portes d'évaluation, traces et tableau de bord Langfuse, chaîne d'alerte, journal des appels MCP. Rapport v1.2 en relecture | [rapport-E3.pdf](docs/rapports/E3/rapport-E3.pdf) (v1.2, 20 pages) · [evidence/C11/](evidence/C11/) · [evidence/C12/](evidence/C12/) | aucun |
+| **E3** : API modèle & MLOps | C9–C13 | 🔨 **proche du gel** (15/10). API du modèle, garde-fous mesurés, 835 tests (10/10), CI avec portes d'évaluation, traces et tableau de bord Langfuse, chaîne d'alerte, journal des appels MCP. Rapport v1.3 en relecture | [rapport-E3.pdf](docs/rapports/E3/rapport-E3.pdf) (v1.2, 20 pages) · [evidence/C11/](evidence/C11/) · [evidence/C12/](evidence/C12/) | aucun |
 | **E4** : Application | C14–C19 | 🔨 **23 critères / 36** prouvés le 26/09 : 2 écrans, spécifications et schémas, pré-production Docker, intégration continue, `main` protégée par pull request et tests verts. Rapport : 0 page, gel le 25/10 | [evidence/C14/](evidence/C14/) · [evidence/C15/](evidence/C15/) · [evidence/C19/](evidence/C19/) | aucun |
 | **E5** : Monitorage | C20–C21 | 🔨 **en construction** : jauge de fraîcheur, identifiant de requête dans journal et traces, alerte vers une issue, manifeste de collecte, journal des appels MCP ; 6 post-mortems d'incidents. Rapport : 0 page, dû le 05/11 | [evidence/C20/](evidence/C20/) · [evidence/C21/](evidence/C21/) | aucun |
 
@@ -71,7 +71,8 @@ recommandation d'achat ou de vente.
 - **Base de données** : PostgreSQL (conception Merise — MCD + MPD)
 - **Big data** : PySpark + Parquet *(nécessite un JDK 21 dans `JAVA_HOME`)*
 - **Modèle d'IA** : GPT-5.4 sur Azure AI Foundry (Data Zone EU) en premier, Claude par Anthropic puis OpenRouter en
-  secours (hors UE, remplacés par Mistral par la carte #82) : modèle **fourni**, aucun entraînement
+  secours, sans garantie de traitement dans l'UE (remplacement par Mistral Large 4 prévu après le gel, carte #82) :
+  modèle **fourni**, aucun entraînement
 - **Orchestration** : LangGraph
 - **CI** : GitHub Actions — tests + **porte d'évaluation des garde-fous**
 

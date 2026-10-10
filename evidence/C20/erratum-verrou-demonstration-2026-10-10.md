@@ -24,12 +24,13 @@ réponse de l'API archivée le 3 octobre (`evidence/C17/mesures-2026-10-03/entre
 | Lignes du fichier d'exemple absentes de la base | 3 |
 | Le verrou accepte-t-il cette base ? | **non** (`False`) |
 
-**Cause** : l'import (`db/importer.py:129-134`) écarte les valeurs absentes de la table `valeur` (clé étrangère), et
-trois lignes du fichier d'exemple sont hors de l'univers suivi. Le verrou, lui, compare dans les deux sens à toutes les
+**Cause** : l'import des positions (`db/importer.py:186-200`, `importer_positions`) écarte une ligne dont le ticker
+n'est ni dans la table `valeur` ni retrouvé par un alias, et trois lignes du fichier d'exemple sont dans ce cas. Le verrou, lui, compare dans les deux sens à toutes les
 lignes gardées par le lecteur (10). Les deux ne filtrent pas les positions de la même façon.
 
 **Conséquence** : en démonstration, `rita_portefeuille` refuse aussi le vrai jeu d'exemple. Le refus du 3 octobre ne
-venait pas d'un portefeuille réel : la base contenait le jeu de démonstration (7 positions sur 7). Le verrou échoue
+venait pas d'un portefeuille réel : les 7 positions servies provenaient toutes du fichier d'exemple, mais 3 des 10
+positions valides n'avaient pas été importées. Le verrou échoue
 fermé, sans rien laisser sortir ; la sécurité tient, la fonction de démonstration ne marche pas.
 
 **Pourquoi les tests étaient verts** : `tests/test_passerelle_mcp.py:210-215` simule une réponse de l'API de
@@ -38,8 +39,9 @@ fermé, sans rien laisser sortir ; la sécurité tient, la fonction de démonstr
 ## Correction (après le gel du 15/10, test d'abord)
 
 Le verrou doit partager avec l'import la même normalisation, le même filtrage par l'univers et la même résolution des
-alias, et comparer un ensemble plus complet que (ticker, quantité) : au moins le ticker, la quantité, le prix de revient
-et la devise. Le test doit passer par l'import réel. Carte à créer.
+alias, et comparer une liste normalisée et triée (un multiensemble : un simple ensemble fusionnerait deux lignes
+identiques) d'au moins le ticker canonique, la quantité, le prix de revient et la devise. Le test doit traverser le
+filtrage et les alias de l'import, puis la forme réelle de la réponse de l'API. Carte à créer.
 
 ## Ce que le jeu d'exemple contient
 
@@ -48,7 +50,8 @@ Des positions inventées sur des sociétés réellement cotées ; Era déclare l
 ## 📖 Glossaire
 
 - **Verrou de démonstration** : contrôle de la passerelle MCP qui ne rend le portefeuille que si les positions servies
-  sont exactement le jeu d'exemple du dépôt.
+  sont exactement le jeu d'exemple du dépôt ; son implémentation actuelle ne compare que les couples (ticker, quantité),
+  sous forme d'ensemble.
 - **Échouer fermé** : en cas de doute, refuser plutôt que laisser passer.
 - **Univers** : les 111 valeurs suivies par RITA ; une position hors univers ne peut pas entrer en base.
 - **Doublure** : fausse réponse utilisée par un test à la place du système réel.

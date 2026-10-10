@@ -20,7 +20,7 @@ Trois règles ont guidé l'écriture. Un chiffre se cite mesuré, avec sa date e
 
 ## 1. Le contexte, une seule fois
 
-**RITA** (*Retrieval Intelligence pour le Tracking et l'Analyse*) est un assistant qui collecte des données boursières et macroéconomiques, les stocke dans une base PostgreSQL conçue selon la méthode Merise, les expose par une API REST, et rédige en français un **briefing** par valeur : un texte court qui dit ce que la valeur a fait, avec quelles actualités autour. L'utilisateur est unique : un investisseur particulier qui suit sept positions.
+**RITA** (*Retrieval Intelligence pour le Tracking et l'Analyse*) est un assistant qui collecte des données boursières et macroéconomiques, les stocke dans une base PostgreSQL conçue selon la méthode Merise, les expose par une API REST, et rédige en français un **briefing** par valeur : un texte court qui dit ce que la valeur a fait, avec quelles actualités autour. L'utilisateur est unique : un investisseur particulier qui suit 111 valeurs ; la démonstration porte sept positions simulées.
 
 **La contrainte qui structure tout** : RITA aide à lire, elle ne recommande jamais d'acheter ni de vendre. C'est l'interdit du conseil en investissement non agréé, posé par l'**AMF** (Autorité des marchés financiers). Il est écrit dans le prompt du rédacteur et vérifié par un garde-fou qui relit le texte produit avant diffusion.
 
