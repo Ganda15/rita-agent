@@ -70,7 +70,8 @@ recommandation d'achat ou de vente.
 - **API** : FastAPI · documentation OpenAPI générée
 - **Base de données** : PostgreSQL (conception Merise — MCD + MPD)
 - **Big data** : PySpark + Parquet *(nécessite un JDK 21 dans `JAVA_HOME`)*
-- **Modèle d'IA** : Claude (Anthropic) — modèle **fourni**, aucun entraînement
+- **Modèle d'IA** : GPT-5.4 sur Azure AI Foundry (Data Zone EU), Mistral Large en secours par son adresse européenne :
+  modèle **fourni**, aucun entraînement
 - **Orchestration** : LangGraph
 - **CI** : GitHub Actions — tests + **porte d'évaluation des garde-fous**
 

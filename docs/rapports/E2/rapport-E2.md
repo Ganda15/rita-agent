@@ -8,7 +8,7 @@
 | **Formation** | Simplon × Wild Code School, promotion Développeur IA et IA agentique |
 | **Dépôt** | `Ganda15/rita-agent` (privé ; accès du jury par invitation de collaborateur) |
 | **Version** | 0.3 du 9 octobre 2026 (squelette du 3 octobre ; § 4.3, § 4.4 et critères C8 remis d'accord le 5 octobre ; déploiement Azure en zone UE le 9 octobre) ; format attendu 15 à 20 pages, oral 15 minutes, sans démonstration ; dû le 5 novembre 2026 |
-| **État** | C6 et C8 rédigés depuis les faits du dépôt ; **C7 : première comparaison mesurée le 03/10 au soir** (GPT par Azure AI Foundry contre Claude par OpenRouter, 30 appels chacun), recommandation provisoire ; prix publics et information environnementale relevés le soir même (rien par modèle chez les deux éditeurs) ; restent la notation du français et Anthropic en direct ; plan validé D1 à D3 = A |
+| **État** | C6 et C8 rédigés depuis les faits du dépôt ; **C7 : première comparaison mesurée le 03/10 au soir** (GPT par Azure AI Foundry contre Claude par OpenRouter, 30 appels chacun), recommandation provisoire ; prix publics et information environnementale relevés le soir même (rien par modèle chez les deux éditeurs) ; restent la notation du français et un passage du banc Foundry contre Mistral (carte #82 : Anthropic et OpenRouter retirés du code le 10/10, règle UE seule) ; plan validé D1 à D3 = A |
 
 ## Lire ce rapport
 
@@ -118,8 +118,9 @@ Les sections suivantes seront remplies **après** la mesure, depuis `evidence/C7
   dans les en-têtes Foundry : 2 500 requêtes et 250 000 jetons par fenêtre ; sortie du modèle plafonnée à 128 000 jetons. Le rapport
   donne l'ordre de grandeur (0,3 à 18 Wh par briefing selon la source) comme une hypothèse, pas comme une mesure.
 - 3.5 Recommandation, **provisoire** jusqu'à la notation du français : Foundry en premier (gratuit pour le projet,
-  conformité et fidélité égales, médiane plus courte), OpenRouter en secours, soit l'ordre actuel de `LLM_ORDRE`. Ce
-  qui ferait changer la décision : une note de français nettement plus basse pour Foundry, la queue de latence (un
+  conformité et fidélité égales, médiane plus courte), OpenRouter en secours, soit l'ordre de `LLM_ORDRE` au 03/10. Depuis la carte #82
+  (10/10), la règle UE seule du projet écarte OpenRouter : le secours est Mistral par son adresse européenne, à mesurer
+  au banc dans les mêmes conditions. Ce qui ferait changer la décision : une note de français nettement plus basse pour Foundry, la queue de latence (un
   appel sur vingt au-delà de 10 s), la fin de la gratuité.
 
 Ce que ce rapport refuse de faire : présenter des scores non mesurés, ou transformer une égalité sur des contrôles
@@ -131,18 +132,21 @@ automatiques en jugement de qualité : le style se note à l'aveugle, par le can
 
 ### 4.1 L'accès et la configuration
 
-Trois fournisseurs en cascade, dans l'ordre `foundry,anthropic,openrouter`, configurable par la variable
-`LLM_ORDRE` ; depuis le 3 octobre au soir, Foundry est appelé par son point compatible OpenAI (déploiement `gpt-5.4`,
-ressource du candidat, gratuite ; en Data Zone Standard EU depuis le 9 octobre, `gpt-5.4-dzs-eu`), ce qui met un modèle d'un autre éditeur que Claude dans la cascade et dans le banc ; un modèle par fournisseur, configurable (`AZURE_FOUNDRY_DEPLOYMENT`, `ANTHROPIC_MODEL`,
-`OPENROUTER_MODEL`) ; les clés lues dans l'environnement, jamais dans le code, un hook refusant toute écriture d'un
+Deux fournisseurs approuvés UE en cascade, dans l'ordre `foundry,mistral` (carte #82, 10/10), configurable par la
+variable `LLM_ORDRE`, qui ignore tout nom non approuvé : Foundry par son point compatible OpenAI depuis le 3 octobre au
+soir (modèle `gpt-5.4`, ressource du candidat, gratuite ; déploiement `gpt-5.4-dzs-eu` en Data Zone Standard EU depuis
+le 9 octobre), puis Mistral (`mistral-large-2512`) par son adresse européenne `api.eu.mistral.ai`, écrite dans le code ;
+un modèle par fournisseur, configurable (`AZURE_FOUNDRY_DEPLOYMENT`, `MISTRAL_MODEL`). Jusqu'au 10/10, la cascade
+comptait aussi Anthropic et OpenRouter (Claude), retirés faute de garantie de région ; les clés lues dans l'environnement, jamais dans le code, un hook refusant toute écriture d'un
 agent dans le fichier de secrets. Si le premier fournisseur échoue, le suivant est essayé, et chaque tentative est
 tracée.
 
 **Ce qui est démontré, et ce qui ne l'est pas.** Le 03/10/2026 à 14 h 48, un briefing réel a été servi par OpenRouter
 après deux fournisseurs en échec (clés absentes). Le soir, la clé Foundry posée, un second briefing réel (SAN.PA) a
 été servi par **Azure AI Foundry en 5,6 s**, `gpt-5.4-2026-03-05`, sans repli : la trace ne montre qu'une génération.
-Deux fournisseurs sont donc opérationnels sur le poste, Foundry en premier et OpenRouter en secours ; Anthropic en
-direct reste branché sans clé. Dire « trois fournisseurs opérationnels » serait encore faux.
+Au 03/10, deux fournisseurs étaient donc opérationnels sur le poste, Foundry en premier et OpenRouter en secours ;
+Anthropic en direct, branché sans clé, n'a jamais répondu. Depuis la carte #82 : Foundry, puis Mistral, dont la clé a
+répondu le 10/10 par l'adresse européenne (sonde, 0,53 s) ; aucun briefing réel n'a encore été servi par Mistral.
 
 ### 4.2 Ce qui est envoyé au service
 
@@ -196,8 +200,8 @@ Information missing, to complete later.
 | C7.6 prérequis et contraintes techniques | 🟠 | relevés dans le code (`src/llm.py`) et dans la sonde du banc (clé, authentification) ; prix publics et types de déploiement relevés ; limites de débit non relevées |
 | C7.7 recommandation argumentée | 🟠 | provisoire (preuve §9), à confirmer par la notation du français |
 | C8.1 service accessible, authentification | ✅ | briefing réel du 03/10, clé en environnement |
-| C8.2 configuration conforme aux besoins | 🟠 | deux fournisseurs opérationnels sur trois (03/10) ; Azure en zone UE depuis le 09/10, mais les replis Anthropic et OpenRouter restent hors de la règle UE seule du projet (registre, T6) |
-| C8.3 monitorage opérationnel | 🟠 | trace complète, tableau, deux alertes réglées et déclenchées le 04/10 ; coût faux pour OpenRouter |
+| C8.2 configuration conforme aux besoins | 🟠 | Azure en zone UE depuis le 09/10 ; replis Anthropic et OpenRouter retirés du code par la carte #82, Mistral par son adresse européenne ; reste à lire le contrat de Mistral avant de dire la cascade conforme à la règle UE seule (registre, T6) |
+| C8.3 monitorage opérationnel | 🟠 | trace complète, tableau, deux alertes réglées et déclenchées le 04/10 ; coût faux pour OpenRouter jusqu'à la carte #82, à vérifier pour Mistral dans la grille de prix de Langfuse |
 | C8.4 documentation d'accès, installation, tests, dépendances, flux | ✅ | `docs/EXPLOITATION.md`, remis d'accord le 05/10 |
 | C8.5 documentation communiquée, accessible | 🔴 | aucune remise prouvée (#43) |
 
@@ -209,7 +213,9 @@ Information missing, to complete later.
 
 1. Captures du fil Discord du 16/08 et envoi daté au formateur (Era) : la seule preuve de partage possible.
 2. Note S40 écrite par Era depuis les candidats ; les semaines S37 à S39 restent déclarées sans séance.
-3. Noter le français à l'aveugle (60 textes, deux services confondus) ; refaire un passage complet avec l'origine journalisée (sur le déploiement Data Zone EU depuis le 09/10) ; confirmer le périmètre avec le formateur ; Anthropic en direct si une clé arrive.
+3. Noter le français à l'aveugle (60 textes, deux services confondus) ; refaire un passage complet avec l'origine journalisée (sur le déploiement Data Zone EU depuis le 09/10) ; confirmer le périmètre avec le formateur ; passage du banc Foundry contre Mistral ; lire le contrat de Mistral
+(sous-traitants, usage des données pour l'entraînement, en « opt-out » selon sa page des tarifs) avant de passer C8.2
+à OK.
 4. Envoi au formateur du guide d'exploitation remis d'accord le 05/10, preuve rangée (#43).
 5. Rédaction des sections C7 depuis `evidence/C7/`, relecture, PDF (`scripts/rendre_pdf.py`), tag `livrable-E2-v1`.
 

@@ -25,6 +25,12 @@ long (le prompt tient en moins de 1 000 jetons).
 
 ## 2. Le périmètre : qui est comparé, qui ne l'est pas (critères C7.2, C7.3)
 
+> **Mise à jour du 10/10/2026 (carte #82, règle « UE seule »)** : Anthropic et OpenRouter sont retirés de `src/llm.py`,
+> Mistral (`mistral-large-2512`, adresse européenne) devient le second fournisseur. Le banc compare désormais Azure AI
+> Foundry et Mistral (`FOURNISSEURS` de `evals/benchmark_fournisseurs.py`, prix public de Mistral cité). Les mesures
+> du 03/10 (Foundry contre OpenRouter) restent dans `evidence/C7/` comme mesure datée ; ce qui suit décrit le plan du
+> 03/10 tel qu'il a été suivi.
+
 **Inclus, parce que déjà branchés dans `src/llm.py`** (ordre de la cascade : `foundry`, `anthropic`, `openrouter`) :
 
 | Service (fournisseur) | Modèle réellement appelé (configuration du 03/10) | État sur le poste de démonstration |

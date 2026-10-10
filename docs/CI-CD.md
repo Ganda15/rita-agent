@@ -97,7 +97,7 @@ Actions`. Trois secrets, dont un fourni par la plateforme :
 | Secret | Qui s'en sert | À quoi | Qui le pose |
 |---|---|---|---|
 | `CLAUDE_CODE_OAUTH_TOKEN` | Revue PR | jeton d'abonnement de l'assistant de développement | posé une fois par `/install-github-app` depuis le terminal de l'assistant ; à renouveler s'il expire |
-| `OPENROUTER_API_KEY` | Scan Giskard | le juge des scénarios (appels payants, plafonnés par l'entrée `max_scenarios`) | le propriétaire du compte OpenRouter, à la main |
+| `OPENROUTER_API_KEY` | Scan Giskard | le juge des scénarios (appels payants, plafonnés par l'entrée `max_scenarios`) ; seul usage d'OpenRouter depuis la carte #82, qui l'a retiré du briefing ; scénarios inventés, sans donnée personnelle ; passage du juge à Mistral prévu après le gel (carte #87) | le propriétaire du compte OpenRouter, à la main |
 | `GITHUB_TOKEN` | Livraison (publier l'image), Alerte (ouvrir une issue) | jeton éphémère fourni par GitHub à chaque exécution, expire à la fin du travail | personne : rien à poser, rien à faire tourner |
 
 Chaque workflow déclare le minimum de permissions dont il a besoin :

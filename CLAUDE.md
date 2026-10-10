@@ -55,7 +55,8 @@ inscrite en dur dans le prompt du rédacteur et vérifiée par le garde-fou d'in
 
 - **Python** 3.13 (CI) / 3.14 (local) · **FastAPI** · **PostgreSQL** · **PySpark + Parquet**
 - **LangGraph** — graphe Scout → Rédacteur (`graph/workflow.py`)
-- **Claude** en cascade 3 fournisseurs : Foundry → Anthropic → OpenRouter (`src/llm.py`)
+- **Modèle fourni** en cascade de fournisseurs approuvés UE : Azure AI Foundry (`gpt-5.4`, Data Zone EU) → Mistral
+  (`mistral-large-2512`, adresse européenne écrite dans le code) (`src/llm.py`, carte #82)
 - **Modèle FOURNI** — aucun entraînement, aucun réglage fin. Ce qui se teste n'est pas une
   métrique d'apprentissage mais le **comportement sous garde-fous**.
 
