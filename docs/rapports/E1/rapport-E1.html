@@ -404,7 +404,7 @@ positions closes sans les servir.</p>
 <p>La documentation technique est versionnée <strong>à la racine du dépôt</strong> : <code>README.md</code>, <code>docs/EXPLOITATION.md</code>
 (voie courte avec Docker Compose, §&nbsp;3 ; voie longue sans Docker, §&nbsp;4 ; vérifications, §&nbsp;5), <code>bigdata/CONCEPTION.md</code>.
 Les dépendances sont dans <code>requirements.txt</code>, épinglées quand la version conditionne le fonctionnement
-(<code>feedparser</code>, <code>chromadb</code>, <code>langfuse</code>, <code>pyspark</code>) ; les autres ne le sont pas encore, c'est une limite connue.
+(<code>feedparser</code>, <code>chromadb</code>, <code>rank-bm25</code>, <code>langfuse</code>, <code>pyspark</code>) ; les 13 autres ne le sont pas encore, c'est une limite connue.
 La séquence ci-dessous reconstruit le projet depuis un dépôt vierge (rejouée sur une base Compose neuve le 03/10).</p>
 
 <pre>python -m pip install --user -r requirements.txt   <b># dependances (pas de venv sous Smart App Control)</b>
@@ -452,7 +452,7 @@ python -m pytest -q                                <b># 804 passed, 29 skipped, 
   <strong>Regroupements d'actions non traités</strong> : <code>operation_sur_titre</code> conçue non construite ; VIRI.PA affiche
   +4 473 % pour cette raison. <strong>Date de clôture = date de l'import</strong>, pas date de la vente : le projet ne connaît pas l'autre.
   <strong>Purges non planifiées</strong> (lancement manuel). <strong><code>memory_audit</code> sans écrivain</strong>, décision reportée après le gel (#86).
-  <strong>Versions non épinglées</strong> pour la moitié des dépendances. <strong>Volumétrie</strong> : le big data est démontré sur un
+  <strong>Versions non épinglées</strong> pour 13 dépendances sur 18. <strong>Volumétrie</strong> : le big data est démontré sur un
   volume qui ne l'exige pas ; la méthode est prouvée, la limite est énoncée plutôt que défendue.
 </div>
 

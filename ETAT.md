@@ -114,6 +114,11 @@ contractuelles types étaient « à confirmer » ; il dit maintenant qu'elles so
 OpenRouter § 13.2, T6, contrats relus le 05/10) et que l'AITD n'est pas faite ; la ligne du Data Privacy Framework
 dit ce qui reste vraiment ouvert (certification de ClickHouse, Inc. non vérifiée, § 5 point 7) ; la liste du 02/10
 garde son texte, avec « Fait le 2026-10-05 ». `tests/test_rgpd_registre.py` : 4 passed.
+Puis, sur demande d'Era : **les dépendances épinglées** étaient mal comptées. `requirements.txt` (compté le 10/10) :
+18 dépendances, **5 épinglées** (`langfuse`, `feedparser`, `chromadb`, `rank-bm25`, `pyspark`), `mcp` avec un
+minimum, 12 sans version. E1 § 9 oubliait `rank-bm25` et § 10 disait « la moitié » : « 13 dépendances sur 18 » ;
+E3 § 7.4 disait « quatre » sans `pyspark` : « cinq ». E1 toujours 5 pages (mise en page identique), E3 toujours
+20 pages (seule la page 16 bouge). Traductions et copies OneDrive remises d'accord.
 
 **📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.2, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :
