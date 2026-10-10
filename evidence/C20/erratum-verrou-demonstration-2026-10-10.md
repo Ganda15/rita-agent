@@ -28,13 +28,14 @@ réponse de l'API archivée le 3 octobre (`evidence/C17/mesures-2026-10-03/entre
 n'est ni dans la table `valeur` ni retrouvé par un alias, et trois lignes du fichier d'exemple sont dans ce cas. Le verrou, lui, compare dans les deux sens à toutes les
 lignes gardées par le lecteur (10). Les deux ne filtrent pas les positions de la même façon.
 
-**Conséquence** : en démonstration, `rita_portefeuille` refuse aussi le vrai jeu d'exemple. Le refus du 3 octobre ne
+**Conséquence** : en démonstration, `rita_portefeuille` refuse aussi le jeu de démonstration importé dans l'environnement
+actuel. Le refus du 3 octobre ne
 venait pas d'un portefeuille réel : les 7 positions servies provenaient toutes du fichier d'exemple, mais 3 des 10
 positions valides n'avaient pas été importées. Le verrou échoue
 fermé, sans rien laisser sortir ; la sécurité tient, la fonction de démonstration ne marche pas.
 
 **Pourquoi les tests étaient verts** : `tests/test_passerelle_mcp.py:210-215` simule une réponse de l'API de
-10 positions, que l'API réelle ne peut pas rendre ; le test ne passe ni par l'import ni par la base.
+10 positions, alors que l'API de l'environnement de démonstration importé n'en rend actuellement que sept ; le test ne passe ni par l'import ni par la base.
 
 ## Correction (après le gel du 15/10, test d'abord)
 

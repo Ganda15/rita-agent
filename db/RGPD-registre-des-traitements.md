@@ -214,7 +214,7 @@ des données ») et une mesure dans le code plutôt qu'une supposition :
 | **Durée de conservation** | Selon chaque fournisseur, **non vérifiée** |
 | **Lien avec T3** | Le même prompt et la même réponse sont tracés dans Langfuse (T3) |
 | **Inventaire champ par champ** | À faire : carte #68 (tableau champ, origine, destinataire, durée, et un test qui échoue si le prompt contient un champ hors liste) |
-| **Correction prévue** (après le gel du 15/10, carte #82) | Ne garder que des fournisseurs approuvés : déploiement Azure limité à l'UE (zone de données ou région, à vérifier dans le portail et le contrat), routage UE d'OpenRouter (éligibilité et contrat à vérifier) ou modèle local. **Aucun repli vers un fournisseur non approuvé** : sans fournisseur approuvé, l'écran montre les faits et dit « briefing indisponible » (réponse 503 `AUCUN_FOURNISSEUR` prévue par `docs/conception/frontend/refonte-2026-10.md`, § 6) |
+| **Correction prévue** (après le gel du 15/10, carte #82) | Ne garder que des fournisseurs approuvés (plan au 10/10, branche `mistral-ue`, PR #88) : Azure AI Foundry en Data Zone Standard EU en premier ; Mistral Large 4 par son adresse européenne en secours, à confirmer par la lecture de son contrat et par le banc C7 ; Anthropic et OpenRouter retirés de la cascade. **Aucun repli vers un fournisseur non approuvé** : sans fournisseur approuvé, l'écran montre les faits et dit « briefing indisponible » (réponse 503 `AUCUN_FOURNISSEUR` prévue par `docs/conception/frontend/refonte-2026-10.md`, § 6) |
 
 ### T7 : Recherche d'actualités sur les valeurs détenues (Google News) : ✅ **ACTIF depuis le 2026-08-28**, inscrit le 2026-10-05 (non conforme à la règle UE seule)
 

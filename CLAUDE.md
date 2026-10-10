@@ -49,7 +49,7 @@ Collecte de données boursières et macro-économiques → PostgreSQL (conceptio
 API REST → briefing **rédigé** en français par un modèle de langage **fourni** (cascade de fournisseurs, `src/llm.py`).
 
 Une aide à la lecture, **jamais** une recommandation d'achat ou de vente : contrainte AMF,
-inscrite en dur dans le prompt du rédacteur et vérifiée par le garde-fou d'injection.
+inscrite en dur dans le prompt du rédacteur et vérifiée par le garde-fou de sortie (`guardrails/sortie.py`).
 
 ## Stack réelle
 

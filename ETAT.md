@@ -133,7 +133,7 @@ collectés), le classeur v4 (memory_audit « décision en attente », quatre fic
 Docker Hub : test d'abord, rouge, vert, mutation). Code gelé laissé tel quel et inscrit sur #82 : `src/llm.py:39`
 (déploiement par défaut `gpt-5.4`, supprimé le 09/10), `src/llm.py:79` et `tests/test_llm.py:109` (« Global Standard »).
 
-**10/10, après-midi et soir, ce qui a changé** (`develop` : `000ca50` à `3fea202`, quatre commits pas encore poussés ; branche `mistral-ue`,
+**10/10, après-midi et soir, ce qui a changé** (`develop` : plusieurs commits locaux du 10/10, pas encore poussés, vérifier `git status --branch` avant tout push ; branche `mistral-ue`,
 PR #88 en brouillon : `0a3f3f8` poussé, CI verte ; `2a7f18c` et `b3c76b5` pas encore poussés) :
 - **Incident, clé Mistral** : la vraie clé d'Era a été écrite dans `.env.example` et poussée (`5fae28e`), puis une
   deuxième dans le commit de correction (`8587a21`). Era a supprimé les deux clés chez Mistral et en a créé une neuve,

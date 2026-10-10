@@ -8,7 +8,7 @@
 | **Formation** | Simplon × Wild Code School, promotion Développeur IA et IA agentique |
 | **Dépôt** | `Ganda15/rita-agent` (privé ; accès du jury par invitation de collaborateur) |
 | **Version** | 1.3, 10 octobre 2026 ; gel et tag `livrable-E3-v1` le 15 octobre 2026 |
-| **Mesures** | datées du 2 au 4 octobre 2026, sauf l'image de base (§ 7.3, 9 octobre), chacune avec la commande qui la produit ; la première trace complète d'un briefing réel date du 3 octobre, 14 h 48 |
+| **Mesures** | datées du 2 au 10 octobre 2026 (date de chaque preuve dans sa section), chacune avec la commande qui la produit ; la première trace complète d'un briefing réel date du 3 octobre, 14 h 48 |
 
 ## Lire ce rapport
 
@@ -20,7 +20,7 @@ Trois règles ont guidé l'écriture. Un chiffre se cite mesuré, avec sa date e
 
 ## 1. Le contexte, une seule fois
 
-**RITA** (*Retrieval Intelligence pour le Tracking et l'Analyse*) est un assistant qui collecte des données boursières et macroéconomiques, les stocke dans une base PostgreSQL conçue selon la méthode Merise, les expose par une API REST, et rédige en français un **briefing** par valeur : un texte court qui dit ce que la valeur a fait, avec quelles actualités autour. L'utilisateur est unique : un investisseur particulier qui suit 111 valeurs ; la démonstration porte sept positions simulées.
+**RITA** (*Retrieval Intelligence pour le Tracking et l'Analyse*) est un assistant qui collecte des données boursières et macroéconomiques, les stocke dans une base PostgreSQL conçue selon la méthode Merise, les expose par une API REST, et rédige en français un **briefing** par valeur : un texte court qui dit ce que la valeur a fait, avec quelles actualités autour. L'utilisateur est unique : un investisseur particulier qui suit 111 valeurs ; la démonstration porte sur sept positions simulées.
 
 **La contrainte qui structure tout** : RITA aide à lire, elle ne recommande jamais d'acheter ni de vendre. C'est l'interdit du conseil en investissement non agréé, posé par l'**AMF** (Autorité des marchés financiers). Il est écrit dans le prompt du rédacteur et vérifié par un garde-fou qui relit le texte produit avant diffusion.
 
