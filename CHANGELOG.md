@@ -9,6 +9,19 @@
 
 ---
 
+## 2026-10-10 (15 h) : les 7 soirs de collecte coupés n'étaient pas tous rattrapés ; taux BCE du 03/09 récupéré
+
+**Manque découvert** en relisant E1 avec Era : § 3 disait les 7 collectes interrompues par l'arrêt du poste « rattrapées
+par les plages de dates ». Vérifié en base (lecture seule) : vrai pour quatre soirs (13, 14, 16, 17/09, rattrapés le
+18/09, sauf la séance parisienne du 17/09), rien de perdu le 08/09, mais les articles des 02 et 03/09 sont perdus et
+le taux BCE du 03/09 manquait. **Récupéré le 10/10** par l'option de rattrapage (5 lignes). E1 § 3 dit maintenant
+l'état mesuré, toujours 5 pages. Preuve : `evidence/C1/preuve-soirs-coupes-verifies-2026-10-10.md`.
+
+**Manque découvert aussi** : le rôle en lecture seule `rita_lecture` existe mais n'a ni mot de passe ni chaîne de
+connexion sur le poste ; la règle « un agent lit la base par `rita_lecture` » n'est donc pas applicable aujourd'hui.
+
+---
+
 ## 2026-10-10 (10 h 30) : E3 v1.2 ; E1 et E3 se contredisaient sur le contrat de Langfuse
 
 **Manque découvert** en traduisant E3 en anglais pour Era : E3 (§ 5.1) disait encore que la présence d'une entité

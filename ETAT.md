@@ -119,6 +119,12 @@ Puis, sur demande d'Era : **les dépendances épinglées** étaient mal comptée
 minimum, 12 sans version. E1 § 9 oubliait `rank-bm25` et § 10 disait « la moitié » : « 13 dépendances sur 18 » ;
 E3 § 7.4 disait « quatre » sans `pyspark` : « cinq ». E1 toujours 5 pages (mise en page identique), E3 toujours
 20 pages (seule la page 16 bouge). Traductions et copies OneDrive remises d'accord.
+Puis **les 7 soirs de collecte coupés** (E1 § 3 disait « rattrapés ») : vérifiés en base le 10/10 par une requête en
+lecture seule lancée par Era : quatre rattrapés le 18/09 (sauf la séance parisienne du 17/09), un sans perte (08/09),
+deux incomplets : articles des 02 et 03/09 perdus, et **aucun taux BCE le 03/09**, que Era a rattrapé le 10/10
+(`--etapes ecb --du 2026-09-03 --au 2026-09-03` : 4 lues, 5 écrites). E1 § 3 le dit, toujours 5 pages. Preuve :
+`evidence/C1/preuve-soirs-coupes-verifies-2026-10-10.md`. Le rôle `rita_lecture` n'a ni mot de passe ni
+`RITA_DSN_LECTURE` sur le poste : un agent ne peut pas lire la base comme le prévoit `AGENTS.md` (après le gel).
 
 **📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.2, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :
