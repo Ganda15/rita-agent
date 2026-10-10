@@ -15,7 +15,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-10, 1 h (nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3 prêt, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-10, 9 h (le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
@@ -48,7 +48,7 @@ compétences** : statuts corrigés (110 OK, 24 partiels, 1 à faire), colonne «
 réécrite, 17 notes périmées corrigées, synthèse courte à la même source ; GitHub (branche à part) et Google Drive
 (synthèse seule, doublons et ancien fichier mis à la corbeille) ; E2 v0.2 (§ 4.3, § 4.4, critères C8).
 
-**Trois décisions qui attendent Era** : (1) ~~C8.2~~ tranchée le 09/10 : partiel des deux côtés (classeur v3 : 109, 25, 1) ; (2) ~~carte #84~~ faite le 09/10 (`21cf8f1`, preuve
+**Trois décisions qui attendent Era** : (1) ~~C8.2~~ tranchée le 09/10 : partiel des deux côtés (classeur v4 : 110, 26, 1 sur 137 lignes) ; (2) ~~carte #84~~ faite le 09/10 (`21cf8f1`, preuve
 `evidence/C18/preuve-image-runner-epinglee-2026-10-09.md`) ; (3) **relire la colonne
 « Rédaction »** du classeur et la dire avec ses mots, puis partager la synthèse Drive en « Commentateur » et envoyer
 les deux liens, le message d'état et `docs/EXPLOITATION.pdf` au formateur.
@@ -68,19 +68,27 @@ de nouveau bloqué par Smart App Control), collecte du 09/10 normale (6 sur 6). 
 constructions de l'image de suite (429, 429, 504) alors que les tests passaient ; l'image de base vient désormais de
 la galerie publique d'Amazon, même empreinte, test d'abord (`232c209`, preuve
 `evidence/C19/preuve-image-de-base-galerie-amazon-2026-10-10.md`). **C8.2 partiel dans le classeur aussi** (v3 :
-109 OK, 25 partiels, 1 à faire), fichiers prêts, pas encore en place (voir le paragraphe suivant). **Mistral UE**
+109 OK, 25 partiels, 1 à faire ; v4 le matin, voir le paragraphe suivant). **Mistral UE**
 choisi par Era pour remplacer les replis hors UE **après le gel** (carte #82, `CONTINUITE.md` D) ; sonde de la clé
 le 10/10 : `mistral-large-2512` répond en 0,53 s par l'adresse européenne ; aucun code de RITA touché. **Note
 d'étude** de la colonne « Rédaction » (les 9 paragraphes, leur sens en anglais, les questions probables du jury,
 une ligne « Ma version » à remplir) : Obsidian `09-EN-personnel`, jamais dans le dépôt.
 
-**Le classeur v3 : où il est, ce qu'il reste à faire (Era)**. Le détaillé est
-`D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP_09_10_26.xlsx` ; la synthèse v3 et le README de la
-branche sont dans `D:\KandaWork\RITA_PROJECT\classeur-v3-pour-branche\`. La synthèse posée à côté (v2) est ouverte
-dans Excel depuis le 09/10 au matin : la fermer, puis la remplacer par celle du dossier. Ensuite : (1) sur la branche
-`classeur-competences`, remplacer les trois fichiers de `docs/competences/` par ceux du dossier, commit, push ;
-(2) dans la synthèse Google Sheets, recopier la ligne 61 de la synthèse v3 (C61 « ◐ Partiel » et la note D61) ;
-(3) relire la colonne « Rédaction » avec la note d'étude et écrire sa version.
+**Le classeur v4 (10/10 au matin) : où il est, ce qu'il reste à faire (Era)**. Era s'étonnait du total de 135 :
+recompté contre le référentiel officiel, il y a **142 critères**. Le modèle Simplon (135 lignes, les mêmes chez David
+et Mehdi) en réunit parfois deux en une ligne (C9, C10, C13, C17, C18) et en découpe un (C6), sans rien perdre, mais
+**omet deux critères de C19** : la documentation de la chaîne de livraison (installation, configuration, test),
+**partiel** (le test de la publication sur un tag n'est pas documenté, premier passage le 15/10), et son format
+accessible, OK. Ajoutés en fin de C19, marqués « ajouté » : **137 lignes, 110 OK, 26 partiels, 1 à faire**. C13
+vérifié : son critère d'accessibilité est réuni dans la ligne de la documentation, toujours OK (PDF E3 régénéré,
+remesuré le 10/10). Fichiers : détaillé `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP_10_10_26.xlsx` ;
+synthèse, détaillé et README de la branche dans `D:\KandaWork\RITA_PROJECT\classeur-v4-pour-branche\` (le dossier
+v3 reste comme version précédente). À faire : (1) fermer Excel (il tient encore la synthèse v2), puis remplacer la
+synthèse de `D:\KandaWork\RITA_PROJECT\` par celle du dossier v4 ; (2) sur la branche `classeur-competences`,
+remplacer les trois fichiers de `docs/competences/` par ceux du dossier v4, commit, push ; (3) Google Sheets :
+Fichier, Importer, la synthèse v4, « Remplacer la feuille de calcul » (le lien ne change pas) ; (4) signaler au
+formateur que son modèle omet deux critères de C19 (Era envoie) ; (5) relire la colonne « Rédaction » avec la note
+d'étude et écrire sa version.
 
 **📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.2, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :
@@ -104,7 +112,7 @@ Idée prise dans la grille d'un camarade : arrêter de construire à date fixe, 
 vers RITA dans `CONTINUITE.md`. D'ici là, RITA reste à trois étapes.
 
 **Tâche principale de la prochaine session** : avancer RITA vers le gel du **jeudi 15/10**. Era relit E1 (5 pages) et
-E3 (20 pages), dit la colonne « Rédaction » avec ses mots (note d'étude du 10/10), met le classeur v3 en place, puis
+E3 (20 pages), dit la colonne « Rédaction » avec ses mots (note d'étude du 10/10), met le classeur v4 en place, puis
 envoie au formateur les liens, le message d'état et `docs/EXPLOITATION.pdf` (#43). Le 15/10 : PR `develop → main`,
 Definition of Done, tags `livrable-E1-v2` et `livrable-E3-v1`. Ensuite E4, E5 et E2 (15-25/10), et la carte #82
 (Mistral UE). Oral blanc E1 + E3 : **29-30/10**.

@@ -9,6 +9,20 @@
 
 ---
 
+## 2026-10-10 (matin) : le modèle de classeur du formateur omet deux critères officiels de C19
+
+**Manque découvert.** Era s'étonnait que le classeur compte 135 critères. Recompté contre le référentiel officiel
+(PDF Simplon, colonne des critères d'évaluation) : 142. Le modèle Simplon, que la promotion utilise (135 lignes aussi
+chez David et Mehdi), réunit parfois deux critères en une ligne (C9 trois fois, C10, C13, C17, C18) et en découpe un
+(C6), ce qui ne perd rien ; mais il omet deux critères de C19 : la documentation de la chaîne de livraison
+(installation, configuration, test) et son format accessible. Ajoutés au classeur v4 (137 lignes : 110 OK,
+26 partiels, 1 à faire) ; le premier est partiel, car le test de la publication sur un tag n'est pas documenté. C13
+vérifié au passage : son critère d'accessibilité est réuni dans la ligne de la documentation, toujours OK (PDF E3
+régénéré le 09/10, remesuré : balisé, langue, titre, 5 images sur 5 avec texte alternatif). Le chiffre de 152 ou 156
+critères n'apparaît ni dans le référentiel ni dans le règlement. À signaler au formateur (message envoyé par Era).
+
+---
+
 ## 2026-10-10 (nuit du 9 au 10) : Docker Hub a bloqué la livraison ; premier fournisseur du modèle en zone UE ; gel fixé au 15/10
 
 **Manques découverts.** (1) Le 09/10, la construction de l'image dans la chaîne de livraison a échoué trois fois de
