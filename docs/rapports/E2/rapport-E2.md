@@ -135,7 +135,7 @@ automatiques en jugement de qualité : le style se note à l'aveugle, par le can
 Deux fournisseurs approuvés UE en cascade, dans l'ordre `foundry,mistral` (carte #82, 10/10), configurable par la
 variable `LLM_ORDRE`, qui ignore tout nom non approuvé : Foundry par son point compatible OpenAI depuis le 3 octobre au
 soir (modèle `gpt-5.4`, ressource du candidat, gratuite ; déploiement `gpt-5.4-dzs-eu` en Data Zone Standard EU depuis
-le 9 octobre), puis Mistral (`mistral-large-2512`) par son adresse européenne `api.eu.mistral.ai`, écrite dans le code ;
+le 9 octobre), puis Mistral (`mistral-large-4-0`, Large 4 sans réflexion) par son adresse européenne `api.eu.mistral.ai`, écrite dans le code ;
 un modèle par fournisseur, configurable (`AZURE_FOUNDRY_DEPLOYMENT`, `MISTRAL_MODEL`). Jusqu'au 10/10, la cascade
 comptait aussi Anthropic et OpenRouter (Claude), retirés faute de garantie de région ; les clés lues dans l'environnement, jamais dans le code, un hook refusant toute écriture d'un
 agent dans le fichier de secrets. Si le premier fournisseur échoue, le suivant est essayé, et chaque tentative est
@@ -146,7 +146,9 @@ après deux fournisseurs en échec (clés absentes). Le soir, la clé Foundry po
 été servi par **Azure AI Foundry en 5,6 s**, `gpt-5.4-2026-03-05`, sans repli : la trace ne montre qu'une génération.
 Au 03/10, deux fournisseurs étaient donc opérationnels sur le poste, Foundry en premier et OpenRouter en secours ;
 Anthropic en direct, branché sans clé, n'a jamais répondu. Depuis la carte #82 : Foundry, puis Mistral, dont la clé a
-répondu le 10/10 par l'adresse européenne (sonde, 0,53 s) ; aucun briefing réel n'a encore été servi par Mistral.
+répondu le 10/10 par l'adresse européenne (sonde, 0,53 s). Le même soir, des briefings d'essai sur MC.PA ont servi
+au choix du modèle : Large 3 inventait une date de séance, Large 4 sans réflexion non (2,6 à 3,7 s, environ
+0,1 centime ; `evidence/C8/preuve-briefing-mistral-2026-10-10.md`). Une seule valeur : le banc C7 reste à passer.
 
 ### 4.2 Ce qui est envoyé au service
 
