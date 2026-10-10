@@ -42,8 +42,9 @@ MAX_TOKENS = 500          # celui du rédacteur
 FOURNISSEURS = ("foundry", "mistral")
 # Prix publics, en dollars par million de jetons (entrée, sortie), avec leur source. Foundry : ressource d'Era, gratuite.
 PRIX_PUBLICS = {
-    "mistral": ((0.5, 1.5), "https://mistral.ai/pricing, lu le 10/10/2026 : « Mistral Large » à 0,5 $ par million de "
-                            "jetons en entrée et 1,5 $ en sortie (la page ne nomme pas la version mistral-large-2512)"),
+    "mistral": ((0.68, 2.09), "https://docs.mistral.ai/models/pricing, lu le 10/10/2026 : Mistral Large 4 "
+                              "(mistral-large-4-0), prix soldé 0,68 $ par million de jetons en entrée et 2,09 $ en "
+                              "sortie ; prix normal 1,36 $ et 4,18 $, aucune date de fin indiquée"),
 }
 MOTS_HAUSSE = ("hausse", "progress", "gagn", "mont", "avanc", "grimp", "bondi", "rebond")
 MOTS_BAISSE = ("baisse", "recul", "perd", "cèd", "ced", "repli", "chut", "décroch", "decroch", "fléch", "flech")

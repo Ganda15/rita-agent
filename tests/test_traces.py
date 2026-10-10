@@ -71,7 +71,7 @@ def test_tracing_desactive_par_variable_meme_avec_cles(monkeypatch):
 
 def test_un_appel_reussi_produit_un_trace_et_une_generation_complete(monkeypatch):
     monkeypatch.setenv("LLM_ORDRE", "mistral")
-    monkeypatch.setenv("MISTRAL_MODEL", "mistral-large-2512")
+    monkeypatch.setenv("MISTRAL_MODEL", "mistral-large-4-0")
     client = _FauxClient()
     with patch("src.traces.client_traces", return_value=client),          patch("src.llm._appel_mistral", return_value="texte du briefing"):
         generer_texte("prompt public")
@@ -85,7 +85,7 @@ def test_un_appel_reussi_produit_un_trace_et_une_generation_complete(monkeypatch
     assert racines[0]["input"] == "prompt public"
     assert len(generations) == 1
     assert generations[0]["name"] == "llm-mistral"
-    assert generations[0]["model"] == "mistral-large-2512"
+    assert generations[0]["model"] == "mistral-large-4-0"
     assert generations[0]["input"] == "prompt public"
     assert generations[0]["metadata"]["fournisseur"] == "mistral"
     sorties = [k for (ev, k) in client.journal if ev == "update" and "output" in k]

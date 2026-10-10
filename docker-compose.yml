@@ -87,7 +87,7 @@ services:
       AZURE_FOUNDRY_API_KEY: ${AZURE_FOUNDRY_API_KEY:-}
       AZURE_FOUNDRY_DEPLOYMENT: ${AZURE_FOUNDRY_DEPLOYMENT:-gpt-5.4-dzs-eu}
       MISTRAL_API_KEY: ${MISTRAL_API_KEY:-}
-      MISTRAL_MODEL: ${MISTRAL_MODEL:-mistral-large-2512}
+      MISTRAL_MODEL: ${MISTRAL_MODEL:-mistral-large-4-0}
       LLM_ORDRE: ${LLM_ORDRE:-foundry,mistral}
       # --- Traçage Langfuse (C11), facultatif ---------------------------------------
       # Audit du 02/10/2026 : rien n'était transmis ici, donc l'API en conteneur (pré-production

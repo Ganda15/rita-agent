@@ -140,9 +140,12 @@ def test_le_banc_compare_les_fournisseurs_approuves_ue():
 
 
 def test_le_prix_de_mistral_est_cite_avec_sa_source():
+    """Prix de Mistral Large 4 (`mistral-large-4-0`), le modèle du code depuis le 10/10/2026, lu sur la grille
+    officielle de la documentation : prix soldé, le prix normal cité à côté."""
     prix, source = banc.PRIX_PUBLICS["mistral"]
-    assert prix == (0.5, 1.5)
-    assert "https://mistral.ai/pricing" in source and "10/10/2026" in source
+    assert prix == (0.68, 2.09)
+    assert "https://docs.mistral.ai/models/pricing" in source and "10/10/2026" in source
+    assert "mistral-large-4-0" in source and "1,36" in source and "4,18" in source
 
 
 def test_le_banc_ne_depend_plus_d_openrouter_pour_ses_prix(tmp_path, monkeypatch):

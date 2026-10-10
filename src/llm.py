@@ -44,7 +44,9 @@ def _modele_prevu(nom: str) -> str:
     return {
         # `gpt-5.4` (Global Standard) a été supprimé le 09/10/2026 : la valeur par défaut vise le déploiement qui existe.
         "foundry": os.getenv("AZURE_FOUNDRY_DEPLOYMENT", "gpt-5.4-dzs-eu"),
-        "mistral": os.getenv("MISTRAL_MODEL", "mistral-large-2512"),
+        # Large 4 plutôt que Large 3 (`mistral-large-2512`) : mesure du 10/10/2026, sans date inventée, même coût à 0,01
+        # centime près (evidence/C8/preuve-briefing-mistral-2026-10-10.md).
+        "mistral": os.getenv("MISTRAL_MODEL", "mistral-large-4-0"),
     }[nom]
 
 
@@ -90,13 +92,16 @@ def _appel_foundry(prompt: str, max_tokens: int) -> Reponse:
 def _appel_mistral(prompt: str, max_tokens: int) -> Reponse:
     """Mistral par son adresse européenne (chat completions, même forme que Foundry), sans SDK.
 
-    `MISTRAL_API_KEY` absente lève `KeyError` : c'est « indisponible », la cascade passe au suivant."""
+    `MISTRAL_API_KEY` absente lève `KeyError` : c'est « indisponible », la cascade passe au suivant.
+    `reasoning_effort: "none"` : Large 4 est un modèle à raisonnement ; sans ce réglage, sa réflexion consommait les
+    500 jetons du rédacteur et il ne rendait aucun texte (mesuré le 10/10/2026)."""
     reponse = httpx.post(
         MISTRAL_URL,
         headers={"Authorization": f"Bearer {os.environ['MISTRAL_API_KEY']}"},
         json={
             "model": _modele_prevu("mistral"),
             "max_tokens": max_tokens,
+            "reasoning_effort": "none",
             "messages": [{"role": "user", "content": prompt}],
         },
         timeout=60.0,
@@ -104,11 +109,23 @@ def _appel_mistral(prompt: str, max_tokens: int) -> Reponse:
     reponse.raise_for_status()
     corps = reponse.json()
     return Reponse(
-        texte=corps["choices"][0]["message"]["content"],
+        texte=_texte_mistral(corps["choices"][0]["message"]["content"]),
         modele=corps.get("model"),
         usage=_usage_openai(corps),
         origine=MISTRAL_HOTE,
     )
+
+
+def _texte_mistral(contenu) -> str:
+    """Le texte d'une réponse Mistral : une chaîne telle quelle ; une liste de blocs (modèle à raisonnement), ses
+    seuls blocs `text`, jamais la réflexion. Sans aucun texte, `ValueError` : la cascade passe au suivant au lieu
+    d'un 500 plus loin dans le garde-fou."""
+    if isinstance(contenu, str):
+        return contenu
+    texte = "".join(b.get("text", "") for b in contenu or [] if isinstance(b, dict) and b.get("type") == "text")
+    if not texte.strip():
+        raise ValueError("Réponse Mistral sans texte (réflexion seule ou vide).")
+    return texte
 
 
 # Les seuls fournisseurs approuvés UE (carte #82). Tout autre nom de `LLM_ORDRE` est ignoré par la cascade.

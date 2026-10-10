@@ -176,16 +176,16 @@ def test_appel_mistral_poste_sur_l_adresse_europeenne_avec_la_cle_et_le_modele(m
 
     def faux_post(url, headers, json, timeout):
         appels.update(url=url, headers=headers, json=json, timeout=timeout)
-        return _ReponseHttp({"model": "mistral-large-2512", "choices": [{"message": {"content": "Paris."}}],
+        return _ReponseHttp({"model": "mistral-large-4-0", "choices": [{"message": {"content": "Paris."}}],
                              "usage": {"prompt_tokens": 14, "completion_tokens": 3}})
 
     monkeypatch.setattr(llm.httpx, "post", faux_post)
     r = llm._appel_mistral("Capitale de la France ?", 50)
     assert appels["url"] == "https://api.eu.mistral.ai/v1/chat/completions"
     assert appels["headers"]["Authorization"] == "Bearer cle-de-test"
-    assert appels["json"]["model"] == "mistral-large-2512" and appels["json"]["max_tokens"] == 50
+    assert appels["json"]["model"] == "mistral-large-4-0" and appels["json"]["max_tokens"] == 50
     assert appels["json"]["messages"] == [{"role": "user", "content": "Capitale de la France ?"}]
-    assert r.texte == "Paris." and r.modele == "mistral-large-2512" and r.usage == {"input": 14, "output": 3}
+    assert r.texte == "Paris." and r.modele == "mistral-large-4-0" and r.usage == {"input": 14, "output": 3}
     assert r.origine == "api.eu.mistral.ai"
 
 
@@ -195,7 +195,7 @@ def test_l_adresse_mistral_ne_se_regle_pas_par_l_environnement(monkeypatch):
     monkeypatch.setenv("MISTRAL_SERVER", "https://api.mistral.ai")
     monkeypatch.setenv("MISTRAL_URL", "https://api.mistral.ai/v1/chat/completions")
     urls = []
-    corps = {"model": "mistral-large-2512", "choices": [{"message": {"content": "ok"}}]}
+    corps = {"model": "mistral-large-4-0", "choices": [{"message": {"content": "ok"}}]}
 
     def faux_post(url, **k):
         urls.append(url)
@@ -216,9 +216,52 @@ def test_appel_mistral_sans_cle_est_une_indisponibilite_pas_une_reponse_vide(mon
 def test_le_modele_mistral_se_regle_par_mistral_model(monkeypatch):
     from src import llm
     monkeypatch.delenv("MISTRAL_MODEL", raising=False)
-    assert llm._modele_prevu("mistral") == "mistral-large-2512"
+    assert llm._modele_prevu("mistral") == "mistral-large-4-0"
     monkeypatch.setenv("MISTRAL_MODEL", "mistral-large-latest")
     assert llm._modele_prevu("mistral") == "mistral-large-latest"
+
+
+# --- Mistral Large 4 sans réflexion (10/10/2026, décision d'Era) ----------------------------------------
+#
+# Mesuré le 10/10 sur MC.PA (evidence/C8/preuve-briefing-mistral-2026-10-10.md) : Large 4 est un modèle à
+# raisonnement. Par défaut il rend une LISTE de blocs (réflexion puis texte) ; avec la limite de 500 jetons du
+# rédacteur, la réflexion consommait tout, aucun texte, et la liste faisait échouer le garde-fou (500 sans repli).
+# Avec `reasoning_effort: "none"` (documentation Mistral), il rend une chaîne : 2,6 et 3,7 s, aucune date inventée.
+
+def test_appel_mistral_demande_une_reponse_sans_reflexion(monkeypatch):
+    from src import llm
+    monkeypatch.setenv("MISTRAL_API_KEY", "cle-de-test")
+    corps_envoyes = []
+
+    def faux_post(url, headers, json, timeout):
+        corps_envoyes.append(json)
+        return _ReponseHttp({"choices": [{"message": {"content": "ok"}}]})
+
+    monkeypatch.setattr(llm.httpx, "post", faux_post)
+    llm._appel_mistral("x", 5)
+    assert corps_envoyes[0]["reasoning_effort"] == "none"
+
+
+def test_une_reponse_mistral_en_blocs_ne_garde_que_le_texte(monkeypatch):
+    """Si la réflexion revient malgré tout (modèle changé par MISTRAL_MODEL), seul le texte final est gardé :
+    la réflexion ne doit jamais arriver dans un briefing."""
+    from src import llm
+    monkeypatch.setenv("MISTRAL_API_KEY", "cle-de-test")
+    blocs = [{"type": "thinking", "thinking": [{"type": "text", "text": "je réfléchis"}]},
+             {"type": "text", "text": "Paris."}]
+    monkeypatch.setattr(llm.httpx, "post", lambda *a, **k: _ReponseHttp({"choices": [{"message": {"content": blocs}}]}))
+    assert llm._appel_mistral("x", 5).texte == "Paris."
+
+
+def test_une_reponse_mistral_sans_texte_est_une_indisponibilite(monkeypatch):
+    """Réflexion seule, coupée par la limite : c'est une panne du fournisseur, pas une réponse. L'erreur fait passer
+    la cascade au suivant, au lieu d'un 500 plus loin dans le garde-fou."""
+    from src import llm
+    monkeypatch.setenv("MISTRAL_API_KEY", "cle-de-test")
+    blocs = [{"type": "thinking", "thinking": [{"type": "text", "text": "je réfléchis encore"}]}]
+    monkeypatch.setattr(llm.httpx, "post", lambda *a, **k: _ReponseHttp({"choices": [{"message": {"content": blocs}}]}))
+    with pytest.raises(ValueError):
+        llm._appel_mistral("x", 5)
 
 
 def test_la_bibliotheque_anthropic_n_est_plus_une_dependance():
