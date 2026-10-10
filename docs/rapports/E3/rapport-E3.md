@@ -7,8 +7,8 @@
 | **Candidat** | Eramalingam Gandakumar |
 | **Formation** | Simplon × Wild Code School, promotion Développeur IA et IA agentique |
 | **Dépôt** | `Ganda15/rita-agent` (privé ; accès du jury par invitation de collaborateur) |
-| **Version** | 1.1, 4 octobre 2026 ; gel et tag `livrable-E3-v1` le 15 octobre 2026 |
-| **Mesures** | toutes datées du 2 au 4 octobre 2026, chacune avec la commande qui la produit ; la première trace complète d'un briefing réel date du 3 octobre, 14 h 48 |
+| **Version** | 1.2, 10 octobre 2026 ; gel et tag `livrable-E3-v1` le 15 octobre 2026 |
+| **Mesures** | datées du 2 au 4 octobre 2026, sauf l'image de base (§ 7.3, 9 octobre), chacune avec la commande qui la produit ; la première trace complète d'un briefing réel date du 3 octobre, 14 h 48 |
 
 ## Lire ce rapport
 
@@ -165,7 +165,7 @@ Le monitorage d'un modèle fourni par API consiste à voir chaque appel : combie
 |---|---|---|---|
 | LangSmith | éditeur sans entité juridique en UE, auto-hébergement réservé au plan Enterprise | oui | non |
 | Langfuse auto-hébergé | aucun | non | non : six composants (web, worker, PostgreSQL, ClickHouse, Redis, S3) sur un serveur de 4 Go déjà occupé |
-| **Langfuse Cloud, région UE** | Langfuse GmbH (Allemagne), groupe ClickHouse | hébergement UE ; une entité américaine figure parmi les sous-traitants du groupe : **à confirmer par la lecture du contrat de traitement** | **oui** |
+| **Langfuse Cloud, région UE** | Langfuse GmbH (Allemagne), groupe ClickHouse | hébergement UE ; une entité américaine figure parmi les sous-traitants du groupe ; contrat relu le 5 octobre : les données restent dans la région choisie sauf si le service l'exige, transferts encadrés par des clauses types ; **vérification propre à RITA incomplète** (registre RGPD, T3) | **oui** |
 
 Le registre RGPD a été mis à jour le 2 octobre : le traitement T3 est actif, l'entité relevée, le transfert noté « à confirmer ». Deux contraintes techniques ont pesé : le SDK Langfuse exporte en OpenTelemetry sur HTTP sans gRPC, or gRPC est refusé par la sécurité du poste de développement (Smart App Control) ; et un auto-hébergement était impossible sur le serveur.
 

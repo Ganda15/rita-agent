@@ -9,6 +9,16 @@
 
 ---
 
+## 2026-10-10 (10 h 30) : E3 v1.2 ; E1 et E3 se contredisaient sur le contrat de Langfuse
+
+**Manque découvert** en traduisant E3 en anglais pour Era : E3 (§ 5.1) disait encore que la présence d'une entité
+américaine parmi les sous-traitants de Langfuse était « à confirmer par la lecture du contrat », alors qu'E1 (§ 7) et le
+registre (T3) disent le contrat relu le 05/10 : données gardées dans la région choisie sauf si le service l'exige,
+transferts encadrés par des clauses types, vérification propre à RITA incomplète. Corrigé dans E3 v1.2 ; version et
+date alignées sur le § 7.3 du 09/10. Toujours 20 pages.
+
+---
+
 ## 2026-10-10 (10 h) : E1 v2.2 avant le gel ; `memory_audit` tranché après le gel
 
 **Manques découverts** en traduisant E1 en anglais pour Era : la date du rapport (4/10) était en retard sur son
