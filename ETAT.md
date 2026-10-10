@@ -139,7 +139,7 @@ C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et u
 | Quand | Quoi |
 |---|---|
 | **06-14/10** (en parallèle du brief) | Era relit E1 et E3 et la colonne « Rédaction » du classeur ; envoi des liens au formateur ; décisions C8.2 et #84 **prises le 09/10** (C8.2 partiel, #84 faite) |
-| **jeudi 15/10** | **gel d'E1 et d'E3** : PR `develop → main`, Definition of Done verte (`scripts/verifier_livrable.py`), tags `livrable-E1-v2` et `livrable-E3-v1`. **Après le gel, plus aucune fonctionnalité nouvelle dans RITA** |
+| **jeudi 15/10** | **gel d'E1 et d'E3** : **d'abord remesurer les tests et propager le chiffre partout** (`pytest --collect-only -q` et la dernière CI : E1 § 2, § 9 et § 10, `README.md`, `CLAUDE.md` ; 835 collectés et 804 verts au matin du 10/10, 836 et 805 depuis `ffe1a46`), régénérer E1 et ses copies ; puis PR `develop → main`, Definition of Done verte (`scripts/verifier_livrable.py`), tags `livrable-E1-v2` et `livrable-E3-v1`. **Après le gel, plus aucune fonctionnalité nouvelle dans RITA** |
 | **15-25/10** | écrire **E4** (15 à 20 pages) et **E5** (2 à 5 pages), finir **E2** (C7) ; les corrections de code d'après le gel seulement si un rapport ou le jury en a besoin, le reste écrit dans « ce qui n'est pas fait » |
 | **à partir du 26/10** | examens blancs ; **passer l'oral d'E1 et d'E3 en français** en premier (oral blanc des 29-30/10) |
 | **05/11** | tous les livrables tagués et envoyés |
