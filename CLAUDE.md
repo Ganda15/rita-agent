@@ -69,19 +69,19 @@ bigdata/    PySpark + Parquet — 11 partitions, 10 ans
 db/         schema.sql · requetes.sql · registre RGPD · importer.py
 docs/       rapports/ (un dossier par épreuve) · veille/ (C6)
 evals/      mesure des garde-fous — porte de qualité de la CI
-evidence/   preuves par compétence : C1/ … C5/
+evidence/   preuves par compétence : C1/ … C21/
 graph/      LangGraph — état + workflow
-guardrails/ garde-fou injection de prompt
+guardrails/ trois garde-fous : entrée, injection indirecte, sortie
 pipelines/  ingestion (ingest.py)
 scripts/    planification de la collecte
 sources/    les 5 types de sources C1
 src/        appel du modèle (llm.py)
-tests/      pytest — 30 fichiers
+tests/      pytest : 61 fichiers
 ```
 
 ## Chiffres à ne jamais réinventer : les vérifier avant de les citer
 
-**835** tests collectés (10/10) · **10** tables · **1** vue · **19** objets d'index (8 explicites) · **12** contraintes `CHECK` ·
+**836** tests collectés (10/10) · **10** tables · **1** vue · **19** objets d'index (8 explicites) · **12** contraintes `CHECK` ·
 **273 608** lignes importées en juillet, **278 473** cotations au 02/10 · **111** valeurs · **112** alias ·
 **7** positions · **11** partitions Parquet · OpenAPI **3.1.0** · **14** chemins documentés, dont **11** de données
 

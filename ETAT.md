@@ -1556,6 +1556,9 @@ fabriquée, donc irrecevable pour C6.
 
 ---
 
+> 📸 **Photographie historique au 03/10/2026 : ne pas utiliser comme état courant.** Les trois sections suivantes
+> (livrables, compétences, manques) décrivent le 3 octobre ; l'état du jour est en tête de ce fichier.
+
 ## Les 5 livrables
 
 | Épreuve | Compét. | État | Tag Git |
@@ -1566,7 +1569,7 @@ fabriquée, donc irrecevable pour C6.
 | **E4** — Application | C14–C19 | 🔨 **recompté le 03/10 : 27 ✅ 9 ⚠️ 0 ❌ après T3** (`docs/rapports/E4/recomptage-criteres-2026-10-03.md` ; 23/13/0 au 26/09, C18 à 6/6 le 03/10) ; rapport 0 page ; écran 2 sans récit utilisateur (#24), RGAA non outillé (#25) ; gel le 25/10 | `livrable-E4-v1` le 25/10 |
 | **E5** — Monitorage | C20–C21 | 🔨 C20 : fraîcheur, `request_id`, journal `mcp_calls`, chaîne d'alerte exécutée une fois ; C21 : 6 post-mortems, INC-005 et INC-006 ; rapport 0 page ; aucune alerte réelle encore partie ; dû le 05/11 | — |
 
-## Ce qui existe vraiment, compétence par compétence
+## Ce qui existait au 03/10/2026, compétence par compétence
 
 | C | Fait | Manque |
 |---|---|---|

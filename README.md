@@ -26,7 +26,7 @@ Simplon & Wild Code School · Eramalingam GANDAKUMAR · ganda70@gmail.com · 202
 | **E1** : Données | C1–C5 | ✅ **livré** le 13/08 (26 critères / 28). **Version 2 rédigée le 03/10**, gel et tag `livrable-E1-v2` le **15/10** : dates de l'archive en date locale (INC-005), 10 tables, FRED stockée, vue sans taux supposé, clôture des positions, traçage UE, étape `ecb` en échec déclaré, 836 tests collectés (10/10) | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) (v2.2, 5 pages) · [preuves C1 à C5](evidence/) | **[`livrable-E1-v1`](https://github.com/Ganda15/rita-agent/tree/livrable-E1-v1)** |
 | **E2** : Veille & services IA | C6–C8 | 🟡 **le plus en retard**. C6 : protocole, 4 notes (S33 à S36) et leur synthèse PDF, un partage sans capture, S37 à S40 sans note ; C7 : **première comparaison mesurée le 03/10** (GPT-5.4 par Azure contre Claude par OpenRouter, 30 appels chacun, `evidence/C7/`), banc Azure contre Mistral Large 4 après le gel ; C8 : Azure en zone UE depuis le 09/10, OpenRouter en secours sur `develop`, Mistral Large 4 sur la branche `mistral-ue`, remise non prouvée (#43). Rapport : v0.3 du 09/10 (`docs/rapports/E2/`), partie C7 à écrire, dû le 05/11 | [docs/veille/](docs/veille/) · [evidence/C6/](evidence/C6/) | aucun |
 | **E3** : API modèle & MLOps | C9–C13 | 🔨 **proche du gel** (15/10). API du modèle, garde-fous mesurés, 836 tests collectés (10/10), CI avec portes d'évaluation, traces et tableau de bord Langfuse, chaîne d'alerte, journal des appels MCP. Rapport v1.3 en relecture | [rapport-E3.pdf](docs/rapports/E3/rapport-E3.pdf) (v1.3, 20 pages) · [evidence/C11/](evidence/C11/) · [evidence/C12/](evidence/C12/) | aucun |
-| **E4** : Application | C14–C19 | 🔨 **25 critères / 36** au recomptage du 03/10 (11 partiels) : 3 écrans, spécifications et schémas, pré-production Docker, intégration continue, `main` protégée par pull request et tests verts. Rapport : 0 page, gel le 25/10 | [evidence/C14/](evidence/C14/) · [evidence/C15/](evidence/C15/) · [evidence/C19/](evidence/C19/) | aucun |
+| **E4** : Application | C14–C19 | 🔨 **27 critères / 36** au recomptage du 03/10 (9 partiels) : 3 écrans, spécifications et schémas, pré-production Docker, intégration continue, `main` protégée par pull request et tests verts. Rapport : 0 page, gel le 25/10 | [evidence/C14/](evidence/C14/) · [evidence/C15/](evidence/C15/) · [evidence/C19/](evidence/C19/) | aucun |
 | **E5** : Monitorage | C20–C21 | 🔨 **en construction** : jauge de fraîcheur, identifiant de requête dans journal et traces, alerte vers une issue, manifeste de collecte, journal des appels MCP ; 7 post-mortems d'incidents (INC-001 à INC-007). Rapport : 0 page, dû le 05/11 | [evidence/C20/](evidence/C20/) · [evidence/C21/](evidence/C21/) | aucun |
 
 *Les 2 critères restants d'E1 (C1#6, C3#2) demandent un accès au dépôt Git — ils sont
@@ -94,10 +94,10 @@ rita-agent/
 │   ├── rapports/ # un dossier par épreuve (E1/, E3/, …)
 │   └── veille/   # une note par semaine (C6)
 ├── evals/        # mesure des garde-fous — porte de qualité de la CI
-├── evidence/     # preuves par compétence : C1/ … C5/
+├── evidence/     # preuves par compétence : C1/ … C21/
 ├── frontend/     # interface web : trois écrans (C10, E4)
 ├── graph/        # LangGraph — état + workflow
-├── guardrails/   # garde-fou injection de prompt
+├── guardrails/   # trois garde-fous : entrée, injection indirecte, sortie
 ├── pipelines/    # ingestion
 ├── scripts/      # planification de la collecte
 ├── sources/      # les 5 types de sources C1
@@ -136,7 +136,7 @@ Si la création d'environnement virtuel est bloquée par une politique de sécur
 python -m pytest -q
 ```
 
-> **Dernière exécution vérifiée : 832 réussis, 2 ignorés, 2 échecs attendus sur 836 collectés, en 76,4 s** (Python 3.14.6, Windows, 10/10/2026).
+> **Dernière exécution vérifiée : 832 réussis, 2 ignorés, 2 échecs attendus sur 836 collectés** (Python 3.14.6, Windows, 10/10/2026).
 > Les tests d'intégration PySpark de `tests/test_spark.py` sont **ignorés** — et non en
 > échec — si aucun JDK 21 n'est présent dans `JAVA_HOME`.
 
@@ -144,5 +144,5 @@ python -m pytest -q
 
 Le registre des traitements est dans
 [db/RGPD-registre-des-traitements.md](db/RGPD-registre-des-traitements.md).
-La purge des données personnelles est écrite et testée ([db/rgpd_purge.py](db/rgpd_purge.py)), lancée à la main : sa
+La purge des données personnelles est écrite et testée ([db/rgpd_purge.py](db/rgpd_purge.py)), déclenchable manuellement : sa
 planification reste à faire (registre RGPD, § 5, point 3).

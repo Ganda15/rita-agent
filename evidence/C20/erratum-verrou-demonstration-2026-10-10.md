@@ -50,8 +50,7 @@ Des positions inventées sur des sociétés réellement cotées ; Era déclare l
 
 ## 📖 Glossaire
 
-- **Verrou de démonstration** : contrôle de la passerelle MCP qui ne rend le portefeuille que si les positions servies
-  sont exactement le jeu d'exemple du dépôt ; son implémentation actuelle ne compare que les couples (ticker, quantité),
+- **Verrou de démonstration** : contrôle de la passerelle MCP destiné à ne servir que le jeu d'exemple du dépôt ; son implémentation actuelle ne compare que les couples (ticker, quantité),
   sous forme d'ensemble.
 - **Échouer fermé** : en cas de doute, refuser plutôt que laisser passer.
 - **Univers** : les 111 valeurs suivies par RITA ; une position hors univers ne peut pas entrer en base.
