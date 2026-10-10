@@ -24,7 +24,7 @@ réponse de l'API archivée le 3 octobre (`evidence/C17/mesures-2026-10-03/entre
 | Lignes du fichier d'exemple absentes de la base | 3 |
 | Le verrou accepte-t-il cette base ? | **non** (`False`) |
 
-**Cause** : l'import des positions (`db/importer.py:186-200`, `importer_positions`) écarte une ligne dont le ticker
+**Cause** : l'import des positions (`db/importer.py:191-200`, `importer_positions`) écarte une ligne dont le ticker
 n'est ni dans la table `valeur` ni retrouvé par un alias, et trois lignes du fichier d'exemple sont dans ce cas. Le verrou, lui, compare dans les deux sens à toutes les
 lignes gardées par le lecteur (10). Les deux ne filtrent pas les positions de la même façon.
 
