@@ -125,6 +125,13 @@ deux incomplets : articles des 02 et 03/09 perdus, et **aucun taux BCE le 03/09*
 (`--etapes ecb --du 2026-09-03 --au 2026-09-03` : 4 lues, 5 écrites). E1 § 3 le dit, toujours 5 pages. Preuve :
 `evidence/C1/preuve-soirs-coupes-verifies-2026-10-10.md`. Le rôle `rita_lecture` n'a ni mot de passe ni
 `RITA_DSN_LECTURE` sur le poste : un agent ne peut pas lire la base comme le prévoit `AGENTS.md` (après le gel).
+Enfin, **audit de propagation** demandé par Era (règle : tout changement se cherche partout, pas seulement dans le
+PDF) : chaque fait changé les 09 et 10/10 cherché par son ancienne valeur dans tout le dépôt. Jumeaux corrigés :
+`docs/CI-CD.md` (quatre dépendances épinglées, cinq en vrai), `README.md` (742 et 700 tests, E1 v2.0, E3 v0.1 :
+835 tests, E1 v2.2, E3 v1.2), `docs/PLAN-12-SEMAINES.md` (contrat Langfuse « à confirmer »), `CLAUDE.md` (835 tests
+collectés), le classeur v4 (memory_audit « décision en attente », quatre fichiers), `Dockerfile.tests` (encore
+Docker Hub : test d'abord, rouge, vert, mutation). Code gelé laissé tel quel et inscrit sur #82 : `src/llm.py:39`
+(déploiement par défaut `gpt-5.4`, supprimé le 09/10), `src/llm.py:79` et `tests/test_llm.py:109` (« Global Standard »).
 
 **📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.2, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :
@@ -454,7 +461,7 @@ par commande) :
 3. `request_id` : middleware, journal, identifiant de trace (2 à 3 h)
 4. C11 visible : variables transmises au conteneur, spans `scout`, `rag`, garde-fous, tableau « RITA C11 », 2 alertes vers une issue GitHub, `evidence/C11/`, INC-006 (6 à 9 h)
 5. Enveloppe `<donnees_externes>` branchée, tests de seuil de l'entrée, cas Giskard rejoués, test de l'ordre des nœuds (2 à 2,5 h)
-6. `memory_audit` : écrire ou retirer (0,5 h ou 2 à 3 h)
+6. `memory_audit` : écrire ou retirer (0,5 h ou 2 à 3 h) ; **tranché le 10/10 : décision après le gel (#86)**
 7. Dossiers de preuves C9, C12, C13, C18 depuis les exécutions existantes de la CI (2 à 3 h)
 8. Rapport E3 (6 à 10 h)
 9. Hygiène : `README.md`, `CLAUDE.md`, commentaire de `test.yml`, `requirements.txt` épinglé, 422 pour ticker inconnu, retour arrière, tag `livrable-E1-v2` puis `livrable-E3-v1` (7 à 10 h)

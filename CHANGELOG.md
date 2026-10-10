@@ -9,6 +9,21 @@
 
 ---
 
+## 2026-10-10 (soir) : audit de propagation, les jumeaux restés faux après les corrections du jour
+
+**Décision structurante (règle d'Era)** : tout changement se propage partout où le même fait apparaît, pas seulement
+dans le rapport corrigé ; on cherche l'ancienne valeur dans tout le dépôt avant de dire « fait ». `evidence/`, les
+entrées passées de ce journal et les journaux ne se réécrivent pas.
+
+**Manques découverts** en appliquant la règle aux changements des 09 et 10/10 : `docs/CI-CD.md` comptait encore quatre
+dépendances épinglées ; `README.md` annonçait 742 et 700 tests, E1 v2.0 et E3 v0.1 ; le plan des 12 semaines disait
+le contrat de Langfuse « à confirmer » ; le classeur disait la décision sur `memory_audit` « en attente » ;
+`Dockerfile.tests` tirait encore son image de Docker Hub (aligné test d'abord). Dans le code gelé, le déploiement Azure
+par défaut de `src/llm.py` vise toujours `gpt-5.4`, supprimé le 09/10 : le poste marche parce que son environnement
+fixe `gpt-5.4-dzs-eu` ; inscrit sur #82 pour l'après-gel, avec deux commentaires « Global Standard ».
+
+---
+
 ## 2026-10-10 (15 h) : les 7 soirs de collecte coupés n'étaient pas tous rattrapés ; taux BCE du 03/09 récupéré
 
 **Manque découvert** en relisant E1 avec Era : § 3 disait les 7 collectes interrompues par l'arrêt du poste « rattrapées

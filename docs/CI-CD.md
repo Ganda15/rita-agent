@@ -155,7 +155,7 @@ Trois choses qu'on ne fait jamais pour « que ça passe » : désactiver un test
 
 Seize tests Spark et douze tests sur la base réelle se sautent en CI (pas de JDK, pas de `DATABASE_URL`). Pas de cache
 `pip`, pas de filtre de chemin, une seule version de Python testée (3.13 ; le poste est en 3.14). Pas de rapport de
-couverture conservé comme artefact. `requirements.txt` n'est épinglé que pour quatre dépendances. La publication sur tag
+couverture conservé comme artefact. `requirements.txt` n'est épinglé que pour cinq dépendances (`feedparser`, `chromadb`, `rank-bm25`, `langfuse`, `pyspark`). La publication sur tag
 n'a encore jamais tourné : le premier tag après ce fichier sera `livrable-E1-v2`, le 15/10/2026. Aucun déploiement
 automatique sur le serveur : la copie Hetzner se met à jour à la main.
 
