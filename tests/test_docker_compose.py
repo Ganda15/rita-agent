@@ -121,3 +121,23 @@ def test_le_tracage_en_conteneur_peut_etre_coupe_sans_toucher_aux_cles(compose):
     couper le traçage du conteneur : c'est l'interrupteur que `src/traces.py` lit déjà."""
     env = compose["services"]["api"].get("environment") or {}
     assert str(env.get("LANGFUSE_TRACING_ENABLED", "")).startswith("${LANGFUSE_TRACING_ENABLED")
+
+
+def test_l_api_en_conteneur_recoit_les_fournisseurs_approuves_ue(compose):
+    """Carte #82 (10/10/2026) : la cascade du conteneur est celle du code, Azure en Data Zone EU puis Mistral par son
+    adresse européenne. Jusqu'ici le conteneur ne recevait que les clés d'Anthropic et d'OpenRouter, ordre
+    `anthropic,openrouter` par défaut : sans garantie de région, et sans Azure."""
+    env = compose["services"]["api"].get("environment") or {}
+    for nom in ("AZURE_FOUNDRY_ENDPOINT", "AZURE_FOUNDRY_API_KEY", "AZURE_FOUNDRY_DEPLOYMENT", "MISTRAL_API_KEY", "MISTRAL_MODEL"):
+        assert nom in env, f"{nom} absente du service api"
+    assert "ANTHROPIC_API_KEY" not in env and "OPENROUTER_API_KEY" not in env
+    ordre = str(env.get("LLM_ORDRE", ""))
+    assert ordre.startswith("${LLM_ORDRE") and ordre.rstrip("}").endswith(":-foundry,mistral"), ordre
+
+
+def test_aucune_cle_de_modele_n_est_ecrite_dans_compose(compose):
+    env = compose["services"]["api"].get("environment") or {}
+    for nom in ("AZURE_FOUNDRY_API_KEY", "MISTRAL_API_KEY"):
+        valeur = str(env.get(nom, ""))
+        assert valeur.startswith("${" + nom), f"{nom} doit être interpolée depuis l'environnement, pas écrite"
+        assert valeur.rstrip("}").endswith(":-"), f"{nom} doit avoir une valeur par défaut VIDE : {valeur}"

@@ -37,7 +37,14 @@ from guardrails.sortie import verifier_sortie
 
 CHAMPS_CAS = ("ticker", "price", "change_pct", "adtv20", "currency", "fraicheur_jours", "cotation_perimee", "passages")
 MAX_TOKENS = 500          # celui du rédacteur
-FOURNISSEURS = ("foundry", "anthropic", "openrouter")
+# Carte #82 (10/10/2026) : les fournisseurs approuvés UE de `src/llm.py`. Les appels OpenRouter du 03/10 restent dans
+# `evidence/C7/` comme mesure datée ; le banc relit toujours ces lignes, il ne les produit plus.
+FOURNISSEURS = ("foundry", "mistral")
+# Prix publics, en dollars par million de jetons (entrée, sortie), avec leur source. Foundry : ressource d'Era, gratuite.
+PRIX_PUBLICS = {
+    "mistral": ((0.5, 1.5), "https://mistral.ai/pricing, lu le 10/10/2026 : « Mistral Large » à 0,5 $ par million de "
+                            "jetons en entrée et 1,5 $ en sortie (la page ne nomme pas la version mistral-large-2512)"),
+}
 MOTS_HAUSSE = ("hausse", "progress", "gagn", "mont", "avanc", "grimp", "bondi", "rebond")
 MOTS_BAISSE = ("baisse", "recul", "perd", "cèd", "ced", "repli", "chut", "décroch", "decroch", "fléch", "flech")
 
@@ -290,13 +297,8 @@ def main(argv: list[str] | None = None) -> int:
     if not a.jeu:
         p.error("--jeu ou --construire")
     jeu = charger_jeu(a.jeu)
-    from src.llm import _modele_prevu
-    prix: dict[str, tuple[float, float]] = {}
-    sources_prix: dict[str, str] = {}
-    po, source = prix_openrouter(_modele_prevu("openrouter"))
-    if po:
-        prix["openrouter"] = po
-    sources_prix["openrouter"] = source
+    prix: dict[str, tuple[float, float]] = {nom: p for nom, (p, _) in PRIX_PUBLICS.items()}
+    sources_prix: dict[str, str] = {nom: s for nom, (_, s) in PRIX_PUBLICS.items()}
     fournisseurs = [f.strip() for f in a.fournisseurs.split(",") if f.strip()]
     chemin_brut = dossier / f"resultats-{date}.jsonl"
     with open(chemin_brut, "a", encoding="utf-8") as f:

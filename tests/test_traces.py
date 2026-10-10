@@ -54,8 +54,8 @@ def test_sans_cles_le_client_est_absent():
 
 
 def test_sans_cles_generer_texte_fonctionne_normalement(monkeypatch):
-    monkeypatch.setenv("LLM_ORDRE", "anthropic")
-    with patch("src.llm._appel_anthropic", return_value="ok"):
+    monkeypatch.setenv("LLM_ORDRE", "mistral")
+    with patch("src.llm._appel_mistral", return_value="ok"):
         assert generer_texte("prompt") == "ok"
 
 
@@ -70,10 +70,10 @@ def test_tracing_desactive_par_variable_meme_avec_cles(monkeypatch):
 # --- avec un client : une génération par tentative --------------------------
 
 def test_un_appel_reussi_produit_un_trace_et_une_generation_complete(monkeypatch):
-    monkeypatch.setenv("LLM_ORDRE", "anthropic")
-    monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-5")
+    monkeypatch.setenv("LLM_ORDRE", "mistral")
+    monkeypatch.setenv("MISTRAL_MODEL", "mistral-large-2512")
     client = _FauxClient()
-    with patch("src.traces.client_traces", return_value=client),          patch("src.llm._appel_anthropic", return_value="texte du briefing"):
+    with patch("src.traces.client_traces", return_value=client),          patch("src.llm._appel_mistral", return_value="texte du briefing"):
         generer_texte("prompt public")
 
     ouvertures = [k for (ev, k) in client.journal if ev == "ouvre"]
@@ -84,27 +84,27 @@ def test_un_appel_reussi_produit_un_trace_et_une_generation_complete(monkeypatch
     assert [r["name"] for r in racines] == ["briefing-llm"]
     assert racines[0]["input"] == "prompt public"
     assert len(generations) == 1
-    assert generations[0]["name"] == "llm-anthropic"
-    assert generations[0]["model"] == "claude-sonnet-5"
+    assert generations[0]["name"] == "llm-mistral"
+    assert generations[0]["model"] == "mistral-large-2512"
     assert generations[0]["input"] == "prompt public"
-    assert generations[0]["metadata"]["fournisseur"] == "anthropic"
+    assert generations[0]["metadata"]["fournisseur"] == "mistral"
     sorties = [k for (ev, k) in client.journal if ev == "update" and "output" in k]
     assert [s["output"] for s in sorties] == ["texte du briefing", "texte du briefing"]  # génération puis racine
     assert client.flushs == 1
 
 
 def test_une_cascade_produit_une_generation_par_tentative_avec_l_echec_marque(monkeypatch):
-    monkeypatch.setenv("LLM_ORDRE", "foundry,anthropic")
+    monkeypatch.setenv("LLM_ORDRE", "foundry,mistral")
     client = _FauxClient()
     with patch("src.traces.client_traces", return_value=client), \
          patch("src.llm._appel_foundry", side_effect=RuntimeError("quota")), \
-         patch("src.llm._appel_anthropic", return_value="ok"):
+         patch("src.llm._appel_mistral", return_value="ok"):
         generer_texte("prompt")
 
     ouvertures = [k for (ev, k) in client.journal if ev == "ouvre"]
     generations = [k for k in ouvertures if k["as_type"] == "generation"]
-    assert [g["name"] for g in generations] == ["llm-foundry", "llm-anthropic"]
-    assert [g["metadata"]["fournisseur"] for g in generations] == ["foundry", "anthropic"]
+    assert [g["name"] for g in generations] == ["llm-foundry", "llm-mistral"]
+    assert [g["metadata"]["fournisseur"] for g in generations] == ["foundry", "mistral"]
     assert sum(1 for k in ouvertures if k["as_type"] == "span") == 1
     erreurs = [k for (ev, k) in client.journal if ev == "update" and k.get("level") == "ERROR"]
     assert len(erreurs) == 1
@@ -112,12 +112,12 @@ def test_une_cascade_produit_une_generation_par_tentative_avec_l_echec_marque(mo
 
 
 def test_l_usage_en_tokens_est_transmis_quand_le_fournisseur_le_donne(monkeypatch):
-    monkeypatch.setenv("LLM_ORDRE", "anthropic")
+    monkeypatch.setenv("LLM_ORDRE", "mistral")
     client = _FauxClient()
     reponse = traces.Reponse(texte="ok", modele="claude-sonnet-5",
                             usage={"input": 120, "output": 45})
     with patch("src.traces.client_traces", return_value=client), \
-         patch("src.llm._appel_anthropic", return_value=reponse):
+         patch("src.llm._appel_mistral", return_value=reponse):
         assert generer_texte("prompt") == "ok"
 
     mises_a_jour = [k for (ev, k) in client.journal if ev == "update"]
@@ -125,10 +125,10 @@ def test_l_usage_en_tokens_est_transmis_quand_le_fournisseur_le_donne(monkeypatc
 
 
 def test_la_trace_ne_porte_aucune_cle_d_api(monkeypatch):
-    monkeypatch.setenv("LLM_ORDRE", "anthropic")
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-SECRET")
+    monkeypatch.setenv("LLM_ORDRE", "mistral")
+    monkeypatch.setenv("MISTRAL_API_KEY", "mistral-SECRET-cle")
     client = _FauxClient()
     with patch("src.traces.client_traces", return_value=client), \
-         patch("src.llm._appel_anthropic", return_value="ok"):
+         patch("src.llm._appel_mistral", return_value="ok"):
         generer_texte("prompt")
-    assert "sk-ant-SECRET" not in repr(client.journal)
+    assert "mistral-SECRET-cle" not in repr(client.journal)

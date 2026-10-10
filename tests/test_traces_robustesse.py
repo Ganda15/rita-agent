@@ -92,10 +92,10 @@ def test_une_panne_de_langfuse_ne_fait_pas_tomber_le_briefing(casse, caplog):
 
 @pytest.mark.parametrize("casse", ["flush", "ouverture", "update"])
 def test_une_panne_de_langfuse_ne_fait_pas_tomber_generer_texte(casse, monkeypatch, caplog):
-    monkeypatch.setenv("LLM_ORDRE", "anthropic")
-    with patch.object(traces, "client_traces", return_value=_ClientCasse(casse)),          patch("src.llm._appel_anthropic", return_value="ok anthropic"),          caplog.at_level(logging.WARNING, logger="src.traces"):
+    monkeypatch.setenv("LLM_ORDRE", "mistral")
+    with patch.object(traces, "client_traces", return_value=_ClientCasse(casse)),          patch("src.llm._appel_mistral", return_value="ok mistral"),          caplog.at_level(logging.WARNING, logger="src.traces"):
         texte = generer_texte("prompt test")
-    assert texte == "ok anthropic"
+    assert texte == "ok mistral"
     assert any(r.levelno == logging.WARNING for r in caplog.records)
 
 

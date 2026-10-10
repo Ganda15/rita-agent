@@ -79,9 +79,16 @@ services:
       # ⚠️ OBLIGATOIRE. L'API refuse de démarrer sans elle (OWASP API2). Elle est
       # lue depuis le `.env` de la machine, JAMAIS écrite ici.
       RITA_API_KEY: ${RITA_API_KEY:?RITA_API_KEY absente - la definir dans .env}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
-      LLM_ORDRE: ${LLM_ORDRE:-anthropic,openrouter}
+      # --- Modèle de langage (carte #82) : fournisseurs approuvés UE seulement -------------
+      # Azure AI Foundry en Data Zone Standard EU, puis Mistral par son adresse européenne
+      # (écrite dans src/llm.py). Clés lues dans l'environnement de la machine, jamais écrites
+      # ici ; vides par défaut : sans clé, un fournisseur est « indisponible » et la cascade passe.
+      AZURE_FOUNDRY_ENDPOINT: ${AZURE_FOUNDRY_ENDPOINT:-}
+      AZURE_FOUNDRY_API_KEY: ${AZURE_FOUNDRY_API_KEY:-}
+      AZURE_FOUNDRY_DEPLOYMENT: ${AZURE_FOUNDRY_DEPLOYMENT:-gpt-5.4-dzs-eu}
+      MISTRAL_API_KEY: ${MISTRAL_API_KEY:-}
+      MISTRAL_MODEL: ${MISTRAL_MODEL:-mistral-large-2512}
+      LLM_ORDRE: ${LLM_ORDRE:-foundry,mistral}
       # --- Traçage Langfuse (C11), facultatif ---------------------------------------
       # Audit du 02/10/2026 : rien n'était transmis ici, donc l'API en conteneur (pré-production
       # et serveur) servait des briefings que Langfuse ne voyait jamais. Les clés se lisent

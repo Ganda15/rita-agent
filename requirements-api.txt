@@ -24,7 +24,6 @@ uvicorn[standard]==0.40.0
 python-dotenv==1.2.2
 psycopg2-binary==2.9.12
 httpx==0.28.1
-anthropic==0.120.0
 langgraph==1.2.9
 feedparser==6.0.14
 pandas==3.0.3

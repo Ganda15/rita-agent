@@ -128,3 +128,40 @@ def test_main_mesure_depuis_un_jeu_fige_avec_des_appels_injectes(monkeypatch, tm
     assert code == 0
     assert list(tmp_path.glob("resultats-*.jsonl")) and list(tmp_path.glob("resume-*.json"))
     assert os.environ.get("LANGFUSE_TRACING_ENABLED") == "false"
+
+
+# --- Carte #82 (10/10/2026) : le banc compare les fournisseurs approuvés UE ------------------------------------
+#
+# Anthropic et OpenRouter sont retirés de `src/llm.py`. Les 120 appels OpenRouter du 03/10 restent dans
+# `evidence/C7/` comme mesure datée ; le banc relit toujours ces lignes, mais n'appelle plus que Foundry et Mistral.
+
+def test_le_banc_compare_les_fournisseurs_approuves_ue():
+    assert banc.FOURNISSEURS == ("foundry", "mistral")
+
+
+def test_le_prix_de_mistral_est_cite_avec_sa_source():
+    prix, source = banc.PRIX_PUBLICS["mistral"]
+    assert prix == (0.5, 1.5)
+    assert "https://mistral.ai/pricing" in source and "10/10/2026" in source
+
+
+def test_le_banc_ne_depend_plus_d_openrouter_pour_ses_prix(tmp_path, monkeypatch):
+    """`main` ne lit plus le catalogue d'OpenRouter : il le faisait pour `_modele_prevu("openrouter")`, qui n'existe plus."""
+    chemin = tmp_path / "jeu.json"
+    chemin.write_text(json.dumps({"fige_le": "2026-10-03", "cas": [CAS]}), encoding="utf-8")
+
+    def interdit(modele):
+        raise AssertionError("le catalogue d'OpenRouter ne doit plus être lu")
+
+    monkeypatch.setattr(banc, "prix_openrouter", interdit)
+
+    class _Rep:
+        texte, usage, modele = "LVMH clôture à 378,55 EUR, en baisse.", {"input": 10, "output": 5}, "m"
+
+    monkeypatch.setattr(banc, "appel_reel", lambda nom, prompt, max_tokens: _Rep())
+    code = banc.main(["--jeu", str(chemin), "--repetitions", "1", "--plafond", "1", "--sortie", str(tmp_path),
+                      "--fournisseurs", "mistral"])
+    assert code == 0
+    lignes = [json.loads(l) for f in tmp_path.glob("resultats-*.jsonl") for l in f.read_text(encoding="utf-8").splitlines()]
+    assert lignes and all(l["fournisseur"] == "mistral" for l in lignes)
+    assert all(l["cout_usd"] > 0 for l in lignes), "le prix public de Mistral doit servir au coût"

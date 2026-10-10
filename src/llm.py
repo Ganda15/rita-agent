@@ -1,9 +1,12 @@
-"""Appel au modèle, 3 fournisseurs en cascade (Foundry → Anthropic → OpenRouter).
+"""Appel au modèle, cascade de fournisseurs approuvés UE (Foundry → Mistral).
 
 Depuis le 03/10/2026, Azure AI Foundry sert un point de terminaison **compatible OpenAI**
-(`.../openai/v1`, déploiement `gpt-5.4`, ressource d'Era, gratuite pour lui) : un modèle d'un
-autre éditeur que Claude, ce qui donne au banc C7 une vraie comparaison. Anthropic en direct et
-OpenRouter servent Claude.
+(`.../openai/v1`, ressource d'Era, gratuite pour lui). Depuis le 09/10/2026, le déploiement est
+`gpt-5.4-dzs-eu` : même modèle `gpt-5.4`, en Data Zone Standard EU.
+
+Carte #82, règle « UE seule » d'Era : les replis Anthropic et OpenRouter, sans garantie de région,
+sont retirés. Le repli est Mistral, par son adresse européenne, écrite ici et non dans un réglage.
+Un nom inconnu dans `LLM_ORDRE` (dont `anthropic` ou `openrouter`) est ignoré avec un avertissement.
 
 Depuis le 02/10/2026, chaque tentative est tracée dans Langfuse (`src/traces.py`, C11,
 carte #39) : fournisseur, modèle, prompt, sortie, usage en tokens, et l'erreur quand un
@@ -14,18 +17,21 @@ import os
 import sys
 
 import httpx
-from anthropic import Anthropic
 
 from src import traces
 from src.traces import Reponse
 
 logger = logging.getLogger(__name__)
 
-OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+# Adresse européenne de Mistral, écrite dans le code (carte #82) : une variable mal posée ne peut pas envoyer la
+# cascade hors de l'UE. Mistral ne renvoie aucun en-tête de région (sonde du 10/10/2026) : l'origine notée est
+# l'adresse appelée, et le lieu de traitement se prouve par son contrat.
+MISTRAL_HOTE = "api.eu.mistral.ai"
+MISTRAL_URL = f"https://{MISTRAL_HOTE}/v1/chat/completions"
 
 
 def _ordre_fournisseurs() -> list[str]:
-    ordre = os.getenv("LLM_ORDRE", "foundry,anthropic,openrouter")
+    ordre = os.getenv("LLM_ORDRE", "foundry,mistral")
     return [nom.strip() for nom in ordre.split(",") if nom.strip()]
 
 
@@ -36,21 +42,22 @@ def _modele_prevu(nom: str) -> str:
     fin par `Reponse.modele`.
     """
     return {
-        "foundry": os.getenv("AZURE_FOUNDRY_DEPLOYMENT", "gpt-5.4"),
-        "anthropic": os.getenv("ANTHROPIC_MODEL", "claude-sonnet-5"),
-        "openrouter": os.getenv("OPENROUTER_MODEL", "anthropic/claude-sonnet-4.5"),
+        # `gpt-5.4` (Global Standard) a été supprimé le 09/10/2026 : la valeur par défaut vise le déploiement qui existe.
+        "foundry": os.getenv("AZURE_FOUNDRY_DEPLOYMENT", "gpt-5.4-dzs-eu"),
+        "mistral": os.getenv("MISTRAL_MODEL", "mistral-large-2512"),
     }[nom]
 
 
-def _usage_anthropic(reponse) -> dict | None:
-    usage = getattr(reponse, "usage", None)
-    if usage is None:
+def _usage_openai(corps: dict) -> dict | None:
+    """L'usage en tokens d'une réponse au format chat completions (Foundry et Mistral)."""
+    usage = corps.get("usage") or {}
+    if not usage:
         return None
-    return {"input": getattr(usage, "input_tokens", 0), "output": getattr(usage, "output_tokens", 0)}
+    return {"input": usage.get("prompt_tokens", 0), "output": usage.get("completion_tokens", 0)}
 
 
 def _appel_foundry(prompt: str, max_tokens: int) -> Reponse:
-    """Azure AI Foundry par son point compatible OpenAI (chat completions), comme OpenRouter.
+    """Azure AI Foundry par son point compatible OpenAI (chat completions), comme Mistral.
 
     `AZURE_FOUNDRY_ENDPOINT` se termine par `/openai/v1` ; le déploiement sert de nom de modèle.
     Une variable absente lève `KeyError` : c'est « indisponible », la cascade passe au suivant.
@@ -70,35 +77,25 @@ def _appel_foundry(prompt: str, max_tokens: int) -> Reponse:
     )
     reponse.raise_for_status()
     corps = reponse.json()
-    usage = corps.get("usage") or {}
     return Reponse(
         texte=corps["choices"][0]["message"]["content"],
         modele=corps.get("model"),
-        usage={"input": usage.get("prompt_tokens", 0), "output": usage.get("completion_tokens", 0)}
-        if usage else None,
-        # Un déploiement « Global Standard » peut être traité dans n'importe quelle région Azure :
-        # la région est le résultat de l'appel, pas une propriété de la ressource.
+        usage=_usage_openai(corps),
+        # Data Zone Standard EU depuis le 09/10/2026 : l'en-tête `x-ms-region` dit, appel par appel, quelle région
+        # a traité la demande. Une région supposée n'est pas une région mesurée.
         origine=(getattr(reponse, "headers", None) or {}).get("x-ms-region"),
     )
 
 
-def _appel_anthropic(prompt: str, max_tokens: int) -> Reponse:
-    client = Anthropic()
-    reponse = client.messages.create(
-        model=_modele_prevu("anthropic"),
-        max_tokens=max_tokens,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    return Reponse(texte=reponse.content[0].text, modele=getattr(reponse, "model", None),
-                   usage=_usage_anthropic(reponse))
+def _appel_mistral(prompt: str, max_tokens: int) -> Reponse:
+    """Mistral par son adresse européenne (chat completions, même forme que Foundry), sans SDK.
 
-
-def _appel_openrouter(prompt: str, max_tokens: int) -> Reponse:
+    `MISTRAL_API_KEY` absente lève `KeyError` : c'est « indisponible », la cascade passe au suivant."""
     reponse = httpx.post(
-        OPENROUTER_URL,
-        headers={"Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}"},
+        MISTRAL_URL,
+        headers={"Authorization": f"Bearer {os.environ['MISTRAL_API_KEY']}"},
         json={
-            "model": _modele_prevu("openrouter"),
+            "model": _modele_prevu("mistral"),
             "max_tokens": max_tokens,
             "messages": [{"role": "user", "content": prompt}],
         },
@@ -106,18 +103,16 @@ def _appel_openrouter(prompt: str, max_tokens: int) -> Reponse:
     )
     reponse.raise_for_status()
     corps = reponse.json()
-    usage = corps.get("usage") or {}
     return Reponse(
         texte=corps["choices"][0]["message"]["content"],
         modele=corps.get("model"),
-        usage={"input": usage.get("prompt_tokens", 0), "output": usage.get("completion_tokens", 0)}
-        if usage else None,
-        # OpenRouter route vers plusieurs hébergeurs et nomme celui qui a répondu.
-        origine=corps.get("provider"),
+        usage=_usage_openai(corps),
+        origine=MISTRAL_HOTE,
     )
 
 
-_NOMS_VALIDES = {"foundry", "anthropic", "openrouter"}
+# Les seuls fournisseurs approuvés UE (carte #82). Tout autre nom de `LLM_ORDRE` est ignoré par la cascade.
+_NOMS_VALIDES = {"foundry", "mistral"}
 
 
 def generer_texte(prompt: str, max_tokens: int = 500) -> str:
@@ -130,7 +125,7 @@ def generer_texte(prompt: str, max_tokens: int = 500) -> str:
     with traces.appel(prompt) as racine:
         for nom in _ordre_fournisseurs():
             if nom not in _NOMS_VALIDES:
-                logger.warning("Fournisseur inconnu ignoré : %s", nom)
+                logger.warning("Fournisseur inconnu ou non approuvé UE, ignoré : %s", nom)
                 continue
             tentative += 1
             fonction = getattr(module, f"_appel_{nom}")

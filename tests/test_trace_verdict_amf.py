@@ -72,10 +72,10 @@ def _modele_simule(texte):
 
 
 def _appeler(texte, monkeypatch):
-    monkeypatch.setenv("LLM_ORDRE", "anthropic")
+    monkeypatch.setenv("LLM_ORDRE", "mistral")
     faux = _FauxClient()
     with patch("src.traces.client_traces", return_value=faux), \
-         patch("src.llm._appel_anthropic", return_value=texte), \
+         patch("src.llm._appel_mistral", return_value=texte), \
          patch("api.main.generer_briefing_complet", side_effect=_modele_simule(texte)):
         reponse = client_http.post("/briefing?ticker=MC.PA", headers={"X-API-Key": CLE_DE_TEST})
     return reponse, faux.journal

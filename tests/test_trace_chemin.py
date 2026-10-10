@@ -21,7 +21,7 @@ client_http = TestClient(app)
 TEXTE_CONFORME = "Le titre recule de 1,10 % sur la séance."
 TEXTE_INTERDIT = "Nous recommandons l'achat de cette valeur."
 ORDRE_ATTENDU = ["briefing", "scout", "rag", "garde-fou-entree", "redacteur",
-                 "briefing-llm", "llm-anthropic", "garde-fou-sortie"]
+                 "briefing-llm", "llm-mistral", "garde-fou-sortie"]
 
 
 class _FausseObs:
@@ -47,12 +47,12 @@ class _CollectionVide:
 
 
 def _briefing(texte, monkeypatch, client=True):
-    monkeypatch.setenv("LLM_ORDRE", "anthropic")
+    monkeypatch.setenv("LLM_ORDRE", "mistral")
     faux = _FauxClient() if client else None
     with patch("src.traces.client_traces", return_value=faux), \
          patch("graph.workflow.collect", return_value=scout_lvmh()), \
          patch("rag.recherche._collection", return_value=_CollectionVide()), \
-         patch("src.llm._appel_anthropic", return_value=texte):
+         patch("src.llm._appel_mistral", return_value=texte):
         reponse = client_http.post("/briefing?ticker=MC.PA", headers={"X-API-Key": CLE_DE_TEST})
     return reponse, (faux.journal if faux else [])
 
