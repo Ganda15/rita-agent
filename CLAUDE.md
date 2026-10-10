@@ -46,7 +46,7 @@ Dépôt : `Ganda15/rita-agent` (**privé** — accès par invitation collaborate
 ## Ce qu'est RITA
 
 Collecte de données boursières et macro-économiques → PostgreSQL (conception Merise) →
-API REST → briefing **rédigé** en français par Claude.
+API REST → briefing **rédigé** en français par un modèle de langage **fourni** (cascade de fournisseurs, `src/llm.py`).
 
 Une aide à la lecture, **jamais** une recommandation d'achat ou de vente : contrainte AMF,
 inscrite en dur dans le prompt du rédacteur et vérifiée par le garde-fou d'injection.
@@ -55,7 +55,8 @@ inscrite en dur dans le prompt du rédacteur et vérifiée par le garde-fou d'in
 
 - **Python** 3.13 (CI) / 3.14 (local) · **FastAPI** · **PostgreSQL** · **PySpark + Parquet**
 - **LangGraph** — graphe Scout → Rédacteur (`graph/workflow.py`)
-- **Claude** en cascade 3 fournisseurs : Foundry → Anthropic → OpenRouter (`src/llm.py`)
+- **Modèle fourni** en cascade de 3 fournisseurs : Azure AI Foundry (`gpt-5.4`, Data Zone EU) → Anthropic → OpenRouter
+  (Claude pour les deux derniers) (`src/llm.py`)
 - **Modèle FOURNI** — aucun entraînement, aucun réglage fin. Ce qui se teste n'est pas une
   métrique d'apprentissage mais le **comportement sous garde-fous**.
 
