@@ -9,6 +9,19 @@
 
 ---
 
+## 2026-10-10 (10 h) : E1 v2.2 avant le gel ; `memory_audit` tranché après le gel
+
+**Manques découverts** en traduisant E1 en anglais pour Era : la date du rapport (4/10) était en retard sur son
+contenu (zone UE du 09/10) ; les chiffres des tests du § 2 n'étaient pas datés (742 collectés, 93,9 %) ; le schéma
+Merise portait une balise de figure sans texte alternatif dans le PDF balisé. Corrigés dans la version 2.2 : 10
+octobre ; 835 tests collectés, et en CI le 10/10 804 verts, 29 ignorés, 2 échecs attendus, 94,7 % ; texte
+alternatif ajouté et mesuré (1 figure, 1 texte). Toujours 5 pages.
+
+**Décision structurante** : `memory_audit` (aucun écrivain, zéro ligne) n'est ni rempli ni retiré avant le gel ; la
+décision se prend dans la fenêtre 15-25/10 (choix C d'Era, carte #86, `CONTINUITE.md` D).
+
+---
+
 ## 2026-10-10 (matin) : le modèle de classeur du formateur omet deux critères officiels de C19
 
 **Manque découvert.** Era s'étonnait que le classeur compte 135 critères. Recompté contre le référentiel officiel

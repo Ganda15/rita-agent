@@ -78,7 +78,7 @@ footer.sign{ margin-top:4pt; padding-top:3.5pt; border-top:.75pt solid var(--rul
     <div><dt>Candidat</dt><dd>Eramalingam Gandakumar<small>erama70@outlook.com<br>ganda70@gmail.com</small></dd></div>
     <div><dt>Organisme</dt><dd>Simplon × Wild Code School<small>Session 2026</small></dd></div>
     <div><dt>Dépôt du code</dt><dd>Ganda15/rita-agent<small>github.com · tag <code>livrable-E1-v2</code> à poser le 15/10</small></dd></div>
-    <div><dt>Date</dt><dd>4 octobre 2026<small>version 2.1, gel prévu le 15 octobre 2026</small></dd></div>
+    <div><dt>Date</dt><dd>10 octobre 2026<small>version 2.2, gel prévu le 15 octobre 2026</small></dd></div>
   </dl>
 </header>
 
@@ -126,7 +126,7 @@ L'objet de E1 est de rendre ces données fiables, traçables et exploitables.</p
   <li>Requêtes SQL <strong>paramétrées</strong> exclusivement, jamais de chaîne concaténée.</li>
   <li>Une source qui échoue <strong>n'interrompt pas</strong> les autres ; une étape qui n'a rien reçu <strong>se déclare en échec</strong>.</li>
   <li>Toute anomalie de structure lève une exception nommée plutôt qu'un résultat vide silencieux.</li>
-  <li>Tests écrits avant le code : <strong>742 tests collectés</strong>, 740 verts et 2 échecs attendus et déclarés (cible des garde-fous, livrable E3), couverture 93,9 %.</li>
+  <li>Tests écrits avant le code : <strong>835 tests collectés</strong> ; le 10/10 en intégration continue, 804 verts, 29 ignorés (ni base, ni JDK, ni Windows), 2 échecs attendus (garde-fous, E3), couverture 94,7 %.</li>
 </ul>
 </div>
 </div>
@@ -218,7 +218,7 @@ devises ISO 4217, nombres français convertis, codes ISIN complétés, puis char
 
 <h2><span class="n">5</span> Modélisation Merise et choix du SGBD <span class="tag">C4</span></h2>
 
-<figure>
+<figure aria-label="Modèle conceptuel de données Merise de RITA, six entités. VALEUR est au centre : elle est nommée par ALIAS, cotée lors de COTATION, cotée en DEVISE et détenue dans POSITION. POSITION est libellée en DEVISE, et DEVISE a pour cours TAUX_CHANGE. POSITION est la seule entité qui porte des données personnelles.">
 <svg viewBox="0 0 640 330" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif">
   <defs><style>
       .ent{ fill:#ECF3F7; stroke:#14607F; stroke-width:1.1; }
@@ -285,7 +285,7 @@ sert la dernière cotation de R1 ; l'index unique
 <p><strong>PostgreSQL</strong> a été retenu pour trois raisons liées au modèle : les contraintes <code>CHECK</code> imposent en
 base les règles issues de l'analyse exploratoire au lieu de les répéter dans chaque script ; <code>EXPLAIN ANALYZE</code> rend
 les optimisations mesurables (§&nbsp;6) ; <code>LATERAL</code> résout la requête centrale du projet. Dit franchement :
-<code>memory_audit</code> n'a aucun écrivain et zéro ligne, sa suppression ou son remplissage est une décision à prendre avant le gel.</p>
+<code>memory_audit</code> n'a aucun écrivain et zéro ligne ; la retirer ou la remplir se décide après le gel (carte #86).</p>
 
 <h2><span class="n">6</span> Requêtes d'extraction <span class="tag">C2</span></h2>
 
@@ -414,7 +414,7 @@ python -m db.importer                              <b># archive 10 ans + positio
 python -m pipelines.ingest                         <b># 6 etapes, un COMMIT par etape, manifeste JSON</b>
 python -m bigdata.build_parquet                    <b># jeu Parquet partitionne par annee</b>
 python -m uvicorn api.main:app                     <b># API + documentation sur /docs</b>
-python -m pytest -q                                <b># 740 passed, 2 xfailed, 93,9 % (03/10/2026)</b></pre>
+python -m pytest -q                                <b># 804 passed, 29 skipped, 2 xfailed, 94,7 % (CI, 10/10/2026)</b></pre>
 
 <table>
   <tr><th style="width:24%">Dépendance</th><th style="width:18%">Version</th><th>Pourquoi elle est requise</th></tr>
@@ -443,7 +443,7 @@ python -m pytest -q                                <b># 740 passed, 2 xfailed, 9
   Dates de l'archive en date locale de la place (INC-005) · 10 tables au lieu de 8, FRED stockée, journal des appels MCP ·
   la vue de valorisation ne remplace plus un taux manquant par 1 · clôture datée des positions, clé de ligne, P2 enfin
   applicable, P3 retirée · traçage hébergé en UE (Langfuse) à la place de LangSmith aux États-Unis · étape BCE en échec déclaré quand
-  rien n'est reçu · collecte planifiée chaque soir, manifeste par exécution · 742 tests contre 186. Le périmètre et le cadrage
+  rien n'est reçu · collecte planifiée chaque soir, manifeste par exécution · 835 tests contre 186. Le périmètre et le cadrage
   acceptés par le formateur n'ont pas bougé.
 </div>
 
@@ -451,14 +451,14 @@ python -m pytest -q                                <b># 740 passed, 2 xfailed, 9
   <span class="lab">Ce qui n'est pas fait, dit franchement</span>
   <strong>Regroupements d'actions non traités</strong> : <code>operation_sur_titre</code> conçue non construite ; VIRI.PA affiche
   +4 473 % pour cette raison. <strong>Date de clôture = date de l'import</strong>, pas date de la vente : le projet ne connaît pas l'autre.
-  <strong>Purges non planifiées</strong> (lancement manuel). <strong><code>memory_audit</code> sans écrivain</strong>, décision avant le gel.
+  <strong>Purges non planifiées</strong> (lancement manuel). <strong><code>memory_audit</code> sans écrivain</strong>, décision reportée après le gel (#86).
   <strong>Versions non épinglées</strong> pour la moitié des dépendances. <strong>Volumétrie</strong> : le big data est démontré sur un
   volume qui ne l'exige pas ; la méthode est prouvée, la limite est énoncée plutôt que défendue.
 </div>
 
 <footer class="sign">
-  <span>RITA, livrable E1 · bloc BC01 · compétences C1 à C5 · version 2.1</span>
-  <span>Eramalingam Gandakumar · 4 octobre 2026</span>
+  <span>RITA, livrable E1 · bloc BC01 · compétences C1 à C5 · version 2.2</span>
+  <span>Eramalingam Gandakumar · 10 octobre 2026</span>
 </footer>
 
 </body>

@@ -15,14 +15,14 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-10, 9 h (le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-10, 10 h (E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
 
 ## ▶️ PROCHAINE ACTION (réécrit le 04/10/2026 ; les ▶️ plus bas sont datés et dépassés)
 
-**Où on en est, en une phrase** : E1 v2.1 (5 pages) et E3 v1.1 (20 pages, **35 ✅ · 4 🟠 · 0 🔴** sur 39) sont complets côté
+**Où on en est, en une phrase** : E1 v2.2 (5 pages, 10/10) et E3 v1.1 (20 pages, **35 ✅ · 4 🟠 · 0 🔴** sur 39) sont complets côté
 assistant et vérifiés contre le code et la base ; ils attendent ta relecture avant le gel du **jeudi 15/10** ; les deux alertes Langfuse sont en service ; la chaîne est
 **verte** (`c7d0f2e`, 10/10 : 804 passed en CI, Livraison verte) ; la production sert toujours le code du **19/08**.
 **Aucun code d'application avant le tag du 15/10.** Règle : **c'est Era qui envoie tout message** au formateur et à la
@@ -90,6 +90,15 @@ Fichier, Importer, la synthèse v4, « Remplacer la feuille de calcul » (le lie
 formateur que son modèle omet deux critères de C19 (Era envoie) ; (5) relire la colonne « Rédaction » avec la note
 d'étude et écrire sa version.
 
+**E1 v2.2 (10/10, 10 h), décision d'Era « fix points 1 to 4 before the freeze »**, relevés en traduisant E1 en
+anglais : (1) la date (4/10) était en retard sur le contenu (zone UE du 09/10) : 10 octobre, version 2.2 ;
+(2) `memory_audit` : choix C d'Era, la décision (retirer la table ou lui donner un écrivain) se prend **après le
+gel**, carte #86, pour ne toucher ni au code ni au schéma avant le tag ; (3) chiffres des tests mesurés et datés :
+835 collectés sur le poste, en CI le 10/10 804 verts, 29 ignorés (ni base, ni JDK, ni Windows), 2 échecs attendus,
+94,7 % ; (4) le schéma Merise avait une balise de figure sans texte alternatif : texte alternatif ajouté, mesuré
+(1 figure, 1 texte). Toujours **5 pages**, mise en page identique (bas de chaque page au même point), chaque page
+modifiée regardée. La traduction anglaise d'Obsidian est remise d'accord.
+
 **📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.2, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :
 
@@ -146,7 +155,7 @@ Nadège et Elena aideront particulièrement à la présentation.
    5 cartes proposées à Fait, ajouter au tableau les 7 issues ouvertes absentes, dire si la revue du 28/09 a eu lieu, garder
    2 cartes « En cours », remplir le §6, coller la ligne du §7 ici, commiter. Seul moyen de fermer C16.1. Vérifier au passage
    que le formateur a bien accès au tableau (C16.4, je ne peux pas le lire).
-2. **Relire** `docs/rapports/E1/rapport-E1.pdf` (v2.1 du 04/10 : cinq affirmations fausses corrigées, voir l'entrée
+2. **Relire** `docs/rapports/E1/rapport-E1.pdf` (v2.2 du 10/10 ; la v2.1 du 04/10 avait corrigé cinq affirmations fausses, voir l'entrée
    du 04/10 plus bas) et `docs/rapports/E3/rapport-E3.pdf` (v1.1 du 04/10, 20 pages) ; corrections dans le chat.
 3. **Noter les 60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1 ou 2), **sans ouvrir** le fichier `-cle.csv`.
    C'est ce qui fait passer la recommandation C7 de « provisoire » à « argumentée ».
@@ -174,7 +183,7 @@ Nadège et Elena aideront particulièrement à la présentation.
 
 5. **Décisions** (une ligne chacune suffit, dans le chat ou à la revue) : **D7** documentation `/docs` publique en production
    (la règle de fermeture validée plaide pour la clé) ; **D6** lignes affichées d'emblée sur l'écran indicateurs (recommandé :
-   rien avant le gel) ; **`memory_audit`** (zone sous garde, plan d'abord) ; **#36** rafraîchir les données en ligne avant le
+   rien avant le gel) ; ~~`memory_audit`~~ tranché le 10/10 : après le gel (#86) ; **#36** rafraîchir les données en ligne avant le
    gel ou après ; libellé du **drawdown** (cité 0 fois sur 60 textes).
 6. 🌐 **GitHub** : activer les **alertes Dependabot** (Settings, Code security) ; capture des rulesets dans `evidence/C19/`.
 7. 🌐 **Langfuse** : **capture de la liste des alertes revenues à l'état normal** (l'alerte 1 doit repasser à OK après le
@@ -199,7 +208,7 @@ fournisseurs, S4 refus journalisés, S3 limite de débit, S1 en-têtes de sécur
 
 | Épreuve | Décompte | Ce qui manque surtout |
 |---|---|---|
-| E1 | v2.1, 5 pages, vérifiée contre le code et la base le 04/10 | ta relecture ; question de l'annexe au formateur ; gel le 15/10 |
+| E1 | v2.2 du 10/10, 5 pages (date, chiffres des tests datés, `memory_audit` reporté, texte alternatif du schéma) ; vérifiée contre le code et la base le 04/10 | ta relecture ; question de l'annexe au formateur ; gel le 15/10 |
 | E2 | 6 ✅ · 13 🟠 · 1 🔴 sur 20 | notation C7, remise de la documentation (C8.5, #43), Anthropic en direct |
 | E3 | 35 ✅ · 4 🟠 · 0 🔴 sur 39 | ta relecture ; les 4 🟠 se ferment après le gel (#73, #75, accessibilité de l'outil, serveur non tracé) ; gel le 15/10 |
 | E4 | 27 ✅ · 9 ⚠️ · 0 ❌ sur 36 | rapport à rédiger ; C16 (revues notées) ; C17.1, .2, .5, .8, .11 ; C19.4 au tag du 15/10 |
