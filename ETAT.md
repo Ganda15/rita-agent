@@ -105,6 +105,10 @@ base ; (2) **E1 et E3 se contredisaient sur Langfuse** : E3 disait « à confirm
 le contrat relu le 05/10 ; E3 dit maintenant la même chose (registre, T3). Toujours **20 pages**, 5 figures avec texte
 alternatif ; seules les pages 6 à 8 bougent. Copies de lecture : `C:\Users\kanda\OneDrive\RITA\reports\` (E1 et E3 en français, et
 leurs traductions anglaises en `.md` et `.pdf`).
+Puis, à 10 h 40, sur demande d'Era : E3 disait « rapport du 11 août » (la date écrite sur la v1 d'E1) et E1
+« envoi du 13 août » ; E3 dit maintenant « rapport envoyé le 13 août », pour que les deux rapports, envoyés ensemble
+après le gel, donnent la même date. **E1 v1 a été envoyé le 13/08 ; E3 n'a jamais été envoyé.** Aucune page ne
+bouge.
 
 **📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.2, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :
