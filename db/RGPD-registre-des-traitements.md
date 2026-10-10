@@ -223,7 +223,7 @@ des données ») et une mesure dans le code plutôt qu'une supposition :
 | **Finalité** | Collecter chaque soir les articles de presse sur les sociétés du portefeuille |
 | **Base légale** | Intérêt légitime |
 | **Catégories de données** | **Le nom de chaque société présente dans la table `position`** (positions closes comprises : `SELECT DISTINCT v.nom_officiel FROM position p JOIN valeur v`, `pipelines/ingest.py:283-289`), placé dans l'adresse d'une requête Google News avec le mot « bourse » et une fenêtre de dates (`sources/rss.py:56-89`) ; l'adresse IP du poste |
-| **Ce que ça révèle** | **La composition du portefeuille**, sans les quantités ni les montants |
+| **Ce que ça révèle** | **La composition du portefeuille**, sans les quantités ni les montants (précision du 10/10 : la base ne contient aujourd'hui que des positions simulées sur des sociétés cotées ; Google reçoit ces noms et l'adresse IP, et recevrait la composition d'un vrai portefeuille dès qu'il serait chargé) |
 | **Destinataire** | Google, service Google News (`news.google.com`) ; entité qui traite et lieu de traitement **non vérifiés** |
 | **Transfert hors UE** | **Probable, non vérifié. Non conforme à la règle UE seule** (§ 0) |
 | **Fréquence** | Chaque soir à 19 h (collecte planifiée) : une requête par société détenue (10 flux le 03/10 : 3 généraux et 7 par société) |
@@ -293,12 +293,12 @@ utilisateur.
 | 2 | **Hook Git `pre-commit`** interdisant l'ajout d'un fichier personnel (P4) | 🟠 moyenne |
 | 3 | Brancher P1 et P2 sur APScheduler (aujourd'hui : lancement manuel) | 🟠 moyenne |
 | 4 | Chiffrer la sauvegarde de la base si elle sort de la machine | 🟡 basse tant que tout est local |
-| 5 | **T7 (carte #81) : arrêter d'envoyer à Google News les noms des sociétés détenues** (liste de veille indépendante des positions, sources approuvées) | 🔴 haute : révèle chaque soir la composition du portefeuille hors de l'UE |
+| 5 | **T7 (carte #81) : arrêter d'envoyer à Google News les noms des sociétés détenues** (liste de veille indépendante des positions, sources approuvées) | 🔴 haute : révèle chaque soir la composition du portefeuille hors de l'UE (précision du 10/10 : aujourd'hui des positions simulées et l'adresse IP ; **bloquante avant tout chargement d'un portefeuille réel**) |
 | 6 | **T6 (cartes #82 et #68) : n'appeler que des fournisseurs de modèle approuvés UE**, sans repli vers un fournisseur non approuvé ; **fait le 2026-10-09 pour le premier fournisseur** (Azure en Data Zone EU, région mesurée) ; reste : retirer les replis Anthropic et OpenRouter (`LLM_ORDRE=foundry`, test et réponse 503 déjà spécifiés), relire en entier le contrat de Microsoft | 🟠 moyenne : un briefing ne sort de l'UE que si Azure échoue |
 | 7 | **Transferts hors UE (T3, T6)** : pour chaque destinataire, vérifier la certification au Data Privacy Framework ; à défaut, faire l'**analyse d'impact du transfert (AITD)** exigée par la CNIL pour les clauses types ; documenter contrats applicables, données envoyées, sous-traitants, lieux et durées | 🟠 moyenne pour le RGPD ; sans effet sur la règle UE seule, qui interdit le transfert de toute façon |
 | 8 | **T6, Azure** : Microsoft documente des cas limités de transfert hors de son EU Data Boundary, dont l'accès à distance de son personnel (https://learn.microsoft.com/en-us/privacy/eudb/eu-data-boundary-learn) ; un accès à distance depuis un pays tiers est un transfert (CEPD, lignes directrices 05/2021, § 9). Lire ces cas avant de dire T6 conforme à la règle UE seule | 🟠 moyenne |
-| 9 | **T1, jeu de démonstration** : la base contient des positions inventées sur des sociétés réellement cotées (déclaration d'Era du 2026-10-10 : il ne détient pas ces titres) ; aligner la fiche T1 et la description du fichier réel `data/positions.csv` | 🟡 basse |
-| 10 | **yfinance (Yahoo, États-Unis)** : la requête du soir envoie les 111 tickers suivis et l'adresse IP du poste ; elle ne révèle pas les positions ; à inscrire (ce qui part, où, sous quelle lecture du CEPD) | 🟡 basse |
+| 9 | **T1, jeu de démonstration** : la base contient des positions inventées sur des sociétés réellement cotées (déclaration d'Era du 2026-10-10 : il ne détient pas ces titres) ; 12 lignes dans le fichier d'exemple, 10 gardées par le lecteur, 7 importées (3 hors univers) ; aligner la fiche T1 et la description du fichier réel `data/positions.csv` | 🟡 basse |
+| 10 | **yfinance (Yahoo, États-Unis)** : la requête du soir envoie les 108 valeurs encore cotées (les 3 radiées ne sont plus demandées) et l'adresse IP du poste ; elle ne révèle pas les positions ; à inscrire (ce qui part, où, sous quelle lecture du CEPD) | 🟡 basse |
 
 > 🟠 **Statut des transferts au 2026-10-05 : garanties contractuelles identifiées ; vérification propre à RITA
 > incomplète.** Trouver une clause (DPA, clauses contractuelles types) montre qu'une garantie existe, pas que la

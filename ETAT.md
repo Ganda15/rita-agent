@@ -22,7 +22,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 
 ## ▶️ PROCHAINE ACTION (réécrit le 04/10/2026 ; les ▶️ plus bas sont datés et dépassés)
 
-**Où on en est, en une phrase** : E1 v2.2 (5 pages, 10/10) et E3 v1.2 (20 pages, 10/10, **35 ✅ · 4 🟠 · 0 🔴** sur 39) sont complets côté
+**Où on en est, en une phrase** : E1 v2.2 (5 pages, 10/10) et E3 v1.3 (20 pages, 10/10, **35 ✅ · 4 🟠 · 0 🔴** sur 39) sont complets côté
 assistant et vérifiés contre le code et la base ; ils attendent ta relecture avant le gel du **jeudi 15/10** ; les deux alertes Langfuse sont en service ; la chaîne est
 **verte** (`c7d0f2e`, 10/10 : 804 passed en CI, Livraison verte) ; la production sert toujours le code du **19/08**.
 **Aucun code d'application avant le tag du 15/10.** Règle : **c'est Era qui envoie tout message** au formateur et à la
@@ -155,13 +155,20 @@ PR #88 en brouillon : `0a3f3f8` poussé, CI verte ; `2a7f18c` et `b3c76b5` pas e
   sert aux preuves ; l'ordre se tranchera sur le banc C7 après le gel.
 - **Règle UE seule gardée stricte** (choix d'Era) ; Google News par position se corrige par #81 après le gel, telle
   qu'écrite. Vérifié dans le code : FRED, yfinance, BCE et Boursorama ne révèlent pas les positions ; seule Google News
-  les révèle (`pipelines/ingest.py:283-289`). Un transfert se juge par le texte du CEPD (lignes directrices 05/2021,
+  les révèle (`pipelines/ingest.py:283-289`) ; aujourd'hui ce sont des positions simulées et l'adresse IP, et #81 est
+  bloquante avant tout chargement d'un portefeuille réel. Un transfert se juge par le texte du CEPD (lignes directrices 05/2021,
   § 9 : un accès à distance depuis un pays tiers est un transfert) ; Microsoft documente des transferts limités hors
   de son EU Data Boundary : T6 n'est pas entièrement prouvé côté Azure (registre, § 5).
 - **Jeu de démonstration** : positions inventées sur des sociétés réellement cotées, choisies dans la liste suivie ;
   Era ne détient pas ces titres (sa déclaration du 10/10). Le fichier de preuve
-  `evidence/C17/mesures-2026-10-03/entrees/donnees_portefeuille.json` lui correspond 7 sur 7 : aucune position réelle
-  dans Git.
+  `evidence/C17/mesures-2026-10-03/entrees/donnees_portefeuille.json` : ses 7 positions sont toutes dans le jeu d'exemple
+  (12 lignes dans le fichier, 10 gardées par le lecteur, 7 importées, 3 hors univers) : aucune position réelle dans Git.
+- **Défaut trouvé en vérifiant : le verrou de démonstration MCP ne s'ouvre jamais.** Le vrai code du verrou, lancé sur la
+  base du 03/10, rend `False` : il compare aux 10 lignes du fichier, l'import n'en garde que 7. Le refus du 03/10 (E3,
+  section 4.1 ; preuve C20) ne venait donc pas d'un portefeuille réel. Échec fermé, sans fuite ; le test vert simule
+  une réponse de 10 positions. **E3 passe en v1.3** (une phrase en 4.1, toujours 20 pages, page 5 regardée ; copies
+  OneDrive v1.3 en français et en anglais), erratum `evidence/C20/erratum-verrou-demonstration-2026-10-10.md` (l'ancienne
+  preuve n'est pas réécrite). Correction après le gel, carte à créer.
 - **À faire par Era** : `.env` ligne 25, `MISTRAL_MODEL=mistral-large-4-0` ; pousser `mistral-ue` puis `develop` et
   lire la CI ; dire si le fichier réel `data/positions.csv` du 31/07 était une simulation (alignement de T1).
 

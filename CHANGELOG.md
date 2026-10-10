@@ -23,14 +23,18 @@ le gel.
 `mistral-ue` : sur un vrai briefing (MC.PA, même prompt qu'Azure), Large 3 invente une date de séance, Large 4 non,
 pour 0,10 centime (preuve C8 sur la branche) ; (2) **Azure GPT-5.4 reste premier** (gratuit pour Era), l'ordre se
 tranchera sur le banc C7 ; (3) **règle UE seule gardée stricte** : Google News par position, seule source qui révèle
-les positions (vérifié dans le code), se corrige par #81 après le gel ; (4) **jeu de démonstration** : positions
+les positions (vérifié dans le code ; aujourd'hui des positions simulées), se corrige par #81 après le gel, et devient
+bloquante avant tout chargement d'un portefeuille réel ; (4) **jeu de démonstration** : positions
 inventées sur des sociétés réellement cotées, Era ne détient pas ces titres.
 
 **Manques découverts** : Langfuse compte 0 $ pour Mistral (prix hors de sa grille) ; Microsoft documente des
 transferts limités hors de son EU Data Boundary, que le CEPD compte comme transferts (T6 pas entièrement prouvé,
 registre § 5) ; le registre ne décrivait pas la requête du soir vers Yahoo (yfinance) ; sur `develop`, `README.md`,
 `CLAUDE.md` et le guide d'exploitation disaient « Claude » pour le modèle et « 502 » pour une panne de fournisseur
-(500 en vrai), corrigés (`000ca50`).
+(500 en vrai), corrigés (`000ca50`). **Le verrou de démonstration de la passerelle MCP ne s'ouvre jamais** : il compare
+aux 10 lignes du fichier d'exemple, l'import n'en garde que 7 ; le refus du 3 octobre présenté dans E3 et dans la preuve
+C20 ne venait pas d'un portefeuille réel. E3 passe en v1.3 (toujours 20 pages), erratum C20 daté, correction après le
+gel.
 
 ---
 
