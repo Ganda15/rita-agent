@@ -109,6 +109,11 @@ Puis, à 10 h 40, sur demande d'Era : E3 disait « rapport du 11 août » (la da
 « envoi du 13 août » ; E3 dit maintenant « rapport envoyé le 13 août », pour que les deux rapports, envoyés ensemble
 après le gel, donnent la même date. **E1 v1 a été envoyé le 13/08 ; E3 n'a jamais été envoyé.** Aucune page ne
 bouge.
+Ensuite, sur demande d'Era : le **registre RGPD** (preuve d'E1, C4) disait encore dans son glossaire que les clauses
+contractuelles types étaient « à confirmer » ; il dit maintenant qu'elles sont prévues (Langfuse § 6.2, T3 ;
+OpenRouter § 13.2, T6, contrats relus le 05/10) et que l'AITD n'est pas faite ; la ligne du Data Privacy Framework
+dit ce qui reste vraiment ouvert (certification de ClickHouse, Inc. non vérifiée, § 5 point 7) ; la liste du 02/10
+garde son texte, avec « Fait le 2026-10-05 ». `tests/test_rgpd_registre.py` : 4 passed.
 
 **📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.2, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :

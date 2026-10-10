@@ -11,7 +11,7 @@
 **Base réglementaire** : RGPD (Règlement Général sur la Protection des Données,
 UE 2016/679), **article 30** — registre des activités de traitement.
 
-**Dernière mise à jour** : 2026-10-09 *(Azure AI Foundry passé en Data Zone Standard EU par Era, région mesurée
+**Dernière mise à jour** : 2026-10-10 *(glossaire et suites du 02/10 alignés sur la lecture des contrats du 05/10 : clauses contractuelles types prévues, Data Privacy Framework non vérifié ; avant, le 2026-10-09 : Azure AI Foundry passé en Data Zone Standard EU par Era, région mesurée
 Sweden Central sur trois appels réels, T6 partiellement corrigé ; avant, le 2026-10-05 : règle « UE seule » posée par Era ; T1 corrigé : les noms des sociétés détenues partent vers Google News ; T6, fournisseurs du modèle, et T7, requêtes Google News, inscrits ; traces de test supprimées le 04/10 ; le même jour, garanties contractuelles des destinataires relues : identifiées,
 vérification propre à RITA incomplète, voir § 5)*
 
@@ -169,8 +169,9 @@ des données ») et une mesure dans le code plutôt qu'une supposition :
   Addendum », avec Langfuse GmbH (Allemagne) comme sous-traitant et ClickHouse, Inc. (États-Unis) parmi les entités
   du groupe. **Reste à faire par Era : lire ce DPA** et confirmer si un transfert vers les États-Unis est encadré
   (clauses contractuelles types ou Data Privacy Framework). Le registre ne dit pas « aucun transfert » avant cela.
+  **Fait le 2026-10-05** : DPA lu, § 6.2 (clauses contractuelles types), voir la ligne « Transfert hors UE » de T3.
 - Transfert hors UE : **non** au titre de la localisation des données ; à confirmer au titre de l'entité
-  (point ci-dessus).
+  (point ci-dessus). **Depuis le 2026-10-05** : transfert possible par contrat, encadré par les clauses types (T3).
 - Durée de conservation : 30 jours (palier gratuit), inférieure aux 90 jours de T2.
 - Mesure de réduction : rien à masquer aujourd'hui (aucune donnée personnelle dans le prompt). **Condition
   écrite** : si une position, un PRU ou une quantité entre un jour dans le prompt, brancher la fonction de
@@ -330,9 +331,9 @@ utilisateur.
 | **Limitation de conservation** (art. 5) | Ne pas garder indéfiniment | D'où les durées du §1 |
 | **Données sensibles** (art. 9) | Catégories particulières : santé, opinions, origine… | Les données financières **n'en font pas partie** |
 | **AIPD / DPIA** | *Analyse d'Impact relative à la Protection des Données* — étude obligatoire si risque élevé | Non requise en mono-utilisateur |
-| **CCT / SCC** | *Clauses Contractuelles Types* — contrat encadrant un transfert hors UE | Encadrerait un transfert vers l'entité américaine du groupe ClickHouse, si le DPA le prévoit (à confirmer) |
+| **CCT / SCC** | *Clauses Contractuelles Types* : contrat modèle de la Commission européenne qui encadre un transfert hors UE | Prévues par le DPA de Langfuse (§ 6.2, T3) et par celui d'OpenRouter (§ 13.2, module 2, T6), relus le 2026-10-05 ; elles exigent une AITD, non faite (§ 5) |
 | **AITD** (analyse d'impact des transferts) | Étude écrite des lois du pays de destination et des protections à ajouter | Exigée par la CNIL quand un transfert repose sur des clauses types (T3, T6) |
-| **Data Privacy Framework** | Accord UE–États-Unis autorisant certains transferts (2023) | Base possible du transfert T3 vers une entité américaine, à confirmer par le DPA |
+| **Data Privacy Framework** | Accord UE–États-Unis autorisant certains transferts (2023) | Base possible du transfert T3 si ClickHouse, Inc. est certifiée (le DPF vaut alors décision d'adéquation) ; certification non vérifiée (§ 5, point 7) ; à défaut, ce sont les clauses types du DPA (§ 6.2) |
 | **Purge** | Suppression programmée des données trop anciennes | P1 et P2 |
 | **Mode simulation** (*dry-run*) | Le script montre ce qu'il ferait, sans le faire | Comportement par défaut de `rgpd_purge.py` |
 | **Hook pre-commit** | Script Git qui s'exécute **avant** d'enregistrer un commit | Empêcherait d'ajouter un fichier personnel |
