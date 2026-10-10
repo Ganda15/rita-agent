@@ -1,0 +1,54 @@
+# Erratum C20 : le refus du verrou de démonstration du 3 octobre (mesuré le 10/10/2026)
+
+Ce fichier corrige une interprétation de `preuve-journal-mcp.md` (3 octobre), qui n'est **pas** réécrite. Constitué le
+jour de la découverte.
+
+## Ce que disait la preuve du 3 octobre
+
+Ligne 58 et section 4 : l'appel « déclaré démo, base réelle » a été refusé (`NOT_AUTHORIZED`) parce que « les sept
+positions réelles ne sont pas le jeu de démonstration ». Le rapport E3 v1.2 (section 4.1) en tirait que le journal
+montrait le verrou à l'endroit exact où il agit.
+
+## Ce qui a été mesuré le 10 octobre
+
+Le code réel du verrou (`passerelle_mcp/serveur.py:93-106`, `_est_le_jeu_de_demonstration`) a été exécuté sur la
+réponse de l'API archivée le 3 octobre (`evidence/C17/mesures-2026-10-03/entrees/donnees_portefeuille.json`) :
+
+| Mesure | Résultat |
+|---|---|
+| Lignes du fichier d'exemple (`data/positions-exemple.csv`) | 12 |
+| Lignes gardées par le lecteur CSV (2 lignes de test rejetées exprès) | 10 |
+| Positions servies par l'API, donc présentes en base | 7 |
+| Positions servies présentes dans le fichier d'exemple | 7 |
+| Positions servies absentes du fichier d'exemple | 0 |
+| Lignes du fichier d'exemple absentes de la base | 3 |
+| Le verrou accepte-t-il cette base ? | **non** (`False`) |
+
+**Cause** : l'import (`db/importer.py:129-134`) écarte les valeurs absentes de la table `valeur` (clé étrangère), et
+trois lignes du fichier d'exemple sont hors de l'univers suivi. Le verrou, lui, compare dans les deux sens à toutes les
+lignes gardées par le lecteur (10). Les deux ne filtrent pas les positions de la même façon.
+
+**Conséquence** : en démonstration, `rita_portefeuille` refuse aussi le vrai jeu d'exemple. Le refus du 3 octobre ne
+venait pas d'un portefeuille réel : la base contenait le jeu de démonstration (7 positions sur 7). Le verrou échoue
+fermé, sans rien laisser sortir ; la sécurité tient, la fonction de démonstration ne marche pas.
+
+**Pourquoi les tests étaient verts** : `tests/test_passerelle_mcp.py:210-215` simule une réponse de l'API de
+10 positions, que l'API réelle ne peut pas rendre ; le test ne passe ni par l'import ni par la base.
+
+## Correction (après le gel du 15/10, test d'abord)
+
+Le verrou doit partager avec l'import la même normalisation, le même filtrage par l'univers et la même résolution des
+alias, et comparer un ensemble plus complet que (ticker, quantité) : au moins le ticker, la quantité, le prix de revient
+et la devise. Le test doit passer par l'import réel. Carte à créer.
+
+## Ce que le jeu d'exemple contient
+
+Des positions inventées sur des sociétés réellement cotées ; Era déclare le 10/10/2026 n'avoir jamais détenu ces titres.
+
+## 📖 Glossaire
+
+- **Verrou de démonstration** : contrôle de la passerelle MCP qui ne rend le portefeuille que si les positions servies
+  sont exactement le jeu d'exemple du dépôt.
+- **Échouer fermé** : en cas de doute, refuser plutôt que laisser passer.
+- **Univers** : les 111 valeurs suivies par RITA ; une position hors univers ne peut pas entrer en base.
+- **Doublure** : fausse réponse utilisée par un test à la place du système réel.
