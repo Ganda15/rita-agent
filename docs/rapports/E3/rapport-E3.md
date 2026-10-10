@@ -7,8 +7,8 @@
 | **Candidat** | Eramalingam Gandakumar |
 | **Formation** | Simplon × Wild Code School, promotion Développeur IA et IA agentique |
 | **Dépôt** | `Ganda15/rita-agent` (privé ; accès du jury par invitation de collaborateur) |
-| **Version** | 1.2, 10 octobre 2026 ; gel et tag `livrable-E3-v1` le 15 octobre 2026 |
-| **Mesures** | datées du 2 au 4 octobre 2026, sauf l'image de base (§ 7.3, 9 octobre), chacune avec la commande qui la produit ; la première trace complète d'un briefing réel date du 3 octobre, 14 h 48 |
+| **Version** | 1.3, 10 octobre 2026 ; gel et tag `livrable-E3-v1` le 15 octobre 2026 |
+| **Mesures** | datées du 2 au 10 octobre 2026 (date de chaque preuve dans sa section), chacune avec la commande qui la produit ; la première trace complète d'un briefing réel date du 3 octobre, 14 h 48 |
 
 ## Lire ce rapport
 
@@ -20,7 +20,7 @@ Trois règles ont guidé l'écriture. Un chiffre se cite mesuré, avec sa date e
 
 ## 1. Le contexte, une seule fois
 
-**RITA** (*Retrieval Intelligence pour le Tracking et l'Analyse*) est un assistant qui collecte des données boursières et macroéconomiques, les stocke dans une base PostgreSQL conçue selon la méthode Merise, les expose par une API REST, et rédige en français un **briefing** par valeur : un texte court qui dit ce que la valeur a fait, avec quelles actualités autour. L'utilisateur est unique : un investisseur particulier qui suit sept positions.
+**RITA** (*Retrieval Intelligence pour le Tracking et l'Analyse*) est un assistant qui collecte des données boursières et macroéconomiques, les stocke dans une base PostgreSQL conçue selon la méthode Merise, les expose par une API REST, et rédige en français un **briefing** par valeur : un texte court qui dit ce que la valeur a fait, avec quelles actualités autour. L'utilisateur est unique : un investisseur particulier qui suit 111 valeurs ; la démonstration porte sur sept positions simulées.
 
 **La contrainte qui structure tout** : RITA aide à lire, elle ne recommande jamais d'acheter ni de vendre. C'est l'interdit du conseil en investissement non agréé, posé par l'**AMF** (Autorité des marchés financiers). Il est écrit dans le prompt du rédacteur et vérifié par un garde-fou qui relit le texte produit avant diffusion.
 
@@ -130,7 +130,7 @@ L'API a deux clients dans le dépôt, et tous deux passent par HTTP avec la clé
 
 **La passerelle MCP** (`passerelle_mcp/serveur.py`) : MCP (*Model Context Protocol*) est le protocole qui décrit des outils à un modèle de langage. La passerelle expose trois outils en lecture seule (`rita_fraicheur`, `rita_portefeuille`, `rita_indicateurs`), avec l'annotation `read_only_hint`, et appelle l'API REST par HTTP avec `X-API-Key`. Le choix de passer par HTTP plutôt que par les modules est écrit dans le fichier : c'est ce qui fait de la passerelle un vrai client, soumis au garde-fou 403, et ce qui évite deux chemins d'accès aux données qui divergeraient. Le formateur a rendu le MCP obligatoire le 28 août 2026. Preuve : `evidence/C10/preuve-passerelle-mcp.md`.
 
-Deux ajouts du 3 octobre viennent du chapitre « Données » validé par le formateur. **Un verrou vérifié, pas déclaré** : `rita_portefeuille` ne répond que si la passerelle est déclarée en démonstration (`RITA_MCP_PORTEFEUILLE=demo`) **et** si les positions servies sont exactement le jeu d'exemple du dépôt ; sinon refus `NOT_AUTHORIZED`, sans aucune donnée. **Un journal des appels d'outils** : une ligne dans la table `mcp_calls` par appel déclaré (`X-Client-Id`, `X-Outil`), statut, code d'erreur et durée, jamais le contenu ; les refus pris dans la passerelle sont déposés par `POST /audit/mcp`. Première preuve réelle le 3 octobre à 13 h 10 : quatre appels, **cinq lignes** de journal, parce que sur `rita_portefeuille` l'API a servi (`succes`) puis la passerelle a refusé (`refuse NOT_AUTHORIZED`) : le journal montre le verrou à l'endroit exact où il agit.
+Deux ajouts du 3 octobre viennent du chapitre « Données » validé par le formateur. **Un contrôle des données, pas une simple déclaration, avec un défaut connu** : `rita_portefeuille` exige le mode démonstration (`RITA_MCP_PORTEFEUILLE=demo`) et compare les couples (ticker, quantité) servis à ceux du jeu d'exemple ; sinon il refuse (`NOT_AUTHORIZED`) sans exposer les données. **Un journal des appels d'outils** : une ligne dans la table `mcp_calls` par appel déclaré (`X-Client-Id`, `X-Outil`), statut, code d'erreur et durée, jamais le contenu ; les refus pris dans la passerelle sont déposés par `POST /audit/mcp`. Première preuve réelle le 3 octobre à 13 h 10 : quatre appels, **cinq lignes** de journal, car sur `rita_portefeuille` l'API a servi (`succes`) puis la passerelle a refusé (`NOT_AUTHORIZED`). **Mesuré le 10 octobre** : l'import et l'API exposent 7 des 10 positions valides du fichier d'exemple ; le verrou en attend 10 et refuse donc l'environnement de démonstration importé, sans fuite (preuve C20 du 10/10).
 
 ### 4.2 Les tests d'intégration
 

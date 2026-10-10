@@ -46,15 +46,15 @@ Dépôt : `Ganda15/rita-agent` (**privé** — accès par invitation collaborate
 ## Ce qu'est RITA
 
 Collecte de données boursières et macro-économiques → PostgreSQL (conception Merise) →
-API REST → briefing **rédigé** en français par Claude.
+API REST → briefing **rédigé** en français par un modèle de langage **fourni** (cascade de fournisseurs, `src/llm.py`).
 
 Une aide à la lecture, **jamais** une recommandation d'achat ou de vente : contrainte AMF,
-inscrite en dur dans le prompt du rédacteur et vérifiée par le garde-fou d'injection.
+inscrite en dur dans le prompt du rédacteur et vérifiée par le garde-fou de sortie (`guardrails/sortie.py`).
 
 ## Stack réelle
 
 - **Python** 3.13 (CI) / 3.14 (local) · **FastAPI** · **PostgreSQL** · **PySpark + Parquet**
-- **LangGraph** — graphe Scout → Rédacteur (`graph/workflow.py`)
+- **LangGraph** : graphe Scout → RAG → Rédacteur (`graph/workflow.py`)
 - **Modèle fourni** en cascade de fournisseurs approuvés UE : Azure AI Foundry (`gpt-5.4`, Data Zone EU) → Mistral
   (`mistral-large-4-0`, Large 4 sans réflexion, adresse européenne écrite dans le code) (`src/llm.py`, carte #82)
 - **Modèle FOURNI** — aucun entraînement, aucun réglage fin. Ce qui se teste n'est pas une
@@ -69,19 +69,19 @@ bigdata/    PySpark + Parquet — 11 partitions, 10 ans
 db/         schema.sql · requetes.sql · registre RGPD · importer.py
 docs/       rapports/ (un dossier par épreuve) · veille/ (C6)
 evals/      mesure des garde-fous — porte de qualité de la CI
-evidence/   preuves par compétence : C1/ … C5/
+evidence/   preuves par compétence : C1/ … C21/
 graph/      LangGraph — état + workflow
-guardrails/ garde-fou injection de prompt
+guardrails/ trois garde-fous : entrée, injection indirecte, sortie
 pipelines/  ingestion (ingest.py)
 scripts/    planification de la collecte
 sources/    les 5 types de sources C1
 src/        appel du modèle (llm.py)
-tests/      pytest — 30 fichiers
+tests/      pytest : 61 fichiers
 ```
 
 ## Chiffres à ne jamais réinventer : les vérifier avant de les citer
 
-**835** tests collectés (10/10) · **10** tables · **1** vue · **19** objets d'index (8 explicites) · **12** contraintes `CHECK` ·
+**836** tests collectés (10/10) · **10** tables · **1** vue · **19** objets d'index (8 explicites) · **12** contraintes `CHECK` ·
 **273 608** lignes importées en juillet, **278 473** cotations au 02/10 · **111** valeurs · **112** alias ·
 **7** positions · **11** partitions Parquet · OpenAPI **3.1.0** · **14** chemins documentés, dont **11** de données
 

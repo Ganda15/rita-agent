@@ -9,6 +9,35 @@
 
 ---
 
+## 2026-10-10 (nuit) : incident de clé Mistral, Mistral Large 4 choisi, règle UE seule gardée stricte
+
+**Manque découvert (incident)** : la vraie clé Mistral d'Era a été écrite dans `.env.example` et poussée sur la
+branche `mistral-ue` (`5fae28e`) ; le commit de correction (`8587a21`) en contenait une deuxième. Le hook
+`bloquer-secrets` protège contre l'agent, pas contre un commit fait à la main. Corrigé : les deux clés supprimées chez
+Mistral par Era, une clé neuve dans `.env` seulement, modèle remis aux valeurs de gabarit (`0a3f3f8`, vérifié sur
+GitHub). Les clés restent lisibles dans l'historique de la PR #88, révoquées. Désormais : commit local, vérification
+sans afficher de valeur, puis push ; un hook qui refuse un modèle d'environnement non gabarit est à proposer après
+le gel.
+
+**Décisions structurantes (Era)** : (1) **Mistral Large 4 sans réflexion** remplace Large 3 sur la branche
+`mistral-ue` : sur un vrai briefing (MC.PA, même prompt qu'Azure), Large 3 invente une date de séance, Large 4 non,
+pour 0,10 centime (preuve C8 sur la branche) ; (2) **Azure GPT-5.4 reste premier** (gratuit pour Era), l'ordre se
+tranchera sur le banc C7 ; (3) **règle UE seule gardée stricte** : Google News par position, seule source qui révèle
+les positions (vérifié dans le code ; aujourd'hui des positions simulées), se corrige par #81 après le gel, et devient
+bloquante avant tout chargement d'un portefeuille réel ; (4) **jeu de démonstration** : positions
+inventées sur des sociétés réellement cotées, Era ne détient pas ces titres.
+
+**Manques découverts** : Langfuse compte 0 $ pour Mistral (prix hors de sa grille) ; Microsoft documente des
+transferts limités hors de son EU Data Boundary, que le CEPD compte comme transferts (T6 pas entièrement prouvé,
+registre § 5) ; le registre ne décrivait pas la requête du soir vers Yahoo (yfinance) ; sur `develop`, `README.md`,
+`CLAUDE.md` et le guide d'exploitation disaient « Claude » pour le modèle et « 502 » pour une panne de fournisseur
+(500 en vrai), corrigés (`000ca50`). **Le verrou MCP refuse actuellement le jeu de démonstration importé** : il attend
+10 positions, alors que l'import et l'API en exposent 7 ; le refus du 3 octobre présenté dans E3 et dans la preuve
+C20 ne venait pas d'un portefeuille réel. E3 passe en v1.3 (toujours 20 pages), erratum C20 daté, correction après le
+gel.
+
+---
+
 ## 2026-10-10 (soir) : audit de propagation, les jumeaux restés faux après les corrections du jour
 
 **Décision structurante (règle d'Era)** : tout changement se propage partout où le même fait apparaît, pas seulement

@@ -15,14 +15,14 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-10, 10 h 30 (E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-10, soir (incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
 
 ## ▶️ PROCHAINE ACTION (réécrit le 04/10/2026 ; les ▶️ plus bas sont datés et dépassés)
 
-**Où on en est, en une phrase** : E1 v2.2 (5 pages, 10/10) et E3 v1.2 (20 pages, 10/10, **35 ✅ · 4 🟠 · 0 🔴** sur 39) sont complets côté
+**Où on en est, en une phrase** : E1 v2.2 (5 pages, 10/10) et E3 v1.3 (20 pages, 10/10, **35 ✅ · 4 🟠 · 0 🔴** sur 39) sont complets côté
 assistant et vérifiés contre le code et la base ; ils attendent ta relecture avant le gel du **jeudi 15/10** ; les deux alertes Langfuse sont en service ; la chaîne est
 **verte** (`c7d0f2e`, 10/10 : 804 passed en CI, Livraison verte) ; la production sert toujours le code du **19/08**.
 **Aucun code d'application avant le tag du 15/10.** Règle : **c'est Era qui envoie tout message** au formateur et à la
@@ -133,6 +133,47 @@ collectés), le classeur v4 (memory_audit « décision en attente », quatre fic
 Docker Hub : test d'abord, rouge, vert, mutation). Code gelé laissé tel quel et inscrit sur #82 : `src/llm.py:39`
 (déploiement par défaut `gpt-5.4`, supprimé le 09/10), `src/llm.py:79` et `tests/test_llm.py:109` (« Global Standard »).
 
+**10/10, après-midi et soir, ce qui a changé** (`develop` : plusieurs commits locaux du 10/10, pas encore poussés, vérifier `git status --branch` avant tout push ; branche `mistral-ue`,
+PR #88 en brouillon : `0a3f3f8` poussé, CI verte ; `2a7f18c` et `b3c76b5` pas encore poussés) :
+- **Incident, clé Mistral** : la vraie clé d'Era a été écrite dans `.env.example` et poussée (`5fae28e`), puis une
+  deuxième dans le commit de correction (`8587a21`). Era a supprimé les deux clés chez Mistral et en a créé une neuve,
+  dans `.env` seulement (empreinte différente des deux, vérifiée sans afficher la clé) ; sur GitHub, le modèle n'a plus
+  que des valeurs de gabarit (`0a3f3f8`, lu sur `origin/mistral-ue`). Les deux clés restent lisibles dans l'historique
+  de la PR #88, révoquées donc inutilisables ; fusion en squash après le gel. Méthode désormais : commit local,
+  vérification sans afficher de valeur, puis push.
+- **`develop`, `000ca50`** : `README.md`, `CLAUDE.md` et `docs/EXPLOITATION.md` décrivent la cascade réelle de
+  `develop` (Azure `gpt-5.4` d'abord, Claude par Anthropic puis OpenRouter en secours) ; une panne de tous les
+  fournisseurs répond **500** (`api/main.py:96-105`), le 502 est réservé aux données manquantes du scout ; PDF du
+  guide régénéré, 11 pages, page 8 regardée.
+- **Premiers vrais briefings Mistral** (MC.PA, même prompt qu'Azure octet pour octet) : Large 3 invente une date de
+  séance absente du prompt ; Large 4 avec sa réflexion par défaut rend une liste de blocs sans texte (500) ; **Large 4
+  sans réflexion** (`reasoning_effort: "none"`) : 3,09 s, 0,10 centime, garde-fou AMF conforme, aucune date inventée.
+  **Décision d'Era : Large 4.** Code et tests d'abord (5 rouges puis verts, suite **847 passed** sur la branche),
+  preuve `evidence/C8/preuve-briefing-mistral-2026-10-10.md` (sur la branche). Langfuse compte 0 $ pour Mistral : le
+  prix du modèle n'est pas dans sa grille.
+- **Ordre de la cascade** : Azure GPT-5.4 reste premier (gratuit pour Era) pour les essais de tous les jours ; Mistral
+  sert aux preuves ; l'ordre se tranchera sur le banc C7 après le gel.
+- **Règle UE seule gardée stricte** (choix d'Era) ; Google News par position se corrige par #81 après le gel, telle
+  qu'écrite. Vérifié dans le code : FRED, yfinance, BCE et Boursorama ne révèlent pas les positions ; seule Google News
+  les révèle (`pipelines/ingest.py:283-289`) ; aujourd'hui ce sont des positions simulées et l'adresse IP, et #81 est
+  bloquante avant tout chargement d'un portefeuille réel. Un transfert se juge par le texte du CEPD (lignes directrices 05/2021,
+  § 9 : un accès à distance depuis un pays tiers est un transfert) ; Microsoft documente des transferts limités hors
+  de son EU Data Boundary : T6 n'est pas entièrement prouvé côté Azure (registre, § 5).
+- **Jeu de démonstration** : positions inventées sur des sociétés réellement cotées, choisies dans la liste suivie ;
+  Era ne détient pas ces titres (sa déclaration du 10/10). Le fichier de preuve
+  `evidence/C17/mesures-2026-10-03/entrees/donnees_portefeuille.json` : ses 7 positions sont toutes dans le jeu d'exemple
+  (12 lignes dans le fichier, 10 gardées par le lecteur, 7 importées, 3 hors univers) : aucune position réelle dans Git.
+- **Défaut trouvé en vérifiant : le verrou de démonstration MCP refuse le jeu de démonstration importé dans
+  l'environnement actuel.** Le vrai code du verrou, lancé sur la
+  base du 03/10, rend `False` : il compare aux 10 lignes du fichier, l'import n'en garde que 7. Le refus du 03/10 (E3,
+  section 4.1 ; preuve C20) ne venait donc pas d'un portefeuille réel. Échec fermé, sans fuite ; le test vert simule
+  une réponse de 10 positions. **E3 passe en v1.3** (une phrase en 4.1, toujours 20 pages, page 5 regardée ; copies
+  OneDrive v1.3 en français et en anglais), erratum `evidence/C20/erratum-verrou-demonstration-2026-10-10.md` (l'ancienne
+  preuve n'est pas réécrite). Correction après le gel, carte à créer.
+- **À faire par Era** : `.env` ligne 25, `MISTRAL_MODEL=mistral-large-4-0` ; pousser `mistral-ue` puis `develop` et
+  lire la CI ; documenter comment le fichier local non versionné `data/positions.csv` du 31/07 a été constitué
+  (Era n'a jamais investi).
+
 **📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.2, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :
 
@@ -190,7 +231,7 @@ Nadège et Elena aideront particulièrement à la présentation.
    2 cartes « En cours », remplir le §6, coller la ligne du §7 ici, commiter. Seul moyen de fermer C16.1. Vérifier au passage
    que le formateur a bien accès au tableau (C16.4, je ne peux pas le lire).
 2. **Relire** `docs/rapports/E1/rapport-E1.pdf` (v2.2 du 10/10 ; la v2.1 du 04/10 avait corrigé cinq affirmations fausses, voir l'entrée
-   du 04/10 plus bas) et `docs/rapports/E3/rapport-E3.pdf` (v1.2 du 10/10, 20 pages) ; corrections dans le chat.
+   du 04/10 plus bas) et `docs/rapports/E3/rapport-E3.pdf` (v1.3 du 10/10, 20 pages) ; corrections dans le chat.
 3. **Noter les 60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1 ou 2), **sans ouvrir** le fichier `-cle.csv`.
    C'est ce qui fait passer la recommandation C7 de « provisoire » à « argumentée ».
 4. **Envoyer au formateur** le message ci-dessous, à copier tel quel ; joindre `docs/EXPLOITATION.pdf` (régénéré le 03/10 au soir,
@@ -244,7 +285,7 @@ fournisseurs, S4 refus journalisés, S3 limite de débit, S1 en-têtes de sécur
 |---|---|---|
 | E1 | v2.2 du 10/10, 5 pages (date, chiffres des tests datés, `memory_audit` reporté, texte alternatif du schéma) ; vérifiée contre le code et la base le 04/10 | ta relecture ; question de l'annexe au formateur ; gel le 15/10 |
 | E2 | 6 ✅ · 13 🟠 · 1 🔴 sur 20 | notation C7, remise de la documentation (C8.5, #43), Anthropic en direct |
-| E3 | v1.2 du 10/10, 20 pages · 35 ✅ · 4 🟠 · 0 🔴 sur 39 | ta relecture ; les 4 🟠 se ferment après le gel (#73, #75, accessibilité de l'outil, serveur non tracé) ; gel le 15/10 |
+| E3 | v1.3 du 10/10, 20 pages · 35 ✅ · 4 🟠 · 0 🔴 sur 39 | ta relecture ; les 4 🟠 se ferment après le gel (#73, #75, accessibilité de l'outil, serveur non tracé) ; gel le 15/10 |
 | E4 | 27 ✅ · 9 ⚠️ · 0 ❌ sur 36 | rapport à rédiger ; C16 (revues notées) ; C17.1, .2, .5, .8, .11 ; C19.4 au tag du 15/10 |
 | E5 | non recompté | rapport ; #70 restauration ; C20 et C21 |
 
@@ -1515,6 +1556,9 @@ fabriquée, donc irrecevable pour C6.
 
 ---
 
+> 📸 **Photographie historique au 03/10/2026 : ne pas utiliser comme état courant.** Les trois sections suivantes
+> (livrables, compétences, manques) décrivent le 3 octobre ; l'état du jour est en tête de ce fichier.
+
 ## Les 5 livrables
 
 | Épreuve | Compét. | État | Tag Git |
@@ -1525,7 +1569,7 @@ fabriquée, donc irrecevable pour C6.
 | **E4** — Application | C14–C19 | 🔨 **recompté le 03/10 : 27 ✅ 9 ⚠️ 0 ❌ après T3** (`docs/rapports/E4/recomptage-criteres-2026-10-03.md` ; 23/13/0 au 26/09, C18 à 6/6 le 03/10) ; rapport 0 page ; écran 2 sans récit utilisateur (#24), RGAA non outillé (#25) ; gel le 25/10 | `livrable-E4-v1` le 25/10 |
 | **E5** — Monitorage | C20–C21 | 🔨 C20 : fraîcheur, `request_id`, journal `mcp_calls`, chaîne d'alerte exécutée une fois ; C21 : 6 post-mortems, INC-005 et INC-006 ; rapport 0 page ; aucune alerte réelle encore partie ; dû le 05/11 | — |
 
-## Ce qui existe vraiment, compétence par compétence
+## Ce qui existait au 03/10/2026, compétence par compétence
 
 | C | Fait | Manque |
 |---|---|---|

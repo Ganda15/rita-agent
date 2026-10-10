@@ -11,7 +11,7 @@ recommandation d'achat ou de vente (contrainte AMF, vérifiée par `guardrails/`
 L'agent implémente ; l'humain garde l'architecture, la sécurité et le seuil des évals.
 
 ## Commandes — depuis la racine du dépôt
-- Tests : `C:\Python314\python.exe -m pytest -q` (dernier passage complet sur le poste : 820 passed, 2 skipped, 2 xfailed, 04/10/2026 ; smoke UI Playwright inclus)
+- Tests : `C:\Python314\python.exe -m pytest -q` (smoke UI Playwright inclus ; le dernier résultat daté est dans `README.md`)
 - Couverture : `C:\Python314\python.exe -m pytest --cov` — seuil `fail_under = 90` dans `.coveragerc`
 - Garde-fous : `C:\Python314\python.exe -m evals.mesurer_gardefou` (taux de blocage + faux positifs)
 - Collecte à blanc : `C:\Python314\python.exe -X utf8 -m pipelines.ingest --simulation`

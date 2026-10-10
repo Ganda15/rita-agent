@@ -67,7 +67,7 @@ divulgation cause un préjudice réel, donc à protéger sérieusement.
 | **Base légale** (art. 6) | **Intérêt légitime** de la personne concernée, qui est l'utilisateur lui-même et l'unique destinataire |
 | **Personnes concernées** | 1 — l'utilisateur |
 | **Catégories de données** | Ticker détenu · quantité · prix de revient unitaire (PRU) · date d'achat · devise |
-| **Ce que ça révèle** | La **situation financière** : composition du patrimoine, montants investis, plus ou moins-values |
+| **Ce que ça révèle** | La **situation financière** : composition du patrimoine, montants investis, plus ou moins-values (précision du 10/10 : au 10/10, la base de développement et de preuve contient uniquement des positions inventées ; quantités et PRU ne décrivent aucun patrimoine réel ; T1 devient un traitement de portefeuille personnel dès le chargement d'un CSV réel) |
 | **Support** | Table `position` (PostgreSQL) · fichier CSV source |
 | **Destinataires** | Aucun pour les quantités, PRU et dates : elles restent locales. **Les noms des sociétés détenues, eux, partent chaque soir vers Google News** (T7, relevé le 2026-10-05 ; ce registre disait « aucun » à tort) |
 | **Transfert hors UE** | Table et fichier : non. Noms des sociétés détenues : **probable**, voir T7 |
@@ -214,7 +214,7 @@ des données ») et une mesure dans le code plutôt qu'une supposition :
 | **Durée de conservation** | Selon chaque fournisseur, **non vérifiée** |
 | **Lien avec T3** | Le même prompt et la même réponse sont tracés dans Langfuse (T3) |
 | **Inventaire champ par champ** | À faire : carte #68 (tableau champ, origine, destinataire, durée, et un test qui échoue si le prompt contient un champ hors liste) |
-| **Correction** (carte #82, branche `mistral-ue`, fusionnée après le gel du 15/10) | **Faite dans le code** : cascade limitée aux fournisseurs approuvés, Azure en Data Zone EU puis Mistral par son adresse européenne ; Anthropic et OpenRouter retirés de `src/llm.py` et la bibliothèque `anthropic` des dépendances ; un nom non approuvé dans `LLM_ORDRE` est ignoré (tests de `tests/test_llm.py`). **Reste** : lire le contrat de Mistral ; la réponse 503 `AUCUN_FOURNISSEUR` (`docs/conception/frontend/refonte-2026-10.md`, § 6) n'est pas construite : sans fournisseur disponible, l'API répond une erreur 500 générique, avec son identifiant de requête |
+| **Correction** (carte #82, branche `mistral-ue`, fusionnée après le gel du 15/10) | **Faite dans le code** : cascade limitée aux fournisseurs approuvés, Azure en Data Zone EU puis Mistral Large 4 sans réflexion (`mistral-large-4-0`) par son adresse européenne ; Anthropic et OpenRouter retirés de `src/llm.py` et la bibliothèque `anthropic` des dépendances ; un nom non approuvé dans `LLM_ORDRE` est ignoré (tests de `tests/test_llm.py`). **Reste** : lire le contrat de Mistral et passer le banc C7 ; la réponse 503 `AUCUN_FOURNISSEUR` (`docs/conception/frontend/refonte-2026-10.md`, § 6) n'est pas construite : sans fournisseur disponible, l'API répond une erreur 500 générique, avec son identifiant de requête |
 
 ### T7 : Recherche d'actualités sur les valeurs détenues (Google News) : ✅ **ACTIF depuis le 2026-08-28**, inscrit le 2026-10-05 (non conforme à la règle UE seule)
 
@@ -223,7 +223,7 @@ des données ») et une mesure dans le code plutôt qu'une supposition :
 | **Finalité** | Collecter chaque soir les articles de presse sur les sociétés du portefeuille |
 | **Base légale** | Intérêt légitime |
 | **Catégories de données** | **Le nom de chaque société présente dans la table `position`** (positions closes comprises : `SELECT DISTINCT v.nom_officiel FROM position p JOIN valeur v`, `pipelines/ingest.py:283-289`), placé dans l'adresse d'une requête Google News avec le mot « bourse » et une fenêtre de dates (`sources/rss.py:56-89`) ; l'adresse IP du poste |
-| **Ce que ça révèle** | **La composition du portefeuille**, sans les quantités ni les montants |
+| **Ce que ça révèle** | **La composition du portefeuille**, sans les quantités ni les montants (précision du 10/10 : la base ne contient aujourd'hui que des positions simulées sur des sociétés cotées ; Google reçoit ces noms et l'adresse IP, et recevrait la composition d'un vrai portefeuille dès qu'il serait chargé) |
 | **Destinataire** | Google, service Google News (`news.google.com`) ; entité qui traite et lieu de traitement **non vérifiés** |
 | **Transfert hors UE** | **Probable, non vérifié. Non conforme à la règle UE seule** (§ 0) |
 | **Fréquence** | Chaque soir à 19 h (collecte planifiée) : une requête par société détenue (10 flux le 03/10 : 3 généraux et 7 par société) |
@@ -293,9 +293,12 @@ utilisateur.
 | 2 | **Hook Git `pre-commit`** interdisant l'ajout d'un fichier personnel (P4) | 🟠 moyenne |
 | 3 | Brancher P1 et P2 sur APScheduler (aujourd'hui : lancement manuel) | 🟠 moyenne |
 | 4 | Chiffrer la sauvegarde de la base si elle sort de la machine | 🟡 basse tant que tout est local |
-| 5 | **T7 (carte #81) : arrêter d'envoyer à Google News les noms des sociétés détenues** (liste de veille indépendante des positions, sources approuvées) | 🔴 haute : révèle chaque soir la composition du portefeuille hors de l'UE |
+| 5 | **T7 (carte #81) : arrêter d'envoyer à Google News les noms des sociétés détenues** (liste de veille indépendante des positions, sources approuvées) | 🔴 haute : révèle chaque soir la composition du portefeuille hors de l'UE (précision du 10/10 : aujourd'hui des positions simulées et l'adresse IP ; **bloquante avant tout chargement d'un portefeuille réel**) |
 | 6 | **T6 (cartes #82 et #68) : n'appeler que des fournisseurs de modèle approuvés UE**, sans repli vers un fournisseur non approuvé ; **fait le 2026-10-09 pour le premier fournisseur** (Azure en Data Zone EU, région mesurée) ; **fait par la carte #82 pour les replis** (Anthropic et OpenRouter retirés du code, Mistral par son adresse européenne) ; reste : lire le contrat de Mistral, relire en entier celui de Microsoft, construire la réponse 503 | 🟠 moyenne : la conformité de Mistral dépend de son contrat, pas encore lu |
 | 7 | **Transferts hors UE (T3, T6)** : pour chaque destinataire, vérifier la certification au Data Privacy Framework ; à défaut, faire l'**analyse d'impact du transfert (AITD)** exigée par la CNIL pour les clauses types ; documenter contrats applicables, données envoyées, sous-traitants, lieux et durées | 🟠 moyenne pour le RGPD ; sans effet sur la règle UE seule, qui interdit le transfert de toute façon |
+| 8 | **T6, Azure** : Microsoft documente des cas limités de transfert hors de son EU Data Boundary, dont l'accès à distance de son personnel (https://learn.microsoft.com/en-us/privacy/eudb/eu-data-boundary-learn) ; un accès à distance depuis un pays tiers est un transfert (CEPD, lignes directrices 05/2021, § 9). Lire ces cas avant de dire T6 conforme à la règle UE seule | 🟠 moyenne |
+| 9 | **T1, jeu de démonstration** : la base contient des positions inventées sur des sociétés réellement cotées (déclaration d'Era du 2026-10-10 : il ne détient pas ces titres) ; 12 lignes dans le fichier d'exemple, 10 gardées par le lecteur, 7 importées (3 hors univers) ; T1 aligné le 10/10 ; reste à documenter comment le fichier local non versionné `data/positions.csv` a été constitué | 🟡 basse |
+| 10 | **yfinance (Yahoo, États-Unis)** : la requête du soir envoie les 108 valeurs encore cotées (les 3 radiées ne sont plus demandées) et l'adresse IP du poste ; elle ne révèle pas les positions ; à inscrire (ce qui part, où, sous quelle lecture du CEPD) | 🟡 basse |
 
 > 🟠 **Statut des transferts au 2026-10-05 : garanties contractuelles identifiées ; vérification propre à RITA
 > incomplète.** Trouver une clause (DPA, clauses contractuelles types) montre qu'une garantie existe, pas que la
@@ -308,7 +311,7 @@ utilisateur.
 > AITD ; la certification se vérifie, elle ne se suppose pas. **Et un transfert licite au regard du RGPD violerait
 > quand même la règle UE seule du projet.**
 
-> Un registre qui ne signale aucune faiblesse n'est pas crédible. Ces sept points sont
+> Un registre qui ne signale aucune faiblesse n'est pas crédible. Ces points (le premier est fait) sont
 > ouverts, et ils seront présentés comme tels.
 
 ---
