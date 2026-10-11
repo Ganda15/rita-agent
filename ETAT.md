@@ -15,14 +15,14 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-11 (politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-11 (E1 v2.3 : passe RGPD et exactitude, revue d'E1 close ; politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
 
 ## ▶️ PROCHAINE ACTION (réécrit le 04/10/2026 ; les ▶️ plus bas sont datés et dépassés)
 
-**Où on en est, en une phrase** : E1 v2.2 (5 pages, 10/10) et E3 v1.3 (20 pages, 10/10, **35 ✅ · 4 🟠 · 0 🔴** sur 39) sont complets côté
+**Où on en est, en une phrase** : E1 v2.3 (5 pages, 11/10) et E3 v1.3 (20 pages, 10/10, **35 ✅ · 4 🟠 · 0 🔴** sur 39) sont complets côté
 assistant et vérifiés contre le code et la base ; ils attendent ta relecture avant le gel du **jeudi 15/10** ; les deux alertes Langfuse sont en service ; la chaîne est
 **verte** (`c7d0f2e`, 10/10 : 804 passed en CI, Livraison verte) ; la production sert toujours le code du **19/08**.
 **Aucun code d'application avant le tag du 15/10.** Règle : **c'est Era qui envoie tout message** au formateur et à la
@@ -89,6 +89,22 @@ remplacer les trois fichiers de `docs/competences/` par ceux du dossier v4, comm
 Fichier, Importer, la synthèse v4, « Remplacer la feuille de calcul » (le lien ne change pas) ; (4) signaler au
 formateur que son modèle omet deux critères de C19 (Era envoie) ; (5) relire la colonne « Rédaction » avec la note
 d'étude et écrire sa version.
+
+**E1 v2.3 (11/10), passe documentaire validée par Era, revue d'E1 close.** Huit corrections, vérifiées dans le code
+et le registre, toujours 5 pages (lignes par page identiques, pages regardées une à une) : (1) § 7 réécrit : positions
+inventées, CSV de démonstration versionné, `mcp_calls` déjà personnel (registre T5), règle UE seule « à établir » pour
+T3, T6 et T7, replis désactivés sur le poste mais présents par défaut, exemption domestique (RGPD art. 2.2.c) à
+examiner, intérêt légitime (art. 6.1.f) retenu à titre provisoire, justification à documenter ; (2) légende et
+description du MCD : « seule entité prévue pour des données personnelles (positions inventées à ce jour) » ; (3) dépôt
+privé « conçu pour » un portefeuille réel ; (4) connexion PostgreSQL **principale** ouverte une fois, l'indexation ouvre
+la sienne (`pipelines/ingest.py:454`), HTTP géré par chaque source ; (5) le scout lit la base par les modules
+d'indicateurs avec `DATABASE_URL` (`indicateurs/socle.py:136-141`) ; (6) `article` et `macro_observation` sont des
+données collectées, pas des tables techniques ; (7) **ordre d'installation corrigé** : `bigdata.build_parquet` avant
+`db.importer`, qui lit le Parquet (`db/importer.py:114-117`), la séquence échouait sur un dépôt vierge ; (8) version et
+date. Registre : § 0 (réserve de l'art. 2.2.c), T1 (base légale provisoire), glossaire. Copies OneDrive du 11/10
+(français, et anglais en `.md` et `.pdf`) ; addendum « corrections du 11/10 » dans l'oral E1 v2 (Obsidian).
+**Reste, après le gel** : le commentaire de `db/schema.sql:154` répète « intérêt légitime de la personne concernée »
+(zone sous garde, plan d'abord) ; rédiger la mise en balance de l'intérêt légitime et examiner l'exemption domestique.
 
 **E1 v2.2 (10/10, 10 h), décision d'Era « fix points 1 to 4 before the freeze »**, relevés en traduisant E1 en
 anglais : (1) la date (4/10) était en retard sur le contenu (zone UE du 09/10) : 10 octobre, version 2.2 ;
@@ -292,7 +308,7 @@ Nadège et Elena aideront particulièrement à la présentation.
    5 cartes proposées à Fait, ajouter au tableau les 7 issues ouvertes absentes, dire si la revue du 28/09 a eu lieu, garder
    2 cartes « En cours », remplir le §6, coller la ligne du §7 ici, commiter. Seul moyen de fermer C16.1. Vérifier au passage
    que le formateur a bien accès au tableau (C16.4, je ne peux pas le lire).
-2. **Relire** `docs/rapports/E1/rapport-E1.pdf` (v2.2 du 10/10 ; la v2.1 du 04/10 avait corrigé cinq affirmations fausses, voir l'entrée
+2. **Relire** `docs/rapports/E1/rapport-E1.pdf` (v2.3 du 11/10 ; avant, v2.2 du 10/10 ; la v2.1 du 04/10 avait corrigé cinq affirmations fausses, voir l'entrée
    du 04/10 plus bas) et `docs/rapports/E3/rapport-E3.pdf` (v1.3 du 10/10, 20 pages) ; corrections dans le chat.
 3. *(remplacé le 11/10, voir le plan E2 : on note les nouveaux textes Azure contre Mistral Large 4.)* **Noter les 60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1 ou 2), **sans ouvrir** le fichier `-cle.csv`.
    C'est ce qui fait passer la recommandation C7 de « provisoire » à « argumentée ».
@@ -346,7 +362,7 @@ fournisseurs, S4 refus journalisés, S3 limite de débit, S1 en-têtes de sécur
 
 | Épreuve | Décompte | Ce qui manque surtout |
 |---|---|---|
-| E1 | v2.2 du 10/10, 5 pages (date, chiffres des tests datés, `memory_audit` reporté, texte alternatif du schéma) ; vérifiée contre le code et la base le 04/10 | ta relecture ; question de l'annexe au formateur ; gel le 15/10 |
+| E1 | v2.3 du 11/10, 5 pages (§ 7 RGPD réécrit, ordre d'installation, connexions, scout, tables hors MCD ; la v2.2 du 10/10 : date, chiffres des tests datés, `memory_audit` reporté, texte alternatif du schéma) ; vérifiée contre le code et la base le 04/10 | ta relecture ; question de l'annexe au formateur ; gel le 15/10 |
 | E2 | 6 ✅ · 13 🟠 · 1 🔴 sur 20 | banc C7 Azure Data Zone EU contre Mistral Large 4 et notation à l'aveugle des nouveaux textes ; guide renvoyé après la fusion de la PR #88 (C8.5, #43) |
 | E3 | v1.3 du 10/10, 20 pages · 35 ✅ · 4 🟠 · 0 🔴 sur 39 | ta relecture ; les 4 🟠 se ferment après le gel (#73, #75, accessibilité de l'outil, serveur non tracé) ; gel le 15/10 |
 | E4 | 27 ✅ · 9 ⚠️ · 0 ❌ sur 36 | rapport à rédiger ; C16 (revues notées) ; C17.1, .2, .5, .8, .11 ; C19.4 au tag du 15/10 |

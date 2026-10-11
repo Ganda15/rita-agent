@@ -9,6 +9,19 @@
 
 ---
 
+## 2026-10-11 (après-midi) : E1 v2.3, passe RGPD et exactitude, revue d'E1 close
+
+**Manques découverts et corrigés dans E1** (relecture d'E1, chaque point vérifié dans le code et le registre) :
+E1 disait qu'une seule table porte des données personnelles, alors que le registre classe `mcp_calls` (T5) comme
+personnel ; il disait le fichier source jamais versionné, alors que le jeu de démonstration l'est ; il donnait
+l'intérêt légitime comme base acquise, sans la réserve de l'exemption domestique (RGPD art. 2.2.c) ni la mise en
+balance qu'exige l'art. 6.1.f ; **la séquence d'installation échouait sur un dépôt vierge** (l'import lit le Parquet,
+construit après) ; deux phrases sur les connexions et une sur les tables étaient inexactes. E1 passe en v2.3, toujours
+5 pages ; registre aligné (§ 0, T1, glossaire). Reste après le gel : le commentaire de `db/schema.sql`, la mise en
+balance écrite, l'examen de l'exemption domestique.
+
+---
+
 ## 2026-10-11 : Azure seul jusqu'au contrat de Mistral, calendrier final, défaut Docker corrigé
 
 **Décisions structurantes (Era)** : (1) appels réels par Azure GPT-5.4 seul (`LLM_ORDRE=foundry`) tant que le

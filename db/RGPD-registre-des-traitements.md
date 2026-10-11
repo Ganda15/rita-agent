@@ -11,7 +11,7 @@
 **Base réglementaire** : RGPD (Règlement Général sur la Protection des Données,
 UE 2016/679), **article 30** — registre des activités de traitement.
 
-**Dernière mise à jour** : 2026-10-10 *(glossaire et suites du 02/10 alignés sur la lecture des contrats du 05/10 : clauses contractuelles types prévues, Data Privacy Framework non vérifié ; avant, le 2026-10-09 : Azure AI Foundry passé en Data Zone Standard EU par Era, région mesurée
+**Dernière mise à jour** : 2026-10-11 *(exemption domestique de l'article 2.2.c ajoutée au § 0, à examiner ; intérêt légitime de T1 retenu à titre provisoire, justification à documenter ; avant, le 2026-10-10 : glossaire et suites du 02/10 alignés sur la lecture des contrats du 05/10 : clauses contractuelles types prévues, Data Privacy Framework non vérifié ; avant, le 2026-10-09 : Azure AI Foundry passé en Data Zone Standard EU par Era, région mesurée
 Sweden Central sur trois appels réels, T6 partiellement corrigé ; avant, le 2026-10-05 : règle « UE seule » posée par Era ; T1 corrigé : les noms des sociétés détenues partent vers Google News ; T6, fournisseurs du modèle, et T7, requêtes Google News, inscrits ; traces de test supprimées le 04/10 ; le même jour, garanties contractuelles des destinataires relues : identifiées,
 vérification propre à RITA incomplète, voir § 5)*
 
@@ -26,8 +26,11 @@ RITA est un **projet personnel mono-utilisateur**. Era est à la fois :
 - le **responsable de traitement** — celui qui décide pourquoi et comment les données sont traitées ;
 - la **personne concernée** — celui dont les données sont traitées.
 
-Cette situation **n'exonère de rien** : dès qu'un traitement automatisé porte sur des
-données personnelles, le RGPD s'applique. Elle simplifie une chose : il n'y a pas de demande
+Cette situation **n'exonère de rien d'office** : le RGPD s'applique à tout traitement automatisé de
+données personnelles, sauf l'exemption de l'**article 2.2.c** (activité « strictement personnelle ou domestique »).
+Précision du 11/10 : cette exemption n'est pas invoquée sans avoir été examinée (RITA sert aussi une certification,
+présentée à un jury, et s'appuie sur des sous-traitants) ; en attendant, ce registre est tenu comme si le RGPD
+s'appliquait. La situation simplifie une chose : il n'y a pas de demande
 d'accès d'un tiers à instruire. Elle ne dispense pas d'encadrer les destinataires extérieurs
 (Langfuse en T3, les fournisseurs du modèle en T6, Google en T7).
 
@@ -64,7 +67,7 @@ divulgation cause un préjudice réel, donc à protéger sérieusement.
 | Rubrique | Contenu |
 |---|---|
 | **Finalité** | Calculer la valorisation et la performance du portefeuille pour produire le briefing quotidien |
-| **Base légale** (art. 6) | **Intérêt légitime** de la personne concernée, qui est l'utilisateur lui-même et l'unique destinataire |
+| **Base légale** (art. 6) | **Intérêt légitime** (art. 6.1.f), retenu **à titre provisoire** si le RGPD s'applique (exemption domestique de l'art. 2.2.c à examiner, § 0) : l'intérêt du responsable, qui est aussi l'utilisateur et l'unique destinataire. Sa justification (intérêt, nécessité, mise en balance) reste à documenter (précision du 11/10) |
 | **Personnes concernées** | 1 — l'utilisateur |
 | **Catégories de données** | Ticker détenu · quantité · prix de revient unitaire (PRU) · date d'achat · devise |
 | **Ce que ça révèle** | La **situation financière** : composition du patrimoine, montants investis, plus ou moins-values (précision du 10/10 : au 10/10, la base de développement et de preuve contient uniquement des positions inventées ; quantités et PRU ne décrivent aucun patrimoine réel ; T1 devient un traitement de portefeuille personnel dès le chargement d'un CSV réel) |
@@ -327,8 +330,8 @@ utilisateur.
 | **Responsable de traitement** | Celui qui décide **pourquoi** et **comment** on traite | Era |
 | **Personne concernée** | Celui **dont** on traite les données | Era aussi, ici |
 | **Sous-traitant** | Un tiers qui traite pour le compte du responsable | Langfuse GmbH et le groupe ClickHouse (T3) |
-| **Base légale** (art. 6) | La justification juridique du traitement — il en faut **une** parmi six | Ici : intérêt légitime |
-| **Intérêt légitime** | Base légale : le traitement sert un intérêt réel sans léser la personne | Celle retenue pour RITA |
+| **Base légale** (art. 6) | La justification juridique du traitement — il en faut **une** parmi six | Ici : intérêt légitime, retenu à titre provisoire (§ 0, T1) |
+| **Intérêt légitime** | Base légale (art. 6.1.f) : un intérêt réel du responsable ou d'un tiers, un traitement nécessaire, et une mise en balance qui ne lèse pas la personne | Retenue à titre provisoire pour RITA ; justification à documenter |
 | **Registre des traitements** (art. 30) | La liste écrite de tous les traitements | Ce document |
 | **Minimisation** (art. 5) | Ne collecter que le strict nécessaire | On ne stocke ni nom ni adresse |
 | **Limitation de conservation** (art. 5) | Ne pas garder indéfiniment | D'où les durées du §1 |

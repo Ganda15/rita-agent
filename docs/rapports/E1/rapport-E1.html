@@ -78,7 +78,7 @@ footer.sign{ margin-top:4pt; padding-top:3.5pt; border-top:.75pt solid var(--rul
     <div><dt>Candidat</dt><dd>Eramalingam Gandakumar<small>erama70@outlook.com<br>ganda70@gmail.com</small></dd></div>
     <div><dt>Organisme</dt><dd>Simplon × Wild Code School<small>Session 2026</small></dd></div>
     <div><dt>Dépôt du code</dt><dd>Ganda15/rita-agent<small>github.com · tag <code>livrable-E1-v2</code> à poser le 15/10</small></dd></div>
-    <div><dt>Date</dt><dd>10 octobre 2026<small>version 2.2, gel prévu le 15 octobre 2026</small></dd></div>
+    <div><dt>Date</dt><dd>11 octobre 2026<small>version 2.3, gel prévu le 15 octobre 2026</small></dd></div>
   </dl>
 </header>
 
@@ -162,7 +162,7 @@ parisienne du 17/09), un sans perte, deux incomplets (articles des 02 et 03/09 p
   <tr><td><strong>Fichier</strong></td><td class="mono">sources/positions.py<br>export courtier</td>
     <td>Positions détenues. Quatre pièges d'un export courtier : séparateur <code>;</code>, encodage <code>cp1252</code>, nombres français avec espace insécable, en-têtes variables. Depuis le 03/10 l'import est une <strong>réconciliation</strong> : une ligne retirée du fichier est close à la date du jour, jamais supprimée (§&nbsp;7).</td></tr>
   <tr><td><strong>Base de données</strong></td><td class="mono">sources/database.py</td>
-    <td>Relecture programmatique du stock constitué, en requêtes paramétrées, par le nœud scout. Un rôle <code>rita_lecture</code> (SELECT seul) existe pour tout outil d'agent qui lirait la base directement ; au 3 octobre aucun ne le fait, la passerelle MCP passe par l'API.</td></tr>
+    <td>Relecture programmatique du stock constitué, en requêtes paramétrées, par le nœud scout, via les modules d'indicateurs (<code>DATABASE_URL</code>). Le rôle <code>rita_lecture</code> (SELECT seul) sert aux outils d'agent extérieurs ; au 3 octobre aucun ne lit la base, la passerelle MCP passe par l'API.</td></tr>
   <tr><td><strong>Big data</strong></td><td class="mono">bigdata/extract_spark.py</td>
     <td>Lecture d'un jeu Parquet partitionné par année via Spark, voir §&nbsp;6.2 ; figure : <code>bigdata/schemas/SCHEMA-BIGDATA-partition-pruning.png</code>.</td></tr>
 </table>
@@ -171,7 +171,7 @@ parisienne du 17/09), un sans perte, deux incomplets (articles des 02 et 03/09 p
 <table>
   <tr><th style="width:26%">Élément attendu</th><th style="width:10%">Repère</th><th>Mise en œuvre dans <code>pipelines/ingest.py</code></th></tr>
   <tr><td>Point de lancement</td><td class="mono">[1]</td><td><code>executer()</code> et une interface en ligne de commande : choix des étapes, période de rattrapage, mode simulation</td></tr>
-  <tr><td>Initialisation des connexions</td><td class="mono">[2]</td><td>connexion PostgreSQL et clients HTTP ouverts une seule fois</td></tr>
+  <tr><td>Initialisation des connexions</td><td class="mono">[2]</td><td>connexion PostgreSQL principale ouverte une fois ; HTTP géré par chaque source</td></tr>
   <tr><td>Règles logiques</td><td class="mono">[3]</td><td>une fonction par source, indépendante des autres ; six étapes : taux, macro, cotations, articles, scraping, indexation</td></tr>
   <tr><td>Gestion des erreurs</td><td class="mono">[4]</td><td>l'étape en échec est annulée et tracée ; <strong>les suivantes continuent</strong> ; zéro ligne reçue vaut échec</td></tr>
   <tr><td>Fin de traitement</td><td class="mono">[5]</td><td>bilan par étape (lues, écrites, rejetées) dans le journal, et depuis le 03/10 un <strong>manifeste JSON</strong> par exécution : versions, comptages, erreurs sans clé</td></tr>
@@ -179,7 +179,7 @@ parisienne du 17/09), un sans perte, deux incomplets (articles des 02 et 03/09 p
 </table>
 
 <p><strong>Versionnement.</strong> Tout le code est sur <code>github.com/Ganda15/rita-agent</code> ; chaque livrable est un tag que
-GitHub interdit de déplacer ou supprimer. Dépôt privé par décision (il décrit un portefeuille réel) ; formateur et jury y accèdent comme collaborateurs.</p>
+GitHub interdit de déplacer ou supprimer. Dépôt privé par décision (il est conçu pour un portefeuille réel) ; formateur et jury y accèdent comme collaborateurs.</p>
 
 <h2><span class="n">4</span> Analyse exploratoire, nettoyage et agrégation <span class="tag">C3</span></h2>
 
@@ -219,7 +219,7 @@ devises ISO 4217, nombres français convertis, codes ISIN complétés, puis char
 
 <h2><span class="n">5</span> Modélisation Merise et choix du SGBD <span class="tag">C4</span></h2>
 
-<figure aria-label="Modèle conceptuel de données Merise de RITA, six entités. VALEUR est au centre : elle est nommée par ALIAS, cotée lors de COTATION, cotée en DEVISE et détenue dans POSITION. POSITION est libellée en DEVISE, et DEVISE a pour cours TAUX_CHANGE. POSITION est la seule entité qui porte des données personnelles.">
+<figure aria-label="Modèle conceptuel de données Merise de RITA, six entités. VALEUR est au centre : elle est nommée par ALIAS, cotée lors de COTATION, cotée en DEVISE et détenue dans POSITION. POSITION est libellée en DEVISE, et DEVISE a pour cours TAUX_CHANGE. POSITION est la seule entité du modèle prévue pour des données personnelles ; elle ne contient aujourd'hui que des positions inventées.">
 <svg viewBox="0 0 640 330" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif">
   <defs><style>
       .ent{ fill:#ECF3F7; stroke:#14607F; stroke-width:1.1; }
@@ -262,7 +262,7 @@ devises ISO 4217, nombres français convertis, codes ISIN complétés, puis char
   <text class="cd" x="97"  y="212">1,n</text><text class="cd" x="97"  y="262">1,1</text>
 </svg>
 <figcaption>Modèle conceptuel de données (MCD, formalisme Merise) : 6 entités, 6 associations, aucune relation n-n.
-En orangé, la seule entité contenant des <strong>données à caractère personnel</strong>. Depuis le 27/09, VALEUR porte sa
+En orangé, la seule entité du modèle prévue pour des <strong>données à caractère personnel</strong> (positions inventées à ce jour). Depuis le 27/09, VALEUR porte sa
 devise et sa place de cotation ; depuis le 03/10, POSITION porte sa date de clôture.</figcaption>
 </figure>
 
@@ -276,8 +276,8 @@ devise et sa place de cotation ; depuis le 03/10, POSITION porte sa date de clô
 <h3>Passage au modèle physique, orienté par les requêtes</h3>
 <p>Une entité devient une table, son identifiant devient la clé primaire, et pour une association <code>1,n / 1,1</code> la clé
 migre du côté <code>1,1</code>. Le modèle physique (<code>db/schema.sql</code>) compte <strong>10 tables</strong> : les six du MCD,
-plus quatre tables techniques qui n'ont pas leur place dans un modèle métier (<code>article</code> pour la collecte brute,
-<code>macro_observation</code> pour FRED, <code>memory_audit</code> et <code>mcp_calls</code>, journaux d'audit) ; <strong>1 vue</strong>
+plus quatre tables hors du MCD du portefeuille : deux de données collectées (<code>article</code> pour la presse,
+<code>macro_observation</code> pour FRED) et deux journaux d'audit (<code>memory_audit</code>, <code>mcp_calls</code>) ; <strong>1 vue</strong>
 (<code>v_portefeuille_valorise</code>, 13 colonnes), <strong>12 contraintes <code>CHECK</code></strong>, 6 clés étrangères et
 <strong>19 objets d'index</strong> dont 8 explicites. Chaque index répond à une requête nommée : la clé <code>(ticker, date_seance)</code>
 sert la dernière cotation de R1 ; l'index unique
@@ -343,14 +343,14 @@ Fichiers connus de Spark : <b>11</b>  →  un seul est ouvert · 27 648 lignes e
 
 <h2><span class="n">7</span> Conformité RGPD <span class="tag">C4</span></h2>
 
-<p>Une seule table porte des <strong>données à caractère personnel</strong> : <code>position</code> (quantités, prix de revient,
-dates d'achat et de clôture). Le fichier source n'est <strong>jamais</strong> versionné (règle d'exclusion Git), et ni quantité ni prix de revient
-n'est envoyé au modèle de langage. <strong>Règle du projet depuis le 05/10 : aucune donnée personnelle hors de l'UE.</strong>
-Deux flux ne la respectent pas, inscrits au registre le 05/10 et corrigés après le gel : les noms des sociétés détenues
-partent chaque soir vers Google News (T7), et si Azure, traité en zone UE depuis le 09/10, échoue, le briefing bascule vers deux fournisseurs sans garantie de
-région (T6). Les données financières ne sont pas des
-données « sensibles » de l'article 9 ; ce sont des données personnelles ordinaires, base légale <strong>intérêt légitime</strong>
-(article 6) pour un usage strictement personnel.</p>
+<p>Le jeu de démonstration contient des <strong>positions inventées</strong> sur des sociétés cotées ; son CSV est
+versionné. Un portefeuille réel serait une <strong>donnée à caractère personnel</strong>, gardée hors de Git ; quantités et
+prix de revient ne vont jamais au modèle. Le journal MCP (<code>mcp_calls</code>, T5) est déjà personnel. <strong>Règle du
+projet depuis le 05/10 : aucune donnée personnelle hors de l'UE.</strong> Son respect reste à établir pour T3 (Langfuse),
+T6 (Azure en zone UE ; replis désactivés sur le poste depuis le 11/10, mais présents par défaut) et T7 (Google News), à
+corriger après le gel. Les données financières ne relèvent pas de l'article 9. L'exemption domestique (article 2.2.c)
+reste à examiner ; si le RGPD s'applique, le registre retient provisoirement l'intérêt légitime (article 6.1.f), dont la
+justification (nécessité, mise en balance) reste à documenter.</p>
 
 <div class="cols">
 <div>
@@ -411,9 +411,9 @@ La séquence ci-dessous reconstruit le projet depuis un dépôt vierge (rejouée
 <pre>python -m pip install --user -r requirements.txt   <b># dependances (pas de venv sous Smart App Control)</b>
 psql -h localhost -p 5433 -f db/schema.sql         <b># 10 tables, 1 vue, 12 CHECK, 19 objets d'index</b>
 psql -h localhost -p 5433 -f db/roles.sql          <b># role rita_lecture, SELECT seul, prevu pour les outils d'agent</b>
+python -m bigdata.build_parquet                    <b># jeu Parquet partitionne par annee (lu par l'import)</b>
 python -m db.importer                              <b># archive 10 ans + positions, import en reconciliation</b>
 python -m pipelines.ingest                         <b># 6 etapes, un COMMIT par etape, manifeste JSON</b>
-python -m bigdata.build_parquet                    <b># jeu Parquet partitionne par annee</b>
 python -m uvicorn api.main:app                     <b># API + documentation sur /docs</b>
 python -m pytest -q                                <b># 804 passed, 29 skipped, 2 xfailed, 94,7 % (CI, 10/10/2026)</b></pre>
 
@@ -458,8 +458,8 @@ python -m pytest -q                                <b># 804 passed, 29 skipped, 
 </div>
 
 <footer class="sign">
-  <span>RITA, livrable E1 · bloc BC01 · compétences C1 à C5 · version 2.2</span>
-  <span>Eramalingam Gandakumar · 10 octobre 2026</span>
+  <span>RITA, livrable E1 · bloc BC01 · compétences C1 à C5 · version 2.3</span>
+  <span>Eramalingam Gandakumar · 11 octobre 2026</span>
 </footer>
 
 </body>
