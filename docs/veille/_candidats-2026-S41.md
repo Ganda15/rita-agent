@@ -12,7 +12,9 @@
 > **Sources balayées** : OWASP GenAI Security Project, ANSSI / cyber.gouv.fr, CERT-FR, CNIL, NIST, simonwillison.net,
 > puis arXiv `cs.CR`. Hors des sept sources, la page AI Act de la Commission européenne, pour le cadre réglementaire.
 > **Liens vérifiés** : chacun a répondu **HTTP 200** le 11/10/2026 (contrôle `curl`). Les liens qui ont répondu `403` ou
-> `404` ne sont **pas** donnés (liste en fin de fichier).
+> `404` ne sont **pas** donnés (liste en fin de fichier). Un 200 dit qu'une page est **accessible**, pas qu'elle est
+> fiable ni que son résumé ici est exact : relire chaque candidat dans sa source avant de l'utiliser dans la note.
+> **Corrigé le 11/10 au soir**, après relecture : cinq points, listés en fin de fichier.
 > **Déjà vu, écarté** : la note CNIL sur l'IA agentique du 20/07 est traitée en S34 ; aucun candidat ci-dessous ne figure
 > dans les relevés précédents (vérifié dans `docs/veille/`).
 
@@ -27,8 +29,9 @@ compte une quarantaine de préprints sur l'injection de prompt. Trois d'entre eu
 
 > 📖 **Injection de prompt** : texte glissé dans une donnée pour que le modèle le prenne pour une instruction.
 > **Injection indirecte** : la même chose, cachée dans une page web ou un flux que l'agent lit tout seul ; c'est le cas
-> qui menace RITA (`sources/rss.py`, `sources/scraper.py`, puis `rag/recherche.py` qui met le texte dans le prompt du
-> rédacteur).
+> qui menace RITA : les articles des flux RSS (`sources/rss.py`) sont indexés, puis remontés par `rag/recherche.py`
+> dans le prompt du rédacteur. Le scraping (`sources/scraper.py`) ne collecte que des cotations : il n'alimente pas
+> la recherche documentaire.
 
 ---
 
@@ -92,15 +95,16 @@ injection réussie ne peut produire que du texte, et ce texte est relu en sortie
 | **Lien** | [arXiv 2610.08571](https://arxiv.org/abs/2610.08571) |
 | **Intérêt commercial** | Non repéré (auteurs universitaires) |
 
-**Ce que décrivent les auteurs.** 4 876 exemples d'injection cachée dans un contenu récupéré, avec un jeu de test tenu à
-l'écart pendant la conception. Ils comparent des détecteurs par mots-clés, par TF-IDF et par transformeur. Le meilleur
+**Ce que décrivent les auteurs.** 4 876 exemples rendus comme des contextes de RAG, **moitié sains, moitié malveillants**
+(2 438 chacun, tableau de répartition de l'article), avec un jeu de test tenu à l'écart pendant la conception. Ils comparent des détecteurs par mots-clés, par TF-IDF et par transformeur. Le meilleur
 est DistilBERT (F1 = 0,896). Le **détecteur lexical** atteint une **précision de 0,981 mais un rappel de 0,104**
 (F1 = 0,189), tableau 3 de la version HTML. Limites : corpus **uniquement en anglais** (CNN/DailyMail, SQuAD,
 WikiText-2), et aucun lien vers le jeu de données.
 
 **Pistes pour la note.** C'est le profil attendu d'un filtre par motifs comme `guardrails/injection.py`, appliqué article
 par article à la collecte : il se trompe rarement quand il bloque, mais laisse passer ce qu'il n'a jamais vu. RITA mesure
-aujourd'hui 70 % de blocage et 0 % de faux positifs, sur 18 cas écrits en même temps que les motifs. Le corpus étant
+aujourd'hui 70 % de blocage et 0 % de faux positifs, sur 18 cas écrits en même temps que les motifs (même
+commit `c1ee404`, 29/07). Les scores de l'article ne mesurent pas RITA. Le corpus étant
 anglais, le chiffre ne se transpose pas tel quel à des articles en français.
 
 ---
@@ -124,7 +128,9 @@ et fixé, vérifier sur quoi le détecteur a été entraîné.
 
 **Pistes pour la note.** La méthode s'applique aux évals de RITA (`evals/mesurer_gardefou.py`) : un taux de blocage ne
 vaut qu'avec son taux de faux positifs, et les faux positifs se mesurent sur les vrais articles collectés. Notoriété de
-l'auteur à confirmer avant de s'appuyer dessus seul : à croiser avec le candidat 3.
+l'auteur à confirmer avant de s'appuyer dessus seul. Il **complète** le candidat 3 sans le valider : l'un compare
+des détecteurs sur son propre corpus, l'autre étudie leur transfert d'un banc à l'autre. Leurs conclusions
+convergent sur les limites des évaluations ; ce ne sont pas des résultats confirmés indépendamment.
 
 ---
 
@@ -144,9 +150,10 @@ vérification. Le protocole proposé masque tout ce qui n'est pas vérifié à l
 médiane des passages empoisonnés retrouvés passe de 34 à 7. « Vérifier avant de rendre visible » supprime l'exposition,
 au prix de 6,3 s de délai pour un contenu sain.
 
-**Déjà vérifié dans RITA (11/10, lecture du code)** : RITA vérifie **avant** d'indexer. Un article marqué
-`bloque_injection` n'est jamais indexé (`rag/indexation.py:280-281`), y compris un article marqué après une première
-indexation (`rag/indexation.py:312`). À la note de dire si cela suffit.
+**Déjà vérifié dans RITA (11/10, lecture du code)** : RITA vérifie **avant** d'indexer. Un article déjà
+marqué `bloque_injection` est exclu de l'indexation (`rag/indexation.py:280-281`). Un article marqué **après** son
+indexation est retiré **à la prochaine exécution de l'indexation** (`rag/indexation.py:311-318`), pas immédiatement.
+À la note de dire si cela suffit.
 
 ---
 
@@ -178,8 +185,8 @@ dans le prompt du rédacteur. Sans outil d'action, l'impact reste du texte, relu
 |---|---|---|---|
 | 07/10 | *BRANCH: Bypassing Multi-Scanner AI Guardrails* | [arXiv 2610.10742](https://arxiv.org/abs/2610.10742) | **intérêt commercial** : un auteur, professeur à Lancaster ([sa page](https://www.lancaster.ac.uk/scc/about-us/people/peter-garraghan)), a fondé Mindgard, qui vend du red teaming IA ([page de Mindgard](https://mindgard.ai/about-us)) ; vise des garde-fous à classifieurs, pas des motifs |
 | 29/09 | *CounterSteer: Suppressing Indirect Prompt Injection with Activation Steering* | [arXiv 2609.36570](https://arxiv.org/abs/2609.36570) | **intérêt commercial** : un auteur est directeur technique de Microsoft Azure ([sa notice](https://en.wikipedia.org/wiki/Mark_Russinovich)), fournisseur de RITA ; la méthode exige l'accès aux poids, impossible par une API |
-| 29/09 | *pikit: A Composable Toolkit for Indirect Prompt Injection Research and Evaluation* | [arXiv 2609.36817](https://arxiv.org/abs/2609.36817) | code publié par Tencent (intérêt commercial) ; confirme le candidat 3 (précision parfaite, rappel faible pour les détecteurs heuristiques) |
-| 08/10 | *LTBD: Learnable Trust-Boundary Delimiters for Prompt Injection Defense* | lien non vérifié, non donné | RITA balise déjà les textes extérieurs (`<donnees_externes>`, `guardrails/injection.py:40`) ; des délimiteurs *appris* demandent en général l'accès au modèle |
+| 29/09 | *pikit: A Composable Toolkit for Indirect Prompt Injection Research and Evaluation* | [arXiv 2609.36817](https://arxiv.org/abs/2609.36817) | code publié par Tencent (intérêt commercial) ; rejoint le candidat 3 (précision parfaite, rappel faible pour les détecteurs heuristiques) |
+| 08/10 | *LTBD: Learnable Trust-Boundary Delimiters for Prompt Injection Defense* | lien non vérifié, non donné | un balisage `<donnees_externes>` est défini (`guardrails/injection.py:40`), mais son branchement jusqu'au prompt n'est pas établi (`sources/rss.py:159` garde le texte brut et le verdict) ; des délimiteurs *appris* demandent en général l'accès au modèle |
 | 03/10 | *COPEX: Benchmarking LLM Robustness to Adversarial Context Across Model Context Protocol Layers* | [arXiv 2610.04378](https://arxiv.org/abs/2610.04378) | porte sur le client MCP ; RITA est côté serveur, en lecture seule |
 | 05/10 | *Can CaMeLs Talk? Securing Multi-Agent Systems Against Indirect Prompt Injection Attacks* | [arXiv 2610.05640](https://arxiv.org/abs/2610.05640) | catégorie `cs.MA`, multi-agents ; ne servirait que si RITA ajoute des agents (question suspendue) |
 
@@ -208,6 +215,17 @@ dans le prompt du rédacteur. Sans outil d'action, l'impact reste du texte, relu
 - une page « à propos » sur `genai.owasp.org` : 404, remplacée par celle d'`owasp.org`.
 
 ---
+
+## Corrections du 11/10 au soir (relecture du relevé)
+
+1. **Balises `<donnees_externes>`** : le relevé disait « RITA balise déjà les textes extérieurs ». Faux en l'état :
+   `neutraliser()` construit un texte balisé (`guardrails/injection.py:40-66`), mais `sources/rss.py:159-168` ne garde
+   que le texte brut, les motifs et le verdict. Mécanisme défini ; branchement jusqu'au prompt non établi.
+2. **Retrait de l'index** : un article marqué après son indexation est retiré à la prochaine exécution de
+   l'indexation, pas immédiatement.
+3. **Le scraping** collecte des cotations ; il n'alimente pas la recherche documentaire. Seul le RSS la nourrit.
+4. **RAG-PIBench** : 4 876 exemples, dont 2 438 sains et 2 438 malveillants, et non 4 876 attaques.
+5. **Candidats 3 et 4** : ils se complètent, ils ne se valident pas l'un l'autre.
 
 ## 📖 Glossaire
 

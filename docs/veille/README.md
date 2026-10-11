@@ -37,7 +37,7 @@ presse.
 | **Sortie** | une note datée dans ce dossier, une par semaine |
 | **Rappel** | aucune tâche planifiée : une tâche `veille-hebdo-securite-llm` avait été annoncée ici, elle **n'a jamais existé** sur le poste (vérifié le 24/08 et le 03/10/2026, `Get-ScheduledTask` ; incident INC-004). Le relevé se fait à la main, le lundi ou en rattrapage, et chaque relevé porte sa date |
 
-**État réel de la récurrence au 03/10/2026**, lu dans ce dossier (un trou se voit, on ne le bouche pas) :
+**État réel de la récurrence au 11/10/2026**, lu dans ce dossier (un trou se voit, on ne le bouche pas) :
 
 | Semaine ISO | Candidats relevés | Note écrite | Quand, et comment |
 |---|---|---|---|
@@ -48,6 +48,7 @@ presse.
 | S37 (07 au 13/09) | ✅ (relevé du 08/09) | 🔴 aucune | carte #31 |
 | S38, S39 (14 au 27/09) | 🔴 aucun | 🔴 aucune | carte #31 : deux semaines sans séance, à dire tel quel |
 | S40 (28/09 au 04/10) | ✅ (relevé du 28/09, fenêtre élargie au 14/09) | 🔴 à écrire par Era | carte #30 |
+| S41 (05 au 11/10) | ✅ (relevé du 11/10, fenêtre élargie au 29/09) | 🟠 modèle copié, note à rédiger par Era | créneau du lundi 05/10 non tenu ; relevé fait le dimanche 11/10, et dit |
 
 Synthèse des quatre notes : `Veille-C6-synthese-S33-a-S36.pdf` (§6). Partage : un seul, Discord le 16/08, sans
 capture des réponses à ce jour (`_JOURNAL-DES-ENVOIS.md`, `../../evidence/C6/README.md`).
