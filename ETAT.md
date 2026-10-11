@@ -15,7 +15,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-11 (E3 v1.4 : sept corrections, 44 critères en 39 lignes, revue d'E3 close ; E1 v2.4 : seconde passe, MCD lisible, guide § 4.5 corrigé ; avant, E1 v2.3 : passe RGPD et exactitude ; politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-11 (veille S41 : relevé, note d'Era et partage à la promo ; E3 v1.4 : sept corrections, 44 critères en 39 lignes, revue d'E3 close ; E1 v2.4 : seconde passe, MCD lisible, guide § 4.5 corrigé ; avant, E1 v2.3 : passe RGPD et exactitude ; politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
@@ -229,6 +229,12 @@ porter le décompte à 7 · 12 · 1.
   sans séance ; (2) la partager
   avec **une question précise**, et garder la capture du fil et au moins une réponse (preuve de C6.4) ; (3) facultatif :
   un lecteur RSS montrable (Feedbro ou Thunderbird), capture des sources, budget 0 € (C6.3).
+- ✅ **Fait le 11/10** : (1) relevé S41 (`docs/veille/_candidats-2026-S41.md`, fenêtre du 29/09 au 11/10, corrigé en
+  six points après relecture) et **note S41 rédigée par Era** en rattrapage (`docs/veille/2026-S41-mesurer-le-gardefou.md`,
+  commit `5422609`) ; (2) **partagée** dans le canal #veille du Discord de la promo le 11/10 à 20 h 04, avec une question
+  ouverte ; capture du message dans `evidence/C6/envoi-2026-10-11-promo-discord-veille.png`, envoi 3 de
+  `docs/veille/_JOURNAL-DES-ENVOIS.md`. **Reste** : au moins une réponse, puis la capture du fil réponses comprises
+  (`evidence/C6/discussion-<date>-discord.png`) ; la capture du fil S33 du 16/08, jamais faite ; (3) facultatif, inchangé.
 - **Après le gel, dans l'ordre** : (1) fusion de la PR #88 et lecture de la CI ; (2) lecture des conditions de Mistral
   (sous-traitants, conservation, entraînement) et des cas de transfert documentés par Microsoft ; (3) décision sur
   **Langfuse** (hébergé en Irlande, mais son contrat permet un traitement hors de la région) : réduire ce qui est envoyé
@@ -255,7 +261,7 @@ porter le décompte à 7 · 12 · 1.
 
 | Quand | Quoi |
 |---|---|
-| jusqu'au **14/10** | Era relit E1 et E3 ; veille S41 |
+| jusqu'au **14/10** | Era relit E1 et E3 ; veille S41 (relevé, note et partage faits le 11/10 ; réponses attendues) |
 | **15/10** | gel d'E1 et d'E3 (inchangé, ligne du tableau plus bas) |
 | **16/10** | date de séance dans le prompt (`agents/analyst.py`, test d'abord), tests, puis banc C7 Azure contre Mistral Large 4 dans un dossier de résultats neuf |
 | **17-20/10** | E2, E4 et E5 terminés, PDF compris |
