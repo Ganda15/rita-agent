@@ -225,9 +225,14 @@ porter le décompte à 7 · 12 · 1.
   `foundry,mistral` à `foundry` dans `src/llm.py:34`, `docker-compose.yml:91` et `.env.example:43` (branche
   `mistral-ue`), test d'abord ; (b) panne de tous les fournisseurs : **aujourd'hui** 500 générique avec identifiant,
   sans détail interne ; **cible** 503 `AUCUN_FOURNISSEUR` testé (carte #75, constat S6).
-- **Manque relevé le 11/10, à décider par Era** : sur `develop`, `docker-compose.yml:84` met `anthropic,openrouter` par
-  défaut, alors que `src/llm.py:28` met `foundry,anthropic,openrouter` : lancée par Docker sans `LLM_ORDRE` dans `.env`,
-  la version gelée le 15/10 saute Azure. Proposition : le dire comme limite connue dans E3, sans code avant le tag.
+- **Manque relevé et corrigé le 11/10 (décision d'Era : corriger avant le gel)** : sur `develop`, le service `api` de
+  `docker-compose.yml` ne recevait aucune variable `AZURE_FOUNDRY_*` et mettait `anthropic,openrouter` par défaut,
+  alors que `src/llm.py:28` met `foundry,anthropic,openrouter` : en conteneur, la cascade sautait Azure. Corrigé :
+  les trois variables Azure transmises (clé vide par défaut, jamais écrite), ordre par défaut aligné sur le code ;
+  deux tests de contrat d'abord, vus en échec (`tests/test_docker_compose.py`, le second compare le comportement réel
+  de `_ordre_fournisseurs()`). Suite complète le 11/10 : **834 passed, 2 skipped, 2 xfailed** (838 collectés) ; le
+  chiffre se remesure au gel. Les lignes Anthropic et OpenRouter restent : elles décrivent le code gelé, et la PR #88
+  les retire partout à la fois. Les anciennes traces Anthropic et OpenRouter restent des preuves datées.
 
 **📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (lignes « 15-25/10 » et
 « à partir du 26/10 » précisées le 11/10 : voir le calendrier final juste au-dessus) (mesuré le même jour : E1 et E3 complets ; E2 en v0.3 depuis le 09/10, partie

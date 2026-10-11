@@ -9,6 +9,20 @@
 
 ---
 
+## 2026-10-11 : Azure seul jusqu'au contrat de Mistral, calendrier final, défaut Docker corrigé
+
+**Décisions structurantes (Era)** : (1) appels réels par Azure GPT-5.4 seul (`LLM_ORDRE=foundry`) tant que le
+contrat de Mistral n'est pas lu ; Mistral Large 4 seulement pour le banc C7, sur des données publiques ou simulées ;
+valeurs par défaut de la branche `mistral-ue` à passer à `foundry` avant la fusion de la PR #88 ; (2) calendrier
+final : contenus terminés le 20/10, gel final le 23/10, simulation le 26/10, examen blanc le 29/10, aucune
+fonctionnalité nouvelle avant le 20/10. Détail et pourquoi : `CONTINUITE.md`, § D.
+
+**Manque découvert et corrigé** : en conteneur, la cascade sautait Azure (aucune variable `AZURE_FOUNDRY_*`
+transmise par `docker-compose.yml`, ordre par défaut `anthropic,openrouter` au lieu de celui du code). Corrigé avant
+le gel, deux tests de contrat d'abord ; la CI n'utilise pas Compose et la production sert toujours le code du 19/08.
+
+---
+
 ## 2026-10-10 (nuit) : incident de clé Mistral, Mistral Large 4 choisi, règle UE seule gardée stricte
 
 **Manque découvert (incident)** : la vraie clé Mistral d'Era a été écrite dans `.env.example` et poussée sur la
