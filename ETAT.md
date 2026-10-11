@@ -15,7 +15,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-11 (plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-11 (politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
@@ -170,7 +170,8 @@ PR #88 en brouillon : `0a3f3f8` poussé, CI verte ; `2a7f18c` et `b3c76b5` pas e
   une réponse de 10 positions. **E3 passe en v1.3** (une phrase en 4.1, toujours 20 pages, page 5 regardée ; copies
   OneDrive v1.3 en français et en anglais), erratum `evidence/C20/erratum-verrou-demonstration-2026-10-10.md` (l'ancienne
   preuve n'est pas réécrite). Correction après le gel, carte à créer.
-- **À faire par Era** : `.env` ligne 25, `MISTRAL_MODEL=mistral-large-4-0` ; pousser `mistral-ue` puis `develop` et
+- **À faire par Era** : `.env` ligne 25, `MISTRAL_MODEL=mistral-large-4-0`, et ajouter `LLM_ORDRE=foundry` (décision
+  du 11/10) ; pousser `mistral-ue` puis `develop` et
   lire la CI ; documenter comment le fichier local non versionné `data/positions.csv` du 31/07 a été constitué
   (Era n'a jamais investi).
 
@@ -203,7 +204,33 @@ porter le décompte à 7 · 12 · 1.
   recommandation provisoire : Azure GPT-5.4 Data Zone EU en premier, Mistral Large 4 meilleur secours européen identifié,
   à confirmer par le banc complet et la lecture du contrat.
 
-**📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.3 depuis le 09/10, partie
+**Décisions d'Era du 11/10 (détail et pourquoi : `CONTINUITE.md`, § D)**
+- **Fournisseurs** : appels réels par **Azure GPT-5.4 seul** (`LLM_ORDRE=foundry`, `MISTRAL_MODEL=mistral-large-4-0`
+  écrits dans `.env`) tant que le contrat de Mistral n'est pas lu ; Mistral Large 4 seulement pour le banc C7, sur des
+  données publiques ou simulées. Les tests automatiques n'appellent aucun modèle (doublures).
+- **Calendrier final** :
+
+| Quand | Quoi |
+|---|---|
+| jusqu'au **14/10** | Era relit E1 et E3 ; veille S41 |
+| **15/10** | gel d'E1 et d'E3 (inchangé, ligne du tableau plus bas) |
+| **16/10** | date de séance dans le prompt (`agents/analyst.py`, test d'abord), tests, puis banc C7 Azure contre Mistral Large 4 dans un dossier de résultats neuf |
+| **17-20/10** | E2, E4 et E5 terminés, PDF compris |
+| **23/10** | gel final |
+| **26/10** | simulation personnelle |
+| **29/10** | examen blanc complet |
+
+  **Aucune fonctionnalité nouvelle avant le 20/10**, sauf une correction indispensable à la validité d'une preuve.
+- **Après le gel, liés à la PR #88** : (a) avant la fusion, valeurs par défaut de `LLM_ORDRE` passées de
+  `foundry,mistral` à `foundry` dans `src/llm.py:34`, `docker-compose.yml:91` et `.env.example:43` (branche
+  `mistral-ue`), test d'abord ; (b) panne de tous les fournisseurs : **aujourd'hui** 500 générique avec identifiant,
+  sans détail interne ; **cible** 503 `AUCUN_FOURNISSEUR` testé (carte #75, constat S6).
+- **Manque relevé le 11/10, à décider par Era** : sur `develop`, `docker-compose.yml:84` met `anthropic,openrouter` par
+  défaut, alors que `src/llm.py:28` met `foundry,anthropic,openrouter` : lancée par Docker sans `LLM_ORDRE` dans `.env`,
+  la version gelée le 15/10 saute Azure. Proposition : le dire comme limite connue dans E3, sans code avant le tag.
+
+**📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (lignes « 15-25/10 » et
+« à partir du 26/10 » précisées le 11/10 : voir le calendrier final juste au-dessus) (mesuré le même jour : E1 et E3 complets ; E2 en v0.3 depuis le 09/10, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :
 
 | Quand | Quoi |
@@ -301,7 +328,8 @@ Nadège et Elena aideront particulièrement à la présentation.
     sera la **première jamais exécutée** : à relever comme preuve C19 (tâche T8).
 
 
-**Après le gel (du 15 au 25/10), dans l'ordre, test d'abord pour tout code** : #75 (S5 ticker borné, S6 panne des
+**Après le gel (du 15 au 25/10), dans l'ordre, test d'abord pour tout code** (dates précisées le 11/10 : contenus
+terminés le 20/10, gel final le 23/10 ; ce qui ne tient pas avant va dans « ce qui n'est pas fait ») : #75 (S5 ticker borné, S6 panne des
 fournisseurs, S4 refus journalisés, S3 limite de débit, S1 en-têtes de sécurité), #73 (clé mémorisée trop tôt), #74
 (compression, cache, favicon, puis remesure Lighthouse), #76 (rôle `rita_api` en lecture, sur plan), #23 (épinglage), #35 ;
 **déploiement du code sur Hetzner**, mesure Lighthouse de la production, rotation de clé éprouvée, **contrôle du certificat
