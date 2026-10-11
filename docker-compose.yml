@@ -79,9 +79,15 @@ services:
       # ⚠️ OBLIGATOIRE. L'API refuse de démarrer sans elle (OWASP API2). Elle est
       # lue depuis le `.env` de la machine, JAMAIS écrite ici.
       RITA_API_KEY: ${RITA_API_KEY:?RITA_API_KEY absente - la definir dans .env}
+      # Relevé du 11/10/2026 : Azure (premier de la cascade) n'était pas transmis, et l'ordre par
+      # défaut sautait `foundry` ; en conteneur, la cascade différait de `src/llm.py`. Les clés se
+      # lisent dans l'environnement de la machine, vides par défaut, JAMAIS écrites ici.
+      AZURE_FOUNDRY_ENDPOINT: ${AZURE_FOUNDRY_ENDPOINT:-}
+      AZURE_FOUNDRY_API_KEY: ${AZURE_FOUNDRY_API_KEY:-}
+      AZURE_FOUNDRY_DEPLOYMENT: ${AZURE_FOUNDRY_DEPLOYMENT:-gpt-5.4-dzs-eu}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
-      LLM_ORDRE: ${LLM_ORDRE:-anthropic,openrouter}
+      LLM_ORDRE: ${LLM_ORDRE:-foundry,anthropic,openrouter}
       # --- Traçage Langfuse (C11), facultatif ---------------------------------------
       # Audit du 02/10/2026 : rien n'était transmis ici, donc l'API en conteneur (pré-production
       # et serveur) servait des briefings que Langfuse ne voyait jamais. Les clés se lisent

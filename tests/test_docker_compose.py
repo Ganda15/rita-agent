@@ -121,3 +121,34 @@ def test_le_tracage_en_conteneur_peut_etre_coupe_sans_toucher_aux_cles(compose):
     couper le traçage du conteneur : c'est l'interrupteur que `src/traces.py` lit déjà."""
     env = compose["services"]["api"].get("environment") or {}
     assert str(env.get("LANGFUSE_TRACING_ENABLED", "")).startswith("${LANGFUSE_TRACING_ENABLED")
+
+
+# --- relevé du 11/10/2026 : le conteneur sautait Azure, premier fournisseur de la cascade ---
+
+VARIABLES_AZURE = ("AZURE_FOUNDRY_ENDPOINT", "AZURE_FOUNDRY_API_KEY", "AZURE_FOUNDRY_DEPLOYMENT")
+
+
+def test_l_api_recoit_les_variables_azure(compose):
+    """Compose ne transmet au conteneur que ce qui est listé sous `environment:`. Les trois
+    variables Azure n'y étaient pas : en conteneur, `foundry` échouait faute de clé et la cascade
+    passait au fournisseur suivant. La clé reste interpolée, vide par défaut, jamais écrite."""
+    env = compose["services"]["api"].get("environment") or {}
+    manquantes = [v for v in VARIABLES_AZURE if v not in env]
+    assert not manquantes, f"variables Azure absentes du service api : {manquantes}"
+    for nom in VARIABLES_AZURE:
+        assert str(env[nom]).startswith("${" + nom), f"{nom} doit être interpolée depuis l'environnement"
+    cle = str(env["AZURE_FOUNDRY_API_KEY"])
+    assert cle.rstrip("}").endswith(":-"), f"la clé Azure doit avoir une valeur par défaut VIDE : {cle}"
+
+
+def test_le_conteneur_garde_l_ordre_par_defaut_du_code(compose, monkeypatch):
+    """Sans `LLM_ORDRE` dans l'environnement, Compose remplace l'ordre du code par sa propre
+    valeur par défaut (`${LLM_ORDRE:-...}`). Les deux doivent donner la même cascade : on compare
+    le comportement réel de `_ordre_fournisseurs()`, pas le texte de `src/llm.py`."""
+    from src.llm import _ordre_fournisseurs
+
+    monkeypatch.delenv("LLM_ORDRE", raising=False)
+    valeur = str((compose["services"]["api"].get("environment") or {}).get("LLM_ORDRE", ""))
+    assert valeur.startswith("${LLM_ORDRE:-") and valeur.endswith("}"), f"forme inattendue : {valeur}"
+    defaut_compose = [nom.strip() for nom in valeur[len("${LLM_ORDRE:-"):-1].split(",") if nom.strip()]
+    assert defaut_compose == _ordre_fournisseurs()
