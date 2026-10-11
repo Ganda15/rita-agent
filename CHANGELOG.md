@@ -9,6 +9,16 @@
 
 ---
 
+## 2026-10-11 (soir) : E1 v2.4 et guide d'exploitation, dernière passe d'E1 avant le gel
+
+**Manque découvert et corrigé** : le guide d'exploitation (§ 4.5) avait le même défaut qu'E1, en pire : il lançait
+l'import sans jamais construire le jeu Parquet, absent de Git ; quiconque suivait le guide sur un poste neuf
+s'arrêtait sur « Jeu Parquet absent ». Corrigé, PDF régénéré. E1 retire aussi une affirmation non prouvée (« rejouée
+sur une base Compose neuve le 03/10 » : seules les migrations l'ont été). E1 v2.4 : MCD lisible, conservation de T4,
+positions simulées, numéros de page ; toujours 5 pages. **Décision** : E1 ne se rouvre plus que pour une erreur de fait.
+
+---
+
 ## 2026-10-11 (après-midi) : E1 v2.3, passe RGPD et exactitude, revue d'E1 close
 
 **Manques découverts et corrigés dans E1** (relecture d'E1, chaque point vérifié dans le code et le registre) :

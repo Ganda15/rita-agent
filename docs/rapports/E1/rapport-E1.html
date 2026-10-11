@@ -9,7 +9,8 @@
   --rule:#D5DCE4; --rule-strong:#9DAAB8;
   --accent:#14607F; --wash:#ECF3F7; --flag:#9E4318; --flag-wash:#FBF1EC;
 }
-@page{ size:A4; margin:9mm 11mm 8mm 11mm; }
+@page{ size:A4; margin:9mm 11mm 8mm 11mm;
+  @bottom-right{ content:counter(page) " / " counter(pages); font-family:"Segoe UI",sans-serif; font-size:6.8pt; color:#4A5766; } }
 *{ box-sizing:border-box; }
 html{ font-size:10px; }
 body{
@@ -78,7 +79,7 @@ footer.sign{ margin-top:4pt; padding-top:3.5pt; border-top:.75pt solid var(--rul
     <div><dt>Candidat</dt><dd>Eramalingam Gandakumar<small>erama70@outlook.com<br>ganda70@gmail.com</small></dd></div>
     <div><dt>Organisme</dt><dd>Simplon × Wild Code School<small>Session 2026</small></dd></div>
     <div><dt>Dépôt du code</dt><dd>Ganda15/rita-agent<small>github.com · tag <code>livrable-E1-v2</code> à poser le 15/10</small></dd></div>
-    <div><dt>Date</dt><dd>11 octobre 2026<small>version 2.3, gel prévu le 15 octobre 2026</small></dd></div>
+    <div><dt>Date</dt><dd>11 octobre 2026<small>version 2.4, gel prévu le 15 octobre 2026</small></dd></div>
   </dl>
 </header>
 
@@ -100,7 +101,7 @@ L'objet de E1 est de rendre ces données fiables, traçables et exploitables.</p
   <tr><td><strong>Objectifs fonctionnels</strong></td><td>Consolider dix ans de cours de 111 valeurs · valoriser un portefeuille multi-devises · détecter les anomalies de marché · fournir un contexte macro-économique et d'actualité</td></tr>
   <tr><td><strong>Objectifs techniques</strong></td><td>Automatiser l'extraction depuis <strong>les 5 types de sources</strong> du référentiel, chaque soir · stocker en base relationnelle modélisée Merise · exposer le jeu de données par une API REST authentifiée</td></tr>
   <tr><td><strong>Environnement</strong></td><td>Windows 11 · Python 3.14 sur le poste, 3.13 en intégration continue · PostgreSQL 18 (port 5433) · Apache Spark 4.2.0 sur JDK Temurin 21 · Docker Compose (base de pré-production) · Git, GitHub Actions</td></tr>
-  <tr><td><strong>Contraintes</strong></td><td><strong>Budget 0 €</strong> : sources gratuites, sans carte bancaire · poste sous <strong>Smart App Control</strong> (les binaires sans réputation sont refusés : ni <code>pip.exe</code>, ni environnement virtuel ; tout passe par <code>python -m</code>) · conformité RGPD sur les positions détenues · dépôt <strong>privé</strong>, par décision : le formateur et le jury y sont invités comme collaborateurs</td></tr>
+  <tr><td><strong>Contraintes</strong></td><td><strong>Budget 0 €</strong> : sources gratuites, sans carte bancaire · poste sous <strong>Smart App Control</strong> (les binaires sans réputation sont refusés : ni <code>pip.exe</code>, ni environnement virtuel ; tout passe par <code>python -m</code>) · conformité RGPD sur les positions · dépôt <strong>privé</strong>, par décision : le formateur et le jury y sont invités comme collaborateurs</td></tr>
   <tr><td><strong>Organisation</strong></td><td>Branche <code>develop</code>, fusion vers <code>main</code> par pull request relue, règle appliquée par GitHub · un livrable = un tag figé · une preuve écrite par compétence dans <code>evidence/</code>, constituée au fil de l'eau · journal de bord daté · zones sous garde (<code>db/schema.sql</code>) modifiées seulement sur plan écrit et validé</td></tr>
   <tr><td><strong>Planification</strong></td><td>Collecte et qualité (juillet) → base et requêtes (août) → envoi v1 le 13 août → collecte planifiée chaque soir depuis le 24 août → INC-005 (27 septembre) → chapitre « Données » validé par le formateur (3 octobre) → v2, gel prévu le 15 octobre · remise le 5 novembre 2026 · jury 30 novembre</td></tr>
 </table>
@@ -160,7 +161,7 @@ parisienne du 17/09), un sans perte, deux incomplets (articles des 02 et 03/09 p
   <tr><td><strong>Scraping</strong></td><td class="mono">sources/scraper.py<br>Boursorama</td>
     <td>Cours de séance. <code>robots.txt</code> lu puis mis en cache. Si la page change de structure, le code lève <code>StructurePageModifiee</code> au lieu de renvoyer <code>None</code>. Un cours relevé le samedi est rangé au vendredi (défaut #49, corrigé le 27/09).</td></tr>
   <tr><td><strong>Fichier</strong></td><td class="mono">sources/positions.py<br>export courtier</td>
-    <td>Positions détenues. Quatre pièges d'un export courtier : séparateur <code>;</code>, encodage <code>cp1252</code>, nombres français avec espace insécable, en-têtes variables. Depuis le 03/10 l'import est une <strong>réconciliation</strong> : une ligne retirée du fichier est close à la date du jour, jamais supprimée (§&nbsp;7).</td></tr>
+    <td>Positions importées, simulées en démonstration. Quatre pièges d'un export courtier : séparateur <code>;</code>, encodage <code>cp1252</code>, nombres français avec espace insécable, en-têtes variables. Depuis le 03/10 l'import est une <strong>réconciliation</strong> : une ligne retirée du fichier est close à la date du jour, jamais supprimée (§&nbsp;7).</td></tr>
   <tr><td><strong>Base de données</strong></td><td class="mono">sources/database.py</td>
     <td>Relecture programmatique du stock constitué, en requêtes paramétrées, par le nœud scout, via les modules d'indicateurs (<code>DATABASE_URL</code>). Le rôle <code>rita_lecture</code> (SELECT seul) sert aux outils d'agent extérieurs ; au 3 octobre aucun ne lit la base, la passerelle MCP passe par l'API.</td></tr>
   <tr><td><strong>Big data</strong></td><td class="mono">bigdata/extract_spark.py</td>
@@ -220,16 +221,16 @@ devises ISO 4217, nombres français convertis, codes ISIN complétés, puis char
 <h2><span class="n">5</span> Modélisation Merise et choix du SGBD <span class="tag">C4</span></h2>
 
 <figure aria-label="Modèle conceptuel de données Merise de RITA, six entités. VALEUR est au centre : elle est nommée par ALIAS, cotée lors de COTATION, cotée en DEVISE et détenue dans POSITION. POSITION est libellée en DEVISE, et DEVISE a pour cours TAUX_CHANGE. POSITION est la seule entité du modèle prévue pour des données personnelles ; elle ne contient aujourd'hui que des positions inventées.">
-<svg viewBox="0 0 640 330" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif">
+<svg viewBox="10 26 620 298" style="width:80%" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif">
   <defs><style>
-      .ent{ fill:#ECF3F7; stroke:#14607F; stroke-width:1.1; }
-      .ent-rgpd{ fill:#FBF1EC; stroke:#9E4318; stroke-width:1.1; }
-      .en{ font-size:10px; font-weight:700; fill:#16202B; text-anchor:middle; }
-      .ek{ font-size:8px; fill:#4A5766; text-anchor:middle; }
-      .as{ fill:#FFFFFF; stroke:#9DAAB8; stroke-width:.9; }
-      .av{ font-size:8.4px; fill:#14607F; font-style:italic; text-anchor:middle; }
-      .ln{ stroke:#9DAAB8; stroke-width:.9; fill:none; }
-      .cd{ font-size:7.6px; fill:#16202B; font-weight:700; text-anchor:middle; }
+      .ent{ fill:#ECF3F7; stroke:#14607F; stroke-width:1.3; }
+      .ent-rgpd{ fill:#FBF1EC; stroke:#9E4318; stroke-width:1.3; }
+      .en{ font-size:11.5px; font-weight:700; fill:#16202B; text-anchor:middle; }
+      .ek{ font-size:10px; fill:#2F3B47; text-anchor:middle; }
+      .as{ fill:#FFFFFF; stroke:#5F6E7D; stroke-width:1.1; }
+      .av{ font-size:9.5px; fill:#14607F; font-style:italic; text-anchor:middle; }
+      .ln{ stroke:#5F6E7D; stroke-width:1.2; fill:none; }
+      .cd{ font-size:9px; fill:#16202B; font-weight:700; text-anchor:middle; }
   </style></defs>
   <line class="ln" x1="150" y1="60"  x2="490" y2="60"/>
   <line class="ln" x1="150" y1="175" x2="490" y2="175"/>
@@ -243,17 +244,17 @@ devises ISO 4217, nombres français convertis, codes ISIN complétés, puis char
   <ellipse class="as" cx="320" cy="175" rx="52" ry="16"/><text class="av" x="320" y="178">est libellée en</text>
   <ellipse class="as" cx="85"  cy="232" rx="47" ry="16"/><text class="av" x="85"  y="235">a pour cours</text>
   <rect class="ent" x="20"  y="36"  width="130" height="48" rx="2"/>
-  <text class="en" x="85" y="55">ALIAS</text><text class="ek" x="85" y="70">libelle · ticker</text>
+  <text class="en" x="85" y="54">ALIAS</text><text class="ek" x="85" y="72">libelle · ticker</text>
   <rect class="ent" x="255" y="36"  width="130" height="48" rx="2"/>
-  <text class="en" x="320" y="55">VALEUR</text><text class="ek" x="320" y="70">ticker · isin · nom · devise · place</text>
+  <text class="en" x="320" y="53">VALEUR</text><text class="ek" x="320" y="67">ticker · isin · nom</text><text class="ek" x="320" y="79">devise · place</text>
   <rect class="ent" x="490" y="36"  width="130" height="48" rx="2"/>
-  <text class="en" x="555" y="55">COTATION</text><text class="ek" x="555" y="70">date_seance · o/h/l/c · volume</text>
+  <text class="en" x="555" y="53">COTATION</text><text class="ek" x="555" y="67">date_seance</text><text class="ek" x="555" y="79">o/h/l/c · volume</text>
   <rect class="ent" x="20"  y="151" width="130" height="48" rx="2"/>
-  <text class="en" x="85" y="170">DEVISE</text><text class="ek" x="85" y="185">code · libelle</text>
+  <text class="en" x="85" y="169">DEVISE</text><text class="ek" x="85" y="187">code · libelle</text>
   <rect class="ent-rgpd" x="490" y="151" width="130" height="48" rx="2"/>
-  <text class="en" x="555" y="170">POSITION</text><text class="ek" x="555" y="185">quantite · PRU · date_achat · date_cloture</text>
+  <text class="en" x="555" y="168">POSITION</text><text class="ek" x="555" y="182">quantite · PRU</text><text class="ek" x="555" y="194">date_achat · date_cloture</text>
   <rect class="ent" x="20"  y="266" width="130" height="48" rx="2"/>
-  <text class="en" x="85" y="285">TAUX_CHANGE</text><text class="ek" x="85" y="300">date_taux · valeur_pour_eur</text>
+  <text class="en" x="85" y="284">TAUX_CHANGE</text><text class="ek" x="85" y="302">date_taux · valeur_pour_eur</text>
   <text class="cd" x="163" y="53">1,1</text><text class="cd" x="243" y="53">1,n</text>
   <text class="cd" x="398" y="53">1,n</text><text class="cd" x="478" y="53">1,1</text>
   <text class="cd" x="272" y="99">1,1</text><text class="cd" x="137" y="140">0,n</text>
@@ -360,10 +361,10 @@ justification (nécessité, mise en balance) reste à documenter.</p>
   <tr><td>T1</td><td>Portefeuille ; une ligne retirée du CSV est close par l'import</td><td>3 ans après <code>date_cloture</code></td></tr>
   <tr><td>T2</td><td>Journal d'accès des agents (<code>memory_audit</code>, sans écrivain)</td><td>90 jours</td></tr>
   <tr><td>T3</td><td>Traces d'exécution <strong>Langfuse Cloud, région UE</strong> (sous-traitant allemand ; DPA relu le 05/10 : traitement hors région permis par contrat)</td><td>30 jours (palier gratuit)</td></tr>
-  <tr><td>T4</td><td>Fichier CSV source</td><td>hors dépôt, local</td></tr>
+  <tr><td>T4</td><td>Fichier CSV source, local et hors Git</td><td>tant qu'il sert</td></tr>
   <tr><td>T5</td><td>Journal des appels MCP (<code>mcp_calls</code>, identifiants techniques seuls)</td><td>90 jours</td></tr>
   <tr><td>T6</td><td>Rédaction par un modèle fourni (Azure en zone UE depuis le 09/10, replis Anthropic et OpenRouter) : <strong>hors UE possible</strong> par les replis</td><td>selon fournisseur, non vérifiée</td></tr>
-  <tr><td>T7</td><td>Requêtes Google News par société détenue : <strong>hors UE probable</strong></td><td>sans objet (requêtes)</td></tr>
+  <tr><td>T7</td><td>Requêtes Google News par position (simulées à ce jour) : <strong>hors UE probable</strong></td><td>sans objet (requêtes)</td></tr>
 </table>
 <p style="font-size:7.6pt">La v1 déclarait un <strong>transfert hors UE</strong> (LangSmith, États-Unis). Le traçage a été
 remplacé le 02/10 par un hébergement européen. Une entité américaine du groupe figure parmi les sous-traitants. Le contrat, relu le 05/10, garde les données dans la région choisie sauf si le service l'exige (§ 6.1) et encadre les transferts par des clauses types (§ 6.2) : garanties identifiées, vérification propre à RITA incomplète, analyse d'impact du transfert à faire (registre, T3 et § 5).</p>
@@ -406,7 +407,7 @@ positions closes sans les servir.</p>
 (voie courte avec Docker Compose, §&nbsp;3 ; voie longue sans Docker, §&nbsp;4 ; vérifications, §&nbsp;5), <code>bigdata/CONCEPTION.md</code>.
 Les dépendances sont dans <code>requirements.txt</code>, épinglées quand la version conditionne le fonctionnement
 (<code>feedparser</code>, <code>chromadb</code>, <code>rank-bm25</code>, <code>langfuse</code>, <code>pyspark</code>) ; les 13 autres ne le sont pas encore, c'est une limite connue.
-La séquence ci-dessous reconstruit le projet depuis un dépôt vierge (rejouée sur une base Compose neuve le 03/10).</p>
+Après les prérequis du guide d'exploitation (§&nbsp;3 et 4), voici la séquence abrégée d'installation.</p>
 
 <pre>python -m pip install --user -r requirements.txt   <b># dependances (pas de venv sous Smart App Control)</b>
 psql -h localhost -p 5433 -f db/schema.sql         <b># 10 tables, 1 vue, 12 CHECK, 19 objets d'index</b>
@@ -458,7 +459,7 @@ python -m pytest -q                                <b># 804 passed, 29 skipped, 
 </div>
 
 <footer class="sign">
-  <span>RITA, livrable E1 · bloc BC01 · compétences C1 à C5 · version 2.3</span>
+  <span>RITA, livrable E1 · bloc BC01 · compétences C1 à C5 · version 2.4</span>
   <span>Eramalingam Gandakumar · 11 octobre 2026</span>
 </footer>
 
