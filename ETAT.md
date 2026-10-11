@@ -15,7 +15,7 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-10, soir (incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-11 (plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
@@ -174,23 +174,26 @@ PR #88 en brouillon : `0a3f3f8` poussé, CI verte ; `2a7f18c` et `b3c76b5` pas e
   lire la CI ; documenter comment le fichier local non versionné `data/positions.csv` du 31/07 a été constitué
   (Era n'a jamais investi).
 
-**E2 (C6 à C8) : état au 11/10 et plan validé par Era.** Rapport `docs/rapports/E2/rapport-E2.md` en **v0.3 du 09/10**,
+**E2 (C6 à C8) : état au 11/10 et plan proposé le 11/10, enregistré à la demande d'Era.** Rapport `docs/rapports/E2/rapport-E2.md` en **v0.3 du 09/10**,
 environ 3 200 mots, **aucun PDF** ; 15 à 20 pages attendues, oral de 15 minutes, dû le 05/11. Décompte à défendre :
-**6 ✅ · 13 🟠 · 1 🔴** sur 20 (§ 5 du rapport, le plus prudent). Le classeur v5 dit 8 · 11 · 1 : l'écart est dans C6
+**6 ✅ · 13 🟠 · 1 🔴** sur 20 (§ 5 du rapport, le plus prudent). Le classeur local du 10/10, non versionné dans `develop`, dit 8 · 11 · 1 : l'écart est dans C6
 (5 OK au classeur, 3 au rapport), à aligner sur le rapport quand E2 sera écrit. Une vraie note de veille récente peut
 porter le décompte à 7 · 12 · 1.
-- **Avant le gel (Era seul, sans toucher au gel)** : (1) une **vraie note de veille S41**, datée du 11/10, depuis
-  `docs/veille/_candidats-2026-S40.md`, sans rien antidater (S37 à S40 restent déclarées sans séance) ; (2) la partager
+- **Avant le gel (Era seul, sans toucher au gel)** : (1) **recommandé** : un nouveau relevé S41, puis une vraie note S41 ;
+  **si le temps manque** : finaliser en rattrapage, le 11/10, la note S40 à partir du relevé S40
+  (`docs/veille/_candidats-2026-S40.md`), sans antidater ; S37 et S40 ont des relevés préparatoires, S38 et S39 sont
+  sans séance ; (2) la partager
   avec **une question précise**, et garder la capture du fil et au moins une réponse (preuve de C6.4) ; (3) facultatif :
   un lecteur RSS montrable (Feedbro ou Thunderbird), capture des sources, budget 0 € (C6.3).
 - **Après le gel, dans l'ordre** : (1) fusion de la PR #88 et lecture de la CI ; (2) lecture des conditions de Mistral
   (sous-traitants, conservation, entraînement) et des cas de transfert documentés par Microsoft ; (3) décision sur
-  **Langfuse** (réduire ce qui est envoyé, ou documenter la limite qui reste : hébergé en Irlande, contrat qui permet un
-  traitement hors de la région) ; (4) banc C7 **Azure Data Zone EU contre Mistral Large 4**, mêmes 10 cas, 3 répétitions ;
+  **Langfuse** (hébergé en Irlande, mais son contrat permet un traitement hors de la région) : réduire ce qui est envoyé
+  limite le risque sans tenir la règle UE stricte ; donc désactiver ou remplacer Langfuse pour les traces concernées, ou
+  le garder en acceptant que C8.2 reste partiel ; (4) banc C7 **Azure Data Zone EU contre Mistral Large 4**, mêmes 10 cas, 3 répétitions ;
   (5) notation à l'aveugle de ces **60 nouveaux textes** (pas des anciens textes Azure contre Claude : Claude sort de la
-  cascade) ; (6) rédaction de C7 ; (7) alignement du classeur sur le rapport ; (8) `docs/EXPLOITATION.pdf` régénéré
-  **après** la fusion, **puis** envoyé au formateur avec une preuve datée : c'est cette version qui ferme C8.5 (le guide
-  actuel décrit encore Anthropic et OpenRouter) ; (9) PDF d'E2 (15 à 20 pages), liens et accessibilité vérifiés, puis
+  cascade) ; (6) rédaction de C7 ; (7) alignement du classeur sur le rapport ; (8) C8.5 : fusion de la configuration
+  finale, guide régénéré, accessibilité remesurée, envoi au formateur, preuve datée de l'envoi (un accusé de réception la
+  renforce) ; le guide actuel décrit encore Anthropic et OpenRouter ; (9) PDF d'E2 (15 à 20 pages), liens et accessibilité vérifiés, puis
   tag `livrable-E2-v1`.
 - **Corrections à porter dans E2** : « 2 appels Azure sur 30 au-dessus de 10 s » (mesuré le 11/10 dans
   `evidence/C7/resultats-2026-10-03.jsonl` ; la preuve C7 dit « un sur vingt » et ne se réécrit pas) ; « 30 textes sur 30
@@ -200,7 +203,7 @@ porter le décompte à 7 · 12 · 1.
   recommandation provisoire : Azure GPT-5.4 Data Zone EU en premier, Mistral Large 4 meilleur secours européen identifié,
   à confirmer par le banc complet et la lecture du contrat.
 
-**📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.2, partie
+**📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.3 depuis le 09/10, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :
 
 | Quand | Quoi |
@@ -223,7 +226,7 @@ vers RITA dans `CONTINUITE.md`. D'ici là, RITA reste à trois étapes.
 
 **Tâche principale de la prochaine session** : avancer RITA vers le gel du **jeudi 15/10**. Era relit E1 (5 pages) et
 E3 (20 pages), dit la colonne « Rédaction » avec ses mots (note d'étude du 10/10), met le classeur v4 en place, puis
-envoie au formateur les liens, le message d'état et `docs/EXPLOITATION.pdf` (#43). Le 15/10 : PR `develop → main`,
+envoie au formateur les liens, le message d'état et `docs/EXPLOITATION.pdf` (#43) (remplacé le 11/10, voir le plan E2 : le guide s'envoie après la fusion de la PR #88). Le 15/10 : PR `develop → main`,
 Definition of Done, tags `livrable-E1-v2` et `livrable-E3-v1`. Ensuite E4, E5 et E2 (15-25/10), et la carte #82
 (Mistral UE). Oral blanc E1 + E3 : **29-30/10**.
 
@@ -258,9 +261,9 @@ Nadège et Elena aideront particulièrement à la présentation.
    que le formateur a bien accès au tableau (C16.4, je ne peux pas le lire).
 2. **Relire** `docs/rapports/E1/rapport-E1.pdf` (v2.2 du 10/10 ; la v2.1 du 04/10 avait corrigé cinq affirmations fausses, voir l'entrée
    du 04/10 plus bas) et `docs/rapports/E3/rapport-E3.pdf` (v1.3 du 10/10, 20 pages) ; corrections dans le chat.
-3. **Noter les 60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1 ou 2), **sans ouvrir** le fichier `-cle.csv`.
+3. *(remplacé le 11/10, voir le plan E2 : on note les nouveaux textes Azure contre Mistral Large 4.)* **Noter les 60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1 ou 2), **sans ouvrir** le fichier `-cle.csv`.
    C'est ce qui fait passer la recommandation C7 de « provisoire » à « argumentée ».
-4. **Envoyer au formateur** le message ci-dessous, à copier tel quel ; joindre `docs/EXPLOITATION.pdf` (régénéré le 03/10 au soir,
+4. *(remplacé le 11/10, voir le plan E2 : le guide s'envoie après la fusion ; le message ci-dessous, qui cite encore Anthropic, est à mettre à jour avant tout envoi.)* **Envoyer au formateur** le message ci-dessous, à copier tel quel ; joindre `docs/EXPLOITATION.pdf` (régénéré le 03/10 au soir,
    deux phrases périmées corrigées). Garder l'envoi et la réponse dans `evidence/C8/` (#43, le seul 🔴 de E2).
 
    > **Objet** : RITA, deux points pour E2 (C7 et C8)
@@ -290,7 +293,7 @@ Nadège et Elena aideront particulièrement à la présentation.
 7. 🌐 **Langfuse** : **capture de la liste des alertes revenues à l'état normal** (l'alerte 1 doit repasser à OK après le
    04/10 vers 15 h 18 UTC) et **capture du tableau « RITA C11 »** (`evidence/C11/README.md`, deux lignes « à faire »).
    Fait le 04/10 : traces factices supprimées, deux alertes réglées et mises à l'épreuve.
-8. **C6** : capture du fil Discord du 16/08 dans `evidence/C6/` ; note de veille S40 ou S41 depuis `docs/veille/_candidats-2026-S40.md`.
+8. **C6** : capture du fil Discord du 16/08 dans `evidence/C6/` ; note de veille (remplacé le 11/10, voir le plan E2 : relevé S41 puis note S41, ou à défaut note S40 en rattrapage datée du jour, depuis `docs/veille/_candidats-2026-S40.md`).
 9. 💻 **Ton PC** : rotation puis suppression des fichiers de clés en clair du Bureau. Facultatif : `ANTHROPIC_API_KEY` dans le
    fichier d'environnement si tu veux mesurer Claude en direct (troisième fournisseur du banc).
 10. Dire **« bon pour le gel »** : l'assistant ouvre la PR `develop → main`, puis les tags `livrable-E1-v2` et `livrable-E3-v1`
@@ -310,7 +313,7 @@ fournisseurs, S4 refus journalisés, S3 limite de débit, S1 en-têtes de sécur
 | Épreuve | Décompte | Ce qui manque surtout |
 |---|---|---|
 | E1 | v2.2 du 10/10, 5 pages (date, chiffres des tests datés, `memory_audit` reporté, texte alternatif du schéma) ; vérifiée contre le code et la base le 04/10 | ta relecture ; question de l'annexe au formateur ; gel le 15/10 |
-| E2 | 6 ✅ · 13 🟠 · 1 🔴 sur 20 | notation C7, remise de la documentation (C8.5, #43), Anthropic en direct |
+| E2 | 6 ✅ · 13 🟠 · 1 🔴 sur 20 | banc C7 Azure Data Zone EU contre Mistral Large 4 et notation à l'aveugle des nouveaux textes ; guide renvoyé après la fusion de la PR #88 (C8.5, #43) |
 | E3 | v1.3 du 10/10, 20 pages · 35 ✅ · 4 🟠 · 0 🔴 sur 39 | ta relecture ; les 4 🟠 se ferment après le gel (#73, #75, accessibilité de l'outil, serveur non tracé) ; gel le 15/10 |
 | E4 | 27 ✅ · 9 ⚠️ · 0 ❌ sur 36 | rapport à rédiger ; C16 (revues notées) ; C17.1, .2, .5, .8, .11 ; C19.4 au tag du 15/10 |
 | E5 | non recompté | rapport ; #70 restauration ; C20 et C21 |
@@ -533,7 +536,7 @@ par commande) :
 8. Rapport E3 (6 à 10 h)
 9. Hygiène : `README.md`, `CLAUDE.md`, commentaire de `test.yml`, `requirements.txt` épinglé, 422 pour ticker inconnu, retour arrière, tag `livrable-E1-v2` puis `livrable-E3-v1` (7 à 10 h)
 
-**Après le gel** : revue du lundi pour C16 (5 entrées datées), note de veille S40 avec A2A, paquet E4 le 25/10, benchmark C7 sur les trois fournisseurs déjà branchés.
+**Après le gel** : revue du lundi pour C16 (5 entrées datées), note de veille S40 avec A2A, paquet E4 le 25/10, benchmark C7 sur les trois fournisseurs déjà branchés (remplacé le 11/10, voir le plan E2 : Azure contre Mistral Large 4).
 
 **Non vérifié** : si Hetzner reçoit les clés Langfuse autrement ; l'existence d'un tableau ou d'alertes dans l'interface Langfuse ; la couverture du jour (suite non relancée) ; quel brief occupe la semaine du 05/10 ; deux notes de la phase 1 du programme (« modèle open source, mode d'emploi » et « l'agent qui a perdu la tête ») sans trace dans Obsidian.
 
