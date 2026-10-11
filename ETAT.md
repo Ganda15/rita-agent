@@ -261,19 +261,34 @@ porter le décompte à 7 · 12 · 1.
   humaine » au lieu de « fidélité égale » ; séparer le coût réellement payé du coût calculé au tarif public ; l'adresse
   `api.eu.mistral.ai` prouve le point d'accès, pas les sous-traitants ni la conservation ; C8.2 mentionne aussi Langfuse ;
   recommandation provisoire : Azure GPT-5.4 Data Zone EU en premier, Mistral Large 4 meilleur secours européen identifié,
-  à confirmer par le banc complet et la lecture du contrat.
+  à confirmer par le banc complet et la lecture du contrat. **Ajouté le 11/10** : le briefing réel de LVMH (MC.PA, 11/10)
+  comme exemple de fidélité dans C7 (il passe l'heuristique minimale, cours et sens de la variation, mais contient une
+  durée non étayée et un cours présenté comme seuil) ; deux points pour la grille de notation à l'aveugle :
+  « affirmation temporelle non étayée » et « niveau de prix présenté comme seuil ».
 
 **Décisions d'Era du 11/10 (détail et pourquoi : `CONTINUITE.md`, § D)**
 - **Fournisseurs** : appels réels par **Azure GPT-5.4 seul** (`LLM_ORDRE=foundry`, `MISTRAL_MODEL=mistral-large-4-0`
   écrits dans `.env`) tant que le contrat de Mistral n'est pas lu ; Mistral Large 4 seulement pour le banc C7, sur des
   données publiques ou simulées. Les tests automatiques n'appellent aucun modèle (doublures).
+- **Prompt du rédacteur, décision d'Era du 11/10 (option B)**, à faire le **16/10, test d'abord, avant le banc C7**
+  (`agents/analyst.py`, `construire_prompt`) : (1) la **date de la séance** affichée, distincte de la date de
+  génération ; (2) la consigne « Signale un point à surveiller pour la séance suivante » remplacée par « un élément
+  observable à suivre, tiré des seules données fournies, sans présenter un cours comme un seuil » ; (3) une règle
+  ajoutée : « ne décris pas une durée ou une tendance que les performances fournies ne montrent pas ». Pourquoi : un
+  briefing réel de LVMH (MC.PA, 11/10) écrivait « séance » sans date, « pression vendeuse persistante depuis plusieurs
+  semaines » (durée non étayée) et « le seuil des 380 EUR » (la clôture, présentée comme un niveau), ce dernier
+  directement induit par la consigne n° 3 ; un banc lancé avant mesurerait ce défaut chez les deux modèles. Ce sont des
+  corrections de fidélité, pas des fonctionnalités. **Après le 05/11** (nouvelles fonctionnalités) : comparer deux
+  briefings par des instantanés chiffrés, séparer actualités récentes et historiques dans la recherche, comparaison
+  à un indice, volumes relatifs, alertes sur des changements factuels ; à citer dans « ce que je ferais ensuite »
+  (E4, E5, oral).
 - **Calendrier final** :
 
 | Quand | Quoi |
 |---|---|
 | jusqu'au **14/10** | Era relit E1 et E3 ; veille S41 (relevé, note et partage faits le 11/10 ; réponses attendues) |
 | **15/10** | gel d'E1 et d'E3 (inchangé, ligne du tableau plus bas) |
-| **16/10** | date de séance dans le prompt (`agents/analyst.py`, test d'abord), tests, puis banc C7 Azure contre Mistral Large 4 dans un dossier de résultats neuf |
+| **16/10** | prompt du rédacteur (`agents/analyst.py`, test d'abord) : date de séance **et deux consignes corrigées** (décision d'Era du 11/10, option B, ci-dessus), tests, puis banc C7 Azure contre Mistral Large 4 dans un dossier de résultats neuf |
 | **17-20/10** | E2, E4 et E5 terminés, PDF compris |
 | **23/10** | gel final |
 | **26/10** | simulation personnelle |
