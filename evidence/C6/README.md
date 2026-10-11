@@ -33,6 +33,11 @@ evidence/C6/
 
 **Au 2026-08-16, ce dossier ne contient encore aucune capture.**
 
+**Au 2026-10-11 : une capture**, `envoi-2026-10-11-promo-discord-veille.png` : la note S41 postée dans le canal
+#veille du Discord de la promo, le 11/10 à 20 h 04, avec sa question ouverte. Elle prouve le **partage** (date,
+canal, contenu), **pas encore l'animation** : aucune réponse au moment de la capture. La capture du fil, réponses
+comprises, reste à faire (`discussion-<date>-discord.png`), comme celle du partage S33 du 16/08.
+
 ✅ **Le 16/08, la note S33 a été postée dans le canal Discord de la promo**, terminée par une
 question ouverte sur le filtrage du texte avant passage au modèle. Le critère *« en animant le
 travail collectif »* est donc **lancé**.

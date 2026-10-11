@@ -26,7 +26,7 @@
 |---|---|---|---|---|---|---|
 | **1** | **2026-08-16** | **la promo** | **Discord** — canal général | **S33** — injection de prompt | ⬜ en attente | ⬜ capture à faire **après** les réponses |
 | 2 | ⬜ | le formateur référent | mail + PDF | S33 | ⬜ | ⬜ — bloqué : congé |
-| 3 | 2026-10-11 | la promo | Discord, canal général | S41 : les détecteurs d'injection réussissent le test sur lequel ils sont entraînés | ⬜ en attente | ⬜ capture **après** les réponses, dans `evidence/C6/` |
+| 3 | 2026-10-11 | la promo | Discord, canal #veille (20 h 04) | S41 : les détecteurs d'injection réussissent le test sur lequel ils sont entraînés | ⬜ en attente (aucune réponse à 20 h 09) | ✅ message posté : `evidence/C6/envoi-2026-10-11-promo-discord-veille.png` · ⬜ fil **après** les réponses |
 
 > **Au 2026-08-16 : 1 partage effectué sur 2.**
 > ✅ La note S33 a été **postée dans le canal Discord de la promo le 16/08**, terminée par une
@@ -37,14 +37,14 @@
 > (`../FILE-DE-VALIDATION.md`, ligne 4).
 
 > **Au 2026-10-11 : 2 partages à la promo effectués (S33 le 16/08, S41 le 11/10), 0 au formateur.**
-> ✅ La note S41 (`2026-S41-mesurer-le-gardefou.md`) a été **postée dans le canal Discord de la promo le 11/10**,
-> terminée par une question ouverte. ⬜ Les **réponses** font la preuve : capture du fil à faire une fois qu'il y en a,
-> rangée dans `evidence/C6/`. La capture du partage S33 (16/08) n'a toujours pas été faite. 🔴 L'envoi au formateur
+> ✅ La note S41 (`2026-S41-mesurer-le-gardefou.md`) a été **postée dans le canal #veille du Discord de la promo le
+> 11/10 à 20 h 04**, terminée par une question ouverte (capture du message : `evidence/C6/`). ⬜ Les **réponses** font
+> la preuve : capture du fil à faire une fois qu'il y en a, rangée dans `evidence/C6/`. La capture du partage S33 (16/08) n'a toujours pas été faite. 🔴 L'envoi au formateur
 > reste en file.
 
-**Le message S41 tel que posté le 11/10** (texte préparé le jour même ; à corriger ici si le texte posté diffère) :
+**Le message S41 tel que posté le 11/10 à 20 h 04** (texte relevé sur la capture du message) :
 
-> 📌 Veille S41 : sécurité des agents LLM
+> sécurité des agents LLM
 >
 > Un détecteur d'injections peut être excellent sur un benchmark et rater presque tout sur un autre. Un article
 > d'octobre a retesté 15 détecteurs sur trois jeux d'essai : le classement ne se transfère pas d'un jeu à l'autre.
@@ -61,7 +61,7 @@
 > contenus sains représentatifs de mes vraies sources (articles RSS, champs extraits des pages par scraping). Vous
 > feriez comment pour constituer ce lot ?
 >
-> Lien : [l'article sur arXiv](https://arxiv.org/abs/2610.03448)
+> Lien : https://arxiv.org/abs/2610.03448
 
 ### ⚠️ Le formateur est bloqué. La promo ne l'est pas.
 
