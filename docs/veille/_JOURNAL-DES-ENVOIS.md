@@ -26,6 +26,7 @@
 |---|---|---|---|---|---|---|
 | **1** | **2026-08-16** | **la promo** | **Discord** — canal général | **S33** — injection de prompt | ⬜ en attente | ⬜ capture à faire **après** les réponses |
 | 2 | ⬜ | le formateur référent | mail + PDF | S33 | ⬜ | ⬜ — bloqué : congé |
+| 3 | 2026-10-11 | la promo | Discord, canal général | S41 : les détecteurs d'injection réussissent le test sur lequel ils sont entraînés | ⬜ en attente | ⬜ capture **après** les réponses, dans `evidence/C6/` |
 
 > **Au 2026-08-16 : 1 partage effectué sur 2.**
 > ✅ La note S33 a été **postée dans le canal Discord de la promo le 16/08**, terminée par une
@@ -34,6 +35,33 @@
 > message. La capture est à faire dans un ou deux jours, une fois le fil nourri.
 > 🔴 L'envoi au **formateur** reste à faire — bloqué par son congé, en file
 > (`../FILE-DE-VALIDATION.md`, ligne 4).
+
+> **Au 2026-10-11 : 2 partages à la promo effectués (S33 le 16/08, S41 le 11/10), 0 au formateur.**
+> ✅ La note S41 (`2026-S41-mesurer-le-gardefou.md`) a été **postée dans le canal Discord de la promo le 11/10**,
+> terminée par une question ouverte. ⬜ Les **réponses** font la preuve : capture du fil à faire une fois qu'il y en a,
+> rangée dans `evidence/C6/`. La capture du partage S33 (16/08) n'a toujours pas été faite. 🔴 L'envoi au formateur
+> reste en file.
+
+**Le message S41 tel que posté le 11/10** (texte préparé le jour même ; à corriger ici si le texte posté diffère) :
+
+> 📌 Veille S41 : sécurité des agents LLM
+>
+> Un détecteur d'injections peut être excellent sur un benchmark et rater presque tout sur un autre. Un article
+> d'octobre a retesté 15 détecteurs sur trois jeux d'essai : le classement ne se transfère pas d'un jeu à l'autre.
+> PIGuard, par exemple, détecte 95,1 % des injections de la moitié test de BIPIA, et seulement 2,1 % de celles
+> d'AgentDojo, au même seuil. Pour les deux détecteurs dont les données d'entraînement sont publiques, la cause est
+> claire : ils ont été entraînés sur des données qui ressemblent au test. Et l'auteur le reconnaît : il règle son
+> seuil sur les données de test elles-mêmes, ce qui avantage tous les détecteurs.
+>
+> Ça me concerne directement : mon filtre d'injection et ses premiers cas de test ont été écrits le même jour, et
+> j'avais obtenu 100 % de blocage le 29/07, sur 7 cas calqués sur les motifs. Les 3 cas écrits après coup contre les
+> motifs sont exactement les 3 qu'il rate (7 sur 10).
+>
+> Ma question ouverte : pour mesurer les faux positifs là où le filtre est vraiment branché, il faudrait un lot de
+> contenus sains représentatifs de mes vraies sources (articles RSS, champs extraits des pages par scraping). Vous
+> feriez comment pour constituer ce lot ?
+>
+> Lien : [l'article sur arXiv](https://arxiv.org/abs/2610.03448)
 
 ### ⚠️ Le formateur est bloqué. La promo ne l'est pas.
 

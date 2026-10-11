@@ -48,7 +48,7 @@ presse.
 | S37 (07 au 13/09) | ✅ (relevé du 08/09) | 🔴 aucune | carte #31 |
 | S38, S39 (14 au 27/09) | 🔴 aucun | 🔴 aucune | carte #31 : deux semaines sans séance, à dire tel quel |
 | S40 (28/09 au 04/10) | ✅ (relevé du 28/09, fenêtre élargie au 14/09) | 🔴 à écrire par Era | carte #30 |
-| S41 (05 au 11/10) | ✅ (relevé du 11/10, fenêtre élargie au 29/09) | 🟠 modèle copié, note à rédiger par Era | créneau du lundi 05/10 non tenu ; relevé fait le dimanche 11/10, et dit |
+| S41 (05 au 11/10) | ✅ (relevé du 11/10, fenêtre élargie au 29/09) | ✅ rédigée en rattrapage le 11/10, partagée à la promo le 11/10 (`_JOURNAL-DES-ENVOIS.md`, envoi 3) | créneau du lundi 05/10 non tenu ; relevé fait le dimanche 11/10, et dit |
 
 Synthèse des quatre notes : `Veille-C6-synthese-S33-a-S36.pdf` (§6). Partage : un seul, Discord le 16/08, sans
 capture des réponses à ce jour (`_JOURNAL-DES-ENVOIS.md`, `../../evidence/C6/README.md`).
