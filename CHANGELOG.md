@@ -9,6 +9,18 @@
 
 ---
 
+## 2026-10-11 (nuit, fin) : guide d'exploitation corrigé, deux manques d'installation
+
+**Manques découverts** (relecture du guide, chaque point vérifié dans le code) : la voie Docker aboutit à une base
+vide, faute de procédure d'initialisation (le PostgreSQL du conteneur ne publie aucun port, la collecte tourne sur le
+poste) ; la création de la base échouait sur PostgreSQL 15 ou plus (`GRANT ALL PRIVILEGES ON DATABASE` ne donne
+plus le droit de créer des tables dans `public`) ; `git clone` sans `cd rita-agent`. Corrigés dans le guide le 11/10
+(documentation seule, non rejouée sur une installation neuve, et le guide le dit), avec la clé contrôlée à
+l'authentification, `OUT_OF_CORPUS`, `curl.exe`, Azure seul depuis le 11/10, chiffres des tests datés. **Reste après
+le gel** : construire l'initialisation de la base Docker, rejouer les deux voies sur un environnement neuf.
+
+---
+
 ## 2026-10-11 (nuit, suite) : relevé de veille S41, et un manque de la CI
 
 **Relevé S41** fait le 11/10 (fenêtre du 29/09 au 11/10, créneau du 05/10 non tenu, dit tel quel), puis corrigé le

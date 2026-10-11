@@ -292,6 +292,13 @@ porter le décompte à 7 · 12 · 1.
   3 attaques adverses écrites le 17/08 contre eux (`c7c8811`, ce sont les 3 qui passent), 8 phrases d'actualité
   ordinaires ; il prouve une couverture d'exemples, pas un taux de sécurité en production.
 
+- **Guide d'exploitation, relevé le 11/10 (relecture), à traiter après le gel** : (a) aucune procédure ne remplit la
+  base Docker (son PostgreSQL ne publie aucun port, la collecte du § 8 tourne sur le poste) : construire et tester
+  une initialisation de la base de Compose ; (b) rejouer les deux voies d'installation (Docker et native) sur un
+  environnement neuf et isolé, puisque les corrections du 11/10 (`cd rita-agent`, base dont `rita` est propriétaire,
+  `.env` non écrasé, `curl.exe`) suivent le code et la documentation de PostgreSQL sans avoir été rejouées ; (c) la
+  passe complète C8.5 après la fusion de la PR #88. Corrigé dans le guide le 11/10 (documentation seule, 12 pages).
+
 **📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (lignes « 15-25/10 » et
 « à partir du 26/10 » précisées le 11/10 : voir le calendrier final juste au-dessus) (mesuré le même jour : E1 et E3 complets ; E2 en v0.3 depuis le 09/10, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :
