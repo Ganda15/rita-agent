@@ -7,7 +7,7 @@
 | **Candidat** | Eramalingam Gandakumar |
 | **Formation** | Simplon × Wild Code School, promotion Développeur IA et IA agentique |
 | **Dépôt** | `Ganda15/rita-agent` (privé ; accès du jury par invitation de collaborateur) |
-| **Version** | 1.3, 10 octobre 2026 ; gel et tag `livrable-E3-v1` le 15 octobre 2026 |
+| **Version** | 1.4, 11 octobre 2026 ; gel et tag `livrable-E3-v1` le 15 octobre 2026 |
 | **Mesures** | datées du 2 au 10 octobre 2026 (date de chaque preuve dans sa section), chacune avec la commande qui la produit ; la première trace complète d'un briefing réel date du 3 octobre, 14 h 48 |
 
 ## Lire ce rapport
@@ -24,7 +24,7 @@ Trois règles ont guidé l'écriture. Un chiffre se cite mesuré, avec sa date e
 
 **La contrainte qui structure tout** : RITA aide à lire, elle ne recommande jamais d'acheter ni de vendre. C'est l'interdit du conseil en investissement non agréé, posé par l'**AMF** (Autorité des marchés financiers). Il est écrit dans le prompt du rédacteur et vérifié par un garde-fou qui relit le texte produit avant diffusion.
 
-**Le modèle est fourni, pas entraîné.** RITA appelle un modèle de langage déjà entraîné, par une API, avec une cascade de trois fournisseurs : Azure AI Foundry (`gpt-5.4`, point compatible OpenAI depuis le 3 octobre au soir, gratuit pour le projet), puis Anthropic (Claude), puis OpenRouter (Claude). Il n'y a ni jeu d'entraînement, ni poids, ni réglage fin. Ce que ce rapport mesure n'est donc pas une métrique d'apprentissage, mais le **comportement du système autour du modèle** : ce qu'on lui donne, ce qu'on accepte de lui, ce qu'on refuse, et comment on le voit fonctionner. La chef de projet l'a confirmé par écrit le 7 septembre 2026 : des tests sur l'évaluation des réponses et la validation des formats, plus la description des pratiques LLMOps mises en place, suffisent ; aucun modèle d'appoint n'est à entraîner.
+**Le modèle est fourni, pas entraîné.** RITA appelle un modèle de langage déjà entraîné, par une API, avec une cascade de trois fournisseurs : Azure AI Foundry (`gpt-5.4`, point compatible OpenAI depuis le 3 octobre au soir, gratuit pour le projet), puis Anthropic (Claude), puis OpenRouter (Claude) ; c'est l'ordre par défaut du code, et depuis le 11 octobre le poste n'appelle qu'Azure (`LLM_ORDRE=foundry`). Il n'y a ni jeu d'entraînement, ni poids, ni réglage fin. Ce que ce rapport mesure n'est donc pas une métrique d'apprentissage, mais le **comportement du système autour du modèle** : ce qu'on lui donne, ce qu'on accepte de lui, ce qu'on refuse, et comment on le voit fonctionner. La chef de projet l'a confirmé par écrit le 7 septembre 2026 : des tests sur l'évaluation des réponses et la validation des formats, plus la description des pratiques LLMOps mises en place, suffisent ; aucun modèle d'appoint n'est à entraîner.
 
 **Ce que le livrable E1 a posé** (rapport envoyé le 13 août 2026, tag `livrable-E1-v1`) : la collecte depuis cinq types de sources, la base de huit tables (dix au 3 octobre 2026, version 2 du rapport E1), les requêtes, le registre RGPD, l'API de données `/donnees/*`. Ce rapport E3 commence là où E1 s'arrête : le modèle.
 
@@ -83,9 +83,9 @@ La distinction entre C5 et C9 est celle du référentiel : `/donnees/*` sert de 
 
 ### 3.2 L'authentification
 
-Toutes les routes sauf `/health` exigent l'en-tête `X-API-Key`. Trois décisions, chacune née d'un incident ou d'une revue :
+Les routes de données, `/briefing` et `/audit/mcp` exigent `X-API-Key` ; `/health`, la documentation OpenAPI et les pages de l'interface sont publiques, sans données métier protégées. Trois décisions, chacune née d'un incident ou d'une revue :
 
-- **Aucune clé par défaut.** Le code acceptait `dev-key` écrite en clair quand la variable manquait ; corrigé le 18 août 2026 (incident INC-001, OWASP API2). Aujourd'hui l'API **refuse de démarrer** sans `RITA_API_KEY` d'au moins 16 caractères (`api/main.py`, `LONGUEUR_MINIMALE_CLE = 16`), et le message d'erreur dit comment en générer une.
+- **Aucune clé par défaut.** Le code acceptait `dev-key` écrite en clair quand la variable manquait ; corrigé le 18 août 2026 (INC-001, OWASP API2). L'absence ou l'insuffisance de la clé configurée (16 caractères minimum) est détectée lors de l'authentification (`cle_attendue()`), avec un message qui dit comment en générer une ; Docker Compose impose sa présence avant le lancement.
 - **Comparaison à temps constant** (`secrets.compare_digest`) : une comparaison ordinaire s'arrête au premier caractère différent et laisse mesurer la clé par le temps de réponse.
 - **Refus en 403**, sur toutes les routes du routeur de données par une dépendance commune, pas route par route.
 
@@ -105,7 +105,7 @@ La revue entrée par entrée, sur l'édition **OWASP Top 10:2025**, est faite le
 
 ### 3.4 Versionnage et tests
 
-Les sources sont sur GitHub, `Ganda15/rita-agent` : `develop` pour le travail, `main` pour les versions, qui ne bouge que par une pull request relue, règle appliquée par GitHub depuis le 3 octobre (section 7.2). Les tests de l'API : `tests/test_health.py` (10 : vivacité, 403 sans clé, 502, refus de démarrer sans clé, substitution AMF prouvée par mutation), `tests/test_request_id.py` (12 : l'identifiant sur toute réponse, 500 compris), `tests/test_traces_robustesse.py` (8 : une panne du traçage ne fait jamais tomber un briefing), `tests/test_api_donnees.py` (57, les routes de données). Les deux derniers répondent aux remarques P1 et P2 de la revue automatisée de la pull request 58, toutes deux vraies, corrigées test d'abord. La documentation technique tient en deux fichiers : `docs/ARCHITECTURE.md` (4 octobre) décrit l'architecture en un seul endroit (chaque brique et ses tests, les points de terminaison et la clé exigée, les règles d'accès, les environnements), `docs/EXPLOITATION.md` dit comment s'en servir (clés, installation avec et sans Docker, dépannage, monitorage). Le détail de chaque route est le contrat OpenAPI. Un appel réel du 3 octobre est rangé dans `evidence/C9/preuve-api-modele-2026-10-03.md`.
+Les sources sont sur GitHub, `Ganda15/rita-agent` : `develop` pour le travail, `main` pour les versions, qui ne bouge que par une pull request relue, règle appliquée par GitHub depuis le 3 octobre (section 7.2). Les tests de l'API : `tests/test_health.py` (10 : vivacité, 403 sans clé, 502, refus de servir sans clé configurée, substitution AMF prouvée par mutation), `tests/test_request_id.py` (12 : l'identifiant sur toute réponse, 500 compris), `tests/test_traces_robustesse.py` (8 : une panne du traçage ne fait jamais tomber un briefing), `tests/test_api_donnees.py` (57, les routes de données). Les deux derniers répondent aux remarques P1 et P2 de la revue automatisée de la pull request 58, toutes deux vraies, corrigées test d'abord. La documentation technique tient en deux fichiers : `docs/ARCHITECTURE.md` (4 octobre) décrit l'architecture en un seul endroit (chaque brique et ses tests, les points de terminaison et la clé exigée, les règles d'accès, les environnements), `docs/EXPLOITATION.md` dit comment s'en servir (clés, installation avec et sans Docker, dépannage, monitorage). Le détail de chaque route est le contrat OpenAPI. Un appel réel du 3 octobre est rangé dans `evidence/C9/preuve-api-modele-2026-10-03.md`.
 
 ### 3.5 Ce qui manque, C9
 
@@ -184,7 +184,7 @@ briefing                      racine : request_id, verdict AMF, note conforme_am
 └── garde-fou-sortie          bloqué ou non, motifs ; niveau WARNING si bloqué
 ```
 
-Une règle tenue partout : la sortie d'une étape est un résumé (compte, motif, durée), jamais le contenu. Le texte des articles et du briefing n'est qu'à un endroit, la génération.
+Une règle tenue partout : la sortie d'une étape est un résumé (compte, motif, durée), jamais le contenu. Le texte des articles et du briefing n'est que dans le span `briefing-llm` et la génération.
 
 ![Surveiller le modèle : collecte, alerte et restitution](schemas/E3-monitorage.png)
 
@@ -397,7 +397,7 @@ Un test de fumée vérifie peu de choses, mais pour de vrai : ici Playwright pil
 
 ### 6.2 La couverture : un seuil établi, pas décrété
 
-Le seuil vit dans un seul fichier, `.coveragerc` (`fail_under = 90`), lu en local comme en intégration continue ; la commande de la CI porte bien `--cov`, sans quoi le seuil ne serait jamais appliqué (leçon de l'exercice Factum du 2 octobre). Son historique est écrit dans le fichier : 80 % le 19 août à la première mesure (81 %), relevé à 90 % le même jour une fois deux manques fermés (92 %), 92,23 % le 7 septembre, 93,66 % le 2 octobre. **Le seuil suit la mesure, jamais l'inverse.** Deux décisions de périmètre : les fichiers de tests sont exclus (ils sont couverts à 100 % par construction) ; `bigdata/` est exclu parce que `.dockerignore` l'écarte déjà de l'image, et une première version qui n'en excluait qu'une partie donnait 82 % en local et 79 % en CI, ce qui a fait tomber la CI au premier passage.
+Le seuil vit dans un seul fichier, `.coveragerc` (`fail_under = 90`), lu en local comme en intégration continue ; la commande de la CI porte bien `--cov`, sans quoi le seuil ne serait jamais appliqué (leçon de l'exercice Factum du 2 octobre). Son historique est écrit dans le fichier : 80 % le 19 août à la première mesure (81 %), relevé à 90 % le même jour une fois deux manques fermés (92 %), 92,23 % le 7 septembre, 93,66 % le 2 octobre. **Le seuil suit la mesure, jamais l'inverse.** Deux décisions de périmètre : les fichiers de tests sont exclus, pour mesurer la couverture du code applicatif ; `bigdata/` est exclu parce que `.dockerignore` l'écarte déjà de l'image, et une première version qui n'en excluait qu'une partie donnait 82 % en local et 79 % en CI, ce qui a fait tomber la CI au premier passage.
 
 ### 6.3 Les garde-fous, mesurés, et le choix de ne pas baisser le seuil
 
@@ -423,7 +423,7 @@ Le 2 octobre, le test de la section 6.1.2 est passé du premier coup, ce qui ne 
 
 ### 6.6 Ce qui manque, C12
 
-- **Aucune validation du format de la sortie du modèle** : pas de schéma sur le texte produit, pas de schéma sur les entrées RSS. Mesuré absent (`grep` de `pydantic`, `BaseModel`, `json.loads` hors tests : aucun résultat).
+- **Aucune validation structurée de la sortie du modèle** : le texte produit n'a pas de schéma, les entrées RSS non plus. Le seul schéma Pydantic du dépôt hors tests valide l'événement d'audit MCP (`EvenementMcp`, `api/main.py`).
 - **Aucun jeu de référence de briefings** (prix attendu, faits obligatoires, formules interdites) : la qualité des réponses n'est mesurée que par les garde-fous et la recherche, pas par une note d'exactitude.
 - Le seuil de blocage de 85 % n'est pas atteint : 70 % sur deux garde-fous.
 - Les attaques du scan Giskard sont rejouées par deux textes copiés à la main, pas en important les fichiers générés : la régression peut dériver.
@@ -506,11 +506,11 @@ Les mesures de garde-fous ne dépendent que du code ; la suite complète et la m
 
 ---
 
-## 10. Les 39 critères, un par un
+## 10. Les 44 critères, regroupés en 39 lignes
 
 État au 4 octobre 2026. ✅ tenu avec preuve · 🟠 partiel · 🔴 absent.
 
-### C9, exposer le modèle (8 critères)
+### C9, exposer le modèle (11 critères, en 8 lignes)
 
 | Critère | État | Preuve |
 |---|---|---|
@@ -523,7 +523,7 @@ Les mesures de garde-fous ne dépendent que du code ; la suite complète et la m
 | Documentation : architecture, points de terminaison, authentification | ✅ | `docs/ARCHITECTURE.md` (4 octobre : briques et tests, points de terminaison et clé exigée, règles d'accès) ; contrat OpenAPI sur `/docs` ; `docs/EXPLOITATION.md` |
 | Documentation et API au standard OpenAPI, format accessible | ✅ | OpenAPI 3.1.0 généré ; Markdown et PDF |
 
-### C10, intégrer l'API dans une application (8 critères)
+### C10, intégrer l'API dans une application (9 critères, en 8 lignes)
 
 | Critère | État | Preuve |
 |---|---|---|
@@ -536,7 +536,7 @@ Les mesures de garde-fous ne dépendent que du code ; la suite complète et la m
 | Les tests s'exécutent en totalité, résultats interprétés | ✅ | suite verte |
 | Sources versionnées sur le dépôt de l'application | ✅ | même dépôt |
 
-### C11, monitorer le modèle (9 critères)
+### C11, monitorer le modèle (9 critères, en 9 lignes)
 
 | Critère | État | Preuve |
 |---|---|---|
@@ -550,7 +550,7 @@ Les mesures de garde-fous ne dépendent que du code ; la suite complète et la m
 | Documentation d'installation, configuration, utilisation | ✅ | section « Monitorage Langfuse et alertes » de `docs/EXPLOITATION.md` |
 | Documentation au format accessible | ✅ | Markdown dans le dépôt ; ce rapport en PDF par `scripts/rendre_pdf.py`, relu |
 
-### C12, tests automatisés (7 critères)
+### C12, tests automatisés (7 critères, en 7 lignes)
 
 | Critère | État | Preuve |
 |---|---|---|
@@ -562,7 +562,7 @@ Les mesures de garde-fous ne dépendent que du code ; la suite complète et la m
 | Documentation : installation de l'environnement de test, exécution, couverture | ✅ | `docs/EXPLOITATION.md` §5, `docs/LLMOPS.md` §7 |
 | Documentation au format accessible | ✅ | Markdown dans le dépôt, PDF de ce rapport ; `evidence/C12/preuve-suite-de-tests-2026-10-03.md` |
 
-### C13, chaîne de livraison continue (7 critères)
+### C13, chaîne de livraison continue (8 critères, en 7 lignes)
 
 | Critère | État | Preuve |
 |---|---|---|
@@ -574,7 +574,7 @@ Les mesures de garde-fous ne dépendent que du code ; la suite complète et la m
 | Sources de la chaîne versionnées | ✅ | `.github/workflows/`, `.githooks/`, `scripts/verifier_livrable.py` |
 | Documentation d'installation, configuration, test de la chaîne, accessible | ✅ | `docs/CI-CD.md` §4 à §7 : secrets, permissions, installation sur un clone neuf, tests de la chaîne, quoi faire quand c'est rouge ; Markdown et PDF |
 
-**Décompte** : 35 ✅ · 4 🟠 · 0 🔴 sur 39 (version 1.0 du 3 octobre au soir : 33, 6, 0 ; version 0.1 du matin : 27, 11, 1).
+**Décompte** : 35 ✅ · 4 🟠 · 0 🔴 sur 39 lignes couvrant 44 critères (3 octobre au soir : 33, 6, 0 ; matin : 27, 11, 1).
 
 ---
 
@@ -582,7 +582,7 @@ Les mesures de garde-fous ne dépendent que du code ; la suite complète et la m
 
 **Pas fait au 4 octobre 2026** : la capture du tableau de bord, et celle des alertes revenues à la normale (retour constaté le 4 octobre au soir, image pas encore rangée) ; une alerte de silence ; le contrat `/v1` et le 422 ; la limite de débit ; le manifeste de version ; le retour arrière ; l'épinglage des dépendances ; le jeu de référence de briefings ; la validation de format des sorties ; les corrections de la revue OWASP (#75) ; une alerte quand la chaîne est rouge (INC-007).
 
-**Risques pour la démonstration** : deux fournisseurs répondent sur le poste (Foundry, puis OpenRouter) ; Anthropic n'a pas de clé. Si les deux tombent, l'API répond une erreur 500 générique, sans fuite, et l'écran 3 affiche « Erreur 500 » au lieu du message prévu (#75, après le gel). Le serveur sert le code du 20 août. Le dépôt est privé. Les métriques agrégées de Langfuse reposent encore sur peu d'appels réels.
+**Risques pour la démonstration** : depuis le 11 octobre, le poste n'appelle qu'Azure (`LLM_ORDRE=foundry`), les replis restant le défaut du code. Si Azure tombe, l'API répond une erreur 500 générique, sans fuite, et l'écran 3 affiche « Erreur 500 » au lieu du message prévu (#75, après le gel). Le serveur sert le code du 20 août. Le dépôt est privé. Les métriques agrégées de Langfuse reposent encore sur peu d'appels réels.
 
 **Ce que ce rapport ne prétend pas** : qu'un garde-fou à motifs lexicaux arrête une intention habilement formulée (70 %) ; qu'une mesure de recherche sur un jeu annoté par un modèle vaut une mesure humaine ; que la chaîne d'alerte a déjà attrapé une vraie panne : elle a attrapé une dégradation réelle, et une fausse alerte de notre fait, corrigée par la mesure.
 

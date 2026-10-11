@@ -9,6 +9,20 @@
 
 ---
 
+## 2026-10-11 (nuit) : E3 v1.4, passe documentaire, revue d'E3 close
+
+**Manques découverts et corrigés dans E3** (relecture, chaque point vérifié dans le code ou le référentiel) : E3
+disait que l'API **refuse de démarrer** sans clé, alors qu'elle la contrôle à l'authentification (le test lui-même
+s'appelle « refuse de servir ») ; que toutes les routes sauf `/health` exigent la clé, alors que la documentation et
+les pages de l'interface sont publiques ; que le texte du briefing n'est qu'à un endroit des traces, alors qu'il est
+dans deux ; qu'aucun schéma Pydantic n'existe, alors qu'il y en a un ; que deux fournisseurs répondent sur le poste,
+alors qu'Azure est seul depuis le 11/10 ; que la section 10 comptait « 39 critères », alors que le référentiel en
+compte **44** pour C9 à C13, regroupés en 39 lignes, aucun absent. Toujours 20 pages, statuts inchangés. **Reste,
+par choix de calendrier** : les figures d'E3 sont petites imprimées (environ 4 points) ; refonte après le gel, en
+nouvelle version.
+
+---
+
 ## 2026-10-11 (soir) : E1 v2.4 et guide d'exploitation, dernière passe d'E1 avant le gel
 
 **Manque découvert et corrigé** : le guide d'exploitation (§ 4.5) avait le même défaut qu'E1, en pire : il lançait
