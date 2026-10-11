@@ -174,6 +174,32 @@ PR #88 en brouillon : `0a3f3f8` poussé, CI verte ; `2a7f18c` et `b3c76b5` pas e
   lire la CI ; documenter comment le fichier local non versionné `data/positions.csv` du 31/07 a été constitué
   (Era n'a jamais investi).
 
+**E2 (C6 à C8) : état au 11/10 et plan validé par Era.** Rapport `docs/rapports/E2/rapport-E2.md` en **v0.3 du 09/10**,
+environ 3 200 mots, **aucun PDF** ; 15 à 20 pages attendues, oral de 15 minutes, dû le 05/11. Décompte à défendre :
+**6 ✅ · 13 🟠 · 1 🔴** sur 20 (§ 5 du rapport, le plus prudent). Le classeur v5 dit 8 · 11 · 1 : l'écart est dans C6
+(5 OK au classeur, 3 au rapport), à aligner sur le rapport quand E2 sera écrit. Une vraie note de veille récente peut
+porter le décompte à 7 · 12 · 1.
+- **Avant le gel (Era seul, sans toucher au gel)** : (1) une **vraie note de veille S41**, datée du 11/10, depuis
+  `docs/veille/_candidats-2026-S40.md`, sans rien antidater (S37 à S40 restent déclarées sans séance) ; (2) la partager
+  avec **une question précise**, et garder la capture du fil et au moins une réponse (preuve de C6.4) ; (3) facultatif :
+  un lecteur RSS montrable (Feedbro ou Thunderbird), capture des sources, budget 0 € (C6.3).
+- **Après le gel, dans l'ordre** : (1) fusion de la PR #88 et lecture de la CI ; (2) lecture des conditions de Mistral
+  (sous-traitants, conservation, entraînement) et des cas de transfert documentés par Microsoft ; (3) décision sur
+  **Langfuse** (réduire ce qui est envoyé, ou documenter la limite qui reste : hébergé en Irlande, contrat qui permet un
+  traitement hors de la région) ; (4) banc C7 **Azure Data Zone EU contre Mistral Large 4**, mêmes 10 cas, 3 répétitions ;
+  (5) notation à l'aveugle de ces **60 nouveaux textes** (pas des anciens textes Azure contre Claude : Claude sort de la
+  cascade) ; (6) rédaction de C7 ; (7) alignement du classeur sur le rapport ; (8) `docs/EXPLOITATION.pdf` régénéré
+  **après** la fusion, **puis** envoyé au formateur avec une preuve datée : c'est cette version qui ferme C8.5 (le guide
+  actuel décrit encore Anthropic et OpenRouter) ; (9) PDF d'E2 (15 à 20 pages), liens et accessibilité vérifiés, puis
+  tag `livrable-E2-v1`.
+- **Corrections à porter dans E2** : « 2 appels Azure sur 30 au-dessus de 10 s » (mesuré le 11/10 dans
+  `evidence/C7/resultats-2026-10-03.jsonl` ; la preuve C7 dit « un sur vingt » et ne se réécrit pas) ; « 30 textes sur 30
+  passent l'heuristique minimale de fidélité (cours et sens de la variation) ; la fidélité complète demande une relecture
+  humaine » au lieu de « fidélité égale » ; séparer le coût réellement payé du coût calculé au tarif public ; l'adresse
+  `api.eu.mistral.ai` prouve le point d'accès, pas les sous-traitants ni la conservation ; C8.2 mentionne aussi Langfuse ;
+  recommandation provisoire : Azure GPT-5.4 Data Zone EU en premier, Mistral Large 4 meilleur secours européen identifié,
+  à confirmer par le banc complet et la lecture du contrat.
+
 **📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (mesuré le même jour : E1 et E3 complets ; E2 en v0.2, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :
 
