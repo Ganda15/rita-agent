@@ -14,7 +14,7 @@
 > **Liens vérifiés** : chacun a répondu **HTTP 200** le 11/10/2026 (contrôle `curl`). Les liens qui ont répondu `403` ou
 > `404` ne sont **pas** donnés (liste en fin de fichier). Un 200 dit qu'une page est **accessible**, pas qu'elle est
 > fiable ni que son résumé ici est exact : relire chaque candidat dans sa source avant de l'utiliser dans la note.
-> **Corrigé le 11/10 au soir**, après relecture : cinq points, listés en fin de fichier.
+> **Corrigé le 11/10 au soir**, après relecture : six points, listés en fin de fichier.
 > **Déjà vu, écarté** : la note CNIL sur l'IA agentique du 20/07 est traitée en S34 ; aucun candidat ci-dessous ne figure
 > dans les relevés précédents (vérifié dans `docs/veille/`).
 
@@ -103,8 +103,9 @@ WikiText-2), et aucun lien vers le jeu de données.
 
 **Pistes pour la note.** C'est le profil attendu d'un filtre par motifs comme `guardrails/injection.py`, appliqué article
 par article à la collecte : il se trompe rarement quand il bloque, mais laisse passer ce qu'il n'a jamais vu. RITA mesure
-aujourd'hui 70 % de blocage et 0 % de faux positifs, sur 18 cas écrits en même temps que les motifs (même
-commit `c1ee404`, 29/07). Les scores de l'article ne mesurent pas RITA. Le corpus étant
+aujourd'hui 70 % de blocage et 0 % de faux positifs, sur 18 cas : 7 attaques écrites le 29/07 pour couvrir les
+9 motifs (commit `c1ee404`), 3 attaques adverses écrites le 17/08 contre eux (commit `c7c8811` ; ce sont les 3 qui
+passent), et 8 phrases d'actualité ordinaires. Les scores de l'article ne mesurent pas RITA. Le corpus étant
 anglais, le chiffre ne se transpose pas tel quel à des articles en français.
 
 ---
@@ -226,6 +227,9 @@ dans le prompt du rédacteur. Sans outil d'action, l'impact reste du texte, relu
 3. **Le scraping** collecte des cotations ; il n'alimente pas la recherche documentaire. Seul le RSS la nourrit.
 4. **RAG-PIBench** : 4 876 exemples, dont 2 438 sains et 2 438 malveillants, et non 4 876 attaques.
 5. **Candidats 3 et 4** : ils se complètent, ils ne se valident pas l'un l'autre.
+6. **Les 18 cas de RITA** : le relevé disait « écrits en même temps que les motifs (même commit) ». Faux pour trois
+   d'entre eux : les 3 attaques adverses ont été écrites le 17/08, contre les motifs (`evals/cas.py`, commentaire du
+   17/08 ; commit `c7c8811`), et ce sont elles que la mesure du 11/10 liste comme non détectées.
 
 ## 📖 Glossaire
 

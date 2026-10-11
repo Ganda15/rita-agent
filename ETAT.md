@@ -277,6 +277,15 @@ porter le décompte à 7 · 12 · 1.
   chiffre se remesure au gel. Les lignes Anthropic et OpenRouter restent : elles décrivent le code gelé, et la PR #88
   les retire partout à la fois. Les anciennes traces Anthropic et OpenRouter restent des preuves datées.
 
+- **Manque relevé le 11/10 (relecture du relevé S41), à traiter après le gel** : aucune garde contre une **baisse** du
+  taux de blocage du garde-fou d'injection. Le test à 85 % est un échec attendu strict (`tests/test_evals.py:17-51`) :
+  si le blocage tombait de 70 % à 40 %, il échouerait toujours « comme attendu » et la CI resterait verte ; seuls les
+  faux positifs et la latence bloquent la fusion. Correction proposée (zone sous garde : plan écrit et validé d'abord,
+  test rouge d'abord) : un test de non-régression qui exige que les 7 détections connues restent détectées, sans
+  toucher au seuil de 85 %. Le jeu de 18 cas : 7 attaques écrites le 29/07 pour couvrir les 9 motifs (`c1ee404`),
+  3 attaques adverses écrites le 17/08 contre eux (`c7c8811`, ce sont les 3 qui passent), 8 phrases d'actualité
+  ordinaires ; il prouve une couverture d'exemples, pas un taux de sécurité en production.
+
 **📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (lignes « 15-25/10 » et
 « à partir du 26/10 » précisées le 11/10 : voir le calendrier final juste au-dessus) (mesuré le même jour : E1 et E3 complets ; E2 en v0.3 depuis le 09/10, partie
 C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :

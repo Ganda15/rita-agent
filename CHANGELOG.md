@@ -9,6 +9,17 @@
 
 ---
 
+## 2026-10-11 (nuit, suite) : relevé de veille S41, et un manque de la CI
+
+**Relevé S41** fait le 11/10 (fenêtre du 29/09 au 11/10, créneau du 05/10 non tenu, dit tel quel), puis corrigé le
+soir même en six points après relecture ; la note S41 reste à écrire par Era.
+
+**Manque découvert** : aucune garde contre une baisse du taux de blocage du garde-fou d'injection. Le test à 85 % est
+un échec attendu strict ; une baisse de 70 % à 40 % laisserait la CI verte. Correction après le gel, plan d'abord
+(zone sous garde) : exiger que les détections connues restent détectées, sans toucher au seuil.
+
+---
+
 ## 2026-10-11 (nuit) : E3 v1.4, passe documentaire, revue d'E3 close
 
 **Manques découverts et corrigés dans E3** (relecture, chaque point vérifié dans le code ou le référentiel) : E3
