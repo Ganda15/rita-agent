@@ -170,9 +170,10 @@ PR #88 en brouillon : `0a3f3f8` poussé, CI verte ; `2a7f18c` et `b3c76b5` pas e
   une réponse de 10 positions. **E3 passe en v1.3** (une phrase en 4.1, toujours 20 pages, page 5 regardée ; copies
   OneDrive v1.3 en français et en anglais), erratum `evidence/C20/erratum-verrou-demonstration-2026-10-10.md` (l'ancienne
   preuve n'est pas réécrite). Correction après le gel, carte à créer.
-- **À faire par Era** : `.env` ligne 25, `MISTRAL_MODEL=mistral-large-4-0`, et ajouter `LLM_ORDRE=foundry` (décision
-  du 11/10) ; pousser `mistral-ue` puis `develop` et
-  lire la CI ; documenter comment le fichier local non versionné `data/positions.csv` du 31/07 a été constitué
+- ✅ **Fait par Era, vérifié le 11/10** : `.env` ligne 25 `MISTRAL_MODEL=mistral-large-4-0` et ligne 26
+  `LLM_ORDRE=foundry` (lues seules, sans afficher de clé ; une seule occurrence de chaque) ; `mistral-ue` et `develop`
+  poussés, CI lue verte (`develop` : `f152668`, 807 passed, 29 skipped, 2 xfailed).
+- **À faire par Era** : documenter comment le fichier local non versionné `data/positions.csv` du 31/07 a été constitué
   (Era n'a jamais investi).
 
 **E2 (C6 à C8) : état au 11/10 et plan proposé le 11/10, enregistré à la demande d'Era.** Rapport `docs/rapports/E2/rapport-E2.md` en **v0.3 du 09/10**,
