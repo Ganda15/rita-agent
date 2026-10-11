@@ -47,8 +47,9 @@ d'accès d'un tiers à instruire. Elle ne dispense pas d'encadrer les destinatai
 > la région choisie (DPA ClickHouse, § 6.1).
 > Corrections après le gel du 15/10 (§ 5).
 
-> ⚠️ **Ce que ça change si RITA devient multi-utilisateur** : il faudra une base légale
-> explicite (le consentement), une information des utilisateurs, une procédure de réponse
+> ⚠️ **Ce que ça change si RITA devient multi-utilisateur** : il faudra déterminer et
+> documenter la base légale de chaque traitement (le consentement n'est qu'une des possibilités ;
+> précision du 11/10), une information des utilisateurs, une procédure de réponse
 > aux demandes d'accès, et une analyse d'impact (AIPD) — les données financières sont
 > considérées à risque élevé. **Aujourd'hui, aucun de ces éléments n'est en place, et c'est
 > assumé.**

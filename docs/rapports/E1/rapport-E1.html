@@ -79,7 +79,7 @@ footer.sign{ margin-top:4pt; padding-top:3.5pt; border-top:.75pt solid var(--rul
     <div><dt>Candidat</dt><dd>Eramalingam Gandakumar<small>erama70@outlook.com<br>ganda70@gmail.com</small></dd></div>
     <div><dt>Organisme</dt><dd>Simplon × Wild Code School<small>Session 2026</small></dd></div>
     <div><dt>Dépôt du code</dt><dd>Ganda15/rita-agent<small>github.com · tag <code>livrable-E1-v2</code> à poser le 15/10</small></dd></div>
-    <div><dt>Date</dt><dd>11 octobre 2026<small>version 2.4, gel prévu le 15 octobre 2026</small></dd></div>
+    <div><dt>Date</dt><dd>11 octobre 2026<small>version 2.5, gel prévu le 15 octobre 2026</small></dd></div>
   </dl>
 </header>
 
@@ -174,7 +174,7 @@ parisienne du 17/09), un sans perte, deux incomplets (articles des 02 et 03/09 p
   <tr><td>Point de lancement</td><td class="mono">[1]</td><td><code>executer()</code> et une interface en ligne de commande : choix des étapes, période de rattrapage, mode simulation</td></tr>
   <tr><td>Initialisation des connexions</td><td class="mono">[2]</td><td>connexion PostgreSQL principale ouverte une fois ; HTTP géré par chaque source</td></tr>
   <tr><td>Règles logiques</td><td class="mono">[3]</td><td>une fonction par source, indépendante des autres ; six étapes : taux, macro, cotations, articles, scraping, indexation</td></tr>
-  <tr><td>Gestion des erreurs</td><td class="mono">[4]</td><td>l'étape en échec est annulée et tracée ; <strong>les suivantes continuent</strong> ; zéro ligne reçue vaut échec</td></tr>
+  <tr><td>Gestion des erreurs</td><td class="mono">[4]</td><td>étape en échec annulée et tracée ; <strong>les suivantes continuent</strong> ; zéro ligne vaut échec (BCE, FRED)</td></tr>
   <tr><td>Fin de traitement</td><td class="mono">[5]</td><td>bilan par étape (lues, écrites, rejetées) dans le journal, et depuis le 03/10 un <strong>manifeste JSON</strong> par exécution : versions, comptages, erreurs sans clé</td></tr>
   <tr><td>Sauvegarde</td><td class="mono">[6]</td><td><strong>un <code>COMMIT</code> par étape</strong>, non un seul global : une panne du scraping ne défait pas les taux déjà chargés</td></tr>
 </table>
@@ -198,8 +198,8 @@ décision de conception précise, et c'est la justification de la structure rete
 <table>
   <tr><th style="width:30%">Défaut mesuré</th><th style="width:30%">Conséquence si ignoré</th><th>Décision prise</th></tr>
   <tr><td><strong>5 120 doublons</strong>, surtout sur VIRI.PA</td><td>l'import échoue sur violation de clé primaire</td><td>dédoublonnage <strong>avant</strong> insertion, sur le couple (ticker, date)</td></tr>
-  <tr><td><strong>1 533 clôtures hors intervalle</strong> haut/bas, dont 1 142 pour STLAP.PA</td><td>des variations aberrantes remontent au briefing</td><td>STLAP.PA marquée <code>INCOHERENT</code> : exclue des requêtes, <strong>gardée</strong> avec sa cause. Aucune contrainte ne borne la clôture (la base refuse seulement haut &lt; bas) : 23 lignes hors bornes en base le 04/10, limite déclarée</td></tr>
-  <tr><td>Cours maximum à <strong>7 156 748</strong> (ALJXR.PA)</td><td>toute moyenne devient illisible</td><td>valeur conservée : regroupement d'actions rétro-ajusté (prix divisé par 36 millions, volume multiplié d'autant), mécanisme identifié, table <code>operation_sur_titre</code> conçue non construite</td></tr>
+  <tr><td><strong>1 533 clôtures hors intervalle</strong> haut/bas, dont 1 142 pour STLAP.PA</td><td>des variations aberrantes remontent au briefing</td><td>STLAP.PA marquée <code>INCOHERENT</code> : exclue des classements (pas de la valorisation), <strong>gardée</strong> avec sa cause. Aucune contrainte ne borne la clôture : 23 lignes hors bornes le 04/10, limite déclarée</td></tr>
+  <tr><td>Cours maximum à <strong>7 156 748</strong> (ALJXR.PA)</td><td>toute moyenne devient illisible</td><td>valeur conservée : regroupement d'actions rétro-ajusté par le fournisseur (de 2016 à 2024, prix divisé par 36 millions, volume multiplié d'autant) ; table <code>operation_sur_titre</code> conçue non construite</td></tr>
   <tr><td>Libellés de portefeuille différents des tickers</td><td>une position ne se rattache à aucun cours</td><td>entité <strong>ALIAS</strong> au modèle (§&nbsp;5), 112 alias</td></tr>
 </table>
 
@@ -208,9 +208,8 @@ décision de conception précise, et c'est la justification de la structure rete
   L'analyse comptait les lignes par ticker, jamais par jour de la semaine. Fin septembre, en relisant chaque chiffre d'un
   guide dans la base : <strong>52 426 cotations un dimanche</strong>, 1 453 un vendredi. La Bourse ne cote pas le dimanche.
   Cause : l'import prenait la date UTC d'un horodatage « minuit à Paris », soit la veille à 22 h ; dix ans d'archive étaient
-  datés <strong>un jour trop tôt</strong>. Même cause pour quatre autres défauts : HSBA.L lue en pence (100 fois trop haut),
-  FTI et SLB en dollars étiquetés euros, un cours du samedi, des fériés inconnus. La place de cotation n'existait nulle part
-  dans le modèle. Correctif en une transaction, 42 tests écrits d'abord. La leçon tient en une ligne : <strong>compter aussi par jour de la semaine</strong>. Cette version du rapport cite les dates locales de la place.
+  datés <strong>un jour trop tôt</strong>. Quatre autres défauts avaient la même cause profonde, la place de cotation absente du modèle :
+  HSBA.L lue en pence (100 fois trop haut), FTI et SLB en dollars étiquetés euros, un cours du samedi, des fériés inconnus. Correctif en une transaction, 42 tests écrits d'abord. La leçon tient en une ligne : <strong>compter aussi par jour de la semaine</strong>. Cette version du rapport cite les dates locales de la place.
 </div>
 
 <p>Le pipeline d'agrégation réunit ces sources en <strong>un jeu unique</strong> : dates ISO 8601 dans le fuseau de la place,
@@ -336,7 +335,7 @@ Fichiers connus de Spark : <b>11</b>  →  un seul est ouvert · 27 648 lignes e
 <div class="callout warn">
   <span class="lab">Limite assumée, et un refus documenté</span>
   <strong>276 168 lignes ne constituent pas du big data</strong> : 14 Mo tiennent en mémoire. Ce qui est démontré est la
-  <strong>méthode</strong>, identique à une autre échelle ; le formateur a accepté ce cadrage en août. Spark échouait sous Windows faute des binaires Hadoop
+  <strong>méthode</strong>, démontrée en local, sans mesure à grande échelle ; le formateur a accepté ce cadrage en août. Spark échouait sous Windows faute des binaires Hadoop
   <code>winutils.exe</code> et <code>hadoop.dll</code> ; les télécharger depuis un dépôt communautaire a été <strong>écarté</strong> :
   des exécutables non signés chargés dans la machine virtuelle Java, sur un projet qui documente sa conformité. Le code natif ne
   servant qu'à lister un répertoire, le listage est fait par Python et les fichiers passés explicitement à Spark.
@@ -366,8 +365,8 @@ justification (nécessité, mise en balance) reste à documenter.</p>
   <tr><td>T6</td><td>Rédaction par un modèle fourni (Azure en zone UE depuis le 09/10, replis Anthropic et OpenRouter) : <strong>hors UE possible</strong> par les replis</td><td>selon fournisseur, non vérifiée</td></tr>
   <tr><td>T7</td><td>Requêtes Google News par position (simulées à ce jour) : <strong>hors UE probable</strong></td><td>sans objet (requêtes)</td></tr>
 </table>
-<p style="font-size:7.6pt">La v1 déclarait un <strong>transfert hors UE</strong> (LangSmith, États-Unis). Le traçage a été
-remplacé le 02/10 par un hébergement européen. Une entité américaine du groupe figure parmi les sous-traitants. Le contrat, relu le 05/10, garde les données dans la région choisie sauf si le service l'exige (§ 6.1) et encadre les transferts par des clauses types (§ 6.2) : garanties identifiées, vérification propre à RITA incomplète, analyse d'impact du transfert à faire (registre, T3 et § 5).</p>
+<p style="font-size:7.6pt">La v1 déclarait un <strong>transfert hors UE</strong> (LangSmith, États-Unis), remplacé le 02/10 par un hébergement
+européen, dont une entité américaine du groupe est sous-traitante. Le contrat (relu le 05/10) garde les données dans la région choisie sauf si le service l'exige (§ 6.1), avec des clauses types (§ 6.2) : vérification propre à RITA incomplète, analyse d'impact à faire (registre, T3, § 5).</p>
 </div>
 <div>
 <h3>Procédures de tri (<code>db/rgpd_purge.py</code>)</h3>
@@ -459,7 +458,7 @@ python -m pytest -q                                <b># 804 passed, 29 skipped, 
 </div>
 
 <footer class="sign">
-  <span>RITA, livrable E1 · bloc BC01 · compétences C1 à C5 · version 2.4</span>
+  <span>RITA, livrable E1 · bloc BC01 · compétences C1 à C5 · version 2.5</span>
   <span>Eramalingam Gandakumar · 11 octobre 2026</span>
 </footer>
 

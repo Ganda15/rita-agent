@@ -15,14 +15,14 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-11 (veille S41 : relevé, note d'Era et partage à la promo ; E3 v1.4 : sept corrections, 44 critères en 39 lignes, revue d'E3 close ; E1 v2.4 : seconde passe, MCD lisible, guide § 4.5 corrigé ; avant, E1 v2.3 : passe RGPD et exactitude ; politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-11 (E1 v2.5 : cinq surgénéralisations corrigées ; veille S41 : relevé, note d'Era et partage à la promo ; E3 v1.4 : sept corrections, 44 critères en 39 lignes, revue d'E3 close ; E1 v2.4 : seconde passe, MCD lisible, guide § 4.5 corrigé ; avant, E1 v2.3 : passe RGPD et exactitude ; politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
 
 ## ▶️ PROCHAINE ACTION (réécrit le 04/10/2026 ; les ▶️ plus bas sont datés et dépassés)
 
-**Où on en est, en une phrase** : E1 v2.4 (5 pages, 11/10) et E3 v1.4 (20 pages, 11/10, **35 ✅ · 4 🟠 · 0 🔴** sur 39 lignes, 44 critères) sont complets côté
+**Où on en est, en une phrase** : E1 v2.5 (5 pages, 11/10) et E3 v1.4 (20 pages, 11/10, **35 ✅ · 4 🟠 · 0 🔴** sur 39 lignes, 44 critères) sont complets côté
 assistant et vérifiés contre le code et la base ; ils attendent ta relecture avant le gel du **jeudi 15/10** ; les deux alertes Langfuse sont en service ; la chaîne est
 **verte** (`c7d0f2e`, 10/10 : 804 passed en CI, Livraison verte) ; la production sert toujours le code du **19/08**.
 **Aucun code d'application avant le tag du 15/10.** Règle : **c'est Era qui envoie tout message** au formateur et à la
@@ -103,6 +103,16 @@ C13** (11, 9, 9, 7, 8, compté dans le PDF Simplon), regroupés en 39 lignes, au
 v1.4 (français, anglais `.md` et `.pdf`) ; addendum dans l'oral E3 v1 (Obsidian). **Reste, choix de calendrier et non
 validation** : les cinq figures d'E3 sont lisibles à l'écran mais petites imprimées (environ 4,2 points dans les
 boîtes, 5,2 pour leurs titres) ; refonte après le gel, en nouvelle version, jamais en remplaçant le PDF en silence.
+
+**E1 v2.5 (11/10, nuit), cinq surgénéralisations corrigées, chacune vérifiée dans le code ou les preuves.** « Zéro ligne
+vaut échec » vaut pour la BCE et FRED seulement (`pipelines/ingest.py:107`, `:158`) ; STLAP.PA est exclue des
+classements, pas de la valorisation (`db/requetes.sql:48-50`) ; le rétro-ajustement est celui du fournisseur, et
+« divisé par 36 millions » est l'évolution observée de 2016 à 2024 (`evidence/C3/preuve-artefact-reverse-split.md`) ;
+la cause commune des quatre autres défauts d'INC-005 est la place de cotation absente du modèle, pas l'erreur UTC ; la
+méthode big data est démontrée en local, sans mesure à grande échelle. La note du § 7 sur LangSmith est resserrée
+(faits gardés). Toujours **5 pages**, regardées ; copies OneDrive du 11/10 remplacées (français, anglais). Registre
+§ 0 : avec plusieurs utilisateurs, déterminer et documenter la base légale de chaque traitement, le consentement n'en
+étant qu'une possibilité. Oral E1 v3 aligné (Obsidian, quatorze passages en anglais et en français).
 
 **E1 v2.4 (11/10, soir), seconde passe validée par Era, dernière avant le gel.** La phrase d'installation ne promet
 plus une reconstruction « depuis un dépôt vierge » : elle renvoie aux prérequis du guide (§ 3 et 4), et l'ancienne
@@ -356,7 +366,7 @@ Nadège et Elena aideront particulièrement à la présentation.
    5 cartes proposées à Fait, ajouter au tableau les 7 issues ouvertes absentes, dire si la revue du 28/09 a eu lieu, garder
    2 cartes « En cours », remplir le §6, coller la ligne du §7 ici, commiter. Seul moyen de fermer C16.1. Vérifier au passage
    que le formateur a bien accès au tableau (C16.4, je ne peux pas le lire).
-2. **Relire** `docs/rapports/E1/rapport-E1.pdf` (v2.4 du 11/10 ; avant, v2.2 du 10/10 ; la v2.1 du 04/10 avait corrigé cinq affirmations fausses, voir l'entrée
+2. **Relire** `docs/rapports/E1/rapport-E1.pdf` (v2.5 du 11/10 ; avant, v2.2 du 10/10 ; la v2.1 du 04/10 avait corrigé cinq affirmations fausses, voir l'entrée
    du 04/10 plus bas) et `docs/rapports/E3/rapport-E3.pdf` (v1.4 du 11/10, 20 pages) ; corrections dans le chat.
 3. *(remplacé le 11/10, voir le plan E2 : on note les nouveaux textes Azure contre Mistral Large 4.)* **Noter les 60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1 ou 2), **sans ouvrir** le fichier `-cle.csv`.
    C'est ce qui fait passer la recommandation C7 de « provisoire » à « argumentée ».
@@ -410,7 +420,7 @@ fournisseurs, S4 refus journalisés, S3 limite de débit, S1 en-têtes de sécur
 
 | Épreuve | Décompte | Ce qui manque surtout |
 |---|---|---|
-| E1 | v2.4 du 11/10, 5 pages (MCD lisible, prérequis d'installation, T4, positions simulées, numéros de page ; v2.3 : § 7 RGPD réécrit, ordre d'installation, connexions, scout, tables hors MCD ; la v2.2 du 10/10 : date, chiffres des tests datés, `memory_audit` reporté, texte alternatif du schéma) ; vérifiée contre le code et la base le 04/10 | ta relecture ; question de l'annexe au formateur ; gel le 15/10 |
+| E1 | v2.5 du 11/10, 5 pages (cinq surgénéralisations corrigées ; v2.4 : MCD lisible, prérequis d'installation, T4, positions simulées, numéros de page ; v2.3 : § 7 RGPD réécrit, ordre d'installation, connexions, scout, tables hors MCD ; la v2.2 du 10/10 : date, chiffres des tests datés, `memory_audit` reporté, texte alternatif du schéma) ; vérifiée contre le code et la base le 04/10 | ta relecture ; question de l'annexe au formateur ; gel le 15/10 |
 | E2 | 6 ✅ · 13 🟠 · 1 🔴 sur 20 | banc C7 Azure Data Zone EU contre Mistral Large 4 et notation à l'aveugle des nouveaux textes ; guide renvoyé après la fusion de la PR #88 (C8.5, #43) |
 | E3 | v1.4 du 11/10, 20 pages · 35 ✅ · 4 🟠 · 0 🔴 sur 39 lignes (44 critères du référentiel) | ta relecture ; les 4 🟠 se ferment après le gel (#73, #75, accessibilité de l'outil, serveur non tracé) ; gel le 15/10 |
 | E4 | 27 ✅ · 9 ⚠️ · 0 ❌ sur 36 | rapport à rédiger ; C16 (revues notées) ; C17.1, .2, .5, .8, .11 ; C19.4 au tag du 15/10 |

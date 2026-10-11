@@ -9,6 +9,18 @@
 
 ---
 
+## 2026-10-11 (nuit, fin bis) : E1 v2.5, cinq surgénéralisations corrigées
+
+**Manques découverts et corrigés dans E1** (relecture de l'oral E1, chaque point vérifié dans le code ou les preuves) :
+« zéro ligne vaut échec » présenté comme général, alors qu'il ne vaut que pour la BCE et FRED ; STLAP.PA dite « exclue
+des requêtes », alors qu'elle reste visible dans la valorisation ; un rétro-ajustement décrit à l'envers (c'est le
+fournisseur qui multiplie les prix passés ; « divisé par 36 millions » est l'évolution observée) ; une cause commune
+attribuée à l'erreur UTC, alors que c'est la place de cotation absente du modèle ; une méthode big data dite
+« identique à une autre échelle » sans mesure. Toujours 5 pages. Registre § 0 : le consentement n'est qu'une des
+bases possibles si RITA devient multi-utilisateur.
+
+---
+
 ## 2026-10-11 (nuit, fin) : guide d'exploitation corrigé, deux manques d'installation
 
 **Manques découverts** (relecture du guide, chaque point vérifié dans le code) : la voie Docker aboutit à une base
