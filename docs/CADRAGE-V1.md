@@ -58,7 +58,7 @@ production tourne en conteneur derrière Caddy, Langfuse trace chaque briefing, 
 deux alertes ouvrent une issue « incident ».
 
 - Architecture : [E3-architecture.png](rapports/E3/schemas/E3-architecture.png)
-- Contrôle : [E3-chaine-livraison.png](rapports/E3/schemas/E3-chaine-livraison.png)
+- Pilotage (chaîne CI/CD, environnements, signaux) : [E3-chaine-livraison.png](rapports/E3/schemas/E3-chaine-livraison.png)
   et [E3-monitorage.png](rapports/E3/schemas/E3-monitorage.png)
 
 ## 6. Contrat personnel
