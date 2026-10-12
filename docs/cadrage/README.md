@@ -26,5 +26,7 @@ Puis le rendu PNG (Chrome exige un `--user-data-dir`, sinon il échoue sans mess
 "C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --disable-gpu --hide-scrollbars --user-data-dir=%TEMP%\chrome-rendu --window-size=1500,1144 --screenshot=docs\cadrage\CADRAGE-architecture-v1.png file:///D:/KandaWork/RITA_PROJECT/rita-agent/docs/cadrage/CADRAGE-architecture-v1.svg
 ```
 
-Le PNG du 12/10/2026 a été regardé avant d'être rangé : aucune flèche ne traverse une boîte ni un titre, aucun texte
+Corrigé le 12/10/2026 au soir après relecture contre le code : les positions et l'archive Parquet sont importées à
+part (`db/importer.py`), pas collectées chaque soir ; sans article trouvé, `rag` rend zéro passage et le briefing
+s'écrit sans extrait (pas de refus). Le PNG a été regardé avant d'être rangé : aucune flèche ne traverse une boîte ni un titre, aucun texte
 ne dépasse de sa boîte. Le `.drawio` et le `.svg` se lisent comme du XML valide (99 et 218 éléments).

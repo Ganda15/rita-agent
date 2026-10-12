@@ -13,11 +13,11 @@
 <rect x="40" y="880" width="1420" height="130" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
 <rect x="56" y="130" width="448" height="112" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
 <rect x="56" y="130" width="7" height="112" fill="#1E293B"/>
-<text x="73" y="151" font-size="14" font-weight="700" fill="#0B2A5B">Sources (C1), collectées chaque soir</text>
-<text x="73" y="170.0" font-size="11.5" fill="#111827">services web : BCE (taux de change), FRED (taux US),</text>
-<text x="73" y="185.5" font-size="11.5" fill="#111827">  Yahoo Finance (cours) · page web : Boursorama</text>
-<text x="73" y="201.0" font-size="11.5" fill="#111827">flux RSS d&#x27;actualité · fichier : positions (CSV)</text>
-<text x="73" y="216.5" font-size="11.5" fill="#111827">big data : archive Parquet (Spark, hors image)</text>
+<text x="73" y="151" font-size="14" font-weight="700" fill="#0B2A5B">Sources (C1)</text>
+<text x="73" y="170.0" font-size="11.5" fill="#111827">chaque soir : BCE (taux de change), FRED (taux US),</text>
+<text x="73" y="185.5" font-size="11.5" fill="#111827">  Yahoo Finance et Boursorama (cours), flux RSS</text>
+<text x="73" y="201.0" font-size="11.5" fill="#111827">à part, par db/importer.py : positions (CSV),</text>
+<text x="73" y="216.5" font-size="11.5" fill="#111827">  archive de cours Parquet (big data, hors image)</text>
 <rect x="56" y="300" width="220" height="84" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
 <rect x="56" y="300" width="7" height="84" fill="#1E293B"/>
 <text x="73" y="321" font-size="14" font-weight="700" fill="#0B2A5B">Collecte du soir, 19 h</text>
@@ -52,7 +52,7 @@
 <text x="593" y="151" font-size="14" font-weight="700" fill="#0B2A5B">Un chemin fixe, toujours le même</text>
 <text x="593" y="170.0" font-size="11.5" fill="#111827">graph/workflow.py : scout, rag, redacteur ;</text>
 <text x="593" y="185.5" font-size="11.5" fill="#111827">le modèle ne choisit jamais le chemin :</text>
-<text x="593" y="201.0" font-size="11.5" fill="#111827">chaque briefing se rejoue et se trace</text>
+<text x="593" y="201.0" font-size="11.5" fill="#111827">chaque étape se suit et se trace</text>
 <rect x="576" y="300" width="308" height="84" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
 <rect x="576" y="300" width="7" height="84" fill="#1E293B"/>
 <text x="593" y="321" font-size="14" font-weight="700" fill="#0B2A5B">scout</text>
@@ -66,9 +66,9 @@
 <rect x="576" y="480" width="308" height="84" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
 <rect x="576" y="480" width="7" height="84" fill="#1E293B"/>
 <text x="593" y="501" font-size="14" font-weight="700" fill="#0B2A5B">rag</text>
-<text x="593" y="520.0" font-size="11.5" fill="#111827">ChromaDB : filtre par valeur,</text>
-<text x="593" y="535.5" font-size="11.5" fill="#111827">recherche hybride dense + BM25</text>
-<text x="593" y="551.0" font-size="11.5" fill="#111827">3 passages ; refus si aucun article</text>
+<text x="593" y="520.0" font-size="11.5" fill="#111827">ChromaDB : filtre par valeur, hybride</text>
+<text x="593" y="535.5" font-size="11.5" fill="#111827">dense + BM25 : 3 passages au plus</text>
+<text x="593" y="551.0" font-size="11.5" fill="#111827">aucun : écrit sans extrait, rien d&#x27;inventé</text>
 <rect x="576" y="584" width="308" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
 <rect x="576" y="584" width="7" height="66" fill="#1E293B"/>
 <text x="593" y="605" font-size="14" font-weight="700" fill="#0B2A5B">redacteur</text>

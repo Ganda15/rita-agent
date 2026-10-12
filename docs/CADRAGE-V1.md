@@ -31,7 +31,8 @@ Le parcours principal existe et est testé. La V1 ferme les manques déjà relev
 | 5 | Refus de clé journalisés avec leur `request_id` |
 | 6 | Marge : tests et documentation |
 
-À couper en premier si le temps manque : le jour 5, gardé comme limite connue.
+À couper en premier si le temps manque : le jour 4, gardé comme limite connue, car aucun critère du contrat n'en
+dépend. Le jour 5 reste : le critère 4 exige la ligne de refus.
 
 **Ce que la V1 reprend du chapitre « Industrialisation » (brief du 15/09).** Le
 manifeste de version (jour 1), le retour arrière (jour 2) et le 422 pour une valeur
@@ -53,9 +54,10 @@ modèle Azure AI Foundry en zone UE. Élément hors socle : [À CONFIRMER].
 
 ## 5. Schémas
 
-**Le système complet.** Chaque soir, la collecte lit six sources (cours, taux de la
-BCE, séries FRED, flux RSS, pages scrapées, fichier de positions) et range tout
-dans PostgreSQL ; les articles sont aussi indexés dans ChromaDB. À la demande,
+**Le système complet.** Chaque soir, la collecte lit ses sources (cours, taux de la
+BCE, séries FRED, flux RSS, pages scrapées) en six étapes indépendantes et range tout
+dans PostgreSQL ; les articles admis sont aussi indexés dans ChromaDB. Le fichier de
+positions et l'archive de cours sont importés à part (`db/importer.py`). À la demande,
 l'interface (trois écrans) ou un assistant passant par la passerelle MCP appelle
 l'API FastAPI, protégée par une clé. Pour un briefing, le graphe enchaîne `scout`,
 `rag` et `redacteur`, le modèle Azure (zone UE) rédige, et le garde-fou de sortie

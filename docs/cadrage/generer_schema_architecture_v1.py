@@ -29,11 +29,11 @@ ARCHI_V1 = Schema(
     boites=[
         # 1 · Données : les sources, la collecte du soir, les deux réserves.
         Boite("z1", 40, 100, 480, 576, "1 · DONNÉES", genre="zone"),
-        Boite("src", 56, 130, 448, 112, "Sources (C1), collectées chaque soir", [
-            "services web : BCE (taux de change), FRED (taux US),",
-            "  Yahoo Finance (cours) · page web : Boursorama",
-            "flux RSS d'actualité · fichier : positions (CSV)",
-            "big data : archive Parquet (Spark, hors image)"], "normal"),
+        Boite("src", 56, 130, 448, 112, "Sources (C1)", [
+            "chaque soir : BCE (taux de change), FRED (taux US),",
+            "  Yahoo Finance et Boursorama (cours), flux RSS",
+            "à part, par db/importer.py : positions (CSV),",
+            "  archive de cours Parquet (big data, hors image)"], "normal"),
         Boite("nuit", 56, 300, 220, 84, "Collecte du soir, 19 h", [
             "pipelines/ingest.py", "6 étapes indépendantes", "manifeste par exécution"], "normal"),
         Boite("pg", 316, 300, 188, 84, "PostgreSQL", [
@@ -51,15 +51,15 @@ ARCHI_V1 = Schema(
         Boite("fixe", 576, 130, 308, 84, "Un chemin fixe, toujours le même", [
             "graph/workflow.py : scout, rag, redacteur ;",
             "le modèle ne choisit jamais le chemin :",
-            "chaque briefing se rejoue et se trace"], "note"),
+            "chaque étape se suit et se trace"], "note"),
         Boite("scout", 576, 300, 308, 84, "scout", [
             "lit PostgreSQL : cours, variation,", "13 indicateurs par valeur",
             "aucune position, aucun prix de revient"], "normal"),
         Boite("ge", 576, 404, 308, 56, "Garde-fou d'entrée (début de rag)", [
             "intention AMF refusée avant la recherche"], "garde"),
         Boite("rag", 576, 480, 308, 84, "rag", [
-            "ChromaDB : filtre par valeur,", "recherche hybride dense + BM25",
-            "3 passages ; refus si aucun article"], "normal"),
+            "ChromaDB : filtre par valeur, hybride", "dense + BM25 : 3 passages au plus",
+            "aucun : écrit sans extrait, rien d'inventé"], "normal"),
         Boite("red", 576, 584, 308, 66, "redacteur", [
             "agents/analyst.py : la consigne,", "interdit AMF écrit dedans"], "normal"),
         Boite("mod", 576, 670, 308, 66, "Modèle fourni : Azure, zone UE", [
