@@ -33,6 +33,12 @@ Le parcours principal existe et est testé. La V1 ferme les manques déjà relev
 
 À couper en premier si le temps manque : le jour 5, gardé comme limite connue.
 
+**Ce que la V1 reprend du chapitre « Industrialisation » (brief du 15/09).** Le
+manifeste de version (jour 1), le retour arrière (jour 2) et le 422 pour une valeur
+inconnue (jour 3) y étaient déjà conçus. Restent hors V1, bien que conçus : la route
+`/v1` avec son refus en 401, les alertes Telegram, la porte d'évaluation sur le vrai
+modèle.
+
 ## 3. Composante agentique
 
 Graphe LangGraph à trois étapes fixes (`scout`, `rag`, `redacteur`), garde-fous
@@ -60,6 +66,12 @@ deux alertes ouvrent une issue « incident ».
 - Architecture : [E3-architecture.png](rapports/E3/schemas/E3-architecture.png)
 - Pilotage (chaîne CI/CD, environnements, signaux) : [E3-chaine-livraison.png](rapports/E3/schemas/E3-chaine-livraison.png)
   et [E3-monitorage.png](rapports/E3/schemas/E3-monitorage.png)
+
+Les schémas sont datés du 04/10. Depuis le 11/10, le poste n'appelle plus qu'Azure
+(`LLM_ORDRE=foundry`, règle UE seule) : la cascade dessinée reste dans le code, sans
+secours configuré. Dans le schéma de livraison, les cases rouges en pointillé
+reprennent l'esquisse de la chaîne du chapitre « Industrialisation » ; la V1 en
+construit deux, le manifeste de version et le retour arrière.
 
 ## 6. Contrat personnel
 
