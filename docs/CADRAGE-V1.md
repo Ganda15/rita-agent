@@ -63,13 +63,16 @@ relit le texte avant la réponse. Autour, GitHub Actions teste chaque changement
 production tourne en conteneur derrière Caddy, Langfuse trace chaque briefing, et
 deux alertes ouvrent une issue « incident ».
 
-- Architecture : [E3-architecture.png](rapports/E3/schemas/E3-architecture.png)
+- **Architecture complète de la V1** (données, agent et garde-fous, interface, API, puis le pilotage ; les ajouts des
+  six jours en pointillé rouge) : [CADRAGE-architecture-v1.png](cadrage/CADRAGE-architecture-v1.png), éditable en
+  [CADRAGE-architecture-v1.drawio](cadrage/CADRAGE-architecture-v1.drawio)
+- Architecture, état du code au 04/10 : [E3-architecture.png](rapports/E3/schemas/E3-architecture.png)
 - Pilotage (chaîne CI/CD, environnements, signaux) : [E3-chaine-livraison.png](rapports/E3/schemas/E3-chaine-livraison.png)
   et [E3-monitorage.png](rapports/E3/schemas/E3-monitorage.png)
 - Interface, de l'écran au modèle et ses erreurs : [E3-integration-briefing.png](rapports/E3/schemas/E3-integration-briefing.png)
   et un vrai briefing à l'écran : [ecran-briefing-2026-10-03.png](../evidence/C10/ecran-briefing-2026-10-03.png)
 
-Les schémas sont datés du 04/10. Depuis le 11/10, le poste n'appelle plus qu'Azure
+Le schéma de la V1 est daté du 12/10 ; les schémas E3 sont datés du 04/10. Depuis le 11/10, le poste n'appelle plus qu'Azure
 (`LLM_ORDRE=foundry`, règle UE seule) : la cascade dessinée reste dans le code, sans
 secours configuré. Dans le schéma de livraison, les cases rouges en pointillé
 reprennent l'esquisse de la chaîne du chapitre « Industrialisation » ; la V1 en
