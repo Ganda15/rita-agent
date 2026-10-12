@@ -66,6 +66,8 @@ deux alertes ouvrent une issue « incident ».
 - Architecture : [E3-architecture.png](rapports/E3/schemas/E3-architecture.png)
 - Pilotage (chaîne CI/CD, environnements, signaux) : [E3-chaine-livraison.png](rapports/E3/schemas/E3-chaine-livraison.png)
   et [E3-monitorage.png](rapports/E3/schemas/E3-monitorage.png)
+- Interface, de l'écran au modèle et ses erreurs : [E3-integration-briefing.png](rapports/E3/schemas/E3-integration-briefing.png)
+  et un vrai briefing à l'écran : [ecran-briefing-2026-10-03.png](../evidence/C10/ecran-briefing-2026-10-03.png)
 
 Les schémas sont datés du 04/10. Depuis le 11/10, le poste n'appelle plus qu'Azure
 (`LLM_ORDRE=foundry`, règle UE seule) : la cascade dessinée reste dans le code, sans
