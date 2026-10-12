@@ -47,6 +47,16 @@ modèle Azure AI Foundry en zone UE. Élément hors socle : [À CONFIRMER].
 
 ## 5. Schémas
 
+**Le système complet.** Chaque soir, la collecte lit six sources (cours, taux de la
+BCE, séries FRED, flux RSS, pages scrapées, fichier de positions) et range tout
+dans PostgreSQL ; les articles sont aussi indexés dans ChromaDB. À la demande,
+l'interface (trois écrans) ou un assistant passant par la passerelle MCP appelle
+l'API FastAPI, protégée par une clé. Pour un briefing, le graphe enchaîne `scout`,
+`rag` et `redacteur`, le modèle Azure (zone UE) rédige, et le garde-fou de sortie
+relit le texte avant la réponse. Autour, GitHub Actions teste chaque changement, la
+production tourne en conteneur derrière Caddy, Langfuse trace chaque briefing, et
+deux alertes ouvrent une issue « incident ».
+
 - Architecture : [E3-architecture.png](rapports/E3/schemas/E3-architecture.png)
 - Contrôle : [E3-chaine-livraison.png](rapports/E3/schemas/E3-chaine-livraison.png)
   et [E3-monitorage.png](rapports/E3/schemas/E3-monitorage.png)
