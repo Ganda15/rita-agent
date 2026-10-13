@@ -47,10 +47,25 @@ en entrée, sur les articles et en sortie. **Pourquoi :** un briefing financier 
 pouvoir être relu et rejoué ; des arêtes fixes le rendent traçable, et le risque
 principal (une phrase qui conseille) est bloqué par un contrôle après le modèle.
 
+**Pourquoi pas un agent qui choisit ses outils.** Il serait plus souple, mais imprévisible
+et difficile à auditer ; en finance, chaque texte doit pouvoir s'expliquer. Le menu du
+dispositif est demandé au formateur pour confronter ce choix.
+
 ## 4. Stack
 
-Python, FastAPI, PostgreSQL, ChromaDB, LangGraph, Langfuse, Docker, GitHub Actions,
-modèle Azure AI Foundry en zone UE. Élément hors socle : [À CONFIRMER].
+| Outil | Rôle et raison |
+|---|---|
+| Python | le langage des données et de l'IA ; LangGraph, FastAPI et les clients des modèles y existent |
+| FastAPI | l'API : paramètres typés et vérifiés, documentation OpenAPI générée |
+| PostgreSQL | les cours et les indicateurs en SQL ; des règles CHECK refusent un cours impossible |
+| ChromaDB | la recherche dans les articles : base de vecteurs locale, dans un dossier, sans service à part |
+| LangGraph | un état partagé entre les trois étapes, chaque étape tracée ; prêt pour un embranchement plus tard. Limite : à trois étapes fixes, il sert surtout à structurer |
+| Langfuse | la trace de chaque briefing (consigne, réponse, jetons, durée) et les alertes ; région UE |
+| Docker | la même application sur le poste, en CI et sur le serveur |
+| GitHub Actions | les contrôles à chaque envoi, sans serveur à gérer |
+| Azure AI Foundry, zone UE | le modèle, sans entraînement ; données gardées en Europe (`LLM_ORDRE=foundry` depuis le 11/10) |
+
+Élément hors socle : [À CONFIRMER].
 
 ## 5. Schémas
 
@@ -64,6 +79,12 @@ l'API FastAPI, protégée par une clé. Pour un briefing, le graphe enchaîne `s
 relit le texte avant la réponse. Autour, GitHub Actions teste chaque changement, la
 production tourne en conteneur derrière Caddy, Langfuse trace chaque briefing, et
 deux alertes ouvrent une issue « incident ».
+
+**La passerelle MCP.** Elle tourne sur le poste de l'utilisateur, lancée par l'assistant
+(Claude Desktop), sans port réseau (transport stdio, `passerelle_mcp/serveur.py`). Elle offre
+trois outils en lecture seule (`rita_fraicheur`, `rita_portefeuille`, `rita_indicateurs`),
+appelle l'API en HTTP avec la clé et n'a aucun accès au briefing ; ses refus sont journalisés
+par `POST /audit/mcp`.
 
 - **Architecture complète de la V1** (données, agent et garde-fous, interface, API, puis le pilotage ; les ajouts des
   six jours en pointillé rouge) : [CADRAGE-architecture-v1.png](cadrage/CADRAGE-architecture-v1.png), éditable en
@@ -95,6 +116,16 @@ construit deux, le manifeste de version et le retour arrière.
 5. **Étant donné** la version N en production et N-1 taguée, **quand** un tiers
    suit la procédure de retour arrière, **alors** `/health` annonce N-1 en moins
    de 10 minutes.
+
+**La preuve de chaque critère.**
+
+| Critère | Preuve |
+|---|---|
+| 1 | l'en-tête : `tests/test_request_id.py` (l. 46) ; le 200 et le texte : démonstration du 13/10 |
+| 2 | `tests/test_health.py` (l. 126) |
+| 3 | test à écrire au jour 3, avec une doublure du modèle appelée zéro fois |
+| 4 | le 403 : `tests/test_api_donnees.py` (l. 77) ; la ligne de refus : test à écrire au jour 5 |
+| 5 | vérification chronométrée au jour 2, par un tiers |
 
 ## 7. Sprints 2 à 5
 
