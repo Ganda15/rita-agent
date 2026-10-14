@@ -85,8 +85,9 @@ jobs:
 
   construire-et-publier:
     runs-on: ubuntu-24.04
-    # Les tests et la construction ne partent qu'après un lint vert : l'ordre du brief.
-    needs: lint
+    # Les tests et la construction ne partent qu'après un lint ET un contrôle des secrets verts : l'ordre du brief,
+    # et aucune image construite ni publiée si gitleaks trouve une clé.
+    needs: [lint, secrets]
 
     permissions:
       contents: read
@@ -226,12 +227,11 @@ jobs:
 
       - name: Vérifier que l'image ne contient pas de fichier .env
         # Ce contrôle ne vérifie que ce chemin-là, `/app/.env` ; à la construction, `.dockerignore` exclut déjà
-        # `.env` et `.env.*`. La preuve le dit telle quelle.
+        # `.env` et `.env.*`. La preuve le dit telle quelle. Le conteneur doit RÉUSSIR à prouver l'absence
+        # (`test ! -e`) : un fichier présent (code 1) comme une panne de Docker (125, 126, 127) arrêtent l'étape,
+        # car GitHub lance ce script avec `bash -e`. Un `if docker run ...; then` prenait une panne pour un succès.
         run: |
-          if docker run --rm --entrypoint sh rita-api:verification -c 'test -e /app/.env'; then
-            echo "::error::l'image contient /app/.env : un fichier de clés n'a rien à faire dans l'image"
-            exit 1
-          fi
+          docker run --rm --entrypoint sh rita-api:verification -c 'test ! -e /app/.env'
           echo "/app/.env absent de l'image"
 
       - name: Arrêter le conteneur de vérification

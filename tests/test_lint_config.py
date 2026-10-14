@@ -27,8 +27,13 @@ def test_la_version_de_ruff_est_la_meme_dans_requirements_et_dans_la_chaine():
     assert exigee.group(1) == installee.group(1)
 
 
-def test_le_lint_passe_avant_la_construction():
-    texte = LIVRAISON.read_text(encoding="utf-8")
-    assert re.search(r"^  lint:$", texte, re.M), "le travail lint doit exister dans livraison.yml"
-    entete = texte.split("\n  construire-et-publier:\n", 1)[1].split("steps:", 1)[0]
-    assert re.search(r"^    needs: lint$", entete, re.M), "construire-et-publier doit attendre lint"
+def test_la_construction_attend_le_lint_et_les_secrets():
+    # `needs` impose l'attente : sans `secrets` dans la liste, la construction et la publication partiraient même si
+    # gitleaks trouvait une clé (relecture du 14/10).
+    import yaml
+
+    travaux = yaml.safe_load(LIVRAISON.read_text(encoding="utf-8"))["jobs"]
+    assert "lint" in travaux, "le travail lint doit exister dans livraison.yml"
+    attend = travaux["construire-et-publier"].get("needs", [])
+    attend = [attend] if isinstance(attend, str) else attend
+    assert {"lint", "secrets"} <= set(attend), f"construire-et-publier attend {attend}"
