@@ -557,9 +557,16 @@ modification du serveur.**
 
 - [ ] 🖧 **Relever, sans rien changer** : le nom du projet Compose (`docker compose ls`), l'image du conteneur
   (`docker inspect rita-api-preprod --format '{{.Image}} {{.Config.Image}}'`), les **noms** des variables du `.env`
-  (`cut -d= -f1 /root/rita-agent/.env`). Le nom du projet confirme `PROJET_COMPOSE` (tâche 8).
-- [ ] 🖧 **Sauvegarder août avant toute modification** : `mkdir -p /root/rita-deploy/sauvegardes/avant-chaine`
-  (droits 700) ; `docker tag <image relevée> rita-api:avant-chaine` ;
+  (`grep -o '^[A-Za-z_][A-Za-z0-9_]*=' /root/rita-agent/.env`, aucune valeur affichée). Le nom du projet confirme
+  `PROJET_COMPOSE` (tâche 8). Relecture du 14/10 : le Python du système doit charger `fcntl` et trouver les données du
+  fuseau `Europe/Paris`, sans quoi le script s'arrête dès son chargement
+  (`/usr/bin/python3 -B -c "import sys, fcntl; from zoneinfo import ZoneInfo; print(sys.version.split()[0]); print(ZoneInfo('Europe/Paris'))"`) ;
+  Compose doit connaître `config --format json` (`docker compose config --help | grep -- --format`), quelle que soit
+  sa version (v2 ou v5 : le poste d'Era est en v5.3.1).
+- [ ] 🖧 **Sauvegarder la version en service avant toute modification** : `mkdir -p /root/rita-deploy/sauvegardes/avant-chaine`
+  (droits 700) ; `docker tag <identifiant sha256:… relevé, le premier champ .Image> rita-api:avant-chaine` (le nom
+  affiché en second peut avoir été réattribué à une autre image ; et le relevé seul ne prouve pas que cette image est
+  encore celle d'août : on parle de la « version en service ») ;
   `docker save rita-api:avant-chaine -o /root/rita-deploy/sauvegardes/avant-chaine.tar` ; copie du `.env` et du
   `docker-compose.yml` **actuellement en service** dans ce dossier (droits 600) ; la configuration effective du
   conteneur (`docker inspect rita-api-preprod > .../inspect.json`, droits 600, jamais affiché) ; son **environnement
