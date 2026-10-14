@@ -126,6 +126,12 @@ code gelé du 15/10, plus les changements du sprint 2, dont la version dans `/he
 Si l'image d'août ne sait plus produire de briefing, son secours est dégradé : **la décision de faire la première
 bascule malgré tout revient à Era**, explicitement, avant le déploiement.
 
+**Exception, décidée le 14/10 pour l'atelier (§ 11) :** le retour vers l'image d'août n'est **pas automatisé**. Si N0
+échoue après la bascule, la chaîne s'arrête en rouge avec le message « restauration manuelle d'août requise », et Era
+restaure août par la procédure manuelle, testée avant toute modification du serveur. Le retour automatique et le
+retour manuel par la chaîne ne couvrent donc pas encore cette toute première livraison ; ils couvrent toutes les
+suivantes (N1 vers N0, etc.).
+
 **Démonstration du sprint 2.** N0 en service, N1 livrée par la chaîne, puis retour N1 vers N0 : deux versions qui
 annoncent leur commit et passent les mêmes contrôles.
 
@@ -166,7 +172,9 @@ Aucun `docker image prune -a` dans les scripts (il efface aussi les images étiq
 Le nettoyage ne touche que les images RITA absentes de la liste à garder (active, précédente, candidate en cours), et
 seulement après une opération validée ; il ne touche jamais les autres images du serveur. Une image effacée
 localement, mais conservée dans GHCR, se retélécharge par son empreinte : l'empreinte identifie l'image, elle ne
-remplace pas sa conservation. L'image d'août est protégée par son fichier `docker save`.
+remplace pas sa conservation. L'image d'août est protégée par son fichier `docker save`. **Après l'atelier (§ 11)** :
+ce nettoyage automatique ; d'ici là, le nettoyage se fait à la main, avec la même règle, par la procédure écrite dans
+`docs/EXPLOITATION.md`.
 
 ### 5.5 La compatibilité
 
@@ -179,8 +187,8 @@ Les changements doivent rester compatibles avec les versions conservées.
 - **Chroma** : `chromadb==1.5.9` est conservé pour N0 et N1 (`requirements-api.txt` l. 43). L'index se déduit des
   articles de PostgreSQL ; l'indexation complète l'index existant (`get_or_create_collection`, `rag/indexation.py`
   l. 248-249) et ne le recrée pas. Toute reconstruction utilise l'image cible et un volume neuf, vérifié avant usage.
-- **Vérification** : le retour N1 vers N0 fait tourner l'ancienne version sur le schéma actuel ; chaque PR qui touche
-  `db/` le rappelle.
+- **Vérification** : le retour N1 vers N0 fait tourner l'ancienne version sur le schéma actuel. Le rappel dans
+  chaque PR qui touche `db/` (modèle de PR) vient **après l'atelier** (§ 11).
 - **Limite** : `pg_dump` ne sauvegarde que PostgreSQL ; la sauvegarde initiale ne suffit pas seule à restaurer RITA
   (il faut aussi la copie de la configuration et la reconstruction de l'index).
 
@@ -215,10 +223,14 @@ Les changements doivent rester compatibles avec les versions conservées.
 - **Formulation** : jeu de données autonome, sans appel aux sources de marché ; accès réseau nécessaire aux
   téléchargements initiaux (images Docker, modèle d'embeddings) et au modèle distant. Le jeu prouve la reconstruction
   et le fonctionnement, pas la fraîcheur des données de production.
-- **Travail `reconstruction`**, check requis et condition du déploiement : sur une machine neuve de la chaîne, dépôt
-  vide, volumes neufs, `docker compose up`, `initialisation`, puis contrôle des routes de données et du nombre
-  d'articles indexés. Le briefing en est exclu (la chaîne n'a pas de clé du modèle) ; le pré-test de production le
-  couvre. Une reconstruction en direct sur le poste utilise un projet Compose distinct (`-p rita-demo`) et un
+- **Pour l'atelier, la reconstruction est montrée en direct**, avant la première livraison, par la procédure écrite
+  dans `docs/EXPLOITATION.md` § 3.
+- **Après l'atelier (§ 11) : le travail `reconstruction`** dans la chaîne, alors check requis et condition du
+  déploiement : sur une machine neuve de la chaîne, dépôt vide, volumes neufs, `docker compose up`, `initialisation`,
+  puis contrôle des routes de données et du nombre d'articles indexés. Le briefing en est exclu (la chaîne n'a pas de
+  clé du modèle) ; le pré-test de production le couvre. Tant qu'il n'existe pas, il ne figure ni dans les travaux
+  qu'attend `deployer`, ni dans les checks requis.
+- Une reconstruction en direct sur le poste utilise un projet Compose distinct (`-p rita-demo`) et un
   fichier de surcharge qui renomme les conteneurs (leurs noms sont fixes dans `docker-compose.yml`) ; les volumes,
   préfixés par le nom du projet, sont alors neufs. Arrêter la pile locale ne suffirait pas : les volumes survivent à
   l'arrêt et à la suppression des conteneurs.
@@ -229,8 +241,8 @@ Les changements doivent rester compatibles avec les versions conservées.
 
 ### 7.1 Le blocage
 
-- **Checks requis sur `main`** : `lint`, `pytest`, `evals`, `revue`, `secrets`, `reconstruction`,
-  `construire-et-publier`. La règle « main protegee » est modifiée en conséquence.
+- **Checks requis sur `main`** : `lint`, `pytest`, `evals`, `revue`, `secrets`, `construire-et-publier`. La règle
+  « main protegee » est modifiée en conséquence. `reconstruction` s'y ajoutera quand le travail existera (§ 11).
 - **Deux verrous** : la règle refuse la fusion ; dans la chaîne de `main`, `deployer` ne part que si tous les travaux
   précédents sont verts.
 - **Lint** : `ruff`, d'abord limité aux erreurs réelles (syntaxe, noms non définis), élargi ensuite ; le nombre
@@ -251,17 +263,18 @@ Les changements doivent rester compatibles avec les versions conservées.
 - Journal des retours de l'atelier n°1 : conseil sur MCP traité (`docs/CADRAGE-V1.md` § 5, commit `bc143c3`) ;
   remarque « mal à communiquer » : phrases courtes, ligne montrée à l'écran.
 
-### 7.3 Déroulé de la démonstration (20 minutes)
+### 7.3 Déroulé de la démonstration (2 minutes de journal, puis 20 minutes)
 
 | Minute | Geste | Critère |
 |---|---|---|
 | 0-2 | Journal des retours | J |
 | 2 | Ouverture de la PR cassée ; son résultat arrive pendant la suite | 3 |
-| 3-6 | Adresse de production : écran de briefing, vrai briefing, `/health` qui annonce N1 | 1 |
-| 6-9 | Journal de chaîne de la livraison de N1 : fusion, travaux, *Deployments* | 2 |
-| 9-11 | La PR cassée : rouge, fusion bloquée, production inchangée | 3 |
-| 11-15 | Retour arrière en direct, puis `/health` qui annonce N0 | 4 |
-| 15-20 | Passages de `secrets` et de `reconstruction`, `git ls-files`, tableau des secrets | 5 |
+| 3-7 | Adresse de production : écran de briefing, vrai briefing, `/health` qui annonce N1 | 1 |
+| 7-10 | Journal de chaîne de la livraison de N1 : fusion `develop → main`, travaux, *Deployments* | 2 |
+| 10-12 | La PR cassée : rouge, fusion bloquée, production inchangée | 3 |
+| 12-16 | Retour arrière en direct, puis `/health` qui annonce N0 | 4 |
+| 16-19 | Passage de `secrets`, `git ls-files`, tableau des secrets, fiche INC-008 | 5 |
+| 19-22 | Reconstruction en direct dans un dossier neuf | 5 |
 
 La durée complète d'une livraison est à mesurer ; la livraison de N1 est donc montrée par son journal, et les deux
 gestes en direct sont le blocage et le retour arrière. Après la démonstration, N1 est remise en service en relançant
@@ -301,6 +314,30 @@ ans dans le dépôt, tout déploiement progressif.
   commit de fusion, sans écrasement des commits ; en cas d'écrasement, la branche du sprint 2 est réalignée, pour que
   sa PR ne reprenne pas les changements du sprint 1.
 - La date de l'atelier n°2 reste à connaître.
+
+## 11. Périmètre de l'atelier n°2 (décision d'Era du 14/10/2026)
+
+Le formateur l'a précisé le 14/10 : pas de présentation à construire ; l'évaluateur regarde chaque élément du brief et
+la façon dont il est réalisé ; la chaîne « pas forcément complète », mais avec tests bloquants, construction,
+déploiement automatique et retour arrière. Chaque élément est donc classé selon la preuve qu'il apporte.
+
+**Gardé pour l'atelier** : tout ce que demande le brief ; la préproduction (pré-test), qui porte « à travers les
+environnements » ; le créneau de 8 h, règle de RITA, avec le retour d'urgence permis à toute heure ; le contrôle
+`/app/.env` ; la sauvegarde d'août et sa restauration manuelle testée avant toute modification du serveur ; deux
+répétitions du retour arrière (une par Era, une par un tiers, chronométrée).
+
+**Reporté après l'atelier**, sans être retiré de cette conception :
+
+| Élément | Ce qui change d'ici là |
+|---|---|
+| Le travail `reconstruction` dans la chaîne (§ 6.2) | absent des travaux qu'attend `deployer` et des checks requis ; la reconstruction est montrée en direct |
+| Le nettoyage automatique des images (§ 5.4) | nettoyage à la main, même règle |
+| L'automatisation du retour vers l'image d'août (§ 5.1) | exception explicite : restauration manuelle testée pour la seule première livraison |
+| Le modèle de PR qui rappelle la compatibilité (§ 5.5) | rappel fait à la main dans la PR qui toucherait `db/` |
+
+**Ordre des tâches** (plan `docs/sprint-2/PLAN-TRAVAIL.md`) : 1 à 3 (faites), puis 7 à 10, puis 4 à 6
+(reconstruction montrée avant la première livraison), puis une relecture indépendante de toute la branche, puis 11
+et 12.
 
 ## Fichiers concernés (prévus)
 

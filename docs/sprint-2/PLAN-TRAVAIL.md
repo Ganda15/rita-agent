@@ -6,9 +6,10 @@
 **But :** une fusion sur `main` livre en production l'image testée, un commit cassé est arrêté, la version précédente
 revient en une opération, aucun secret n'est dans le dépôt et l'environnement se reconstruit depuis le dépôt.
 
-**Architecture :** `livraison.yml` reçoit trois contrôles (`lint`, `secrets`, `reconstruction`) à côté de
-`construire-et-publier` (`test.yml` garde `pytest` et `evals`) et publie l'image à chaque fusion sur `main`. L'image
-embarque ses propres fichiers de déploiement. Un travail `deployer`, qui attend ces quatre travaux, appelle par SSH un
+**Architecture :** `livraison.yml` reçoit deux contrôles (`lint`, `secrets`) à côté de `construire-et-publier`
+(`test.yml` garde `pytest` et `evals` ; le travail `reconstruction` vient après l'atelier) et publie l'image à chaque
+fusion sur `main`. L'image embarque ses propres fichiers de déploiement. Un travail `deployer`, qui attend ces
+travaux, appelle par SSH un
 script installé sur le serveur, `deployer.py` (Python, bibliothèque standard seulement) : il extrait la configuration
 de l'image livrée, fait le pré-test, la bascule, les contrôles d'après bascule et le retour automatique, et tient
 l'état (image, configuration et profil de chaque version). Le workflow manuel `retour-arriere.yml` appelle le même
@@ -17,7 +18,7 @@ script.
 **Outils :** Python 3.13 (image) et 3.14 (poste), FastAPI, PostgreSQL 18, ChromaDB 1.5.9, Docker Compose,
 GitHub Actions, GHCR, ruff, gitleaks, pytest.
 
-**Spec :** `docs/CHAINE-V1.md` (branche `sprint-2-socle-chaine`, commit `2d30aaa`).
+**Spec :** `docs/CHAINE-V1.md` (branche `sprint-2-socle-chaine` ; conception `2d30aaa`, périmètre de l'atelier § 11).
 
 ## Contraintes globales
 
@@ -48,13 +49,34 @@ GitHub Actions, GHCR, ruff, gitleaks, pytest.
 - Écart de nom avec la spec : la logique du serveur est en Python (`deploy/deployer.py`) pour être testée par pytest ;
   `deploy/deployer.sh` n'est que le point d'entrée de la clé à commande forcée.
 
+## Périmètre de l'atelier et ordre des tâches (décision d'Era du 14/10/2026)
+
+Détail et raisons : `docs/CHAINE-V1.md` § 11. Ce qui suit prime sur les passages des tâches qui le contredisent ; ces
+passages sont aussi marqués **(après l'atelier)** là où ils se trouvent.
+
+**Ordre** : tâches 1 à 3 (faites, commits `0dccede` à `89ad8f9`), puis **7, 8, 9, 10**, puis **4, 5, 6**
+(reconstruction montrée en direct avant la première livraison), puis une **relecture indépendante** de toute la branche
+(un relecteur neuf, sur le modèle `superpowers:requesting-code-review`), puis **11 et 12**.
+
+**Reporté après l'atelier** :
+- le travail `reconstruction` de la tâche 6 (étape 3) : il ne figure ni dans les `needs` de `deployer` (tâche 9), ni
+  dans les checks requis (tâche 10) ;
+- `nettoyer_images` (tâche 8) : nettoyage à la main, procédure dans `EXPLOITATION.md` ;
+- l'automatisation du retour vers l'image d'août (tâche 8) : à la première livraison, l'état ne connaît pas août ;
+  si N0 échoue après la bascule, le script s'arrête avec « restauration manuelle d'août requise », et Era restaure
+  par la procédure testée à la tâche 10 ;
+- le modèle de PR (tâche 12).
+
+**Gardé** : le pré-test (préproduction), le créneau de 8 h et le retour d'urgence à toute heure, le contrôle
+`/app/.env`, la sauvegarde d'août et sa restauration manuelle testée, deux répétitions du retour arrière.
+
 ## Points de vigilance (non couverts par un test de la spec, couverts ici)
 
 1. **Ordre SSH malformé ou malveillant** (`livrer sha256:abc; rm -rf /`, image d'un autre dépôt, numéro de passage non
    numérique) : refusé sans rien exécuter. Test à la tâche 7.
-2. **Fichier d'état absent ou illisible** : absent à la première livraison, la version d'août sauvegardée devient
-   l'active (et la livraison refuse si la sauvegarde manque) ; illisible, arrêt « état illisible » sans livraison.
-   Tests aux tâches 7 et 8.
+2. **Fichier d'état absent ou illisible** : absent à la première livraison, la livraison refuse si la sauvegarde
+   d'août manque, et un échec après la bascule demande la restauration manuelle d'août ; illisible, arrêt « état
+   illisible » sans livraison. Tests aux tâches 7 et 8.
 3. **Le créneau de 8 h et le changement d'heure** : 07:59:59 et 09:00:00 hors créneau, 08:00:00 et 08:59:59 dedans,
    y compris le dimanche 25/10/2026, jour du passage à l'heure d'hiver. Test à la tâche 7.
 4. **Un briefing en 200 qui n'en est pas un** : texte vide, ou message de refus avec `conforme_amf: false`, donne
@@ -252,18 +274,19 @@ def test_health_sans_version_annonce_inconnu(monkeypatch):
 - [ ] **Étape 3 : écrire les fonctions et l'option `--demo`**. Le mode Parquet existant ne change pas.
 - [ ] **Étape 4 : relancer**, puis la suite complète ; la couverture de `db/importer.py` ne baisse pas. Commit.
 
-### Tâche 6 : le service `initialisation` et le travail `reconstruction`
+### Tâche 6 : le service `initialisation` (le travail `reconstruction` : après l'atelier)
 
 **Fichiers :**
 - Modifier : `docker-compose.yml` (service `initialisation`)
 - Créer : `docker-compose.demo.yml` (surcharge pour une reconstruction sur le poste)
-- Modifier : `.github/workflows/livraison.yml` (travail `reconstruction`)
+- Modifier : `.github/workflows/livraison.yml` (travail `reconstruction`) **(après l'atelier)**
 - Modifier : `docs/EXPLOITATION.md` § 3 (procédure locale)
 
 **Interfaces :**
 - Consomme : `python -m db.importer --demo` (tâche 5) ; `rag.indexation.compter_indexes(chemin=None) -> int`
   (existant, `rag/indexation.py` l. 331).
-- Produit : le check `reconstruction`, exigé à la tâche 10 et attendu par `deployer`.
+- Produit : la procédure de reconstruction en direct (étape 4). **(Après l'atelier)** : le check `reconstruction`,
+  alors exigé par la règle et attendu par `deployer`.
 
 - [ ] **Étape 1 : service `initialisation`** : profil `outils`, image `rita-api:local`, `depends_on` postgres en bonne
   santé, même `DATABASE_URL` que le service `indexation` (compte propriétaire : il faut écrire dans la base de
@@ -279,7 +302,7 @@ def test_health_sans_version_annonce_inconnu(monkeypatch):
   n'afficher que les ports :
   `docker compose --env-file tests/donnees/env-fictif -f docker-compose.yml -f docker-compose.demo.yml config --format json`
   lu par une ligne Python qui imprime seulement `services.api.ports`. Attendu : une seule entrée, publiée sur 8011.
-- [ ] **Étape 3 : travail `reconstruction`** dans `livraison.yml`, sur une machine neuve :
+- [ ] **Étape 3 (après l'atelier) : travail `reconstruction`** dans `livraison.yml`, sur une machine neuve :
   1. `.env` créé depuis `.env.example`, avec une clé de test (`RITA_API_KEY=cle-de-reconstruction-ci-32-caracteres`) ;
   2. `docker compose -p rita-recon-${{ github.run_id }} up -d --build postgres api`, puis attente de `/health` ;
   3. `docker compose -p ... --profile outils run --rm initialisation`, **deux fois** ;
@@ -381,8 +404,9 @@ def test_health_sans_version_annonce_inconnu(monkeypatch):
   - `remplacer_production(version)` : profil `complet` :
     `docker compose -p <projet> --project-directory /root/rita-agent -f <config>/docker-compose.yml
     -f <config>/compose.prod.yml --env-file <config>/.env up -d --no-deps --no-build --pull never api`, avec
-    `RITA_IMAGE = version.image` ; profil `aout` : `docker tag rita-api:avant-chaine rita-api:local`, puis la même
-    commande avec le seul fichier Compose d'août sauvegardé. Seul le service `api` est remplacé (`--no-deps`).
+    `RITA_IMAGE = version.image`. Seul le service `api` est remplacé (`--no-deps`). **(Après l'atelier)** : le profil
+    `aout` (`docker tag rita-api:avant-chaine rita-api:local`, puis la même commande avec le seul fichier Compose
+    d'août sauvegardé).
   - `preparer_version(docker, ref, dossier, maintenant) -> Version` : crée un dossier **unique par livraison**,
     `configs/<AAAAMMJJ-HHMMSS>-<sha court>/`, y extrait les fichiers de l'image et y copie le `.env` du serveur
     (droits 600) ; rend `Version(ref, chemin, "complet")`. Un dossier existant n'est **jamais réécrit** (refus si le
@@ -394,15 +418,18 @@ def test_health_sans_version_annonce_inconnu(monkeypatch):
     avec la clé : 200, texte non vide, `conforme_amf` vrai, et (sauf `aout`) son `X-Request-ID` présent dans
     `journal()`. Rend `sain`, `degrade` (`/health` répond, un autre contrôle échoue) ou `indisponible`. Chaque version
     est contrôlée avec **son** profil.
-  - `nettoyer_images(docker, garder: set[str]) -> list[str]` : supprime seulement les images de
+  - **(Après l'atelier)** `nettoyer_images(docker, garder: set[str]) -> list[str]` : supprime seulement les images de
     `ghcr.io/ganda15/rita-api` absentes de `garder` ; jamais `prune` ; ne touche pas `rita-api:avant-chaine`.
   - `livrer(ref, docker, dossier, maintenant) -> int` et `revenir(numero, docker, dossier) -> int`, qui suivent
     `docs/CHAINE-V1.md` § 4 (étapes 5 à 8) et § 5.3. **Le serveur n'attend jamais** : dans le créneau, `livrer` rend
     `CODE_CRENEAU` **avant** de prendre le verrou, sans rien changer ; si le créneau est atteint pendant le pré-test,
     l'heure relue juste avant la bascule annule proprement (pré-test arrêté, marque fermée, état inchangé) et rend
-    `CODE_CRENEAU`. Première livraison (état absent) : l'active devient
-    `Version("rita-api:avant-chaine", "<dossier>/sauvegardes/avant-chaine", "aout")` ; si ce dossier ou l'image
-    manquent, refus « sauvegarde d'août absente ». Le retour manuel ignore le créneau.
+    `CODE_CRENEAU`. Première livraison (état absent) : refus « sauvegarde d'août absente » si le dossier
+    `<dossier>/sauvegardes/avant-chaine` ou l'image `rita-api:avant-chaine` manquent ; réussie, l'active devient N0 et
+    la précédente reste vide ; ratée après la bascule, sortie 1 avec « restauration manuelle d'août requise », état
+    inchangé, sans tentative de restauration (exception décidée le 14/10, spec § 5.1 et § 11). **(Après l'atelier)** :
+    l'active devient `Version("rita-api:avant-chaine", "<dossier>/sauvegardes/avant-chaine", "aout")` et le retour
+    automatique vers août est géré. Le retour manuel ignore le créneau.
   - `main(argv: list[str]) -> int` : lit `SSH_ORIGINAL_COMMAND`, prend le verrou (`attente_max` : 600 s pour
     `livrer`, 900 s pour `revenir`, qui attend donc la fin d'une bascule en cours), refuse si une opération est
     inachevée, puis appelle `livrer`, `revenir` ou affiche `empreinte_du_script()`.
@@ -426,8 +453,9 @@ def test_health_sans_version_annonce_inconnu(monkeypatch):
     restaurée ») ;
   - `test_bascule_ratee_et_restauration_ratee` (santé `degrade` ou `indisponible` ; message « cause externe possible
     (modèle, base) ou configuration commune incorrecte, à diagnostiquer » quand les deux échouent au même contrôle) ;
-  - `test_retour_vers_aout_utilise_sa_configuration_et_son_profil` (`remplacer_production` reçoit la `Version` d'août,
-    `controler` est appelé avec le profil `aout`) ;
+  - **(après l'atelier)** `test_retour_vers_aout_utilise_sa_configuration_et_son_profil` ;
+  - `test_premiere_livraison_ratee_demande_la_restauration_manuelle_d_aout` (état absent, bascule ratée : sortie 1,
+    message « restauration manuelle d'août requise », état toujours absent, aucune tentative de restauration) ;
   - `test_retour_manuel_reussi_vide_la_precedente`, `test_retour_manuel_rate_remet_l_active`,
     `test_retour_sans_precedente_refuse` ;
   - `test_retour_manuel_ignore_le_creneau` (à 08:30, le retour s'exécute) ;
@@ -438,10 +466,11 @@ def test_health_sans_version_annonce_inconnu(monkeypatch):
   - `test_meme_image_config_changee_livraison_ratee_restaure_l_ancienne_config` (même empreinte relivrée avec un
     `.env` modifié, bascule ratée : `remplacer_production` rappelé avec le **dossier de configuration d'origine**,
     qui n'a pas été réécrit) ;
-  - `test_premiere_livraison_prend_aout_comme_active` et `test_premiere_livraison_exige_la_sauvegarde_d_aout` ;
+  - `test_premiere_livraison_reussie_n_a_pas_de_precedente` (active N0, précédente vide) et
+    `test_premiere_livraison_exige_la_sauvegarde_d_aout` ;
   - `test_etat_illisible_arrete_sans_livrer` ;
   - `test_briefing_vide_ou_refuse_donne_degrade` (texte vide ; puis texte de refus avec `conforme_amf: false`) ;
-  - `test_nettoyage_ne_touche_que_les_images_rita_hors_liste` ;
+  - **(après l'atelier)** `test_nettoyage_ne_touche_que_les_images_rita_hors_liste` ;
   - `test_bascule_ne_remplace_que_l_api` (la commande contient `--no-deps` et se termine par `api`).
 - [ ] **Étape 2 : les lancer** : `C:\Python314\python.exe -m pytest tests\test_deployer_scenarios.py -q` : rouges.
 - [ ] **Étape 3 : écrire l'orchestration**, `deployer.sh`, `compose.prod.yml` et la ligne `COPY` du `Dockerfile`. Accès
@@ -466,8 +495,8 @@ def test_health_sans_version_annonce_inconnu(monkeypatch):
 
 - [ ] **Étape 1 : tests rouges** sur le texte des workflows :
   `test_publication_sur_main` (la condition de publication contient `refs/heads/main`) ;
-  `test_deployer_attend_tous_les_controles_et_ne_part_que_sur_main` (`needs: [lint, secrets, reconstruction,
-  construire-et-publier, attendre-creneau]`, conditions `github.ref == 'refs/heads/main'` et
+  `test_deployer_attend_tous_les_controles_et_ne_part_que_sur_main` (`needs: [lint, secrets, construire-et-publier,
+  attendre-creneau]` ; `reconstruction` s'y ajoutera après l'atelier, conditions `github.ref == 'refs/heads/main'` et
   `github.event_name == 'push'`) ;
   `test_attente_du_creneau_hors_du_groupe` (le travail `attendre-creneau` n'a pas de `concurrency`) ;
   `test_un_seul_deploiement_a_la_fois` (`deployer` : groupe `production`, `cancel-in-progress: false`) ;
@@ -552,8 +581,8 @@ modification du serveur.**
 - [ ] 🌐 Environnement `production` créé, **sans relecteur obligatoire**, avec `DEPLOY_SSH_KEY`, `DEPLOY_HOST` et
   `DEPLOY_KNOWN_HOSTS` ; l'empreinte de `ssh-keyscan` comparée à celle du serveur
   (`ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub`).
-- [ ] 💻 Règle « main protegee » : checks requis `lint`, `pytest`, `evals`, `revue`, `secrets`, `reconstruction`,
-  `construire-et-publier`, par `gh api -X PUT` avec le JSON mis à jour de `evidence/C19/ruleset-main-2026-10-03-soir.json`
+- [ ] 💻 Règle « main protegee » : checks requis `lint`, `pytest`, `evals`, `revue`, `secrets`, `construire-et-publier`
+  (`reconstruction` après l'atelier), par `gh api -X PUT` avec le JSON mis à jour de `evidence/C19/ruleset-main-2026-10-03-soir.json`
   (copie datée du nouveau JSON rangée au même endroit).
 - [ ] Tableau des secrets de `docs/EXPLOITATION.md` § 2 complété (qui pose, où, comment changer, comment révoquer) ;
   commit.
@@ -574,7 +603,7 @@ modification du serveur.**
 
 **Fichiers :**
 - Créer : `docs/sprint-2/README.md`, `evidence/sprint-2/` (captures et extraits), `eval/ateliers/sprint-2-grille.md`,
-  `.github/pull_request_template.md`
+  `.github/pull_request_template.md` **(après l'atelier)**
 - Modifier : `docs/EXPLOITATION.md` (retour arrière, secours sans GitHub, mise à jour du script du serveur),
   `docs/CI-CD.md` (§ 2, § 3, § 4, § 8)
 
@@ -587,7 +616,7 @@ modification du serveur.**
 - [ ] **Commit cassé** : branche `demo/commit-casse` où `health()` rend `"project": "RITX"` ;
   `test_health_returns_project_name` échoue ; PR vers `main` : check `pytest` rouge, fusion bloquée, *Deployments*
   inchangé, `/health` toujours sur N1 ; captures ; PR fermée sans fusion, branche supprimée.
-- [ ] **Modèle de PR** (`.github/pull_request_template.md`) : une case « si la PR touche `db/` : le changement reste
+- [ ] **(Après l'atelier) Modèle de PR** (`.github/pull_request_template.md`) : une case « si la PR touche `db/` : le changement reste
   compatible avec les versions conservées (colonne qui accepte le vide ou valeur par défaut, rien de renommé ni de
   supprimé) ».
 - [ ] **Document d'entrée** `docs/sprint-2/README.md` : adresse de production, version servie, lien vers chaque
@@ -606,10 +635,11 @@ modification du serveur.**
 | § 4 La livraison automatique | 8, 9, 10, 11 |
 | § 5.1 Deux temps | 10, 11, 12 |
 | § 5.2-5.3 Cible et état (image, configuration, profil) | 7, 8, 9 |
-| § 5.4 Images | 8 (`nettoyer_images`), 10 |
+| § 5.4 Images | 8 (`nettoyer_images`, après l'atelier), 10 |
 | § 5.5 Compatibilité | 11, 12 (modèle de PR) |
 | § 6.1 Secrets | 3, 10 |
 | § 6.2 Reconstruction | 4, 5, 6 |
 | § 7 Blocage, preuves, démonstration | 10 (règle), 12 |
 | § 9 À vérifier | 2, 3, 10, 11 |
 | § 10 Calendrier | contraintes globales, 11 |
+| § 11 Périmètre de l'atelier | section « Périmètre de l'atelier et ordre des tâches », marques **(après l'atelier)** |
