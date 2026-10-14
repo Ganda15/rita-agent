@@ -121,7 +121,9 @@ d'investissement n'a pas besoin du verbe « acheter » pour en être un.
 
 ## 3. La chaîne de livraison continue — C13
 
-Deux workflows GitHub Actions, dans `.github/workflows/`.
+> Depuis le 03/10/2026, la chaîne complète (cinq workflows, tous les déclencheurs, secrets, permissions, installation, test) est décrite en un seul endroit : `docs/CI-CD.md`. Cette section garde les deux workflows d'origine et le pourquoi des portes.
+
+Deux workflows GitHub Actions d'origine, dans `.github/workflows/` (cinq aujourd'hui, voir `docs/CI-CD.md`).
 
 ### `test.yml` — à chaque poussée sur `main` et `develop`
 

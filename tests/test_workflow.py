@@ -169,7 +169,7 @@ def test_le_redacteur_recoit_les_passages_trouves_par_le_rag():
 
 
 def test_la_question_du_rag_utilise_le_nom_court_pas_la_raison_sociale():
-    """Récidive du défaut LVMH (§10a du guide d'étude), mesurée le 30/08.
+    """Récidive du défaut LVMH, mesurée le 30/08.
 
     `valeur.nom_officiel` vaut « LVMH MOET VUITTON » ; la presse écrit « LVMH ».
     Interrogé avec la raison sociale, le moteur refusait TOUT :
@@ -192,3 +192,11 @@ def test_la_question_du_rag_utilise_le_nom_court_pas_la_raison_sociale():
     assert "LVMH" in question
     assert "MOET" not in question
     assert "VUITTON" not in question
+
+
+def test_le_redacteur_recoit_les_indicateurs_du_scout():
+    """Les 13 indicateurs calculés par le scout vont jusqu'au rédacteur, pas seulement quatre nombres."""
+    indicateurs = {"ma20": 404.9, "rsi_14": 38.4, "volatilite_annualisee_pct": 22.5}
+    with patch("graph.workflow.collect", return_value=scout_lvmh(indicateurs=indicateurs)),          patch("graph.workflow.generate_briefing", return_value="x") as redacteur:
+        generer_briefing_complet("MC.PA")
+    assert redacteur.call_args.kwargs["indicateurs"] == indicateurs

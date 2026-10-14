@@ -116,3 +116,44 @@ def test_une_position_sans_taux_affiche_indisponible_a_l_ecran(page):
     assert ligne_aapl.count("indisponible") == 2, ligne_aapl
     assert "0,00" not in ligne_aapl
     assert page.erreurs_js == []
+
+
+def test_l_ecran_briefing_affiche_le_texte_et_le_verdict(page, serveur):
+    """Écran 3 dans un vrai navigateur, `/briefing` intercepté : aucun appel payant au modèle.
+    Ce qu'un utilisateur voit : le texte en paragraphes, le cours, le verdict du garde-fou en mots."""
+    import json
+
+    corps = {"ticker": "MC.PA", "price": 378.55, "change_pct": -0.25, "currency": "EUR",
+             "briefing": "LVMH clôture à 378,55 EUR, en légère baisse de 0,25 %.\n\nAucune actualité récente.",
+             "conforme_amf": True, "motifs_amf": []}
+    page.route("**/briefing?ticker=*", lambda route: route.fulfill(
+        status=200, content_type="application/json", headers={"X-Request-ID": "abcdef1234567890"},
+        body=json.dumps(corps)))
+    page.goto(serveur + "/briefing.html", wait_until="networkidle")
+    page.evaluate("sessionStorage.setItem('rita_api_key', 'cle-de-test-smoke-ui-32-caracteres-x')")
+    page.goto(serveur + "/briefing.html", wait_until="networkidle")
+
+    page.fill("#ticker", "MC.PA")
+    page.click("#form-briefing button[type=submit], #form-briefing button")
+    page.wait_for_selector("#texte p", timeout=5000)
+
+    texte = page.locator("#texte").inner_text()
+    assert "378,55" in texte and page.locator("#texte p").count() == 2
+    verdict = page.locator("#verdict").inner_text().lower()
+    assert "conforme" in verdict and "retenu" not in verdict
+    assert "abcdef1234567890" in page.locator("#reference").inner_text()
+    assert page.erreurs_js == []
+
+
+def test_l_ecran_briefing_dit_quand_le_ticker_est_introuvable(page, serveur):
+    page.route("**/briefing?ticker=*", lambda route: route.fulfill(
+        status=502, content_type="application/json", body='{"detail": "ticker absent de la base : XXX"}'))
+    page.goto(serveur + "/briefing.html", wait_until="networkidle")
+    page.evaluate("sessionStorage.setItem('rita_api_key', 'cle-de-test-smoke-ui-32-caracteres-x')")
+    page.goto(serveur + "/briefing.html", wait_until="networkidle")
+    page.fill("#ticker", "XXX")
+    page.click("#form-briefing button[type=submit], #form-briefing button")
+    page.wait_for_timeout(1500)
+    statut = page.locator("#statut").inner_text().lower()
+    assert "introuvable" in statut, statut
+    assert page.erreurs_js == []

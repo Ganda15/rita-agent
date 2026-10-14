@@ -65,3 +65,24 @@ Un tag `livrable-E1-v2` se **pose** librement (nouveau nom) ; `livrable-E1-v1` n
 - **Ruleset** : l'outil actuel de GitHub pour poser des règles sur des branches ; remplace la « protection de branche » classique.
 - **Push forcé** : réécrire l'historique distant ; interdit sur `main`.
 - **Status check** : un job de la CI dont le résultat conditionne la fusion.
+
+
+## Complément du 03/10/2026 au soir : la revue automatisée devient un check requis
+
+Un contrôle extérieur du dépôt a relevé que le ruleset `main protegee` exigeait `pytest` et `evals` verts, mais pas
+le job `revue` du workflow `Revue PR`. La règle écrite dans `AGENTS.md` (« `main` ne bouge que par une pull request
+relue ») n'était donc tenue que par l'habitude, pas par le serveur. Corrigé par l'API (`PUT /repos/.../rulesets/24414639`)
+en ajoutant le contexte `revue` à la liste des checks requis ; relu depuis GitHub :
+
+```
+["pytest","evals","revue"]
+```
+
+Vérifié avant d'ajouter : le job `revue` était vert sur les deux dernières PR (58 et 72), donc la règle n'a bloqué
+aucune fusion en cours. Le ruleset complet après modification : `ruleset-main-2026-10-03-soir.json` ; la liste des deux
+rulesets actifs : `rulesets-liste-2026-10-03.txt`. Aucune protection « classique » n'existe sur `main` (l'API répond
+`Branch not protected`) : les rulesets sont la seule source, et c'est voulu, une règle à un seul endroit.
+
+Risque accepté, dit franchement : si le workflow de revue tombe en panne (jeton expiré, action indisponible), aucune PR
+ne peut plus être fusionnée, puisque personne n'a de droit de contournement. La sortie est alors d'éditer le ruleset
+dans *Settings → Rules*, pas de pousser sur `main`.

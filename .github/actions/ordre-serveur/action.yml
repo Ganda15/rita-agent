@@ -1,0 +1,108 @@
+# Action composite du sprint 2 (tâche 9) : envoyer UN ordre au script du serveur, par la clé SSH dédiée.
+#
+# Utilisée par les trois travaux qui parlent au serveur : `deployer` et `deployer-reprise` (livraison.yml),
+# `revenir` (retour-arriere.yml). La clé ne peut lancer que /root/rita-deploy/bin/deployer.sh (commande forcée) :
+# l'ordre envoyé arrive dans SSH_ORIGINAL_COMMAND, et deploy/deployer.py n'accepte que trois ordres écrits en entier.
+#
+# Règle de sécurité : aucune entrée n'est recopiée dans une commande ; chacune passe par une variable d'un bloc `env`
+# (contrôlé par tests/test_workflows_livraison.py).
+
+name: Ordre au serveur
+description: Compare le script du serveur à celui du dépôt, puis envoie un ordre (livrer, revenir) par la clé dédiée.
+
+inputs:
+  ordre:
+    description: "livrer ou revenir"
+    required: true
+  argument:
+    description: "l'empreinte de l'image (livrer) ou le numéro du passage (revenir)"
+    required: true
+  cle-ssh:
+    description: "la clé privée dédiée (secret DEPLOY_SSH_KEY de l'environnement production)"
+    required: true
+  hote:
+    description: "l'adresse du serveur (secret DEPLOY_HOST)"
+    required: true
+  known-hosts:
+    description: "l'empreinte du serveur (secret DEPLOY_KNOWN_HOSTS), vérifiée avant toute connexion"
+    required: true
+  empreinte-bloquante:
+    description: "true : un script du serveur différent du dépôt arrête tout ; false : simple avertissement"
+    required: true
+  accepter-report:
+    description: "true : le code 75 (créneau du matin) termine sans échec avec reporte=true"
+    required: true
+
+outputs:
+  reporte:
+    description: "true si le serveur a reporté la livraison (code 75)"
+    value: ${{ steps.envoi.outputs.reporte }}
+
+runs:
+  using: composite
+  steps:
+    - name: Préparer la clé SSH dédiée
+      shell: bash
+      env:
+        CLE_SSH: ${{ inputs.cle-ssh }}
+        KNOWN_HOSTS: ${{ inputs.known-hosts }}
+      run: |
+        umask 077
+        mkdir -p ~/.ssh
+        printf '%s\n' "$CLE_SSH" > ~/.ssh/cle_deploiement
+        printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+    - name: Comparer le script du serveur à celui du dépôt
+      # L'ordre `version` rend le sha256 du script installé ; s'il diffère du dépôt, le serveur n'exécuterait pas le
+      # code relu. Bloquant pour une livraison ; simple avertissement pour un retour arrière, qui utilise le script
+      # déjà installé et ne doit jamais être empêché.
+      shell: bash
+      env:
+        HOTE: ${{ inputs.hote }}
+        BLOQUANTE: ${{ inputs.empreinte-bloquante }}
+      run: |
+        serveur=$(ssh -i ~/.ssh/cle_deploiement -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes \
+          "root@$HOTE" version)
+        depot=$(sha256sum deploy/deployer.py | cut -d' ' -f1)
+        if [ "$serveur" = "$depot" ]; then
+          echo "script du serveur identique au depot ($depot)"
+        elif [ "$BLOQUANTE" = "true" ]; then
+          echo "::error::script du serveur a mettre a jour (serveur $serveur, depot $depot) : voir docs/EXPLOITATION.md"
+          exit 1
+        else
+          echo "::warning::script du serveur different du depot (serveur $serveur, depot $depot) : le retour utilise le script installe"
+        fi
+
+    - name: Envoyer l'ordre au serveur
+      id: envoi
+      # Code 0 : fait. Code 75 : livraison reportée par le créneau du matin, rien n'a changé ; accepté seulement si
+      # `accepter-report` vaut true (la reprise de 9 h le refuse). Tout autre code arrête le travail.
+      shell: bash
+      env:
+        HOTE: ${{ inputs.hote }}
+        ORDRE: ${{ inputs.ordre }}
+        ARGUMENT: ${{ inputs.argument }}
+        ACCEPTER_REPORT: ${{ inputs.accepter-report }}
+      run: |
+        set +e
+        ssh -i ~/.ssh/cle_deploiement -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes \
+          -o ServerAliveInterval=60 -o ServerAliveCountMax=5 "root@$HOTE" "$ORDRE $ARGUMENT"
+        code=$?
+        set -e
+        echo "code rendu par le serveur : $code"
+        if [ "$code" = "0" ]; then
+          echo "reporte=false" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+        if [ "$code" = "75" ] && [ "$ACCEPTER_REPORT" = "true" ]; then
+          echo "reporte=true" >> "$GITHUB_OUTPUT"
+          echo "::notice::livraison reportee par le creneau du matin (8 h a 9 h) : reprise automatique a 9 h"
+          exit 0
+        fi
+        echo "::error::le serveur a rendu le code $code : voir journal.jsonl sur le serveur"
+        exit 1
+
+    - name: Effacer la clé SSH
+      if: always()
+      shell: bash
+      run: rm -f ~/.ssh/cle_deploiement

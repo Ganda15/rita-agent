@@ -1,6 +1,6 @@
 # Veille S36 — L'incident Claude Code, et LongGuard qui confirme le choix des expressions régulières
 
-**Semaine** : 2026-S36, du 24/08 au 31/08 · **Créneau tenu** : rédigée en rattrapage le 08/09/2026
+**Semaine** : 2026-S36, du 31 août au 6 septembre 2026 · **Période réellement balayée** : du 24 au 31 août (relevé du 31/08, voir `_candidats-2026-S36.md` ; l'étiquette portait cette fenêtre jusqu'au 03/10/2026, corrigée sans changer le contenu) · **Créneau tenu** : rédigée en rattrapage le 08/09/2026
 **Thématique** : sécurité des agents LLM — injection de prompt
 
 ## Résumé en clair

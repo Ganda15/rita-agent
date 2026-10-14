@@ -79,9 +79,15 @@ services:
       # ⚠️ OBLIGATOIRE. L'API refuse de démarrer sans elle (OWASP API2). Elle est
       # lue depuis le `.env` de la machine, JAMAIS écrite ici.
       RITA_API_KEY: ${RITA_API_KEY:?RITA_API_KEY absente - la definir dans .env}
+      # Relevé du 11/10/2026 : Azure (premier de la cascade) n'était pas transmis, et l'ordre par
+      # défaut sautait `foundry` ; en conteneur, la cascade différait de `src/llm.py`. Les clés se
+      # lisent dans l'environnement de la machine, vides par défaut, JAMAIS écrites ici.
+      AZURE_FOUNDRY_ENDPOINT: ${AZURE_FOUNDRY_ENDPOINT:-}
+      AZURE_FOUNDRY_API_KEY: ${AZURE_FOUNDRY_API_KEY:-}
+      AZURE_FOUNDRY_DEPLOYMENT: ${AZURE_FOUNDRY_DEPLOYMENT:-gpt-5.4-dzs-eu}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
-      LLM_ORDRE: ${LLM_ORDRE:-anthropic,openrouter}
+      LLM_ORDRE: ${LLM_ORDRE:-foundry,anthropic,openrouter}
       # --- Traçage Langfuse (C11), facultatif ---------------------------------------
       # Audit du 02/10/2026 : rien n'était transmis ici, donc l'API en conteneur (pré-production
       # et serveur) servait des briefings que Langfuse ne voyait jamais. Les clés se lisent
@@ -140,6 +146,31 @@ services:
       - rita_cache_preprod:/home/rita/.cache
     # `--strict` : une étape en échec = code de sortie 1, sinon `docker compose run` rendait 0 avec un volume vide.
     command: ["python", "-m", "pipelines.ingest", "--etapes", "indexation", "--strict"]
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+
+  # --- Outil : reconstruire une base NEUVE depuis le dépôt (sprint 2, tâche 6) ---------
+  # Charge le jeu versionné `data/demo/` (python -m db.importer --demo : refuse toute base
+  # qui contient déjà des données sans la marque de démonstration), puis construit l'index
+  # Chroma de ces articles. Profil `outils` : jamais démarré par `docker compose up`.
+  #   docker compose --profile outils run --rm initialisation
+  # Compte propriétaire, comme `indexation` : il faut écrire dans la base et poser sa marque.
+  initialisation:
+    image: rita-api:local
+    profiles: ["outils"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:-rita_preprod_local}@postgres:5432/rita
+    volumes:
+      - ./data/demo:/app/data/demo:ro
+      - rita_chroma_preprod:/app/data/chroma
+      - rita_cache_preprod:/home/rita/.cache
+    command: ["sh", "-c", "python -m db.importer --demo /app/data/demo && python -m pipelines.ingest --etapes indexation --strict"]
     read_only: true
     tmpfs:
       - /tmp

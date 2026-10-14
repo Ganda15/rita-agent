@@ -16,7 +16,7 @@ dit à voix haute quel âge il a.
 """
 from typing import Any, TypedDict
 
-from indicateurs.risque import lire_volatilite_drawdown
+from indicateurs.risque import lire_rsi, lire_volatilite_drawdown
 from indicateurs.socle import lire_socle
 
 
@@ -76,6 +76,12 @@ def collect(ticker: str) -> ScoutState:
         mesures = risque[0].en_dict()
         indicateurs["volatilite_annualisee_pct"] = mesures["volatilite_annualisee_pct"]
         indicateurs["drawdown_max_1a_pct"] = mesures["drawdown_max_1a_pct"]
+
+    # Treizième indicateur (03/10/2026) : le RSI était calculé pour l'écran 2 mais jamais joint ici.
+    # Absent pour une valeur radiée (fenêtre calée sur la dernière séance globale) : pas une erreur.
+    rsi = lire_rsi([ticker])
+    if rsi and rsi[0].rsi_14 is not None:
+        indicateurs["rsi_14"] = rsi[0].rsi_14
 
     return {
         "ticker": socle.ticker,

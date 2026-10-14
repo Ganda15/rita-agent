@@ -1,0 +1,52 @@
+{
+ "fige_le": "2026-10-03",
+ "prix_par_million_usd": {
+  "openrouter": [
+   3.0,
+   15.0
+  ]
+ },
+ "sources_prix": {
+  "openrouter": "https://openrouter.ai/api/v1/models"
+ },
+ "etat": {
+  "foundry": {
+   "statut": "indisponible",
+   "motif": "KeyError: 'AZURE_FOUNDRY_API_KEY'"
+  },
+  "anthropic": {
+   "statut": "indisponible",
+   "motif": "TypeError: \"Could not resolve authentication method. Expected one of api_key, auth_token, or credentials to be set. Or for one of the `X-Api-Key` or `Authorization` headers to be explicitly omitted\""
+  },
+  "openrouter": {
+   "statut": "mesure",
+   "motif": ""
+  }
+ },
+ "resume": {
+  "openrouter": {
+   "appels": 30,
+   "reussis": 30,
+   "intervalle_disponibilite": [
+    0.8864829086095221,
+    1.0
+   ],
+   "conformes_amf": 30,
+   "intervalle_conformes": [
+    0.8864829086095221,
+    1.0
+   ],
+   "fideles": 30,
+   "intervalle_fideles": [
+    0.8864829086095221,
+    1.0
+   ],
+   "latence_p50_s": 5.631,
+   "latence_p95_s": 7.389,
+   "jetons_entree_moyen": 506.4,
+   "jetons_sortie_moyen": 196.33333333333334,
+   "cout_total_usd": 0.133926,
+   "cout_moyen_usd": 0.0044642
+  }
+ }
+}

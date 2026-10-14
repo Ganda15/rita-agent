@@ -14,7 +14,10 @@
 # nécessaires pour bâtir psycopg2, mais **inutiles pour l'exécuter**. Les laisser
 # dans l'image finale, ce serait des centaines de mégaoctets transportés à chaque
 # déploiement et une surface d'attaque de plus. Ils restent ici.
-FROM python:3.13-slim AS constructeur
+# Image de base tirée de la galerie publique d'Amazon, où Docker publie ses images officielles : même image que
+# `python:3.13-slim` de Docker Hub (même empreinte le 09/10/2026), sans la limite des téléchargements anonymes
+# qui a fait échouer trois constructions de suite ce soir-là (carte #85).
+FROM public.ecr.aws/docker/library/python:3.13-slim AS constructeur
 
 # Compilateur requis par psycopg2-binary sur certaines plateformes, et libpq pour
 # les en-têtes PostgreSQL.
@@ -34,7 +37,7 @@ RUN pip install --no-cache-dir --prefix=/installation -r requirements-api.txt
 
 
 # --- Étape 2 : exécution -----------------------------------------------------
-FROM python:3.13-slim AS execution
+FROM public.ecr.aws/docker/library/python:3.13-slim AS execution
 
 # `libpq5` seule — la bibliothèque cliente PostgreSQL à l'exécution, sans les
 # en-têtes ni le compilateur de l'étape précédente.
@@ -84,6 +87,18 @@ USER rita
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app
+
+# Sprint 2 : l'image embarque ses fichiers Compose de déploiement ; le script du serveur les en extrait, si bien
+# qu'une empreinte d'image désigne le code ET sa configuration Compose (le .env reste sur le serveur).
+COPY --chown=rita:rita docker-compose.yml deploy/compose.prod.yml ./deploy/
+
+# Sprint 2 : la version servie, lue par `/health`. La chaîne passe le commit et la date de construction
+# (`--build-arg`) ; sans eux, « inconnu ». Placés en fin d'étape : à chaque commit, seules ces dernières couches
+# se reconstruisent, les dépendances restent en cache. Aucun secret ici (contrôlé par la tâche 3).
+ARG GIT_SHA=inconnu
+ARG CONSTRUIT_LE=inconnu
+ENV RITA_GIT_SHA=$GIT_SHA \
+    RITA_CONSTRUIT_LE=$CONSTRUIT_LE
 
 EXPOSE 8000
 

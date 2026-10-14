@@ -1,0 +1,158 @@
+{
+ "portefeuille": {
+  "statique_octets": 25542,
+  "statique_gzip_octets": 9724,
+  "api_octets": 3491,
+  "api_gzip_octets": 1212,
+  "dom_etat1": 65,
+  "dom_donnees": 138,
+  "requetes_etat1": 4,
+  "requetes_donnees": 7,
+  "cas": [
+   {
+    "etat": "etat 1, sans cle, actuel",
+    "dom": 65,
+    "requetes": 4,
+    "ko": 24.9,
+    "ecoindex": 93,
+    "note": "A",
+    "gco2e": 1.14,
+    "cl_eau": 1.71
+   },
+   {
+    "etat": "etat 1, sans cle, gzip",
+    "dom": 65,
+    "requetes": 4,
+    "ko": 9.5,
+    "ecoindex": 93,
+    "note": "A",
+    "gco2e": 1.14,
+    "cl_eau": 1.71
+   },
+   {
+    "etat": "donnees affichees, actuel",
+    "dom": 138,
+    "requetes": 7,
+    "ko": 28.4,
+    "ecoindex": 90,
+    "note": "A",
+    "gco2e": 1.2,
+    "cl_eau": 1.8
+   },
+   {
+    "etat": "donnees affichees, gzip",
+    "dom": 138,
+    "requetes": 7,
+    "ko": 10.7,
+    "ecoindex": 90,
+    "note": "A",
+    "gco2e": 1.2,
+    "cl_eau": 1.8
+   }
+  ]
+ },
+ "indicateurs": {
+  "statique_octets": 23456,
+  "statique_gzip_octets": 8940,
+  "api_octets": 65205,
+  "api_gzip_octets": 10632,
+  "dom_etat1": 84,
+  "dom_donnees": 1860,
+  "requetes_etat1": 3,
+  "requetes_donnees": 5,
+  "cas": [
+   {
+    "etat": "etat 1, sans cle, actuel",
+    "dom": 84,
+    "requetes": 3,
+    "ko": 22.9,
+    "ecoindex": 92,
+    "note": "A",
+    "gco2e": 1.16,
+    "cl_eau": 1.74
+   },
+   {
+    "etat": "etat 1, sans cle, gzip",
+    "dom": 84,
+    "requetes": 3,
+    "ko": 8.7,
+    "ecoindex": 92,
+    "note": "A",
+    "gco2e": 1.16,
+    "cl_eau": 1.74
+   },
+   {
+    "etat": "donnees affichees, actuel",
+    "dom": 1860,
+    "requetes": 5,
+    "ko": 86.6,
+    "ecoindex": 51,
+    "note": "D",
+    "gco2e": 1.98,
+    "cl_eau": 2.97
+   },
+   {
+    "etat": "donnees affichees, gzip",
+    "dom": 1860,
+    "requetes": 5,
+    "ko": 19.1,
+    "ecoindex": 52,
+    "note": "D",
+    "gco2e": 1.96,
+    "cl_eau": 2.94
+   }
+  ]
+ },
+ "briefing": {
+  "statique_octets": 20986,
+  "statique_gzip_octets": 8251,
+  "api_octets": 18218,
+  "api_gzip_octets": 1664,
+  "dom_etat1": 46,
+  "dom_donnees": 157,
+  "requetes_etat1": 3,
+  "requetes_donnees": 4,
+  "cas": [
+   {
+    "etat": "etat 1, sans cle, actuel",
+    "dom": 46,
+    "requetes": 3,
+    "ko": 20.5,
+    "ecoindex": 95,
+    "note": "A",
+    "gco2e": 1.1,
+    "cl_eau": 1.65
+   },
+   {
+    "etat": "etat 1, sans cle, gzip",
+    "dom": 46,
+    "requetes": 3,
+    "ko": 8.1,
+    "ecoindex": 95,
+    "note": "A",
+    "gco2e": 1.1,
+    "cl_eau": 1.65
+   },
+   {
+    "etat": "donnees affichees, actuel",
+    "dom": 157,
+    "requetes": 4,
+    "ko": 38.3,
+    "ecoindex": 90,
+    "note": "A",
+    "gco2e": 1.2,
+    "cl_eau": 1.8
+   },
+   {
+    "etat": "donnees affichees, gzip",
+    "dom": 157,
+    "requetes": 4,
+    "ko": 9.7,
+    "ecoindex": 90,
+    "note": "A",
+    "gco2e": 1.2,
+    "cl_eau": 1.8
+   }
+  ]
+ }
+}

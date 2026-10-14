@@ -15,12 +15,532 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-03** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-11 (E1 v2.5 : cinq surgénéralisations corrigées ; veille S41 : relevé, note d'Era et partage à la promo ; E3 v1.4 : sept corrections, 44 critères en 39 lignes, revue d'E3 close ; E1 v2.4 : seconde passe, MCD lisible, guide § 4.5 corrigé ; avant, E1 v2.3 : passe RGPD et exactitude ; politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
 
-🔀 **03/10, nuit : PR #72 `develop → main` ouverte** (2 commits : clôture des positions, plan 66, et l'état après la fusion de la PR 58). Ferme #66 et #69 à la fusion. `evals` vert, `pytest` et `Livraison` en cours au moment de l'ouverture. **À fusionner par Era** quand les trois checks sont verts : `gh pr merge 72 --merge` depuis `D:\KandaWork\RITA_PROJECTita-agent`.
+## ▶️ PROCHAINE ACTION (réécrit le 04/10/2026 ; les ▶️ plus bas sont datés et dépassés)
+
+**Où on en est, en une phrase** : E1 v2.5 (5 pages, 11/10) et E3 v1.4 (20 pages, 11/10, **35 ✅ · 4 🟠 · 0 🔴** sur 39 lignes, 44 critères) sont complets côté
+assistant et vérifiés contre le code et la base ; ils attendent ta relecture avant le gel du **jeudi 15/10** ; les deux alertes Langfuse sont en service ; la chaîne est
+**verte** (`c7d0f2e`, 10/10 : 804 passed en CI, Livraison verte) ; la production sert toujours le code du **19/08**.
+**Aucun code d'application avant le tag du 15/10.** Règle : **c'est Era qui envoie tout message** au formateur et à la
+promo ; l'assistant rédige.
+
+**Nuit du 04 au 05/10, ce qui a changé** (commits `5440a34` à `981cdc7`, CI verte à chaque poussée : 793 passed, 29
+skipped, 2 xfailed) : les **sept schémas** E1 et E3 refaits (texte foncé, une couleur par rôle et par sens de flèche,
+légende dessinée), **textes et flèches relus contre le code** (le scraping apporte des cours, pas des articles ; 22 PR
+vers `main` ; l'alerte #77 a réellement sonné) ; **vingt figures** relues et placées (E1 y renvoie, les planches E4
+attendent le rapport E4) ; tuile Langfuse renommée « Tentatives par fournisseur (échecs compris) » ; 278 473 cotations ;
+E3 : retour des alertes à la normale constaté ; **décision d'architecture** pour le périmètre actuel (`CONTINUITE.md`
+D : trois étapes fixes, une génération avec repli de fournisseur, à rouvrir après le brief multi-agents) ; **règle UE
+seule**, choix du projet d'Era : registre RGPD corrigé (T1 disait « aucun destinataire »), T6 et T7 inscrits non
+conformes (#82, #81) ; trois défauts latents d'indicateurs (#78, #79, #80) et l'ATR en % (#83). Guides d'étude E1 (mis à
+jour) et E3 (nouveau) : Obsidian `09-EN-personnel`, jamais dans le dépôt.
+
+**05/10 au soir et nuit du 06/10, ce qui a changé** (commits `0dc32fe` à `77b449f` sur `develop`, `07a7ecb` et `987eaf2`
+sur la branche `classeur-competences` ; CI verte : 793 passed, 29 skipped, 2 xfailed, couverture 94,70 % ; le soir,
+une panne de GitHub Actions a annulé deux exécutions sans lancer une étape, relancées à 23 h 56 et vertes) : retour du
+formateur consigné ; contrats d'OpenRouter et de Langfuse relus (garanties identifiées, vérification propre à RITA
+incomplète) ; guide d'exploitation remis d'accord (`f34486c`), cartes #24, #25, #55 fermées ; **classeur des
+compétences** : statuts corrigés (110 OK, 24 partiels, 1 à faire), colonne « Rédaction » des 9 compétences rédigées
+réécrite, 17 notes périmées corrigées, synthèse courte à la même source ; GitHub (branche à part) et Google Drive
+(synthèse seule, doublons et ancien fichier mis à la corbeille) ; E2 v0.2 (§ 4.3, § 4.4, critères C8).
+
+**Trois décisions qui attendent Era** : (1) ~~C8.2~~ tranchée le 09/10 : partiel des deux côtés (classeur v4 : 110, 26, 1 sur 137 lignes) ; (2) ~~carte #84~~ faite le 09/10 (`21cf8f1`, preuve
+`evidence/C18/preuve-image-runner-epinglee-2026-10-09.md`) ; (3) **relire la colonne
+« Rédaction »** du classeur et la dire avec ses mots, puis partager la synthèse Drive en « Commentateur » et envoyer
+les deux liens, le message d'état et `docs/EXPLOITATION.pdf` au formateur.
+
+**09/10, ce qui a changé** : carte #84 faite (image des machines de la CI épinglée sur `ubuntu-24.04`, test d'abord,
+CI verte sur `Image: ubuntu-24.04`) ; **Azure AI Foundry en Data Zone Standard EU** (`gpt-5.4-dzs-eu`, créé par Era,
+trois appels réels en Sweden Central, `evidence/C8/preuve-deploiement-zone-eu-2026-10-09.md`) : T6 partiellement corrigé, les replis Anthropic
+et OpenRouter restent à retirer après le gel ; collecte du 08/10 : 2 étapes sur 6 en échec (Boursorama a rendu une
+ouverture à 0 pour OR.PA, refusée par la contrainte `prix_positifs`, ce qui a annulé tout le scraping du soir ; `cygrpc`
+de nouveau bloqué par Smart App Control), collecte du 09/10 normale (6 sur 6). Douze avertissements nouveaux en CI
+(`pydantic` 2.14 dans la bibliothèque `giskard`, carte #23). À faire par Era dans le portail : supprimer `gpt-5.4-3`
+(Global Standard créé par erreur), puis `gpt-5.4-2` (l'ancien Global Standard). **Fait par Era**, vérifié la nuit suivante (voir ci-dessous).
+
+**Nuit du 9 au 10/10, ce qui a changé** (commits `645696f` à `c7d0f2e` ; CI verte : 804 passed, 29 skipped,
+2 xfailed, couverture 94,70 % ; Livraison verte) : les deux déploiements Global Standard sont supprimés (404
+`DeploymentNotFound` sur les deux), seul `gpt-5.4-dzs-eu` répond. **Carte #85** : Docker Hub a refusé trois
+constructions de l'image de suite (429, 429, 504) alors que les tests passaient ; l'image de base vient désormais de
+la galerie publique d'Amazon, même empreinte, test d'abord (`232c209`, preuve
+`evidence/C19/preuve-image-de-base-galerie-amazon-2026-10-10.md`). **C8.2 partiel dans le classeur aussi** (v3 :
+109 OK, 25 partiels, 1 à faire ; v4 le matin, voir le paragraphe suivant). **Mistral UE**
+choisi par Era pour remplacer les replis hors UE **après le gel** (carte #82, `CONTINUITE.md` D) ; sonde de la clé
+le 10/10 : `mistral-large-2512` répond en 0,53 s par l'adresse européenne ; aucun code de RITA touché. **Note
+d'étude** de la colonne « Rédaction » (les 9 paragraphes, leur sens en anglais, les questions probables du jury,
+une ligne « Ma version » à remplir) : Obsidian `09-EN-personnel`, jamais dans le dépôt.
+
+**Le classeur v4 (10/10 au matin) : où il est, ce qu'il reste à faire (Era)**. Era s'étonnait du total de 135 :
+recompté contre le référentiel officiel, il y a **142 critères**. Le modèle Simplon (135 lignes, les mêmes chez David
+et Mehdi) en réunit parfois deux en une ligne (C9, C10, C13, C17, C18) et en découpe un (C6), sans rien perdre, mais
+**omet deux critères de C19** : la documentation de la chaîne de livraison (installation, configuration, test),
+**partiel** (le test de la publication sur un tag n'est pas documenté, premier passage le 15/10), et son format
+accessible, OK. Ajoutés en fin de C19, marqués « ajouté » : **137 lignes, 110 OK, 26 partiels, 1 à faire**. C13
+vérifié : son critère d'accessibilité est réuni dans la ligne de la documentation, toujours OK (PDF E3 régénéré,
+remesuré le 10/10). Fichiers : détaillé `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP_10_10_26.xlsx` ;
+synthèse, détaillé et README de la branche dans `D:\KandaWork\RITA_PROJECT\classeur-v4-pour-branche\` (le dossier
+v3 reste comme version précédente). À faire : (1) fermer Excel (il tient encore la synthèse v2), puis remplacer la
+synthèse de `D:\KandaWork\RITA_PROJECT\` par celle du dossier v4 ; (2) sur la branche `classeur-competences`,
+remplacer les trois fichiers de `docs/competences/` par ceux du dossier v4, commit, push ; (3) Google Sheets :
+Fichier, Importer, la synthèse v4, « Remplacer la feuille de calcul » (le lien ne change pas) ; (4) signaler au
+formateur que son modèle omet deux critères de C19 (Era envoie) ; (5) relire la colonne « Rédaction » avec la note
+d'étude et écrire sa version.
+
+**E3 v1.4 (11/10, soir), passe documentaire validée par Era, revue d'E3 close.** Sept corrections, chacune vérifiée
+dans le code ou le référentiel, toujours **20 pages** (alignées page par page sur la v1.3, regardées) : (1) routes
+publiques nommées (`/health`, documentation OpenAPI, pages de l'interface, sans données métier protégées) ; (2) la clé
+n'est pas contrôlée au démarrage mais à l'authentification (`cle_attendue()` appelée seulement par `verify_api_key`,
+`api/main.py:168`) ; Docker Compose impose sa présence ; sans en-tête, 403 ; avec en-tête sur un serveur sans clé,
+500 générique ; (3) le texte du briefing est dans deux observations Langfuse (`briefing-llm` et la génération,
+`src/traces.py:260-286`) ; (4) un schéma Pydantic existe (`EvenementMcp`), le manque est la validation structurée de
+la sortie du modèle ; (5) depuis le 11/10 le poste n'appelle qu'Azure ; (6) **44 critères au référentiel pour C9 à
+C13** (11, 9, 9, 7, 8, compté dans le PDF Simplon), regroupés en 39 lignes, aucun absent, statuts inchangés ;
+(7) couverture : tests exclus « pour mesurer le code applicatif », plus « 100 % par construction ». Copies OneDrive
+v1.4 (français, anglais `.md` et `.pdf`) ; addendum dans l'oral E3 v1 (Obsidian). **Reste, choix de calendrier et non
+validation** : les cinq figures d'E3 sont lisibles à l'écran mais petites imprimées (environ 4,2 points dans les
+boîtes, 5,2 pour leurs titres) ; refonte après le gel, en nouvelle version, jamais en remplaçant le PDF en silence.
+
+**E1 v2.5 (11/10, nuit), cinq surgénéralisations corrigées, chacune vérifiée dans le code ou les preuves.** « Zéro ligne
+vaut échec » vaut pour la BCE et FRED seulement (`pipelines/ingest.py:107`, `:158`) ; STLAP.PA est exclue des
+classements, pas de la valorisation (`db/requetes.sql:48-50`) ; le rétro-ajustement est celui du fournisseur, et
+« divisé par 36 millions » est l'évolution observée de 2016 à 2024 (`evidence/C3/preuve-artefact-reverse-split.md`) ;
+la cause commune des quatre autres défauts d'INC-005 est la place de cotation absente du modèle, pas l'erreur UTC ; la
+méthode big data est démontrée en local, sans mesure à grande échelle. La note du § 7 sur LangSmith est resserrée
+(faits gardés). Toujours **5 pages**, regardées ; copies OneDrive du 11/10 remplacées (français, anglais). Registre
+§ 0 : avec plusieurs utilisateurs, déterminer et documenter la base légale de chaque traitement, le consentement n'en
+étant qu'une possibilité. Oral E1 v3 aligné (Obsidian, quatorze passages en anglais et en français).
+
+**E1 v2.4 (11/10, soir), seconde passe validée par Era, dernière avant le gel.** La phrase d'installation ne promet
+plus une reconstruction « depuis un dépôt vierge » : elle renvoie aux prérequis du guide (§ 3 et 4), et l'ancienne
+mention « rejouée sur une base Compose neuve le 03/10 » est retirée (le 03/10, seules les migrations ont été jouées
+sur la base Compose : commits `2caa9b6` et `1a5ecd9`) ; T4 donne une conservation (« tant qu'il sert »), plus un
+lieu ; trois « détenue(s) » remplacés (positions simulées) ; MCD lisible à hauteur constante (cadre recadré, largeur
+80 %, attributs sur deux lignes, environ 7 points au lieu de 5, traits plus foncés, POSITION ne déborde plus) ;
+numéros de page « n / 5 ». Toujours 5 pages, regardées une à une. **Guide d'exploitation, même défaut, en pire** :
+le § 4.5 lançait `db.importer` sans jamais construire le Parquet (absent de Git) ; `bigdata.build_parquet` ajouté
+avant, `docs/EXPLOITATION.pdf` régénéré (11 pages). Écartés, par choix : liens cliquables (travail neuf), coupure
+du paragraphe entre les pages 1 et 2 (normale). **Règle pour la suite : E1 ne se rouvre que pour une erreur de
+fait**, plus pour la mise en page.
+
+**E1 v2.3 (11/10), passe documentaire validée par Era, revue d'E1 close.** Huit corrections, vérifiées dans le code
+et le registre, toujours 5 pages (lignes par page identiques, pages regardées une à une) : (1) § 7 réécrit : positions
+inventées, CSV de démonstration versionné, `mcp_calls` déjà personnel (registre T5), règle UE seule « à établir » pour
+T3, T6 et T7, replis désactivés sur le poste mais présents par défaut, exemption domestique (RGPD art. 2.2.c) à
+examiner, intérêt légitime (art. 6.1.f) retenu à titre provisoire, justification à documenter ; (2) légende et
+description du MCD : « seule entité prévue pour des données personnelles (positions inventées à ce jour) » ; (3) dépôt
+privé « conçu pour » un portefeuille réel ; (4) connexion PostgreSQL **principale** ouverte une fois, l'indexation ouvre
+la sienne (`pipelines/ingest.py:454`), HTTP géré par chaque source ; (5) le scout lit la base par les modules
+d'indicateurs avec `DATABASE_URL` (`indicateurs/socle.py:136-141`) ; (6) `article` et `macro_observation` sont des
+données collectées, pas des tables techniques ; (7) **ordre d'installation corrigé** : `bigdata.build_parquet` avant
+`db.importer`, qui lit le Parquet (`db/importer.py:114-117`), la séquence échouait sur un dépôt vierge ; (8) version et
+date. Registre : § 0 (réserve de l'art. 2.2.c), T1 (base légale provisoire), glossaire. Copies OneDrive du 11/10
+(français, et anglais en `.md` et `.pdf`) ; addendum « corrections du 11/10 » dans l'oral E1 v2 (Obsidian).
+**Reste, après le gel** : le commentaire de `db/schema.sql:154` répète « intérêt légitime de la personne concernée »
+(zone sous garde, plan d'abord) ; rédiger la mise en balance de l'intérêt légitime et examiner l'exemption domestique.
+
+**E1 v2.2 (10/10, 10 h), décision d'Era « fix points 1 to 4 before the freeze »**, relevés en traduisant E1 en
+anglais : (1) la date (4/10) était en retard sur le contenu (zone UE du 09/10) : 10 octobre, version 2.2 ;
+(2) `memory_audit` : choix C d'Era, la décision (retirer la table ou lui donner un écrivain) se prend **après le
+gel**, carte #86, pour ne toucher ni au code ni au schéma avant le tag ; (3) chiffres des tests mesurés et datés :
+835 collectés sur le poste, en CI le 10/10 804 verts, 29 ignorés (ni base, ni JDK, ni Windows), 2 échecs attendus,
+94,7 % ; (4) le schéma Merise avait une balise de figure sans texte alternatif : texte alternatif ajouté, mesuré
+(1 figure, 1 texte). Toujours **5 pages**, mise en page identique (bas de chaque page au même point), chaque page
+modifiée regardée. La traduction anglaise d'Obsidian est remise d'accord.
+
+**E3 v1.2 (10/10, 10 h 30), même demande d'Era pour E3**, relevés en traduisant E3 : (1) version et date (« 1.1, 4
+octobre ») en retard sur le § 7.3 du 09/10 : 1.2, 10 octobre, et la ligne « Mesures » dit l'exception de l'image de
+base ; (2) **E1 et E3 se contredisaient sur Langfuse** : E3 disait « à confirmer par la lecture du contrat », E1 dit
+le contrat relu le 05/10 ; E3 dit maintenant la même chose (registre, T3). Toujours **20 pages**, 5 figures avec texte
+alternatif ; seules les pages 6 à 8 bougent. Copies de lecture : `C:\Users\kanda\OneDrive\RITA\reports\` (E1 et E3 en français, et
+leurs traductions anglaises en `.md` et `.pdf`).
+Puis, à 10 h 40, sur demande d'Era : E3 disait « rapport du 11 août » (la date écrite sur la v1 d'E1) et E1
+« envoi du 13 août » ; E3 dit maintenant « rapport envoyé le 13 août », pour que les deux rapports, envoyés ensemble
+après le gel, donnent la même date. **E1 v1 a été envoyé le 13/08 ; E3 n'a jamais été envoyé.** Aucune page ne
+bouge.
+Ensuite, sur demande d'Era : le **registre RGPD** (preuve d'E1, C4) disait encore dans son glossaire que les clauses
+contractuelles types étaient « à confirmer » ; il dit maintenant qu'elles sont prévues (Langfuse § 6.2, T3 ;
+OpenRouter § 13.2, T6, contrats relus le 05/10) et que l'AITD n'est pas faite ; la ligne du Data Privacy Framework
+dit ce qui reste vraiment ouvert (certification de ClickHouse, Inc. non vérifiée, § 5 point 7) ; la liste du 02/10
+garde son texte, avec « Fait le 2026-10-05 ». `tests/test_rgpd_registre.py` : 4 passed.
+Puis, sur demande d'Era : **les dépendances épinglées** étaient mal comptées. `requirements.txt` (compté le 10/10) :
+18 dépendances, **5 épinglées** (`langfuse`, `feedparser`, `chromadb`, `rank-bm25`, `pyspark`), `mcp` avec un
+minimum, 12 sans version. E1 § 9 oubliait `rank-bm25` et § 10 disait « la moitié » : « 13 dépendances sur 18 » ;
+E3 § 7.4 disait « quatre » sans `pyspark` : « cinq ». E1 toujours 5 pages (mise en page identique), E3 toujours
+20 pages (seule la page 16 bouge). Traductions et copies OneDrive remises d'accord.
+Puis **les 7 soirs de collecte coupés** (E1 § 3 disait « rattrapés ») : vérifiés en base le 10/10 par une requête en
+lecture seule lancée par Era : quatre rattrapés le 18/09 (sauf la séance parisienne du 17/09), un sans perte (08/09),
+deux incomplets : articles des 02 et 03/09 perdus, et **aucun taux BCE le 03/09**, que Era a rattrapé le 10/10
+(`--etapes ecb --du 2026-09-03 --au 2026-09-03` : 4 lues, 5 écrites). E1 § 3 le dit, toujours 5 pages. Preuve :
+`evidence/C1/preuve-soirs-coupes-verifies-2026-10-10.md`. Le rôle `rita_lecture` n'a ni mot de passe ni
+`RITA_DSN_LECTURE` sur le poste : un agent ne peut pas lire la base comme le prévoit `AGENTS.md` (après le gel).
+Enfin, **audit de propagation** demandé par Era (règle : tout changement se cherche partout, pas seulement dans le
+PDF) : chaque fait changé les 09 et 10/10 cherché par son ancienne valeur dans tout le dépôt. Jumeaux corrigés :
+`docs/CI-CD.md` (quatre dépendances épinglées, cinq en vrai), `README.md` (742 et 700 tests, E1 v2.0, E3 v0.1 :
+835 tests, E1 v2.2, E3 v1.2), `docs/PLAN-12-SEMAINES.md` (contrat Langfuse « à confirmer »), `CLAUDE.md` (835 tests
+collectés), le classeur v4 (memory_audit « décision en attente », quatre fichiers), `Dockerfile.tests` (encore
+Docker Hub : test d'abord, rouge, vert, mutation). Code gelé laissé tel quel et inscrit sur #82 : `src/llm.py:39`
+(déploiement par défaut `gpt-5.4`, supprimé le 09/10), `src/llm.py:79` et `tests/test_llm.py:109` (« Global Standard »).
+
+**10/10, après-midi et soir, ce qui a changé** (`develop` : plusieurs commits locaux du 10/10, pas encore poussés, vérifier `git status --branch` avant tout push ; branche `mistral-ue`,
+PR #88 en brouillon : `0a3f3f8` poussé, CI verte ; `2a7f18c` et `b3c76b5` pas encore poussés) :
+- **Incident, clé Mistral** : la vraie clé d'Era a été écrite dans `.env.example` et poussée (`5fae28e`), puis une
+  deuxième dans le commit de correction (`8587a21`). Era a supprimé les deux clés chez Mistral et en a créé une neuve,
+  dans `.env` seulement (empreinte différente des deux, vérifiée sans afficher la clé) ; sur GitHub, le modèle n'a plus
+  que des valeurs de gabarit (`0a3f3f8`, lu sur `origin/mistral-ue`). Les deux clés restent lisibles dans l'historique
+  de la PR #88, révoquées donc inutilisables ; fusion en squash après le gel. Méthode désormais : commit local,
+  vérification sans afficher de valeur, puis push.
+- **`develop`, `000ca50`** : `README.md`, `CLAUDE.md` et `docs/EXPLOITATION.md` décrivent la cascade réelle de
+  `develop` (Azure `gpt-5.4` d'abord, Claude par Anthropic puis OpenRouter en secours) ; une panne de tous les
+  fournisseurs répond **500** (`api/main.py:96-105`), le 502 est réservé aux données manquantes du scout ; PDF du
+  guide régénéré, 11 pages, page 8 regardée.
+- **Premiers vrais briefings Mistral** (MC.PA, même prompt qu'Azure octet pour octet) : Large 3 invente une date de
+  séance absente du prompt ; Large 4 avec sa réflexion par défaut rend une liste de blocs sans texte (500) ; **Large 4
+  sans réflexion** (`reasoning_effort: "none"`) : 3,09 s, 0,10 centime, garde-fou AMF conforme, aucune date inventée.
+  **Décision d'Era : Large 4.** Code et tests d'abord (5 rouges puis verts, suite **847 passed** sur la branche),
+  preuve `evidence/C8/preuve-briefing-mistral-2026-10-10.md` (sur la branche). Langfuse compte 0 $ pour Mistral : le
+  prix du modèle n'est pas dans sa grille.
+- **Ordre de la cascade** : Azure GPT-5.4 reste premier (gratuit pour Era) pour les essais de tous les jours ; Mistral
+  sert aux preuves ; l'ordre se tranchera sur le banc C7 après le gel.
+- **Règle UE seule gardée stricte** (choix d'Era) ; Google News par position se corrige par #81 après le gel, telle
+  qu'écrite. Vérifié dans le code : FRED, yfinance, BCE et Boursorama ne révèlent pas les positions ; seule Google News
+  les révèle (`pipelines/ingest.py:283-289`) ; aujourd'hui ce sont des positions simulées et l'adresse IP, et #81 est
+  bloquante avant tout chargement d'un portefeuille réel. Un transfert se juge par le texte du CEPD (lignes directrices 05/2021,
+  § 9 : un accès à distance depuis un pays tiers est un transfert) ; Microsoft documente des transferts limités hors
+  de son EU Data Boundary : T6 n'est pas entièrement prouvé côté Azure (registre, § 5).
+- **Jeu de démonstration** : positions inventées sur des sociétés réellement cotées, choisies dans la liste suivie ;
+  Era ne détient pas ces titres (sa déclaration du 10/10). Le fichier de preuve
+  `evidence/C17/mesures-2026-10-03/entrees/donnees_portefeuille.json` : ses 7 positions sont toutes dans le jeu d'exemple
+  (12 lignes dans le fichier, 10 gardées par le lecteur, 7 importées, 3 hors univers) : aucune position réelle dans Git.
+- **Défaut trouvé en vérifiant : le verrou de démonstration MCP refuse le jeu de démonstration importé dans
+  l'environnement actuel.** Le vrai code du verrou, lancé sur la
+  base du 03/10, rend `False` : il compare aux 10 lignes du fichier, l'import n'en garde que 7. Le refus du 03/10 (E3,
+  section 4.1 ; preuve C20) ne venait donc pas d'un portefeuille réel. Échec fermé, sans fuite ; le test vert simule
+  une réponse de 10 positions. **E3 passe en v1.3** (une phrase en 4.1, toujours 20 pages, page 5 regardée ; copies
+  OneDrive v1.3 en français et en anglais), erratum `evidence/C20/erratum-verrou-demonstration-2026-10-10.md` (l'ancienne
+  preuve n'est pas réécrite). Correction après le gel, carte à créer.
+- ✅ **Fait par Era, vérifié le 11/10** : `.env` ligne 25 `MISTRAL_MODEL=mistral-large-4-0` et ligne 26
+  `LLM_ORDRE=foundry` (lues seules, sans afficher de clé ; une seule occurrence de chaque) ; `mistral-ue` et `develop`
+  poussés, CI lue verte (`develop` : `f152668`, 807 passed, 29 skipped, 2 xfailed).
+- **À faire par Era** : documenter comment le fichier local non versionné `data/positions.csv` du 31/07 a été constitué
+  (Era n'a jamais investi).
+
+**E2 (C6 à C8) : état au 11/10 et plan proposé le 11/10, enregistré à la demande d'Era.** Rapport `docs/rapports/E2/rapport-E2.md` en **v0.3 du 09/10**,
+environ 3 200 mots, **aucun PDF** ; 15 à 20 pages attendues, oral de 15 minutes, dû le 05/11. Décompte à défendre :
+**6 ✅ · 13 🟠 · 1 🔴** sur 20 (§ 5 du rapport, le plus prudent). Le classeur local du 10/10, non versionné dans `develop`, dit 8 · 11 · 1 : l'écart est dans C6
+(5 OK au classeur, 3 au rapport), à aligner sur le rapport quand E2 sera écrit. Une vraie note de veille récente peut
+porter le décompte à 7 · 12 · 1.
+- **Avant le gel (Era seul, sans toucher au gel)** : (1) **recommandé** : un nouveau relevé S41, puis une vraie note S41 ;
+  **si le temps manque** : finaliser en rattrapage, le 11/10, la note S40 à partir du relevé S40
+  (`docs/veille/_candidats-2026-S40.md`), sans antidater ; S37 et S40 ont des relevés préparatoires, S38 et S39 sont
+  sans séance ; (2) la partager
+  avec **une question précise**, et garder la capture du fil et au moins une réponse (preuve de C6.4) ; (3) facultatif :
+  un lecteur RSS montrable (Feedbro ou Thunderbird), capture des sources, budget 0 € (C6.3).
+- ✅ **Fait le 11/10** : (1) relevé S41 (`docs/veille/_candidats-2026-S41.md`, fenêtre du 29/09 au 11/10, corrigé en
+  six points après relecture) et **note S41 rédigée par Era** en rattrapage (`docs/veille/2026-S41-mesurer-le-gardefou.md`,
+  commit `5422609`) ; (2) **partagée** dans le canal #veille du Discord de la promo le 11/10 à 20 h 04, avec une question
+  ouverte ; capture du message dans `evidence/C6/envoi-2026-10-11-promo-discord-veille.png`, envoi 3 de
+  `docs/veille/_JOURNAL-DES-ENVOIS.md`. **Reste** : au moins une réponse, puis la capture du fil réponses comprises
+  (`evidence/C6/discussion-<date>-discord.png`) ; la capture du fil S33 du 16/08, jamais faite ; (3) facultatif, inchangé.
+- **Après le gel, dans l'ordre** : (1) fusion de la PR #88 et lecture de la CI ; (2) lecture des conditions de Mistral
+  (sous-traitants, conservation, entraînement) et des cas de transfert documentés par Microsoft ; (3) décision sur
+  **Langfuse** (hébergé en Irlande, mais son contrat permet un traitement hors de la région) : réduire ce qui est envoyé
+  limite le risque sans tenir la règle UE stricte ; donc désactiver ou remplacer Langfuse pour les traces concernées, ou
+  le garder en acceptant que C8.2 reste partiel ; (4) banc C7 **Azure Data Zone EU contre Mistral Large 4**, mêmes 10 cas, 3 répétitions ;
+  (5) notation à l'aveugle de ces **60 nouveaux textes** (pas des anciens textes Azure contre Claude : Claude sort de la
+  cascade) ; (6) rédaction de C7 ; (7) alignement du classeur sur le rapport ; (8) C8.5 : fusion de la configuration
+  finale, guide régénéré, accessibilité remesurée, envoi au formateur, preuve datée de l'envoi (un accusé de réception la
+  renforce) ; le guide actuel décrit encore Anthropic et OpenRouter ; (9) PDF d'E2 (15 à 20 pages), liens et accessibilité vérifiés, puis
+  tag `livrable-E2-v1`.
+- **Corrections à porter dans E2** : « 2 appels Azure sur 30 au-dessus de 10 s » (mesuré le 11/10 dans
+  `evidence/C7/resultats-2026-10-03.jsonl` ; la preuve C7 dit « un sur vingt » et ne se réécrit pas) ; « 30 textes sur 30
+  passent l'heuristique minimale de fidélité (cours et sens de la variation) ; la fidélité complète demande une relecture
+  humaine » au lieu de « fidélité égale » ; séparer le coût réellement payé du coût calculé au tarif public ; l'adresse
+  `api.eu.mistral.ai` prouve le point d'accès, pas les sous-traitants ni la conservation ; C8.2 mentionne aussi Langfuse ;
+  recommandation provisoire : Azure GPT-5.4 Data Zone EU en premier, Mistral Large 4 meilleur secours européen identifié,
+  à confirmer par le banc complet et la lecture du contrat. **Ajouté le 11/10** : le briefing réel de LVMH (MC.PA, 11/10)
+  comme exemple de fidélité dans C7 (il passe l'heuristique minimale, cours et sens de la variation, mais contient une
+  durée non étayée et un cours présenté comme seuil) ; deux points pour la grille de notation à l'aveugle :
+  « affirmation temporelle non étayée » et « niveau de prix présenté comme seuil ».
+
+**Décisions d'Era du 11/10 (détail et pourquoi : `CONTINUITE.md`, § D)**
+- **Fournisseurs** : appels réels par **Azure GPT-5.4 seul** (`LLM_ORDRE=foundry`, `MISTRAL_MODEL=mistral-large-4-0`
+  écrits dans `.env`) tant que le contrat de Mistral n'est pas lu ; Mistral Large 4 seulement pour le banc C7, sur des
+  données publiques ou simulées. Les tests automatiques n'appellent aucun modèle (doublures).
+- **Prompt du rédacteur, décision d'Era du 11/10 (option B)**, à faire le **16/10, test d'abord, avant le banc C7**
+  (`agents/analyst.py`, `construire_prompt`) : (1) la **date de la séance** affichée, distincte de la date de
+  génération ; (2) la consigne « Signale un point à surveiller pour la séance suivante » remplacée par « un élément
+  observable à suivre, tiré des seules données fournies, sans présenter un cours comme un seuil » ; (3) une règle
+  ajoutée : « ne décris pas une durée ou une tendance que les performances fournies ne montrent pas ». Pourquoi : un
+  briefing réel de LVMH (MC.PA, 11/10) écrivait « séance » sans date, « pression vendeuse persistante depuis plusieurs
+  semaines » (durée non étayée) et « le seuil des 380 EUR » (la clôture, présentée comme un niveau), ce dernier
+  directement induit par la consigne n° 3 ; un banc lancé avant mesurerait ce défaut chez les deux modèles. Ce sont des
+  corrections de fidélité, pas des fonctionnalités. **Après le 05/11** (nouvelles fonctionnalités) : comparer deux
+  briefings par des instantanés chiffrés, séparer actualités récentes et historiques dans la recherche, comparaison
+  à un indice, volumes relatifs, alertes sur des changements factuels ; à citer dans « ce que je ferais ensuite »
+  (E4, E5, oral).
+- **Calendrier final** :
+
+| Quand | Quoi |
+|---|---|
+| jusqu'au **14/10** | Era relit E1 et E3 ; veille S41 (relevé, note et partage faits le 11/10 ; réponses attendues) |
+| **15/10** | gel d'E1 et d'E3 (inchangé, ligne du tableau plus bas) |
+| **16/10** | prompt du rédacteur (`agents/analyst.py`, test d'abord) : date de séance **et deux consignes corrigées** (décision d'Era du 11/10, option B, ci-dessus), tests, puis banc C7 Azure contre Mistral Large 4 dans un dossier de résultats neuf |
+| **17-20/10** | E2, E4 et E5 terminés, PDF compris |
+| **23/10** | gel final |
+| **26/10** | simulation personnelle |
+| **29/10** | examen blanc complet |
+
+  **Aucune fonctionnalité nouvelle avant le 20/10**, sauf une correction indispensable à la validité d'une preuve.
+- **Après le gel, liés à la PR #88** : (a) avant la fusion, valeurs par défaut de `LLM_ORDRE` passées de
+  `foundry,mistral` à `foundry` dans `src/llm.py:34`, `docker-compose.yml:91` et `.env.example:43` (branche
+  `mistral-ue`), test d'abord ; (b) panne de tous les fournisseurs : **aujourd'hui** 500 générique avec identifiant,
+  sans détail interne ; **cible** 503 `AUCUN_FOURNISSEUR` testé (carte #75, constat S6).
+- **Manque relevé et corrigé le 11/10 (décision d'Era : corriger avant le gel)** : sur `develop`, le service `api` de
+  `docker-compose.yml` ne recevait aucune variable `AZURE_FOUNDRY_*` et mettait `anthropic,openrouter` par défaut,
+  alors que `src/llm.py:28` met `foundry,anthropic,openrouter` : en conteneur, la cascade sautait Azure. Corrigé :
+  les trois variables Azure transmises (clé vide par défaut, jamais écrite), ordre par défaut aligné sur le code ;
+  deux tests de contrat d'abord, vus en échec (`tests/test_docker_compose.py`, le second compare le comportement réel
+  de `_ordre_fournisseurs()`). Suite complète le 11/10 : **834 passed, 2 skipped, 2 xfailed** (838 collectés) ; le
+  chiffre se remesure au gel. Les lignes Anthropic et OpenRouter restent : elles décrivent le code gelé, et la PR #88
+  les retire partout à la fois. Les anciennes traces Anthropic et OpenRouter restent des preuves datées.
+
+- **Manque relevé le 11/10 (relecture du relevé S41), à traiter après le gel** : aucune garde contre une **baisse** du
+  taux de blocage du garde-fou d'injection. Le test à 85 % est un échec attendu strict (`tests/test_evals.py:17-51`) :
+  si le blocage tombait de 70 % à 40 %, il échouerait toujours « comme attendu » et la CI resterait verte ; seuls les
+  faux positifs et la latence bloquent la fusion. Correction proposée (zone sous garde : plan écrit et validé d'abord,
+  test rouge d'abord) : un test de non-régression qui exige que les 7 détections connues restent détectées, sans
+  toucher au seuil de 85 %. Le jeu de 18 cas : 7 attaques écrites le 29/07 pour couvrir les 9 motifs (`c1ee404`),
+  3 attaques adverses écrites le 17/08 contre eux (`c7c8811`, ce sont les 3 qui passent), 8 phrases d'actualité
+  ordinaires ; il prouve une couverture d'exemples, pas un taux de sécurité en production.
+
+- **Guide d'exploitation, relevé le 11/10 (relecture), à traiter après le gel** : (a) aucune procédure ne remplit la
+  base Docker (son PostgreSQL ne publie aucun port, la collecte du § 8 tourne sur le poste) : construire et tester
+  une initialisation de la base de Compose ; (b) rejouer les deux voies d'installation (Docker et native) sur un
+  environnement neuf et isolé, puisque les corrections du 11/10 (`cd rita-agent`, base dont `rita` est propriétaire,
+  `.env` non écrasé, `curl.exe`) suivent le code et la documentation de PostgreSQL sans avoir été rejouées ; (c) la
+  passe complète C8.5 après la fusion de la PR #88. Corrigé dans le guide le 11/10 (documentation seule, 12 pages).
+
+**📅 Calendrier jusqu'au 05/11, décidé par Era le 06/10, gel fixé au jeudi 15/10 le 09/10** (lignes « 15-25/10 » et
+« à partir du 26/10 » précisées le 11/10 : voir le calendrier final juste au-dessus) (mesuré le même jour : E1 et E3 complets ; E2 en v0.3 depuis le 09/10, partie
+C7 à écrire ; **E4 : aucun rapport**, seulement `docs/PLAN-E4-rapport.md` et un recomptage ; **E5 : aucun rapport**) :
+
+| Quand | Quoi |
+|---|---|
+| **06-14/10** (en parallèle du brief) | Era relit E1 et E3 et la colonne « Rédaction » du classeur ; envoi des liens au formateur ; décisions C8.2 et #84 **prises le 09/10** (C8.2 partiel, #84 faite) |
+| **jeudi 15/10** | **gel d'E1 et d'E3** : **d'abord remesurer les tests et propager le chiffre partout** (`pytest --collect-only -q` et la dernière CI : E1 § 2, § 9 et § 10, `README.md`, `CLAUDE.md` ; 835 collectés et 804 verts au matin du 10/10, 836 et 805 depuis `ffe1a46`), régénérer E1 et ses copies ; puis PR `develop → main`, Definition of Done verte (`scripts/verifier_livrable.py`), tags `livrable-E1-v2` et `livrable-E3-v1`. **Après le gel, plus aucune fonctionnalité nouvelle dans RITA** |
+| **15-25/10** | écrire **E4** (15 à 20 pages) et **E5** (2 à 5 pages), finir **E2** (C7) ; les corrections de code d'après le gel seulement si un rapport ou le jury en a besoin, le reste écrit dans « ce qui n'est pas fait » |
+| **à partir du 26/10** | examens blancs ; **passer l'oral d'E1 et d'E3 en français** en premier (oral blanc des 29-30/10) |
+| **05/11** | tous les livrables tagués et envoyés |
+
+Le **gel** fixe le contenu d'un livrable : fusion dans `main`, tag que GitHub interdit de déplacer ; toute correction
+ensuite passe par une nouvelle version taguée, jamais en silence (règle d'Era du 29/09 : geler 2 à 3 semaines avant l'oral ; date repoussée du 11 au 15/10 le 02/10 ; cible du 13/10
+abandonnée le 09/10, le 15/10 étant la date la plus tardive qui laisse deux semaines avant l'oral blanc du 29/10).
+Idée prise dans la grille d'un camarade : arrêter de construire à date fixe, puis seulement écrire, et donner une date
+à chaque critère non fini.
+
+**Le dernier brief** (multi-agents et industrialisation) : Era le fait **seul** cette semaine, dans un dossier
+`kadera_v2` (chemin à donner) ; l'assistant n'y écrit rien et le relit à la fin de la semaine, puis écrit la passerelle
+vers RITA dans `CONTINUITE.md`. D'ici là, RITA reste à trois étapes.
+
+**Tâche principale de la prochaine session** : avancer RITA vers le gel du **jeudi 15/10**. Era relit E1 (5 pages) et
+E3 (20 pages), dit la colonne « Rédaction » avec ses mots (note d'étude du 10/10), met le classeur v4 en place, puis
+envoie au formateur les liens, le message d'état et `docs/EXPLOITATION.pdf` (#43) (remplacé le 11/10, voir le plan E2 : le guide s'envoie après la fusion de la PR #88). Le 15/10 : PR `develop → main`,
+Definition of Done, tags `livrable-E1-v2` et `livrable-E3-v1`. Ensuite E4, E5 et E2 (15-25/10), et la carte #82
+(Mistral UE). Oral blanc E1 + E3 : **29-30/10**.
+
+**Retour du formateur, rencontre du 05/10 (dix minutes)** : trois étapes de traitement acceptées, système à garder
+simple à expliquer ; E1 tenu à 5 pages, annexe permise ; RGPD : faire d'abord fonctionner, régions européennes,
+choisir la région du modèle dans Azure (détail et réserves : `CONTINUITE.md` D, 05/10). **Examens blancs à partir du
+26/10 environ**, deux sessions (l'une sur E1-E3 ou E1-E2, l'autre sur tout) : **périmètre et dates à confirmer** ;
+Nadège et Elena aideront particulièrement à la présentation.
+
+**Dans l'ordre, pour Era** :
+
+0. **Demandé par le formateur le 05/10** : (a) lui envoyer par message où en est RITA (code, développement fait,
+   ce qui reste) : texte préparé dans la conversation du 05/10 ; (b) lui envoyer **en message privé le lien du
+   document de compétences**. **Corrections faites le 05/10 au soir** (35 lignes relues contre le dépôt et GitHub) :
+   **110 OK, 24 PARTIELLEMENT, 1 A AJOUTER** sur 135, contre 100, 28 et 7 avant ; partie E1 (C1 à C5) : 28 sur 28.
+   Puis, le même soir : colonne « Rédaction » réécrite pour les 9 compétences rédigées (C1 à C5, C8, C9, C12, C13,
+   d'après les rapports E1, E2, E3 et la CI du 05/10 : **Era doit la relire et la dire avec ses mots**), 17 notes du
+   03/10 périmées corrigées (dont 12 en E1), notes « format accessible » appuyées sur la mesure des PDF balisés, C16
+   lignes 115 et 117 échangées ; idée d'une synthèse courte prise dans la grille d'un camarade (contenu non repris).
+   Fichiers : `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP_05_10_26_v2.xlsx` (le détaillé, fichier de
+   travail) et `Era-Synthese-competences-RNCP.xlsx` (la synthèse, même contenu, colonnes pour les remarques du
+   formateur). **Liens** : GitHub, branche à part `classeur-competences`, dossier `docs/competences/` (les deux
+   classeurs et un README daté) ; Google Drive, synthèse convertie en Google Sheets (compte ganda70), à partager en
+   « Commentateur » avant l'envoi. **Cette branche ne se fusionne pas
+   dans `main` sans décision** : un tag `livrable-*` est figé, le classeur y resterait pour toujours. Décider avant la
+   PR du 15/10 s'il fait partie de la remise au jury, et sous quelle forme (question à poser au formateur). Le seul
+   « A AJOUTER » est C8.5 : il passe à OK quand le formateur accuse réception du guide d'exploitation corrigé
+   (`f34486c`, #43). Garder envoi et réponse dans `evidence/C8/` s'ils touchent C8.
+1. **Lundi 05/10, la revue hebdomadaire (15 min)** avec la trame `evidence/C16/revues/2026-10-05-revue-S41.md` : cocher les
+   5 cartes proposées à Fait, ajouter au tableau les 7 issues ouvertes absentes, dire si la revue du 28/09 a eu lieu, garder
+   2 cartes « En cours », remplir le §6, coller la ligne du §7 ici, commiter. Seul moyen de fermer C16.1. Vérifier au passage
+   que le formateur a bien accès au tableau (C16.4, je ne peux pas le lire).
+2. **Relire** `docs/rapports/E1/rapport-E1.pdf` (v2.5 du 11/10 ; avant, v2.2 du 10/10 ; la v2.1 du 04/10 avait corrigé cinq affirmations fausses, voir l'entrée
+   du 04/10 plus bas) et `docs/rapports/E3/rapport-E3.pdf` (v1.4 du 11/10, 20 pages) ; corrections dans le chat.
+3. *(remplacé le 11/10, voir le plan E2 : on note les nouveaux textes Azure contre Mistral Large 4.)* **Noter les 60 textes** de `evidence/C7/notes-francais-2026-10-03.csv` (0, 1 ou 2), **sans ouvrir** le fichier `-cle.csv`.
+   C'est ce qui fait passer la recommandation C7 de « provisoire » à « argumentée ».
+4. *(remplacé le 11/10, voir le plan E2 : le guide s'envoie après la fusion ; le message ci-dessous, qui cite encore Anthropic, est à mettre à jour avant tout envoi.)* **Envoyer au formateur** le message ci-dessous, à copier tel quel ; joindre `docs/EXPLOITATION.pdf` (régénéré le 03/10 au soir,
+   deux phrases périmées corrigées). Garder l'envoi et la réponse dans `evidence/C8/` (#43, le seul 🔴 de E2).
+
+   > **Objet** : RITA, deux points pour E2 (C7 et C8)
+   >
+   > Bonjour Elbby,
+   >
+   > Deux points sur le livrable E2, pour lesquels un retour, même court, m'aiderait.
+   >
+   > 1. C7, le choix du service de modèle. J'ai écrit le protocole avant de mesurer (`docs/PLAN-C7-benchmark.md`) et fait une première comparaison le 3 octobre : GPT-5.4 servi par Azure AI Foundry contre Claude Sonnet 4.5 servi par OpenRouter, sur dix cas tirés de mes données, trois répétitions chacun. Je mesure la conformité au garde-fou AMF, la fidélité aux chiffres fournis, la latence et le coût, avec des intervalles de confiance. J'ai aussi relevé les prix publics et ce que les fournisseurs publient sur l'environnement, c'est-à-dire très peu. Je note moi-même le français, à l'aveugle. Ma question : deux éditeurs comparés de cette façon, est-ce que cela répond au critère, ou attendez-vous un troisième service, par exemple Claude en direct chez Anthropic ?
+   >
+   > 2. C8, la documentation d'exploitation. Je vous joins le guide d'exploitation de RITA en PDF : accès et clés, installation avec ou sans Docker, tests, services externes, données, monitorage. Le critère demande qu'elle soit communiquée, votre accusé de réception me servira de preuve.
+   >
+   > Pour information, les rapports E1 (version 2) et E3 seront gelés le 15 octobre. Je vous enverrai le lien du tag à ce moment-là.
+   >
+   > Merci,
+   > Eramalingam
+
+   **Point 3 proposé le 04/10, à ajouter si tu es d'accord** (avant « Pour information ») :
+
+   > 3. E1, la forme. Le rapport E1 est à 5 pages, la limite. Puis-je joindre les schémas (collecte, nettoyage, requêtes big data) en annexe hors du décompte, ou tout doit-il tenir dans les 5 pages ? Et à l'oral E1, sans démonstration, puis-je montrer des schémas et des extraits de code à l'écran ?
+
+5. **Décisions** (une ligne chacune suffit, dans le chat ou à la revue) : **D7** documentation `/docs` publique en production
+   (la règle de fermeture validée plaide pour la clé) ; **D6** lignes affichées d'emblée sur l'écran indicateurs (recommandé :
+   rien avant le gel) ; ~~`memory_audit`~~ tranché le 10/10 : après le gel (#86) ; **#36** rafraîchir les données en ligne avant le
+   gel ou après ; libellé du **drawdown** (cité 0 fois sur 60 textes).
+6. 🌐 **GitHub** : activer les **alertes Dependabot** (Settings, Code security) ; capture des rulesets dans `evidence/C19/`.
+7. 🌐 **Langfuse** : **capture de la liste des alertes revenues à l'état normal** (l'alerte 1 doit repasser à OK après le
+   04/10 vers 15 h 18 UTC) et **capture du tableau « RITA C11 »** (`evidence/C11/README.md`, deux lignes « à faire »).
+   Fait le 04/10 : traces factices supprimées, deux alertes réglées et mises à l'épreuve.
+8. **C6** : capture du fil Discord du 16/08 dans `evidence/C6/` ; note de veille (remplacé le 11/10, voir le plan E2 : relevé S41 puis note S41, ou à défaut note S40 en rattrapage datée du jour, depuis `docs/veille/_candidats-2026-S40.md`).
+9. 💻 **Ton PC** : rotation puis suppression des fichiers de clés en clair du Bureau. Facultatif : `ANTHROPIC_API_KEY` dans le
+   fichier d'environnement si tu veux mesurer Claude en direct (troisième fournisseur du banc).
+10. Dire **« bon pour le gel »** : l'assistant ouvre la PR `develop → main`, puis les tags `livrable-E1-v2` et `livrable-E3-v1`
+    se posent le **15/10** (`docs/FILE-DE-VALIDATION.md`, `scripts/verifier_livrable.py`). La publication de l'image sur ce tag
+    sera la **première jamais exécutée** : à relever comme preuve C19 (tâche T8).
+
+
+**Après le gel (du 15 au 25/10), dans l'ordre, test d'abord pour tout code** (dates précisées le 11/10 : contenus
+terminés le 20/10, gel final le 23/10 ; ce qui ne tient pas avant va dans « ce qui n'est pas fait ») : #75 (S5 ticker borné, S6 panne des
+fournisseurs, S4 refus journalisés, S3 limite de débit, S1 en-têtes de sécurité), #73 (clé mémorisée trop tôt), #74
+(compression, cache, favicon, puis remesure Lighthouse), #76 (rôle `rita_api` en lecture, sur plan), #23 (épinglage), #35 ;
+**déploiement du code sur Hetzner**, mesure Lighthouse de la production, rotation de clé éprouvée, **contrôle du certificat
+(il expire le 18/11, avant le jury)** ; rapport E4 (T10 à T12), **pull request prête le vendredi 23/10**, tag
+`livrable-E4-v1` le 25/10. **Ensuite** : conclusion C7 (#33), E2 (#34), E5 (#41), tout envoyé le **05/11**.
+
+**État des épreuves au 04/10** :
+
+| Épreuve | Décompte | Ce qui manque surtout |
+|---|---|---|
+| E1 | v2.5 du 11/10, 5 pages (cinq surgénéralisations corrigées ; v2.4 : MCD lisible, prérequis d'installation, T4, positions simulées, numéros de page ; v2.3 : § 7 RGPD réécrit, ordre d'installation, connexions, scout, tables hors MCD ; la v2.2 du 10/10 : date, chiffres des tests datés, `memory_audit` reporté, texte alternatif du schéma) ; vérifiée contre le code et la base le 04/10 | ta relecture ; question de l'annexe au formateur ; gel le 15/10 |
+| E2 | 6 ✅ · 13 🟠 · 1 🔴 sur 20 | banc C7 Azure Data Zone EU contre Mistral Large 4 et notation à l'aveugle des nouveaux textes ; guide renvoyé après la fusion de la PR #88 (C8.5, #43) |
+| E3 | v1.4 du 11/10, 20 pages · 35 ✅ · 4 🟠 · 0 🔴 sur 39 lignes (44 critères du référentiel) | ta relecture ; les 4 🟠 se ferment après le gel (#73, #75, accessibilité de l'outil, serveur non tracé) ; gel le 15/10 |
+| E4 | 27 ✅ · 9 ⚠️ · 0 ❌ sur 36 | rapport à rédiger ; C16 (revues notées) ; C17.1, .2, .5, .8, .11 ; C19.4 au tag du 15/10 |
+| E5 | non recompté | rapport ; #70 restauration ; C20 et C21 |
+
+**Manques ouverts nés du 04/10** : aucune contrainte ne borne la clôture entre bas et haut (23 lignes hors bornes en base,
+déclaré dans E1) ; pas d'alerte de silence (deux alertes seulement au palier gratuit) ; seuil de latence à revoir après une
+semaine de traces ; DPA Langfuse identifié mais non lu (transfert à confirmer) ; le docstring de `db/rgpd_purge.py` dit
+encore P1 et P2 « automatisés » alors que le registre et E1 disent « lancement manuel » (après le gel) ; la skill
+`tester` du dépôt cite encore « 477 passed, 19/09 » ; l'encadré « D'où vient ce texte ? » de l'écran 3 ne cite pas les
+13 indicateurs désormais transmis au rédacteur (après le gel) ; deux mesures de fraîcheur coexistent (âge calendaire
+pour le prompt, jours de bourse pour le monitorage) : à documenter côte à côte, ce n'est pas en soi un défaut ; la
+tournure « vérifier si le rebond du jour se prolonge » est à ajouter au jeu d'évaluation comme cas limite, avec son
+résultat attendu écrit et une phrase de comparaison purement descriptive en regard, pour mesurer à la fois les
+recommandations manquées et les refus inutiles (`evals/` : zone sous garde, plan d'abord) ; la tuile « Générations par
+fournisseur » du tableau C11 comptait `briefing-llm` (données du 02/10) : filtre corrigé par l'API le 04/10 au soir,
+puis tuile renommée « Tentatives par fournisseur (échecs compris) » : la barre Anthropic ne comptait que des
+échecs (`evidence/C11/README.md`) ; tableau et alertes vérifiés à l'écran après la correction ;
+restent l'axe à zéro (aucun réglage dans l'API, éditeur de la tuile à regarder) et les deux captures datées à ranger. E1 et ses deux schémas disaient
+278 457 cotations, la base en compte 278 473 (dernier cours le 02/10) : corrigé le 04/10.
+**Décidé par Era le 05/10, après le gel du 15/10, dans cet ordre** : 1) corriger les indicateurs existants, test
+d'abord (RSI d'une série plate #78, pire baisse positive en hausse continue #79, libellé « depuis le 1er janvier » #80) ; 2) vérifier
+la fidélité du texte aux faits fournis (chiffres, devises, dates) ; 3) expliquer les 13 indicateurs à l'écran ; 4) un
+seul nouvel indicateur, l'ATR en % (#83), spécification d'abord dans `docs/indicateurs/CONCEPTION.md` ; comparaison à un indice
+(après résolution du décalage cours ajustés des dividendes contre indice de prix), ADX, concentration et corrélations,
+fondamentaux : après la certification. **Règle « UE seule », choix du projet posé par Era le 05/10** (pas une exigence du
+référentiel, qui demande le respect du RGPD) : non tenue au 05/10 par T6 (fournisseurs du modèle, #82) et T7 (Google News, #81),
+inscrits au registre ; à prouver dans E2 (C7, choix des services d'IA) quand il sera repris.
+**Rapport E4, à son écriture (figures déjà prêtes, relues le 04/10)** : § 1 « Analyser le besoin » (C14), la planche
+`evidence/C14/WIREFRAMES-C14-ecran-portefeuille.png` à côté du récit utilisateur du portefeuille (valeurs
+d'illustration, vérifiées différentes des positions réelles) ; § 2 « Cadre technique » (C15),
+`docs/conception/donnees/schema-architecture-donnees.svg` comme conception de septembre, observé et proposé
+séparés, et `E3-architecture` pour l'application actuelle ; § 1 aussi, la planche
+`evidence/C14/WIREFRAMES-C14-ecran-briefing.png` à côté du récit utilisateur du briefing, avec sa légende « redessinée
+après l'implémentation, le 03/10 », et un renvoi depuis § 4 « Développer » (C17) ; § 1 encore, la planche
+`evidence/C14/WIREFRAMES-C14-ecran-indicateurs.png` à côté du récit utilisateur des indicateurs, légende « spécification
+reconstituée après le code, 03/10/2026 » (elle explique l'écran, elle ne prouve pas une spécification antérieure ;
+relue le 04/10 contre `frontend/indicateurs.js` : deux appels en parallèle, 13 colonnes, lot 1 gardé si le lot 3 échoue) ; en améliorations futures, un
+renvoi aux maquettes de la refonte (`docs/conception/frontend/refonte-2026-10.md`, § 12), jamais présentées comme
+l'application actuelle. Le flux C15 du 18/08 reste une preuve historique (`evidence/C15/`).
+**Décidé par Era le 04/10** : les mentions historiques d'un guide d'étude dans `CHANGELOG.md` et `evidence/C21/INC-005` restent
+telles quelles (elles racontent comment un défaut a été trouvé ; la préparation personnelle, elle, vit hors du dépôt).
+Restent ceux du 03/10 : aucune alerte quand la chaîne est rouge (INC-007) ; seize indicateurs spécifiés, treize reçus par
+le briefing, drawdown jamais cité ; production sans en-têtes de sécurité ni limite de débit, API en rôle propriétaire en base, écran 3
+qui mémorise la clé trop tôt, tableau Kanban décroché du travail réel.
+
+**Verrous** : le dépôt est privé (jury et formateur invités) ; `main` et les tags `livrable-*` sont protégés par GitHub ;
+zones sous garde (`db/schema.sql`, `guardrails/`, `evals/`) : rien sans plan validé ; aucun code sur le serveur avant le 15/10.
+
+
+---
+
+🏁 **04/10 : E1 et E3 complétés, puis vérifiés contre le code.** Demande d'Era à 8 h 32 : finir E1 et E3, vérifier
+les schémas par critère. **E3** : étape « Tester les données » dans la
+chaîne (`002a0b7`), `docs/ARCHITECTURE.md` et trois schémas (`067fb25`), 15 traces factices supprimées par Era (API : 7
+traces, 0 « prompt test »), **deux alertes Langfuse réglées et mises à l'épreuve** (erreurs de fournisseur : vraie, 4
+erreurs du 03/10, deux Foundry et deux Anthropic, faute de clés, la cascade a servi ; latence : **fausse alerte**, seuil saisi en secondes alors que
+Langfuse compte en millisecondes, corrigé à 15 000), titre des issues d'alerte réparé test d'abord (`f42697d`), preuve C11
+(`bed00b6`), **rapport E3 v1.1 : 35 ✅ · 4 🟠 · 0 🔴**, 20 pages (`8a6037b`). **E1** : deux schémas générés depuis le
+code et tenus par 12 tests (`854bc21`) ; en cherchant les lignes exactes pour le guide, **cinq affirmations fausses**
+trouvées et revérifiées en base : un index partiel sur les volumes qui n'existe pas (cité deux fois), un `HAVING` qui est
+un `WHERE`, un transfert Langfuse dit « fermé » au lieu de « à confirmer », une contrainte `CHECK` sur les clôtures qui
+n'existe pas ; **E1 v2.1**, 5 pages (`65aa70b`, `33dbd62`). `CLAUDE.md` et `AGENTS.md` remesurés (`638b65c`, `7e630d7`).
+CI verte sur `33dbd62` : 793
+passed, 29 skipped, 2 xfailed, 94,70 % ; poste : 820 passed, 2 skipped, 2 xfailed.
+
+🏁 **03/10, nuit : Foundry répond, et le banc C7 compare enfin deux éditeurs.** Clé posée par Era ; un 400 « `max_tokens` unsupported » corrigé en `max_completion_tokens` (test d'abord) ; briefing réel SAN.PA servi par Foundry en 5,6 s sans repli (trace à une génération). **Quatrième passage du banc** : Foundry `gpt-5.4` et OpenRouter `claude-sonnet-4.5` indiscernables sur les contrôles automatiques (30/30 conformes et fidèles chacun, Wilson [0,89 ; 1,00]) ; Foundry médiane 3,2 s mais p95 10,7 s, OpenRouter 6,3 s et 7,2 s ; coût 0 pour le projet contre 0,0060 USD. Recommandation **provisoire** : Foundry en premier, OpenRouter en secours (l'ordre actuel), à confirmer par la notation du français d'Era (`notes-francais-2026-10-03.csv`, **60 textes**, deux services confondus). E2 : 6 ✅ 12 🟠 2 🔴. Preuve §9.
+
+🗓️ **03/10, nuit : trame de la revue du lundi 05/10 préparée (T6)** (`evidence/C16/revues/2026-10-05-revue-S41.md`), revue **non tenue**. Faits relevés : 13 issues fermées en S40, dont **3 seulement suivies au tableau** ; **18 issues jamais ajoutées au tableau** (toutes créées le 03/10) ; colonne « En cours » à 1 carte alors qu'au moins quatre chantiers sont ouverts ; **aucune trace de la revue du 28/09** (à dire tel quel, sans reconstituer). Cinq cartes proposées à Fait avec preuve (#24, #25, #27, #55, #57), six refusées avec la raison (dont #39 : `stop_reason` jamais lu).
+
+🔑 **03/10, nuit : T5 faite, droits d'accès défendus par écrit** (`evidence/C17/preuve-droits-acces-2026-10-03.md`). Choix : un utilisateur, une clé, pas de comptes (décision D10) ; données de démonstration seulement ; modèle de menace en huit lignes ; **la matrice d'accès validée par le formateur confrontée au code, case par case**. Tient : aucun accès sans clé (403 mesuré en production), portefeuille MCP servi seulement en démonstration vérifiée, aucune position envoyée au modèle, articles bloqués filtrés, aucun outil MCP pour `/briefing`. **Écart trouvé (E1, carte #76)** : l'API et le scout lisent la base avec le **rôle propriétaire**, alors que la matrice leur donne la lecture seule ; et le rôle `rita_lecture` n'est utilisé par aucun code. La documentation publique (`/docs`) est hors matrice : **la règle de fermeture validée plaide pour la mettre derrière la clé** (décision D7). Procédure de rotation de la clé proposée, à éprouver au déploiement. C17.5 reste ⚠️ (conforme au besoin, pas encore à la spécification). Carte #26 fermée. Prochaine tâche : T6, la revue du lundi 05/10 (C16) : **c'est toi qui la tiens**, je prépare la trame.
+
+🛡️ **03/10, nuit : T4 faite, revue OWASP Top 10:2025 écrite** (`evidence/C17/revue-owasp-top10-2025-2026-10-03.md`). L'édition en vigueur est **2025** (l'adresse officielle y redirige) : l'injection y est A05, et non plus A03 comme le dépôt l'écrit encore. Tenus : contrôle d'accès (403 en production sans clé et avec une fausse clé), cryptographie (TLS 1.3, 1.0 et 1.1 refusés), injection SQL et HTML, intégrité, conditions exceptionnelles. **Le point faible est la configuration** : aucun en-tête de sécurité en production, documentation de l'API publique. Partiels : chaîne d'approvisionnement (Dependabot désactivé, dépendances de développement non épinglées), conception (**aucune limite de débit sur un appel payant**), authentification, journalisation (**les refus de clé ne laissent aucune trace**). Deux faits **mesurés** par une sonde : un ticker de 5 000 caractères passe en entier dans le journal et la réponse ; la panne de tous les fournisseurs donne un 500 sans fuite, mais **pas le 502 que ma spécification de l'écran 3 décrivait** (corrigée, wireframe redessiné). Aucun secret dans l'arbre ni dans les 313 commits. **Le certificat expire le 18/11, avant le jury** : renouvellement à contrôler fin octobre. Corrections regroupées : carte #75, après le 15/10. **Pour toi** : décision D7 (documentation `/docs` publique en production : la garder pour la démonstration, ou la mettre derrière la clé ?) et activer les alertes Dependabot (Settings, Code security). C17.8 reste ⚠️ (revue faite, préconisations pas toutes implémentées). Recompte inchangé : 27 ✅, 9 ⚠️. Prochaine tâche : T5, défendre les droits d'accès par écrit (D1).
+
+🌿 **03/10, nuit : T3 faite, éco-conception et accessibilité mesurées** (`evidence/C17/preuve-eco-conception-et-accessibilite-2026-10-03.md`, Lighthouse 13.5.0 en mode flux, EcoIndex avec le code officiel `cnumr/ecoindex_python`, parcours au clavier). **Accessibilité : 100 sur 100 et zéro échec aux 10 étapes**, bureau et mobile ; clavier : ordre logique, focus visible, focus placé sur le résultat du briefing, aucun piège. **EcoIndex : A (portefeuille, 90), A (briefing, 90), D (écran indicateurs avec 111 valeurs, 51)** : la cause est le nombre d'éléments de la page (1 860), pas son poids ; la compression, mesurée, fait passer 51 à 52. **Constats** : aucune compression ni aucun en-tête de cache, ni en local ni en production ; `favicon.ico` en 404 ; **la production sert encore les pages du 19/08 et n'a pas l'écran briefing (404)**. Corrections regroupées dans la **carte #74, après le tag du 15/10**, puis remesure (tableau avant/après). **Décision D6 d'Era** : réduire les lignes affichées d'emblée sur l'écran indicateurs ? (seul levier sur la note ; recommandation : pas avant le gel). Recompte : **27 ✅, 9 ⚠️, 0 ❌**. Prochaine tâche : T4, la revue OWASP écrite (#29).
+
+📐 **03/10, soir : T2 faite, les écrans 2 et 3 spécifiés** (`evidence/C14/preuve-specifications-ecrans-2-et-3.md` : US-2 et US-3, 9 et 8 scénarios, 15 et 14 critères d'acceptation avec le test qui les vérifie ou la mention « lecture du code », wireframes d'état en `.drawio`, `.svg` et `.png`). **Écrit après le code, dit en tête du document.** Trois trouvailles : (1) **défaut sur l'écran 3**, la clé est mémorisée avant d'avoir fonctionné (carte #73, correction après le tag du 15/10, test d'abord) ; (2) **erreur de référence RGAA** dans la spécification de l'écran 1 et deux étiquettes de tests : les messages de statut sont la règle 7.5 du RGAA 4.1.2, pas 12.x ni 4.x (erratum daté, étiquettes corrigées) ; (3) l'écran 2 appelle « Pire baisse » ce que le prompt appelle « Drawdown » : à rapprocher du 0 sur 60. **Recompte mis à jour : 26 ✅, 10 ⚠️, 0 ❌** (C14.3 passe à ✅). Prochaine tâche : T3, mesurer éco-conception et accessibilité des trois pages (**décision D2 d'Era attendue**, Lighthouse via `npx` télécharge un paquet).
+
+📋 **03/10, soir : T1 faite, les 36 critères de E4 recomptés : 25 ✅, 11 ⚠️, 0 ❌** (`docs/rapports/E4/recomptage-criteres-2026-10-03.md`). C19 gagne un ✅ (documentation de la chaîne), C16 en perd un (aucun compte rendu daté de revue du lundi). Les 11 ⚠️ : C14.3 (user stories des écrans 2 et 3), C16.1, C16.3, C16.4, C17.1, .2, .5, .7, .8, .11, C19.4. **Pour toi** : (1) regarder dans les paramètres du projet Kanban si le formateur y est bien en lecture (C16.4, je ne peux pas le lire) ; (2) tenir la revue du lundi 05/10 et en écrire le compte rendu daté (C16.1). Prochaine tâche : T2, user stories et wireframes des écrans 2 et 3 (#24).
+
+🚨 **03/10, soir : la CI était rouge depuis 1 h 20 sans que personne le sache (INC-007)**, trouvée en commençant le recomptage E4 (T1). Dix exécutions rouges consécutives de Tests et de Livraison sur `develop`, du commit des 13 indicateurs (`b54d65e`) à `46aab59` : quatre tests du scout atteignaient la vraie base par le RSI, verts sur le poste (un fichier d'environnement donne une base), rouges en CI. Reproduit en vidant les variables du modèle d'environnement, corrigé par une fixture (`0e53ede`), **Tests et Livraison verts** sur ce commit. `main` n'a jamais été touchée, aucune image publiée. Fiche : `evidence/C21/INC-007-ci-rouge-scout-base-reelle.md`. **Règle ajoutée** : après un push sur `develop`, lire `gh run list --limit 3` avant de dire « c'est fait » ; mes « 803 passed » des dix commits ne regardaient que le poste. À proposer à Era : une garde dans `conftest.py` qui interdit à la suite d'atteindre la base hors des tests marqués pour cela.
+
+🔢 **03/10, soir : les indicateurs du briefing, mesurés** (`evidence/C7/indicateurs-cites-dans-les-textes-2026-10-03.md`, script `evidence/C7/mesure-indicateurs-cites.py`). La spécification compte **16 indicateurs** (11 + 2 + 3, `docs/indicateurs/CONCEPTION.md` §4) ; le briefing en reçoit **13** (les 10 du socle par valeur et les 3 du risque) : manquent le volume relatif (requête R3, jamais appelée par le scout) et les deux indicateurs de portefeuille (poids de ligne, exposition par devise), qui supposeraient d'envoyer les positions au modèle. Sur les 60 textes du 4e passage, un texte cite en moyenne **9,3 indicateurs sur 13** chez Foundry et **8,0** chez OpenRouter ; **le drawdown n'est cité par aucun des 60 textes**, le seul indicateur à zéro. Cause non établie. Décisions d'Era (sans urgence, rien avant le gel) : laisser tel quel, reformuler le libellé du drawdown et remesurer, ajouter les indicateurs absents (les positions demandent d'abord le registre RGPD).
+
+📍 **03/10, soir : le banc journalise l'origine de chaque appel** (test d'abord, 6 tests rouges puis verts ; `Reponse.origine`, en-tête `x-ms-region` pour Foundry, champ `provider` pour OpenRouter, colonne `origine` et compte `origines` par fournisseur). Suite : 803 passed, 2 xfailed, 94,99 %. Mesure réelle sur 10 cas (`evidence/C7/passage-origine-2026-10-03/`) : Foundry **Sweden Central** 10 sur 10 ; OpenRouter a servi Claude par **Amazon Bedrock** 10 sur 10, et non par Anthropic. Les 60 appels du quatrième passage restent sans origine. Preuve : `evidence/C7/preuve-benchmark-2026-10-03.md` §10.
+
+💵 **03/10, soir, après le banc : prix public et information environnementale relevés** (`evidence/C7/prix-et-environnement-2026-10-03.md`, chaque lien contrôlé). `gpt-5.4` : 2,50 et 15,00 USD par million de jetons (billet Microsoft du 05/03/2026 ; la page de tarifs Azure affichait encore `$-` le 03/10) ; `claude-sonnet-4.5` : 3,00 et 15,00 (API OpenRouter). Au prix public, 0,0047 contre 0,0060 USD par briefing : la recommandation provisoire tient sans la gratuité. Environnement : Microsoft publie des chiffres d'entreprise vérifiés (FY25 : 21,1 Mt CO2e, +62 % sur 2020 ; 100 % renouvelable direct ; PUE 1,17) ; **OpenAI et Anthropic ne publient rien par modèle** (0,34 Wh par requête moyenne chez OpenAI, sans méthode ; page inexistante chez Anthropic) : écrit comme inconnu, ordre de grandeur 0,3 à 18 Wh par briefing donné comme hypothèse. C7.5 passe de 🔴 à 🟠 dans E2. Région mesurée ensuite par une sonde de 5 jetons : `x-ms-region = Sweden Central` (Era hésitait entre trois régions européennes) ; limites de débit lues dans les en-têtes : 2 500 requêtes et 250 000 jetons par fenêtre ; fiche du modèle : sortie plafonnée à 128 000 jetons. Type de déploiement lu par Era dans le portail : **Global Standard**, donc n'importe quelle région Azure peut traiter un appel (Sweden Central ce soir) ; les prompts, sans donnée personnelle, peuvent sortir de l'Union européenne ; écrit dans la preuve et dans E2.
+
+☁️ **03/10, nuit : Azure AI Foundry devient le premier fournisseur, par son point compatible OpenAI** (décision d'Era : sa ressource Foundry sert `gpt-5.4`, gratuite pour lui, pour les tests et la démonstration ; OpenRouter reste le secours). `src/llm.py` : `_appel_foundry` en httpx (chat completions, `Bearer`, le déploiement comme nom de modèle), plus de client Anthropic-sur-Foundry, 4 tests écrits avant ; modèle d'environnement, guide d'exploitation, plan C7, preuve C8, rapports E2 et E3 à jour. Conséquence pour C7 : la cascade porte maintenant **deux éditeurs** (GPT par Foundry, Claude par Anthropic et OpenRouter), la question du périmètre au formateur devient une confirmation. **Bloqué par les clés** : les trois variables `AZURE_FOUNDRY_*` ne sont pas dans l'environnement du poste ; Era les pose dans `.env` (jamais touché par l'assistant), puis une sonde et le banc donnent la première vraie comparaison.
+
+📊 **03/10, nuit : les 13 indicateurs entrent dans le prompt du rédacteur** (décision d'Era). Le scout en calculait treize, le modèle n'en recevait que quatre nombres ; les neuf autres vivaient sur l'écran 2 sans l'atteindre, et le RSI n'était même pas joint au dictionnaire du scout. Tests d'abord (prompt, scout, graphe, banc), bloc « faits à décrire, jamais des signaux », volatilité sans signe, absent = « non disponible ». Banc C7 refigé et relancé (troisième passage, qui fait foi) : 30/30 conformes et fidèles, médiane 6,3 s, 797 jetons en entrée, 0,0060 USD par briefing ; 30 textes sur 30 citent le RSI, 25 la volatilité, aucun mot de signal. Point à surveiller écrit dans la preuve : « RSI à 24,2, forte pression vendeuse » est une lecture, pas un conseil, le garde-fou l'accepte ; à mettre dans le jeu d'évaluation. **La notation du français porte sur ce troisième jeu** (`notes-francais-2026-10-03.csv`).
+
+🖥️ **03/10, nuit : le troisième écran, le briefing, est construit** (décision d'Era, « do it »). `frontend/briefing.html` et `briefing.js` : champ ticker avec l'univers en liste déroulante, `POST /briefing` avec la clé, texte en paragraphes par `textContent`, verdict du garde-fou en mots, identifiant de requête affiché, 502 dit « introuvable », 403 redemande la clé, attente annoncée. 17 tests statiques et 2 tests navigateur écrits avant (API interceptée, aucun appel payant), puis un briefing réel capturé : `evidence/C10/ecran-briefing-2026-10-03.png`, `preuve-ecran-briefing.md`. Rapport E3 : C10 « tous les points de terminaison intégrés » passe à tenu, **33 ✅ · 6 🟠 · 0 🔴**, PDF regénéré. **Pour la démo de l'oral E3** : l'écran 3 avec une vraie valeur, puis la trace Langfuse de la même requête par sa référence.
+
+📏 **03/10, nuit : le banc C7 existe et a tourné une fois** (D1 à D3 = A sur « ok do it »). `evals/benchmark_fournisseurs.py` écrit test d'abord (34 tests), `agents.analyst.construire_prompt` extrait sans changer le rédacteur ; jeu de dix cas figé ; **un seul fournisseur mesurable** (OpenRouter, second passage sur le prompt corrigé de la carte #57 : 30/30 réussis, 30/30 conformes AMF, 30/30 fidèles, Wilson [0,89 ; 1,00], médiane 5,6 s, p95 7,4 s, 0,0045 USD par briefing ; avant #57, 5 textes sur 30 appelaient des capitaux des « titres échangés », 0 après), Foundry et Anthropic indisponibles faute de clés : **aucune comparaison encore**. Preuve `evidence/C7/preuve-benchmark-2026-10-03.md` ; français à noter par Era (`notes-francais-2026-10-03.csv`). Incident INC-006 bis trouvé et corrigé (22 traces parasites écrites par la construction du jeu, supprimées, verrou posé et testé). Couverture passée sous 90 % avec le script puis remontée par ses tests. **Reste à Era** : question au formateur (périmètre C7), clés Foundry et Anthropic sur le poste, notation à l'aveugle, puis relancer le banc.
+
+🧭 **03/10, nuit, après la clôture : deux relectures extérieures vérifiées ligne à ligne, et ce qui en découle.** E1 v2 : trois phrases fausses corrigées (gel prévu, mix des cinq types de sources, le scout lit la base et `rita_lecture` n'est utilisé par aucun outil), PDF regénéré, 5 pages. C6 : synthèse S33 à S36 rapatriée dans `docs/veille/` et rendue reproductible (`scripts/synthese_veille.py`), étiquettes ISO de S35 et S36 corrigées sans antidater, protocole remis à la vérité (aucune tâche planifiée, relevé manuel, `sources/rss.py` n'est pas l'outil de veille), état réel de la récurrence écrit (S37 à S40 sans note). C7 : **aucune mesure n'existe** ; les scores du brouillon de juillet (4,05, 4,35…) sont des exemples d'un gabarit, à ne jamais citer ; `docs/PLAN-C7-benchmark.md` écrit, trois décisions D1 à D3 attendues d'Era et une question au formateur, aucun appel payant avant. C8 : `evidence/C8/README.md` indexe les preuves réelles (un seul fournisseur opérationnel, dit tel quel) ; `docs/EXPLOITATION.md` corrigé (cascade dans l'ordre du code, Foundry ajouté, taux manquant selon le plan 65, FRED et flux à jour). E2 : `docs/rapports/E2/rapport-E2.md` v0.1, C6 et C8 rédigés depuis les faits, C7 vide par construction. **Reste à Era** : captures de partage Discord, note S40, décisions D1 à D3 du banc, envoi du guide au formateur (#43).
+
+📚 **03/10, nuit : `evidence/C18/` créé et `docs/CI-CD.md` écrit (carte #27 fermée)**. Preuve C18 depuis l'API GitHub : 268 exécutions du workflow Tests depuis le 28/07, 97 vertes sur les 100 dernières, les 3 rouges expliquées (19/08 couverture dépendante de la machine, 20/09 dépendance manquante attrapée par la CI, 28/09 pandas construit depuis les sources), ce que la CI saute (16 tests Spark, 12 tests base réelle). `docs/CI-CD.md` : cinq workflows, tous les déclencheurs, étapes, secrets et permissions, installation sur un clone neuf, test de la chaîne, quoi faire quand c'est rouge. Les six critères C18 passent à ✅ ; dans le rapport E3, les deux critères C13 de documentation aussi : **32 ✅ · 7 🟠 · 0 🔴**.
+
+📝 **03/10, nuit : rapport E3 version 1.0 rédigé** (`docs/rapports/E3/rapport-E3.md`, 9 600 mots environ, rendu en PDF de 20 pages par le nouveau `scripts/rendre_pdf.py`, pages relues). Depuis la v0.1 du matin : première trace Langfuse complète d'un vrai briefing (03/10 14 h 48, 10 observations, note `conforme_amf = 1`, même `request_id` dans la réponse, le journal et la trace), tableau « RITA C11 » construit, chaîne d'alerte exécutée une fois (#71), journal `mcp_calls` (cinq lignes pour quatre appels), verrou de démonstration de la passerelle, rulesets GitHub (`pytest`, `evals`, `revue` requis), 742 tests, 93,92 %, les deux remarques de la revue de la PR 58. Bilan des 39 critères : **30 ✅ · 9 🟠 · 0 🔴** (v0.1 : 27, 11, 1). Trois dossiers de preuves créés depuis des exécutions réelles : `evidence/C9/`, `evidence/C12/preuve-suite-de-tests-2026-10-03.md`, `evidence/C13/` ; `evidence/README.md` réindexé. **Reste à Era avant le 15/10** : relire les 20 pages ; clics Langfuse (15 traces factices, 2 alertes, capture du tableau) ; décision `memory_audit` ; puis PR `develop → main`, tags `livrable-E1-v2` et `livrable-E3-v1` (`docs/FILE-DE-VALIDATION.md`). **Non fait** : capture d'écran de l'interface Langfuse (session d'Era), déploiement du code sur Hetzner (après le gel), 422 pour un ticker inconnu, limite de débit.
+
+📝 **03/10, nuit : rapport E1 version 2 rédigé** (`docs/rapports/E1/rapport-E1.html` et `.pdf`, 5 pages, imprimé par Chrome, chaque page regardée). Mis à jour depuis la v1 du 13/08 : dates de l'archive en date locale (INC-005), 10 tables et 1 vue, FRED stockée, vue sans taux supposé, clôture des positions et registre T1 à T5 / P1 à P6, Langfuse UE à la place du transfert hors UE, collecte planifiée et manifeste, 11 routes, 742 tests, encadré « ce qui a changé » et limites (date de clôture = date d'import, purges non planifiées, `memory_audit`, versions non épinglées). Fait avec : correctif TDD de la carte #55 (étape `ecb` en échec déclaré quand aucun taux n'est reçu, 2 tests), les quatre fichiers aux dates décalées corrigés (README, `bigdata/CONCEPTION.md`, schéma SVG et drawio, PNG regénéré). Suite : **740 passed, 2 xfailed, 93,92 %**. **Reste à Era avant le 15/10** : relire le rapport, trancher `memory_audit` (écrire ou retirer : une phrase du rapport en dépend), puis PR `develop → main` et tag `livrable-E1-v2` (`docs/FILE-DE-VALIDATION.md`).
+
+✅ **03/10, nuit : PR #72 `develop → main` fusionnée** (`43025f9`, 2 commits : clôture des positions, plan 66, et l'état après la fusion de la PR 58) ; #66 et #69 fermés. Quatre constats d'un contrôle extérieur du dépôt traités avant la fusion : cache `commit-graph` de Git reconstruit (plus d'avertissement) ; arbre déjà propre (les 19 fichiers étaient le commit `1a5ecd9`) ; `main` locale remise au niveau de GitHub (199 commits de retard, avance rapide) ; le job `revue` ajouté aux checks requis du ruleset `main protegee` (`pytest`, `evals`, `revue`), aucune protection classique n'existe (`evidence/C19/`).
 
 ✅ **03/10, après-midi : la liste « reste à Era » traitée.** PR #58 **fusionnée** (`d1cec3b` sur `main`, six issues fermées) ;
 bouton *Run workflow* testé pour de vrai juste après (issue #71 créée puis fermée comme démonstration) ; les trois migrations
@@ -64,7 +584,7 @@ cochée** : c'est ce que le formateur regarde la semaine du 05/10.
 **Push fait le 03/10 à la demande d'Era** : dix commits, `2022689..a1c14e6` sur `origin/develop`, suite verte avant
 (626 passed, 2 xfailed, 126 s), arbre propre après. **▶️ Ordre des prochaines actions** : 1) les fichiers de clés en clair du Bureau (Era seul : gestionnaire, suppression, rotation) ; 3) Langfuse : **tableau « RITA C11 » construit par l'API le 03/10** (3 tuiles), 15 traces factices exportées ;
 restent à Era les clics de suppression (refusée à l'agent), les 2 alertes (pas d'API) et les captures ; le bouton
-*Run workflow* attend la PR `develop → main` (`evidence/C11/preuve-langfuse-2026-10-03.md`) ; 4) **fait le 03/10** : le classeur Excel rempli critère par critère depuis la note (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER, preuve en commentaire de chaque cellule, sauvegarde SAUVEGARDE3 à côté) ; puis E1 v2 (tag `livrable-E1-v2` le 15/10) et
+*Run workflow* attend la PR `develop → main` (`evidence/C11/preuve-langfuse-2026-10-03.md`) ; 4) **fait le 03/10** : le classeur Excel rempli critère par critère depuis la note (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER, preuve en commentaire de chaque cellule, sauvegarde SAUVEGARDE3 à côté ; recompté le 05/10 dans le fichier enregistré le 03/10 à 15:08 : 100 OK, 28 PARTIELLEMENT, 7 A AJOUTER) ; puis E1 v2 (tag `livrable-E1-v2` le 15/10) et
 le rapport E3. Pointeurs des skills et table de `CLAUDE.md` global : **corrigés le 03/10**. **`main` protégée côté serveur depuis le 03/10**
 (GitHub Pro activé par Era, ruleset : PR obligatoire, `pytest` et `evals` verts ; **tags `livrable-*` figés** par un second ruleset le soir ; `evidence/C19/`) : capture d'écran de
 *Settings → Rules* à ranger par Era.
@@ -88,7 +608,7 @@ encore poussé » jusque-là.
 | Une alerte Langfuse ouvre une issue `incident` (workflow `alerte-incident.yml`, bouton manuel, label créé, alerte répétée commentée) ; section « Monitorage Langfuse et alertes » dans `docs/EXPLOITATION.md` | `tests/test_alerte_incident.py` (7) |
 | `evidence/C11/README.md` (9 critères : 5 tenus, 1 partiel, 3 à faire) ; **INC-006** écrit ; index C21 à jour (critères 3 et 5 ✅ depuis INC-005) | `evidence/C11/`, `evidence/C21/` |
 
-**Mesures** : `C:\Python314\python.exe -m pytest -q` : **626 passed, 2 xfailed** (586 ce matin) · couverture **93,66 %**
+**Mesures** (03/10 nuit) : `C:\Python314\python.exe -X utf8 -m pytest --cov -q` : **765 passed, 2 xfailed** (767 collectés, 59 fichiers) · couverture **94,19 %** (seuil 90) · garde-fous : entrée 100 % / 0 % FP, injection 70 % / 0 %, sortie 70 % / 0 %. *(02/10 : `C:\Python314\python.exe -m pytest -q` : **626 passed, 2 xfailed** (586 ce matin) · couverture **93,66 %**)*
 (seuil 90 %), `api/main.py` et `graph/workflow.py` à 100 % · `scripts\verifier_liens.py` : 82 liens internes, 84 externes,
 **0 cassé**.
 
@@ -134,12 +654,12 @@ par commande) :
 3. `request_id` : middleware, journal, identifiant de trace (2 à 3 h)
 4. C11 visible : variables transmises au conteneur, spans `scout`, `rag`, garde-fous, tableau « RITA C11 », 2 alertes vers une issue GitHub, `evidence/C11/`, INC-006 (6 à 9 h)
 5. Enveloppe `<donnees_externes>` branchée, tests de seuil de l'entrée, cas Giskard rejoués, test de l'ordre des nœuds (2 à 2,5 h)
-6. `memory_audit` : écrire ou retirer (0,5 h ou 2 à 3 h)
+6. `memory_audit` : écrire ou retirer (0,5 h ou 2 à 3 h) ; **tranché le 10/10 : décision après le gel (#86)**
 7. Dossiers de preuves C9, C12, C13, C18 depuis les exécutions existantes de la CI (2 à 3 h)
 8. Rapport E3 (6 à 10 h)
 9. Hygiène : `README.md`, `CLAUDE.md`, commentaire de `test.yml`, `requirements.txt` épinglé, 422 pour ticker inconnu, retour arrière, tag `livrable-E1-v2` puis `livrable-E3-v1` (7 à 10 h)
 
-**Après le gel** : revue du lundi pour C16 (5 entrées datées), note de veille S40 avec A2A, paquet E4 le 25/10, benchmark C7 sur les trois fournisseurs déjà branchés.
+**Après le gel** : revue du lundi pour C16 (5 entrées datées), note de veille S40 avec A2A, paquet E4 le 25/10, benchmark C7 sur les trois fournisseurs déjà branchés (remplacé le 11/10, voir le plan E2 : Azure contre Mistral Large 4).
 
 **Non vérifié** : si Hetzner reçoit les clés Langfuse autrement ; l'existence d'un tableau ou d'alertes dans l'interface Langfuse ; la couverture du jour (suite non relancée) ; quel brief occupe la semaine du 05/10 ; deux notes de la phase 1 du programme (« modèle open source, mode d'emploi » et « l'agent qui a perdu la tête ») sans trace dans Obsidian.
 
@@ -198,7 +718,7 @@ de session dans `CLAUDE.md`.
 
 ---
 
-🔎 **27/09 : le guide d'étude « marchés et finance » a fait tomber cinq défauts de données, tous corrigés (INC-005).**
+🔎 **27/09 : une relecture des chiffres contre la base a fait tomber cinq défauts de données, tous corrigés (INC-005).**
 Cause unique : la place de cotation n'était modélisée nulle part (Paris, euros, UTC, sans férié, supposés partout).
 
 | Défaut | Mesuré | Corrigé | Carte |
@@ -226,8 +746,7 @@ passées à « Fait » par l'automatisation. Même défaut sur l'étape `ecb`, a
 4 éléments retenus, chacun rangé à sa semaine de `docs/PLAN-12-SEMAINES.md` : Wilson (S40, protocole
 du benchmark C7) · traces et alerte de `src/llm.py` (S43, C11/C20) · journal d'audit de `/briefing`
 (S43, C20) · trous des garde-fous (S44, C17 ; correctif testé sur une copie : 571 passed, 0 faux
-positif sur 2 592 textes réels, 0/8 hors échantillon). Le reste est parqué. Détail : Obsidian
-`Projets/RITA/08-Etude/ETUDE - Livre Packt ... (2026-09-26).md`.
+positif sur 2 592 textes réels, 0/8 hors échantillon). Le reste est parqué.
 ⚠️ **Retard mesuré sur le plan** : S38 (monitorage instrumenté) et S39 (E4 rédigé) non faits ;
 `docs/rapports/` ne contient que E1.
 
@@ -536,8 +1055,7 @@ document d'une question est refusé pour **0,0013**. **Non déplacé** — ajust
 neuf questions est la faute décrite par *Confidently Wrong* (veille S35). *Ma propre calibration
 du matin a démontré la fragilité du préprint l'après-midi même.*
 
-📓 Trace en 4 endroits : `CHANGELOG.md` · Obsidian `JOURNAL-012` · Obsidian
-`STUDY — 2 September 2026` (EN, séparé) · les messages de commit.
+📓 Trace en 3 endroits : `CHANGELOG.md` · Obsidian `JOURNAL-012` · les messages de commit.
 
 ▶️ **Prochaines actions — dans l'ordre, révisé le 06/09 :**
 1. ~~🔴 Trancher le runtime~~ — **fermé par la mesure du 06/09** (voir en tête) : indexation OK
@@ -625,7 +1143,7 @@ Suite **401 passed, 2 xfailed** · couverture **92,52 %** · 0 lien cassé.
   **Vérifié sur les 7 valeurs détenues avant de corriger** : seul `MC.PA` cassait, le premier
   mot n'en dégrade aucune. ⚠️ Le premier mot est acceptable **ici et seulement ici** — le
   filtre par ticker a déjà prouvé la pertinence, la question ne fait que **classer**. Pour
-  *étiqueter* un article, « CREDIT » resterait dangereux (§10a du guide d'étude).
+  *étiqueter* un article, « CREDIT » resterait dangereux.
 - 🔴 **Le prompt annonçait « Articles récents » au-dessus d'une dépêche de 2023.** Le RAG
   classe par **pertinence**, jamais par date. C'était **une affirmation fausse produite par le
   code lui-même** — la pire espèce, elle ne vient d'aucune source à mettre en doute.
@@ -878,11 +1396,6 @@ chemins absolus, code de sortie propre) : **il n'a jamais été installé**.
   le rapport, et pytest fera **échouer la suite** le jour où le taux repassera au-dessus.
   Ne toujours **pas** baisser le seuil : l'arbitrage reste la question ouverte de S35.
 - Le **garde-fou de sortie mesure aussi 70 %** — motifs écrits d'abord, cas d'évasion ensuite.
-- Deux guides d'étude en anglais. ⚠️ **Déplacés dans Obsidian le 18/08** : ils étaient dans
-  `docs/etude/`, c'est-à-dire de la **préparation dans le dépôt de livrables** — contraire à
-  la règle du 11/08. Ils vivent désormais dans
-  `Projets/RITA/09-EN-personnel/` (« Prompt injection and agent security » pour les concepts,
-  « 17 August 2026 » pour la méthode).
 
 📅 **Le plan des 12 semaines est écrit : `docs/PLAN-12-SEMAINES.md`.**
 Le formateur est en congé → on ne l'attend pas : **produire → geler → mettre en file
@@ -1195,35 +1708,38 @@ fabriquée, donc irrecevable pour C6.
 
 ---
 
+> 📸 **Photographie historique au 03/10/2026 : ne pas utiliser comme état courant.** Les trois sections suivantes
+> (livrables, compétences, manques) décrivent le 3 octobre ; l'état du jour est en tête de ce fichier.
+
 ## Les 5 livrables
 
 | Épreuve | Compét. | État | Tag Git |
 |---|---|---|---|
-| **E1** — Données | C1–C5 | ✅ **livré** — 26 critères / 28 | `livrable-E1-v1` |
-| **E2** — Veille & services IA | C6–C8 | 🔴 C6 et C7 **non commencés** · C8 partiel | — |
-| **E3** — API modèle & MLOps | C9–C13 | 🔨 C9/C12/C13 partiels · C10 et C11 **non commencés** | — |
-| **E4** — Application | C14–C19 | 🔨 **démarré le 16/08** — 1er écran livré | — |
-| **E5** — Monitorage | C20–C21 | 🔨 **démarré le 25/08** — fraîcheur des données livrée (C20) · C21 : 5 incidents réels vécus, **à formaliser en post-mortems** | — |
+| **E1** — Données | C1–C5 | ✅ **livré** le 13/08 (26 / 28) · **v2 rédigée le 03/10** (5 pages, dates locales, 10 tables, vue sans taux supposé, clôture des positions, Langfuse UE, 742 tests) : à relire, tag le 15/10 | `livrable-E1-v1` → `livrable-E1-v2` le 15/10 |
+| **E2** — Veille & services IA | C6–C8 | 🔴 **le plus en retard** : C6 4 notes (S33 à S36), un seul partage ; C7 **à zéro** (7 critères) ; C8 cascade et doc faites, monitorage du service réel depuis le 02/10 ; rapport 0 page, dû le 05/11 | — |
+| **E3** — API modèle & MLOps | C9–C13 | 🟢 **rapport v1.0 rédigé le 03/10** (20 pages, PDF) : **32 ✅ · 7 🟠 · 0 🔴** sur 39 ; première trace Langfuse complète d'un vrai briefing, tableau « RITA C11 », alerte exécutée (#71), preuves C9 C12 C13 ; restent les clics Langfuse et la relecture | `livrable-E3-v1` le 15/10 |
+| **E4** — Application | C14–C19 | 🔨 **recompté le 03/10 : 27 ✅ 9 ⚠️ 0 ❌ après T3** (`docs/rapports/E4/recomptage-criteres-2026-10-03.md` ; 23/13/0 au 26/09, C18 à 6/6 le 03/10) ; rapport 0 page ; écran 2 sans récit utilisateur (#24), RGAA non outillé (#25) ; gel le 25/10 | `livrable-E4-v1` le 25/10 |
+| **E5** — Monitorage | C20–C21 | 🔨 C20 : fraîcheur, `request_id`, journal `mcp_calls`, chaîne d'alerte exécutée une fois ; C21 : 6 post-mortems, INC-005 et INC-006 ; rapport 0 page ; aucune alerte réelle encore partie ; dû le 05/11 | — |
 
-## Ce qui existe vraiment, compétence par compétence
+## Ce qui existait au 03/10/2026, compétence par compétence
 
 | C | Fait | Manque |
 |---|---|---|
 | **C1** | 7 sources, les 5 types, script en 6 points · ✅ **dépôt accessible au relecteur (24/08)** · *big data validé par le formateur, sans remarque négative* | — |
 | **C2** | 3 requêtes SQL, optimisation LATERAL mesurée ×2000 | — |
 | **C3** | `pipelines/ingest.py`, 15 tests, règles justifiées par mesure · ✅ **dépôt accessible (24/08)** | — |
-| **C4** | MCD Merise 6 entités, MPD 8 tables, registre RGPD, purge testée | — |
-| **C5** | **9 endpoints** authentifiés + `/health` public, OpenAPI 3.1.0, auth **au niveau routeur** (une route ajoutée est protégée par défaut), **45 tests** | — |
+| **C4** | MCD Merise 6 entités, MPD **10 tables** et 1 vue (03/10), 12 CHECK, registre RGPD T1 à T5 et purges P1 à P6, clôture datée des positions (plan 66), migrations rejouables jouées sur poste, Compose et Hetzner | `memory_audit` sans écrivain (décision Era) ; purges non planifiées |
+| **C5** | **11 routes `/donnees/*`** + `/health` + `/briefing` + `/audit/mcp` = 14 chemins OpenAPI 3.1.0, auth au niveau routeur, **57 tests** sur les routes de données ; total `null` quand un taux manque, positions closes comptées jamais servies | `evidence/C5/` daté du 11/08 : à rafraîchir |
 | **C6** | protocole **complet** (15/08), gabarit, récurrence, registre, note S33 (14/08), **partage promo lancé le 16/08 sur Discord** | ⚠️ ~11 notes à venir · 🟠 réponses Discord à capturer · 🔴 envoi **formateur** non fait (congé) |
 | **C7** | **rien** — aucun benchmark de services IA | tout |
 | **C8** | cascade 3 fournisseurs testée, clé en `.env` · **doc d'exploitation écrite le 19/08** (`docs/EXPLOITATION.md`) : accès, installation avec et sans Docker, dépendances, données, dépannage | 🔴 **monitorage du service** · la doc reste à **communiquer** aux parties prenantes (5ᵉ critère) |
 | **C9** | `POST /briefing`, auth 403, OpenAPI, garde-fou injection · ✅ **dépôt accessible (24/08)** | revue OWASP · doc d'architecture |
 | **C10** | 🔨 **19/08** — **2 écrans** : portefeuille + indicateurs, servis par l'API. Clé saisie (jamais en dur), partagée entre écrans, 403 et erreurs traités, RGAA vérifié **dans le navigateur**. **10 points de terminaison** intégrés. **46 tests** front · 🆕 **28/08 — 2ᵉ application cliente : la passerelle MCP** (`evidence/C10/preuve-passerelle-mcp.md`), qui consomme l'API en HTTP avec la même authentification | tri/recherche · audit RGAA outillé · doc d'architecture · ⚠️ confirmer qu'un client MCP compte comme « une application » |
-| **C11** | 🔨 **02/10** : Langfuse Cloud UE ; une trace par briefing avec une étape par nœud et par garde-fou, verdict AMF et note `conforme_amf`, `request_id` partagé avec le journal, variables transmises au conteneur, alerte vers issue `incident` (workflow). 37 tests sur le traçage. `evidence/C11/README.md` : 5 critères tenus, 1 partiel, 3 à faire | tableau « RITA C11 » et 2 alertes dans l'interface (Era) · captures · variables sur le serveur · argument d'accessibilité dans le rapport E3 |
+| **C11** | ✅ **03/10** : Langfuse Cloud UE ; **première trace complète d'un vrai briefing** (10 observations, note `conforme_amf = 1`, même `request_id` réponse / journal / trace) ; tableau « RITA C11 » construit par l'API ; chaîne d'alerte exécutée une fois (#71) ; `evidence/C11/` | 2 alertes à régler, 15 traces factices à supprimer, capture d'écran (clics d'Era) ; coût à zéro pour le modèle OpenRouter ; serveur non tracé avant le déploiement |
 | **C20** | 🔨 **25/08** — `GET /donnees/fraicheur` + bandeau : l'application sait dire de quand datent ses données (retard en **jours ouvrés**, statut vert/orange/rouge, accessible sans la couleur). 23 tests. Preuve : `evidence/C20/preuve-fraicheur.md` | métriques applicatives (Prometheus) · journaux structurés · alertes · dashboard |
 | **C21** | 🔨 **02/10 : 6 post-mortems** ; INC-005 (27/09) a traversé toute la chaîne (issues #47 à #53, PR #54), INC-006 (02/10) en commit direct, dit tel quel ; critères 3 et 5 ✅ depuis le 27/09 · **25/08 : 4 post-mortems rédigés** dans `evidence/C21/` + gabarit aligné sur les 5 critères officiels. Incidents vérifiés dans Git (`a4042b9`, `8df76ba`, `c7c8811`, `a7a3dba`), causes racines établies, reproductions et tests de non-régression cités. **3 critères sur 5 satisfaits** · ✅ **27/09 : INC-005** est le premier incident traité de bout en bout par la chaîne **issues (#47 à #53) → branche `qualite-donnees` → pull request**, tests rouges puis verts, sauvegarde avant reconstruction | critères 3 et 5 désormais **prouvés sur un incident réel** (pas reconstitués) ; reste à le refaire au moins une fois pour montrer que c'est la méthode, pas l'exception |
-| **C12** | **319 tests** (2 xfailed volontaires — entrée et sortie), 15 cas d'éval, seuils non compensables en CI · **couverture 92 %**, seuil **90 %** verrouillé en CI (19/08, `db/importer.py` et `evals/mesurer_sortie.py` fermés 0→100 %) · procédure documentée | DVC · 🔴 **aucun test ne se connecte à la vraie base** — tous simulent `_executer`, d'où un défaut C4 invisible pendant des semaines |
-| **C13** | GitHub Actions (2 jobs, porte garde-fous) · **empaquetage Docker 18/08** — image 595 Mo, non-root, lecture seule · **volet LIVRAISON 19/08** (`7570bc9`) : publie sur GHCR uniquement sur tag `livrable-*`, démarre l'image et vérifie `/health` + 403 · ✅ **DÉPLOYÉ 19/08** sur Hetzner CX23, **HTTPS 20/08** (Caddy + Let's Encrypt via sslip.io) — `https://178-104-184-125.sslip.io/`, vérifié depuis l'extérieur, PostgreSQL 18 aligné partout, pare-feu `ufw` actif (22/80/443/8001) | 🔴 `db/importer.py` **ne tourne pas dans l'image** (pyarrow exclu) · certificat à surveiller fin octobre (renouvellement auto avant le 18/11) |
+| **C12** | **740 passed, 2 xfailed** (742 collectés, 57 fichiers, 03/10), couverture **93,92 %**, seuil 90 % en CI ; 32 cas du chapitre « Données » rapprochés des tests ; preuves par mutation (02/10, 03/10 ×2) ; `evidence/C12/` | 70 % contre 85 % sur deux garde-fous (xfail strict) ; pas de validation de format des sorties ; 28 tests sautés en CI (Spark, base réelle) |
+| **C13** | 5 workflows ; `main` protégée par ruleset (PR + `pytest`, `evals`, `revue` requis, ni suppression ni force-push), tags `livrable-*` figés ; 24 PR fusionnées, 13 exécutions vertes le 03/10 ; `docs/CI-CD.md` (03/10) ; `evidence/C13/` | publication sur tag **jamais exécutée** (première le 15/10) ; pas de retour arrière ; déploiement serveur manuel |
 | **C14** | 🔨 **18/08** — wireframes des 4 états (`evidence/C14/`), spécification US-1 : contexte, 5 scénarios, 11 critères d'acceptation dont 6 avec numéro de règle RGAA. Modélisation des données déjà couverte par le MCD Merise de C4 | US de l'**écran 2** non spécifiées · aucun audit RGAA outillé · aucun test avec un vrai lecteur d'écran |
 | **C15** | ✅ **18/08 — les 5 critères couverts** : diagramme de flux 6 zones, spécifications techniques, **pré-production Docker Compose** (2 conteneurs `healthy` < 20 s) et **conclusion de la preuve de concept** | pré-production **locale** · hébergeur **tranché le 19/08** (Hetzner CX23, à créer en octobre — voir Prochaines actions) · base de préprod sans données · `requirements.txt` toujours non épinglé |
 | **C16** | 🔨 **26/09** : Kanban GitHub (35 issues, 22 PR fusionnées au 02/10), formateur en lecture, revue du lundi annoncée | les comptes rendus datés de la revue du lundi (5 entrées, du 05/10 au 02/11) : aucun au 02/10 |
@@ -1272,7 +1788,7 @@ fabriquée, donc irrecevable pour C6.
 
 | Quoi | Où |
 |---|---|
-| Rédaction par compétences (modèle Simplon, à rendre) | `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP.xlsx` : 135 critères, colonne « Critère validé » remplie le 03/10 (93 OK, 34 PARTIELLEMENT, 8 A AJOUTER : les 7 de C7 et le tableau de bord C11), preuve datée en commentaire de chaque cellule ; colonne « Rédaction » : 9 compétences sur 21 |
+| Rédaction par compétences (modèle Simplon, à rendre) | `D:\KandaWork\RITA_PROJECT\Era-Preparation-livrables-RNCP_05_10_26_v2.xlsx`, et sa synthèse `Era-Synthese-competences-RNCP.xlsx` (copies pour le formateur : branche `classeur-competences`, `docs/competences/`, et Google Drive) : 135 critères, colonne « Critère validé » remplie le 03/10 puis corrigée le 05/10 sur 35 lignes, rédaction et notes remises d'accord le même soir : **110 OK, 24 PARTIELLEMENT, 1 A AJOUTER** (C8.5, en attente de l'accusé de réception du formateur), preuve datée en commentaire de chaque cellule ; colonne « Rédaction » : 9 compétences sur 21 |
 | ⤷ rempli pour | C1 C2 C3 C4 C5 C8 C9 C12 C13 — les autres **volontairement vides** |
 | Boussole (tâche principale + pile de détours) | `C:\Users\kanda\Desktop\RITA PROJET PRO\BOUSSOLE-RITA.md` : **archivé depuis le 14/08** (bannière du fichier : « n'est plus la source »). L'état vivant est ce fichier-ci. La skill `boussole` pointe encore vers l'archive : à corriger (relevé le 03/10) |
 | Journal (19 entrées, JOURNAL-000 à JOURNAL-018) | Obsidian `Projets/RITA/07-Journal/` (coffre `C:\Users\kanda\Documents\Formation-IA\Formation-IA\`) : la 018 du 02/10 au soir compte 18 sections ; index à jour le 03/10 |

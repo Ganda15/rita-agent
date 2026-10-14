@@ -33,6 +33,11 @@ evidence/C6/
 
 **Au 2026-08-16, ce dossier ne contient encore aucune capture.**
 
+**Au 2026-10-11 : une capture**, `envoi-2026-10-11-promo-discord-veille.png` : la note S41 postée dans le canal
+#veille du Discord de la promo, le 11/10 à 20 h 04, avec sa question ouverte. Elle prouve le **partage** (date,
+canal, contenu), **pas encore l'animation** : aucune réponse au moment de la capture. La capture du fil, réponses
+comprises, reste à faire (`discussion-<date>-discord.png`), comme celle du partage S33 du 16/08.
+
 ✅ **Le 16/08, la note S33 a été postée dans le canal Discord de la promo**, terminée par une
 question ouverte sur le filtrage du texte avant passage au modèle. Le critère *« en animant le
 travail collectif »* est donc **lancé**.
@@ -48,6 +53,10 @@ a des réponses à montrer**. Capturer aujourd'hui donnerait une preuve d'auto-p
 publier dans le vide — règle posée dans `../../docs/veille/_JOURNAL-DES-ENVOIS.md`.
 
 Registre des envois : `../../docs/veille/_JOURNAL-DES-ENVOIS.md` — vide, et il le dit.
+
+## Ajout du 03/10/2026 : la synthèse mensuelle est dans le dépôt
+
+`../../docs/veille/Veille-C6-synthese-S33-a-S36.pdf` (produite le 08/09/2026, regénérée le 03/10 depuis sa source `Veille-C6-synthese-S33-a-S36.md` après correction des étiquettes de semaine de S35 et S36) rassemble les quatre notes S33 à S36. Elle vivait hors du dépôt, à la racine de `D:\KandaWork\RITA_PROJECT\` ; un évaluateur ne pouvait pas la trouver. Vérifié avant de la ranger : les 28 titres de section des quatre notes s'y retrouvent, et aucune note n'a été modifiée depuis le 08/09 (`git log`). Ce qu'elle prouve : la récurrence (quatre semaines, dont deux rédigées en rattrapage, et le PDF le dit). Ce qu'elle ne prouve pas : le partage et l'animation, qui restent sans capture. Si une note change avant le gel de E2, le PDF se regénère, il ne se retouche pas.
 
 ## 📖 Glossaire
 

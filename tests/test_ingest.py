@@ -73,6 +73,34 @@ def test_ecb_une_devise_en_echec_ne_bloque_pas_les_autres():
     assert any("GBP" in d for d in b.details)
 
 
+def test_ecb_quatre_devises_en_echec_est_un_echec_declare():
+    """Carte #55 (27/09/2026) : chaque devise en echec etait attrapee, mais si les quatre echouaient
+    `Bilan.erreur` restait None et le resume du soir comptait l'etape parmi les reussies, sans une ligne
+    ecrite. La valorisation en euros aurait tourne sur un taux ancien sans alerte."""
+    with patch("sources.ecb.fetch_taux_change", side_effect=ConnectionError("BCE injoignable")):
+        b = ingest.etape_taux_change(_curseur(), simulation=False)
+
+    assert b.ok is False
+    assert b.erreur and "BCE" in b.erreur
+    assert b.ecrites == 0
+    assert b.rejetees == len(ingest.DEVISES_SUIVIES)
+
+
+def test_ecb_une_seule_devise_recue_reste_un_succes_partiel():
+    """Le succes partiel est conserve : une devise sur quatre suffit a ecrire quelque chose (et l'euro)."""
+    def une_seule(devise):
+        if devise != "USD":
+            raise ConnectionError("BCE injoignable")
+        return {"devise": "USD", "date": "2026-08-01", "valeur": 1.14}
+
+    with patch("sources.ecb.fetch_taux_change", side_effect=une_seule),          patch("pipelines.ingest.execute_values"):
+        b = ingest.etape_taux_change(_curseur(), simulation=False)
+
+    assert b.ok is True and b.erreur is None
+    assert b.ecrites == 2            # USD + EUR
+    assert b.rejetees == len(ingest.DEVISES_SUIVIES) - 1
+
+
 def test_ecb_simulation_n_ecrit_rien():
     with patch("sources.ecb.fetch_taux_change",
                return_value={"devise": "USD", "date": "2026-08-01", "valeur": 1.14}):

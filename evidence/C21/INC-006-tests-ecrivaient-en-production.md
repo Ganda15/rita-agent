@@ -1,5 +1,16 @@
 # INC-006 : douze générations de test sont apparues dans le projet Langfuse de production
 
+> **Complément du 03/10/2026, INC-006 bis.** Le banc C7 (`evals/benchmark_fournisseurs.py`), en figeant son jeu
+> d'essai, a appelé `rag.recherche.rechercher` hors d'un briefing : l'étape `garde-fou-entree` est devenue une trace
+> racine, **22 traces parasites** écrites dans le projet Langfuse de production (13 h 56 à 13 h 57 UTC ; dix pour la
+> construction du jeu, douze pour une vérification préalable). Même cause de fond qu'INC-006 : un outil qui importe
+> le code de RITA avec les vraies clés chargées. Correctif le jour même : le script force
+> `LANGFUSE_TRACING_ENABLED=false` avant tout import, un test le fige
+> (`tests/test_benchmark_outillage.py::test_le_banc_coupe_le_tracage_avant_de_toucher_au_code_de_rita`), et les 22
+> traces ont été supprimées par l'API le soir même (compte relu après). Règle qui en sort : **tout script hors API
+> qui importe `api.main` ou `rag` coupe le traçage d'abord**, et la suppression des quinze traces de la suite de
+> tests du 02/10 reste à faire par le propriétaire du compte.
+
 > Trouvé le 02/10/2026 vers 19 h **en lisant l'interface Langfuse**, pas en lisant le code : Era
 > voulait voir sa première trace réelle et a trouvé, au-dessus, douze lignes « prompt test »
 > suivies de « ok anthropic ». Aucune n'était un vrai briefing.

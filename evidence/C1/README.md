@@ -15,6 +15,13 @@
 [`.svg`](SCHEMA-C1-collecte-multisource.svg).
 Le big data a ses propres schémas : [`../../bigdata/schemas/`](../../bigdata/schemas/).
 
+> **Ce schéma est une preuve datée du 11/08/2026, conservée telle quelle.** Ses chiffres de base et de
+> garde-fou n'ont pas suivi le code : au 04/10/2026 la base compte 10 tables (pas 8), le garde-fou
+> d'injection 12 motifs (pas 9) et la mesure donne 70 % de blocage pour 0 % de faux positifs (le
+> schéma annonçait davantage, sur un jeu de cas plus petit). La version tenue à jour, générée depuis le
+> code et vérifiée par un test, est
+> [`../../docs/rapports/E1/schemas/E1-collecte.png`](../../docs/rapports/E1/schemas/E1-collecte.png).
+
 ## Les 7 sources et les 5 types
 
 | # | Source | Type C1 | Fichier | Preuve | État |

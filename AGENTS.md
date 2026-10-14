@@ -11,7 +11,7 @@ recommandation d'achat ou de vente (contrainte AMF, vérifiée par `guardrails/`
 L'agent implémente ; l'humain garde l'architecture, la sécurité et le seuil des évals.
 
 ## Commandes — depuis la racine du dépôt
-- Tests : `C:\Python314\python.exe -m pytest -q` (dernier passage complet : 468 passed, 2 xfailed, 19/09/2026 ; smoke UI Playwright inclus)
+- Tests : `C:\Python314\python.exe -m pytest -q` (smoke UI Playwright inclus ; le dernier résultat daté est dans `README.md`)
 - Couverture : `C:\Python314\python.exe -m pytest --cov` — seuil `fail_under = 90` dans `.coveragerc`
 - Garde-fous : `C:\Python314\python.exe -m evals.mesurer_gardefou` (taux de blocage + faux positifs)
 - Collecte à blanc : `C:\Python314\python.exe -X utf8 -m pipelines.ingest --simulation`
@@ -57,7 +57,7 @@ L'agent implémente ; l'humain garde l'architecture, la sécurité et le seuil d
 
 ## Livraison
 - `main` ne bouge **que par une pull request** `develop → main`, relue par `Revue PR` (revue automatisée, Action GitHub). Jamais de push direct : `git config core.hooksPath .githooks` l'interdit (à activer une fois par clone),
-  et depuis le 03/10/2026 GitHub lui-même (ruleset `main protegee` : PR obligatoire, `pytest` et `evals` verts, ni suppression ni force-push)
+  et depuis le 03/10/2026 GitHub lui-même (ruleset `main protegee` : PR obligatoire, `pytest`, `evals` et `revue` verts, ni suppression ni force-push)
 - Un livrable = un **tag** `livrable-E<n>-v<k>` posé sur `main` **après** la fusion ; on envoie le lien du tag,
   jamais celui du dépôt. Depuis le 03/10/2026, GitHub interdit de déplacer ou supprimer un tag `livrable-*` (ruleset)
 - Avant le tag : tests verts, évals vertes, liens vérifiés, `ETAT.md` à jour

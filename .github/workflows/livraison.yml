@@ -9,12 +9,14 @@
 #   test.yml       INTÉGRATION continue  — les tests tournent à chaque envoi
 #   livraison.yml  LIVRAISON continue    — l'image se construit et se publie
 #
-# ⚠️ LE CHOIX QUI STRUCTURE TOUT : on ne publie **que sur un tag**.
+# ⚠️ LE CHOIX QUI STRUCTURE TOUT : on publie sur un tag de livrable, et
+#    (sprint 2) après chaque fusion dans `main`, jamais sur `develop`.
 #
-#    Un tag = un livrable. C'est déjà la discipline du projet : le formateur
-#    reçoit `.../tree/livrable-E1-v1`, pas la branche par défaut. La même
-#    règle vaut pour l'image : `ghcr.io/ganda15/rita-api:livrable-E1-v1`
-#    montre le code **exactement tel qu'il était le jour de l'envoi**.
+#    Un tag = un livrable : `ghcr.io/ganda15/rita-api:livrable-E1-v1` montre le
+#    code exactement tel qu'il était le jour de l'envoi. Une fusion dans `main`
+#    = une version de production : l'image `:sha-…` est publiée, son empreinte
+#    (`@sha256:…`) est transmise au serveur, qui l'essaie puis la met en service
+#    (travaux `attendre-creneau`, `deployer`, et la reprise de 9 h).
 #
 #    Publier à chaque envoi sur `develop` produirait des dizaines d'images
 #    dont aucune ne correspondrait à quoi que ce soit d'identifiable.
@@ -38,8 +40,59 @@ env:
 
 jobs:
 
+  # --- Le lint (sprint 2, tâche 2) -------------------------------------------
+  # Premier maillon de la chaîne du brief : lint, tests, construction, déploiement. Il lit le code sans
+  # l'exécuter et ne cherche que les vraies erreurs (règles dans `ruff.toml`). Version fixée, la même que
+  # dans `requirements.txt` (contrôlé par `tests/test_lint_config.py`). Check requis sur `main` (tâche 10).
+  lint:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Installer ruff (version fixée)
+        run: pip install "ruff==0.15.17"
+      - name: Lint
+        run: ruff check .
+
+  # --- Les secrets (sprint 2, tâche 3) ----------------------------------------
+  # Critère 5 de la grille : aucun secret dans le dépôt, y compris dans l'HISTORIQUE (une clé effacée aujourd'hui
+  # reste lisible dans les anciens commits). gitleaks à une version fixée, ses règles par défaut, valeurs masquées.
+  # Exceptions : les cinq fausses clés de test (`.gitleaks.toml`) ; les secrets révoqués de l'incident INC-008
+  # (`.gitleaksignore`). Puis le contrôle des déclarations ARG et ENV du Dockerfile. Check requis (tâche 10).
+  secrets:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Tout l'historique, toutes les branches et tous les tags : c'est ce que gitleaks doit lire.
+          fetch-depth: 0
+      - name: Chercher des secrets dans tout l'historique (gitleaks v8.30.1)
+        # `safe.directory` : le dépôt monté appartient à l'utilisateur du runner, pas à celui du conteneur ; sans
+        # cette ligne, Git refuserait de le lire (« dubious ownership »).
+        run: |
+          docker run --rm \
+            -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0=/repo \
+            -v "$GITHUB_WORKSPACE:/repo" zricethezav/gitleaks:v8.30.1 \
+            git /repo --log-opts="--branches --remotes --tags" \
+            --config /repo/.gitleaks.toml --gitleaks-ignore-path /repo/.gitleaksignore \
+            --redact --exit-code 1
+      - name: Aucune déclaration ARG ou ENV sensible dans le Dockerfile
+        run: python3 scripts/verifier_dockerfile.py Dockerfile
+
   construire-et-publier:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    # Les tests et la construction ne partent qu'après un lint ET un contrôle des secrets verts : l'ordre du brief,
+    # et aucune image construite ni publiée si gitleaks trouve une clé.
+    needs: [lint, secrets]
+    # Sprint 2 : l'empreinte de l'image publiée après une fusion dans `main`, transmise au travail `deployer`.
+    outputs:
+      empreinte: ${{ steps.empreinte.outputs.ref }}
 
     permissions:
       contents: read
@@ -96,6 +149,11 @@ jobs:
             type=ref,event=tag
             type=sha,format=short
 
+      # Sprint 2 : la date de construction, que l'image annonce dans `/health` avec son commit.
+      - name: Date de construction
+        id: date
+        run: echo "iso=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
       - name: Construire l'image (sans publier)
         uses: docker/build-push-action@v7
         with:
@@ -106,6 +164,10 @@ jobs:
             ${{ steps.etiquettes.outputs.tags }}
             rita-api:verification
           labels: ${{ steps.etiquettes.outputs.labels }}
+          # Lus par les `ARG GIT_SHA` et `ARG CONSTRUIT_LE` du Dockerfile, puis servis par `/health`.
+          build-args: |
+            GIT_SHA=${{ github.sha }}
+            CONSTRUIT_LE=${{ steps.date.outputs.iso }}
           # Le cache évite de retélécharger et recompiler les dépendances à
           # chaque exécution : quelques minutes, et autant d'énergie, en moins.
           cache-from: type=gha
@@ -135,6 +197,28 @@ jobs:
             sleep 1
           done
 
+      - name: Vérifier la version annoncée par /health
+        # Les tests Python prouvent que `/health` lit les variables ; ce contrôle prouve qu'elles sont bien
+        # arrivées dans l'image construite (build-args, puis ARG et ENV du Dockerfile). Les deux champs sont
+        # comparés aux valeurs de construction, en lisant le JSON (pas une recherche de texte).
+        env:
+          COMMIT_ATTENDU: ${{ github.sha }}
+          DATE_ATTENDUE: ${{ steps.date.outputs.iso }}
+        run: |
+          curl -s http://localhost:8000/health > health.json
+          python3 - <<'PY'
+          import json, os, sys
+          corps = json.load(open("health.json", encoding="utf-8"))
+          attendus = {"commit": os.environ["COMMIT_ATTENDU"], "construit_le": os.environ["DATE_ATTENDUE"]}
+          ecarts = [(champ, corps.get(champ), valeur) for champ, valeur in attendus.items()
+                    if corps.get(champ) != valeur]
+          for champ, lu, valeur in ecarts:
+              print(f"::error::/health annonce {champ}={lu!r}, attendu {valeur!r}")
+          if not ecarts:
+              print(f"/health annonce le commit {corps['commit']} construit le {corps['construit_le']}")
+          sys.exit(1 if ecarts else 0)
+          PY
+
       - name: Vérifier que l'accès est bien restreint
         # Une image qui démarre mais qui laisse entrer sans clé serait pire
         # qu'une image cassée : elle passerait inaperçue.
@@ -146,17 +230,32 @@ jobs:
             exit 1
           fi
 
+      - name: Vérifier que l'image ne contient pas de fichier .env
+        # Ce contrôle ne vérifie que ce chemin-là, `/app/.env` ; à la construction, `.dockerignore` exclut déjà
+        # `.env` et `.env.*`. La preuve le dit telle quelle. Le conteneur doit RÉUSSIR à prouver l'absence
+        # (`test ! -e`) : un fichier présent (code 1) comme une panne de Docker (125, 126, 127) arrêtent l'étape,
+        # car GitHub lance ce script avec `bash -e`. Un `if docker run ...; then` prenait une panne pour un succès.
+        run: |
+          docker run --rm --entrypoint sh rita-api:verification -c 'test ! -e /app/.env'
+          echo "/app/.env absent de l'image"
+
+      - name: Vérifier que l'image embarque ses fichiers de déploiement
+        # Le script du serveur extrait ces deux fichiers de l'image livrée (tâche 8) : sans eux, aucune bascule.
+        run: |
+          docker run --rm --entrypoint sh rita-api:verification -c 'test -f /app/deploy/docker-compose.yml && test -f /app/deploy/compose.prod.yml'
+          echo "fichiers de déploiement présents dans l'image"
+
       - name: Arrêter le conteneur de vérification
         if: always()
         run: docker rm -f verification || true
 
       # --- La publication -------------------------------------------------
-      # Seulement sur un tag, et seulement si les deux vérifications sont passées
-      # (une étape en échec arrête le job avant d'arriver ici).
+      # Sur un tag de livrable, ou après une fusion dans `main` (sprint 2), et seulement si toutes les vérifications
+      # sont passées (une étape en échec arrête le job avant d'arriver ici). Jamais sur une PR ni sur `develop`.
       - name: S'authentifier sur le registre
         # Juste avant de publier : une connexion inutile est une permission
         # accordée pour rien.
-        if: startsWith(github.ref, 'refs/tags/livrable-')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/livrable-'))
         uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRE }}
@@ -164,7 +263,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publier l'image vérifiée
-        if: startsWith(github.ref, 'refs/tags/livrable-')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/livrable-'))
         env:
           ETIQUETTES: ${{ steps.etiquettes.outputs.tags }}
         run: |
@@ -172,23 +271,144 @@ jobs:
             [ -n "$etiquette" ] && docker push "$etiquette"
           done
 
+      - name: Lire l'empreinte de l'image publiée
+        # Le serveur ne reçoit que l'empreinte (`@sha256:…`), qui ne désigne qu'une image : une étiquette, elle,
+        # pourrait être déplacée. Vérifiée avec le motif du script du serveur avant d'être transmise.
+        id: empreinte
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          ETIQUETTES: ${{ steps.etiquettes.outputs.tags }}
+        run: |
+          etiquette=$(printf '%s\n' "$ETIQUETTES" | grep ':sha-' | head -n 1)
+          ref=$(docker inspect --format '{{index .RepoDigests 0}}' "$etiquette")
+          if ! printf '%s' "$ref" | grep -Eq '^ghcr\.io/ganda15/rita-api@sha256:[0-9a-f]{64}$'; then
+            echo "::error::empreinte inattendue : $ref"
+            exit 1
+          fi
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+          echo "empreinte publiee : $ref"
+
       - name: Résumé
+        env:
+          PUBLIEE: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/livrable-')) }}
+          ETIQUETTES: ${{ steps.etiquettes.outputs.tags }}
+          EMPREINTE: ${{ steps.empreinte.outputs.ref }}
         run: |
           {
             echo "### Livraison"
             echo ""
-            if [ "${{ startsWith(github.ref, 'refs/tags/livrable-') }}" = "true" ]; then
+            if [ "$PUBLIEE" = "true" ]; then
               echo "**Image publiee** sur \`${{ env.REGISTRE }}/${{ env.IMAGE }}\`"
               echo ""
               echo '```'
-              echo "${{ steps.etiquettes.outputs.tags }}"
+              printf '%s\n' "$ETIQUETTES"
+              [ -n "$EMPREINTE" ] && printf '%s\n' "$EMPREINTE"
               echo '```'
             else
               echo "**Construction verifiee**, sans publication."
               echo ""
-              echo "La publication n'a lieu que sur un tag \`livrable-*\`."
+              echo "La publication n'a lieu qu'apres une fusion dans \`main\` ou sur un tag \`livrable-*\`."
             fi
             echo ""
             echo "- L'API demarre et repond sur \`/health\`"
             echo "- L'acces sans cle est refuse (403)"
           } >> "$GITHUB_STEP_SUMMARY"
+
+  # --- Le créneau du matin (sprint 2, tâche 9) ---------------------------------
+  # Entre 7 h 30 et 9 h (heure de Paris), ce travail dort jusqu'à 9 h : une livraison ne doit pas tomber pendant le
+  # créneau protégé de 8 h à 9 h, et la marge de 30 minutes couvre le pré-test. Calcul : `secondes_avant_livraison`
+  # de deploy/deployer.py, testé à la tâche 7. SANS groupe de concurrence : une attente dans le groupe `production`
+  # bloquerait tout le reste.
+  attendre-creneau:
+    needs: construire-et-publier
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v7
+      - name: Attendre la fin du créneau du matin si besoin
+        run: |
+          attente=$(python3 -c 'from datetime import datetime; from deploy.deployer import PARIS, secondes_avant_livraison; print(secondes_avant_livraison(datetime.now(PARIS)))')
+          echo "attente avant la livraison : ${attente} s"
+          sleep "$attente"
+
+  # --- Le déploiement automatique (sprint 2, tâche 9) -----------------------------
+  # Après une fusion dans `main` et tous les contrôles verts : l'ordre `livrer <empreinte>` part au serveur par la clé
+  # dédiée. Le serveur essaie l'image en préproduction, la met en service, la contrôle, et remet l'ancienne si besoin.
+  # Code 75 : le créneau de 8 h est arrivé pendant le pré-test, rien n'a changé ; la reprise de 9 h prend le relais.
+  deployer:
+    needs: [lint, secrets, construire-et-publier, attendre-creneau]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    environment:
+      name: production
+      url: https://178-104-184-125.sslip.io
+    # Une seule livraison à la fois, et jamais annulée par la suivante.
+    concurrency:
+      group: production
+      cancel-in-progress: false
+    # Le serveur attend le verrou au plus ATTENTE_VERROU["livrer"], puis travaille au plus DUREE_MAX_LIVRER
+    # (deploy/deployer.py) : environ 98 minutes ; le travail ne doit pas être coupé avant lui.
+    timeout-minutes: 110
+    outputs:
+      reporte: ${{ steps.ordre.outputs.reporte }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Livrer l'image sur le serveur
+        id: ordre
+        uses: ./.github/actions/ordre-serveur
+        with:
+          ordre: livrer
+          argument: ${{ needs.construire-et-publier.outputs.empreinte }}
+          cle-ssh: ${{ secrets.DEPLOY_SSH_KEY }}
+          hote: ${{ secrets.DEPLOY_HOST }}
+          known-hosts: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          empreinte-bloquante: "true"
+          accepter-report: "true"
+
+  # --- La reprise automatique après un code 75 ----------------------------------
+  attendre-reprise:
+    needs: deployer
+    if: needs.deployer.outputs.reporte == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v7
+      - name: Attendre 9 h
+        run: |
+          attente=$(python3 -c 'from datetime import datetime; from deploy.deployer import PARIS, secondes_avant_livraison; print(secondes_avant_livraison(datetime.now(PARIS)))')
+          echo "attente avant la reprise : ${attente} s"
+          sleep "$attente"
+
+  deployer-reprise:
+    needs: [construire-et-publier, deployer, attendre-reprise]
+    if: needs.deployer.outputs.reporte == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    environment:
+      name: production
+      url: https://178-104-184-125.sslip.io
+    concurrency:
+      group: production
+      cancel-in-progress: false
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v7
+      - name: Livrer la même image après 9 h
+        # La MÊME empreinte que le travail `deployer`. Un nouveau code 75, impossible après 9 h, serait un échec.
+        uses: ./.github/actions/ordre-serveur
+        with:
+          ordre: livrer
+          argument: ${{ needs.construire-et-publier.outputs.empreinte }}
+          cle-ssh: ${{ secrets.DEPLOY_SSH_KEY }}
+          hote: ${{ secrets.DEPLOY_HOST }}
+          known-hosts: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          empreinte-bloquante: "true"
+          accepter-report: "false"

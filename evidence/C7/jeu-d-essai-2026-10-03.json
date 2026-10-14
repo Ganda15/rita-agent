@@ -1,0 +1,617 @@
+{
+ "fige_le": "2026-10-03",
+ "cas": [
+  {
+   "ticker": "AI.PA",
+   "price": 170.16,
+   "change_pct": 2.24,
+   "adtv20": 131989980.0,
+   "currency": "EUR",
+   "fraicheur_jours": 1,
+   "cotation_perimee": false,
+   "passages": [
+    {
+     "article_id": 1742,
+     "texte": "AIR LIQUIDE : Les résistances sont proches - Boursorama",
+     "titre": "AIR LIQUIDE : Les résistances sont proches - Boursorama",
+     "source": "Boursorama",
+     "lien": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPTDlFLTFYNlFoTXZ3bU9PcjNWSjJmc2h0TFVoV09SdHJQOHhSZjVtMzNIYmtiblRfeU9VVG9XTnFTdGVNRWtpODlFNGxXX2M5SlVUNEFMMDdGdU9WWmNaWEZDb2JkZWNnNkNRV0hsaXpqdk9yUUxiTG12WUlUdnBjcGpYVkFHSEJJRzNUZEI5YVpsbzVnN1hQcG1ua09LbzZLc2JXTW5ScmVXRkpWZnA5bFlNRzE1MXV1VWfSAb8BQVVfeXFMTnNFMVd2eV8zcnNfYXN0RWdFaUJQVmV1bC00dUdMMl9ZWEN6NTB0TUtCdFU3LVIwT1k5S3o2enZ0SDVFRWhPdnp4RERpWk5GenJlU1BCTGozMTF5SnpfQXNhcUFOblY5OEFlZ1JXdUJIbGhQMkpuaEpWbjRFdjRwdGw0SXNzekZLOWdmX0prY1A4VEhCNGlkdzVRZXg2UGUyZDZ2Qjl5U0tqWGFqdnNHeXZLTEdmNGNSbjF0ZGs5OHc?oc=5",
+     "publie_le": "2026-07-03T09:00:00+02:00",
+     "tickers": [
+      "AI.PA"
+     ],
+     "rang_dense": 8,
+     "rang_lexical": 3,
+     "distance_dense": 0.5527341961860657,
+     "score_lexical": 1.265
+    },
+    {
+     "article_id": 241,
+     "texte": "AIR LIQUIDE : Baisse en cours - Boursorama",
+     "titre": "AIR LIQUIDE : Baisse en cours - Boursorama",
+     "source": "Boursorama",
+     "lien": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxORGg4NHNBSXVkWWtzcVRkVll4M29XZmdlb1I0YlUxeE5qN0Yxb2RnZnFtT2tYMHV0STI2dzdpS2hONC1ueC1zWUFpOUlnTXUxdnU5aGhJY19NMWxlQjM4ak9qUHBVOV9wVGRKRnBRMjVYWnZoV0c5S3p0aHduSEstWmVoUlZland4TEd4WlpyWUgtaTVqSHQwYzAtOHQ1S2xnNjdPZE1VLXjSAa4BQVVfeXFMUDE3TUV5Qnl6MFFnN2tPNWFwdmR2QkxaeGhwWmpubTdTRGdXNFNva3ZYcU9KaXRJRDIwdWFrRmxQUWVjRGJhMkFZNVNKTzR6cHp1YU9BY3gzNWtYYk5hei1hblU5emJCU25CaERvS0xUNk9wbjBmNkxmbmlaUnhlbVJ2ZlNVTGU2ZTFFeTduM0ZPY29mUngzcWFaa0hKQllFajQwbERCVU5nUnJqaXlB?oc=5",
+     "publie_le": "2026-08-27T05:02:00+02:00",
+     "tickers": [
+      "AI.PA"
+     ],
+     "rang_dense": 11,
+     "rang_lexical": 1,
+     "distance_dense": 0.5568867921829224,
+     "score_lexical": 1.265
+    },
+    {
+     "article_id": 246,
+     "texte": "Attribution d’Actions Gratuites - Air Liquide",
+     "titre": "Attribution d’Actions Gratuites - Air Liquide",
+     "source": "Air Liquide",
+     "lien": "https://news.google.com/rss/articles/CBMia0FVX3lxTE90Yi10dGxmcHduanR6ME41VGFOUUFLTTQ2dUg3UU1tQ3oxNDBmNWNrUElvdEJZb3ZJc0Z5Yk5CRERqSmdxeUx1SGhIekpIQUhTVU11TUVLdWR6SFQ3YmQxYjNxcGVZTURFcnk4?oc=5",
+     "publie_le": "2026-06-01T11:33:58+02:00",
+     "tickers": [
+      "AI.PA"
+     ],
+     "rang_dense": 10,
+     "rang_lexical": 2,
+     "distance_dense": 0.556367039680481,
+     "score_lexical": 1.265
+    }
+   ],
+   "indicateurs": {
+    "ticker": "AI.PA",
+    "nom_officiel": "AIR LIQUIDE",
+    "devise": "EUR",
+    "statut_qualite": "OK",
+    "date_cours": "2026-10-02",
+    "cours": 170.16,
+    "fraicheur_jours": 1,
+    "perf_1j_pct": 2.24,
+    "perf_1s_pct": 1.59,
+    "perf_1m_pct": -1.35,
+    "perf_ytd_pct": 20.25,
+    "perf_1a_pct": 8.27,
+    "ma20": 167.98,
+    "ma50": 169.6408,
+    "adtv20": 131989980.0,
+    "distance_plus_haut_1a_pct": -6.64,
+    "cotation_perimee": false,
+    "volatilite_annualisee_pct": 21.18,
+    "drawdown_max_1a_pct": -12.24,
+    "rsi_14": 53.75
+   }
+  },
+  {
+   "ticker": "BNP.PA",
+   "price": 92.06,
+   "change_pct": 0.57,
+   "adtv20": 220918003.0,
+   "currency": "EUR",
+   "fraicheur_jours": 1,
+   "cotation_perimee": false,
+   "passages": [
+    {
+     "article_id": 446,
+     "texte": "GROUPE BNP PARIBAS: LITIGE SOUDAN DECLARATION DE BNP PARIBAS - Zonebourse Suisse",
+     "titre": "GROUPE BNP PARIBAS: LITIGE SOUDAN DECLARATION DE BNP PARIBAS - Zonebourse Suisse",
+     "source": "Zonebourse Suisse",
+     "lien": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOLU8yLTZQd3dsdDBjZTZIeDRJT1dDZktsbG5uelBlRllrdmpsc1dTWUlWb2lGTUZMRDFrMkp1N2t1emZHX1FuNU1YVE50OUpqQVZkTXVHeDIwV3k3aTc3UFV6VEFXdC1jNk1faFdfRVBRRGdoYjItZ3d6YTlybmRadkprd3Q1SS1lWTRkQkg1SF9XckxYd29naXBBQzg4NmtKWWM1bzZFYUxGRS1BMTc1MGVtQWtwVzExOEsw?oc=5",
+     "publie_le": "2026-08-30T18:08:05+02:00",
+     "tickers": [
+      "BNP.PA"
+     ],
+     "rang_dense": 0,
+     "rang_lexical": 1,
+     "distance_dense": 0.40115439891815186,
+     "score_lexical": 1.527
+    },
+    {
+     "article_id": 439,
+     "texte": "GROUPE BNP PARIBAS: LITIGE SOUDAN DECLARATION DE BNP PARIBAS - Boursorama",
+     "titre": "GROUPE BNP PARIBAS: LITIGE SOUDAN DECLARATION DE BNP PARIBAS - Boursorama",
+     "source": "Boursorama",
+     "lien": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxQZmN4NnJPUE1FczVlZ1RDcS1YSXNpMUNKZWdMeDZxMzFqVVhReFFBNHZlNEhSVVNYcGJCWjloLUdjY1FJSFhhZ0RCWEgycGRSd3czOW1FWWhsRWcteUxLa3p5SUhERGFhb2dFU2xpOFM2bFVjNzRobm56OEpUYm1sVzluLVBfZEprUGEtMDlxaHpWUGRETWVtak1qT1VKUXlLYkluLXpVVlA0N0QyYmFUSzhydHI0clF5YUtES3U2aERVWTJsM3dWVEdvTlBPeWFIbzVr0gHYAUFVX3lxTFBHa0FFVnRLOWgxZExWNndIX3A3SDZhQTdwbHVZQW1fOEQ0WjROa3pIUEdqQ3plUGlmdFVaejJERHpKSmgydGFHVnFpeE5UV2dqMmVicXVONGxvOGgwYXI1bW9tQ2l5V3o2c3FYRl9fSlZiSVltcExMTGN5eWFKRzFNTG80NWhBX25zaUE4dG5rTHp1TTBDTnJrdmxhcWFaQXF3Z3dIVGlFNjE0aDlsdk9tYVc4RTVwYlBTb2g0NFBkNUZud01YNWRabVpjR05ORldBRDhiR2RHRA?oc=5",
+     "publie_le": "2026-08-30T18:07:06+02:00",
+     "tickers": [
+      "BNP.PA"
+     ],
+     "rang_dense": 8,
+     "rang_lexical": 0,
+     "distance_dense": 0.4288855195045471,
+     "score_lexical": 1.569
+    },
+    {
+     "article_id": 804,
+     "texte": "BNP Paribas perd 0,18% - Boursier.com",
+     "titre": "BNP Paribas perd 0,18% - Boursier.com",
+     "source": "Boursier.com",
+     "lien": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNUi1TdmhSbzJkVlpJYnRuYU8tS2FfSkZtbmZDckJTaG5SZ1RFUzBES2w1aFpfbnRMUWJJaXg0MHJuUHZhaF8za2lBcmNBdVM4LUV5bWZGUTFESU9ZNGdZVnJSN3RxZkhscGs4bl9VQkZLeFRoSDRBa2M2OXJjWjlEZmY4ZkpXZ09mQUE?oc=5",
+     "publie_le": "2026-09-01T17:41:11+02:00",
+     "tickers": [
+      "BNP.PA"
+     ],
+     "rang_dense": 4,
+     "rang_lexical": 8,
+     "distance_dense": 0.4218250513076782,
+     "score_lexical": 1.306
+    }
+   ],
+   "indicateurs": {
+    "ticker": "BNP.PA",
+    "nom_officiel": "BNP PARIBAS",
+    "devise": "EUR",
+    "statut_qualite": "OK",
+    "date_cours": "2026-10-02",
+    "cours": 92.06,
+    "fraicheur_jours": 1,
+    "perf_1j_pct": 0.57,
+    "perf_1s_pct": -7.29,
+    "perf_1m_pct": -10.71,
+    "perf_ytd_pct": 15.71,
+    "perf_1a_pct": 22.26,
+    "ma20": 100.032,
+    "ma50": 104.7364,
+    "adtv20": 220918003.0,
+    "distance_plus_haut_1a_pct": -19.12,
+    "cotation_perimee": false,
+    "volatilite_annualisee_pct": 24.76,
+    "drawdown_max_1a_pct": -18.85,
+    "rsi_14": 26.95
+   }
+  },
+  {
+   "ticker": "MC.PA",
+   "price": 378.55,
+   "change_pct": -0.25,
+   "adtv20": 259273190.0,
+   "currency": "EUR",
+   "fraicheur_jours": 1,
+   "cotation_perimee": false,
+   "passages": [
+    {
+     "article_id": 468,
+     "texte": "Lvmh : L'activité de la mode et maroquinerie de LVMH laisse la Bourse sur sa faim, l'action chute de 7% - BFM Bourse",
+     "titre": "Lvmh : L'activité de la mode et maroquinerie de LVMH laisse la Bourse sur sa faim, l'action chute de 7% - BFM Bourse",
+     "source": "BFM Bourse",
+     "lien": "https://news.google.com/rss/articles/CBMi_AFBVV95cUxQa0ZMREhUekxEd3FqSFNiY1BvSzktSy1ta19wdE91VWYxd1g2QmMzeGRnVllpLVFfT3ZrSE5uNUY3VUZMQUFUb0plamtkc29lekZXMHBOaEgyaE0xek92SVhyS2ZWZWZQbnAtMHRHTjZsbmhNUVgxeFJCNkxNLURneVNWM1dvaXVVb2ZqdWozTFp2eVRTLVlBNEhqVXFVQTFobkxNY2hidG4yaHV2S2o4aDJjMzFBUktCdHEyTFBfUEZydUV6XzQzOW12OXY2M0QyaTB4U0VjLXdVSnFYZlRIOHRWaFZfZC1Vb3NMOHlHNlBxcWNXbXROa2Jydmw?oc=5",
+     "publie_le": "2026-01-28T09:00:00+01:00",
+     "tickers": [
+      "MC.PA"
+     ],
+     "rang_dense": 4,
+     "rang_lexical": 0,
+     "distance_dense": 0.4819452166557312,
+     "score_lexical": 1.317
+    },
+    {
+     "article_id": 734,
+     "texte": "Lvmh : Les marges de LVMH surprennent mais la croissance de la mode et maroquinerie est trop juste et la demande chinoise stagne, l'action est dans le rouge - BFM Bourse",
+     "titre": "Lvmh : Les marges de LVMH surprennent mais la croissance de la mode et maroquinerie est trop juste et la demande chinoise stagne, l'action est dans le rouge - BFM Bourse",
+     "source": "BFM Bourse",
+     "lien": "https://news.google.com/rss/articles/CBMixAJBVV95cUxOc3c1UFhHWXAtNnVIdGdVSWZOVGpERHhmQ3VYaEJOZU1kSEtERkx2ZV81dTVWbUNlME15OU9sdUJmb1d0QjFZYXoyYTVXc19LUDNRRHVWSmxIZzFqdW4wU1NhLUwzSF91RmxaUWxKVmxQOHJabWN3cmw1VFRaRUxkQlBKRU82VUpfUE1yMnhCNm1yc25pYThpbHNuYUJBZkFDbG10S1RnU0JfekZ3OXhUckwzMFB2R2dsRXRORkZaMnBHdDgwUDJIQ01IVkczOWtzLXdSYTUyQW1la1NoUlk3N0E5OHczTFVPRkJIQ0lkOHg5V3IwVW5WWGxJQmlzLWxISW40VnEydUxhSHBxcGF5WDZaSVBmcS1GdDhoR0N3RnMteW5SeHZsYU1GcDZjeGNGVC1WYXpnalVURHFTb0VXLUY5ZGs?oc=5",
+     "publie_le": "2026-07-28T09:00:00+02:00",
+     "tickers": [
+      "MC.PA"
+     ],
+     "rang_dense": 2,
+     "rang_lexical": 3,
+     "distance_dense": 0.47162890434265137,
+     "score_lexical": 1.181
+    },
+    {
+     "article_id": 282,
+     "texte": "Action LVMH : analyse, prévisions et avis en 2026 - Cafédelabourse",
+     "titre": "Action LVMH : analyse, prévisions et avis en 2026 - Cafédelabourse",
+     "source": "Cafédelabourse",
+     "lien": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPMk9kallkaHB3N1BSUDYzQkpTRnZ2OWpLUmxDVS1ucHAtZFExcjhwRUF5My1IOW1MWUpDbkh3SXJHOTFDZFJnQkVPV1RSYWYtYk9TN1ZiN2V6OWhleFc0OHk2S3liUGdLR1lPN3hnOF9lb3hsX2pMWnRxUFJTUG5XZzhn?oc=5",
+     "publie_le": "2026-07-28T09:00:00+02:00",
+     "tickers": [
+      "MC.PA"
+     ],
+     "rang_dense": 1,
+     "rang_lexical": 5,
+     "distance_dense": 0.4715700149536133,
+     "score_lexical": 1.135
+    }
+   ],
+   "indicateurs": {
+    "ticker": "MC.PA",
+    "nom_officiel": "LVMH MOET VUITTON",
+    "devise": "EUR",
+    "statut_qualite": "OK",
+    "date_cours": "2026-10-02",
+    "cours": 378.55,
+    "fraicheur_jours": 1,
+    "perf_1j_pct": -0.25,
+    "perf_1s_pct": -4.61,
+    "perf_1m_pct": -13.77,
+    "perf_ytd_pct": -40.06,
+    "perf_1a_pct": -28.52,
+    "ma20": 404.865,
+    "ma50": 438.61,
+    "adtv20": 259273190.0,
+    "distance_plus_haut_1a_pct": -41.2,
+    "cotation_perimee": false,
+    "volatilite_annualisee_pct": 22.5,
+    "drawdown_max_1a_pct": -41.0,
+    "rsi_14": 24.18
+   }
+  },
+  {
+   "ticker": "OR.PA",
+   "price": 372.75,
+   "change_pct": 0.27,
+   "adtv20": 125274739.0,
+   "currency": "EUR",
+   "fraicheur_jours": 1,
+   "cotation_perimee": false,
+   "passages": [
+    {
+     "article_id": 1523,
+     "texte": "L'Oréal perd 0,47% - Boursier.com",
+     "titre": "L'Oréal perd 0,47% - Boursier.com",
+     "source": "Boursier.com",
+     "lien": "https://news.google.com/rss/articles/CBMiekFVX3lxTE5FS0pSNkJ3ZlNPNTc1a3VXV0RhM2tQeTB0TlNzWVgxRHZvS1hFZGt3UDNLYUI5S1ZBR3hFWW1mMHdVS3VuQ1FsckxkVlVvMGhxMWtNNWkyMnBLSEVNZ29TUVptdFpfUWtXZ3l0ekF2WXk0cWRrY1p4SjBB?oc=5",
+     "publie_le": "2026-09-17T17:42:23+02:00",
+     "tickers": [
+      "OR.PA"
+     ],
+     "rang_dense": 2,
+     "rang_lexical": 0,
+     "distance_dense": 0.3964988589286804,
+     "score_lexical": 1.114
+    },
+    {
+     "article_id": 1534,
+     "texte": "L'Oréal finit à l'équilibre - Boursier.com",
+     "titre": "L'Oréal finit à l'équilibre - Boursier.com",
+     "source": "Boursier.com",
+     "lien": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNVzdrTkpWUmd2SHM0N0U5aF9QV3R4Wks2aVBlVm9PbTBNYlN6emMzdXd1ZlZYUkdQajI5TThpV2FQcUtIT1BGX255ZTJnemVuOGh1aUVQWEpPQzlvN2hMOFJ6WW5nMXFTM2QwdTdWWmdjQ1NBaDE3VmItNVUzUFhOM2xjTFBUc0pBUVh1d09kTmg3QQ?oc=5",
+     "publie_le": "2026-09-16T17:42:22+02:00",
+     "tickers": [
+      "OR.PA"
+     ],
+     "rang_dense": 3,
+     "rang_lexical": 1,
+     "distance_dense": 0.43514901399612427,
+     "score_lexical": 1.114
+    },
+    {
+     "article_id": 1527,
+     "texte": "L'OREAL : La tendance baissière peut reprendre - Boursorama",
+     "titre": "L'OREAL : La tendance baissière peut reprendre - Boursorama",
+     "source": "Boursorama",
+     "lien": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPTEpLZTRkWkEyRXRGQ0VHQUhMNDczM3BFb0Y2VFJyR1VZRDFnZmZEZWc4QlBXY1hHam9RZ1NVRUhBenBlSDZ6bjlndDhLX1VHdUtiV09XU21id0xLdHlKTzR1UFgwUVRIWl96WHBHSFNKOU9MczFvMFF1UmJ6T3VwYTZKV2F5VVpkOXRMemg2Q1ZpbGkySVN2TEZrUjFtWnhVeU8wd25xdDFYQlpxcXY2Z2c5aV8ybXJWNzRncVRLONIBxAFBVV95cUxOcFBIWDc0QUU5SnpKNTRnRkFwSmRnMDRzLVBvVVhSNU50Q0lPRW9kcUVsSExwRzAzZm5US2pSa05kR1FsN2lXVWZlaS1oNmhZdVUyLXR3SlRJYXVoTlIydmRrZlpmUU1USkx5QWxSMEhMS09MdUZuS3VXOWt6NENfbnYwSHAyZVZocGV3Tm9vZFEzbnRFcGV5NTZDR2xQYVF4d2VMckZ5eEgyYkNkQmFZU2N5TEgxZlhyRGstSXdvNnkxek9w?oc=5",
+     "publie_le": "2026-09-14T08:31:00+02:00",
+     "tickers": [
+      "OR.PA"
+     ],
+     "rang_dense": 6,
+     "rang_lexical": 3,
+     "distance_dense": 0.5186091661453247,
+     "score_lexical": 1.061
+    }
+   ],
+   "indicateurs": {
+    "ticker": "OR.PA",
+    "nom_officiel": "OREAL(L')",
+    "devise": "EUR",
+    "statut_qualite": "OK",
+    "date_cours": "2026-10-02",
+    "cours": 372.75,
+    "fraicheur_jours": 1,
+    "perf_1j_pct": 0.27,
+    "perf_1s_pct": -2.38,
+    "perf_1m_pct": -3.18,
+    "perf_ytd_pct": 4.22,
+    "perf_1a_pct": 1.57,
+    "ma20": 381.36,
+    "ma50": 382.65,
+    "adtv20": 125274739.0,
+    "distance_plus_haut_1a_pct": -7.04,
+    "cotation_perimee": false,
+    "volatilite_annualisee_pct": 21.14,
+    "drawdown_max_1a_pct": -14.71,
+    "rsi_14": 42.4
+   }
+  },
+  {
+   "ticker": "SAN.PA",
+   "price": 70.81,
+   "change_pct": -3.13,
+   "adtv20": 162734457.0,
+   "currency": "EUR",
+   "fraicheur_jours": 1,
+   "cotation_perimee": false,
+   "passages": [
+    {
+     "article_id": 252,
+     "texte": "Sanofi cède 1,29% - Boursier.com",
+     "titre": "Sanofi cède 1,29% - Boursier.com",
+     "source": "Boursier.com",
+     "lien": "https://news.google.com/rss/articles/CBMigwFBVV95cUxNcU5BMW9kWXlLaDdxdTM3bmRJY3VDazNGeThreXdXSVVUOVNZVTlNQjVTWWRjYjduUG1CTXc0OUZzNS01NUFRc1VXc2FYc1E2NUdFOTA3WmdpVWl6Z3BHQ3MzMHRJb0o2cTkzdHo4eFVMSThKVVZOOWJvWkJzeXEtTHRBdw?oc=5",
+     "publie_le": "2026-08-27T17:43:08+02:00",
+     "tickers": [
+      "SAN.PA"
+     ],
+     "rang_dense": 3,
+     "rang_lexical": 3,
+     "distance_dense": 0.44198763370513916,
+     "score_lexical": 1.164
+    },
+    {
+     "article_id": 1283,
+     "texte": "Sanofi abandonne 0,42% - boursier.com",
+     "titre": "Sanofi abandonne 0,42% - boursier.com",
+     "source": "boursier.com",
+     "lien": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNbTVlRVN6S2pUVzZrTkUyNjdCSVR1eUItbFJzQWdSODhHc0VudlRTZVFuZXpFVXpIUGxlSUMtcTBvYWJsNjZOSm43RXRVcGNSZXFJNG5QSlE0YmxLZU0wUFgzeFlQN1o4Q0dwbGhaZWlCeHVfRmlCWjNNSEZxVXBxS0JzMjNyZGJyN0E?oc=5",
+     "publie_le": "2026-09-11T17:43:19+02:00",
+     "tickers": [
+      "SAN.PA"
+     ],
+     "rang_dense": 0,
+     "rang_lexical": 8,
+     "distance_dense": 0.43512868881225586,
+     "score_lexical": 1.164
+    },
+    {
+     "article_id": 702,
+     "texte": "Sanofi abandonne 0,57% - Boursier.com",
+     "titre": "Sanofi abandonne 0,57% - Boursier.com",
+     "source": "Boursier.com",
+     "lien": "https://news.google.com/rss/articles/CBMiigFBVV95cUxPdHRJMkhZZkF4TzdDSzA1aVgxWXUySlA1SFFrd0JldUZQZVB6ZUhrZFJ5azRRaG1HMHIwUGFHZFh5eGRCaEc5NHBJcDlsYjRYSk9qbmdPVDRqWjlzUXBnZjFRWlViVEk3UGR6c0tWRG1jTW1KU1dGYUlBQkNDdGZvbjlPZ3VjdjlaVEE?oc=5",
+     "publie_le": "2026-08-31T17:43:10+02:00",
+     "tickers": [
+      "SAN.PA"
+     ],
+     "rang_dense": 2,
+     "rang_lexical": 7,
+     "distance_dense": 0.43977588415145874,
+     "score_lexical": 1.164
+    }
+   ],
+   "indicateurs": {
+    "ticker": "SAN.PA",
+    "nom_officiel": "SANOFI",
+    "devise": "EUR",
+    "statut_qualite": "OK",
+    "date_cours": "2026-10-02",
+    "cours": 70.81,
+    "fraicheur_jours": 1,
+    "perf_1j_pct": -3.13,
+    "perf_1s_pct": -1.37,
+    "perf_1m_pct": -8.23,
+    "perf_ytd_pct": -9.17,
+    "perf_1a_pct": -12.08,
+    "ma20": 73.588,
+    "ma50": 75.4376,
+    "adtv20": 162734457.0,
+    "distance_plus_haut_1a_pct": -17.97,
+    "cotation_perimee": false,
+    "volatilite_annualisee_pct": 20.55,
+    "drawdown_max_1a_pct": -17.33,
+    "rsi_14": 34.61
+   }
+  },
+  {
+   "ticker": "SU.PA",
+   "price": 303.0,
+   "change_pct": 3.55,
+   "adtv20": 224103437.0,
+   "currency": "EUR",
+   "fraicheur_jours": 1,
+   "cotation_perimee": false,
+   "passages": [
+    {
+     "article_id": 291,
+     "texte": "Schneider Electric prend 1,53% - Boursier.com",
+     "titre": "Schneider Electric prend 1,53% - Boursier.com",
+     "source": "Boursier.com",
+     "lien": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOV2FZb21IbmZCN0poT0kzaTRGSi03R29fUVAzXzBvc29VR1hra3JIYXBDT1d2ZHduS093Z1dHbzhXQXBMaWhtbnE0Y0c4aUJzOFdlUDA0cGx5MjBvVEltLW9iR3cxUUxWTFVGbVVRTTlCbEZiOHlRMFpISVFfZmN2Ylk3TW05NlJWLVZic0FreEs2TUNJ?oc=5",
+     "publie_le": "2026-08-25T17:43:00+02:00",
+     "tickers": [
+      "SU.PA"
+     ],
+     "rang_dense": 8,
+     "rang_lexical": 0,
+     "distance_dense": 0.5389530658721924,
+     "score_lexical": 1.212
+    },
+    {
+     "article_id": 1392,
+     "texte": "Schneider Electric gagne 2,76% - Boursier.com",
+     "titre": "Schneider Electric gagne 2,76% - Boursier.com",
+     "source": "Boursier.com",
+     "lien": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQTmZQQnV4WnBnNm1VZXNXRXB1YWlrd1o4M0VwRE4xWV9JeVVQdUlFZzlqM0hoallnMVhhQzliOTdpeFRGM0JTWVZHQUp2WGRXaGI0ODZubTY5VnRzd2VsUTZpdElMX1Q1SjZxLVNzNG1vblo2WUUzTURYOW4zTWstdkh6Q1RaSmlSR0MwZ29mbnlxclVR?oc=5",
+     "publie_le": "2026-09-17T17:43:23+02:00",
+     "tickers": [
+      "SU.PA"
+     ],
+     "rang_dense": 1,
+     "rang_lexical": 7,
+     "distance_dense": 0.45723170042037964,
+     "score_lexical": 1.212
+    },
+    {
+     "article_id": 1755,
+     "texte": "Schneider Electric gagne 3,24% - Boursier.com",
+     "titre": "Schneider Electric gagne 3,24% - Boursier.com",
+     "source": "Boursier.com",
+     "lien": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPUFRUWTYtSGUxVzJNMXFXMzc2QUx2U3pSUG5UMTBNNFBfU2dVV2ZJa0xoM0hQQ2pxWlFES3ltOWZ6SEhWSUVpVXRkczZHdklBM0ppdl93ZUlreE5oNGpIdjFSLUY4bkE3V0NjUTdHY19BeVNuZWJ6VW5oYkZRQUMtOHEwNUI2cm5iNHZqTEVuYTUxU0hQ?oc=5",
+     "publie_le": "2026-09-21T17:43:25+02:00",
+     "tickers": [
+      "SU.PA"
+     ],
+     "rang_dense": 0,
+     "rang_lexical": 10,
+     "distance_dense": 0.4554526209831238,
+     "score_lexical": 1.212
+    }
+   ],
+   "indicateurs": {
+    "ticker": "SU.PA",
+    "nom_officiel": "SCHNEIDER ELECTRIC",
+    "devise": "EUR",
+    "statut_qualite": "OK",
+    "date_cours": "2026-10-02",
+    "cours": 303.0,
+    "fraicheur_jours": 1,
+    "perf_1j_pct": 3.55,
+    "perf_1s_pct": 4.12,
+    "perf_1m_pct": 5.67,
+    "perf_ytd_pct": 29.82,
+    "perf_1a_pct": 22.85,
+    "ma20": 290.12,
+    "ma50": 291.333,
+    "adtv20": 224103437.0,
+    "distance_plus_haut_1a_pct": -2.98,
+    "cotation_perimee": false,
+    "volatilite_annualisee_pct": 37.45,
+    "drawdown_max_1a_pct": -17.76,
+    "rsi_14": 59.93
+   }
+  },
+  {
+   "ticker": "VIRI.PA",
+   "price": 84.6,
+   "change_pct": -1.28,
+   "adtv20": 3011051.0,
+   "currency": "EUR",
+   "fraicheur_jours": 1,
+   "cotation_perimee": false,
+   "passages": [],
+   "indicateurs": {
+    "ticker": "VIRI.PA",
+    "nom_officiel": "CGG BS",
+    "devise": "EUR",
+    "statut_qualite": "OK",
+    "date_cours": "2026-10-02",
+    "cours": 84.6,
+    "fraicheur_jours": 1,
+    "perf_1j_pct": -1.28,
+    "perf_1s_pct": -8.24,
+    "perf_1m_pct": -4.51,
+    "perf_ytd_pct": -18.26,
+    "perf_1a_pct": 32.71,
+    "ma20": 90.9975,
+    "ma50": 89.482,
+    "adtv20": 3011051.0,
+    "distance_plus_haut_1a_pct": -47.58,
+    "cotation_perimee": false,
+    "volatilite_annualisee_pct": 50.41,
+    "drawdown_max_1a_pct": -50.39,
+    "rsi_14": 40.68
+   }
+  },
+  {
+   "ticker": "CO.PA",
+   "price": 0.186,
+   "change_pct": 9.09,
+   "adtv20": 39951.0,
+   "currency": "EUR",
+   "fraicheur_jours": 1,
+   "cotation_perimee": false,
+   "passages": [
+    {
+     "article_id": 842,
+     "texte": "\"Avant, quand les magasins étaient fermés le dimanche, on attendait le lundi\" mais aujourd'hui \"on achète sur les plateformes de vente en ligne\": le patron du groupe Casino appelle les candidats à la présidentielle à défendre les commerces de proximité. Dans un entretien accordé à La Tribune Dimanche, le directeur général du groupe Casino a invité les candidats à la prochaine élection présidentielle à \"s'emparer du sujet du maintien des commerces de centre-ville et en zones rurales\".",
+     "titre": "\"Avant, quand les magasins étaient fermés le dimanche, on attendait le lundi\" mais aujourd'hui \"on achète sur les plateformes de vente en ligne\": le patron du groupe Casino appelle les candidats à la présidentielle à défendre les commerces de proximité",
+     "source": "BFM Éco",
+     "lien": "https://www.bfmtv.com/economie/entreprises/avant-quand-les-magasins-etaient-fermes-le-dimanche-on-attendait-le-lundi-mais-aujourd-hui-on-achete-sur-les-plateformes-de-vente-en-ligne-le-patron-du-groupe-casino-appelle-les-candidats-a-la-presidentielle-a-defendre-les-commerces-de-proximite_AD-202609060151.html",
+     "publie_le": "2026-09-06T10:45:25+02:00",
+     "tickers": [
+      "CO.PA"
+     ],
+     "rang_dense": 0,
+     "rang_lexical": 0,
+     "distance_dense": 0.6228549480438232,
+     "score_lexical": -0.392
+    }
+   ],
+   "indicateurs": {
+    "ticker": "CO.PA",
+    "nom_officiel": "CASINO GUICHARD",
+    "devise": "EUR",
+    "statut_qualite": "OK",
+    "date_cours": "2026-10-02",
+    "cours": 0.186,
+    "fraicheur_jours": 1,
+    "perf_1j_pct": 9.09,
+    "perf_1s_pct": 6.96,
+    "perf_1m_pct": 2.76,
+    "perf_ytd_pct": -31.72,
+    "perf_1a_pct": -60.44,
+    "ma20": 0.179,
+    "ma50": 0.1853,
+    "adtv20": 39951.0,
+    "distance_plus_haut_1a_pct": -61.7,
+    "cotation_perimee": false,
+    "volatilite_annualisee_pct": 45.54,
+    "drawdown_max_1a_pct": -75.1,
+    "rsi_14": 55.71
+   }
+  },
+  {
+   "ticker": "ALMKT.PA",
+   "price": 0.1242,
+   "change_pct": -11.29,
+   "adtv20": 52721.0,
+   "currency": "EUR",
+   "fraicheur_jours": 1,
+   "cotation_perimee": false,
+   "passages": [],
+   "indicateurs": {
+    "ticker": "ALMKT.PA",
+    "nom_officiel": "MAUNA KEA TECHNOL.",
+    "devise": "EUR",
+    "statut_qualite": "OK",
+    "date_cours": "2026-10-02",
+    "cours": 0.1242,
+    "fraicheur_jours": 1,
+    "perf_1j_pct": -11.29,
+    "perf_1s_pct": -15.85,
+    "perf_1m_pct": -21.09,
+    "perf_ytd_pct": 57.22,
+    "perf_1a_pct": 50.0,
+    "ma20": 0.1487,
+    "ma50": 0.1524,
+    "adtv20": 52721.0,
+    "distance_plus_haut_1a_pct": -46.35,
+    "cotation_perimee": false,
+    "volatilite_annualisee_pct": 46.61,
+    "drawdown_max_1a_pct": -43.03,
+    "rsi_14": 21.24
+   }
+  },
+  {
+   "ticker": "HSBA.L",
+   "price": 14.422,
+   "change_pct": 0.36,
+   "adtv20": 298901408.0,
+   "currency": "GBP",
+   "fraicheur_jours": 1,
+   "cotation_perimee": false,
+   "passages": [],
+   "indicateurs": {
+    "ticker": "HSBA.L",
+    "nom_officiel": "HSBC HOLDINGS",
+    "devise": "GBP",
+    "statut_qualite": "OK",
+    "date_cours": "2026-10-02",
+    "cours": 14.422,
+    "fraicheur_jours": 1,
+    "perf_1j_pct": 0.36,
+    "perf_1s_pct": -4.63,
+    "perf_1m_pct": -6.67,
+    "perf_ytd_pct": 21.05,
+    "perf_1a_pct": 38.25,
+    "ma20": 15.178,
+    "ma50": 15.2976,
+    "adtv20": 298901408.0,
+    "distance_plus_haut_1a_pct": -10.42,
+    "cotation_perimee": false,
+    "volatilite_annualisee_pct": 22.83,
+    "drawdown_max_1a_pct": -18.13,
+    "rsi_14": 34.48
+   }
+  }
+ ]
+}

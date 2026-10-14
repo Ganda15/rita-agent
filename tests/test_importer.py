@@ -348,3 +348,131 @@ def test_les_trois_valeurs_radiees_sont_marquees_delistee(tmp_path, monkeypatch,
     valeurs, _ = importer.charger_univers()
 
     assert valeurs[ticker]["statut"] == "DELISTEE"
+
+
+# --- Sprint 2, tâche 5 : le mode « démonstration » (`--demo`) --------------------------------------------------------
+# La base de démonstration porte une marque (le commentaire de la base). L'import refuse toute base qui contient déjà
+# des données sans porter cette marque : les tickers seuls ne disent pas si la destination est une vraie base.
+
+from pathlib import Path as _Path
+
+from psycopg2 import sql as _sql
+
+DOSSIER_DEMO = _Path(__file__).resolve().parent.parent / "data" / "demo"
+TABLES_DU_SCHEMA = ["devise", "valeur", "alias_valeur", "cotation", "position", "taux_change", "macro_observation",
+                    "article", "memory_audit", "mcp_calls"]
+
+
+def _texte(requete) -> str:
+    """Le texte d'une requête, qu'elle soit une chaîne ou composée avec `psycopg2.sql`."""
+    if isinstance(requete, str):
+        return requete
+    if isinstance(requete, _sql.Composed):
+        return "".join(_texte(partie) for partie in requete.seq)
+    if isinstance(requete, _sql.Identifier):
+        return ".".join(f'"{s}"' for s in requete.strings)
+    if isinstance(requete, _sql.Literal):
+        return repr(requete.wrapped)
+    return requete.string
+
+
+class FauxCurseurDemo:
+    """Répond aux requêtes du mode démonstration comme le ferait une base avec ces tables remplies et cette marque."""
+
+    def __init__(self, tables_remplies=(), marque=None, rowcount=1):
+        self.tables_remplies, self.marque, self.rowcount_insert = set(tables_remplies), marque, rowcount
+        self.executions, self._resultat, self.rowcount = [], [], 0
+
+    def execute(self, requete, params=None):
+        texte = _texte(requete)
+        self.executions.append(texte)
+        self.rowcount = 0
+        if "shobj_description" in texte:
+            self._resultat = [(self.marque,)]
+        elif "information_schema.tables" in texte:
+            self._resultat = [(t,) for t in TABLES_DU_SCHEMA]
+        elif texte.startswith("SELECT EXISTS"):
+            table = texte.split("FROM", 1)[1].strip().strip(')').strip('"')
+            self._resultat = [(table in self.tables_remplies,)]
+        elif "current_database()" in texte:
+            self._resultat = [("rita",)]
+        elif texte.startswith("COMMENT ON DATABASE"):
+            self.marque = importer.MARQUE_DEMO
+        elif texte.lstrip().startswith("INSERT"):
+            self.rowcount = self.rowcount_insert
+
+    def fetchone(self):
+        return self._resultat[0]
+
+    def fetchall(self):
+        return self._resultat
+
+    def inserts(self):
+        return [t for t in self.executions if t.lstrip().startswith("INSERT")]
+
+    def comments(self):
+        return [t for t in self.executions if t.startswith("COMMENT ON DATABASE")]
+
+
+def test_demo_refuse_une_base_reelle_avec_les_memes_tickers():
+    # Une base réelle qui ne contiendrait que OR.PA, MC.PA et AIR.PA ressemble au jeu : seule la marque tranche.
+    cur = FauxCurseurDemo(tables_remplies={"valeur", "cotation"})
+    with pytest.raises(importer.BaseNonDemo):
+        importer.preparer_base_demo(cur)
+    assert cur.inserts() == [] and cur.comments() == []
+
+
+@pytest.mark.parametrize("table", ["taux_change", "macro_observation", "memory_audit", "mcp_calls"])
+def test_demo_refuse_une_base_non_vide_sans_marque(table):
+    cur = FauxCurseurDemo(tables_remplies={table})
+    with pytest.raises(importer.BaseNonDemo):
+        importer.preparer_base_demo(cur)
+    assert cur.comments() == []
+
+
+def test_demo_ignore_les_devises_de_reference():
+    # db/schema.sql remplit `devise` : une base neuve n'est jamais vide au sens strict.
+    cur = FauxCurseurDemo(tables_remplies={"devise"})
+    importer.preparer_base_demo(cur)
+    assert cur.marque == importer.MARQUE_DEMO
+
+
+def test_demo_marque_une_base_vide_puis_importe():
+    cur = FauxCurseurDemo()
+    importer.preparer_base_demo(cur)
+    importer.importer_demo(cur, DOSSIER_DEMO)
+    commentaire = cur.executions.index(cur.comments()[0])
+    premiere_insertion = cur.executions.index(cur.inserts()[0])
+    assert commentaire < premiere_insertion
+    assert "'rita-demonstration'" in cur.comments()[0] and '"rita"' in cur.comments()[0]
+
+
+def test_demo_accepte_une_base_deja_marquee():
+    cur = FauxCurseurDemo(tables_remplies={"valeur", "cotation"}, marque=importer.MARQUE_DEMO)
+    importer.preparer_base_demo(cur)
+    assert cur.comments() == []
+
+
+def test_importer_demo_rend_les_lignes_inserees():
+    cur = FauxCurseurDemo()
+    assert importer.importer_demo(cur, DOSSIER_DEMO) == {"valeurs": 3, "cotations": 222, "articles": 6, "positions": 3}
+
+
+def test_importer_demo_deux_fois_n_insere_rien():
+    # Deuxième exécution : tout existe déjà, chaque insertion touche 0 ligne (ON CONFLICT DO NOTHING).
+    cur = FauxCurseurDemo(marque=importer.MARQUE_DEMO, rowcount=0)
+    assert importer.importer_demo(cur, DOSSIER_DEMO) == {"valeurs": 0, "cotations": 0, "articles": 0, "positions": 0}
+    assert all("ON CONFLICT DO NOTHING" in t or "NOT EXISTS" in t for t in cur.inserts())
+
+
+def test_importer_demo_complet_marque_importe_et_valide_en_une_transaction():
+    # Ajouté après le code (lignes que la couverture montrait non exercées) : la marque puis l'import, puis commit.
+    cur = FauxCurseurDemo()
+    conn = MagicMock()
+    conn.__enter__.return_value = conn
+    conn.cursor.return_value.__enter__.return_value = cur
+    with patch.object(importer.psycopg2, "connect", return_value=conn) as connexion:
+        bilan = importer.importer_demo_complet("postgresql://demo", DOSSIER_DEMO)
+    connexion.assert_called_once_with("postgresql://demo")
+    assert bilan["cotations"] == 222 and cur.marque == importer.MARQUE_DEMO
+    conn.commit.assert_called_once()

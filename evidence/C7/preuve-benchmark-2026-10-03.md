@@ -1,0 +1,190 @@
+# Preuve C7 : première mesure du banc des fournisseurs (03/10/2026)
+
+> Plan : `../../docs/PLAN-C7-benchmark.md`, options D1 à D3 = A retenues par Era le 03/10 (« ok do it »).
+> **Quatre passages le 03/10** : le premier sur le prompt d'avant la carte #57 (`*-avant-57.*`), le deuxième sur le
+> prompt corrigé (`*-v2-prompt-57.*`), le troisième, **qui fait foi**, sur le prompt qui porte les 13 indicateurs
+> (§8, fichiers `*-v3-13-indicateurs.*`), le quatrième, **qui fait foi**, avec Azure AI Foundry enfin disponible : la
+> **première comparaison** (§9, fichiers sans suffixe). Jeu figé `jeu-d-essai-2026-10-03.json` (l'ancien jeu sans
+> indicateurs est `-v1-sans-indicateurs`). Le §3 donne le deuxième passage, le §8 le troisième, le §9 la comparaison.
+> Script : `evals/benchmark_fournisseurs.py`, écrit test d'abord (`tests/test_benchmark_fournisseurs.py`,
+> `tests/test_benchmark_outillage.py`). Brut : `resultats-2026-10-03.jsonl` (30 lignes), `resume-2026-10-03.json`,
+> jeu figé `jeu-d-essai-2026-10-03.json`. Notation du français à faire par Era : `notes-francais-2026-10-03.csv`
+> (30 textes mélangés, sans fournisseur), clé de correspondance dans le fichier `-cle.csv`, à ouvrir après.
+
+## 1. Ce qui a été mesuré, et ce qui ne pouvait pas l'être
+
+Trois fournisseurs sondés, dans l'ordre de la cascade de `src/llm.py` :
+
+| Fournisseur | Modèle configuré | Sonde | Conséquence |
+|---|---|---|---|
+| Azure AI Foundry | `claude-opus-4-8` | `KeyError: AZURE_FOUNDRY_API_KEY` | **indisponible pour la mesure** : aucune clé sur le poste |
+| Anthropic, API directe | `claude-sonnet-5` | `TypeError: Could not resolve authentication method` | **indisponible pour la mesure** : aucune clé dans l'environnement du poste |
+| OpenRouter | `anthropic/claude-sonnet-4.5` | répond | **mesuré** : 10 cas × 3 répétitions = 30 appels |
+
+**Il n'y a donc pas de comparaison le 03/10 : un seul fournisseur a pu être mesuré.** Le banc est en place, le
+jeu est figé, la méthode a tourné ; la comparaison exige que les deux autres clés soient posées (Era) et, selon la
+réponse du formateur (plan §2), un modèle d'un autre éditeur par OpenRouter (D1).
+
+## 2. Le jeu d'essai figé
+
+Dix cas construits par le code réel (`agents.scout.collect`, `rag.recherche.rechercher` avec la question du
+graphe), figés le 03/10 : les sept valeurs du portefeuille (AI.PA, BNP.PA, MC.PA, OR.PA, SAN.PA, SU.PA, VIRI.PA),
+la plus forte hausse de la dernière séance (CO.PA, +9,09 %), la plus forte baisse (ALMKT.PA, −11,29 %), une valeur
+cotée à Londres en livres (HSBA.L). Trois cas sans aucun article retrouvé (VIRI.PA, ALMKT.PA, HSBA.L), sept avec un à
+trois passages. Prompt identique à celui du rédacteur (`agents.analyst.construire_prompt`, test de contrat),
+`max_tokens` 500.
+
+## 3. Résultats, OpenRouter seul
+
+| Mesure | Valeur | Lecture |
+|---|---|---|
+| Disponibilité | 30 / 30, Wilson 95 % [0,89 ; 1,00] | aucune erreur ni délai dépassé (les deux passages) |
+| Conformité AMF (`guardrails/sortie.py`) | 30 / 30, [0,89 ; 1,00] | aucun texte retenu par le garde-fou ; sur 30 appels l'intervalle reste large, on ne conclut pas « 100 % » |
+| Fidélité aux faits fournis (cours présent, sens de la variation non inversé) | 30 / 30, [0,89 ; 1,00] | heuristique automatique ; les chiffres non fournis restent à relire par Era avec la notation du français |
+| Latence, médiane et p95 | 5,63 s et 7,39 s (premier passage : 5,79 s et 6,95 s) | appels de 5 à 7,4 s ; même ordre que le briefing réel de 14 h 48 (5,6 s) |
+| Jetons, moyenne entrée et sortie | 506 et 196 (premier passage : 491 et 212) | 3 à 5 phrases comme demandé |
+| Coût, prix public OpenRouter du 03/10 (3 USD / 15 USD par million de jetons, `https://openrouter.ai/api/v1/models`) | 0,1339 USD pour 30 briefings, soit 0,0045 USD par briefing (premier passage : 0,1396 USD) | sept briefings par jour sur un an : de l'ordre de 12 USD ; les champs du brut s'appellent `cout_usd` |
+
+Trois textes relus à la main (CO.PA, HSBA.L, SAN.PA) : le cours et la variation fournis sont repris tels quels, le
+volume est présenté comme une moyenne sur 20 séances, l'absence d'actualité est dite plutôt qu'inventée, et un
+article de septembre est daté comme tel au lieu d'être présenté comme récent (règle R13 du prompt).
+
+## 4. Ce que cette mesure ne dit pas
+
+- Rien sur Foundry ni sur Anthropic en direct : indisponibles, pas mauvais.
+- Rien sur un modèle d'un autre éditeur : hors périmètre tant que D1 n'est pas tranchée avec le formateur.
+- Rien sur la qualité du français : la grille à trois niveaux est à remplir par Era, à l'aveugle, dans le CSV.
+- Le coût est en dollars, prix public du jour ; Langfuse affiche encore 0 pour ce modèle (nom hors grille).
+- Trente appels sur un même jour : la variance d'un fournisseur d'un jour à l'autre n'est pas mesurée.
+
+## 5. Un défaut trouvé en mesurant, et corrigé : INC-006 bis
+
+Construire le jeu appelle `rag.recherche.rechercher`, qui ouvre une étape de trace (`garde-fou-entree`) ; hors d'un
+briefing, cette étape devient une trace racine. Résultat : **22 traces parasites** écrites dans le projet Langfuse de
+production entre 13 h 56 et 13 h 57 UTC (dix pour la construction du jeu, douze pour une vérification préalable des
+tickers), même défaut qu'INC-006 par un autre chemin. Corrigé le jour même : le script coupe le traçage
+(`LANGFUSE_TRACING_ENABLED=false`) avant tout import du code de RITA, un test le fige
+(`test_le_banc_coupe_le_tracage_avant_de_toucher_au_code_de_rita`), et les 22 traces ont été supprimées par l'API le soir même (compte relu : 23 traces, les 15 factices du 02/10 et les 8 réelles)
+(voir le post-mortem, `../C21/INC-006-tests-ecrivaient-en-production.md`, complément du 03/10). Les 30 appels du
+banc, eux, n'ont écrit aucune trace : ils appellent les fonctions de fournisseur une à une, sans la cascade tracée.
+
+## 7. Second passage : la carte #57, trouvée par une relecture extérieure, corrigée, remesurée
+
+Le prompt nommait « Volume moyen sur 20 séances » une grandeur qui est `AVG(volume × clôture)`, des **capitaux en
+devise** (carte #57, ouverte le 27/09, rappelée par une relecture extérieure le 03/10 au soir). Compté sur les 30
+textes du premier passage : **5 textes** parlaient d'« unités » ou de « titres échangés » pour ce chiffre, aucun ne
+disait « capitaux ». Le contrôle de fidélité du banc ne pouvait pas le voir : il vérifie le cours et le sens de la
+variation, pas l'unité. Correction test d'abord dans `agents/analyst.py` (le prompt dit « Capitaux échangés en
+moyenne par séance sur 20 séances : 1 200 000 EUR » et interdit « un volume du jour » comme « un nombre de
+titres »), puis le banc relancé sur le même jeu figé, 0,13 USD. Après : **0 texte** sur 30 parle d'unités ou de
+titres, 7 nomment les capitaux, et HSBA.L dit « près de 299 millions de livres sterling ». Les cinq mentions
+restantes du mot « volume » désignent la liquidité en général, pas ce chiffre. Le premier passage est conservé dans
+les fichiers `*-avant-57.*` : un chiffre mesuré sur un prompt faux reste une mesure, datée, et elle montre ce que la
+correction a changé.
+
+## 8. Troisième passage : les 13 indicateurs dans le prompt
+
+Décision d'Era le 03/10 au soir : le scout calculait treize indicateurs et le rédacteur n'en recevait que quatre
+nombres (cours, variation du jour, capitaux moyens, devise). Le prompt reçoit désormais les neuf autres (performances
+1 semaine, 1 mois, depuis le 1er janvier, 1 an ; moyennes mobiles 20 et 50 ; distance au plus haut sur 1 an ;
+volatilité annualisée ; drawdown maximal ; RSI 14, rejoint au dictionnaire du scout ce soir), avec une règle en toutes
+lettres : des faits à décrire, jamais des signaux. Tests d'abord (prompt, scout, graphe, banc), jeu refigé avec les
+indicateurs, banc relancé : 0,18 USD.
+
+| Mesure | Deuxième passage (4 nombres) | Troisième passage (13 indicateurs) |
+|---|---|---|
+| Réussis, conformes AMF, fidèles | 30 / 30 chacun, Wilson [0,89 ; 1,00] | 30 / 30 chacun, Wilson [0,89 ; 1,00] |
+| Latence, médiane et p95 | 5,63 s et 7,39 s | 6,34 s et 7,30 s |
+| Jetons, entrée et sortie (moyenne) | 506 et 196 | 797 et 242 |
+| Coût par briefing (prix public du jour) | 0,0045 USD | 0,0060 USD |
+| Textes qui citent le RSI | 0 (il n'était pas fourni) | 30 sur 30 |
+| Textes qui citent la volatilité, une performance à 1 mois ou 1 an | 0 | 25 et 25 |
+| Textes qui citent une moyenne mobile ; le drawdown | 0 | 8 ; 0 |
+| Mots de signal (acheter, vendre, survente, surachat, sous-évalué, point d'entrée) | 0 | 0 |
+
+Lecture. Le modèle s'empare des indicateurs : le briefing dit maintenant « recul de 4,61 % sur la semaine et de
+13,77 % sur le mois », « 41,20 % en dessous de son plus haut annuel », « volatilité élevée (22,50 % annualisée) ».
+Aucun texte ne franchit la ligne AMF, et aucun mot de signal n'apparaît. Un point à surveiller, dit tel quel : sur
+MC.PA, « le RSI à 24,2 témoigne d'une forte pression vendeuse récente » est une lecture de l'indicateur, pas une
+recommandation ; le garde-fou de sortie l'accepte, et c'est le genre de formulation que le jeu d'évaluation du
+garde-fou devra contenir pour que la limite reste mesurée. Le coût monte d'un tiers (300 jetons d'entrée de plus),
+la latence d'une demi-seconde en médiane. Le drawdown n'est jamais repris : le mot ne parle pas à un particulier,
+le libellé du prompt pourra le dire autrement.
+
+## 9. Quatrième passage : la première comparaison, GPT par Foundry contre Claude par OpenRouter
+
+Era a posé la clé de sa ressource Azure AI Foundry le 03/10 au soir (point compatible OpenAI, déploiement `gpt-5.4`,
+gratuit pour le projet ; `src/llm.py` adapté test d'abord, un premier 400 « `max_tokens` unsupported » corrigé en
+`max_completion_tokens`). Même jeu figé, mêmes 13 indicateurs dans le prompt, trois répétitions ; Anthropic en direct
+reste indisponible (pas de clé). Coût du passage : 0,18 USD côté OpenRouter, 0 pour Foundry.
+
+| Mesure | Azure AI Foundry, `gpt-5.4-2026-03-05` | OpenRouter, `anthropic/claude-sonnet-4.5` |
+|---|---|---|
+| Disponibilité | 30 / 30, Wilson [0,89 ; 1,00] | 30 / 30, [0,89 ; 1,00] |
+| Conformité AMF (garde-fou de sortie) | 30 / 30, [0,89 ; 1,00] | 30 / 30, [0,89 ; 1,00] |
+| Fidélité aux faits fournis | 30 / 30, [0,89 ; 1,00] | 30 / 30, [0,89 ; 1,00] |
+| Latence, médiane et p95 | **3,21 s** et **10,69 s** (maximum 11,9 s) | 6,33 s et 7,20 s (maximum 7,3 s) |
+| Jetons, entrée et sortie (moyenne) | 644 et 204 | 797 et 243 |
+| Coût par briefing | **0 pour le projet** (ressource du candidat) ; **0,0047 USD au prix public** (2,50 et 15,00 USD par million, billet Microsoft du 05/03/2026, relevé le 03/10 dans `prix-et-environnement-2026-10-03.md`) | 0,0060 USD au prix public du 03/10 (3,00 et 15,00 USD par million) |
+| Longueur moyenne du texte | 714 caractères | 707 caractères |
+| Textes qui citent le RSI ; la volatilité | 29 ; 17 | 28 ; 22 |
+| Mots de signal | 0 | 0 |
+
+**Lecture, sans conclure plus que les chiffres.** Sur ce que le banc mesure automatiquement, les deux services sont
+**indiscernables** : trente textes conformes et fidèles chacun, des intervalles identiques. Ce qui les distingue :
+la latence (Foundry deux fois plus rapide en médiane, mais une queue plus longue, un appel sur vingt dépasse 10 s,
+quand OpenRouter reste entre 5 et 7,3 s) ; le coût (zéro pour le projet contre 0,006 USD ; au prix public, 0,0047 contre 0,0060 USD par
+briefing, soit 22 % de moins pour `gpt-5.4`, surtout par les jetons : relevé daté dans `prix-et-environnement-2026-10-03.md`) ; et le style, que seule la notation à l'aveugle
+d'Era peut départager (fichier `notes-francais-2026-10-03.csv`, 60 textes mélangés, les deux services confondus).
+Les deux modèles lisent les 13 indicateurs de la même façon : HSBA.L chez Foundry, « sous ses moyennes mobiles à 20
+séances (15,18 GBP) et 50 séances (15,30 GBP), RSI 14 à 34,5 », sans un mot de conseil.
+
+**Recommandation provisoire, en attendant la notation du français** : Foundry en premier (gratuit pour le projet,
+conformité et fidélité égales, médiane plus courte), OpenRouter en secours, ce qui est la configuration actuelle de
+`LLM_ORDRE`. Ce qui ferait changer la décision : une note de français nettement plus basse pour Foundry, une queue de
+latence qui gênerait la démonstration (un appel sur vingt au-delà de 10 s), ou la fin de la gratuité de la ressource.
+
+**Ce qui manque encore pour clore C7** : la notation du français (Era) ; Anthropic en direct, jamais mesuré faute de
+clé ; la variance d'un jour à l'autre (tout est mesuré le 03/10) ; l'origine des 60 appels du quatrième passage, qui
+n'était pas journalisée (voir §10 pour ce qui l'est désormais, sur un passage séparé).
+
+**Relevé le 03/10 au soir, après ce passage** (`prix-et-environnement-2026-10-03.md`) : le prix public des deux modèles, daté et sourcé ;
+l'information environnementale : Microsoft publie des chiffres d'entreprise vérifiés (FY25 : 21,1 millions de tonnes
+équivalent CO2, +62 % sur 2020 ; 100 % d'électricité renouvelable directe ; PUE 1,17), **aucun des deux éditeurs ne
+publie quoi que ce soit par modèle** (OpenAI : un seul chiffre moyen de 0,34 Wh par requête, sans méthode ; Anthropic :
+rien). C7.5 reste donc une approche par l'absence : l'ordre de grandeur va de 0,3 à 18 Wh par briefing selon la source,
+et le fichier le dit au lieu de choisir.
+
+## 10. L'origine de chaque appel est journalisée (03/10, soir)
+
+Le déploiement Foundry d'Era est en Global Standard : Azure peut traiter un appel dans n'importe quelle région, donc la
+région est le résultat de l'appel, pas une propriété de la ressource. Le banc ne la lisait pas. Ajouté test d'abord (6
+tests rouges, puis verts) : `Reponse.origine` (`src/traces.py`), lue dans l'en-tête `x-ms-region` pour Foundry et dans le
+champ `provider` du corps pour OpenRouter (`src/llm.py`) ; une colonne `origine` dans chaque ligne brute et un compte
+`origines` par fournisseur dans le résumé (`evals/benchmark_fournisseurs.py`). Aucun seuil touché ; suite complète :
+803 passed, 2 xfailed, couverture 94,99 % (seuil 90).
+
+**Mesure réelle**, une répétition sur les dix cas figés, Foundry et OpenRouter, vers un dossier séparé pour ne pas
+écraser le quatrième passage (`evidence/C7/passage-origine-2026-10-03/`, 20 appels, 0,059 USD au prix public côté OpenRouter, 0 côté Foundry) :
+
+| Fournisseur | Modèle servi | Origine journalisée | Appels |
+|---|---|---|---|
+| Foundry | `gpt-5.4-2026-03-05` | **Sweden Central** | 10 sur 10 |
+| OpenRouter | `anthropic/claude-sonnet-4.5` | **Amazon Bedrock** | 10 sur 10 |
+
+À retenir, sans en tirer plus : (1) la région Foundry est maintenant mesurée appel par appel, et la sonde de tout à
+l'heure est confirmée ; (2) OpenRouter n'a pas servi Claude par Anthropic mais par Amazon Bedrock, ce qui est une
+information nouvelle pour le jury (le "Claude d'OpenRouter" et le "Claude d'Anthropic en direct" de la cascade ne
+sont pas le même hébergeur) ; (3) le champ ne nomme pas la région de Bedrock, elle reste inconnue ; (4) dix appels
+ne disent rien de la fréquence à laquelle Azure ou OpenRouter changent de région ou d'hébergeur : seul un journal sur
+plusieurs jours le dira, et chaque futur passage l'écrira désormais sans rien faire de plus. Les 60 appels du quatrième
+passage restent sans origine ; ce passage-ci ne les remplace pas et n'est pas à noter (aucun fichier de notation
+conservé).
+
+## 6. Commandes
+
+```
+C:\Python314\python.exe -X utf8 -m evals.benchmark_fournisseurs --construire AI.PA BNP.PA MC.PA OR.PA SAN.PA SU.PA VIRI.PA CO.PA ALMKT.PA HSBA.L --sortie evidence/C7
+C:\Python314\python.exe -X utf8 -m evals.benchmark_fournisseurs --jeu evidence/C7/jeu-d-essai-2026-10-03.json --repetitions 3 --plafond 5 --sortie evidence/C7
+C:\Python314\python.exe -X utf8 -m pytest tests/test_benchmark_fournisseurs.py tests/test_benchmark_outillage.py -q
+```

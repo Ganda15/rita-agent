@@ -1,0 +1,21 @@
+# Configuration de gitleaks (sprint 2, tâche 3), lue par le travail `secrets` de .github/workflows/livraison.yml.
+#
+# Les règles par défaut de gitleaks sont gardées. Les seules exceptions sont les CINQ fausses clés de test du dépôt,
+# chacune écrite en entier et ancrée (^...$) : aucun motif large qui laisserait passer une vraie clé.
+# tests/test_gitleaks_config.py le vérifie, y compris sur des clés tirées au hasard.
+#
+# Les vrais secrets déjà révoqués ne sont PAS ici : ce ne sont pas des faux positifs. Leurs empreintes sont dans
+# .gitleaksignore, avec la fiche d'incident evidence/C21/INC-008-cles-mistral-dans-l-historique.md.
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Fausses clés de test de RITA : publiques par construction, elles ne donnent accès à rien"
+regexes = [
+  '''^cle-de-test-integration-continue-32c$''',        # livraison.yml : porte de tests avant la construction
+  '''^cle-de-verification-au-demarrage-32c$''',        # livraison.yml : démarrage de l'image vérifiée
+  '''^cle-de-test-smoke-ui-32-caracteres-x$''',        # tests/test_smoke_ui.py : smoke test de l'interface
+  '''^cle-de-reconstruction-ci-32-caracteres$''',      # docs/sprint-2/PLAN-TRAVAIL.md, tâche 6 (exemple)
+  '''^remplacer-par-une-cle-generee-de-32-octets$''',  # .env.example : valeur à remplacer par chacun
+]

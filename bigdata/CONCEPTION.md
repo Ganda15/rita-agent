@@ -300,7 +300,7 @@ Spark SQL, et surtout **ce que chacune déclenche** dans le moteur.
 | Grandeur | Valeur | Vérifiée par |
 |---|---|---|
 | Partitions | **11** *(`annee=2016` → `annee=2026`)* | `ls -d data/bigdata/ohlcv/annee=*` |
-| Profondeur | **10 ans pile** — 28/07/2016 → 29/07/2026, **3 652 jours** | min/max de la colonne `date` |
+| Profondeur | **10 ans pile** : 29/07/2016 → 29/07/2026, **3 652 jours** (dates locales de la place ; corrigé le 03/10/2026, INC-005 : la colonne `date` est un horodatage UTC, 2016-07-28 22:00 UTC est le 29/07 à Paris) | min/max de la colonne `date`, convertis dans le fuseau de la place |
 | Taille du jeu | **13 972 899 octets** = **13,3 Mio** = **14,0 Mo** | somme des 11 fichiers `.parquet` |
 | Lignes | **276 168** | `explorer.py` |
 | Tests | **16 verts** en 14 s | `pytest tests/test_spark.py` |
@@ -317,7 +317,7 @@ vaut la peine d'être sue :
 
 | | |
 |---|---|
-| Première séance | **2016-07-28** |
+| Première séance | **2016-07-29** (horodatage Parquet `2016-07-28 22:00+00:00`, soit minuit à Paris ; lu comme le 28/07 jusqu'à INC-005 du 27/09/2026) |
 | Dernière séance | **2026-07-29** |
 | Durée | **3 652 jours = 10,00 ans** |
 
@@ -325,7 +325,7 @@ Le téléchargement utilise `period="10y"` depuis le 29/07/2026. Une fenêtre de
 **commence en juillet** traverse **onze années civiles** :
 
 ```
-2016 : du 28 juillet      →  ~5 mois   (11 980 lignes)
+2016 : du 29 juillet      →  ~5 mois   (11 980 lignes)
 2017 → 2025 : pleines     →   9 ans    (~27 500 lignes chacune)
 2026 : jusqu'au 29 juillet →  ~7 mois   (15 903 lignes)
                               ─────────

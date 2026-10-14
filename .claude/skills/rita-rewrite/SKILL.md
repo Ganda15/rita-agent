@@ -28,7 +28,7 @@ ita-agent`
   (`Ganda15/rita-agent`) — `docs/`, `evidence/C<n>/`, `ETAT.md` (présent), `CONTINUITE.md` (décisions),
   `CHANGELOG.md` (passé). Le dossier Desktop `RITA PROJET PRO` et le dépôt `rita-agent-certif` sont des archives.
 - Vault Obsidian (MCP obsidian) — le récit, pas la source :
-  - `Projets/RITA/07-Journal/` — journal daté ; `Projets/RITA/` — oraux, notes
+  - `Projets/RITA/07-Journal/` : journal daté ; `Projets/RITA/` : notes
   - `Notes-Formation/Examen-RNCP/` — référentiel, Livrables E1–E5, Rapports E1–E5, guides
   - `Notes-Formation/Briefs/` — briefs de formation à mapper sur RITA
 - Fichier d'état de la réécriture : `ETAT.md` de ce dépôt (l'ancien `RITA-REWRITE-STATE.md` est archivé)
@@ -38,7 +38,7 @@ ita-agent`
    rapports E1–E5, guides), skill `projet-rncp` (critères C1–C21), docs officiels Wild Code School / Simplon.
 2. Docs de ce dépôt : `docs/rapports/`, `docs/indicateurs/CONCEPTION.md`, `bigdata/CONCEPTION.md`, `CONTINUITE.md`
    (les anciens RAPPORT-PROJET-V0 / RITA-V2-ARCHITECTURE de `rita-agent-certif` sont archivés).
-3. Ensuite seulement : les autres documents (conception, oraux, brouillons, archives).
+3. Ensuite seulement : les autres documents (conception, brouillons, archives).
 
 ## Décisions déjà actées (2026-07-17, relues le 20/09/2026)
 1. ~~Le code source RITA est dans Obsidian~~ — **périmé** : depuis le 28/07/2026 le code est dans ce dépôt, Obsidian garde le journal.

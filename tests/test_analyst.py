@@ -19,15 +19,18 @@ def test_generate_briefing_appelle_le_llm_et_retourne_le_texte():
     assert "AUCUNE recommandation" in prompt_produit(mock_llm)
 
 
-def test_le_prompt_nomme_le_volume_comme_une_moyenne_20_seances():
-    """Le modèle ne doit jamais pouvoir écrire « volume du jour » sur une moyenne."""
+def test_le_prompt_nomme_les_capitaux_moyens_avec_leur_devise_et_jamais_un_volume():
+    """Carte #57 : `adtv20` est AVG(volume × clôture), des capitaux en devise, pas un nombre de titres.
+    Le prompt disait « Volume moyen » : le modèle écrivait « 299 millions d'unités » (banc C7 du 03/10, HSBA.L).
+    Le nom dit la mesure, et la devise est à côté du nombre ; le mot « volume » ne doit plus nommer ce chiffre."""
     with patch("agents.analyst.generer_texte", return_value="x") as mock_llm:
         generate_briefing(ticker="MC.PA", price=457.5, change_pct=-1.99,
                           adtv20=1_200_000.0, currency="EUR")
 
     prompt = prompt_produit(mock_llm)
-    assert "Volume moyen sur 20 séances" in prompt
-    assert "JAMAIS le volume moyen 20 séances comme le volume du jour" in prompt
+    assert "Capitaux échangés en moyenne par séance sur 20 séances : 1,200,000 EUR" in prompt
+    assert "Volume moyen sur 20 séances" not in prompt
+    assert "ni comme un volume du jour, ni comme un nombre de titres" in prompt
 
 
 def test_un_adtv20_absent_ne_produit_pas_un_zero_invente():
@@ -125,3 +128,65 @@ def test_le_prompt_ne_pretend_jamais_que_les_articles_sont_recents():
     assert "Articles récents" not in prompt
     assert "Articles retrouvés" in prompt
     assert "vérifie leur date" in prompt
+
+
+# --- plan C7 (03/10/2026) : le prompt se construit sans appeler le modèle --------------------------
+
+def test_construire_prompt_est_exactement_ce_que_le_redacteur_envoie():
+    """Le banc C7 doit mesurer les fournisseurs sur le prompt réel, pas sur une copie qui dériverait."""
+    from agents.analyst import construire_prompt
+    arguments = dict(ticker="MC.PA", price=378.55, change_pct=-0.25, adtv20=1234.0, currency="EUR",
+                     fraicheur_jours=1, cotation_perimee=False, passages=[])
+    with patch("agents.analyst.generer_texte", return_value="ok") as generer:
+        generate_briefing(**arguments)
+    assert generer.call_args.args[0] == construire_prompt(**arguments)
+    assert generer.call_args.kwargs.get("max_tokens") == 500
+
+
+# --- Les 13 indicateurs dans le prompt (décision d'Era, 03/10/2026) ---------------------------------
+#
+# Le scout calculait treize indicateurs et le rédacteur n'en recevait que quatre nombres (cours, variation
+# du jour, capitaux moyens, devise). Les neuf autres vivaient sur l'écran 2 sans jamais atteindre le modèle.
+
+INDICATEURS = {"perf_1s_pct": -4.61, "perf_1m_pct": -13.77, "perf_ytd_pct": -40.06, "perf_1a_pct": -28.52, "ma20": 404.865, "ma50": 438.61, "distance_plus_haut_1a_pct": -41.2, "volatilite_annualisee_pct": 22.5, "drawdown_max_1a_pct": -41.0, "rsi_14": 38.4}
+
+
+def _prompt_avec(indicateurs):
+    with patch("agents.analyst.generer_texte", return_value="x") as mock_llm:
+        generate_briefing(ticker="MC.PA", price=378.55, change_pct=-0.25, adtv20=259273190.0,
+                          currency="EUR", fraicheur_jours=1, indicateurs=indicateurs)
+    return prompt_produit(mock_llm)
+
+
+def test_les_neuf_autres_indicateurs_entrent_dans_le_prompt_avec_leur_unite():
+    prompt = _prompt_avec(INDICATEURS)
+    assert "Indicateurs calculés sur l'historique" in prompt
+    for attendu in ("1 semaine : -4,61 %", "1 mois : -13,77 %", "depuis le 1er janvier : -40,06 %", "1 an : -28,52 %",
+                    "Moyenne mobile 20 séances : 404.87 EUR", "Moyenne mobile 50 séances : 438.61 EUR",
+                    "plus haut sur 1 an : -41,20 %", "Volatilité annualisée : 22,50 %",
+                    "Drawdown maximal sur 1 an : -41,00 %", "RSI 14 : 38.4"):
+        assert attendu in prompt, attendu
+
+
+def test_un_indicateur_absent_est_dit_non_disponible_jamais_zero():
+    prompt = _prompt_avec({"perf_1m_pct": -13.77})
+    assert "1 mois : -13,77 %" in prompt
+    assert "RSI 14 : non disponible" in prompt and "Volatilité annualisée : non disponible" in prompt
+    assert "RSI 14 : 0" not in prompt
+
+
+def test_les_indicateurs_sont_des_faits_a_decrire_jamais_des_signaux():
+    """La contrainte AMF, répétée là où le risque naît : un RSI ou une moyenne mobile se lisent
+    comme des signaux dans la presse financière ; le prompt l'interdit en toutes lettres."""
+    prompt = _prompt_avec(INDICATEURS)
+    assert "Ces indicateurs sont des faits à décrire, jamais des signaux" in prompt
+    assert "ne tire d'aucun d'eux une recommandation d'achat ou de vente" in prompt
+    assert "RSI" in prompt
+
+
+def test_sans_dictionnaire_d_indicateurs_le_prompt_reste_celui_d_avant():
+    """Compatibilité : un appelant qui ne fournit pas les indicateurs (banc C7 sur un jeu figé ancien,
+    tests existants) obtient le prompt d'avant, sans bloc vide ni « non disponible » à la chaîne."""
+    prompt = _prompt_avec(None)
+    assert "Indicateurs calculés" not in prompt
+    assert "non disponible" not in prompt

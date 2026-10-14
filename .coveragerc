@@ -11,7 +11,7 @@
 #    le lecteur conclut que le seuil n'existe pas.
 
 [run]
-source = agents, api, bigdata, db, evals, graph, guardrails, indicateurs, pipelines, sources, src
+source = agents, api, bigdata, db, deploy, evals, graph, guardrails, indicateurs, pipelines, sources, src
 
 omit =
     # ⚠️ Les FICHIERS DE TESTS sont exclus, et c'est le point le plus important

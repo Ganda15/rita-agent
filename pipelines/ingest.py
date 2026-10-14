@@ -99,8 +99,16 @@ def etape_taux_change(cur, simulation: bool,
             b.rejetees += 1
             b.details.append(f"{devise} : {type(erreur).__name__}")
 
-    # L'euro vaut 1 euro. Évident — mais sans cette ligne, la jointure de valorisation
-    # ne trouve aucun taux pour les positions en EUR et retombe sur le COALESCE.
+    # Carte #55 (03/10/2026), même défaut que `fred` corrigé le 27/09 : chaque devise en échec
+    # est attrapée ci-dessus, mais si les quatre échouent l'étape passait pour réussie sans une
+    # ligne écrite, et la valorisation en euros tournait sur un taux ancien sans alerte.
+    # Succès partiel conservé (une devise suffit) ; zéro ligne reçue = échec déclaré.
+    if not lignes:
+        b.erreur = "aucun taux BCE recu (" + "; ".join(b.details or ["aucune devise"]) + ")"
+        return b
+
+    # L'euro vaut 1 euro. Évident, mais sans cette ligne la jointure de valorisation
+    # ne trouve aucun taux pour les positions en EUR (taux manquant, plan 65).
     # Une ligne PAR jour présent : la jointure cherche le taux du jour, pas « un » taux.
     for jour in sorted({l[1] for l in lignes}):
         lignes.append(("EUR", jour, 1.0))

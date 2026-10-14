@@ -42,7 +42,7 @@ permissions:
 
 jobs:
   ouvrir-ou-commenter:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Préparer le titre et le corps de l'issue
@@ -59,11 +59,15 @@ jobs:
             nom="$ALERTE_MANUELLE"
             source="déclenchement manuel (bouton Run workflow)"
             detail="$DETAIL_MANUEL"
+            gravite=""
           else
-            # Le nom de l'alerte, quel que soit le champ que Langfuse utilise ; sinon un nom générique.
-            nom=$(printf '%s' "$CHARGE_UTILE" | jq -r '.name // .alertName // .alert.name // .title // "alerte Langfuse"')
+            # Langfuse met le nom dans .payload.message.title, précédé de la gravité
+            # (« [ALERT] RITA : ... », constaté le 04/10 sur l'issue #77). On retire la gravité :
+            # le titre de l'issue reste le même pour une alerte donnée, quel que soit son état.
+            nom=$(printf '%s' "$CHARGE_UTILE" | jq -r '.payload.message.title // .name // .alertName // .title // "alerte Langfuse"' | sed -E 's/^\[[A-Z]+\] //')
+            gravite=$(printf '%s' "$CHARGE_UTILE" | jq -r '.payload.severity // empty')
             source="Langfuse (repository_dispatch, type alerte-langfuse)"
-            detail=""
+            detail=$(printf '%s' "$CHARGE_UTILE" | jq -r '.payload.message.body // empty')
           fi
           # Un titre STABLE par alerte : c'est lui qui permet de retrouver l'issue déjà ouverte.
           titre="Incident : alerte Langfuse « ${nom} »"
@@ -75,6 +79,7 @@ jobs:
             echo "|---|---|"
             echo "| Source | ${source} |"
             echo "| Alerte | ${nom} |"
+            [ -n "$gravite" ] && echo "| Gravité | ${gravite} |"
             [ -n "$detail" ] && echo "| Détail | ${detail} |"
             echo "| Exécution | ${LIEN_EXECUTION} |"
             echo

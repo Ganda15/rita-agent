@@ -83,6 +83,7 @@ def _rediger(state: RitaState) -> str:
         fraicheur_jours=state["fraicheur_jours"],
         cotation_perimee=state["cotation_perimee"],
         passages=state["passages"],
+        indicateurs=state.get("indicateurs") or None,
     )
 
 

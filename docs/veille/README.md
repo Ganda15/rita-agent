@@ -35,13 +35,31 @@ presse.
 | **Créneau** | **lundi, 09h00 → 10h00** |
 | **Durée** | 1 heure — le minimum exigé par le critère |
 | **Sortie** | une note datée dans ce dossier, une par semaine |
-| **Rappel** | tâche planifiée `veille-hebdo-securite-llm` (hebdomadaire, lundi 09h00) |
+| **Rappel** | aucune tâche planifiée : une tâche `veille-hebdo-securite-llm` avait été annoncée ici, elle **n'a jamais existé** sur le poste (vérifié le 24/08 et le 03/10/2026, `Get-ScheduledTask` ; incident INC-004). Le relevé se fait à la main, le lundi ou en rattrapage, et chaque relevé porte sa date |
 
-⚠️ **Ce que la tâche planifiée fait, et ce qu'elle ne fait pas.** Elle **prépare le terrain** :
-elle relève les nouveautés des sources ci-dessous et dépose une liste de candidats. Elle
-**n'écrit pas la note à la place d'Era** — la sélection, le jugement de fiabilité et la
-conclusion « ce que ça change dans RITA » sont le travail de veille lui-même. Une note
-produite automatiquement ne prouverait aucune compétence.
+**État réel de la récurrence au 11/10/2026**, lu dans ce dossier (un trou se voit, on ne le bouche pas) :
+
+| Semaine ISO | Candidats relevés | Note écrite | Quand, et comment |
+|---|---|---|---|
+| S33 (10 au 16/08) | ✅ | ✅ | créneau tenu le vendredi 14/08 |
+| S34 (17 au 23/08) | ✅ | ✅ | créneau tenu le lundi 17/08 |
+| S35 (24 au 30/08) | ✅ (relevé du 25/08) | ✅ | rédigée en rattrapage le 08/09, l'en-tête le dit |
+| S36 (31/08 au 06/09) | ✅ (relevé du 31/08) | ✅ | rédigée en rattrapage le 08/09, l'en-tête le dit |
+| S37 (07 au 13/09) | ✅ (relevé du 08/09) | 🔴 aucune | carte #31 |
+| S38, S39 (14 au 27/09) | 🔴 aucun | 🔴 aucune | carte #31 : deux semaines sans séance, à dire tel quel |
+| S40 (28/09 au 04/10) | ✅ (relevé du 28/09, fenêtre élargie au 14/09) | 🔴 à écrire par Era | carte #30 |
+| S41 (05 au 11/10) | ✅ (relevé du 11/10, fenêtre élargie au 29/09) | ✅ rédigée en rattrapage le 11/10, partagée à la promo le 11/10 (`_JOURNAL-DES-ENVOIS.md`, envoi 3) | créneau du lundi 05/10 non tenu ; relevé fait le dimanche 11/10, et dit |
+
+Synthèse des quatre notes : `Veille-C6-synthese-S33-a-S36.pdf` (§6). Partage : un seul, Discord le 16/08, sans
+capture des réponses à ce jour (`_JOURNAL-DES-ENVOIS.md`, `../../evidence/C6/README.md`).
+
+
+⚠️ **Ce que le relevé fait, et ce qu'il ne fait pas.** Il **prépare le terrain** : les nouveautés
+des sources ci-dessous sont relevées (au besoin avec l'assistant de développement, qui lit les
+flux et les pages) et déposées dans `_candidats-AAAA-Sxx.md`, avec la période balayée, la date
+du relevé et les sources balayées. Il **n'écrit pas la note à la place d'Era** — la sélection, le
+jugement de fiabilité et la conclusion « ce que ça change dans RITA » sont le travail de veille
+lui-même. Une note produite automatiquement ne prouverait aucune compétence.
 
 ---
 
@@ -84,14 +102,21 @@ y compris celles qu'on garde malgré un défaut.
 
 ## 4. L'outil d'agrégation, et son budget
 
-**Choix : les flux RSS, lus par le module que le projet possède déjà** — `sources/rss.py`
-(httpx + feedparser, testé par `tests/test_rss.py`).
+**Choix : les flux RSS et Atom des sources du §3, relevés à la main** (lecteur de flux ou
+navigateur), et consignés dans un fichier `_candidats-AAAA-Sxx.md` par semaine : période balayée,
+date du relevé, sources balayées, un bloc par candidat avec son lien primaire.
+
+> ⚠️ **Corrigé le 03/10/2026.** Ce paragraphe affirmait que l'outil de la veille était
+> `sources/rss.py`, le module de collecte de RITA. C'est faux : ce module lit des flux
+> **financiers** (BFM Économie, La Tribune, Le Monde Économie, Google Actualités) pour les
+> briefings, et **aucune** des sources du §3 n'y est configurée (vérifié dans `sources/rss.py`).
+> Le dire ici plutôt que de le laisser découvrir à un évaluateur.
 
 | Critère | Réponse |
 |---|---|
 | **Budget** | **0 €** — RSS est un format ouvert, aucun abonnement, aucune API payante |
 | **Cohérence avec les sources** | les 5 sources principales publient toutes un flux RSS ou Atom |
-| **Cohérence avec le projet** | c'est **le code de RITA**, déjà écrit et déjà testé — rien de nouveau à maintenir |
+| **Cohérence avec le projet** | les relevés sont **versionnés dans le dépôt**, lisibles sans outil ; aucun code à maintenir pour la veille |
 
 **Pourquoi pas un agrégateur du commerce** (Feedly, Inoreader) : payant au-delà de quelques
 flux, et il faudrait justifier une dépense pour une fonction que le projet sait déjà faire.
@@ -104,14 +129,14 @@ Un second outil existe **hors du dépôt** : `C:\Users\kanda\Desktop\Veille-IA\`
 ne le mentionnait pas, ce qui laissait un évaluateur devant deux outils pour un seul besoin,
 sans savoir lequel fait foi. **Tranché le 15/08/2026.**
 
-| | `sources/rss.py` — **dans le dépôt** | `Veille-IA` — **hors dépôt** |
+| | relevé manuel, `_candidats-*.md` — **dans le dépôt** | `Veille-IA` — **hors dépôt** |
 |---|---|---|
 | **Rôle pour C6** | ✅ **l'outil de la veille C6** — celui qui produit la preuve | ❌ **hors C6** — veille personnelle d'éveil |
 | **Thématique** | sécurité des agents LLM, injection de prompt | IA en finance, IA agentique, outils de dev (`config.yaml`, `focus_weights`) |
-| **Sources** | les flux RSS des 5 sources pesées au §3 | Google News, Hacker News, DuckDuckGo, arXiv (`src/websearch.py`) |
+| **Sources** | les flux et pages des 5 sources pesées au §3, relevés à la main | Google News, Hacker News, DuckDuckGo, arXiv (`src/websearch.py`) |
 | **Sortie** | une liste de candidats — **Era écrit la note** | top-10 quotidien sur Telegram, puis diapositives et script oral **rédigés par un LLM** |
 | **Budget** | 0 € | 0 € (OpenRouter, modèle gratuit) |
-| **Versionné et testé** | ✅ dépôt Git, `tests/test_rss.py` | ❌ ni versionné, ni testé |
+| **Versionné et testé** | ✅ relevés et notes dans le dépôt Git ; rien à tester, il n'y a pas de code | ❌ ni versionné, ni testé |
 
 **Pourquoi `Veille-IA` ne peut pas être l'outil de C6** — trois raisons, dont une rédhibitoire :
 
@@ -203,6 +228,8 @@ docs/veille/
 ├── _MODELE-note-hebdomadaire.md       le gabarit
 ├── _JOURNAL-DES-ENVOIS.md             la trace des partages (§5.2)
 └── 2026-S33-injection-de-prompt.md    une note par semaine : AAAA-Sxx-sujet.md
+└── Veille-C6-synthese-S33-a-S36.md     synthèse mensuelle : page de garde + les quatre notes S33 à S36, concaténées par `scripts/synthese_veille.py`
+└── Veille-C6-synthese-S33-a-S36.pdf    son rendu (`scripts/rendre_pdf.py`), le format partageable ; produit le 08/09/2026, regénéré le 03/10 après correction des étiquettes de semaine
 ```
 
 Le numéro de semaine ISO rend la **récurrence lisible d'un coup d'œil** : un trou dans la

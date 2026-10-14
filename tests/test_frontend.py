@@ -106,7 +106,7 @@ def test_le_rendu_n_utilise_jamais_innerhtml():
     ('lang="fr"', "RGAA 8.3 — langue de la page"),
     ("<caption", "RGAA 5.4 — titre du tableau"),
     ('scope="col"', "RGAA 5.7 — en-têtes de colonnes"),
-    ('aria-live="polite"', "RGAA 4.x — annonce des changements d'état"),
+    ('aria-live="polite"', "RGAA 7.5 — messages de statut annoncés"),
     ('role="status"', "zone de statut identifiée"),
 ])
 def test_les_marqueurs_d_accessibilite_sont_presents(marqueur, regle):
@@ -156,7 +156,7 @@ def test_l_ecran_indicateurs_n_utilise_jamais_innerhtml():
     ('lang="fr"', "RGAA 8.3 — langue de la page"),
     ('scope="col"', "RGAA 5.7 — en-têtes de colonne"),
     ("<caption", "RGAA 5.4 — titre du tableau"),
-    ('aria-live="polite"', "RGAA 12.x — annonce des changements de statut"),
+    ('aria-live="polite"', "RGAA 7.5 — messages de statut annoncés"),
     ('role="status"', "zone de statut identifiée"),
     ('aria-current="page"', "page courante signalée dans la navigation"),
     ('aria-controls="tableau-indicateurs"', "le filtre est relié au tableau qu'il modifie"),
@@ -422,3 +422,86 @@ def test_un_montant_sans_taux_s_affiche_indisponible_jamais_zero():
 def test_le_total_dit_combien_de_positions_sont_sans_taux():
     code = code_sans_commentaires("app.js")
     assert "positions_sans_taux" in code
+
+
+# --- Écran 3 : le briefing (C10, 03/10/2026) -------------------------------------------------------
+#
+# Jusqu'ici l'interface servait les deux écrans de données ; `/briefing`, le seul point de terminaison
+# qui expose le modèle, ne se demandait que par curl, la passerelle MCP ou la documentation interactive.
+# Le rapport E3 le déclarait comme premier manque de C10. Même dispositif que les deux autres écrans :
+# clé en sessionStorage, 4 états, textContent seulement, aucune information portée par la seule couleur.
+
+BRIEFING_HTML = (FRONTEND / "briefing.html").read_text(encoding="utf-8")
+BRIEFING_JS = (FRONTEND / "briefing.js").read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("fichier", ["briefing.html", "briefing.js"])
+def test_l_ecran_briefing_est_servi(client, fichier):
+    assert client.get(f"/{fichier}").status_code == 200
+
+
+def test_les_trois_ecrans_se_relient(client):
+    for page in ("index.html", "indicateurs.html", "briefing.html"):
+        html = client.get(f"/{page}").text
+        for cible in ("index.html", "indicateurs.html", "briefing.html"):
+            if cible != page:
+                assert f'href="{cible}"' in html, f"{page} ne mène pas à {cible}"
+        assert 'aria-current="page"' in html
+
+
+def test_l_ecran_briefing_appelle_le_point_de_terminaison_du_modele_en_post_avec_la_cle():
+    assert '"/briefing"' in BRIEFING_JS
+    assert 'method: "POST"' in BRIEFING_JS
+    assert '"X-API-Key"' in BRIEFING_JS
+
+
+def test_aucune_cle_d_api_dans_le_code_de_l_ecran_briefing():
+    code = code_sans_commentaires("briefing.js") + BRIEFING_HTML
+    assert "RITA_API_KEY" not in code
+    assert not re.search(r"['\"][A-Za-z0-9_-]{32,}['\"]", code), "une clé en dur ?"
+
+
+def test_l_ecran_briefing_n_utilise_jamais_innerhtml():
+    assert "innerHTML" not in code_sans_commentaires("briefing.js")
+
+
+@pytest.mark.parametrize("marqueur, regle", [
+    ('<label for="cle">', "RGAA 11.1 : le champ de clé a une étiquette"),
+    ('<label for="ticker">', "RGAA 11.1 : le champ de ticker a une étiquette"),
+    ('aria-live="polite"', "RGAA 7.5 : le statut est annoncé aux lecteurs d'écran"),
+    ('<nav aria-label=', "RGAA 12.6 : la navigation est une zone nommée"),
+    ('aria-current="page"', "bonne pratique : la page courante est marquée"),
+])
+def test_les_marqueurs_d_accessibilite_de_l_ecran_3(marqueur, regle):
+    assert marqueur in BRIEFING_HTML, regle
+
+
+def test_l_avertissement_amf_est_sur_l_ecran_briefing():
+    assert "Aucune recommandation d'achat ou de vente" in BRIEFING_HTML
+
+
+def test_le_verdict_du_garde_fou_est_dit_en_texte_pas_seulement_en_couleur():
+    code = code_sans_commentaires("briefing.js")
+    assert "conforme_amf" in code
+    assert "retenu par le garde-fou" in code, "un texte refusé est dit avec des mots"
+    assert "motifs_amf" in code, "les motifs du refus sont montrés"
+
+
+def test_un_ticker_inconnu_est_dit_en_clair_et_une_cle_refusee_est_oubliee():
+    code = code_sans_commentaires("briefing.js")
+    assert "502" in code and "introuvable" in code
+    assert "403" in code and "sessionStorage.removeItem" in code
+
+
+def test_le_texte_du_modele_est_rendu_en_paragraphes_sans_html():
+    code = code_sans_commentaires("briefing.js")
+    assert 'createElement("p")' in code and "textContent" in code
+
+
+def test_l_ecran_briefing_dit_que_la_redaction_prend_du_temps():
+    code = code_sans_commentaires("briefing.js")
+    assert "secondes" in code, "un appel au modèle dure 5 à 15 s : le dire, sinon l'écran paraît figé"
+
+
+def test_l_identifiant_de_requete_est_montre_pour_le_support():
+    assert "X-Request-ID" in code_sans_commentaires("briefing.js")
