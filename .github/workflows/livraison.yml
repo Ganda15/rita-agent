@@ -234,6 +234,12 @@ jobs:
           docker run --rm --entrypoint sh rita-api:verification -c 'test ! -e /app/.env'
           echo "/app/.env absent de l'image"
 
+      - name: Vérifier que l'image embarque ses fichiers de déploiement
+        # Le script du serveur extrait ces deux fichiers de l'image livrée (tâche 8) : sans eux, aucune bascule.
+        run: |
+          docker run --rm --entrypoint sh rita-api:verification -c 'test -f /app/deploy/docker-compose.yml && test -f /app/deploy/compose.prod.yml'
+          echo "fichiers de déploiement présents dans l'image"
+
       - name: Arrêter le conteneur de vérification
         if: always()
         run: docker rm -f verification || true

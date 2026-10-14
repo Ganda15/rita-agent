@@ -88,6 +88,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app
 
+# Sprint 2 : l'image embarque ses fichiers Compose de déploiement ; le script du serveur les en extrait, si bien
+# qu'une empreinte d'image désigne le code ET sa configuration Compose (le .env reste sur le serveur).
+COPY --chown=rita:rita docker-compose.yml deploy/compose.prod.yml ./deploy/
+
 # Sprint 2 : la version servie, lue par `/health`. La chaîne passe le commit et la date de construction
 # (`--build-arg`) ; sans eux, « inconnu ». Placés en fin d'étape : à chaque commit, seules ces dernières couches
 # se reconstruisent, les dépendances restent en cache. Aucun secret ici (contrôlé par la tâche 3).

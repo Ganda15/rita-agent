@@ -430,9 +430,12 @@ def test_health_sans_version_annonce_inconnu(monkeypatch):
     inchangé, sans tentative de restauration (exception décidée le 14/10, spec § 5.1 et § 11). **(Après l'atelier)** :
     l'active devient `Version("rita-api:avant-chaine", "<dossier>/sauvegardes/avant-chaine", "aout")` et le retour
     automatique vers août est géré. Le retour manuel ignore le créneau.
-  - `main(argv: list[str]) -> int` : lit `SSH_ORIGINAL_COMMAND`, prend le verrou (`attente_max` : 600 s pour
-    `livrer`, 900 s pour `revenir`, qui attend donc la fin d'une bascule en cours), refuse si une opération est
-    inachevée, puis appelle `livrer`, `revenir` ou affiche `empreinte_du_script()`.
+  - `main(environ, docker, dossier, maintenant, http, verrou, dormir, source_env) -> int` (dépendances injectables
+    pour les tests), dans cet ordre (relecture du 14/10) : analyser l'ordre (2 si refusé) ; `version` affiche
+    `empreinte_du_script()` ; pour `livrer`, **refuser le créneau avant tout verrou** (`CODE_CRENEAU`) ; prendre le
+    verrou (`attente_max` : 600 s pour `livrer`, 900 s pour `revenir`, qui attend donc la fin d'une bascule en
+    cours) ; refuser si une opération est inachevée ; appeler `livrer` ou `revenir`, qui relit l'heure juste avant
+    la bascule. Le retour arrière garde son exception horaire. Les tests du créneau et du verrou passent par `main`.
   - Constantes en tête : `DOSSIER = Path("/root/rita-deploy")`, `DEPOT = Path("/root/rita-agent")`,
     `CONTENEUR = "rita-api-preprod"`, `PORT_PRODUCTION = 8001`, `PORT_PRETEST = 8002`,
     `IMAGE = "ghcr.io/ganda15/rita-api"`, `PROJET_COMPOSE = "rita-agent"` (nom par défaut, à confirmer à la tâche 10
