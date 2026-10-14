@@ -573,6 +573,17 @@ modification du serveur.**
   effectif**, tel que Compose l'a construit (`DATABASE_URL` vient du bloc `environment`, pas du `.env`) :
   `docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' rita-api-preprod > .../env-effectif` (droits
   600, jamais affiché) ; `pg_dump` de la base dans le même dossier.
+  Relecture du 14/10, en deux temps. **2a, lecture seule** : `/root/rita-deploy` toujours absent (sinon, examiner
+  l'existant avant tout : une reprise écraserait la première sauvegarde) ; espace libre (`df -h /root`) face à la
+  taille de l'image ; montages du conteneur (`docker inspect rita-api-preprod --format '{{json .Mounts}}'`) et index
+  présent dans le conteneur (`docker exec rita-api-preprod du -sh /app/data/chroma`) : l'absence de volume Chroma ne
+  prouve pas l'absence d'index, et `docker save` garde l'image, pas les fichiers propres au conteneur ; un index trouvé
+  dans le conteneur est copié dans la sauvegarde (`docker cp`). **2b, la sauvegarde**, avec `umask 077` et
+  `set -o noclobber` (une redirection `>` refuse alors d'écraser un fichier), puis la lecture des archives sans rien
+  restaurer : `tar -tf .../avant-chaine.tar` et `pg_restore --file=/dev/null` sur le fichier de la base, chacun avec
+  le code 0 (l'essai de restauration du point suivant reste nécessaire). Formulations de la preuve : `git log` donne
+  le commit du dossier du serveur, pas forcément celui qui a construit l'image ; l'identifiant `sha256:…` de l'image
+  est la seule référence certaine ; `inspect.json` et `env-effectif` contiennent tous deux les clés du conteneur.
 - [ ] 🖧 **Tester la restauration d'août avec son environnement effectif** : `docker run -d --name rita-essai-aout
   -p 127.0.0.1:8002:8000 --network <réseau du projet> --env-file .../env-effectif rita-api:avant-chaine`, puis les
   contrôles du profil `aout` et la ligne de journal qui dit quel fournisseur répond ; arrêt et suppression du
