@@ -1,0 +1,17 @@
+# Surcharge de production (sprint 2, tâche 8), utilisée par deploy/deployer.py avec docker-compose.yml.
+# L'API tourne sur l'image livrée par la chaîne, désignée par son empreinte (RITA_IMAGE, posée par le script) :
+# rien n'est reconstruit ni retéléchargé au moment de la bascule. Ce fichier est embarqué dans l'image
+# (/app/deploy/compose.prod.yml) ET installé par Era dans /root/rita-deploy/bin/ : le serveur l'exécute en root, donc
+# une livraison dont les fichiers Compose diffèrent de la copie installée est refusée.
+services:
+  api:
+    image: ${RITA_IMAGE:?RITA_IMAGE absente}
+    pull_policy: never
+
+# L'index d'articles de CETTE version (choix A d'Era, 14/10) : le volume rempli et vérifié par le pré-test, désigné par
+# son nom (RITA_INDEX, posé par le script). `external: true` : Compose refuse de démarrer s'il manque, au lieu de créer
+# un index vide en silence. Un retour arrière retrouve ainsi l'index de l'ancienne version.
+volumes:
+  rita_chroma_preprod:
+    external: true
+    name: ${RITA_INDEX:?RITA_INDEX absente}

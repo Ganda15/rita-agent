@@ -27,6 +27,9 @@ mcp>=2.1.1
 chromadb==1.5.9
 rank-bm25==0.2.2
 
+# Lint (sprint 2) : meme version que le travail `lint` de livraison.yml, verifie par tests/test_lint_config.py.
+ruff==0.15.17
+
 # Big data (C1 connexion + C2 requetes). Necessite un JDK 21 dans JAVA_HOME.
 # Sans JDK, les tests d'integration de tests/test_spark.py sont ignores, pas en echec.
 pyspark==4.2.0

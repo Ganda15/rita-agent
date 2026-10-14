@@ -20,6 +20,24 @@ def test_health_returns_project_name():
     assert response.json()["project"] == "RITA"
 
 
+# Sprint 2 (critère 1 de la grille, jour 1 du cadrage) : /health annonce la version servie. Les valeurs sont
+# posées dans l'image par le Dockerfile (ARG puis ENV) ; hors de l'image, « inconnu ».
+def test_health_annonce_le_commit_et_la_date(monkeypatch):
+    monkeypatch.setenv("RITA_GIT_SHA", "abc1234")
+    monkeypatch.setenv("RITA_CONSTRUIT_LE", "2026-10-15T10:00:00Z")
+    corps = client.get("/health").json()
+    assert corps["commit"] == "abc1234"
+    assert corps["construit_le"] == "2026-10-15T10:00:00Z"
+
+
+def test_health_sans_version_annonce_inconnu(monkeypatch):
+    monkeypatch.delenv("RITA_GIT_SHA", raising=False)
+    monkeypatch.delenv("RITA_CONSTRUIT_LE", raising=False)
+    corps = client.get("/health").json()
+    assert corps["commit"] == "inconnu"
+    assert corps["construit_le"] == "inconnu"
+
+
 def test_briefing_without_api_key_returns_403():
     response = client.post("/briefing?ticker=AAPL")
     assert response.status_code == 403

@@ -29,6 +29,7 @@ from pathlib import Path
 import pandas as pd
 import psycopg2
 from dotenv import load_dotenv
+from psycopg2 import sql
 from psycopg2.extras import execute_values
 
 from sources.marches import date_de_seance, devise_de_cotation, facteur_prix
@@ -261,14 +262,114 @@ def importer(dsn: str, limite_annees: int | None = None) -> dict:
     return stats
 
 
+# --- Le mode « démonstration » (sprint 2, tâche 5) -------------------------------------------------------------------
+# Remplit une base NEUVE avec le jeu versionné `data/demo/`, pour reconstruire RITA depuis le dépôt. La base de
+# démonstration porte une marque : le commentaire de la base. Toute base qui contient déjà des données sans cette marque
+# est refusée, avant la moindre insertion : les tickers seuls ne disent pas si la destination est une vraie base.
+
+MARQUE_DEMO = "rita-demonstration"
+TABLES_DE_REFERENCE = {"devise"}   # les seules tables que db/schema.sql remplit lui-même
+
+
+class BaseNonDemo(Exception):
+    """La base contient déjà des données et ne porte pas la marque de démonstration : import refusé."""
+
+
+def lire_marque(cur) -> str | None:
+    """Le commentaire de la base courante (la marque de démonstration, ou autre chose, ou rien)."""
+    cur.execute("SELECT shobj_description(oid, 'pg_database') FROM pg_database WHERE datname = current_database()")
+    return cur.fetchone()[0]
+
+
+def base_vide(cur) -> bool:
+    """Toutes les tables du schéma `public` sont vides, sauf les tables de référence. Une table ajoutée plus tard au
+    schéma est couverte sans changer ce code : la liste vient de `information_schema`."""
+    cur.execute("SELECT table_name FROM information_schema.tables "
+                "WHERE table_schema = 'public' AND table_type = 'BASE TABLE'")
+    tables = [ligne[0] for ligne in cur.fetchall() if ligne[0] not in TABLES_DE_REFERENCE]
+    for table in tables:
+        cur.execute(sql.SQL("SELECT EXISTS (SELECT 1 FROM {})").format(sql.Identifier(table)))
+        if cur.fetchone()[0]:
+            return False
+    return True
+
+
+def preparer_base_demo(cur) -> None:
+    """Accepte une base déjà marquée ; marque une base entièrement vide ; refuse tout le reste, avant toute insertion."""
+    if lire_marque(cur) == MARQUE_DEMO:
+        return
+    if not base_vide(cur):
+        raise BaseNonDemo("la base contient deja des donnees et ne porte pas la marque de demonstration : "
+                          "import de demonstration refuse (rien n'a ete ecrit)")
+    cur.execute("SELECT current_database()")
+    nom = cur.fetchone()[0]
+    cur.execute(sql.SQL("COMMENT ON DATABASE {} IS {}").format(sql.Identifier(nom), sql.Literal(MARQUE_DEMO)))
+
+
+def _lire_csv(chemin: Path) -> list[dict[str, str]]:
+    with open(chemin, encoding="utf-8", newline="") as fichier:
+        return list(csv.DictReader(fichier, delimiter=";"))
+
+
+def _inserer(cur, requete: str, lignes: list[tuple]) -> int:
+    """Insère ligne par ligne et rend le nombre de lignes réellement insérées (`rowcount`)."""
+    total = 0
+    for ligne in lignes:
+        cur.execute(requete, ligne)
+        total += max(cur.rowcount, 0)
+    return total
+
+
+def importer_demo(cur, dossier: Path) -> dict[str, int]:
+    """Importe les quatre fichiers du jeu ; une deuxième exécution n'insère rien (ON CONFLICT DO NOTHING)."""
+    vide = lambda v: v or None  # noqa: E731 - une chaîne vide du CSV devient NULL
+    valeurs = [(l["ticker"], l["nom_officiel"], vide(l["isin"]), l["devise"], vide(l["place_cotation"]))
+               for l in _lire_csv(dossier / "valeurs.csv")]
+    cotations = [(l["ticker"], l["date_seance"], l["ouverture"], l["haut"], l["bas"], l["cloture"], l["volume"])
+                 for l in _lire_csv(dossier / "cotations.csv")]
+    articles = [(l["source"], l["titre"], l["lien"], l["publie_le"], l["resume"])
+                for l in _lire_csv(dossier / "articles.csv")]
+    positions = [(l["ticker"], l["quantite"], l["pru"], l["devise"], l["date_achat"], l["ticker"])
+                 for l in _lire_csv(dossier / "positions.csv")]
+    return {
+        "valeurs": _inserer(cur, "INSERT INTO valeur (ticker, nom_officiel, isin, devise, place_cotation) "
+                                 "VALUES (%s, %s, %s, %s, %s) ON CONFLICT DO NOTHING", valeurs),
+        "cotations": _inserer(cur, "INSERT INTO cotation (ticker, date_seance, ouverture, haut, bas, cloture, volume) "
+                                   "VALUES (%s, %s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING", cotations),
+        "articles": _inserer(cur, "INSERT INTO article (source, titre, lien, publie_le, resume) "
+                                  "VALUES (%s, %s, %s, %s, %s) ON CONFLICT DO NOTHING", articles),
+        # Pas de clé naturelle sur `position` : aucune insertion si le ticker a déjà une position.
+        "positions": _inserer(cur, "INSERT INTO position (ticker, quantite, pru, devise, date_achat) "
+                                   "SELECT %s, %s, %s, %s, %s WHERE NOT EXISTS "
+                                   "(SELECT 1 FROM position WHERE ticker = %s)", positions),
+    }
+
+
+def importer_demo_complet(dsn: str, dossier: Path) -> dict[str, int]:
+    """La marque puis l'import, dans une seule transaction : un refus ou une erreur n'écrit rien."""
+    with psycopg2.connect(dsn) as conn:
+        with conn.cursor() as cur:
+            preparer_base_demo(cur)
+            bilan = importer_demo(cur, dossier)
+        conn.commit()
+    return bilan
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 
     parseur = argparse.ArgumentParser(description="Import RITA -> PostgreSQL")
     parseur.add_argument("--dsn", default=os.getenv("DATABASE_URL", DSN_DEFAUT))
-    parseur.add_argument("--limite-annees", type=int, default=None,
-                         help="n'importer que les N dernieres annees")
+    exclusifs = parseur.add_mutually_exclusive_group()
+    exclusifs.add_argument("--limite-annees", type=int, default=None,
+                           help="n'importer que les N dernieres annees")
+    exclusifs.add_argument("--demo", type=Path, default=None, metavar="DOSSIER",
+                           help="remplir une base neuve avec le jeu de demonstration (data/demo)")
     args = parseur.parse_args()
+
+    if args.demo:
+        print(importer_demo_complet(args.dsn, args.demo))
+        raise SystemExit(0)
 
     r = importer(args.dsn, args.limite_annees)
 

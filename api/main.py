@@ -197,8 +197,17 @@ def journaliser_evenement_mcp(evenement: EvenementMcp, request: Request,
 
 @app.get("/health", tags=["service"], summary="Vérifier que le service répond")
 def health():
-    """Seul point de terminaison **non protégé** : il ne révèle aucune donnée."""
-    return {"status": "ok", "project": "RITA"}
+    """Seul point de terminaison **non protégé** : il ne révèle aucune donnée.
+
+    Il annonce aussi la version servie (commit et date de construction), posées dans l'image par le
+    Dockerfile ; « inconnu » hors de l'image (poste, tests). Lues à chaque appel, pas au chargement.
+    """
+    return {
+        "status": "ok",
+        "project": "RITA",
+        "commit": os.getenv("RITA_GIT_SHA", "inconnu"),
+        "construit_le": os.getenv("RITA_CONSTRUIT_LE", "inconnu"),
+    }
 
 
 # --- C5 : le jeu de données -------------------------------------------------
@@ -262,6 +271,9 @@ def briefing(ticker: str, api_key: str = Security(verify_api_key)):
         "briefing": verdict["texte_diffusable"],
         "conforme_amf": verdict["conforme"],
         "motifs_amf": verdict["motifs_detectes"],
+        # Sprint 2 (14/10) : le nombre d'articles distincts transmis au modèle. Un briefing est rédigé même sans
+        # article ; sans ce compte, un index vide en production passait tous les contrôles du script du serveur.
+        "articles_transmis": len({p["article_id"] for p in resultat.get("passages") or []}),
     }
 
 

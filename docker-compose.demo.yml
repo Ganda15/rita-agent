@@ -1,0 +1,19 @@
+# Surcharge pour une reconstruction de démonstration SUR LE POSTE (sprint 2, tâche 6), à côté de la pile locale.
+#
+# Chaque essai a son propre projet Compose, donc ses propres volumes neufs, et son propre suffixe de conteneur :
+#   RITA_DEMO_ID=20261015-0930
+#   docker compose -p rita-demo-20261015-0930 -f docker-compose.yml -f docker-compose.demo.yml up -d --build postgres api
+#   docker compose -p rita-demo-20261015-0930 -f docker-compose.yml -f docker-compose.demo.yml --profile outils run --rm initialisation
+#   ... l'API répond sur http://localhost:8011 ...
+#   docker compose -p rita-demo-20261015-0930 -f docker-compose.yml -f docker-compose.demo.yml down -v
+# `down -v` n'efface que les volumes de CE projet. La procédure complète est dans docs/EXPLOITATION.md § 3.
+
+services:
+  postgres:
+    container_name: rita-postgres-demo-${RITA_DEMO_ID:?RITA_DEMO_ID absente}
+  api:
+    container_name: rita-api-demo-${RITA_DEMO_ID:?RITA_DEMO_ID absente}
+    # `!override` remplace la liste des ports au lieu de s'y ajouter (Compose 2.24.4 et plus) : l'API de démonstration
+    # ne prend jamais le port 8001 de la pile locale.
+    ports: !override
+      - "${RITA_DEMO_PORT:-8011}:8000"

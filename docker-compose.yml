@@ -152,6 +152,31 @@ services:
     security_opt:
       - no-new-privileges:true
 
+  # --- Outil : reconstruire une base NEUVE depuis le dépôt (sprint 2, tâche 6) ---------
+  # Charge le jeu versionné `data/demo/` (python -m db.importer --demo : refuse toute base
+  # qui contient déjà des données sans la marque de démonstration), puis construit l'index
+  # Chroma de ces articles. Profil `outils` : jamais démarré par `docker compose up`.
+  #   docker compose --profile outils run --rm initialisation
+  # Compte propriétaire, comme `indexation` : il faut écrire dans la base et poser sa marque.
+  initialisation:
+    image: rita-api:local
+    profiles: ["outils"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:-rita_preprod_local}@postgres:5432/rita
+    volumes:
+      - ./data/demo:/app/data/demo:ro
+      - rita_chroma_preprod:/app/data/chroma
+      - rita_cache_preprod:/home/rita/.cache
+    command: ["sh", "-c", "python -m db.importer --demo /app/data/demo && python -m pipelines.ingest --etapes indexation --strict"]
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+
 volumes:
   rita_pgdata_preprod:
   rita_chroma_preprod:

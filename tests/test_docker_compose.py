@@ -152,3 +152,64 @@ def test_le_conteneur_garde_l_ordre_par_defaut_du_code(compose, monkeypatch):
     assert valeur.startswith("${LLM_ORDRE:-") and valeur.endswith("}"), f"forme inattendue : {valeur}"
     defaut_compose = [nom.strip() for nom in valeur[len("${LLM_ORDRE:-"):-1].split(",") if nom.strip()]
     assert defaut_compose == _ordre_fournisseurs()
+
+
+# --- Sprint 2, tâche 6 : reconstruire RITA depuis le dépôt (service `initialisation`, surcharge de démonstration) ----
+
+import json as _json
+import shutil as _shutil
+import subprocess as _subprocess
+
+
+class _ChargeurCompose(yaml.SafeLoader):
+    """PyYAML ne connaît pas les balises de Compose (`!override`, `!reset`) : elles sont lues comme la valeur nue."""
+
+
+for _balise in ("!override", "!reset"):
+    _ChargeurCompose.add_constructor(
+        _balise, lambda chargeur, noeud: chargeur.construct_sequence(noeud) if isinstance(noeud, yaml.SequenceNode)
+        else chargeur.construct_mapping(noeud) if isinstance(noeud, yaml.MappingNode)
+        else chargeur.construct_scalar(noeud))
+
+
+def _demo():
+    return yaml.load((RACINE / "docker-compose.demo.yml").read_text(encoding="utf-8"), Loader=_ChargeurCompose)
+
+
+def test_le_service_initialisation_remplit_une_base_neuve_puis_l_index(compose):
+    service = compose["services"]["initialisation"]
+    assert service["profiles"] == ["outils"] and service["image"] == "rita-api:local"
+    assert service["depends_on"]["postgres"]["condition"] == "service_healthy"
+    # Le compte propriétaire, comme `indexation` : il faut écrire dans la base de démonstration et poser sa marque.
+    assert service["environment"]["DATABASE_URL"] == compose["services"]["indexation"]["environment"]["DATABASE_URL"]
+    montages = service["volumes"]          # la liste brute : source, destination, mode
+    assert "./data/demo:/app/data/demo:ro" in montages
+    assert "rita_chroma_preprod:/app/data/chroma" in montages and "rita_cache_preprod:/home/rita/.cache" in montages
+    commande = " ".join(service["command"]) if isinstance(service["command"], list) else service["command"]
+    assert "python -m db.importer --demo /app/data/demo" in commande
+    assert "python -m pipelines.ingest --etapes indexation --strict" in commande
+    assert commande.index("db.importer") < commande.index("pipelines.ingest")      # la base d'abord, l'index ensuite
+    assert service["read_only"] is True and "/tmp" in service["tmpfs"]
+    assert "no-new-privileges:true" in service["security_opt"]
+
+
+def test_la_surcharge_de_demonstration_isole_les_conteneurs_et_le_port():
+    services = _demo()["services"]
+    for nom in ("postgres", "api"):
+        assert "${RITA_DEMO_ID:?" in services[nom]["container_name"], nom
+    assert services["api"]["ports"] == ["${RITA_DEMO_PORT:-8011}:8000"]
+    texte = (RACINE / "docker-compose.demo.yml").read_text(encoding="utf-8")
+    assert "ports: !override" in texte          # remplace la liste de l'API au lieu de s'y ajouter
+
+
+@pytest.mark.skipif(_shutil.which("docker") is None, reason="Docker absent : la chaîne et le poste l'ont")
+def test_la_surcharge_ne_publie_que_le_port_de_demonstration():
+    # Compose lui-même fusionne les deux fichiers ; on n'affiche jamais la configuration complète (elle contient les
+    # clés résolues) : seulement les ports de l'API. Le fichier d'environnement est fictif et versionné.
+    sortie = _subprocess.run(
+        ["docker", "compose", "--env-file", str(RACINE / "tests" / "donnees" / "env-fictif"),
+         "-f", str(RACINE / "docker-compose.yml"), "-f", str(RACINE / "docker-compose.demo.yml"),
+         "config", "--format", "json"], capture_output=True, text=True, cwd=RACINE, timeout=60)
+    assert sortie.returncode == 0, sortie.stderr[-400:]
+    ports = _json.loads(sortie.stdout)["services"]["api"]["ports"]
+    assert len(ports) == 1 and str(ports[0]["published"]) == "8011" and ports[0]["target"] == 8000
