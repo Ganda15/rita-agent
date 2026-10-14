@@ -88,6 +88,14 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app
 
+# Sprint 2 : la version servie, lue par `/health`. La chaîne passe le commit et la date de construction
+# (`--build-arg`) ; sans eux, « inconnu ». Placés en fin d'étape : à chaque commit, seules ces dernières couches
+# se reconstruisent, les dépendances restent en cache. Aucun secret ici (contrôlé par la tâche 3).
+ARG GIT_SHA=inconnu
+ARG CONSTRUIT_LE=inconnu
+ENV RITA_GIT_SHA=$GIT_SHA \
+    RITA_CONSTRUIT_LE=$CONSTRUIT_LE
+
 EXPOSE 8000
 
 # `/health` est le seul point de terminaison non protégé — c'est précisément son

@@ -96,6 +96,11 @@ jobs:
             type=ref,event=tag
             type=sha,format=short
 
+      # Sprint 2 : la date de construction, que l'image annonce dans `/health` avec son commit.
+      - name: Date de construction
+        id: date
+        run: echo "iso=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
       - name: Construire l'image (sans publier)
         uses: docker/build-push-action@v7
         with:
@@ -106,6 +111,10 @@ jobs:
             ${{ steps.etiquettes.outputs.tags }}
             rita-api:verification
           labels: ${{ steps.etiquettes.outputs.labels }}
+          # Lus par les `ARG GIT_SHA` et `ARG CONSTRUIT_LE` du Dockerfile, puis servis par `/health`.
+          build-args: |
+            GIT_SHA=${{ github.sha }}
+            CONSTRUIT_LE=${{ steps.date.outputs.iso }}
           # Le cache évite de retélécharger et recompiler les dépendances à
           # chaque exécution : quelques minutes, et autant d'énergie, en moins.
           cache-from: type=gha
@@ -134,6 +143,28 @@ jobs:
             fi
             sleep 1
           done
+
+      - name: Vérifier la version annoncée par /health
+        # Les tests Python prouvent que `/health` lit les variables ; ce contrôle prouve qu'elles sont bien
+        # arrivées dans l'image construite (build-args, puis ARG et ENV du Dockerfile). Les deux champs sont
+        # comparés aux valeurs de construction, en lisant le JSON (pas une recherche de texte).
+        env:
+          COMMIT_ATTENDU: ${{ github.sha }}
+          DATE_ATTENDUE: ${{ steps.date.outputs.iso }}
+        run: |
+          curl -s http://localhost:8000/health > health.json
+          python3 - <<'PY'
+          import json, os, sys
+          corps = json.load(open("health.json", encoding="utf-8"))
+          attendus = {"commit": os.environ["COMMIT_ATTENDU"], "construit_le": os.environ["DATE_ATTENDUE"]}
+          ecarts = [(champ, corps.get(champ), valeur) for champ, valeur in attendus.items()
+                    if corps.get(champ) != valeur]
+          for champ, lu, valeur in ecarts:
+              print(f"::error::/health annonce {champ}={lu!r}, attendu {valeur!r}")
+          if not ecarts:
+              print(f"/health annonce le commit {corps['commit']} construit le {corps['construit_le']}")
+          sys.exit(1 if ecarts else 0)
+          PY
 
       - name: Vérifier que l'accès est bien restreint
         # Une image qui démarre mais qui laisse entrer sans clé serait pire
