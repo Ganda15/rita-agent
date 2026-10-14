@@ -265,6 +265,13 @@ class ComposeNonInstalle(Exception):
     """Les fichiers Compose de l'image diffèrent de ceux qu'Era a installés sur le serveur : livraison refusée."""
 
 
+class EnvIllisible(Exception):
+    """Une ligne du `.env` a un nom que le filtre du pré-test ne sait pas lire comme Docker : livraison refusée."""
+
+
+_NOM_DE_VARIABLE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
+
+
 @dataclass(frozen=True)
 class Reponse:
     statut: int
@@ -296,14 +303,27 @@ def lire_env(chemin: Path) -> dict[str, str]:
 
 def env_du_pretest(texte: str) -> str:
     """Le `.env` donné au pré-test : tout le `.env` du serveur, sauf ce qui permet d'écrire dans la base
-    (`DATABASE_URL`, `POSTGRES_*`). Sa base, le pré-test la reçoit à part : le compte rita_lecture."""
+    (`DATABASE_URL`, `POSTGRES_*`). Sa base, le pré-test la reçoit à part : le compte rita_lecture.
+    Le texte est lu comme `docker run --env-file` le lit : BOM retiré en tête, coupure sur « \\n » seulement (un « \\r »
+    final retiré), espaces de gauche ignorés, commentaires sautés. Les lignes gardées sont réécrites sous cette forme.
+    Un nom qui n'est pas un nom de variable simple lève `EnvIllisible` (sans recopier la ligne) : on ne devine pas."""
     gardees = []
-    for ligne in texte.splitlines():
-        nom = ligne.split("=", 1)[0].strip().removeprefix("export ").strip()
+    for numero, ligne in enumerate(texte.removeprefix("﻿").split("\n"), start=1):
+        contenu = ligne.removesuffix("\r").lstrip()
+        if not contenu or contenu.startswith("#"):
+            continue
+        nom = contenu.split("=", 1)[0]
+        if not _NOM_DE_VARIABLE.fullmatch(nom):
+            raise EnvIllisible(f"ligne {numero} du .env : nom de variable illisible pour docker run --env-file")
         if nom == "DATABASE_URL" or nom.startswith("POSTGRES_"):
             continue
-        gardees.append(ligne)
+        gardees.append(contenu)
     return "\n".join(gardees) + "\n"
+
+
+def _lire_texte(chemin: Path) -> str:
+    """Le texte exact du fichier, sans conversion des fins de ligne (comme Docker le lit)."""
+    return chemin.read_bytes().decode("utf-8")
 
 
 def _ecrire_secret(chemin: Path, contenu: str) -> None:
@@ -363,7 +383,7 @@ class Docker:
         Le pré-test reçoit un `.env` sans accès en écriture à la base ; le DSN de lecture passe par l'environnement
         de la commande `docker` (`-e DATABASE_URL` sans valeur), jamais par ses arguments, qu'une erreur recopie."""
         fichier_env = config / "pretest.env"
-        _ecrire_secret(fichier_env, env_du_pretest((config / ".env").read_text(encoding="utf-8")))
+        _ecrire_secret(fichier_env, env_du_pretest(_lire_texte(config / ".env")))
         commun = ["--network", f"{self.projet}_default", "--env-file", str(fichier_env),
                   "-e", "DATABASE_URL",
                   "-v", f"{VOLUME_INDEX_PRETEST}:/app/data/chroma",
@@ -404,8 +424,11 @@ def preparer_version(docker, ref: str, dossier: Path, source_env: Path, maintena
     cible.mkdir(parents=True, exist_ok=False)
     docker.extraire_config(ref, cible)
     for nom in FICHIERS_COMPOSE:
-        installe = dossier / "bin" / nom
-        if not installe.is_file() or installe.read_bytes() != (cible / nom).read_bytes():
+        installe, venu = dossier / "bin" / nom, cible / nom
+        # Un lien symbolique copié depuis l'image passerait la comparaison, puis sa cible pourrait changer avant la
+        # bascule : seul un fichier ordinaire, dans ce dossier créé à l'instant, est accepté.
+        if (venu.is_symlink() or not venu.is_file() or not installe.is_file()
+                or installe.read_bytes() != venu.read_bytes()):
             raise ComposeNonInstalle(f"{nom} de l'image differe de la copie installee sur le serveur ({installe}) : "
                                      "la relire, puis l'installer a la main (docs/EXPLOITATION.md)")
     shutil.copy2(source_env, cible / ".env")
@@ -481,9 +504,11 @@ def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete,
         journaliser(dossier, maintenant(), **trace, resultat="refusee",
                     message=f"variable absente du .env du serveur : {', '.join(_manquantes(env))}")
         return 1
+    source = source_env or DEPOT / ".env"
     try:
+        env_du_pretest(_lire_texte(source))  # le .env du pré-test doit se lire comme Docker le lit, avant tout
         etat = lire_etat(chemin)
-    except EtatIllisible as erreur:
+    except (EnvIllisible, EtatIllisible) as erreur:
         journaliser(dossier, maintenant(), **trace, resultat="refusee", message=str(erreur))
         return 1
     premiere = etat.active is None
@@ -496,7 +521,7 @@ def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete,
     try:
         docker.tirer(ref)
         try:
-            version = preparer_version(docker, ref, dossier, source_env or DEPOT / ".env", maintenant())
+            version = preparer_version(docker, ref, dossier, source, maintenant())
         except ComposeNonInstalle as erreur:
             journaliser(dossier, maintenant(), **trace, resultat="refusee", message=str(erreur))
             fermer_operation(dossier)

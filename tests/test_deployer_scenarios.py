@@ -7,6 +7,7 @@ précédente, et son échec demande la restauration manuelle d'août.
 """
 import http.server
 import json
+import os
 import subprocess
 import threading
 from datetime import datetime
@@ -683,5 +684,79 @@ def test_le_pretest_ne_recoit_pas_les_acces_en_ecriture_a_la_base(tmp_path):
 
 
 def test_env_du_pretest_retire_toute_variable_d_ecriture():
-    texte = "A=1\n DATABASE_URL =x\nexport POSTGRES_USER=rita\nPOSTGRES_DB=rita\n# DATABASE_URL en commentaire\nB=2\n"
-    assert d.env_du_pretest(texte) == "A=1\n# DATABASE_URL en commentaire\nB=2\n"
+    texte = "A=1\nDATABASE_URL=x\n  POSTGRES_DB=rita\n# commentaire\nB=2\r\n"
+    assert d.env_du_pretest(texte) == "A=1\nB=2\n"
+
+
+# Seconde revue automatique (commit 6b5eb53) : le filtre doit lire le .env comme `docker run --env-file` le lit,
+# sinon une variable qu'il croit retirée arrive quand même au pré-test.
+
+def test_env_du_pretest_retire_le_bom_comme_docker():
+    # Docker retire un BOM UTF-8 en tête de fichier ; sans le retirer aussi, « ﻿POSTGRES_PASSWORD » passait.
+    assert d.env_du_pretest("﻿POSTGRES_PASSWORD=ADMIN-FICTIF\nA=1\n") == "A=1\n"
+
+
+def test_env_du_pretest_ne_coupe_les_lignes_que_sur_le_saut_de_ligne():
+    # Docker ne coupe que sur « \n » : un « \r » isolé reste dans la valeur.
+    assert d.env_du_pretest("A=x\ry\nB=1\n") == "A=x\ry\nB=1\n"
+
+
+@pytest.mark.parametrize("ligne", ["export POSTGRES_USER=rita", " DATABASE_URL =x", "A B=1", "=valeur"])
+def test_env_du_pretest_refuse_une_ligne_au_nom_illisible(ligne):
+    # Ne pas deviner ce que Docker ferait d'un nom inhabituel : le pré-test est refusé, sans recopier la ligne.
+    with pytest.raises(d.EnvIllisible) as erreur:
+        d.env_du_pretest("A=1\n" + ligne + "\n")
+    assert "ligne 2" in str(erreur.value) and "rita" not in str(erreur.value) and "valeur" not in str(erreur.value)
+
+
+def test_le_pretest_lit_le_env_sans_transformer_les_fins_de_ligne(tmp_path):
+    (tmp_path / ".env").write_bytes(b"A=x\ry\nB=1\n")
+    d.Docker(executer=Enregistreur()).demarrer_pretest(REF_C, tmp_path, DSN_SECRET)
+    assert (tmp_path / "pretest.env").read_bytes() == b"A=x\ry\nB=1\n"
+
+
+def test_livrer_refuse_un_env_illisible_avant_toute_operation(serveur):
+    dossier, env = serveur
+    env.write_text(env.read_text(encoding="utf-8") + "export POSTGRES_USER=rita\n", encoding="utf-8")
+    docker = FauxDocker({REF_C: _comportement(commit="ccc")}, production="rita-api:local")
+    assert _livrer(REF_C, docker, dossier, env) == 1
+    assert docker.appels == []
+    assert _journal(dossier)[-1]["resultat"] == "refusee"
+    assert not (dossier / "operation-en-cours.json").exists()
+
+
+class DockerQuiCopieUnPiege(FauxDocker):
+    """L'image contient, à la place de compose.prod.yml, un lien symbolique ou un dossier."""
+
+    def __init__(self, *args, piege, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.piege = piege
+
+    def extraire_config(self, ref, dossier):
+        (dossier / "docker-compose.yml").write_text("services: {}\n", encoding="utf-8")
+        cible = dossier / "compose.prod.yml"
+        if self.piege == "lien":
+            # Le lien vise la copie installée : la comparaison passerait, puis la cible pourrait changer avant la bascule.
+            os.symlink(dossier.parent.parent / "bin" / "compose.prod.yml", cible)
+        else:
+            cible.mkdir()
+        self.appels.append(("extraire", ref))
+
+
+@pytest.mark.parametrize("piege", ["lien", "dossier"])
+def test_un_fichier_compose_qui_n_est_pas_un_fichier_ordinaire_est_refuse(serveur, piege):
+    dossier, env = serveur
+    a = _version(REF_A, dossier, "a")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=a))
+    if piege == "lien":
+        try:
+            os.symlink(dossier / "bin" / "compose.prod.yml", dossier / "essai-lien")
+        except OSError:
+            pytest.skip("liens symboliques non permis sur ce poste : le test tourne dans la chaîne (Linux)")
+    docker = DockerQuiCopieUnPiege({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc")},
+                                   production=REF_A, piege=piege)
+    assert _livrer(REF_C, docker, dossier, env) == 1
+    assert docker.remplacements() == [] and not any(appel[0] == "pretest" for appel in docker.appels)
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "refusee" and "compose.prod.yml" in dernier["message"]
+    assert not (dossier / "operation-en-cours.json").exists()
