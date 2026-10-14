@@ -54,7 +54,7 @@ une exception (`src/llm.py` l. 156) et le middleware répond 500 avec son `X-Req
 | # | Étape (chapitre Industrialisation § 5.1) | Décision pour le sprint 2 |
 |---|---|---|
 | 0 | Avant la fusion : PR vers `main`, revue, hook `pre-push` | inchangé |
-| 1 | Contrôles : lint, tests et couverture ≥ 90 %, portes d'évaluation | ajouter `lint`, `secrets` et `reconstruction` (§ 6, § 7) |
+| 1 | Contrôles : lint, tests et couverture ≥ 90 %, portes d'évaluation | ajouter `lint` et `secrets` (§ 6, § 7) ; le contrôle `reconstruction` dans la chaîne vient après l'atelier (§ 11) |
 | 2-3 | Filtre de chemins, porte d'évaluation sur le vrai modèle | hors V1 (cadrage § 2) |
 | 4 | Version | l'image porte `sha-<commit court>` (lisible) et son empreinte `sha256:…` (immuable) ; `/health` annonce le commit et la date de construction ; le numéro `vX.Y.Z` est reporté, son calcul dépendant du filtre de chemins |
 | 5 | Construction et publication | après chaque fusion sur `main`, et plus seulement sur un tag `livrable-*` |
