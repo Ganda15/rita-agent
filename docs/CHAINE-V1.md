@@ -62,8 +62,9 @@ une exception (`src/llm.py` l. 156) et le middleware répond 500 avec son `X-Req
 | 7 | Retour arrière | workflow manuel `retour-arriere.yml` (§ 5) |
 
 Règles reprises du chapitre (§ 5.3) : aucun secret dans l'image ; clés dans le `.env` du serveur et dans les secrets
-GitHub ; aucune bascule entre 8 h et 9 h ; changements compatibles avec les versions conservées (§ 5.5 ci-dessous) ;
-pas de déploiement progressif (un seul utilisateur).
+GitHub ; aucune livraison entre 8 h et 9 h (le retour arrière d'urgence reste permis à toute heure ; les démonstrations
+se font hors de ce créneau) ; changements compatibles avec les versions conservées (§ 5.5 ci-dessous) ; pas de
+déploiement progressif (un seul utilisateur).
 
 ## 4. La livraison automatique
 
@@ -75,9 +76,13 @@ pas de déploiement progressif (un seul utilisateur).
    déploiement à la fois (`concurrency`, `cancel-in-progress: false`), pour qu'une nouvelle livraison n'interrompe
    jamais une bascule commencée. Chaque déploiement figure dans l'onglet *Deployments* du dépôt.
 4. **Connexion au serveur** par SSH, avec une clé dédiée à commande forcée : elle ne peut lancer que
-   `deploy/deployer.sh`, qui n'accepte que deux ordres, `livrer sha256:<64 caractères hexadécimaux>` et
-   `revenir <numéro de passage>`. Le script prend un verrou commun au déploiement et au retour arrière, et écrit une
-   marque « opération commencée » avant toute bascule.
+   `deploy/deployer.sh`, qui appelle `deploy/deployer.py` (Python, testé par pytest), tous deux installés par Era dans
+   `/root/rita-deploy/bin/`. Le script n'accepte que trois ordres : `livrer <image>@sha256:<64 caractères
+   hexadécimaux>`, `revenir <numéro de passage>` et `version` (l'empreinte du script, comparée par la chaîne à celle du
+   dépôt avant chaque opération). Il prend un verrou commun au déploiement et au retour arrière, et écrit une marque
+   « opération commencée » avant toute bascule. L'image embarque ses fichiers de déploiement (`docker-compose.yml`,
+   `deploy/compose.prod.yml`) : le script les en extrait, si bien qu'une empreinte désigne à la fois le code et sa
+   configuration. Limite : une nouvelle version du script lui-même se recopie à la main.
 5. **Pré-test**, à côté de la production, sur `127.0.0.1:8002` : la nouvelle image se connecte avec `DATABASE_URL`
    réglée sur `rita_lecture` (valeur `RITA_DSN_LECTURE` du `.env` du serveur) et construit son propre index Chroma
    dans un volume temporaire, avec la commande existante `python -m pipelines.ingest --etapes indexation --strict`.
@@ -87,8 +92,10 @@ pas de déploiement progressif (un seul utilisateur).
    actives (`src/traces.py` l. 270-276). Le pré-test ne peut pas écrire dans PostgreSQL et utilise son propre index ;
    il partage encore le serveur et la base consultée avec la production.
 6. **Pré-test en échec** : le conteneur de test est arrêté, le travail échoue, la production ne change pas.
-7. **Pré-test réussi** : contrôle de l'heure (fuseau Europe/Paris) ; entre 8 h et 9 h, attente de 9 h puis nouveau
-   contrôle juste avant la bascule. Remplacement du conteneur de production par l'empreinte (quelques secondes de
+7. **Pré-test réussi** : contrôle de l'heure (fuseau Europe/Paris) juste avant la bascule. L'attente de 9 h se fait
+   dans GitHub, avant le déploiement, hors du verrou du serveur et du groupe de concurrence ; si le créneau est
+   atteint pendant le pré-test, la livraison est annulée proprement, puis **reprend automatiquement à 9 h avec la
+   même empreinte**, sans action manuelle et sans bloquer un retour arrière. Remplacement du conteneur de production par l'empreinte (quelques secondes de
    coupure), puis **contrôles d'après bascule** avec la configuration réelle de production : `/health` annonce la
    nouvelle version ; `/briefing.html` répond 200 ; 403 sans clé ; un briefing `OR.PA` en 200 avec un texte non vide,
    `conforme_amf: true` et son `X-Request-ID` dans le journal. En échec : retour automatique (§ 5.2).
@@ -128,8 +135,9 @@ annoncent leur commit et passent les mêmes contrôles.
   Avec active A, précédente B, candidate C : si C échoue, A revient.
 - **Retour manuel** : la **précédente validée** (B), par GitHub, onglet *Actions*, workflow `retour-arriere.yml`,
   *Run workflow*, avec le nom et le motif (comme `rollback.yml` de Mardik v2). Le nom et le motif restent dans GitHub ;
-  le serveur ne reçoit que le numéro du passage. Secours si GitHub est indisponible : la même commande lancée sur le
-  serveur, écrite dans `docs/EXPLOITATION.md`.
+  le serveur ne reçoit que le numéro du passage. Le retour est permis à toute heure ; il a son propre groupe de
+  concurrence et utilise le script déjà installé, même si le dépôt en contient une version plus récente. Secours si
+  GitHub est indisponible : la même commande lancée sur le serveur, écrite dans `docs/EXPLOITATION.md`.
 
 ### 5.3 L'état enregistré
 
@@ -185,8 +193,9 @@ Les changements doivent rester compatibles avec les versions conservées.
   `.gitleaks.toml`, se limitent aux faux positifs constatés (par exemple les fausses clés de test de
   `livraison.yml`), chacune avec sa raison. Aucune absence de fuite n'est annoncée avant le premier passage ; une vraie
   clé trouvée est révoquée et remplacée.
-- **Contrôle de l'image**, ajouté à la vérification de `livraison.yml` : aucun fichier `.env` dans l'image, et aucun
-  `ARG` ni `ENV` portant un secret dans le `Dockerfile`. La preuve énonce exactement ces deux vérifications.
+- **Contrôle de l'image**, ajouté à la vérification de `livraison.yml` : aucun fichier `/app/.env` dans l'image (ce
+  chemin seulement), et aucun `ARG` ni `ENV` portant un secret dans le `Dockerfile`, lignes continuées comprises. La
+  preuve énonce exactement ces deux vérifications et leur limite.
 - **Où vit chaque secret** : tableau de `docs/EXPLOITATION.md` § 2, complété par `DEPLOY_SSH_KEY`, `DEPLOY_HOST`,
   `DEPLOY_KNOWN_HOSTS` (environnement `production` de GitHub), le jeton GHCR en lecture seule, le `.env` du serveur
   (dont `RITA_DSN_LECTURE`) et sa copie de sauvegarde. La clé SSH dédiée se révoque en retirant une ligne sur le
@@ -295,11 +304,14 @@ ans dans le dépôt, tout déploiement progressif.
 
 ## Fichiers concernés (prévus)
 
-`.github/workflows/livraison.yml`, `.github/workflows/test.yml`, `.github/workflows/retour-arriere.yml` (nouveau),
-`deploy/deployer.sh` et `deploy/compose.prod.yml` (nouveaux), `docker-compose.yml`, `Dockerfile`, `api/main.py`
-(`/health`), `db/importer.py`, `data/demo/` (nouveau), `.gitleaks.toml` (nouveau), configuration de `ruff`,
-`docs/EXPLOITATION.md`, `docs/CI-CD.md`, `docs/sprint-2/README.md`, `evidence/sprint-2/`,
-`eval/ateliers/sprint-2-grille.md`, et les tests associés.
+`.github/workflows/livraison.yml`, `.github/workflows/retour-arriere.yml` et
+`.github/actions/ordre-serveur/action.yml` (nouveaux), `deploy/deployer.py`,
+`deploy/deployer.sh` et `deploy/compose.prod.yml` (nouveaux), `docker-compose.yml`, `docker-compose.demo.yml`
+(nouveau), `Dockerfile`, `.coveragerc`, `api/main.py` (`/health`), `db/importer.py`, `data/demo/` (nouveau),
+`scripts/extraire_jeu_demo.py` et `scripts/verifier_dockerfile.py` (nouveaux), `.gitleaks.toml` et `ruff.toml`
+(nouveaux), `.github/pull_request_template.md` (nouveau), `docs/EXPLOITATION.md`, `docs/CI-CD.md`,
+`docs/sprint-2/README.md`, `evidence/sprint-2/`, `eval/ateliers/sprint-2-grille.md`, et les tests associés. Le
+détail, tâche par tâche, est dans `docs/sprint-2/PLAN-TRAVAIL.md`.
 
 ## Glossaire
 
