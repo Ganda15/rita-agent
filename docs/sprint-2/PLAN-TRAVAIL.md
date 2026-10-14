@@ -578,9 +578,16 @@ modification du serveur.**
 - [ ] 💻 Clé SSH dédiée : `ssh-keygen -t ed25519 -C deploiement-rita -f <chemin hors du dépôt>` ; 🖧 sa clé publique
   ajoutée dans `/root/.ssh/authorized_keys`, précédée de
   `command="/root/rita-deploy/bin/deployer.sh",no-pty,no-port-forwarding,no-agent-forwarding,no-X11-forwarding`.
-- [ ] 💻 **Installer le script du serveur** : `scp deploy/deployer.py deploy/deployer.sh root@<serveur>:/root/rita-deploy/bin/`
-  (par la clé personnelle d'Era, pas la clé dédiée), puis 🖧 `chmod 700` sur les deux. La même commande sert aux mises
-  à jour ; elle est écrite dans `EXPLOITATION.md`.
+- [ ] 💻 **Installer le script du serveur et les fichiers Compose relus** : `scp deploy/deployer.py deploy/deployer.sh
+  docker-compose.yml deploy/compose.prod.yml root@<serveur>:/root/rita-deploy/bin/` (par la clé personnelle d'Era, pas
+  la clé dédiée, fichiers en LF), puis 🖧 `chmod 700` sur les deux scripts et `chmod 600` sur les deux fichiers Compose.
+  Le script refuse toute livraison dont les fichiers Compose diffèrent de ces copies (correctif de sécurité du 14/10) :
+  un changement de `docker-compose.yml` passe donc par une relecture et une installation à la main. La même commande sert
+  aux mises à jour ; elle est écrite dans `EXPLOITATION.md`.
+- [ ] 🖧 **`.env` du serveur lisible par `docker run --env-file`** : aucune valeur entre guillemets
+  (`grep -c '="' /root/rita-agent/.env` doit montrer `0`), et un mot de passe PostgreSQL qui n'est pas la valeur par
+  défaut publique de `docker-compose.yml` (`grep -c '^POSTGRES_PASSWORD=rita_preprod_local$' /root/rita-agent/.env`
+  doit montrer `0`, et `grep -c '^POSTGRES_PASSWORD=' /root/rita-agent/.env` doit montrer `1`). Aucune valeur affichée.
 - [ ] 🌐 Environnement `production` créé, **sans relecteur obligatoire**, avec `DEPLOY_SSH_KEY`, `DEPLOY_HOST` et
   `DEPLOY_KNOWN_HOSTS` ; l'empreinte de `ssh-keyscan` comparée à celle du serveur
   (`ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub`).

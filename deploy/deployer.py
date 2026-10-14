@@ -258,6 +258,11 @@ PORT_PRETEST = 8002
 URL_PRODUCTION = f"http://127.0.0.1:{PORT_PRODUCTION}"
 URL_PRETEST = f"http://127.0.0.1:{PORT_PRETEST}"
 VARIABLES_REQUISES = ("RITA_API_KEY", "RITA_DSN_LECTURE")
+FICHIERS_COMPOSE = ("docker-compose.yml", "compose.prod.yml")  # embarqués dans l'image ET installés dans bin/
+
+
+class ComposeNonInstalle(Exception):
+    """Les fichiers Compose de l'image diffèrent de ceux qu'Era a installés sur le serveur : livraison refusée."""
 
 
 @dataclass(frozen=True)
@@ -287,6 +292,25 @@ def lire_env(chemin: Path) -> dict[str, str]:
         nom, _, valeur = ligne.partition("=")
         valeurs[nom.strip()] = valeur.strip().strip('"').strip("'")
     return valeurs
+
+
+def env_du_pretest(texte: str) -> str:
+    """Le `.env` donné au pré-test : tout le `.env` du serveur, sauf ce qui permet d'écrire dans la base
+    (`DATABASE_URL`, `POSTGRES_*`). Sa base, le pré-test la reçoit à part : le compte rita_lecture."""
+    gardees = []
+    for ligne in texte.splitlines():
+        nom = ligne.split("=", 1)[0].strip().removeprefix("export ").strip()
+        if nom == "DATABASE_URL" or nom.startswith("POSTGRES_"):
+            continue
+        gardees.append(ligne)
+    return "\n".join(gardees) + "\n"
+
+
+def _ecrire_secret(chemin: Path, contenu: str) -> None:
+    """Écrit un fichier lisible par root seul dès sa création (droits 600), en fins de ligne LF."""
+    descripteur = os.open(chemin, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(descripteur, "w", encoding="utf-8", newline="\n") as fichier:
+        fichier.write(contenu)
 
 
 class Docker:
@@ -335,16 +359,21 @@ class Docker:
             self._essayer(["docker", "rm", "-f", temporaire])
 
     def demarrer_pretest(self, ref: str, config: Path, dsn_lecture: str) -> None:
-        """La préproduction : compte PostgreSQL en lecture seule, index Chroma construit pour l'essai puis jeté."""
-        commun = ["--network", f"{self.projet}_default", "--env-file", str(config / ".env"),
-                  "-e", f"DATABASE_URL={dsn_lecture}",
+        """La préproduction : compte PostgreSQL en lecture seule, index Chroma construit pour l'essai puis jeté.
+        Le pré-test reçoit un `.env` sans accès en écriture à la base ; le DSN de lecture passe par l'environnement
+        de la commande `docker` (`-e DATABASE_URL` sans valeur), jamais par ses arguments, qu'une erreur recopie."""
+        fichier_env = config / "pretest.env"
+        _ecrire_secret(fichier_env, env_du_pretest((config / ".env").read_text(encoding="utf-8")))
+        commun = ["--network", f"{self.projet}_default", "--env-file", str(fichier_env),
+                  "-e", "DATABASE_URL",
                   "-v", f"{VOLUME_INDEX_PRETEST}:/app/data/chroma",
                   "-v", f"{self.projet}_rita_cache_preprod:/home/rita/.cache"]
+        avec_dsn = {**os.environ, "DATABASE_URL": dsn_lecture}
         self._essayer(["docker", "volume", "rm", "-f", VOLUME_INDEX_PRETEST])
         self._lancer(["docker", "run", "--rm", *commun, ref,
-                      "python", "-m", "pipelines.ingest", "--etapes", "indexation", "--strict"])
+                      "python", "-m", "pipelines.ingest", "--etapes", "indexation", "--strict"], env=avec_dsn)
         self._lancer(["docker", "run", "-d", "--name", CONTENEUR_PRETEST, *commun,
-                      "-p", f"127.0.0.1:{PORT_PRETEST}:8000", ref])
+                      "-p", f"127.0.0.1:{PORT_PRETEST}:8000", ref], env=avec_dsn)
 
     def arreter_pretest(self) -> None:
         self._essayer(["docker", "rm", "-f", CONTENEUR_PRETEST])
@@ -368,10 +397,17 @@ class Docker:
 def preparer_version(docker, ref: str, dossier: Path, source_env: Path, maintenant: datetime) -> Version:
     """Un dossier de configuration UNIQUE par livraison, jamais réécrit : les fichiers Compose de l'image, plus une
     copie du `.env` du serveur à cet instant. L'empreinte de l'image ne désigne donc pas toute la configuration
-    effective : le `.env` est sauvegardé à part, pour chaque livraison."""
+    effective : le `.env` est sauvegardé à part, pour chaque livraison.
+    Les fichiers Compose s'exécutent en root : ceux de l'image doivent être identiques, octet pour octet, à ceux
+    qu'Era a installés dans `bin/` à côté du script. Sinon, `ComposeNonInstalle`, avant tout pré-test."""
     cible = dossier / "configs" / f"{maintenant:%Y%m%d-%H%M%S}-{ref.rsplit(':', 1)[-1][:12]}"
     cible.mkdir(parents=True, exist_ok=False)
     docker.extraire_config(ref, cible)
+    for nom in FICHIERS_COMPOSE:
+        installe = dossier / "bin" / nom
+        if not installe.is_file() or installe.read_bytes() != (cible / nom).read_bytes():
+            raise ComposeNonInstalle(f"{nom} de l'image differe de la copie installee sur le serveur ({installe}) : "
+                                     "la relire, puis l'installer a la main (docs/EXPLOITATION.md)")
     shutil.copy2(source_env, cible / ".env")
     os.chmod(cible / ".env", 0o600)
     return Version(ref, str(cible), "complet")
@@ -459,7 +495,12 @@ def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete,
     ouvrir_operation(dossier, Ordre("livrer", ref), maintenant())
     try:
         docker.tirer(ref)
-        version = preparer_version(docker, ref, dossier, source_env or DEPOT / ".env", maintenant())
+        try:
+            version = preparer_version(docker, ref, dossier, source_env or DEPOT / ".env", maintenant())
+        except ComposeNonInstalle as erreur:
+            journaliser(dossier, maintenant(), **trace, resultat="refusee", message=str(erreur))
+            fermer_operation(dossier)
+            return 1
         commit = docker.commit_de_l_image(ref)
         docker.demarrer_pretest(ref, Path(version.config), env["RITA_DSN_LECTURE"])
         attendre_disponible(URL_PRETEST, http, dormir)
@@ -588,6 +629,16 @@ def main(environ=None, docker=None, dossier: Path = DOSSIER, maintenant=None, ht
         journaliser(dossier, maintenant(), operation=ordre.nom, resultat="refusee : operation inachevee",
                     observee=docker.image_du_conteneur(CONTENEUR))
         print(erreur, file=sys.stderr)
+        return 1
+    except subprocess.CalledProcessError as erreur:
+        # Le message de cette erreur recopie toute la commande, secrets compris, et la sortie d'erreur part par SSH
+        # jusqu'au journal de GitHub : on n'en garde que les deux premiers mots et le code. La marque d'opération
+        # reste ouverte : l'opération suivante vérifiera l'état réel.
+        commande = " ".join(str(mot) for mot in list(erreur.cmd)[:2])
+        journaliser(dossier, maintenant(), operation=ordre.nom, resultat="interrompue : commande en echec",
+                    commande=commande, code=erreur.returncode)
+        print(f"commande en echec : {commande} (code {erreur.returncode}) ; operation interrompue, voir journal.jsonl",
+              file=sys.stderr)
         return 1
     print({0: "operation reussie", CODE_CRENEAU: "livraison reportee par le creneau du matin"}.get(
         code, "operation refusee ou en echec : voir journal.jsonl sur le serveur"))

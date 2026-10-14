@@ -37,6 +37,7 @@ class FauxDocker:
         self.pretest = None
         self.aout = aout
         self.appels = []
+        self.fichiers_compose = {"docker-compose.yml": "services: {}\n", "compose.prod.yml": "services: {}\n"}
 
     def tirer(self, ref):
         self.appels.append(("tirer", ref))
@@ -51,8 +52,8 @@ class FauxDocker:
         return self.production
 
     def extraire_config(self, ref, dossier):
-        (dossier / "docker-compose.yml").write_text("services: {}\n", encoding="utf-8")
-        (dossier / "compose.prod.yml").write_text("services: {}\n", encoding="utf-8")
+        for nom, contenu in self.fichiers_compose.items():
+            (dossier / nom).write_text(contenu, encoding="utf-8")
         self.appels.append(("extraire", ref))
 
     def demarrer_pretest(self, ref, config, dsn_lecture):
@@ -118,6 +119,10 @@ DIX_HEURES = _horloge(datetime(2026, 10, 14, 10, 0, tzinfo=PARIS))
 @pytest.fixture
 def serveur(tmp_path):
     (tmp_path / "sauvegardes" / "avant-chaine").mkdir(parents=True)
+    # Les fichiers Compose installés par Era à côté du script (tâche 10) : ceux de l'image doivent leur être identiques.
+    (tmp_path / "bin").mkdir()
+    for nom in ("docker-compose.yml", "compose.prod.yml"):
+        (tmp_path / "bin" / nom).write_text("services: {}\n", encoding="utf-8")
     env = tmp_path / "env-serveur"
     env.write_text("RITA_API_KEY=cle-de-test-smoke-ui-32-caracteres-x\nRITA_DSN_LECTURE=postgresql://lecture@base/rita\n",
                    encoding="utf-8")
@@ -472,16 +477,22 @@ def test_docker_extraire_config_supprime_le_conteneur_meme_en_cas_d_echec(tmp_pa
     assert enregistreur.commandes[-1][0][:3] == ["docker", "rm", "-f"]
 
 
+DSN_SECRET = "postgresql://rita_lecture:MOTDEPASSE-FICTIF@postgres:5432/rita"
+
+
 def test_docker_pretest_indexe_puis_demarre_en_lecture_seule(tmp_path):
+    (tmp_path / ".env").write_text("RITA_API_KEY=k\n", encoding="utf-8")
     enregistreur = Enregistreur()
-    d.Docker(executer=enregistreur).demarrer_pretest(REF_C, tmp_path, "postgresql://lecture@base/rita")
-    commandes = [args for args, _ in enregistreur.commandes]
-    indexation = next(a for a in commandes if "pipelines.ingest" in a)
-    api = next(a for a in commandes if "-d" in a)
-    for args in (indexation, api):
-        assert "DATABASE_URL=postgresql://lecture@base/rita" in args
+    d.Docker(executer=enregistreur).demarrer_pretest(REF_C, tmp_path, DSN_SECRET)
+    lancements = [(args, env) for args, env in enregistreur.commandes if args[:2] == ["docker", "run"]]
+    indexation = next(c for c in lancements if "pipelines.ingest" in c[0])
+    api = next(c for c in lancements if "-d" in c[0])
+    for args, env in (indexation, api):
+        # Le mot de passe ne passe jamais dans les arguments : ils se lisent dans `ps` et une erreur les recopie.
+        assert not any("MOTDEPASSE-FICTIF" in a for a in args)
+        assert args[args.index("-e") + 1] == "DATABASE_URL" and env["DATABASE_URL"] == DSN_SECRET
         assert f"{d.VOLUME_INDEX_PRETEST}:/app/data/chroma" in args
-    assert f"127.0.0.1:{d.PORT_PRETEST}:8000" in api and d.CONTENEUR_PRETEST in api
+    assert f"127.0.0.1:{d.PORT_PRETEST}:8000" in api[0] and d.CONTENEUR_PRETEST in api[0]
 
 
 # --- Les chemins d'erreur (ajoutés après le code, pour les lignes que la couverture montrait non exercées) ---------
@@ -609,3 +620,68 @@ def test_requete_reelle_sur_un_petit_serveur_local():
         serveur.shutdown()
     with pytest.raises(OSError):
         d.requete("GET", base + "/health", delai=2)
+
+
+# --- Correctifs de sécurité (revue automatique du 14/10 sur le commit 6b473d0) -------------------------------------
+
+@pytest.mark.parametrize("cas", ["different", "absent"])
+def test_compose_de_l_image_different_de_celui_installe_refuse_la_livraison(serveur, cas):
+    # Constat 1 : le serveur exécute les fichiers Compose en root. Une fusion dans `main` ne doit pas pouvoir changer,
+    # seule, un réglage de la machine : seuls les fichiers installés par Era sont acceptés.
+    dossier, env = serveur
+    a = _version(REF_A, dossier, "a")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=a))
+    docker = FauxDocker({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc")}, production=REF_A)
+    if cas == "different":
+        docker.fichiers_compose["compose.prod.yml"] = "services:\n  api:\n    privileged: true\n"
+    else:
+        (dossier / "bin" / "compose.prod.yml").unlink()
+    assert _livrer(REF_C, docker, dossier, env) == 1
+    assert docker.remplacements() == [] and not any(appel[0] == "pretest" for appel in docker.appels)
+    assert d.lire_etat(dossier / "etat.json") == d.Etat(active=a)
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "refusee" and "compose.prod.yml" in dernier["message"]
+    assert not (dossier / "operation-en-cours.json").exists()
+
+
+class DockerEnPanne(FauxDocker):
+    def tirer(self, ref):
+        raise subprocess.CalledProcessError(1, ["docker", "run", "-e", f"DATABASE_URL={DSN_SECRET}", ref],
+                                            stderr=f"echec avec {DSN_SECRET}")
+
+
+def test_main_une_commande_docker_ratee_n_affiche_jamais_ses_arguments(serveur, capsys):
+    # Constat 2 : le message d'une CalledProcessError recopie toute la commande ; il remonterait par SSH jusqu'au
+    # journal de GitHub. `main` n'affiche que le nom de la commande et son code.
+    dossier, _ = serveur
+    docker = DockerEnPanne({REF_C: _comportement(commit="ccc")}, production="rita-api:local")
+    code, _ = _main(serveur, "livrer " + REF_C, docker)
+    sortie = capsys.readouterr()
+    assert code == 1
+    assert "MOTDEPASSE-FICTIF" not in sortie.out + sortie.err
+    assert "MOTDEPASSE-FICTIF" not in (dossier / "journal.jsonl").read_text(encoding="utf-8")
+    assert "docker run" in sortie.err and "code 1" in sortie.err
+    assert (dossier / "operation-en-cours.json").exists()   # interrompue : l'opération suivante vérifiera l'état réel
+
+
+def test_le_pretest_ne_recoit_pas_les_acces_en_ecriture_a_la_base(tmp_path):
+    # Constat 3 : le pré-test ne reçoit pas tout le `.env` de production, seulement ce qui ne permet pas d'écrire
+    # dans la base ; sa base, il la reçoit par `-e DATABASE_URL` (le compte rita_lecture).
+    (tmp_path / ".env").write_text(
+        "# production\nRITA_API_KEY=k\nDATABASE_URL=postgresql://rita:ADMIN-FICTIF@postgres/rita\n"
+        "POSTGRES_PASSWORD=ADMIN-FICTIF\nMISTRAL_API_KEY=m\n", encoding="utf-8")
+    enregistreur = Enregistreur()
+    d.Docker(executer=enregistreur).demarrer_pretest(REF_C, tmp_path, DSN_SECRET)
+    lancements = [args for args, _ in enregistreur.commandes if args[:2] == ["docker", "run"]]
+    assert len(lancements) == 2
+    for args in lancements:
+        fichier = Path(args[args.index("--env-file") + 1])
+        assert fichier != tmp_path / ".env"
+        contenu = fichier.read_text(encoding="utf-8")
+        assert "ADMIN-FICTIF" not in contenu
+        assert "RITA_API_KEY=k" in contenu and "MISTRAL_API_KEY=m" in contenu
+
+
+def test_env_du_pretest_retire_toute_variable_d_ecriture():
+    texte = "A=1\n DATABASE_URL =x\nexport POSTGRES_USER=rita\nPOSTGRES_DB=rita\n# DATABASE_URL en commentaire\nB=2\n"
+    assert d.env_du_pretest(texte) == "A=1\n# DATABASE_URL en commentaire\nB=2\n"

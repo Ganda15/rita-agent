@@ -1,7 +1,8 @@
 # Surcharge de production (sprint 2, tâche 8), utilisée par deploy/deployer.py avec docker-compose.yml.
 # L'API tourne sur l'image livrée par la chaîne, désignée par son empreinte (RITA_IMAGE, posée par le script) :
 # rien n'est reconstruit ni retéléchargé au moment de la bascule. Ce fichier est embarqué dans l'image
-# (/app/deploy/compose.prod.yml) : chaque version apporte sa propre configuration Compose.
+# (/app/deploy/compose.prod.yml) ET installé par Era dans /root/rita-deploy/bin/ : le serveur l'exécute en root, donc
+# une livraison dont les fichiers Compose diffèrent de la copie installée est refusée.
 services:
   api:
     image: ${RITA_IMAGE:?RITA_IMAGE absente}
