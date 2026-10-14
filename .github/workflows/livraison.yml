@@ -56,6 +56,33 @@ jobs:
       - name: Lint
         run: ruff check .
 
+  # --- Les secrets (sprint 2, tâche 3) ----------------------------------------
+  # Critère 5 de la grille : aucun secret dans le dépôt, y compris dans l'HISTORIQUE (une clé effacée aujourd'hui
+  # reste lisible dans les anciens commits). gitleaks à une version fixée, ses règles par défaut, valeurs masquées.
+  # Exceptions : les cinq fausses clés de test (`.gitleaks.toml`) ; les secrets révoqués de l'incident INC-008
+  # (`.gitleaksignore`). Puis le contrôle des déclarations ARG et ENV du Dockerfile. Check requis (tâche 10).
+  secrets:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Tout l'historique, toutes les branches et tous les tags : c'est ce que gitleaks doit lire.
+          fetch-depth: 0
+      - name: Chercher des secrets dans tout l'historique (gitleaks v8.30.1)
+        # `safe.directory` : le dépôt monté appartient à l'utilisateur du runner, pas à celui du conteneur ; sans
+        # cette ligne, Git refuserait de le lire (« dubious ownership »).
+        run: |
+          docker run --rm \
+            -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0=/repo \
+            -v "$GITHUB_WORKSPACE:/repo" zricethezav/gitleaks:v8.30.1 \
+            git /repo --log-opts="--branches --remotes --tags" \
+            --config /repo/.gitleaks.toml --gitleaks-ignore-path /repo/.gitleaksignore \
+            --redact --exit-code 1
+      - name: Aucune déclaration ARG ou ENV sensible dans le Dockerfile
+        run: python3 scripts/verifier_dockerfile.py Dockerfile
+
   construire-et-publier:
     runs-on: ubuntu-24.04
     # Les tests et la construction ne partent qu'après un lint vert : l'ordre du brief.
@@ -196,6 +223,16 @@ jobs:
             echo "::error::L'API repond $code sans cle d'API, 403 attendu"
             exit 1
           fi
+
+      - name: Vérifier que l'image ne contient pas de fichier .env
+        # Ce contrôle ne vérifie que ce chemin-là, `/app/.env` ; à la construction, `.dockerignore` exclut déjà
+        # `.env` et `.env.*`. La preuve le dit telle quelle.
+        run: |
+          if docker run --rm --entrypoint sh rita-api:verification -c 'test -e /app/.env'; then
+            echo "::error::l'image contient /app/.env : un fichier de clés n'a rien à faire dans l'image"
+            exit 1
+          fi
+          echo "/app/.env absent de l'image"
 
       - name: Arrêter le conteneur de vérification
         if: always()

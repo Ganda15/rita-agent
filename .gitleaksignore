@@ -1,0 +1,7 @@
+# Secrets historiques RÉVOQUÉS : ce ne sont pas des faux positifs.
+# Incident INC-008 (evidence/C21/INC-008-cles-mistral-dans-l-historique.md) : deux vraies valeurs de MISTRAL_API_KEY
+# écrites dans .env.example le 10/10/2026, présentes seulement dans l'historique de la branche mistral-ue.
+# Révocation chez Mistral confirmée par Era le 14/10/2026 ; une nouvelle clé vit seulement dans le .env local.
+# Une empreinte gitleaks = commit:fichier:règle:ligne. N'ajouter ici qu'un secret révoqué, avec sa fiche d'incident.
+5fae28e4d596f2ec44e8b2fa726866bfb08fd4fd:.env.example:generic-api-key:55
+8587a215e23f894e0547627c7067eceac7522279:.env.example:generic-api-key:53
