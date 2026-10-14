@@ -271,6 +271,9 @@ def briefing(ticker: str, api_key: str = Security(verify_api_key)):
         "briefing": verdict["texte_diffusable"],
         "conforme_amf": verdict["conforme"],
         "motifs_amf": verdict["motifs_detectes"],
+        # Sprint 2 (14/10) : le nombre d'articles distincts transmis au modèle. Un briefing est rédigé même sans
+        # article ; sans ce compte, un index vide en production passait tous les contrôles du script du serveur.
+        "articles_transmis": len({p["article_id"] for p in resultat.get("passages") or []}),
     }
 
 

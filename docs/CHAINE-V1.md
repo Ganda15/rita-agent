@@ -187,6 +187,14 @@ Les changements doivent rester compatibles avec les versions conservées.
 - **Chroma** : `chromadb==1.5.9` est conservé pour N0 et N1 (`requirements-api.txt` l. 43). L'index se déduit des
   articles de PostgreSQL ; l'indexation complète l'index existant (`get_or_create_collection`, `rag/indexation.py`
   l. 248-249) et ne le recrée pas. Toute reconstruction utilise l'image cible et un volume neuf, vérifié avant usage.
+- **Un index par livraison** (choix A d'Era, 14/10, après le relevé du serveur : la production n'avait aucun index).
+  Chaque livraison remplit un volume neuf (`rita-index-<date>-<empreinte>`), le pré-test le vérifie, puis la
+  production s'en sert (`deploy/compose.prod.yml`, volume externe `RITA_INDEX`) ; le nom est enregistré avec la
+  version. Un retour arrière retrouve exactement l'index de sa version ; un index manquant est refusé, jamais recréé
+  vide. L'index d'une candidate refusée est supprimé ; jamais celui de l'active. Les contrôles exigent au moins un
+  article transmis au modèle pour `OR.PA` (`articles_transmis`, ajouté à la réponse du briefing) : sans ce compte,
+  un index vide passait inaperçu, le briefing étant rédigé même sans article. Les anciens index s'accumulent jusqu'au
+  nettoyage, reporté après l'atelier comme celui des images (§ 5.4).
 - **Vérification** : le retour N1 vers N0 fait tourner l'ancienne version sur le schéma actuel. Le rappel dans
   chaque PR qui touche `db/` (modèle de PR) vient **après l'atelier** (§ 11).
 - **Limite** : `pg_dump` ne sauvegarde que PostgreSQL ; la sauvegarde initiale ne suffit pas seule à restaurer RITA
@@ -332,7 +340,7 @@ répétitions du retour arrière (une par Era, une par un tiers, chronométrée)
 | Élément | Ce qui change d'ici là |
 |---|---|
 | Le travail `reconstruction` dans la chaîne (§ 6.2) | absent des travaux qu'attend `deployer` et des checks requis ; la reconstruction est montrée en direct |
-| Le nettoyage automatique des images (§ 5.4) | nettoyage à la main, même règle |
+| Le nettoyage automatique des images (§ 5.4) et des anciens index (§ 5.5) | nettoyage à la main, même règle |
 | L'automatisation du retour vers l'image d'août (§ 5.1) | exception explicite : restauration manuelle testée pour la seule première livraison |
 | Le modèle de PR qui rappelle la compatibilité (§ 5.5) | rappel fait à la main dans la PR qui toucherait `db/` |
 

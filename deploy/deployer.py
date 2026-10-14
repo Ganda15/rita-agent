@@ -118,6 +118,9 @@ class Version:
     image: str   # empreinte GHCR (ou étiquette locale pour l'image d'août)
     config: str  # dossier de configuration sauvegardé sur le serveur
     profil: str  # liste de contrôles adaptée à la version : « complet » (ou « aout », après l'atelier)
+    # Le volume Docker de l'index d'articles de CETTE version (choix A d'Era, 14/10) : un par livraison, rempli et
+    # vérifié par le pré-test, puis servi en production ; un retour arrière retrouve exactement le sien.
+    index: str
 
 
 CHAMPS_ETAT = {"active", "precedente", "observee", "sante"}
@@ -145,7 +148,7 @@ def apres_retour(etat: Etat) -> Etat:
 def _version(valeur) -> Version | None:
     if valeur is None:
         return None
-    if not isinstance(valeur, dict) or set(valeur) != {"image", "config", "profil"} \
+    if not isinstance(valeur, dict) or set(valeur) != {"image", "config", "profil", "index"} \
             or not all(isinstance(v, str) for v in valeur.values()):
         raise EtatIllisible("version mal formée dans le fichier d'état")
     return Version(**valeur)
@@ -251,7 +254,6 @@ DEPOT = Path("/root/rita-agent")             # dossier de projet Compose et `.en
 PROJET_COMPOSE = "rita-agent"                # nom de projet de production : à confirmer sur le serveur (tâche 10)
 CONTENEUR = "rita-api-preprod"               # le conteneur de production (nom fixé par docker-compose.yml)
 CONTENEUR_PRETEST = "rita-api-pretest"
-VOLUME_INDEX_PRETEST = "rita-index-pretest"  # index Chroma propre au pré-test, jeté après
 IMAGE_AOUT = "rita-api:avant-chaine"         # l'image d'août, mise de côté avant la première bascule
 PORT_PRODUCTION = 8001
 PORT_PRETEST = 8003      # relevé du 14/10 : 8002 est pris sur le serveur par le conteneur `glossary`
@@ -279,10 +281,11 @@ DUREE_MAX_CONTROLE = 3 * DELAI_CONTROLE + DELAI_BRIEFING + DELAI_COURT          
 DUREE_MAX_MISE_EN_SERVICE = (DELAI_BASCULE + DELAI_COURT + DUREE_MAX_DISPONIBLE         # bascule, commit, attente
                              + DUREE_MAX_CONTROLE + DELAI_COURT)                       # contrôles, image observée
 DUREE_MAX_PRETEST = (DELAI_TIRAGE + 4 * DELAI_COURT + DELAI_COURT                       # pull, extraction, commit
-                     + DELAI_COURT + DELAI_COURT + DELAI_INDEXATION + DELAI_COURT       # config, volume, index, run
-                     + DUREE_MAX_DISPONIBLE + DUREE_MAX_CONTROLE + 2 * DELAI_COURT)     # attente, contrôles, arrêt
-DUREE_MAX_LIVRER = DELAI_COURT + DUREE_MAX_PRETEST + 2 * DUREE_MAX_MISE_EN_SERVICE + DELAI_COURT
-DUREE_MAX_REVENIR = 2 * DUREE_MAX_MISE_EN_SERVICE + DELAI_COURT
+                     + DELAI_COURT + DELAI_INDEXATION + DELAI_COURT                     # config, index, run
+                     + DUREE_MAX_DISPONIBLE + DUREE_MAX_CONTROLE + DELAI_COURT)         # attente, contrôles, arrêt
+DUREE_MAX_LIVRER = (2 * DELAI_COURT + DUREE_MAX_PRETEST                                 # image d'août, index actif
+                    + 2 * DUREE_MAX_MISE_EN_SERVICE + 2 * DELAI_COURT)                  # observée, index candidat
+DUREE_MAX_REVENIR = DELAI_COURT + 2 * DUREE_MAX_MISE_EN_SERVICE + DELAI_COURT           # index de la cible
 # Le retour d'urgence attend plus longtemps qu'une livraison ne peut durer, et inversement : il n'abandonne jamais.
 ATTENTE_VERROU = {"livrer": DUREE_MAX_REVENIR + 60, "revenir": DUREE_MAX_LIVRER + 60}
 
@@ -392,6 +395,19 @@ class Docker:
         except subprocess.SubprocessError:
             return None
 
+    def index_existe(self, nom: str) -> bool:
+        """Le volume d'index d'une version existe-t-il encore ? Jamais recréé vide : un retour vers une version sans
+        son index est refusé."""
+        try:
+            self._lancer(["docker", "volume", "inspect", nom])
+            return True
+        except subprocess.SubprocessError:
+            return False
+
+    def supprimer_index(self, nom: str) -> None:
+        """Supprime l'index d'une candidate refusée. Sans `-f` : un volume encore utilisé n'est jamais retiré."""
+        self._essayer(["docker", "volume", "rm", nom])
+
     def extraire_config(self, ref: str, dossier: Path) -> None:
         """Copie les fichiers Compose embarqués dans l'image : l'empreinte désigne le code ET ces fichiers."""
         temporaire = "rita-extraction-config"
@@ -408,41 +424,48 @@ class Docker:
                 "-f", str(config / "docker-compose.yml"), "-f", str(config / "compose.prod.yml"),
                 "--env-file", str(config / ".env")]
 
-    def environnement_api(self, config: Path, ref: str) -> dict:
+    @staticmethod
+    def _variables_compose(version: Version) -> dict:
+        """Les deux variables lues par compose.prod.yml : l'image par son empreinte, et l'index de CETTE version."""
+        return {**os.environ, "RITA_IMAGE": version.image, "RITA_INDEX": version.index}
+
+    def environnement_api(self, version: Version) -> dict:
         """L'environnement que Compose donnera à l'API de production pour cette version (`docker compose config`) :
         seulement les variables du bloc `environment` de docker-compose.yml, valeurs par défaut comprises."""
-        sortie = self._lancer([*self._compose(config), "config", "--format", "json"],
-                              env={**os.environ, "RITA_IMAGE": ref})
+        sortie = self._lancer([*self._compose(Path(version.config)), "config", "--format", "json"],
+                              env=self._variables_compose(version))
         return json.loads(sortie)["services"]["api"]["environment"]
 
-    def demarrer_pretest(self, ref: str, config: Path, dsn_lecture: str) -> None:
-        """La préproduction : compte PostgreSQL en lecture seule, index Chroma construit pour l'essai puis jeté.
+    def demarrer_pretest(self, version: Version, dsn_lecture: str) -> None:
+        """La préproduction : compte PostgreSQL en lecture seule, et l'index de la version, rempli ici puis gardé : si le
+        pré-test est vert, c'est cet index vérifié que la production utilisera (choix A d'Era, 14/10).
         Le pré-test reçoit l'environnement de la production sans accès en écriture à la base ; le DSN de lecture passe
         par l'environnement de la commande `docker` (`-e DATABASE_URL` sans valeur), jamais par ses arguments."""
+        config = Path(version.config)
         fichier_env = config / "pretest.env"
-        _ecrire_secret(fichier_env, env_du_pretest(self.environnement_api(config, ref)))
+        _ecrire_secret(fichier_env, env_du_pretest(self.environnement_api(version)))
         commun = ["--network", f"{self.projet}_default", "--env-file", str(fichier_env),
                   "-e", "DATABASE_URL",
-                  "-v", f"{VOLUME_INDEX_PRETEST}:/app/data/chroma",
+                  "-v", f"{version.index}:/app/data/chroma",
                   "-v", f"{self.projet}_rita_cache_preprod:/home/rita/.cache"]
         avec_dsn = {**os.environ, "DATABASE_URL": dsn_lecture}
-        self._essayer(["docker", "volume", "rm", "-f", VOLUME_INDEX_PRETEST])
-        self._lancer(["docker", "run", "--rm", *commun, ref,
+        self._lancer(["docker", "run", "--rm", *commun, version.image,
                       "python", "-m", "pipelines.ingest", "--etapes", "indexation", "--strict"],
                      env=avec_dsn, delai=DELAI_INDEXATION)
         self._lancer(["docker", "run", "-d", "--name", CONTENEUR_PRETEST, *commun,
-                      "-p", f"127.0.0.1:{PORT_PRETEST}:8000", ref], env=avec_dsn)
+                      "-p", f"127.0.0.1:{PORT_PRETEST}:8000", version.image], env=avec_dsn)
 
     def arreter_pretest(self) -> None:
+        """Arrête le conteneur d'essai et GARDE l'index : s'il est vérifié, la production s'en servira."""
         self._essayer(["docker", "rm", "-f", CONTENEUR_PRETEST])
-        self._essayer(["docker", "volume", "rm", "-f", VOLUME_INDEX_PRETEST])
 
     def remplacer_production(self, version: Version) -> None:
         """Remplace l'API seule (`--no-deps` : PostgreSQL n'est pas touché), sur l'image désignée par son empreinte,
-        avec la configuration sauvegardée de CETTE version."""
+        avec la configuration sauvegardée et l'index de CETTE version. compose.prod.yml déclare l'index comme volume
+        externe : s'il manque, Compose refuse de démarrer au lieu de créer un index vide."""
         self._lancer([*self._compose(Path(version.config)),
                       "up", "-d", "--no-deps", "--no-build", "--pull", "never", "api"],
-                     env={**os.environ, "RITA_IMAGE": version.image}, delai=DELAI_BASCULE)
+                     env=self._variables_compose(version), delai=DELAI_BASCULE)
 
     def journal_du_conteneur(self, nom: str) -> str:
         try:
@@ -472,7 +495,7 @@ def preparer_version(docker, ref: str, dossier: Path, source_env: Path, maintena
                                      "la relire, puis l'installer a la main (docs/EXPLOITATION.md)")
     shutil.copy2(source_env, cible / ".env")
     os.chmod(cible / ".env", 0o600)
-    return Version(ref, str(cible), "complet")
+    return Version(ref, str(cible), "complet", f"rita-index-{cible.name}")   # un index par livraison
 
 
 @dataclass(frozen=True)
@@ -516,6 +539,10 @@ def controler(base: str, cle: str, profil: str, commit_attendu: str | None, jour
         echecs.append("briefing")
     elif f"request_id={briefing.entetes.get('x-request-id', '?')}" not in journal():
         echecs.append("journal")
+    # Choix A d'Era (14/10) : un briefing est rédigé même sans article ; seul ce compte rend un index vide visible.
+    articles = corps.get("articles_transmis")
+    if briefing.statut == 200 and not (isinstance(articles, int) and articles >= 1):
+        echecs.append("articles")
     return Controle("sain" if not echecs else "degrade", tuple(echecs))
 
 
@@ -566,20 +593,17 @@ def _commande(cmd) -> str:
 ERREURS_AVANT_BASCULE = (subprocess.SubprocessError, OSError, ValueError, KeyError, ComposeNonInstalle, EnvIllisible)
 
 
-def _essai_en_preproduction(ref: str, docker, dossier: Path, source: Path, env: dict, maintenant, http, dormir):
-    """Prépare la version et la contrôle sur le port du pré-test ; rend (version, contrôle). Le pré-test est
-    toujours arrêté, même après une erreur."""
+def _essai_en_preproduction(version: Version, docker, env: dict, http, dormir) -> Controle:
+    """Remplit l'index de la version et la contrôle sur le port du pré-test. Le conteneur d'essai est toujours
+    arrêté, même après une erreur ; son index reste, pour la production ou pour être supprimé par l'appelant."""
     try:
-        docker.tirer(ref)
-        version = preparer_version(docker, ref, dossier, source, maintenant())
-        commit = docker.commit_de_l_image(ref)
-        docker.demarrer_pretest(ref, Path(version.config), env["RITA_DSN_LECTURE"])
+        commit = docker.commit_de_l_image(version.image)
+        docker.demarrer_pretest(version, env["RITA_DSN_LECTURE"])
         attendre_disponible(URL_PRETEST, http, dormir)
-        controle = controler(URL_PRETEST, _cle(version), "pretest", commit,
-                             lambda: docker.journal_du_conteneur(CONTENEUR_PRETEST), http)
+        return controler(URL_PRETEST, _cle(version), "pretest", commit,
+                         lambda: docker.journal_du_conteneur(CONTENEUR_PRETEST), http)
     finally:
         docker.arreter_pretest()
-    return version, controle
 
 
 def _mettre_en_service(version: Version, docker, http, dormir) -> Controle:
@@ -620,21 +644,32 @@ def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete,
         journaliser(dossier, maintenant(), **trace, resultat="refusee",
                     message="sauvegarde d'aout absente : premiere livraison impossible (tache 10)")
         return 1
+    if not premiere and not docker.index_existe(etat.active.index):
+        # Sans l'index de l'active, un retour automatique serait impossible : on ne bascule pas.
+        journaliser(dossier, maintenant(), **trace, resultat="refusee",
+                    message=f"index de la version active absent ({etat.active.index}) : retour automatique impossible")
+        return 1
 
     ouvrir_operation(dossier, Ordre("livrer", ref), maintenant())
+    version = None
     try:
-        version, pretest = _essai_en_preproduction(ref, docker, dossier, source_env or DEPOT / ".env", env,
-                                                   maintenant, http, dormir)
+        docker.tirer(ref)
+        version = preparer_version(docker, ref, dossier, source_env or DEPOT / ".env", maintenant())
+        pretest = _essai_en_preproduction(version, docker, env, http, dormir)
     except ERREURS_AVANT_BASCULE as erreur:
+        if version is not None:
+            docker.supprimer_index(version.index)
         journaliser(dossier, maintenant(), **trace, resultat="refusee", message=_decrire(erreur),
                     observee=docker.image_du_conteneur(CONTENEUR))
         fermer_operation(dossier)
         return 1
     if pretest.sante != "sain":
+        docker.supprimer_index(version.index)
         journaliser(dossier, maintenant(), **trace, resultat="refusee au pre-test", echecs=list(pretest.echecs))
         fermer_operation(dossier)
         return 1
     if secondes_avant_ouverture(maintenant()) > 0:  # l'heure relue juste avant la bascule
+        docker.supprimer_index(version.index)       # la reprise de 9 h préparera une nouvelle livraison
         journaliser(dossier, maintenant(), **trace, resultat="reportee",
                     message="creneau du matin atteint pendant le pre-test : rien n'a change")
         fermer_operation(dossier)
@@ -665,6 +700,8 @@ def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete,
         resultat, message = "restauration en echec, intervention necessaire", ""
         if set(apres.echecs) & set(restaure.echecs):
             message = "cause externe possible (modele, base) ou configuration commune incorrecte, a diagnostiquer"
+    if restaure.sante == "sain":
+        docker.supprimer_index(version.index)       # la candidate n'est plus servie : son index ne sert plus
     journaliser(dossier, maintenant(), **trace, de=etat.active.image, resultat=resultat, message=message,
                 echecs=list(apres.echecs), echecs_restauration=list(restaure.echecs),
                 **_details(bascule=apres, restauration=restaure))
@@ -687,6 +724,10 @@ def revenir(numero: str, docker, dossier: Path, env: dict, maintenant, http=requ
         return 1
     if etat.active is None or etat.precedente is None:
         journaliser(dossier, maintenant(), **trace, resultat="refuse : aucune version precedente")
+        return 1
+    if not docker.index_existe(etat.precedente.index):
+        journaliser(dossier, maintenant(), **trace, resultat="refuse",
+                    message=f"index de la version precedente absent ({etat.precedente.index}) : jamais recree vide")
         return 1
 
     ouvrir_operation(dossier, Ordre("revenir", numero), maintenant())

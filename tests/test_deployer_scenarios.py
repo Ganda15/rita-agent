@@ -8,6 +8,7 @@ précédente, et son échec demande la restauration manuelle d'août.
 import http.server
 import json
 import os
+import re
 import subprocess
 import threading
 from datetime import datetime
@@ -39,6 +40,8 @@ class FauxDocker:
         self.aout = aout
         self.appels = []
         self.fichiers_compose = {"docker-compose.yml": "services: {}\n", "compose.prod.yml": "services: {}\n"}
+        self.index_absents = set()    # volumes d'index qui n'existent pas (ou plus)
+        self.index_supprimes = []
 
     def tirer(self, ref):
         self.appels.append(("tirer", ref))
@@ -57,17 +60,26 @@ class FauxDocker:
             (dossier / nom).write_text(contenu, encoding="utf-8")
         self.appels.append(("extraire", ref))
 
-    def demarrer_pretest(self, ref, config, dsn_lecture):
-        self.pretest = ref
-        self.appels.append(("pretest", ref, dsn_lecture))
+    def index_existe(self, nom):
+        return nom not in self.index_absents
+
+    def supprimer_index(self, nom):
+        self.index_supprimes.append(nom)
+        self.index_absents.add(nom)
+
+    def demarrer_pretest(self, version, dsn_lecture):
+        self.pretest = version.image
+        self.appels.append(("pretest", version.image, dsn_lecture, version.index))
 
     def arreter_pretest(self):
         self.pretest = None
         self.appels.append(("arret_pretest",))
 
     def remplacer_production(self, version):
-        self.production = version.image
         self.appels.append(("remplacer", version))
+        if version.index in self.index_absents:   # Compose refuse un volume externe absent, sans le créer
+            raise subprocess.CalledProcessError(1, ["docker", "compose", "up"])
+        self.production = version.image
 
     def journal_du_conteneur(self, nom):
         image = self.pretest if nom == d.CONTENEUR_PRETEST else self.production
@@ -95,7 +107,8 @@ def faux_http(docker):
         if chemin.startswith("briefing?") and c.get("cle") and (entetes or {}).get("X-API-Key") != c["cle"]:
             return d.Reponse(403, {}, b"{}")      # chaque version n'accepte que SA clé
         if chemin.startswith("briefing?"):
-            corps = {"ok": {"briefing": "Texte du briefing.", "conforme_amf": True},
+            corps = {"ok": {"briefing": "Texte du briefing.", "conforme_amf": True,
+                            "articles_transmis": c.get("articles", 1)},
                      "vide": {"briefing": " ", "conforme_amf": True},
                      "refus": {"briefing": "Briefing retenu par le garde-fou.", "conforme_amf": False}}[c["briefing"]]
             return d.Reponse(200, {"x-request-id": f"rid-{image[-6:]}"}, json.dumps(corps).encode())
@@ -136,7 +149,7 @@ def _version(ref, dossier, nom, cle=ENV["RITA_API_KEY"]):
     chemin = dossier / "configs" / nom
     chemin.mkdir(parents=True, exist_ok=True)
     (chemin / ".env").write_text(f"RITA_API_KEY={cle}\n", encoding="utf-8")   # le .env sauvegardé de la version
-    return d.Version(ref, str(chemin), "complet")
+    return d.Version(ref, str(chemin), "complet", f"rita-index-{nom}")
 
 
 def _livrer(ref, docker, dossier, env_source, maintenant=DIX_HEURES):
@@ -345,6 +358,7 @@ def test_preparer_version_ne_reecrit_jamais_un_dossier(serveur):
     ({"briefing": "vide"}, "degrade", "briefing"),
     ({"briefing": "refus"}, "degrade", "briefing"),
     ({"journal": False}, "degrade", "journal"),
+    ({"articles": 0}, "degrade", "articles"),
     ({"commit": "zzz"}, "degrade", "version"),
     ({"health": False}, "indisponible", "health"),
 ])
@@ -470,7 +484,7 @@ class Enregistreur:
 
 def test_bascule_ne_remplace_que_l_api(tmp_path):
     enregistreur = Enregistreur()
-    version = d.Version(REF_C, str(tmp_path), "complet")
+    version = d.Version(REF_C, str(tmp_path), "complet", "rita-index-essai")
     d.Docker(executer=enregistreur).remplacer_production(version)
     args, env = enregistreur.commandes[-1]
     assert isinstance(args, list) and args[:2] == ["docker", "compose"]
@@ -503,7 +517,8 @@ DSN_SECRET = "postgresql://rita_lecture:MOTDEPASSE-FICTIF@postgres:5432/rita"
 def test_docker_pretest_indexe_puis_demarre_en_lecture_seule(tmp_path):
     (tmp_path / ".env").write_text("RITA_API_KEY=k\n", encoding="utf-8")
     enregistreur = Enregistreur()
-    d.Docker(executer=enregistreur).demarrer_pretest(REF_C, tmp_path, DSN_SECRET)
+    d.Docker(executer=enregistreur).demarrer_pretest(
+        d.Version(REF_C, str(tmp_path), "complet", "rita-index-essai"), DSN_SECRET)
     lancements = [(args, env) for args, env in enregistreur.commandes if args[:2] == ["docker", "run"]]
     indexation = next(c for c in lancements if "pipelines.ingest" in c[0])
     api = next(c for c in lancements if "-d" in c[0])
@@ -511,7 +526,7 @@ def test_docker_pretest_indexe_puis_demarre_en_lecture_seule(tmp_path):
         # Le mot de passe ne passe jamais dans les arguments : ils se lisent dans `ps` et une erreur les recopie.
         assert not any("MOTDEPASSE-FICTIF" in a for a in args)
         assert args[args.index("-e") + 1] == "DATABASE_URL" and env["DATABASE_URL"] == DSN_SECRET
-        assert f"{d.VOLUME_INDEX_PRETEST}:/app/data/chroma" in args
+        assert "rita-index-essai:/app/data/chroma" in args     # l'index DE LA VERSION, gardé ensuite
     assert f"127.0.0.1:{d.PORT_PRETEST}:8000" in api[0] and d.CONTENEUR_PRETEST in api[0]
 
 
@@ -680,8 +695,8 @@ def test_une_commande_ratee_avant_la_bascule_refuse_sans_rien_afficher_de_secret
 
 
 class DockerTropLent(FauxDocker):
-    def demarrer_pretest(self, ref, config, dsn_lecture):
-        self.appels.append(("pretest", ref, dsn_lecture))
+    def demarrer_pretest(self, version, dsn_lecture):
+        self.appels.append(("pretest", version.image, dsn_lecture))
         raise subprocess.TimeoutExpired(["docker", "run", "-e", f"DATABASE_URL={DSN_SECRET}"], d.DELAI_INDEXATION)
 
 
@@ -721,10 +736,11 @@ def test_le_pretest_recoit_l_environnement_de_production_sans_la_base(tmp_path):
     # plus dans le .env n'arrive ni à la production, ni au pré-test.
     (tmp_path / ".env").write_text("RITA_API_KEY=k\nAUTRE_SECRET=ne-doit-pas-passer\n", encoding="utf-8")
     enregistreur = Enregistreur()
-    d.Docker(executer=enregistreur).demarrer_pretest(REF_C, tmp_path, DSN_SECRET)
+    d.Docker(executer=enregistreur).demarrer_pretest(
+        d.Version(REF_C, str(tmp_path), "complet", "rita-index-essai"), DSN_SECRET)
     config, env_config = next((args, env) for args, env in enregistreur.commandes if "config" in args)
     assert config[:2] == ["docker", "compose"] and str(tmp_path / ".env") in config
-    assert env_config["RITA_IMAGE"] == REF_C
+    assert env_config["RITA_IMAGE"] == REF_C and env_config["RITA_INDEX"] == "rita-index-essai"
     assert (tmp_path / "pretest.env").read_text(encoding="utf-8") == (
         "ANTHROPIC_API_KEY=\nAZURE_FOUNDRY_DEPLOYMENT=gpt-5.4-dzs-eu\nLLM_ORDRE=foundry,anthropic,openrouter\n"
         "RITA_API_KEY=cle-compose-fictive\n")
@@ -848,7 +864,7 @@ def test_une_version_sans_env_sauvegarde_echoue_au_controle_au_lieu_de_planter(s
     dossier, _ = serveur
     sans_env = dossier / "configs" / "a-sans-env"
     sans_env.mkdir(parents=True)
-    a, c = d.Version(REF_A, str(sans_env), "complet"), _version(REF_C, dossier, "c")
+    a, c = d.Version(REF_A, str(sans_env), "complet", "rita-index-a"), _version(REF_C, dossier, "c")
     d.ecrire_etat(dossier / "etat.json", d.Etat(active=c, precedente=a))
     docker = FauxDocker({REF_A: _comportement(commit="aaa", cle=CLE_A), REF_C: _comportement(commit="ccc")},
                         production=REF_C)
@@ -878,9 +894,12 @@ def test_toutes_les_commandes_docker_ont_un_delai_maximal(tmp_path):
     docker.commit_de_l_image(REF_C)
     docker.image_du_conteneur(d.CONTENEUR)
     docker.extraire_config(REF_C, tmp_path)
-    docker.demarrer_pretest(REF_C, tmp_path, DSN_SECRET)
+    version = d.Version(REF_C, str(tmp_path), "complet", "rita-index-essai")
+    docker.demarrer_pretest(version, DSN_SECRET)
     docker.arreter_pretest()
-    docker.remplacer_production(d.Version(REF_C, str(tmp_path), "complet"))
+    docker.remplacer_production(version)
+    docker.index_existe(version.index)
+    docker.supprimer_index(version.index)
     docker.journal_du_conteneur(d.CONTENEUR)
     assert len(enregistreur.delais) >= 13
     permis = {d.DELAI_COURT, d.DELAI_TIRAGE, d.DELAI_INDEXATION, d.DELAI_BASCULE}
@@ -952,7 +971,7 @@ def _pire_chemin(serveur, monkeypatch, briefing_rate):
         if fin.startswith("briefing?"):
             briefings.append(url)
             statut = 500 if len(briefings) == briefing_rate else 200
-            corps = json.dumps({"briefing": "Texte.", "conforme_amf": True}).encode()
+            corps = json.dumps({"briefing": "Texte.", "conforme_amf": True, "articles_transmis": 2}).encode()
             return d.Reponse(statut, {"x-request-id": "rid"}, corps)
         return d.Reponse(200, {}, b"")
     return d.Docker(executer=enregistreur, depot=dossier), enregistreur, attentes, delais_http, http
@@ -1018,3 +1037,123 @@ def test_un_fichier_compose_qui_n_est_pas_un_fichier_ordinaire_est_refuse(serveu
     dernier = _journal(dossier)[-1]
     assert dernier["resultat"] == "refusee" and "compose.prod.yml" in dernier["message"]
     assert not (dossier / "operation-en-cours.json").exists()
+
+
+# --- Choix A d'Era (14/10) : un index par livraison, vérifié avant la bascule, gardé pour le retour arrière ---------
+
+def test_un_index_vide_est_refuse_au_pretest(serveur):
+    # Un briefing est rédigé même sans article : seul le compte d'articles rend un index vide visible.
+    dossier, env = serveur
+    a = _version(REF_A, dossier, "a")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=a))
+    docker = FauxDocker({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc", articles=0)},
+                        production=REF_A)
+    assert _livrer(REF_C, docker, dossier, env) == 1
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "refusee au pre-test" and "articles" in dernier["echecs"]
+    assert docker.remplacements() == []
+
+
+def test_la_livraison_garde_l_index_verifie_pour_la_production(serveur):
+    dossier, env = serveur
+    a = _version(REF_A, dossier, "a")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=a))
+    docker = FauxDocker({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc")}, production=REF_A)
+    assert _livrer(REF_C, docker, dossier, env) == 0
+    pretest = next(appel for appel in docker.appels if appel[0] == "pretest")
+    active = d.lire_etat(dossier / "etat.json").active
+    assert active.index == pretest[3] == docker.remplacements()[0].index     # testé, puis servi en production
+    assert active.index.startswith("rita-index-") and docker.index_supprimes == []
+
+
+def test_chaque_livraison_a_son_propre_index_meme_pour_la_meme_image(serveur):
+    dossier, env = serveur
+    docker = FauxDocker({})
+    premiere = d.preparer_version(docker, REF_C, dossier, env, datetime(2026, 10, 14, 10, 0, tzinfo=PARIS))
+    seconde = d.preparer_version(docker, REF_C, dossier, env, datetime(2026, 10, 14, 10, 0, 1, tzinfo=PARIS))
+    assert premiere.index != seconde.index
+    assert premiere.index == "rita-index-" + Path(premiere.config).name
+    assert re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9_.-]+", premiere.index)     # un nom de volume Docker valide
+
+
+def test_une_candidate_refusee_au_pretest_perd_son_index_et_l_active_garde_le_sien(serveur):
+    dossier, env = serveur
+    a = _version(REF_A, dossier, "a")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=a))
+    docker = FauxDocker({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc", briefing="vide")},
+                        production=REF_A)
+    assert _livrer(REF_C, docker, dossier, env) == 1
+    candidate = next(appel for appel in docker.appels if appel[0] == "pretest")[3]
+    assert docker.index_supprimes == [candidate] and a.index not in docker.index_supprimes
+    assert d.lire_etat(dossier / "etat.json") == d.Etat(active=a)
+
+
+def test_une_candidate_ratee_apres_bascule_perd_son_index_et_l_active_garde_le_sien(serveur):
+    dossier, env = serveur
+    a = _version(REF_A, dossier, "a")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=a))
+    docker = FauxDocker({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc", ecran=False)},
+                        production=REF_A)
+    assert _livrer(REF_C, docker, dossier, env) == 1
+    remplacees = docker.remplacements()
+    assert remplacees[1] == a                                   # l'active revient avec SON index
+    assert docker.index_supprimes == [remplacees[0].index] and a.index not in docker.index_supprimes
+
+
+def test_une_livraison_dont_l_active_n_a_plus_son_index_est_refusee(serveur):
+    # Sans l'index de l'active, un retour automatique serait impossible : on ne bascule pas.
+    dossier, env = serveur
+    a = _version(REF_A, dossier, "a")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=a))
+    docker = FauxDocker({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc")}, production=REF_A)
+    docker.index_absents.add(a.index)
+    assert _livrer(REF_C, docker, dossier, env) == 1
+    assert docker.appels == [] and _journal(dossier)[-1]["resultat"] == "refusee"
+    assert a.index in _journal(dossier)[-1]["message"]
+    assert not (dossier / "operation-en-cours.json").exists()
+
+
+def test_le_retour_reprend_exactement_l_ancien_index(serveur):
+    dossier, _ = serveur
+    a, c = _version(REF_A, dossier, "a"), _version(REF_C, dossier, "c")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=c, precedente=a))
+    docker = FauxDocker({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc")}, production=REF_C)
+    assert d.revenir("7", docker, dossier, ENV, DIX_HEURES, http=faux_http(docker), dormir=lambda s: None) == 0
+    assert docker.remplacements() == [a] and docker.remplacements()[0].index == "rita-index-a"
+    assert docker.index_supprimes == []
+
+
+def test_un_retour_vers_une_version_sans_index_est_refuse_sans_rien_toucher(serveur):
+    # Un volume manquant ne doit jamais être recréé vide : refus explicite, avant toute bascule.
+    dossier, _ = serveur
+    a, c = _version(REF_A, dossier, "a"), _version(REF_C, dossier, "c")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=c, precedente=a))
+    docker = FauxDocker({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc")}, production=REF_C)
+    docker.index_absents.add(a.index)
+    assert d.revenir("7", docker, dossier, ENV, DIX_HEURES, http=faux_http(docker), dormir=lambda s: None) == 1
+    assert docker.remplacements() == []
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "refuse" and a.index in dernier["message"]
+    assert not (dossier / "operation-en-cours.json").exists()
+
+
+def test_compose_prod_branche_l_api_sur_l_index_de_la_version_sans_jamais_le_creer():
+    prod = (RACINE / "deploy" / "compose.prod.yml").read_text(encoding="utf-8")
+    assert "rita_chroma_preprod:" in prod and "external: true" in prod
+    assert "name: ${RITA_INDEX:?" in prod
+
+
+def test_la_vraie_classe_docker_gere_les_index_par_leur_nom(tmp_path):
+    enregistreur = Enregistreur(echec="volume inspect rita-index-absent")
+    docker = d.Docker(executer=enregistreur)
+    assert docker.index_existe("rita-index-present") is True
+    assert docker.index_existe("rita-index-absent") is False
+    docker.supprimer_index("rita-index-candidate")
+    version = d.Version(REF_C, str(tmp_path), "complet", "rita-index-essai")
+    docker.remplacer_production(version)
+    docker.arreter_pretest()
+    commandes = [args for args, _ in enregistreur.commandes]
+    assert ["docker", "volume", "inspect", "rita-index-present"] in commandes
+    assert ["docker", "volume", "rm", "rita-index-candidate"] in commandes
+    assert enregistreur.commandes[-2][1]["RITA_INDEX"] == "rita-index-essai"      # la bascule
+    assert commandes[-1] == ["docker", "rm", "-f", d.CONTENEUR_PRETEST]          # l'arrêt garde l'index

@@ -7,3 +7,11 @@ services:
   api:
     image: ${RITA_IMAGE:?RITA_IMAGE absente}
     pull_policy: never
+
+# L'index d'articles de CETTE version (choix A d'Era, 14/10) : le volume rempli et vérifié par le pré-test, désigné par
+# son nom (RITA_INDEX, posé par le script). `external: true` : Compose refuse de démarrer s'il manque, au lieu de créer
+# un index vide en silence. Un retour arrière retrouve ainsi l'index de l'ancienne version.
+volumes:
+  rita_chroma_preprod:
+    external: true
+    name: ${RITA_INDEX:?RITA_INDEX absente}

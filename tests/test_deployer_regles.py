@@ -110,9 +110,9 @@ def test_le_pretest_vise_un_port_libre_du_serveur():
 
 # --- Les transitions d'état (calculs purs) -------------------------------------------------------------------------
 
-A = d.Version("ghcr.io/ganda15/rita-api@sha256:" + "a" * 64, "/root/rita-deploy/configs/a", "complet")
-B = d.Version("ghcr.io/ganda15/rita-api@sha256:" + "b" * 64, "/root/rita-deploy/configs/b", "complet")
-C = d.Version("ghcr.io/ganda15/rita-api@sha256:" + "c" * 64, "/root/rita-deploy/configs/c", "complet")
+A = d.Version("ghcr.io/ganda15/rita-api@sha256:" + "a" * 64, "/root/rita-deploy/configs/a", "complet", "rita-index-a")
+B = d.Version("ghcr.io/ganda15/rita-api@sha256:" + "b" * 64, "/root/rita-deploy/configs/b", "complet", "rita-index-b")
+C = d.Version("ghcr.io/ganda15/rita-api@sha256:" + "c" * 64, "/root/rita-deploy/configs/c", "complet", "rita-index-c")
 
 
 def test_apres_livraison():
@@ -166,6 +166,7 @@ def test_etat_sans_precedente_se_relit(tmp_path):
     '{"active": null, "precedente": null, "observee": null, "sante": null, "x": 1}',  # champ en trop
     '{"active": {"image": "x"}, "precedente": null, "observee": null, "sante": null}',  # version incomplète
     '{"active": {"image": 1, "config": "y", "profil": "c"}, "precedente": null, "observee": null, "sante": null}',
+    '{"active": {"image": "x", "config": "y", "profil": "complet"}, "precedente": null, "observee": null, "sante": null}',
 ])
 def test_etat_illisible_leve_et_ne_passe_jamais_pour_une_premiere_livraison(tmp_path, contenu):
     chemin = tmp_path / "etat.json"

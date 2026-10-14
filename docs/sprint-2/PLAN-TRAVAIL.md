@@ -608,6 +608,14 @@ modification du serveur.**
   💻 `git ls-files --eol docker-compose.yml deploy` doit montrer `w/lf` partout (`.gitattributes` l'impose depuis la
   relecture du 14/10) ; une copie en CRLF ferait refuser toutes les livraisons. La même commande sert aux mises à jour ;
   elle est écrite dans `EXPLOITATION.md`.
+- [ ] 🖧 **Des articles de `OR.PA` dans la base de production** (le contrôle de livraison exige au moins un article
+  transmis au modèle, choix A du 14/10) : `docker exec rita-postgres-preprod psql -U rita -d rita -tAc "SELECT
+  count(*), count(*) FILTER (WHERE titre ILIKE '%oréal%' OR titre ILIKE '%oreal%' OR resume ILIKE '%oréal%' OR
+  resume ILIKE '%oreal%') FROM article WHERE NOT bloque_injection"`. Le second nombre doit être au moins 1 ; sinon,
+  collecter des articles ou choisir une autre valeur de contrôle avant la première livraison.
+- [ ] 🖧 **Clés du modèle dans le `.env` du serveur** (relevé du 14/10 : aucune clé utilisable dans la version en
+  service) : Era tape lui-même `AZURE_FOUNDRY_ENDPOINT`, `AZURE_FOUNDRY_API_KEY`, `AZURE_FOUNDRY_DEPLOYMENT`
+  (OpenRouter facultatif) ; vérification par les noms seulement. Le conteneur en service n'en est pas affecté.
 - [ ] 🖧 **`.env` du serveur lisible par `docker run --env-file`** : aucune valeur entre guillemets
   (`grep -c '="' /root/rita-agent/.env` doit montrer `0`), et un mot de passe PostgreSQL qui n'est pas la valeur par
   défaut publique de `docker-compose.yml` (`grep -c '^POSTGRES_PASSWORD=rita_preprod_local$' /root/rita-agent/.env`
