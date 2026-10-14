@@ -80,7 +80,7 @@ class FauxDocker:
 
 
 def faux_http(docker):
-    def requete(methode, url, entetes=None):
+    def requete(methode, url, entetes=None, delai=None):
         image = docker.pretest if url.startswith(d.URL_PRETEST) else docker.production
         c = docker.images.get(image, {})
         chemin = url.split("127.0.0.1:")[1].split("/", 1)[1]
@@ -92,6 +92,8 @@ def faux_http(docker):
             return d.Reponse(403, {}, b"{}")
         if chemin == "briefing.html":
             return d.Reponse(200 if c.get("ecran") else 404, {}, b"")
+        if chemin.startswith("briefing?") and c.get("cle") and (entetes or {}).get("X-API-Key") != c["cle"]:
+            return d.Reponse(403, {}, b"{}")      # chaque version n'accepte que SA clé
         if chemin.startswith("briefing?"):
             corps = {"ok": {"briefing": "Texte du briefing.", "conforme_amf": True},
                      "vide": {"briefing": " ", "conforme_amf": True},
@@ -130,9 +132,10 @@ def serveur(tmp_path):
     return tmp_path, env
 
 
-def _version(ref, dossier, nom):
+def _version(ref, dossier, nom, cle=ENV["RITA_API_KEY"]):
     chemin = dossier / "configs" / nom
     chemin.mkdir(parents=True, exist_ok=True)
+    (chemin / ".env").write_text(f"RITA_API_KEY={cle}\n", encoding="utf-8")   # le .env sauvegardé de la version
     return d.Version(ref, str(chemin), "complet")
 
 
@@ -402,13 +405,13 @@ def test_main_retour_manuel_ignore_le_creneau(serveur):
     d.ecrire_etat(dossier / "etat.json", d.Etat(active=c, precedente=a))
     docker = FauxDocker({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc")}, production=REF_C)
     code, verrou = _main(serveur, "revenir 77", docker, maintenant=_horloge(datetime(2026, 10, 14, 8, 30, tzinfo=PARIS)))
-    assert code == 0 and verrou.pris == [900]
+    assert code == 0 and verrou.pris == [d.ATTENTE_VERROU["revenir"]]
 
 
 def test_main_livraison_prend_le_verrou_puis_livre(serveur):
     docker = FauxDocker({REF_C: _comportement(commit="ccc")}, production="rita-api:local")
     code, verrou = _main(serveur, "livrer " + REF_C, docker)
-    assert code == 0 and verrou.pris == [600]
+    assert code == 0 and verrou.pris == [d.ATTENTE_VERROU["livrer"]]
 
 
 def test_main_operation_inachevee_bloque_la_livraison(serveur):
@@ -435,17 +438,33 @@ def test_main_version_affiche_l_empreinte(serveur, capsys):
 
 # --- La vraie classe Docker : les commandes construites ------------------------------------------------------------
 
+# L'environnement que `docker compose config` donnerait au service api (forme vérifiée avec le vrai Compose le 14/10).
+ENV_COMPOSE = {"RITA_API_KEY": "cle-compose-fictive", "LLM_ORDRE": "foundry,anthropic,openrouter",
+               "AZURE_FOUNDRY_DEPLOYMENT": "gpt-5.4-dzs-eu", "ANTHROPIC_API_KEY": "",
+               "DATABASE_URL": "postgresql://rita:ADMIN-FICTIF@postgres:5432/rita"}
+
+
 class Enregistreur:
-    def __init__(self, sorties=None, echec=None):
+    """Remplace `subprocess.run` : note chaque commande, son environnement et son délai maximal."""
+
+    def __init__(self, sorties=None, echec=None, environnement=None):
         self.commandes = []
+        self.delais = []
         self.sorties = sorties or {}
         self.echec = echec
+        self.environnement = ENV_COMPOSE if environnement is None else environnement
 
-    def __call__(self, args, check=False, capture_output=False, text=False, env=None):
+    def __call__(self, args, check=False, capture_output=False, text=False, env=None, timeout=None):
         self.commandes.append((list(args), env))
-        cle = " ".join(map(str, args[:3]))
+        self.delais.append((" ".join(map(str, args[:3])), timeout))
         if self.echec and self.echec in " ".join(map(str, args)) and check:
             raise subprocess.CalledProcessError(1, args)
+        if args[:2] == ["docker", "cp"]:
+            Path(args[-1]).write_text("services: {}\n", encoding="utf-8")
+        if "config" in args and "--format" in args:
+            sortie = json.dumps({"services": {"api": {"environment": self.environnement}}})
+            return subprocess.CompletedProcess(args, 0, stdout=sortie, stderr="")
+        cle = " ".join(map(str, args[:3]))
         return subprocess.CompletedProcess(args, 0, stdout=self.sorties.get(cle, ""), stderr="")
 
 
@@ -499,7 +518,7 @@ def test_docker_pretest_indexe_puis_demarre_en_lecture_seule(tmp_path):
 # --- Les chemins d'erreur (ajoutés après le code, pour les lignes que la couverture montrait non exercées) ---------
 
 def test_controler_health_en_erreur_donne_indisponible():
-    def http(methode, url, entetes=None):
+    def http(methode, url, entetes=None, delai=None):
         return d.Reponse(500, {}, b"")
     assert d.controler(d.URL_PRODUCTION, "k", "complet", None, lambda: "", http).sante == "indisponible"
 
@@ -507,7 +526,7 @@ def test_controler_health_en_erreur_donne_indisponible():
 def test_controler_sans_403_et_connexion_perdue():
     appels = []
 
-    def http(methode, url, entetes=None):
+    def http(methode, url, entetes=None, delai=None):
         appels.append(url)
         if url.endswith("/health"):
             return d.Reponse(200, {}, b"pas du json")
@@ -517,15 +536,6 @@ def test_controler_sans_403_et_connexion_perdue():
     controle = d.controler(d.URL_PRODUCTION, "k", "complet", "abc", lambda: "", http)
     assert controle.sante == "degrade"
     assert set(controle.echecs) == {"version", "403", "connexion"}
-
-
-def test_attendre_disponible_abandonne_apres_les_essais():
-    pauses = []
-
-    def http(methode, url, entetes=None):
-        raise OSError("pas encore")
-    assert d.attendre_disponible(d.URL_PRODUCTION, http, pauses.append, essais=3, pause=2) is False
-    assert pauses == [2, 2, 2]
 
 
 def test_revenir_refuse_sans_variable_ou_avec_un_etat_illisible(serveur):
@@ -588,9 +598,12 @@ def test_l_image_embarque_ses_fichiers_compose():
 def test_les_fichiers_du_serveur_sont_toujours_en_lf():
     # Sur le poste Windows (core.autocrlf=true), une copie en CRLF casserait `#!/bin/sh` et changerait l'empreinte
     # comparée par la chaîne (ordre `version`) : livraisons refusées. `.gitattributes` impose LF dans `deploy/`.
-    assert "deploy/* text eol=lf" in (RACINE / ".gitattributes").read_text(encoding="utf-8")
-    for nom in ("deployer.py", "deployer.sh", "compose.prod.yml"):
-        assert b"\r" not in (RACINE / "deploy" / nom).read_bytes(), f"deploy/{nom} contient des CR"
+    # Relecture du 14/10 : docker-compose.yml aussi, car il est comparé octet par octet à la copie installée sur le
+    # serveur ; une copie en CRLF depuis Windows différerait de celle de l'image (construite sous Linux, en LF).
+    attributs = (RACINE / ".gitattributes").read_text(encoding="utf-8")
+    assert "deploy/* text eol=lf" in attributs and "docker-compose.yml text eol=lf" in attributs
+    for chemin in ("deploy/deployer.py", "deploy/deployer.sh", "deploy/compose.prod.yml", "docker-compose.yml"):
+        assert b"\r" not in (RACINE / chemin).read_bytes(), f"{chemin} contient des CR"
 
 
 def test_requete_reelle_sur_un_petit_serveur_local():
@@ -651,78 +664,323 @@ class DockerEnPanne(FauxDocker):
                                             stderr=f"echec avec {DSN_SECRET}")
 
 
-def test_main_une_commande_docker_ratee_n_affiche_jamais_ses_arguments(serveur, capsys):
-    # Constat 2 : le message d'une CalledProcessError recopie toute la commande ; il remonterait par SSH jusqu'au
-    # journal de GitHub. `main` n'affiche que le nom de la commande et son code.
+def test_une_commande_ratee_avant_la_bascule_refuse_sans_rien_afficher_de_secret(serveur, capsys):
+    # Le message d'une CalledProcessError recopie toute la commande. Avant la bascule, la production n'a pas bougé :
+    # la livraison est refusée proprement, l'état réel relu, l'opération fermée (relecture du 14/10).
     dossier, _ = serveur
     docker = DockerEnPanne({REF_C: _comportement(commit="ccc")}, production="rita-api:local")
     code, _ = _main(serveur, "livrer " + REF_C, docker)
     sortie = capsys.readouterr()
     assert code == 1
-    assert "MOTDEPASSE-FICTIF" not in sortie.out + sortie.err
-    assert "MOTDEPASSE-FICTIF" not in (dossier / "journal.jsonl").read_text(encoding="utf-8")
-    assert "docker run" in sortie.err and "code 1" in sortie.err
-    assert (dossier / "operation-en-cours.json").exists()   # interrompue : l'opération suivante vérifiera l'état réel
+    assert "MOTDEPASSE-FICTIF" not in sortie.out + sortie.err + (dossier / "journal.jsonl").read_text(encoding="utf-8")
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "refusee" and dernier["message"] == "commande en echec : docker run (code 1)"
+    assert dernier["observee"] == "rita-api:local"
+    assert not (dossier / "operation-en-cours.json").exists()
 
 
-def test_le_pretest_ne_recoit_pas_les_acces_en_ecriture_a_la_base(tmp_path):
-    # Constat 3 : le pré-test ne reçoit pas tout le `.env` de production, seulement ce qui ne permet pas d'écrire
-    # dans la base ; sa base, il la reçoit par `-e DATABASE_URL` (le compte rita_lecture).
-    (tmp_path / ".env").write_text(
-        "# production\nRITA_API_KEY=k\nDATABASE_URL=postgresql://rita:ADMIN-FICTIF@postgres/rita\n"
-        "POSTGRES_PASSWORD=ADMIN-FICTIF\nMISTRAL_API_KEY=m\n", encoding="utf-8")
+class DockerTropLent(FauxDocker):
+    def demarrer_pretest(self, ref, config, dsn_lecture):
+        self.appels.append(("pretest", ref, dsn_lecture))
+        raise subprocess.TimeoutExpired(["docker", "run", "-e", f"DATABASE_URL={DSN_SECRET}"], d.DELAI_INDEXATION)
+
+
+def test_une_commande_trop_longue_avant_la_bascule_refuse_sans_toucher_la_production(serveur):
+    dossier, env = serveur
+    a = _version(REF_A, dossier, "a")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=a))
+    docker = DockerTropLent({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc")}, production=REF_A)
+    assert _livrer(REF_C, docker, dossier, env) == 1
+    assert docker.remplacements() == [] and ("arret_pretest",) in docker.appels
+    dernier = _journal(dossier)[-1]
+    assert dernier["message"] == f"commande trop longue : docker run (plus de {d.DELAI_INDEXATION} s)"
+    assert "MOTDEPASSE-FICTIF" not in json.dumps(dernier)
+    assert d.lire_etat(dossier / "etat.json") == d.Etat(active=a)
+    assert not (dossier / "operation-en-cours.json").exists()
+
+
+class DockerEnPanneAuDepart(FauxDocker):
+    def image_existe(self, ref):
+        raise subprocess.TimeoutExpired(["docker", "image", "inspect", DSN_SECRET], d.DELAI_COURT)
+
+
+def test_main_n_affiche_jamais_les_arguments_d_une_commande_en_dernier_recours(serveur, capsys):
+    # Le dernier filet de `main` : une erreur Docker qui échapperait aux phases de `livrer` n'affiche que son nom.
+    docker = DockerEnPanneAuDepart({REF_C: _comportement(commit="ccc")}, production="rita-api:local")
+    code, _ = _main(serveur, "livrer " + REF_C, docker)
+    sortie = capsys.readouterr()
+    assert code == 1 and "MOTDEPASSE-FICTIF" not in sortie.out + sortie.err
+    assert f"commande trop longue : docker image (plus de {d.DELAI_COURT} s)" in sortie.err
+
+
+# --- Relecture du 14/10 : l'environnement du pré-test est celui de la production, calculé par Compose ---------------
+
+def test_le_pretest_recoit_l_environnement_de_production_sans_la_base(tmp_path):
+    # En production, l'API ne reçoit que le bloc `environment` de docker-compose.yml. Le pré-test reçoit le même,
+    # calculé par Compose avec les mêmes fichiers, sauf DATABASE_URL (mot de passe administrateur) : une variable de
+    # plus dans le .env n'arrive ni à la production, ni au pré-test.
+    (tmp_path / ".env").write_text("RITA_API_KEY=k\nAUTRE_SECRET=ne-doit-pas-passer\n", encoding="utf-8")
     enregistreur = Enregistreur()
     d.Docker(executer=enregistreur).demarrer_pretest(REF_C, tmp_path, DSN_SECRET)
-    lancements = [args for args, _ in enregistreur.commandes if args[:2] == ["docker", "run"]]
-    assert len(lancements) == 2
-    for args in lancements:
-        fichier = Path(args[args.index("--env-file") + 1])
-        assert fichier != tmp_path / ".env"
-        contenu = fichier.read_text(encoding="utf-8")
-        assert "ADMIN-FICTIF" not in contenu
-        assert "RITA_API_KEY=k" in contenu and "MISTRAL_API_KEY=m" in contenu
+    config, env_config = next((args, env) for args, env in enregistreur.commandes if "config" in args)
+    assert config[:2] == ["docker", "compose"] and str(tmp_path / ".env") in config
+    assert env_config["RITA_IMAGE"] == REF_C
+    assert (tmp_path / "pretest.env").read_text(encoding="utf-8") == (
+        "ANTHROPIC_API_KEY=\nAZURE_FOUNDRY_DEPLOYMENT=gpt-5.4-dzs-eu\nLLM_ORDRE=foundry,anthropic,openrouter\n"
+        "RITA_API_KEY=cle-compose-fictive\n")
+    for args, _ in enregistreur.commandes:
+        if args[:2] == ["docker", "run"]:
+            assert args[args.index("--env-file") + 1] == str(tmp_path / "pretest.env")
 
 
-def test_env_du_pretest_retire_toute_variable_d_ecriture():
-    texte = "A=1\nDATABASE_URL=x\n  POSTGRES_DB=rita\n# commentaire\nB=2\r\n"
-    assert d.env_du_pretest(texte) == "A=1\nB=2\n"
+def test_env_du_pretest_retire_la_base_et_garde_les_valeurs_vides():
+    environnement = {"B": "2", "DATABASE_URL": "postgresql://rita:x@p/r", "POSTGRES_PASSWORD": "x", "A": "", "C": None}
+    assert d.env_du_pretest(environnement) == "A=\nB=2\n"
 
 
-# Seconde revue automatique (commit 6b5eb53) : le filtre doit lire le .env comme `docker run --env-file` le lit,
-# sinon une variable qu'il croit retirée arrive quand même au pré-test.
-
-def test_env_du_pretest_retire_le_bom_comme_docker():
-    # Docker retire un BOM UTF-8 en tête de fichier ; sans le retirer aussi, « ﻿POSTGRES_PASSWORD » passait.
-    assert d.env_du_pretest("﻿POSTGRES_PASSWORD=ADMIN-FICTIF\nA=1\n") == "A=1\n"
-
-
-def test_env_du_pretest_ne_coupe_les_lignes_que_sur_le_saut_de_ligne():
-    # Docker ne coupe que sur « \n » : un « \r » isolé reste dans la valeur.
-    assert d.env_du_pretest("A=x\ry\nB=1\n") == "A=x\ry\nB=1\n"
-
-
-@pytest.mark.parametrize("ligne", ["export POSTGRES_USER=rita", " DATABASE_URL =x", "A B=1", "=valeur"])
-def test_env_du_pretest_refuse_une_ligne_au_nom_illisible(ligne):
-    # Ne pas deviner ce que Docker ferait d'un nom inhabituel : le pré-test est refusé, sans recopier la ligne.
+@pytest.mark.parametrize("valeur", ["ligne-un\nligne-deux", "morceau-a\rmorceau-b"])
+def test_env_du_pretest_refuse_une_valeur_sur_plusieurs_lignes(valeur):
+    # `docker run --env-file` ne sait pas lire une valeur sur plusieurs lignes : refus, sans recopier la valeur.
     with pytest.raises(d.EnvIllisible) as erreur:
-        d.env_du_pretest("A=1\n" + ligne + "\n")
-    assert "ligne 2" in str(erreur.value) and "rita" not in str(erreur.value) and "valeur" not in str(erreur.value)
+        d.env_du_pretest({"CLE_MULTI": valeur})
+    assert "CLE_MULTI" in str(erreur.value) and "morceau" not in str(erreur.value) and "ligne-" not in str(erreur.value)
 
 
-def test_le_pretest_lit_le_env_sans_transformer_les_fins_de_ligne(tmp_path):
-    (tmp_path / ".env").write_bytes(b"A=x\ry\nB=1\n")
-    d.Docker(executer=Enregistreur()).demarrer_pretest(REF_C, tmp_path, DSN_SECRET)
-    assert (tmp_path / "pretest.env").read_bytes() == b"A=x\ry\nB=1\n"
+# --- Relecture du 14/10 : une bascule qui échoue ou dépasse son délai déclenche la récupération --------------------
+
+class DockerBasculeRatee(FauxDocker):
+    """`docker compose up` échoue (ou dépasse son délai) après avoir commencé le remplacement, pour certaines images."""
+
+    def __init__(self, *args, rates, erreur, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rates, self.erreur = set(rates), erreur
+
+    def remplacer_production(self, version):
+        self.appels.append(("remplacer", version))
+        if version.image in self.rates:
+            self.production = None               # l'ancienne API est arrêtée, la nouvelle n'a pas démarré
+            raise self.erreur
+        self.production = version.image
 
 
-def test_livrer_refuse_un_env_illisible_avant_toute_operation(serveur):
+@pytest.mark.parametrize("erreur", [subprocess.CalledProcessError(1, ["docker", "compose", "up"]),
+                                    subprocess.TimeoutExpired(["docker", "compose", "up"], 300)],
+                         ids=["echec", "delai"])
+def test_une_bascule_qui_echoue_remet_l_active_du_debut(serveur, erreur):
     dossier, env = serveur
-    env.write_text(env.read_text(encoding="utf-8") + "export POSTGRES_USER=rita\n", encoding="utf-8")
-    docker = FauxDocker({REF_C: _comportement(commit="ccc")}, production="rita-api:local")
+    a, b = _version(REF_A, dossier, "a"), _version(REF_B, dossier, "b")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=a, precedente=b))
+    docker = DockerBasculeRatee({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc")},
+                                production=REF_A, rates=[REF_C], erreur=erreur)
     assert _livrer(REF_C, docker, dossier, env) == 1
-    assert docker.appels == []
-    assert _journal(dossier)[-1]["resultat"] == "refusee"
+    assert [v.image for v in docker.remplacements()] == [REF_C, REF_A]
+    etat = d.lire_etat(dossier / "etat.json")
+    assert etat.active == a and etat.precedente == b and etat.observee == REF_A and etat.sante == "sain"
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "livraison refusee, version active du debut restauree"
+    assert "bascule" in dernier["echecs"]
     assert not (dossier / "operation-en-cours.json").exists()
+
+
+def test_une_bascule_qui_echoue_a_la_premiere_livraison_demande_la_restauration_manuelle(serveur):
+    dossier, env = serveur
+    docker = DockerBasculeRatee({REF_C: _comportement(commit="ccc")}, production="rita-api:avant-chaine",
+                                rates=[REF_C], erreur=subprocess.CalledProcessError(1, ["docker", "compose", "up"]))
+    assert _livrer(REF_C, docker, dossier, env) == 1
+    assert [v.image for v in docker.remplacements()] == [REF_C]
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "echec apres bascule" and "restauration manuelle" in dernier["message"]
+    assert d.lire_etat(dossier / "etat.json").observee is None      # l'état réel relu : plus aucune API
+    assert not (dossier / "operation-en-cours.json").exists()
+
+
+def test_un_retour_dont_la_bascule_depasse_son_delai_remet_la_version_de_depart(serveur):
+    dossier, _ = serveur
+    a, c = _version(REF_A, dossier, "a"), _version(REF_C, dossier, "c")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=c, precedente=a))
+    docker = DockerBasculeRatee({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc")},
+                                production=REF_C, rates=[REF_A],
+                                erreur=subprocess.TimeoutExpired(["docker", "compose", "up"], 300))
+    assert d.revenir("7", docker, dossier, ENV, DIX_HEURES, http=faux_http(docker), dormir=lambda s: None) == 1
+    assert [v.image for v in docker.remplacements()] == [REF_A, REF_C]
+    etat = d.lire_etat(dossier / "etat.json")
+    assert etat.active == c and etat.observee == REF_C and etat.sante == "sain"
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "retour refuse" and "bascule" in dernier["echecs"]
+
+
+def test_une_restauration_dont_la_bascule_echoue_aussi_est_journalisee(serveur):
+    dossier, env = serveur
+    a = _version(REF_A, dossier, "a")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=a))
+    docker = DockerBasculeRatee({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc")},
+                                production=REF_A, rates=[REF_C, REF_A],
+                                erreur=subprocess.CalledProcessError(1, ["docker", "compose", "up"]))
+    assert _livrer(REF_C, docker, dossier, env) == 1
+    etat = d.lire_etat(dossier / "etat.json")
+    assert etat.active == a and etat.observee is None and etat.sante == "indisponible"
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "restauration en echec, intervention necessaire"
+    assert dernier["echecs_restauration"] == ["bascule"]
+    assert not (dossier / "operation-en-cours.json").exists()
+
+
+# --- Relecture du 14/10 : chaque version est contrôlée avec SA clé sauvegardée --------------------------------------
+
+CLE_A = "cle-fictive-de-l-ancienne-version-a-32"
+
+
+def test_le_retour_controle_la_version_cible_avec_sa_propre_cle(serveur):
+    # A, réinstallée avec son ancien .env, n'accepte que son ancienne clé. Contrôlée avec la clé actuelle, elle
+    # répondait 403 et le retour était refusé à tort.
+    dossier, _ = serveur
+    a, c = _version(REF_A, dossier, "a", cle=CLE_A), _version(REF_C, dossier, "c")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=c, precedente=a))
+    docker = FauxDocker({REF_A: _comportement(commit="aaa", cle=CLE_A),
+                         REF_C: _comportement(commit="ccc", cle=ENV["RITA_API_KEY"])}, production=REF_C)
+    assert d.revenir("7", docker, dossier, ENV, DIX_HEURES, http=faux_http(docker), dormir=lambda s: None) == 0
+    assert d.lire_etat(dossier / "etat.json").active == a
+
+
+def test_une_version_sans_env_sauvegarde_echoue_au_controle_au_lieu_de_planter(serveur):
+    # Ajouté après le code (ligne que la couverture montrait non exercée) : sans .env sauvegardé, pas de clé ; le
+    # contrôle du briefing échoue de façon visible et le retour est refusé, la version de départ remise.
+    dossier, _ = serveur
+    sans_env = dossier / "configs" / "a-sans-env"
+    sans_env.mkdir(parents=True)
+    a, c = d.Version(REF_A, str(sans_env), "complet"), _version(REF_C, dossier, "c")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=c, precedente=a))
+    docker = FauxDocker({REF_A: _comportement(commit="aaa", cle=CLE_A), REF_C: _comportement(commit="ccc")},
+                        production=REF_C)
+    assert d.revenir("7", docker, dossier, ENV, DIX_HEURES, http=faux_http(docker), dormir=lambda s: None) == 1
+    assert _journal(dossier)[-1]["echecs"] == ["briefing"]
+    assert d.lire_etat(dossier / "etat.json").observee == REF_C
+
+
+def test_le_retour_automatique_controle_l_active_avec_sa_propre_cle(serveur):
+    dossier, env = serveur
+    a = _version(REF_A, dossier, "a", cle=CLE_A)
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=a))
+    docker = FauxDocker({REF_A: _comportement(commit="aaa", cle=CLE_A),
+                         REF_C: _comportement(commit="ccc", ecran=False)}, production=REF_A)
+    assert _livrer(REF_C, docker, dossier, env) == 1
+    assert _journal(dossier)[-1]["resultat"] == "livraison refusee, version active du debut restauree"
+
+
+# --- Relecture du 14/10 : des délais partout, et une durée bornée tant que le verrou est tenu ----------------------
+
+def test_toutes_les_commandes_docker_ont_un_delai_maximal(tmp_path):
+    enregistreur = Enregistreur({"docker image inspect": "RITA_GIT_SHA=ccc\n"})
+    docker = d.Docker(executer=enregistreur)
+    (tmp_path / ".env").write_text("RITA_API_KEY=k\n", encoding="utf-8")
+    docker.tirer(REF_C)
+    docker.image_existe(REF_C)
+    docker.commit_de_l_image(REF_C)
+    docker.image_du_conteneur(d.CONTENEUR)
+    docker.extraire_config(REF_C, tmp_path)
+    docker.demarrer_pretest(REF_C, tmp_path, DSN_SECRET)
+    docker.arreter_pretest()
+    docker.remplacer_production(d.Version(REF_C, str(tmp_path), "complet"))
+    docker.journal_du_conteneur(d.CONTENEUR)
+    assert len(enregistreur.delais) >= 13
+    permis = {d.DELAI_COURT, d.DELAI_TIRAGE, d.DELAI_INDEXATION, d.DELAI_BASCULE}
+    assert all(delai in permis for _, delai in enregistreur.delais), enregistreur.delais
+    assert ("docker pull " + REF_C, d.DELAI_TIRAGE) in enregistreur.delais
+    assert ("docker run --rm", d.DELAI_INDEXATION) in enregistreur.delais
+    assert ("docker compose -p", d.DELAI_BASCULE) in enregistreur.delais
+
+
+def test_une_commande_de_nettoyage_trop_longue_n_interrompt_rien():
+    def executer(args, check=False, capture_output=False, text=False, env=None, timeout=None):
+        raise subprocess.TimeoutExpired(args, timeout)
+    docker = d.Docker(executer=executer)
+    docker.arreter_pretest()                                   # ne lève rien
+    assert docker.image_du_conteneur(d.CONTENEUR) is None
+    assert docker.image_existe(REF_C) is False
+    assert docker.journal_du_conteneur(d.CONTENEUR) == ""
+
+
+class FausseHorloge:
+    def __init__(self):
+        self.instant = 0.0
+
+    def __call__(self):
+        return self.instant
+
+    def dormir(self, secondes):
+        self.instant += secondes
+
+
+def test_attendre_disponible_respecte_son_echeance():
+    horloge = FausseHorloge()
+    delais = []
+
+    def http(methode, url, entetes=None, delai=None):
+        delais.append(delai)
+        horloge.instant += delai                 # chaque appel dure tout son délai, puis échoue
+        raise OSError("pas encore")
+    assert d.attendre_disponible(d.URL_PRODUCTION, http, horloge.dormir, horloge=horloge) is False
+    assert horloge.instant <= d.DUREE_MAX_DISPONIBLE and set(delais) == {d.DELAI_SONDE}
+
+
+def test_chaque_appel_d_un_controle_est_borne():
+    delais = []
+
+    def http(methode, url, entetes=None, delai=None):
+        delais.append(delai)
+        return d.Reponse(200, {}, b"{}")
+    d.controler(d.URL_PRODUCTION, "k", "complet", None, lambda: "", http)
+    assert len(delais) == 4 and None not in delais
+    assert sum(delais) + d.DELAI_COURT <= d.DUREE_MAX_CONTROLE     # plus `docker logs`
+
+
+def _pire_chemin(serveur, monkeypatch, briefing_rate):
+    """La vraie classe Docker sur un Enregistreur : renvoie (enregistreur, délais HTTP, nombre d'attentes, http)."""
+    dossier, _ = serveur
+    enregistreur = Enregistreur({"docker image inspect": "RITA_GIT_SHA=ccc\n",
+                                 "docker logs --since": "INFO request_id=rid\n"})
+    attentes, delais_http, briefings = [], [], []
+    monkeypatch.setattr(d, "attendre_disponible", lambda *args, **kwargs: attentes.append(1) or True)
+
+    def http(methode, url, entetes=None, delai=None):
+        delais_http.append(delai)
+        fin = url.rsplit("/", 1)[-1]
+        if fin == "health":
+            return d.Reponse(200, {}, json.dumps({"commit": "ccc"}).encode())
+        if fin == "valeurs":
+            return d.Reponse(403, {}, b"{}")
+        if fin.startswith("briefing?"):
+            briefings.append(url)
+            statut = 500 if len(briefings) == briefing_rate else 200
+            corps = json.dumps({"briefing": "Texte.", "conforme_amf": True}).encode()
+            return d.Reponse(statut, {"x-request-id": "rid"}, corps)
+        return d.Reponse(200, {}, b"")
+    return d.Docker(executer=enregistreur, depot=dossier), enregistreur, attentes, delais_http, http
+
+
+def _duree(enregistreur, attentes, delais_http):
+    return sum(delai for _, delai in enregistreur.delais) + sum(delais_http) + len(attentes) * d.DUREE_MAX_DISPONIBLE
+
+
+def test_une_livraison_dure_toujours_moins_que_l_attente_du_retour_d_urgence(serveur, monkeypatch):
+    # Sans délais, une livraison bloquée gardait le verrou et le retour d'urgence abandonnait au bout de 900 s.
+    # Pire chemin : pré-test vert, nouvelle version en échec après la bascule (2e briefing), restauration de l'active.
+    dossier, env = serveur
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=_version(REF_A, dossier, "a")))
+    docker, enregistreur, attentes, delais_http, http = _pire_chemin(serveur, monkeypatch, briefing_rate=2)
+    assert d.livrer(REF_C, docker, dossier, ENV, DIX_HEURES, http=http, dormir=lambda s: None, source_env=env) == 1
+    assert _journal(dossier)[-1]["resultat"] == "livraison refusee, version active du debut restauree"
+    assert _duree(enregistreur, attentes, delais_http) <= d.DUREE_MAX_LIVRER < d.ATTENTE_VERROU["revenir"]
+
+
+def test_un_retour_dure_toujours_moins_que_l_attente_d_une_livraison(serveur, monkeypatch):
+    # Pire chemin : la version cible échoue (1er briefing), la version de départ est remise et recontrôlée.
+    dossier, _ = serveur
+    a, c = _version(REF_A, dossier, "a"), _version(REF_C, dossier, "c")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=c, precedente=a))
+    docker, enregistreur, attentes, delais_http, http = _pire_chemin(serveur, monkeypatch, briefing_rate=1)
+    assert d.revenir("7", docker, dossier, ENV, DIX_HEURES, http=http, dormir=lambda s: None) == 1
+    assert _duree(enregistreur, attentes, delais_http) <= d.DUREE_MAX_REVENIR < d.ATTENTE_VERROU["livrer"]
 
 
 class DockerQuiCopieUnPiege(FauxDocker):

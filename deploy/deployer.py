@@ -260,13 +260,39 @@ URL_PRETEST = f"http://127.0.0.1:{PORT_PRETEST}"
 VARIABLES_REQUISES = ("RITA_API_KEY", "RITA_DSN_LECTURE")
 FICHIERS_COMPOSE = ("docker-compose.yml", "compose.prod.yml")  # embarqués dans l'image ET installés dans bin/
 
+# Délais maximaux, en secondes (relecture du 14/10) : chaque commande Docker et chaque appel HTTP est borné, pour qu'une
+# opération qui tient le verrou finisse toujours. Valeurs à ajuster aux durées mesurées à la première livraison.
+DELAI_COURT = 60          # inspect, create, cp, rm, logs, volume, run -d, compose config
+DELAI_TIRAGE = 600        # docker pull
+DELAI_INDEXATION = 900    # indexation de test du pré-test
+DELAI_BASCULE = 300       # docker compose up, arrêt de l'ancienne API compris
+ECHEANCE_DISPONIBLE = 180  # attente, en tout, que /health réponde après un démarrage
+DELAI_SONDE = 5           # un appel /health pendant cette attente
+PAUSE_SONDE = 2
+DELAI_CONTROLE = 10       # /health, 403, écran
+DELAI_BRIEFING = 90       # le briefing appelle le modèle
+
+# Bornes calculées (pas mesurées) des durées, phase par phase ; deux tests rejouent le pire chemin et vérifient
+# que la somme des délais réellement demandés reste dessous.
+DUREE_MAX_DISPONIBLE = ECHEANCE_DISPONIBLE + DELAI_SONDE + PAUSE_SONDE
+DUREE_MAX_CONTROLE = 3 * DELAI_CONTROLE + DELAI_BRIEFING + DELAI_COURT                 # plus `docker logs`
+DUREE_MAX_MISE_EN_SERVICE = (DELAI_BASCULE + DELAI_COURT + DUREE_MAX_DISPONIBLE         # bascule, commit, attente
+                             + DUREE_MAX_CONTROLE + DELAI_COURT)                       # contrôles, image observée
+DUREE_MAX_PRETEST = (DELAI_TIRAGE + 4 * DELAI_COURT + DELAI_COURT                       # pull, extraction, commit
+                     + DELAI_COURT + DELAI_COURT + DELAI_INDEXATION + DELAI_COURT       # config, volume, index, run
+                     + DUREE_MAX_DISPONIBLE + DUREE_MAX_CONTROLE + 2 * DELAI_COURT)     # attente, contrôles, arrêt
+DUREE_MAX_LIVRER = DELAI_COURT + DUREE_MAX_PRETEST + 2 * DUREE_MAX_MISE_EN_SERVICE + DELAI_COURT
+DUREE_MAX_REVENIR = 2 * DUREE_MAX_MISE_EN_SERVICE + DELAI_COURT
+# Le retour d'urgence attend plus longtemps qu'une livraison ne peut durer, et inversement : il n'abandonne jamais.
+ATTENTE_VERROU = {"livrer": DUREE_MAX_REVENIR + 60, "revenir": DUREE_MAX_LIVRER + 60}
+
 
 class ComposeNonInstalle(Exception):
     """Les fichiers Compose de l'image diffèrent de ceux qu'Era a installés sur le serveur : livraison refusée."""
 
 
 class EnvIllisible(Exception):
-    """Une ligne du `.env` a un nom que le filtre du pré-test ne sait pas lire comme Docker : livraison refusée."""
+    """Une variable de l'environnement de production ne peut pas passer au pré-test : livraison refusée."""
 
 
 _NOM_DE_VARIABLE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
@@ -301,29 +327,22 @@ def lire_env(chemin: Path) -> dict[str, str]:
     return valeurs
 
 
-def env_du_pretest(texte: str) -> str:
-    """Le `.env` donné au pré-test : tout le `.env` du serveur, sauf ce qui permet d'écrire dans la base
-    (`DATABASE_URL`, `POSTGRES_*`). Sa base, le pré-test la reçoit à part : le compte rita_lecture.
-    Le texte est lu comme `docker run --env-file` le lit : BOM retiré en tête, coupure sur « \\n » seulement (un « \\r »
-    final retiré), espaces de gauche ignorés, commentaires sautés. Les lignes gardées sont réécrites sous cette forme.
-    Un nom qui n'est pas un nom de variable simple lève `EnvIllisible` (sans recopier la ligne) : on ne devine pas."""
-    gardees = []
-    for numero, ligne in enumerate(texte.removeprefix("﻿").split("\n"), start=1):
-        contenu = ligne.removesuffix("\r").lstrip()
-        if not contenu or contenu.startswith("#"):
+def env_du_pretest(environnement: dict) -> str:
+    """Le fichier d'environnement du pré-test, à partir de l'environnement que Compose donne à l'API de production
+    (`Docker.environnement_api`) : le même, valeurs par défaut comprises, sauf ce qui permet d'écrire dans la base
+    (`DATABASE_URL`, `POSTGRES_*`) ; sa base, le pré-test la reçoit à part (le compte rita_lecture). Une variable du
+    `.env` absente du bloc `environment` de docker-compose.yml n'arrive donc ni à la production, ni au pré-test.
+    `docker run --env-file` lit une variable par ligne, sans guillemets : une valeur sur plusieurs lignes lève
+    `EnvIllisible`, avec le nom de la variable et jamais sa valeur."""
+    lignes = []
+    for nom in sorted(environnement):
+        valeur = environnement[nom]
+        if nom == "DATABASE_URL" or nom.startswith("POSTGRES_") or valeur is None:
             continue
-        nom = contenu.split("=", 1)[0]
-        if not _NOM_DE_VARIABLE.fullmatch(nom):
-            raise EnvIllisible(f"ligne {numero} du .env : nom de variable illisible pour docker run --env-file")
-        if nom == "DATABASE_URL" or nom.startswith("POSTGRES_"):
-            continue
-        gardees.append(contenu)
-    return "\n".join(gardees) + "\n"
-
-
-def _lire_texte(chemin: Path) -> str:
-    """Le texte exact du fichier, sans conversion des fins de ligne (comme Docker le lit)."""
-    return chemin.read_bytes().decode("utf-8")
+        if not _NOM_DE_VARIABLE.fullmatch(nom) or "\n" in str(valeur) or "\r" in str(valeur):
+            raise EnvIllisible(f"{nom} : nom ou valeur impossible a passer au pre-test par docker run --env-file")
+        lignes.append(f"{nom}={valeur}")
+    return "\n".join(lignes) + "\n"
 
 
 def _ecrire_secret(chemin: Path, contenu: str) -> None:
@@ -339,20 +358,25 @@ class Docker:
     def __init__(self, executer=subprocess.run, projet: str = PROJET_COMPOSE, depot: Path = DEPOT):
         self.executer, self.projet, self.depot = executer, projet, depot
 
-    def _lancer(self, args: list[str], env: dict | None = None) -> str:
-        return self.executer(args, check=True, capture_output=True, text=True, env=env).stdout
+    def _lancer(self, args: list[str], env: dict | None = None, delai: float = DELAI_COURT) -> str:
+        """Lance une commande qui doit réussir ; au-delà de `delai`, elle est arrêtée et `TimeoutExpired` est levée."""
+        return self.executer(args, check=True, capture_output=True, text=True, env=env, timeout=delai).stdout
 
     def _essayer(self, args: list[str]) -> None:
-        self.executer(args, check=False, capture_output=True, text=True)
+        """Lance une commande de nettoyage : son échec ou sa lenteur n'interrompt rien."""
+        try:
+            self.executer(args, check=False, capture_output=True, text=True, timeout=DELAI_COURT)
+        except subprocess.TimeoutExpired:
+            pass
 
     def tirer(self, ref: str) -> None:
-        self._lancer(["docker", "pull", ref])
+        self._lancer(["docker", "pull", ref], delai=DELAI_TIRAGE)
 
     def image_existe(self, ref: str) -> bool:
         try:
             self._lancer(["docker", "image", "inspect", ref])
             return True
-        except subprocess.CalledProcessError:
+        except subprocess.SubprocessError:
             return False
 
     def commit_de_l_image(self, ref: str) -> str | None:
@@ -365,7 +389,7 @@ class Docker:
     def image_du_conteneur(self, nom: str) -> str | None:
         try:
             return self._lancer(["docker", "inspect", "--format", "{{.Config.Image}}", nom]).strip() or None
-        except subprocess.CalledProcessError:
+        except subprocess.SubprocessError:
             return None
 
     def extraire_config(self, ref: str, dossier: Path) -> None:
@@ -378,12 +402,25 @@ class Docker:
         finally:
             self._essayer(["docker", "rm", "-f", temporaire])
 
+    def _compose(self, config: Path) -> list[str]:
+        """Le début de toute commande Compose de production : projet, dossier, fichiers et `.env` de CETTE version."""
+        return ["docker", "compose", "-p", self.projet, "--project-directory", str(self.depot),
+                "-f", str(config / "docker-compose.yml"), "-f", str(config / "compose.prod.yml"),
+                "--env-file", str(config / ".env")]
+
+    def environnement_api(self, config: Path, ref: str) -> dict:
+        """L'environnement que Compose donnera à l'API de production pour cette version (`docker compose config`) :
+        seulement les variables du bloc `environment` de docker-compose.yml, valeurs par défaut comprises."""
+        sortie = self._lancer([*self._compose(config), "config", "--format", "json"],
+                              env={**os.environ, "RITA_IMAGE": ref})
+        return json.loads(sortie)["services"]["api"]["environment"]
+
     def demarrer_pretest(self, ref: str, config: Path, dsn_lecture: str) -> None:
         """La préproduction : compte PostgreSQL en lecture seule, index Chroma construit pour l'essai puis jeté.
-        Le pré-test reçoit un `.env` sans accès en écriture à la base ; le DSN de lecture passe par l'environnement
-        de la commande `docker` (`-e DATABASE_URL` sans valeur), jamais par ses arguments, qu'une erreur recopie."""
+        Le pré-test reçoit l'environnement de la production sans accès en écriture à la base ; le DSN de lecture passe
+        par l'environnement de la commande `docker` (`-e DATABASE_URL` sans valeur), jamais par ses arguments."""
         fichier_env = config / "pretest.env"
-        _ecrire_secret(fichier_env, env_du_pretest(_lire_texte(config / ".env")))
+        _ecrire_secret(fichier_env, env_du_pretest(self.environnement_api(config, ref)))
         commun = ["--network", f"{self.projet}_default", "--env-file", str(fichier_env),
                   "-e", "DATABASE_URL",
                   "-v", f"{VOLUME_INDEX_PRETEST}:/app/data/chroma",
@@ -391,7 +428,8 @@ class Docker:
         avec_dsn = {**os.environ, "DATABASE_URL": dsn_lecture}
         self._essayer(["docker", "volume", "rm", "-f", VOLUME_INDEX_PRETEST])
         self._lancer(["docker", "run", "--rm", *commun, ref,
-                      "python", "-m", "pipelines.ingest", "--etapes", "indexation", "--strict"], env=avec_dsn)
+                      "python", "-m", "pipelines.ingest", "--etapes", "indexation", "--strict"],
+                     env=avec_dsn, delai=DELAI_INDEXATION)
         self._lancer(["docker", "run", "-d", "--name", CONTENEUR_PRETEST, *commun,
                       "-p", f"127.0.0.1:{PORT_PRETEST}:8000", ref], env=avec_dsn)
 
@@ -402,15 +440,16 @@ class Docker:
     def remplacer_production(self, version: Version) -> None:
         """Remplace l'API seule (`--no-deps` : PostgreSQL n'est pas touché), sur l'image désignée par son empreinte,
         avec la configuration sauvegardée de CETTE version."""
-        config = Path(version.config)
-        self._lancer(["docker", "compose", "-p", self.projet, "--project-directory", str(self.depot),
-                      "-f", str(config / "docker-compose.yml"), "-f", str(config / "compose.prod.yml"),
-                      "--env-file", str(config / ".env"),
+        self._lancer([*self._compose(Path(version.config)),
                       "up", "-d", "--no-deps", "--no-build", "--pull", "never", "api"],
-                     env={**os.environ, "RITA_IMAGE": version.image})
+                     env={**os.environ, "RITA_IMAGE": version.image}, delai=DELAI_BASCULE)
 
     def journal_du_conteneur(self, nom: str) -> str:
-        resultat = self.executer(["docker", "logs", "--since", "15m", nom], check=False, capture_output=True, text=True)
+        try:
+            resultat = self.executer(["docker", "logs", "--since", "15m", nom], check=False, capture_output=True,
+                                     text=True, timeout=DELAI_COURT)
+        except subprocess.TimeoutExpired:
+            return ""
         return (resultat.stdout or "") + (resultat.stderr or "")
 
 
@@ -439,7 +478,8 @@ def preparer_version(docker, ref: str, dossier: Path, source_env: Path, maintena
 @dataclass(frozen=True)
 class Controle:
     sante: str            # « sain », « degrade » ou « indisponible »
-    echecs: tuple = ()    # les contrôles en échec, pour comparer deux versions
+    echecs: tuple = ()    # les contrôles en échec, pour comparer deux versions ; « bascule » si Compose a échoué
+    detail: str = ""      # la commande en cause, décrite sans ses arguments
 
 
 def _json(reponse: Reponse) -> dict:
@@ -452,9 +492,10 @@ def _json(reponse: Reponse) -> dict:
 
 def controler(base: str, cle: str, profil: str, commit_attendu: str | None, journal, http=requete) -> Controle:
     """Les contrôles d'une version. `pretest` : version dans /health, 403 sans clé, un briefing conforme dont le
-    X-Request-ID est dans le journal. `complet` (production réelle) : les mêmes, plus l'écran `/briefing.html`."""
+    X-Request-ID est dans le journal. `complet` (production réelle) : les mêmes, plus l'écran `/briefing.html`.
+    Chaque appel a son délai maximal : la durée d'un contrôle est bornée (`DUREE_MAX_CONTROLE`)."""
     try:
-        sante = http("GET", f"{base}/health")
+        sante = http("GET", f"{base}/health", delai=DELAI_CONTROLE)
     except OSError:
         return Controle("indisponible", ("health",))
     if sante.statut != 200:
@@ -463,11 +504,11 @@ def controler(base: str, cle: str, profil: str, commit_attendu: str | None, jour
     if commit_attendu is not None and _json(sante).get("commit") != commit_attendu:
         echecs.append("version")
     try:
-        if http("GET", f"{base}/donnees/valeurs").statut != 403:
+        if http("GET", f"{base}/donnees/valeurs", delai=DELAI_CONTROLE).statut != 403:
             echecs.append("403")
-        if profil == "complet" and http("GET", f"{base}/briefing.html").statut != 200:
+        if profil == "complet" and http("GET", f"{base}/briefing.html", delai=DELAI_CONTROLE).statut != 200:
             echecs.append("ecran")
-        briefing = http("POST", f"{base}/briefing?ticker=OR.PA", {"X-API-Key": cle})
+        briefing = http("POST", f"{base}/briefing?ticker=OR.PA", {"X-API-Key": cle}, delai=DELAI_BRIEFING)
     except OSError:
         return Controle("degrade", tuple(echecs) + ("connexion",))
     corps = _json(briefing)
@@ -478,11 +519,16 @@ def controler(base: str, cle: str, profil: str, commit_attendu: str | None, jour
     return Controle("sain" if not echecs else "degrade", tuple(echecs))
 
 
-def attendre_disponible(base: str, http=requete, dormir=time.sleep, essais: int = 30, pause: float = 2) -> bool:
-    """Laisse le temps à l'API de démarrer : jusqu'à `essais` appels à /health."""
-    for _ in range(essais):
+def attendre_disponible(base: str, http=requete, dormir=time.sleep, echeance: float = ECHEANCE_DISPONIBLE,
+                        pause: float = PAUSE_SONDE, horloge=time.monotonic) -> bool:
+    """Laisse le temps à l'API de démarrer : des appels courts à /health jusqu'à l'échéance, jamais au-delà. Le nombre
+    d'appels est borné lui aussi (échéance divisée par la pause) : l'attente finit même si l'horloge ne bouge pas."""
+    fin = horloge() + echeance
+    for _ in range(math.ceil(echeance / pause)):
+        if horloge() >= fin:
+            break
         try:
-            if http("GET", f"{base}/health").statut == 200:
+            if http("GET", f"{base}/health", delai=DELAI_SONDE).statut == 200:
                 return True
         except OSError:
             pass
@@ -492,6 +538,66 @@ def attendre_disponible(base: str, http=requete, dormir=time.sleep, essais: int 
 
 def _manquantes(env: dict) -> list[str]:
     return [nom for nom in VARIABLES_REQUISES if not env.get(nom)]
+
+
+def _cle(version: Version) -> str:
+    """La clé d'API de CETTE version, lue dans son `.env` sauvegardé : une version ancienne peut avoir une autre clé
+    que la configuration actuelle. Fichier absent ou illisible : chaîne vide, et le contrôle du briefing échoue."""
+    try:
+        return lire_env(Path(version.config) / ".env").get("RITA_API_KEY", "")
+    except (OSError, UnicodeDecodeError):
+        return ""
+
+
+def _decrire(erreur: BaseException) -> str:
+    """Décrit une erreur sans jamais recopier une commande : ses arguments et sa sortie peuvent porter un secret."""
+    if isinstance(erreur, subprocess.TimeoutExpired):
+        return f"commande trop longue : {_commande(erreur.cmd)} (plus de {erreur.timeout:g} s)"
+    if isinstance(erreur, subprocess.CalledProcessError):
+        return f"commande en echec : {_commande(erreur.cmd)} (code {erreur.returncode})"
+    return f"{type(erreur).__name__} : {erreur}"
+
+
+def _commande(cmd) -> str:
+    return " ".join(str(mot) for mot in list(cmd)[:2])
+
+
+# Avant la bascule, la production n'a pas bougé : ces erreurs refusent la livraison proprement, opération fermée.
+ERREURS_AVANT_BASCULE = (subprocess.SubprocessError, OSError, ValueError, KeyError, ComposeNonInstalle, EnvIllisible)
+
+
+def _essai_en_preproduction(ref: str, docker, dossier: Path, source: Path, env: dict, maintenant, http, dormir):
+    """Prépare la version et la contrôle sur le port du pré-test ; rend (version, contrôle). Le pré-test est
+    toujours arrêté, même après une erreur."""
+    try:
+        docker.tirer(ref)
+        version = preparer_version(docker, ref, dossier, source, maintenant())
+        commit = docker.commit_de_l_image(ref)
+        docker.demarrer_pretest(ref, Path(version.config), env["RITA_DSN_LECTURE"])
+        attendre_disponible(URL_PRETEST, http, dormir)
+        controle = controler(URL_PRETEST, _cle(version), "pretest", commit,
+                             lambda: docker.journal_du_conteneur(CONTENEUR_PRETEST), http)
+    finally:
+        docker.arreter_pretest()
+    return version, controle
+
+
+def _mettre_en_service(version: Version, docker, http, dormir) -> Controle:
+    """Bascule l'API de production sur `version`, puis la contrôle avec SA clé. Si Compose échoue ou dépasse son
+    délai, le remplacement a pu commencer : le contrôle vaut « indisponible », et l'appelant relit l'état réel
+    (`image_du_conteneur`) puis remet la version du début."""
+    try:
+        docker.remplacer_production(version)
+        commit = docker.commit_de_l_image(version.image)
+    except subprocess.SubprocessError as erreur:
+        return Controle("indisponible", ("bascule",), _decrire(erreur))
+    attendre_disponible(URL_PRODUCTION, http, dormir)
+    return controler(URL_PRODUCTION, _cle(version), version.profil, commit,
+                     lambda: docker.journal_du_conteneur(CONTENEUR), http)
+
+
+def _details(**controles: Controle) -> dict:
+    return {f"detail_{nom}": controle.detail for nom, controle in controles.items() if controle.detail}
 
 
 def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete, dormir=time.sleep,
@@ -504,11 +610,9 @@ def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete,
         journaliser(dossier, maintenant(), **trace, resultat="refusee",
                     message=f"variable absente du .env du serveur : {', '.join(_manquantes(env))}")
         return 1
-    source = source_env or DEPOT / ".env"
     try:
-        env_du_pretest(_lire_texte(source))  # le .env du pré-test doit se lire comme Docker le lit, avant tout
         etat = lire_etat(chemin)
-    except (EnvIllisible, EtatIllisible) as erreur:
+    except EtatIllisible as erreur:
         journaliser(dossier, maintenant(), **trace, resultat="refusee", message=str(erreur))
         return 1
     premiere = etat.active is None
@@ -519,20 +623,13 @@ def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete,
 
     ouvrir_operation(dossier, Ordre("livrer", ref), maintenant())
     try:
-        docker.tirer(ref)
-        try:
-            version = preparer_version(docker, ref, dossier, source, maintenant())
-        except ComposeNonInstalle as erreur:
-            journaliser(dossier, maintenant(), **trace, resultat="refusee", message=str(erreur))
-            fermer_operation(dossier)
-            return 1
-        commit = docker.commit_de_l_image(ref)
-        docker.demarrer_pretest(ref, Path(version.config), env["RITA_DSN_LECTURE"])
-        attendre_disponible(URL_PRETEST, http, dormir)
-        pretest = controler(URL_PRETEST, env["RITA_API_KEY"], "pretest", commit,
-                            lambda: docker.journal_du_conteneur(CONTENEUR_PRETEST), http)
-    finally:
-        docker.arreter_pretest()
+        version, pretest = _essai_en_preproduction(ref, docker, dossier, source_env or DEPOT / ".env", env,
+                                                   maintenant, http, dormir)
+    except ERREURS_AVANT_BASCULE as erreur:
+        journaliser(dossier, maintenant(), **trace, resultat="refusee", message=_decrire(erreur),
+                    observee=docker.image_du_conteneur(CONTENEUR))
+        fermer_operation(dossier)
+        return 1
     if pretest.sante != "sain":
         journaliser(dossier, maintenant(), **trace, resultat="refusee au pre-test", echecs=list(pretest.echecs))
         fermer_operation(dossier)
@@ -543,10 +640,7 @@ def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete,
         fermer_operation(dossier)
         return CODE_CRENEAU
 
-    docker.remplacer_production(version)
-    attendre_disponible(URL_PRODUCTION, http, dormir)
-    apres = controler(URL_PRODUCTION, env["RITA_API_KEY"], "complet", commit,
-                      lambda: docker.journal_du_conteneur(CONTENEUR), http)
+    apres = _mettre_en_service(version, docker, http, dormir)
     if apres.sante == "sain":
         nouvel = replace(apres_livraison(etat, version), observee=docker.image_du_conteneur(CONTENEUR), sante="sain")
         ecrire_etat(chemin, nouvel)
@@ -557,16 +651,13 @@ def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete,
     if premiere:  # exception de l'atelier : pas de retour automatique vers l'image d'août
         ecrire_etat(chemin, Etat(observee=docker.image_du_conteneur(CONTENEUR), sante=apres.sante))
         journaliser(dossier, maintenant(), **trace, resultat="echec apres bascule", echecs=list(apres.echecs),
-                    message="restauration manuelle d'aout requise (procedure de docs/EXPLOITATION.md)")
+                    message="restauration manuelle d'aout requise (procedure de docs/EXPLOITATION.md)",
+                    **_details(bascule=apres))
         fermer_operation(dossier)
         return 1
 
     # Retour automatique : la version ACTIVE AU DÉBUT de l'opération, avec sa configuration (jamais la précédente).
-    docker.remplacer_production(etat.active)
-    attendre_disponible(URL_PRODUCTION, http, dormir)
-    restaure = controler(URL_PRODUCTION, env["RITA_API_KEY"], etat.active.profil,
-                         docker.commit_de_l_image(etat.active.image),
-                         lambda: docker.journal_du_conteneur(CONTENEUR), http)
+    restaure = _mettre_en_service(etat.active, docker, http, dormir)
     ecrire_etat(chemin, replace(etat, observee=docker.image_du_conteneur(CONTENEUR), sante=restaure.sante))
     if restaure.sante == "sain":
         resultat, message = "livraison refusee, version active du debut restauree", ""
@@ -575,7 +666,8 @@ def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete,
         if set(apres.echecs) & set(restaure.echecs):
             message = "cause externe possible (modele, base) ou configuration commune incorrecte, a diagnostiquer"
     journaliser(dossier, maintenant(), **trace, de=etat.active.image, resultat=resultat, message=message,
-                echecs=list(apres.echecs), echecs_restauration=list(restaure.echecs))
+                echecs=list(apres.echecs), echecs_restauration=list(restaure.echecs),
+                **_details(bascule=apres, restauration=restaure))
     fermer_operation(dossier)
     return 1
 
@@ -599,23 +691,18 @@ def revenir(numero: str, docker, dossier: Path, env: dict, maintenant, http=requ
 
     ouvrir_operation(dossier, Ordre("revenir", numero), maintenant())
     depart, cible = etat.active, etat.precedente
-    docker.remplacer_production(cible)
-    attendre_disponible(URL_PRODUCTION, http, dormir)
-    controle = controler(URL_PRODUCTION, env["RITA_API_KEY"], cible.profil, docker.commit_de_l_image(cible.image),
-                         lambda: docker.journal_du_conteneur(CONTENEUR), http)
+    controle = _mettre_en_service(cible, docker, http, dormir)
     if controle.sante == "sain":
         ecrire_etat(chemin, replace(apres_retour(etat), observee=docker.image_du_conteneur(CONTENEUR), sante="sain"))
         journaliser(dossier, maintenant(), **trace, de=depart.image, vers=cible.image, resultat="retour arriere")
         fermer_operation(dossier)
         return 0
 
-    docker.remplacer_production(depart)
-    attendre_disponible(URL_PRODUCTION, http, dormir)
-    remise = controler(URL_PRODUCTION, env["RITA_API_KEY"], depart.profil, docker.commit_de_l_image(depart.image),
-                       lambda: docker.journal_du_conteneur(CONTENEUR), http)
+    remise = _mettre_en_service(depart, docker, http, dormir)
     ecrire_etat(chemin, replace(etat, observee=docker.image_du_conteneur(CONTENEUR), sante=remise.sante))
     journaliser(dossier, maintenant(), **trace, de=depart.image, vers=cible.image, resultat="retour refuse",
-                echecs=list(controle.echecs))
+                echecs=list(controle.echecs), echecs_remise=list(remise.echecs),
+                **_details(bascule=controle, remise=remise))
     fermer_operation(dossier)
     return 1
 
@@ -642,7 +729,7 @@ def main(environ=None, docker=None, dossier: Path = DOSSIER, maintenant=None, ht
     env = lire_env(source_env)
     docker = docker or Docker()
     try:
-        with verrou(dossier / "verrou", attente_max=600 if ordre.nom == "livrer" else 900):
+        with verrou(dossier / "verrou", attente_max=ATTENTE_VERROU[ordre.nom]):
             if ordre.nom == "livrer":
                 code = livrer(ordre.argument, docker, dossier, env, maintenant, http, dormir, source_env)
             else:
@@ -655,15 +742,12 @@ def main(environ=None, docker=None, dossier: Path = DOSSIER, maintenant=None, ht
                     observee=docker.image_du_conteneur(CONTENEUR))
         print(erreur, file=sys.stderr)
         return 1
-    except subprocess.CalledProcessError as erreur:
-        # Le message de cette erreur recopie toute la commande, secrets compris, et la sortie d'erreur part par SSH
-        # jusqu'au journal de GitHub : on n'en garde que les deux premiers mots et le code. La marque d'opération
-        # reste ouverte : l'opération suivante vérifiera l'état réel.
-        commande = " ".join(str(mot) for mot in list(erreur.cmd)[:2])
-        journaliser(dossier, maintenant(), operation=ordre.nom, resultat="interrompue : commande en echec",
-                    commande=commande, code=erreur.returncode)
-        print(f"commande en echec : {commande} (code {erreur.returncode}) ; operation interrompue, voir journal.jsonl",
-              file=sys.stderr)
+    except subprocess.SubprocessError as erreur:
+        # Dernier filet : le message de cette erreur recopie toute la commande, secrets compris, et la sortie d'erreur
+        # part par SSH jusqu'au journal de GitHub. Seuls le nom de la commande et son code (ou son délai) sortent ;
+        # une marque d'opération ouverte le reste, et l'opération suivante vérifiera l'état réel.
+        journaliser(dossier, maintenant(), operation=ordre.nom, resultat="interrompue", message=_decrire(erreur))
+        print(f"{_decrire(erreur)} ; operation interrompue, voir journal.jsonl", file=sys.stderr)
         return 1
     print({0: "operation reussie", CODE_CRENEAU: "livraison reportee par le creneau du matin"}.get(
         code, "operation refusee ou en echec : voir journal.jsonl sur le serveur"))

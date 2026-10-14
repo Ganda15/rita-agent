@@ -4,3 +4,6 @@
 # Les fichiers du serveur (sprint 2) : deployer.sh est un script sh, et la chaine compare l empreinte de deployer.py
 # a celle de la copie installee sur le serveur ; un CRLF casserait l un et changerait l autre (14/10/2026)
 deploy/* text eol=lf
+# docker-compose.yml est compare octet par octet a sa copie installee sur le serveur, et l image est construite
+# sous Linux en LF : une copie en CRLF depuis Windows bloquerait toutes les livraisons (relecture du 14/10/2026)
+docker-compose.yml text eol=lf

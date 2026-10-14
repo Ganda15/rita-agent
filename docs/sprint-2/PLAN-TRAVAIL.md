@@ -513,6 +513,9 @@ def test_health_sans_version_annonce_inconnu(monkeypatch):
   `reporte == 'true'` ; `deployer-reprise` envoie la **même empreinte**, lue dans la sortie de
   `construire-et-publier`) ;
   `test_un_vrai_echec_reste_bloquant` (dans l'action composite, tout code autre que 0 et 75 fait `exit 1`) ;
+  `test_les_travaux_laissent_au_serveur_le_temps_de_finir` (relecture du 14/10 : `timeout-minutes` de `deployer`,
+  `deployer-reprise` et du retour arrière supérieur à l'attente du verrou plus la durée maximale de l'opération, lues
+  dans `deploy/deployer.py` : `ATTENTE_VERROU` et `DUREE_MAX_LIVRER`, `DUREE_MAX_REVENIR`) ;
   `test_aucune_entree_utilisateur_dans_une_commande` (chaque `${{ inputs.` est sur une ligne de la forme
   `NOM: ${{ inputs.… }}` d'un bloc `env:`).
 - [ ] **Étape 2 : `livraison.yml`** : publication si `github.event_name == 'push'` et (`refs/heads/main` ou tag
@@ -582,8 +585,10 @@ modification du serveur.**
   docker-compose.yml deploy/compose.prod.yml root@<serveur>:/root/rita-deploy/bin/` (par la clé personnelle d'Era, pas
   la clé dédiée, fichiers en LF), puis 🖧 `chmod 700` sur les deux scripts et `chmod 600` sur les deux fichiers Compose.
   Le script refuse toute livraison dont les fichiers Compose diffèrent de ces copies (correctif de sécurité du 14/10) :
-  un changement de `docker-compose.yml` passe donc par une relecture et une installation à la main. La même commande sert
-  aux mises à jour ; elle est écrite dans `EXPLOITATION.md`.
+  un changement de `docker-compose.yml` passe donc par une relecture et une installation à la main. **Avant la copie**,
+  💻 `git ls-files --eol docker-compose.yml deploy` doit montrer `w/lf` partout (`.gitattributes` l'impose depuis la
+  relecture du 14/10) ; une copie en CRLF ferait refuser toutes les livraisons. La même commande sert aux mises à jour ;
+  elle est écrite dans `EXPLOITATION.md`.
 - [ ] 🖧 **`.env` du serveur lisible par `docker run --env-file`** : aucune valeur entre guillemets
   (`grep -c '="' /root/rita-agent/.env` doit montrer `0`), et un mot de passe PostgreSQL qui n'est pas la valeur par
   défaut publique de `docker-compose.yml` (`grep -c '^POSTGRES_PASSWORD=rita_preprod_local$' /root/rita-agent/.env`
