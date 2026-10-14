@@ -20,10 +20,14 @@ SENSIBLE = re.compile(r"KEY|SECRET|TOKEN|PASSWORD|PASS", re.IGNORECASE)
 
 
 def _instructions(texte: str) -> list[str]:
-    """Les instructions du Dockerfile, une par élément, lignes continuées réunies, commentaires retirés."""
+    """Les instructions du Dockerfile, une par élément, lignes continuées réunies, commentaires retirés.
+
+    Comme Docker, une ligne de commentaire ou une ligne vide au milieu d'une instruction continuée est
+    sautée sans terminer l'instruction.
+    """
     instructions, courante = [], ""
     for ligne in texte.splitlines():
-        if not courante and ligne.lstrip().startswith("#"):
+        if ligne.lstrip().startswith("#") or (courante and not ligne.strip()):
             continue
         if ligne.rstrip().endswith("\\"):
             courante += ligne.rstrip()[:-1] + " "
@@ -41,10 +45,10 @@ def declarations(texte: str) -> list[str]:
     """Les noms déclarés par chaque `ARG` et chaque `ENV`, dans l'ordre du fichier."""
     noms = []
     for instruction in _instructions(texte):
-        mot, _, reste = instruction.partition(" ")
-        mot = mot.upper()
-        if mot not in ("ARG", "ENV"):
+        morceaux = instruction.split(None, 1)  # tout blanc sépare l'instruction : espace ou tabulation
+        if len(morceaux) < 2 or morceaux[0].upper() not in ("ARG", "ENV"):
             continue
+        mot, reste = morceaux[0].upper(), morceaux[1]
         jetons = shlex.split(reste, posix=True)
         if mot == "ENV" and jetons and "=" not in jetons[0]:
             noms.append(jetons[0])  # ancienne forme : `ENV NOM valeur avec espaces`

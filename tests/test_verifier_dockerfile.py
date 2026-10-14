@@ -39,6 +39,26 @@ def test_arg_sensible_sans_valeur():
     assert _module().declarations_sensibles("ARG DB_PASSWORD\n") == ["DB_PASSWORD"]
 
 
+def test_une_tabulation_apres_l_instruction():
+    v = _module()
+    assert v.declarations_sensibles("ARG\tAPI_KEY=x\n") == ["API_KEY"]
+    assert v.declarations_sensibles("ENV\tA=1 \\\n\tSECRET_TOKEN=x\n") == ["SECRET_TOKEN"]
+
+
+def test_un_commentaire_au_milieu_d_une_instruction_continuee():
+    # Docker retire les lignes de commentaire avant de lire une instruction continuée.
+    texte = "ENV A=1 \\\n# un commentaire\n    SECRET_TOKEN=x\n"
+    assert _module().declarations(texte) == ["A", "SECRET_TOKEN"]
+
+
+def test_une_ligne_vide_au_milieu_d_une_instruction_continuee():
+    assert _module().declarations_sensibles("ENV A=1 \\\n\n    DB_PASSWORD=x\n") == ["DB_PASSWORD"]
+
+
+def test_une_instruction_en_minuscules():
+    assert _module().declarations_sensibles("env api_key=x\n") == ["api_key"]
+
+
 def test_les_commentaires_et_les_autres_instructions_sont_ignores():
     texte = "# ENV API_KEY=dans-un-commentaire\nRUN echo TOKEN\nCOPY secret.txt .\n"
     assert _module().declarations(texte) == []
