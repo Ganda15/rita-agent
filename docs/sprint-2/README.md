@@ -16,7 +16,7 @@ pas fait.
 | Un squelette : une route API, une interface minimale, un appel au modèle qui répond | `POST /briefing`, `GET /health` (`api/main.py`), `frontend/briefing.html`, `src/llm.py` |
 | Une chaîne lint, tests, construction, déploiement automatique, à travers les environnements | `.github/workflows/livraison.yml` : `lint`, `secrets`, `construire-et-publier`, `attendre-creneau`, `deployer` ; le serveur essaie chaque image en préproduction (port 8003, compte en lecture seule) avant de la mettre en service (`deploy/deployer.py`) ; première livraison : `evidence/sprint-2/N0-premiere-livraison-2026-10-14.md` |
 | Des tests bloquants, prouvés par un commit cassé | règle de protection de `main` : six contrôles exigés (`evidence/C19/ruleset-main-2026-10-14.json`) ; la PR cassée est ouverte pendant l'atelier, jamais fusionnée |
-| Un retour arrière en une opération, répété | `.github/workflows/retour-arriere.yml` (*Run workflow*), ordre `revenir` du script du serveur |
+| Un retour arrière en une opération, répété | `.github/workflows/retour-arriere.yml` (*Run workflow*), ordre `revenir` du script du serveur ; répété le 14/10 : `evidence/sprint-2/N1-retour-arriere-2026-10-14.md` |
 
 ## Décisions d'Era avant la première livraison (14/10/2026)
 
@@ -51,11 +51,23 @@ connexion), puis adresse du modèle collée deux fois dans le `.env` du serveur 
 briefing). Le troisième a livré en 221 s côté serveur ; `/health` annonce le commit `48196272…`. Détail et sorties :
 `evidence/sprint-2/N0-premiere-livraison-2026-10-14.md`.
 
+## N1 et la répétition du retour arrière (14/10/2026, mesurés)
+
+- **N1** (PR #92, commit `e06cd17`) : livrée au premier essai, 9 min 24 s de la fusion à la production.
+- **Retour arrière N1 vers N0** en une opération (`gh workflow run retour-arriere.yml`, avec acteur et motif) :
+  28 s de bout en bout, 16 s côté serveur ; N0 servie 19 s après le lancement.
+- **N1 relivrée** par la relance du travail `deployer` : la production correspond de nouveau à `main`.
+
+Détail, journal du serveur et mesure de `/health` : `evidence/sprint-2/N1-retour-arriere-2026-10-14.md`.
+
 ## Ce qui n'est pas fait
 
 - Le travail `reconstruction` de la chaîne (reconstruction automatique à chaque PR) : reporté après l'atelier ; la
   reconstruction est montrée en direct.
-- Le nettoyage automatique des anciennes images et des anciens index : à la main.
+- Le nettoyage automatique des anciennes images et des anciens index : à la main (un index ne sert déjà plus,
+  celui de la première livraison de N1).
+- Une bascule sans coupure : pendant le retour arrière, la production a répondu 502 pendant environ 7 s, le temps de
+  remplacer le conteneur de l'API ; les livraisons basculent de la même façon.
 - Le retour automatique vers la version d'avant la chaîne : la première livraison n'a pas de version précédente
   connue du script ; en cas d'échec, restauration manuelle.
 - Les durées maximales du script du serveur sont calculées ; une seule est mesurée : 221 s pour la première
