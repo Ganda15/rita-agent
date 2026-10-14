@@ -145,6 +145,12 @@ def test_etat_sans_precedente_se_relit(tmp_path):
     '["pas", "un", "objet"]',                            # mauvaise forme
     '{"active": {"image": "x"}}',                        # version incomplète
     '{"active": {"image": 1, "config": "y", "profil": "complet"}}',  # champs complets, mauvais type
+    "{}",                                                            # objet vide : pas une première livraison
+    '{"activee": null}',                                             # nom de champ faux
+    '{"active": null, "precedente": null, "observee": 3, "sante": null}',        # observee pas du texte
+    '{"active": null, "precedente": null, "observee": null, "sante": {"x": 1}}', # sante pas une valeur permise
+    '{"active": null, "precedente": null, "observee": null, "sante": "bof"}',    # sante inconnue
+    '{"active": null, "precedente": null, "observee": null, "sante": null, "x": 1}',  # champ en trop
 ])
 def test_etat_illisible_leve_et_ne_passe_jamais_pour_une_premiere_livraison(tmp_path, contenu):
     chemin = tmp_path / "etat.json"

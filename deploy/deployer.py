@@ -111,6 +111,10 @@ class Version:
     profil: str  # liste de contrôles adaptée à la version : « complet » (ou « aout », après l'atelier)
 
 
+CHAMPS_ETAT = {"active", "precedente", "observee", "sante"}
+SANTES = {"sain", "degrade", "indisponible", None}
+
+
 @dataclass(frozen=True)
 class Etat:
     active: Version | None = None
@@ -146,10 +150,16 @@ def lire_etat(chemin: Path) -> Etat:
         donnees = json.loads(chemin.read_text(encoding="utf-8"))
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as erreur:
         raise EtatIllisible(f"{chemin} illisible : {type(erreur).__name__}") from erreur
-    if not isinstance(donnees, dict):
-        raise EtatIllisible(f"{chemin} : un objet JSON était attendu")
-    return Etat(active=_version(donnees.get("active")), precedente=_version(donnees.get("precedente")),
-                observee=donnees.get("observee"), sante=donnees.get("sante"))
+    # Les quatre champs sont obligatoires, avec leur type : un champ manquant, en trop ou mal typé ne doit jamais faire
+    # passer le fichier pour un état vide (une première livraison) et faire oublier la version active.
+    if not isinstance(donnees, dict) or set(donnees) != CHAMPS_ETAT:
+        raise EtatIllisible(f"{chemin} : les champs attendus sont {sorted(CHAMPS_ETAT)}")
+    if donnees["observee"] is not None and not isinstance(donnees["observee"], str):
+        raise EtatIllisible(f"{chemin} : « observee » doit être du texte ou null")
+    if not isinstance(donnees["sante"], (str, type(None))) or donnees["sante"] not in SANTES:
+        raise EtatIllisible(f"{chemin} : « sante » doit valoir {sorted(s for s in SANTES if s)} ou null")
+    return Etat(active=_version(donnees["active"]), precedente=_version(donnees["precedente"]),
+                observee=donnees["observee"], sante=donnees["sante"])
 
 
 def ecrire_etat(chemin: Path, etat: Etat) -> None:
