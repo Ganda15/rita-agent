@@ -204,7 +204,7 @@ def health():
     """
     return {
         "status": "ok",
-        "project": "RITA",
+        "project": "RITX",
         "commit": os.getenv("RITA_GIT_SHA", "inconnu"),
         "construit_le": os.getenv("RITA_CONSTRUIT_LE", "inconnu"),
     }
