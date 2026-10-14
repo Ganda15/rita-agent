@@ -359,6 +359,7 @@ def test_preparer_version_ne_reecrit_jamais_un_dossier(serveur):
     ({"briefing": "refus"}, "degrade", "briefing"),
     ({"journal": False}, "degrade", "journal"),
     ({"articles": 0}, "degrade", "articles"),
+    ({"articles": True}, "degrade", "articles"),      # en Python, True est un entier : il ne vaut pas « 1 article »
     ({"commit": "zzz"}, "degrade", "version"),
     ({"health": False}, "indisponible", "health"),
 ])

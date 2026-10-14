@@ -541,7 +541,8 @@ def controler(base: str, cle: str, profil: str, commit_attendu: str | None, jour
         echecs.append("journal")
     # Choix A d'Era (14/10) : un briefing est rédigé même sans article ; seul ce compte rend un index vide visible.
     articles = corps.get("articles_transmis")
-    if briefing.statut == 200 and not (isinstance(articles, int) and articles >= 1):
+    # `type(...) is int` et non `isinstance` : en Python, True est un entier, et « true » ne vaut pas un article.
+    if briefing.statut == 200 and not (type(articles) is int and articles >= 1):
         echecs.append("articles")
     return Controle("sain" if not echecs else "degrade", tuple(echecs))
 
