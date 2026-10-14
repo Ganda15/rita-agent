@@ -9,12 +9,14 @@
 #   test.yml       INTÉGRATION continue  — les tests tournent à chaque envoi
 #   livraison.yml  LIVRAISON continue    — l'image se construit et se publie
 #
-# ⚠️ LE CHOIX QUI STRUCTURE TOUT : on ne publie **que sur un tag**.
+# ⚠️ LE CHOIX QUI STRUCTURE TOUT : on publie sur un tag de livrable, et
+#    (sprint 2) après chaque fusion dans `main`, jamais sur `develop`.
 #
-#    Un tag = un livrable. C'est déjà la discipline du projet : le formateur
-#    reçoit `.../tree/livrable-E1-v1`, pas la branche par défaut. La même
-#    règle vaut pour l'image : `ghcr.io/ganda15/rita-api:livrable-E1-v1`
-#    montre le code **exactement tel qu'il était le jour de l'envoi**.
+#    Un tag = un livrable : `ghcr.io/ganda15/rita-api:livrable-E1-v1` montre le
+#    code exactement tel qu'il était le jour de l'envoi. Une fusion dans `main`
+#    = une version de production : l'image `:sha-…` est publiée, son empreinte
+#    (`@sha256:…`) est transmise au serveur, qui l'essaie puis la met en service
+#    (travaux `attendre-creneau`, `deployer`, et la reprise de 9 h).
 #
 #    Publier à chaque envoi sur `develop` produirait des dizaines d'images
 #    dont aucune ne correspondrait à quoi que ce soit d'identifiable.
@@ -88,6 +90,9 @@ jobs:
     # Les tests et la construction ne partent qu'après un lint ET un contrôle des secrets verts : l'ordre du brief,
     # et aucune image construite ni publiée si gitleaks trouve une clé.
     needs: [lint, secrets]
+    # Sprint 2 : l'empreinte de l'image publiée après une fusion dans `main`, transmise au travail `deployer`.
+    outputs:
+      empreinte: ${{ steps.empreinte.outputs.ref }}
 
     permissions:
       contents: read
@@ -245,12 +250,12 @@ jobs:
         run: docker rm -f verification || true
 
       # --- La publication -------------------------------------------------
-      # Seulement sur un tag, et seulement si les deux vérifications sont passées
-      # (une étape en échec arrête le job avant d'arriver ici).
+      # Sur un tag de livrable, ou après une fusion dans `main` (sprint 2), et seulement si toutes les vérifications
+      # sont passées (une étape en échec arrête le job avant d'arriver ici). Jamais sur une PR ni sur `develop`.
       - name: S'authentifier sur le registre
         # Juste avant de publier : une connexion inutile est une permission
         # accordée pour rien.
-        if: startsWith(github.ref, 'refs/tags/livrable-')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/livrable-'))
         uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRE }}
@@ -258,7 +263,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publier l'image vérifiée
-        if: startsWith(github.ref, 'refs/tags/livrable-')
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/livrable-'))
         env:
           ETIQUETTES: ${{ steps.etiquettes.outputs.tags }}
         run: |
@@ -266,23 +271,144 @@ jobs:
             [ -n "$etiquette" ] && docker push "$etiquette"
           done
 
+      - name: Lire l'empreinte de l'image publiée
+        # Le serveur ne reçoit que l'empreinte (`@sha256:…`), qui ne désigne qu'une image : une étiquette, elle,
+        # pourrait être déplacée. Vérifiée avec le motif du script du serveur avant d'être transmise.
+        id: empreinte
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          ETIQUETTES: ${{ steps.etiquettes.outputs.tags }}
+        run: |
+          etiquette=$(printf '%s\n' "$ETIQUETTES" | grep ':sha-' | head -n 1)
+          ref=$(docker inspect --format '{{index .RepoDigests 0}}' "$etiquette")
+          if ! printf '%s' "$ref" | grep -Eq '^ghcr\.io/ganda15/rita-api@sha256:[0-9a-f]{64}$'; then
+            echo "::error::empreinte inattendue : $ref"
+            exit 1
+          fi
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+          echo "empreinte publiee : $ref"
+
       - name: Résumé
+        env:
+          PUBLIEE: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/livrable-')) }}
+          ETIQUETTES: ${{ steps.etiquettes.outputs.tags }}
+          EMPREINTE: ${{ steps.empreinte.outputs.ref }}
         run: |
           {
             echo "### Livraison"
             echo ""
-            if [ "${{ startsWith(github.ref, 'refs/tags/livrable-') }}" = "true" ]; then
+            if [ "$PUBLIEE" = "true" ]; then
               echo "**Image publiee** sur \`${{ env.REGISTRE }}/${{ env.IMAGE }}\`"
               echo ""
               echo '```'
-              echo "${{ steps.etiquettes.outputs.tags }}"
+              printf '%s\n' "$ETIQUETTES"
+              [ -n "$EMPREINTE" ] && printf '%s\n' "$EMPREINTE"
               echo '```'
             else
               echo "**Construction verifiee**, sans publication."
               echo ""
-              echo "La publication n'a lieu que sur un tag \`livrable-*\`."
+              echo "La publication n'a lieu qu'apres une fusion dans \`main\` ou sur un tag \`livrable-*\`."
             fi
             echo ""
             echo "- L'API demarre et repond sur \`/health\`"
             echo "- L'acces sans cle est refuse (403)"
           } >> "$GITHUB_STEP_SUMMARY"
+
+  # --- Le créneau du matin (sprint 2, tâche 9) ---------------------------------
+  # Entre 7 h 30 et 9 h (heure de Paris), ce travail dort jusqu'à 9 h : une livraison ne doit pas tomber pendant le
+  # créneau protégé de 8 h à 9 h, et la marge de 30 minutes couvre le pré-test. Calcul : `secondes_avant_livraison`
+  # de deploy/deployer.py, testé à la tâche 7. SANS groupe de concurrence : une attente dans le groupe `production`
+  # bloquerait tout le reste.
+  attendre-creneau:
+    needs: construire-et-publier
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v7
+      - name: Attendre la fin du créneau du matin si besoin
+        run: |
+          attente=$(python3 -c 'from datetime import datetime; from deploy.deployer import PARIS, secondes_avant_livraison; print(secondes_avant_livraison(datetime.now(PARIS)))')
+          echo "attente avant la livraison : ${attente} s"
+          sleep "$attente"
+
+  # --- Le déploiement automatique (sprint 2, tâche 9) -----------------------------
+  # Après une fusion dans `main` et tous les contrôles verts : l'ordre `livrer <empreinte>` part au serveur par la clé
+  # dédiée. Le serveur essaie l'image en préproduction, la met en service, la contrôle, et remet l'ancienne si besoin.
+  # Code 75 : le créneau de 8 h est arrivé pendant le pré-test, rien n'a changé ; la reprise de 9 h prend le relais.
+  deployer:
+    needs: [lint, secrets, construire-et-publier, attendre-creneau]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    environment:
+      name: production
+      url: https://178-104-184-125.sslip.io
+    # Une seule livraison à la fois, et jamais annulée par la suivante.
+    concurrency:
+      group: production
+      cancel-in-progress: false
+    # Le serveur attend le verrou au plus ATTENTE_VERROU["livrer"], puis travaille au plus DUREE_MAX_LIVRER
+    # (deploy/deployer.py) : environ 98 minutes ; le travail ne doit pas être coupé avant lui.
+    timeout-minutes: 110
+    outputs:
+      reporte: ${{ steps.ordre.outputs.reporte }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Livrer l'image sur le serveur
+        id: ordre
+        uses: ./.github/actions/ordre-serveur
+        with:
+          ordre: livrer
+          argument: ${{ needs.construire-et-publier.outputs.empreinte }}
+          cle-ssh: ${{ secrets.DEPLOY_SSH_KEY }}
+          hote: ${{ secrets.DEPLOY_HOST }}
+          known-hosts: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          empreinte-bloquante: "true"
+          accepter-report: "true"
+
+  # --- La reprise automatique après un code 75 ----------------------------------
+  attendre-reprise:
+    needs: deployer
+    if: needs.deployer.outputs.reporte == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    timeout-minutes: 100
+    steps:
+      - uses: actions/checkout@v7
+      - name: Attendre 9 h
+        run: |
+          attente=$(python3 -c 'from datetime import datetime; from deploy.deployer import PARIS, secondes_avant_livraison; print(secondes_avant_livraison(datetime.now(PARIS)))')
+          echo "attente avant la reprise : ${attente} s"
+          sleep "$attente"
+
+  deployer-reprise:
+    needs: [construire-et-publier, deployer, attendre-reprise]
+    if: needs.deployer.outputs.reporte == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    environment:
+      name: production
+      url: https://178-104-184-125.sslip.io
+    concurrency:
+      group: production
+      cancel-in-progress: false
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v7
+      - name: Livrer la même image après 9 h
+        # La MÊME empreinte que le travail `deployer`. Un nouveau code 75, impossible après 9 h, serait un échec.
+        uses: ./.github/actions/ordre-serveur
+        with:
+          ordre: livrer
+          argument: ${{ needs.construire-et-publier.outputs.empreinte }}
+          cle-ssh: ${{ secrets.DEPLOY_SSH_KEY }}
+          hote: ${{ secrets.DEPLOY_HOST }}
+          known-hosts: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          empreinte-bloquante: "true"
+          accepter-report: "false"
