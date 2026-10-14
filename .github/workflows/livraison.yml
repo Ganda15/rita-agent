@@ -38,8 +38,28 @@ env:
 
 jobs:
 
+  # --- Le lint (sprint 2, tâche 2) -------------------------------------------
+  # Premier maillon de la chaîne du brief : lint, tests, construction, déploiement. Il lit le code sans
+  # l'exécuter et ne cherche que les vraies erreurs (règles dans `ruff.toml`). Version fixée, la même que
+  # dans `requirements.txt` (contrôlé par `tests/test_lint_config.py`). Check requis sur `main` (tâche 10).
+  lint:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Installer ruff (version fixée)
+        run: pip install "ruff==0.15.17"
+      - name: Lint
+        run: ruff check .
+
   construire-et-publier:
     runs-on: ubuntu-24.04
+    # Les tests et la construction ne partent qu'après un lint vert : l'ordre du brief.
+    needs: lint
 
     permissions:
       contents: read

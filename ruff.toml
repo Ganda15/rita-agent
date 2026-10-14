@@ -1,0 +1,15 @@
+# Lint de RITA (sprint 2, tâche 2), lancé par le travail `lint` de `.github/workflows/livraison.yml`.
+#
+# Pour commencer, seulement les vraies erreurs, celles qui casseraient le programme :
+#   E9   erreurs d'entrée et de syntaxe (ruff signale toujours les erreurs de syntaxe)
+#   F63  comparaisons invalides (par exemple `x is "texte"`)
+#   F7   instructions mal placées (`return` hors d'une fonction, `break` hors d'une boucle)
+#   F82  noms non définis
+# Les règles de style viendront plus tard, une famille à la fois : les imposer d'un coup à un code existant
+# de plus de 800 tests produirait des centaines d'alertes sans rapport avec la sûreté.
+# Mesure du 14/10/2026 avec ruff 0.15.17 : « All checks passed! », aucune correction nécessaire.
+# ruff suit `.gitignore` de lui-même : aucune exclusion à ajouter ici.
+target-version = "py313"
+
+[lint]
+select = ["E9", "F63", "F7", "F82"]
