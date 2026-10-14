@@ -83,7 +83,7 @@ déploiement progressif (un seul utilisateur).
    « opération commencée » avant toute bascule. L'image embarque ses fichiers de déploiement (`docker-compose.yml`,
    `deploy/compose.prod.yml`) : le script les en extrait, si bien qu'une empreinte désigne à la fois le code et sa
    configuration. Limite : une nouvelle version du script lui-même se recopie à la main.
-5. **Pré-test**, à côté de la production, sur `127.0.0.1:8002` : la nouvelle image se connecte avec `DATABASE_URL`
+5. **Pré-test**, à côté de la production, sur `127.0.0.1:8003` : la nouvelle image se connecte avec `DATABASE_URL`
    réglée sur `rita_lecture` (valeur `RITA_DSN_LECTURE` du `.env` du serveur) et construit son propre index Chroma
    dans un volume temporaire, avec la commande existante `python -m pipelines.ingest --etapes indexation --strict`.
    Elle doit réussir : `/health` à la version attendue ; 403 sans clé ; un briefing `OR.PA` en 200, avec un texte non
@@ -119,7 +119,7 @@ code gelé du 15/10, plus les changements du sprint 2, dont la version dans `/he
   survit à tout nettoyage ;
 - garder sa configuration : copie du `.env` et du `docker-compose.yml` en service dans un dossier de sauvegarde du
   serveur, et sauvegarde `pg_dump` de la base ;
-- vérifier qu'on sait la recréer : une API seule (`docker run`, autre nom, port 8002) avec cette configuration, et son
+- vérifier qu'on sait la recréer : une API seule (`docker run`, autre nom, port 8003) avec cette configuration, et son
   propre profil de contrôles (`/health` 200, `/` 200, 403 sans clé, briefing `OR.PA` en 200 avec un texte non vide et
   `conforme_amf: true`), qui dit aussi quel fournisseur répond.
 
@@ -294,7 +294,8 @@ ans dans le dépôt, tout déploiement progressif.
 1. l'image réellement exécutée sur le serveur et sa configuration effective (noms de variables seulement) ;
 2. l'essai de l'image d'août en API seule, et le fournisseur qui lui répond ;
 3. le mot de passe de `rita_lecture` sur le serveur, et le démarrage de l'API avec ce compte ;
-4. la disponibilité du port 8002 ;
+4. la disponibilité du port du pré-test (vérifiée le 14/10 : 8002 est pris par le conteneur `glossary`, le pré-test
+   passe sur 8003) ;
 5. la présence des clés Langfuse sur le serveur ;
 6. l'authentification SSH par clé seulement ;
 7. les droits des fichiers `.env` du serveur ;

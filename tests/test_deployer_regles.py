@@ -95,6 +95,19 @@ def test_creneau_elargi_pour_github(heure, minute, seconde, attendu):
     assert d.secondes_avant_livraison(maintenant) == attendu
 
 
+# --- Les ports du serveur ------------------------------------------------------------------------------------------
+
+# Relevé du serveur du 14/10 (tâche 10, `docker ps`) : les ports déjà publiés par d'autres conteneurs.
+PORTS_PRIS_SUR_LE_SERVEUR = {8001: "rita-api-preprod (production RITA)", 8002: "glossary", 8100: "kaldera-partenaire"}
+
+
+def test_le_pretest_vise_un_port_libre_du_serveur():
+    # Un pré-test sur un port déjà pris échouerait au démarrage, à chaque livraison.
+    assert d.PORT_PRETEST not in PORTS_PRIS_SUR_LE_SERVEUR, PORTS_PRIS_SUR_LE_SERVEUR.get(d.PORT_PRETEST)
+    assert d.URL_PRETEST == f"http://127.0.0.1:{d.PORT_PRETEST}"
+    assert d.PORT_PRODUCTION == 8001
+
+
 # --- Les transitions d'état (calculs purs) -------------------------------------------------------------------------
 
 A = d.Version("ghcr.io/ganda15/rita-api@sha256:" + "a" * 64, "/root/rita-deploy/configs/a", "complet")

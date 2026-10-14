@@ -396,7 +396,7 @@ def test_health_sans_version_annonce_inconnu(monkeypatch):
   - `class Docker` : `tirer(ref) -> None` ; `image_du_conteneur(nom) -> str` ;
     `extraire_config(ref, dossier: Path) -> None` (copie `/app/deploy/docker-compose.yml` et
     `/app/deploy/compose.prod.yml` de l'image dans `dossier`) ;
-    `demarrer_pretest(ref, dsn_lecture, volume_index) -> None` (port `127.0.0.1:8002`, réseau du projet de production,
+    `demarrer_pretest(ref, dsn_lecture, volume_index) -> None` (port `127.0.0.1:8003`, réseau du projet de production,
     `DATABASE_URL = dsn_lecture`, index construit d'abord par `python -m pipelines.ingest --etapes indexation --strict`
     dans `volume_index`) ; `arreter_pretest() -> None` (conteneur et volume d'index temporaires supprimés) ;
     `remplacer_production(version: Version) -> None` ; `journal_du_conteneur(nom) -> str` ;
@@ -437,7 +437,7 @@ def test_health_sans_version_annonce_inconnu(monkeypatch):
     cours) ; refuser si une opération est inachevée ; appeler `livrer` ou `revenir`, qui relit l'heure juste avant
     la bascule. Le retour arrière garde son exception horaire. Les tests du créneau et du verrou passent par `main`.
   - Constantes en tête : `DOSSIER = Path("/root/rita-deploy")`, `DEPOT = Path("/root/rita-agent")`,
-    `CONTENEUR = "rita-api-preprod"`, `PORT_PRODUCTION = 8001`, `PORT_PRETEST = 8002`,
+    `CONTENEUR = "rita-api-preprod"`, `PORT_PRODUCTION = 8001`, `PORT_PRETEST = 8003` (8002 est pris par `glossary`, relevé du 14/10),
     `IMAGE = "ghcr.io/ganda15/rita-api"`, `PROJET_COMPOSE = "rita-agent"` (nom par défaut, à confirmer à la tâche 10
     avant toute livraison).
 - `deploy/deployer.sh` : `exec /usr/bin/python3 /root/rita-deploy/bin/deployer.py`.
@@ -585,12 +585,13 @@ modification du serveur.**
   le commit du dossier du serveur, pas forcément celui qui a construit l'image ; l'identifiant `sha256:…` de l'image
   est la seule référence certaine ; `inspect.json` et `env-effectif` contiennent tous deux les clés du conteneur.
 - [ ] 🖧 **Tester la restauration d'août avec son environnement effectif** : `docker run -d --name rita-essai-aout
-  -p 127.0.0.1:8002:8000 --network <réseau du projet> --env-file .../env-effectif rita-api:avant-chaine`, puis les
+  -p 127.0.0.1:8003:8000 --network <réseau du projet> --env-file .../env-effectif rita-api:avant-chaine`, puis les
   contrôles du profil `aout` et la ligne de journal qui dit quel fournisseur répond ; arrêt et suppression du
   conteneur d'essai. Résultat noté : *sain* ou *dégradé*. Un échec ici vient alors de l'image ou du fournisseur, et non
   d'un environnement d'essai incomplet.
 - [ ] 🖧 SSH par clé seulement : `sshd -T | grep -i passwordauthentication` doit montrer `no`.
-- [ ] 🖧 Port 8002 libre : `ss -ltn | grep 8002` ne montre rien.
+- [ ] 🖧 Port 8003 libre : `ss -ltn | grep ':8003 '` ne montre rien (relevé du 14/10 : 8002 est pris par le
+  conteneur `glossary`, 8001 par la production RITA).
 - [ ] 🖧 Droits du `.env` : `stat -c '%a %U' /root/rita-agent/.env` doit montrer `600 root`.
 - [ ] 🖧 Clés Langfuse présentes ou non : `grep -c '^LANGFUSE_' /root/rita-agent/.env` (un nombre, aucune valeur).
 - [ ] 🖧 Mot de passe de `rita_lecture` posé par Era (`ALTER ROLE rita_lecture PASSWORD …` dans `psql`) et ligne
