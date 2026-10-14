@@ -14,7 +14,7 @@ pas fait.
 |---|---|
 | Un dépôt propre, des environnements reproductibles, des secrets hors du dépôt | `Dockerfile`, `docker-compose.yml` ; reconstruction depuis le dépôt : `docker-compose.demo.yml`, `data/demo/`, `docs/EXPLOITATION.md` § 3 ter ; secrets : travail `secrets` (gitleaks sur tout l'historique), `scripts/verifier_dockerfile.py`, `evidence/C21/INC-008-cles-mistral-dans-l-historique.md` |
 | Un squelette : une route API, une interface minimale, un appel au modèle qui répond | `POST /briefing`, `GET /health` (`api/main.py`), `frontend/briefing.html`, `src/llm.py` |
-| Une chaîne lint, tests, construction, déploiement automatique, à travers les environnements | `.github/workflows/livraison.yml` : `lint`, `secrets`, `construire-et-publier`, `attendre-creneau`, `deployer` ; le serveur essaie chaque image en préproduction (port 8003, compte en lecture seule) avant de la mettre en service (`deploy/deployer.py`) |
+| Une chaîne lint, tests, construction, déploiement automatique, à travers les environnements | `.github/workflows/livraison.yml` : `lint`, `secrets`, `construire-et-publier`, `attendre-creneau`, `deployer` ; le serveur essaie chaque image en préproduction (port 8003, compte en lecture seule) avant de la mettre en service (`deploy/deployer.py`) ; première livraison : `evidence/sprint-2/N0-premiere-livraison-2026-10-14.md` |
 | Des tests bloquants, prouvés par un commit cassé | règle de protection de `main` : six contrôles exigés (`evidence/C19/ruleset-main-2026-10-14.json`) ; la PR cassée est ouverte pendant l'atelier, jamais fusionnée |
 | Un retour arrière en une opération, répété | `.github/workflows/retour-arriere.yml` (*Run workflow*), ordre `revenir` du script du serveur |
 
@@ -32,13 +32,24 @@ pas fait.
 ## Préparation du serveur (tâche 10, 14/10/2026)
 
 Faite par Era, chaque point vérifié par une commande :
-- `.env` du serveur lisible par root seul (600) ; clés du modèle Azure ajoutées sans être affichées ;
+- `.env` du serveur lisible par root seul (600) ; clés du modèle Azure ajoutées sans être affichées (l'adresse,
+  collée deux fois, a été corrigée le soir même ; un appel réel au modèle depuis le serveur répond 200) ;
 - compte PostgreSQL `rita_lecture` avec un mot de passe aléatoire jamais affiché ; lecture vérifiée, écriture refusée ;
 - SSH par clé seulement : mot de passe refusé, clé acceptée ;
 - jeton GHCR en lecture seule ; clé SSH dédiée à GitHub, limitée par une commande forcée à `deployer.sh` ;
-  environnement GitHub `production` et ses trois secrets ; empreinte du serveur vérifiée ;
+  environnement GitHub `production` et ses trois secrets ; empreinte du serveur vérifiée. Le secret
+  `DEPLOY_KNOWN_HOSTS` se pose par `gh secret set --body` avec la ligne vérifiée, jamais par `ssh-keyscan | gh` : sur
+  le poste, le `ssh-keyscan` de Windows échoue face à ce serveur et le secret part vide ;
 - articles de la base de production remplacés une fois par ceux du poste (2 052 articles, dont 54 sur L'Oréal) : le
   contrôle de livraison exige au moins un article pour `OR.PA`.
+
+## Première livraison N0 (14/10/2026, mesurée)
+
+La fusion de la PR #91 (commit `4819627`) est arrivée en production au troisième essai du travail `deployer`. Les
+deux premiers ont été refusés sans toucher à la production : empreinte du serveur enregistrée vide (SSH refuse la
+connexion), puis adresse du modèle collée deux fois dans le `.env` du serveur (le pré-test refuse la version, faute de
+briefing). Le troisième a livré en 221 s côté serveur ; `/health` annonce le commit `48196272…`. Détail et sorties :
+`evidence/sprint-2/N0-premiere-livraison-2026-10-14.md`.
 
 ## Ce qui n'est pas fait
 
@@ -47,7 +58,9 @@ Faite par Era, chaque point vérifié par une commande :
 - Le nettoyage automatique des anciennes images et des anciens index : à la main.
 - Le retour automatique vers la version d'avant la chaîne : la première livraison n'a pas de version précédente
   connue du script ; en cas d'échec, restauration manuelle.
-- Les durées maximales du script du serveur sont calculées, pas encore mesurées ; la première livraison donnera les
-  durées réelles.
+- Les durées maximales du script du serveur sont calculées ; une seule est mesurée : 221 s pour la première
+  livraison, pour un maximum calculé de 4 161 s.
+- Le journal du serveur nomme le contrôle en échec sans son code HTTP, et le conteneur du pré-test part avec ses
+  journaux : un refus demande une enquête. À ajouter après l'atelier (le script du serveur devra être réinstallé).
 - Pas de traçage Langfuse en production : aucune clé Langfuse sur le serveur.
 - La fraîcheur des données de production n'entre pas dans ce sprint : les articles ont été copiés une fois, le 14/10.
