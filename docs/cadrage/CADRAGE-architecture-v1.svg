@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1144" viewBox="0 0 1500 1144" font-family="Segoe UI,Calibri,Arial,sans-serif">
+<defs><marker id="fl-flux" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#0B2A5B"/></marker><marker id="fl-ecriture" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#1565C0"/></marker><marker id="fl-lecture" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#15803D"/></marker><marker id="fl-erreur" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#D32F2F"/></marker><marker id="fl-manuel" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#64748B"/></marker><marker id="fl-perso" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#A21CAF"/></marker></defs>
+<rect width="1500" height="1144" fill="#FFFFFF"/>
+<rect x="40" y="16" width="1420" height="5" fill="#1565C0"/>
+<text x="40" y="54" font-size="30" font-weight="700" fill="#0B2A5B">RITA : l&#x27;architecture complète de la V1, des données à l&#x27;API</text>
+<text x="40" y="80" font-size="15" fill="#1F2937">Sprint 1, cadrage V1 · lecture : 1 données → 2 agent et garde-fous → 3 interface → 4 API, puis le pilotage autour</text>
+<g transform="translate(0,16)">
+<rect x="40" y="100" width="480" height="576" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="560" y="100" width="340" height="760" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="940" y="100" width="520" height="134" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="940" y="260" width="520" height="600" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="40" y="880" width="1420" height="130" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="56" y="130" width="448" height="112" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="56" y="130" width="7" height="112" fill="#1E293B"/>
+<text x="73" y="151" font-size="14" font-weight="700" fill="#0B2A5B">Sources (C1)</text>
+<text x="73" y="170.0" font-size="11.5" fill="#111827">chaque soir : BCE (taux de change), FRED (taux US),</text>
+<text x="73" y="185.5" font-size="11.5" fill="#111827">  Yahoo Finance et Boursorama (cours), flux RSS</text>
+<text x="73" y="201.0" font-size="11.5" fill="#111827">à part, par db/importer.py : positions (CSV),</text>
+<text x="73" y="216.5" font-size="11.5" fill="#111827">  archive de cours Parquet (big data, hors image)</text>
+<rect x="56" y="300" width="220" height="84" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="56" y="300" width="7" height="84" fill="#1E293B"/>
+<text x="73" y="321" font-size="14" font-weight="700" fill="#0B2A5B">Collecte du soir, 19 h</text>
+<text x="73" y="340.0" font-size="11.5" fill="#111827">pipelines/ingest.py</text>
+<text x="73" y="355.5" font-size="11.5" fill="#111827">6 étapes indépendantes</text>
+<text x="73" y="371.0" font-size="11.5" fill="#111827">manifeste par exécution</text>
+<rect x="316" y="300" width="188" height="84" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="316" y="300" width="7" height="84" fill="#6D28D9"/>
+<text x="333" y="321" font-size="14" font-weight="700" fill="#4C1D95">PostgreSQL</text>
+<text x="333" y="340.0" font-size="11.5" fill="#111827">10 tables, 1 vue</text>
+<text x="333" y="355.5" font-size="11.5" fill="#111827">cours, taux, articles,</text>
+<text x="333" y="371.0" font-size="11.5" fill="#111827">positions (RGPD)</text>
+<rect x="56" y="480" width="220" height="84" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="56" y="480" width="7" height="84" fill="#C2410C"/>
+<text x="73" y="501" font-size="14" font-weight="700" fill="#9A3412">Garde-fou d&#x27;injection</text>
+<text x="73" y="520.0" font-size="11.5" fill="#111827">guardrails/injection.py</text>
+<text x="73" y="535.5" font-size="11.5" fill="#111827">relit chaque article</text>
+<text x="73" y="551.0" font-size="11.5" fill="#111827">bloqué : marqué, gardé</text>
+<rect x="316" y="480" width="188" height="84" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="316" y="480" width="7" height="84" fill="#6D28D9"/>
+<text x="333" y="501" font-size="14" font-weight="700" fill="#4C1D95">ChromaDB</text>
+<text x="333" y="520.0" font-size="11.5" fill="#111827">articles découpés</text>
+<text x="333" y="535.5" font-size="11.5" fill="#111827">et vectorisés,</text>
+<text x="333" y="551.0" font-size="11.5" fill="#111827">reconstruit chaque soir</text>
+<rect x="56" y="590" width="448" height="66" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="56" y="590" width="7" height="66" fill="#475569"/>
+<text x="73" y="611" font-size="14" font-weight="700" fill="#0B2A5B">Ce qui part chez le fournisseur du modèle</text>
+<text x="73" y="630.0" font-size="11.5" fill="#111827">le prompt seul : cours, variation, indicateurs,</text>
+<text x="73" y="645.5" font-size="11.5" fill="#111827">au plus 3 extraits d&#x27;articles ; jamais une position</text>
+<rect x="576" y="130" width="308" height="84" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="576" y="130" width="7" height="84" fill="#475569"/>
+<text x="593" y="151" font-size="14" font-weight="700" fill="#0B2A5B">Un chemin fixe, toujours le même</text>
+<text x="593" y="170.0" font-size="11.5" fill="#111827">graph/workflow.py : scout, rag, redacteur ;</text>
+<text x="593" y="185.5" font-size="11.5" fill="#111827">le modèle ne choisit jamais le chemin :</text>
+<text x="593" y="201.0" font-size="11.5" fill="#111827">chaque étape se suit et se trace</text>
+<rect x="576" y="300" width="308" height="84" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="576" y="300" width="7" height="84" fill="#1E293B"/>
+<text x="593" y="321" font-size="14" font-weight="700" fill="#0B2A5B">scout</text>
+<text x="593" y="340.0" font-size="11.5" fill="#111827">lit PostgreSQL : cours, variation,</text>
+<text x="593" y="355.5" font-size="11.5" fill="#111827">13 indicateurs par valeur</text>
+<text x="593" y="371.0" font-size="11.5" fill="#111827">aucune position, aucun prix de revient</text>
+<rect x="576" y="404" width="308" height="56" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="576" y="404" width="7" height="56" fill="#C2410C"/>
+<text x="593" y="425" font-size="14" font-weight="700" fill="#9A3412">Garde-fou d&#x27;entrée (début de rag)</text>
+<text x="593" y="444.0" font-size="11.5" fill="#111827">intention AMF refusée avant la recherche</text>
+<rect x="576" y="480" width="308" height="84" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="576" y="480" width="7" height="84" fill="#1E293B"/>
+<text x="593" y="501" font-size="14" font-weight="700" fill="#0B2A5B">rag</text>
+<text x="593" y="520.0" font-size="11.5" fill="#111827">ChromaDB : filtre par valeur, hybride</text>
+<text x="593" y="535.5" font-size="11.5" fill="#111827">dense + BM25 : 3 passages au plus</text>
+<text x="593" y="551.0" font-size="11.5" fill="#111827">aucun : écrit sans extrait, rien d&#x27;inventé</text>
+<rect x="576" y="584" width="308" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="576" y="584" width="7" height="66" fill="#1E293B"/>
+<text x="593" y="605" font-size="14" font-weight="700" fill="#0B2A5B">redacteur</text>
+<text x="593" y="624.0" font-size="11.5" fill="#111827">agents/analyst.py : la consigne,</text>
+<text x="593" y="639.5" font-size="11.5" fill="#111827">interdit AMF écrit dedans</text>
+<rect x="576" y="670" width="308" height="66" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="576" y="670" width="7" height="66" fill="#1565C0"/>
+<text x="593" y="691" font-size="14" font-weight="700" fill="#0B2A5B">Modèle fourni : Azure, zone UE</text>
+<text x="593" y="710.0" font-size="11.5" fill="#111827">src/llm.py ; gpt-5.4-dzs-eu</text>
+<text x="593" y="725.5" font-size="11.5" fill="#111827">LLM_ORDRE=foundry (11/10)</text>
+<rect x="576" y="756" width="308" height="84" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="576" y="756" width="7" height="84" fill="#C2410C"/>
+<text x="593" y="777" font-size="14" font-weight="700" fill="#9A3412">Garde-fou de sortie</text>
+<text x="593" y="796.0" font-size="11.5" fill="#111827">guardrails/sortie.py, échec fermé</text>
+<text x="593" y="811.5" font-size="11.5" fill="#111827">recommandation : texte remplacé</text>
+<text x="593" y="827.0" font-size="11.5" fill="#111827">par un refus, conforme_amf=false</text>
+<rect x="956" y="130" width="300" height="84" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="956" y="130" width="7" height="84" fill="#1E293B"/>
+<text x="973" y="151" font-size="14" font-weight="700" fill="#0B2A5B">Interface web (frontend/)</text>
+<text x="973" y="170.0" font-size="11.5" fill="#111827">3 écrans : portefeuille, indicateurs,</text>
+<text x="973" y="185.5" font-size="11.5" fill="#111827">  briefing ; clé saisie à l&#x27;écran</text>
+<text x="973" y="201.0" font-size="11.5" fill="#111827">verdict AMF écrit en mots</text>
+<rect x="1272" y="130" width="172" height="84" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="1272" y="130" width="7" height="84" fill="#1E293B"/>
+<text x="1289" y="151" font-size="14" font-weight="700" fill="#0B2A5B">Passerelle MCP</text>
+<text x="1289" y="170.0" font-size="11.5" fill="#111827">3 outils en lecture</text>
+<text x="1289" y="185.5" font-size="11.5" fill="#111827">seule, avec la clé</text>
+<text x="1289" y="201.0" font-size="11.5" fill="#111827">aucun accès à /briefing</text>
+<rect x="956" y="300" width="488" height="84" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="956" y="300" width="7" height="84" fill="#1565C0"/>
+<text x="973" y="321" font-size="14" font-weight="700" fill="#0B2A5B">Routes, clé, identifiant de requête</text>
+<text x="973" y="340.0" font-size="11.5" fill="#111827">GET /health (public) · 11 routes GET /donnees/*</text>
+<text x="973" y="355.5" font-size="11.5" fill="#111827">POST /briefing?ticker= : le seul chemin vers le modèle</text>
+<text x="973" y="371.0" font-size="11.5" fill="#111827">clé X-API-Key 16 car. min. ; 403 ; X-Request-ID</text>
+<rect x="956" y="404" width="240" height="56" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
+<rect x="956" y="404" width="7" height="56" fill="#D32F2F"/>
+<text x="973" y="425" font-size="14" font-weight="700" fill="#C62828">J1 · /health dit sa version</text>
+<text x="973" y="444.0" font-size="11.5" fill="#111827">le manifeste de version servi</text>
+<rect x="1204" y="404" width="240" height="56" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
+<rect x="1204" y="404" width="7" height="56" fill="#D32F2F"/>
+<text x="1221" y="425" font-size="14" font-weight="700" fill="#C62828">J3 · valeur inconnue : 422</text>
+<text x="1221" y="444.0" font-size="11.5" fill="#111827">sans appel au modèle (502 auj.)</text>
+<rect x="956" y="476" width="240" height="56" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
+<rect x="956" y="476" width="7" height="56" fill="#D32F2F"/>
+<text x="973" y="497" font-size="14" font-weight="700" fill="#C62828">J4 · limite de débit</text>
+<text x="973" y="516.0" font-size="11.5" fill="#111827">sur POST /briefing (429)</text>
+<rect x="1204" y="476" width="240" height="56" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
+<rect x="1204" y="476" width="7" height="56" fill="#D32F2F"/>
+<text x="1221" y="497" font-size="14" font-weight="700" fill="#C62828">J5 · refus de clé journalisé</text>
+<text x="1221" y="516.0" font-size="11.5" fill="#111827">une ligne avec son request_id</text>
+<rect x="956" y="560" width="488" height="84" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="956" y="560" width="7" height="84" fill="#1E293B"/>
+<text x="973" y="581" font-size="14" font-weight="700" fill="#0B2A5B">Journal de l&#x27;API</text>
+<text x="973" y="600.0" font-size="11.5" fill="#111827">une ligne par briefing servi ou refusé,</text>
+<text x="973" y="615.5" font-size="11.5" fill="#111827">avec son request_id ; jamais le texte</text>
+<text x="973" y="631.0" font-size="11.5" fill="#111827">POST /audit/mcp : les refus de la passerelle MCP</text>
+<rect x="956" y="756" width="488" height="84" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="956" y="756" width="7" height="84" fill="#1E293B"/>
+<text x="973" y="777" font-size="14" font-weight="700" fill="#0B2A5B">Réponse JSON</text>
+<text x="973" y="796.0" font-size="11.5" fill="#111827">ticker, prix, variation, briefing,</text>
+<text x="973" y="811.5" font-size="11.5" fill="#111827">conforme_amf, motifs_amf</text>
+<text x="973" y="827.0" font-size="11.5" fill="#111827">en-tête X-Request-ID sur chaque réponse</text>
+<rect x="56" y="910" width="380" height="84" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="56" y="910" width="7" height="84" fill="#1565C0"/>
+<text x="73" y="931" font-size="14" font-weight="700" fill="#0B2A5B">GitHub Actions (CI/CD)</text>
+<text x="73" y="950.0" font-size="11.5" fill="#111827">tests, garde-fous mesurés, image vérifiée</text>
+<text x="73" y="965.5" font-size="11.5" fill="#111827">main ne change que par une PR relue</text>
+<text x="73" y="981.0" font-size="11.5" fill="#111827">un livrable = un tag livrable-E&lt;n&gt;-v&lt;k&gt;</text>
+<rect x="456" y="910" width="400" height="84" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="456" y="910" width="7" height="84" fill="#6D28D9"/>
+<text x="473" y="931" font-size="14" font-weight="700" fill="#4C1D95">Langfuse Cloud, région UE</text>
+<text x="473" y="950.0" font-size="11.5" fill="#111827">une trace par briefing, même request_id</text>
+<text x="473" y="965.5" font-size="11.5" fill="#111827">étapes, durée, jetons, verdict AMF</text>
+<text x="473" y="981.0" font-size="11.5" fill="#111827">2 alertes → une issue « incident »</text>
+<rect x="876" y="910" width="280" height="84" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="876" y="910" width="7" height="84" fill="#1E293B"/>
+<text x="893" y="931" font-size="14" font-weight="700" fill="#0B2A5B">Production : Hetzner, Caddy</text>
+<text x="893" y="950.0" font-size="11.5" fill="#111827">conteneur, déploiement manuel</text>
+<text x="893" y="965.5" font-size="11.5" fill="#111827">J1 : déployer le code du 15/10</text>
+<text x="893" y="981.0" font-size="11.5" fill="#111827">(sert le code du 19/08)</text>
+<rect x="1176" y="910" width="268" height="84" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
+<rect x="1176" y="910" width="7" height="84" fill="#D32F2F"/>
+<text x="1193" y="931" font-size="14" font-weight="700" fill="#C62828">J2 · retour arrière outillé</text>
+<text x="1193" y="950.0" font-size="11.5" fill="#111827">tag précédent, jamais reconstruit</text>
+<text x="1193" y="965.5" font-size="11.5" fill="#111827">procédure dans EXPLOITATION.md</text>
+<text x="1193" y="981.0" font-size="11.5" fill="#111827">critère 5 : N-1 en &lt; 10 min</text>
+<line x1="168.0" y1="242" x2="166.0" y2="300" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="276" y1="342.0" x2="316" y2="342.0" stroke="#1565C0" stroke-width="3" marker-end="url(#fl-ecriture)"/>
+<line x1="166.0" y1="384" x2="166.0" y2="480" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="166.0" y="436.0" font-size="12.5" font-weight="700" fill="#0B2A5B" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">articles</text>
+<line x1="276" y1="522.0" x2="316" y2="522.0" stroke="#1565C0" stroke-width="3" marker-end="url(#fl-ecriture)"/>
+<line x1="504" y1="342.0" x2="576" y2="342.0" stroke="#15803D" stroke-width="3" marker-end="url(#fl-lecture)"/>
+<line x1="504" y1="522.0" x2="576" y2="522.0" stroke="#15803D" stroke-width="3" marker-end="url(#fl-lecture)"/>
+<line x1="730.0" y1="384" x2="730.0" y2="404" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="730.0" y1="460" x2="730.0" y2="480" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="730.0" y1="564" x2="730.0" y2="584" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="730.0" y1="650" x2="730.0" y2="670" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="730.0" y1="736" x2="730.0" y2="756" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1106.0" y1="214" x2="1107.28" y2="300" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1358.0" y1="214" x2="1361.04" y2="300" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="956" y1="342.0" x2="884" y2="342.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="884" y1="798.0" x2="956" y2="798.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="730.0" y1="840" x2="730.0" y2="910" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="730.0" y="879.0" font-size="12.5" font-weight="700" fill="#0B2A5B" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">trace</text>
+<text x="54" y="122" font-size="13.5" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">1 · DONNÉES</text>
+<text x="574" y="122" font-size="13.5" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">2 · AGENT + GARDE-FOUS (LangGraph)</text>
+<text x="954" y="122" font-size="13.5" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">3 · INTERFACE</text>
+<text x="954" y="282" font-size="13.5" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">4 · API (FastAPI, api/main.py)</text>
+<text x="54" y="902" font-size="13.5" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">AUTOUR : PILOTAGE ET SIGNAUX (détail : E3-chaine-livraison, E3-monitorage)</text>
+<rect x="40" y="1026" width="1420" height="1.5" fill="#94A3B8"/>
+<text x="40" y="1057" font-size="13.5" font-weight="700" fill="#0B2A5B">Légende</text>
+<rect x="124.0" y="1043" width="28" height="18" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="124.0" y="1043" width="6" height="18" fill="#1E293B"/>
+<text x="160.0" y="1057" font-size="12.5" fill="#111827">composant présent</text>
+<rect x="296.25" y="1043" width="28" height="18" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="296.25" y="1043" width="6" height="18" fill="#1565C0"/>
+<text x="332.25" y="1057" font-size="12.5" fill="#111827">cœur du traitement</text>
+<rect x="474.75" y="1043" width="28" height="18" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="474.75" y="1043" width="6" height="18" fill="#C2410C"/>
+<text x="510.75" y="1057" font-size="12.5" fill="#111827">garde-fou</text>
+<rect x="597.0" y="1043" width="28" height="18" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="597.0" y="1043" width="6" height="18" fill="#6D28D9"/>
+<text x="633.0" y="1057" font-size="12.5" fill="#111827">réserve de données, service externe</text>
+<rect x="881.75" y="1043" width="28" height="18" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="5,3"/>
+<rect x="881.75" y="1043" width="6" height="18" fill="#D32F2F"/>
+<text x="917.75" y="1057" font-size="12.5" fill="#111827">à construire dans la V1 (jour n)</text>
+<rect x="1147.75" y="1043" width="28" height="18" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="1147.75" y="1043" width="6" height="18" fill="#475569"/>
+<text x="1183.75" y="1057" font-size="12.5" fill="#111827">à retenir</text>
+<line x1="1270.0" y1="1052" x2="1310.0" y2="1052" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="1320.0" y="1057" font-size="12.5" fill="#111827">appel, passage</text>
+<line x1="124.0" y1="1080" x2="164.0" y2="1080" stroke="#1565C0" stroke-width="3" marker-end="url(#fl-ecriture)"/>
+<text x="174.0" y="1085" font-size="12.5" fill="#111827">écriture</text>
+<line x1="254.0" y1="1080" x2="294.0" y2="1080" stroke="#15803D" stroke-width="3" marker-end="url(#fl-lecture)"/>
+<text x="304.0" y="1085" font-size="12.5" fill="#111827">lecture seule</text>
+<text x="40" y="1114" font-size="12.5" fill="#1F2937">Sprint 1, cadrage V1 · relu le 12/10/2026 contre api/main.py, api/donnees.py, src/llm.py, ARCHITECTURE.md et EXPLOITATION.md · pointillé rouge : construit pendant les six jours de la V1.</text>
+</g>
+</svg>
