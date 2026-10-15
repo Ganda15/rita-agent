@@ -3,7 +3,7 @@
 Document d'entrée du sprint 2 du fil rouge RITA. Il dit où voir chaque élément demandé par le brief, et ce qui n'est
 pas fait.
 
-**À lire en premier** : le livrable du sprint, `docs/sprint-2/livrable/livrable-sprint-2.pdf` (9 pages : livrables
+**À lire en premier** : le livrable du sprint, `docs/sprint-2/livrable/livrable-sprint-2.pdf` (13 pages : livrables
 demandés, exigence par exigence, preuves, ce qui n'est pas fait). Index des preuves : `evidence/sprint-2/README.md`.
 
 - **Production** : <https://178-104-184-125.sslip.io> (serveur Hetzner, `178.104.184.125`). `/health` annonce le
