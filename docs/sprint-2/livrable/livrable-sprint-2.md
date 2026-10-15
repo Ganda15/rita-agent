@@ -1,6 +1,6 @@
 # Sprint 2 : le socle et la chaîne
 
-> RITA, fil rouge de la phase 6 : un squelette en production, livré par une chaîne CI/CD bloquante (version 2)
+> RITA, fil rouge de la phase 6 : un squelette en production, livré par une chaîne CI/CD bloquante (version 3)
 
 ## Sommaire
 
@@ -22,8 +22,9 @@ en service, sans aucune action sur le serveur.
 | Secrets dans le dépôt | aucun : recherche sur tout l'historique à chaque passage | section 6.5 |
 | Reconstruction depuis le dépôt | base, données de démonstration et index en moins de deux minutes | section 6.5 |
 
-Production : <https://178-104-184-125.sslip.io> · dépôt au tag de remise :
-<https://github.com/Ganda15/rita-agent/tree/livrable-sprint-2-v2>
+Production : <https://178-104-184-125.sslip.io/health> (version servie) et
+<https://178-104-184-125.sslip.io/briefing.html> (écran). Entrée du sprint 2 au tag de remise :
+<https://github.com/Ganda15/rita-agent/tree/livrable-sprint-2-v3/docs/sprint-2>
 
 ## 2. Les livrables demandés, et où les trouver
 
@@ -33,14 +34,14 @@ Le brief demande : « Le squelette en production, livré par la chaîne ; la pre
 | Livrable demandé | Où le trouver |
 |---|---|
 | Le squelette en production | <https://178-104-184-125.sslip.io/briefing.html> (écran) et <https://178-104-184-125.sslip.io/health> (version servie) |
-| Livré par la chaîne | [`.github/workflows/livraison.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-2-v2/.github/workflows/livraison.yml) ; journal de la livraison N1 : [`evidence/sprint-2/journaux/livraison-N1.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-2-v2/evidence/sprint-2/journaux/livraison-N1.txt) |
-| La preuve du blocage sur échec | [`evidence/sprint-2/journaux/pr-93-commit-casse.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-2-v2/evidence/sprint-2/journaux/pr-93-commit-casse.txt) ; la PR elle-même : <https://github.com/Ganda15/rita-agent/pull/93> |
-| La preuve du rollback | [`evidence/sprint-2/journaux/retours-arriere.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-2-v2/evidence/sprint-2/journaux/retours-arriere.txt) ; mesures : [`evidence/sprint-2/N1-retour-arriere-2026-10-14.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-2-v2/evidence/sprint-2/N1-retour-arriere-2026-10-14.md) |
-| Captures | [`evidence/sprint-2/captures/`](https://github.com/Ganda15/rita-agent/tree/livrable-sprint-2-v2/evidence/sprint-2/captures) |
+| Livré par la chaîne | [`.github/workflows/livraison.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-2-v3/.github/workflows/livraison.yml) ; journal de la livraison N1 : [`evidence/sprint-2/journaux/livraison-N1.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-2-v3/evidence/sprint-2/journaux/livraison-N1.txt) |
+| La preuve du blocage sur échec | [`evidence/sprint-2/journaux/pr-93-commit-casse.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-2-v3/evidence/sprint-2/journaux/pr-93-commit-casse.txt) ; la PR elle-même : <https://github.com/Ganda15/rita-agent/pull/93> |
+| La preuve du rollback | [`evidence/sprint-2/journaux/retours-arriere.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-2-v3/evidence/sprint-2/journaux/retours-arriere.txt) ; mesures : [`evidence/sprint-2/N1-retour-arriere-2026-10-14.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-2-v3/evidence/sprint-2/N1-retour-arriere-2026-10-14.md) |
+| Captures | [`evidence/sprint-2/captures/`](https://github.com/Ganda15/rita-agent/tree/livrable-sprint-2-v3/evidence/sprint-2/captures) |
 
 Index de toutes les preuves du sprint :
-[`evidence/sprint-2/README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-2-v2/evidence/sprint-2/README.md).
-Document d'entrée du sprint : [`docs/sprint-2/README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-2-v2/docs/sprint-2/README.md).
+[`evidence/sprint-2/README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-2-v3/evidence/sprint-2/README.md).
+Document d'entrée du sprint : [`docs/sprint-2/README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-2-v3/docs/sprint-2/README.md).
 
 **Accès aux liens.** Le dépôt est privé : les liens vers GitHub ne s'ouvrent qu'avec un compte qui a accès au dépôt
 (le formateur y est collaborateur). Sans cet accès, GitHub répond « page introuvable ». Ce document se lit donc sans
@@ -263,8 +264,8 @@ pour mot, avec la suite donnée à chaque remarque.
 - Grille de l'atelier croisé n°2 (Simplonline, ressource du brief) :
   [grille-atelier-2-socle-chaine.pdf](https://simplonline-v3-prod.s3.eu-west-3.amazonaws.com/media/file/pdf/grille-atelier-2-socle-chaine-6acc929e15319714116731.pdf)
 - Production : <https://178-104-184-125.sslip.io/health>
-- Dépôt au tag de remise : <https://github.com/Ganda15/rita-agent/tree/livrable-sprint-2-v2>
-- Conception de la chaîne : [`docs/CHAINE-V1.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-2-v2/docs/CHAINE-V1.md)
+- Entrée du sprint 2 au tag de remise : <https://github.com/Ganda15/rita-agent/tree/livrable-sprint-2-v3/docs/sprint-2>
+- Conception de la chaîne : [`docs/CHAINE-V1.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-2-v3/docs/CHAINE-V1.md)
 - Passages GitHub : [livraison N1](https://github.com/Ganda15/rita-agent/actions/runs/38636271353),
   [retour arrière du 14/10](https://github.com/Ganda15/rita-agent/actions/runs/38637911060),
   [retour arrière du 15/10](https://github.com/Ganda15/rita-agent/actions/runs/38707804718),

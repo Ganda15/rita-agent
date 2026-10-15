@@ -9,6 +9,16 @@
 
 ---
 
+## 2026-10-15 (soir, fin) : livrable du sprint 2, version 3, tag `livrable-sprint-2-v3`
+
+**Manque relevé par Era** : deux liens du PDF v2 existaient mais ouvraient la mauvaise page. « Dépôt au tag de remise »
+menait à la racine du dépôt (README général), et « Production » à l'écran « Mon portefeuille » qui demande la clé.
+**Correction** : entrée du sprint 2 au tag (`tree/<tag>/docs/sprint-2`), production par `/health` et
+`/briefing.html` ; renvoi vers le sprint 2 en tête du README général. Leçon : vérifier ce qu'un lien affiche, pas
+seulement qu'il existe.
+
+---
+
 ## 2026-10-15 (soir) : livrable du sprint 2, version 2, tag `livrable-sprint-2-v2`
 
 **Manque découvert après la v1** : les 14 liens GitHub du PDF répondent 404 à un lecteur sans accès au dépôt privé

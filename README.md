@@ -5,6 +5,10 @@
 **Certification RNCP37827 — Développeur en Intelligence Artificielle**
 Simplon & Wild Code School · Eramalingam GANDAKUMAR · ganda70@gmail.com · 2026
 
+> **Sprint 2 de la phase 6 (le socle et la chaîne), livré le 15/10/2026** : commencer par
+> [`docs/sprint-2/README.md`](docs/sprint-2/README.md), puis le livrable
+> [`docs/sprint-2/livrable/livrable-sprint-2.pdf`](docs/sprint-2/livrable/livrable-sprint-2.pdf).
+
 ---
 
 ## 📋 État des livrables
