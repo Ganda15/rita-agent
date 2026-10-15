@@ -9,6 +9,25 @@
 
 ---
 
+## 2026-10-15 (nuit, fin) : sprint 2 clos, tag `livrable-sprint-2-v3` ; sprint 3 ouvert dans un worktree
+
+**Livrable** : version 3 du livrable du sprint 2, tag `livrable-sprint-2-v3` sur `2268b05` (fusion de la PR #99),
+livrée en production par N4 (`/health` = `2268b05`). Les 17 liens du livrable sont vérifiés au tag. Le message au
+formateur avait été envoyé par Era avant la pose du tag.
+
+**Deux empreintes pour le même commit** : image déployée par N4
+`sha256:086fed50dd3402a4bd5f5a8a03fed326e6223c4f00ef1adf21c253da7b6b7f7e` ; image publiée par le run du tag
+`sha256:f2e95c71470ab4c0dfa04ed3dfb7ef23080d7c387725afa0210f45d17d872c92`. **Manque découvert** : le run d'un tag
+reconstruit l'image au lieu de réétiqueter celle de `main`, et déplace ainsi `sha-2268b05` et `latest`. La production
+n'est pas touchée : elle est lancée par son empreinte. Le `429` du registre `public.ecr.aws` a frappé une quatrième
+fois (PR #99) ; relancé sans effet sur le registre, puisqu'un run de PR construit sans publier.
+
+**Décision structurante (D4)** : le sprint 3 se développe dans un worktree séparé,
+`D:\KandaWork\RITA_PROJECT\rita-agent-sprint-3`, branche `sprint-3-donnees-ancrage`, avec un `.env` et une base de test
+dédiés ; le dossier d'origine n'est pas modifié pendant le sprint.
+
+---
+
 ## 2026-10-15 (nuit) : grille de l'atelier n°2 versée ; passage du tag v2 en échec, non relancé
 
 **Grille** : celle remplie par l'évaluateur (Alpha DIALLO) est versée, transcrite mot pour mot
