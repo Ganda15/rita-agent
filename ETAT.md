@@ -20,6 +20,17 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 
 ---
 
+## ▶️ SPRINT 2 LIVRÉ (15/10/2026) : le socle et la chaîne
+
+**Où on en est** : la production est livrée par la chaîne (`/health` : commit `e06cd17`, N1, au 15/10). Atelier croisé
+n°2 fait le 15/10 ; PR #93 (commit cassé) bloquée en direct. Livrable : `docs/sprint-2/livrable/livrable-sprint-2.pdf`
+(9 pages), preuves dans `evidence/sprint-2/`. Tag de remise prévu : **`livrable-sprint-2-v1`**, à poser sur `main`
+après les PR `sprint-2-socle-chaine → develop → main` (la fusion dans `main` livre N2).
+
+**Reste** : fermer la PR #93 sans fusion ; recopier la grille remplie de l'atelier n°2 dans
+`eval/ateliers/sprint-2-grille.md` ; écrire dans `docs/EXPLOITATION.md` la procédure de retour sans GitHub (annoncée
+par `docs/CHAINE-V1.md` § 5.2, absente) ; ajouter le code HTTP au journal du serveur.
+
 ## ▶️ PROCHAINE ACTION (réécrit le 04/10/2026 ; les ▶️ plus bas sont datés et dépassés)
 
 **Où on en est, en une phrase** : E1 v2.5 (5 pages, 11/10) et E3 v1.4 (20 pages, 11/10, **35 ✅ · 4 🟠 · 0 🔴** sur 39 lignes, 44 critères) sont complets côté

@@ -13,7 +13,7 @@ en service, sans aucune action sur le serveur.
 
 | Mesure | Valeur | Preuve |
 |---|---|---|
-| Version en production | commit `e06cd17` (N1), annoncé par `/health` | section 6.1 |
+| Version en production au 15/10 | commit `e06cd17` (N1), annoncé par `/health` | section 6.1 |
 | De la fusion à la production | 9 min 24 s, sans intervention | section 6.2 |
 | Livraisons réussies par la chaîne | 4 (N0, puis N1 et deux relivraisons de N1) | sections 6.2 et 6.6 |
 | Versions refusées avant la bascule | 2, production intacte | section 6.6 |
