@@ -9,6 +9,16 @@
 
 ---
 
+## 2026-10-15 (soir) : livrable du sprint 2, version 2, tag `livrable-sprint-2-v2`
+
+**Manque découvert après la v1** : les 14 liens GitHub du PDF répondent 404 à un lecteur sans accès au dépôt privé
+(vérifié sans connexion ; les 4 liens publics répondent 200). **Correction** : le PDF v2 se lit sans ouvrir aucun lien :
+note « Accès aux liens » en § 2, annexe § 11 qui recopie les journaux de chaîne, la règle de protection de `main` et le
+journal du serveur ; production N2 (`2048aec`, fusion de la PR #95, 8 min 53 s jusqu'à la production) et son journal.
+Les captures des pages GitHub restent impossibles sans compte connecté ; les journaux extraits avec `gh` les remplacent.
+
+---
+
 ## 2026-10-15 : livrable du sprint 2 (le socle et la chaîne), tag `livrable-sprint-2-v1`
 
 **Livrable** : `docs/sprint-2/livrable/livrable-sprint-2.pdf` (9 pages) et les preuves versionnées
