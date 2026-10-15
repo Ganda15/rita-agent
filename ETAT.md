@@ -22,15 +22,23 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 
 ## ▶️ SPRINT 2 LIVRÉ (15/10/2026) : le socle et la chaîne
 
-**Où on en est** : la production est livrée par la chaîne (`/health` : commit `e06cd17`, N1, au 15/10). Atelier croisé
-n°2 fait le 15/10 ; PR #93 (commit cassé) bloquée en direct. Livrable : `docs/sprint-2/livrable/livrable-sprint-2.pdf`
-(13 pages), preuves dans `evidence/sprint-2/`. Tag `livrable-sprint-2-v1` posé sur `2048aec` (N2 en production) ;
-version 2 (liens GitHub inaccessibles sans compte : annexe des preuves recopiées), tag prévu **`livrable-sprint-2-v2`**
-après les PR `sprint-2-socle-chaine → develop → main` (cette fusion livre N3).
+**Où on en est** : la production est livrée par la chaîne (au 15/10 au soir, `/health` : commit `1cbace0`, N3).
+Atelier croisé n°2 fait le 15/10 ; PR #93 (commit cassé) bloquée en direct, puis **fermée sans fusion**. Grille de
+l'évaluateur (Alpha DIALLO) versée : `eval/ateliers/sprint-2-grille.md` (transcription) et
+`eval/ateliers/sprint-2-grille-originale.pdf` (original) ; 5 critères ✓, conseil « RAS ». Livrable :
+`docs/sprint-2/livrable/livrable-sprint-2.pdf` (13 pages), preuves dans `evidence/sprint-2/`.
 
-**Reste** : fermer la PR #93 sans fusion ; recopier la grille remplie de l'atelier n°2 dans
-`eval/ateliers/sprint-2-grille.md` ; écrire dans `docs/EXPLOITATION.md` la procédure de retour sans GitHub (annoncée
-par `docs/CHAINE-V1.md` § 5.2, absente) ; ajouter le code HTTP au journal du serveur.
+**Tags** : `livrable-sprint-2-v1` sur `2048aec` (N2) ; `livrable-sprint-2-v2` sur `1cbace0` (N3). Le passage déclenché
+par le tag v2 a **échoué** (`429 Too Many Requests` du registre d'images, construction), il n'a rien déployé ; il n'est
+pas relancé, car une relance reconstruirait l'image et déplacerait l'étiquette `sha-1cbace0`. Version 3 (liens vers
+l'entrée du sprint 2 et vers `/health`) : tag prévu **`livrable-sprint-2-v3`** après les PR
+`sprint-2-socle-chaine → develop → main` (cette fusion livre N4). La v3 remplacera la v2 après validation ; ce
+remplacement n'est pas encore fait. À consigner à ce moment : l'empreinte de l'image **déployée** après la fusion, et
+celle de l'image **publiée** après le tag (deux constructions du même commit peuvent différer).
+
+**Reste** : écrire dans `docs/EXPLOITATION.md` la procédure de retour sans GitHub (annoncée par `docs/CHAINE-V1.md`
+§ 5.2, absente) ; ajouter le code HTTP au journal du serveur. **Sprint 3** (données et ancrage) : plan consolidé,
+accepté par Era le 15/10 ; étape 0 (clôture du sprint 2) en cours.
 
 ## ▶️ PROCHAINE ACTION (réécrit le 04/10/2026 ; les ▶️ plus bas sont datés et dépassés)
 
