@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="720" viewBox="0 0 680 720" role="img" font-family="Segoe UI, Arial, sans-serif">
+<title>La chaîne de livraison de RITA, sprint 2</title>
+<desc>Une PR passe trois contrôles, puis la règle de main ; après la fusion, l'image est publiée, livrée par SSH, essayée en préproduction, puis mise en production ; trois sorties protègent la production : fusion bloquée, version refusée, retour arrière.</desc>
+<defs><marker id="fleche" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect width="680" height="720" fill="#FFFFFF"/>
+<g fill="none" stroke="#5F5E5A" stroke-width="1.2">
+<path d="M340 74 L340 90 L145 90 L145 108" marker-end="url(#fleche)"/>
+<path d="M340 74 L340 108" marker-end="url(#fleche)"/>
+<path d="M340 90 L535 90 L535 108" marker-end="url(#fleche)"/>
+<path d="M145 166 L145 228 L208 228" marker-end="url(#fleche)"/>
+<path d="M340 166 L340 198" marker-end="url(#fleche)"/>
+<path d="M535 166 L535 318 L472 318" marker-end="url(#fleche)"/>
+<path d="M340 256 L340 288" marker-end="url(#fleche)"/>
+<path d="M210 318 L187 318" marker-end="url(#fleche)"/>
+<path d="M340 346 L340 374" marker-end="url(#fleche)"/>
+<path d="M340 432 L340 460" marker-end="url(#fleche)"/>
+<path d="M340 518 L340 546" marker-end="url(#fleche)"/>
+<path d="M470 576 L493 576" marker-end="url(#fleche)"/>
+<path d="M340 604 L340 632" marker-end="url(#fleche)"/>
+<path d="M470 662 L493 662" marker-end="url(#fleche)"/>
+</g>
+<g fill="#F1EFE8" stroke="#888780" stroke-width="0.8">
+<rect x="240" y="30" width="200" height="44" rx="8"/>
+<rect x="60" y="110" width="170" height="56" rx="8"/>
+<rect x="255" y="110" width="170" height="56" rx="8"/>
+<rect x="450" y="110" width="170" height="56" rx="8"/>
+<rect x="210" y="200" width="260" height="56" rx="8"/>
+<rect x="210" y="290" width="260" height="56" rx="8"/>
+</g>
+<g fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.8">
+<rect x="210" y="376" width="260" height="56" rx="8"/>
+<rect x="210" y="462" width="260" height="56" rx="8"/>
+<rect x="210" y="548" width="260" height="56" rx="8"/>
+<rect x="210" y="634" width="260" height="56" rx="8"/>
+</g>
+<g fill="#FAECE7" stroke="#993C1D" stroke-width="0.8">
+<rect x="40" y="290" width="145" height="56" rx="8"/>
+<rect x="495" y="548" width="145" height="56" rx="8"/>
+<rect x="495" y="634" width="145" height="56" rx="8"/>
+</g>
+<g text-anchor="middle" dominant-baseline="central">
+<g fill="#2C2C2A" font-size="14" font-weight="600">
+<text x="340" y="52">PR ouverte</text>
+<text x="145" y="128">Lint</text>
+<text x="340" y="128">Secrets</text>
+<text x="535" y="128">Tests</text>
+<text x="340" y="218">Construire l'image</text>
+<text x="340" y="308">Règle de main</text>
+</g>
+<g fill="#5F5E5A" font-size="12">
+<text x="145" y="148">ruff, lit le code</text>
+<text x="340" y="148">gitleaks, historique</text>
+<text x="535" y="148">pytest, evals</text>
+<text x="340" y="238">tests rejoués, image contrôlée</text>
+<text x="340" y="328">six contrôles verts ?</text>
+</g>
+<g fill="#085041" font-size="14" font-weight="600">
+<text x="340" y="394">Fusion, puis publication</text>
+<text x="340" y="480">Livraison par SSH</text>
+<text x="340" y="566">Pré-test, port 8003</text>
+<text x="340" y="652">Bascule en production</text>
+</g>
+<g fill="#0F6E56" font-size="12">
+<text x="340" y="414">image et son empreinte</text>
+<text x="340" y="500">jamais de 8 h à 9 h</text>
+<text x="340" y="586">base en lecture seule</text>
+<text x="340" y="672">/health annonce le commit</text>
+</g>
+<g fill="#712B13" font-size="14" font-weight="600">
+<text x="112" y="308">Fusion bloquée</text>
+<text x="567" y="566">Version refusée</text>
+<text x="567" y="652">Retour arrière</text>
+</g>
+<g fill="#993C1D" font-size="12">
+<text x="112" y="328">prod intacte</text>
+<text x="567" y="586">prod intacte</text>
+<text x="567" y="672">auto ou manuel</text>
+</g>
+</g>
+</svg>

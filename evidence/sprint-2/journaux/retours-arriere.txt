@@ -1,0 +1,17 @@
+# Retours arriere (releve du 15/10/2026 17:42, heure de Paris)
+
+passage 38637911060 : Retour arrière, workflow_dispatch, success, de 2026-10-14T21:08:37Z a 2026-10-14T21:09:05Z
+2026-10-14T21:08:43.9307980Z   ACTEUR: Era
+2026-10-14T21:08:43.9309486Z   MOTIF: Repetition du retour arriere N1 vers N0 (sprint 2)
+2026-10-14T21:08:46.1516193Z script du serveur identique au depot (85c460468dfbb16fe84d3d345c2cc74e08b76e983cad754e221dd21e210a5b6e)
+2026-10-14T21:08:46.1647790Z   ORDRE: revenir
+2026-10-14T21:08:46.1648078Z   ARGUMENT: 38637911060
+2026-10-14T21:09:02.7699144Z code rendu par le serveur : 0
+
+passage 38707804718 : Retour arrière, workflow_dispatch, success, de 2026-10-15T08:44:18Z a 2026-10-15T08:44:53Z
+2026-10-15T08:44:27.7649880Z   ACTEUR: Era
+2026-10-15T08:44:27.7651086Z   MOTIF: Repetition du 15/10 avant l'atelier
+2026-10-15T08:44:30.3553520Z script du serveur identique au depot (85c460468dfbb16fe84d3d345c2cc74e08b76e983cad754e221dd21e210a5b6e)
+2026-10-15T08:44:30.3672762Z   ORDRE: revenir
+2026-10-15T08:44:30.3673071Z   ARGUMENT: 38707804718
+2026-10-15T08:44:50.1869853Z code rendu par le serveur : 0
