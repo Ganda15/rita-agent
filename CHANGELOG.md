@@ -9,6 +9,19 @@
 
 ---
 
+## 2026-10-15 : livrable du sprint 2 (le socle et la chaîne), tag `livrable-sprint-2-v1`
+
+**Livrable** : `docs/sprint-2/livrable/livrable-sprint-2.pdf` (9 pages) et les preuves versionnées
+`evidence/sprint-2/` (journaux de chaîne, captures). Production livrée par la chaîne : N0 (14/10, après deux refus
+avant bascule), N1 (fusion de la PR #92, 9 min 24 s jusqu'à la production). Retour arrière répété deux fois (28 s et
+35 s). Commit cassé (PR #93) bloqué pendant l'atelier : 2 tests en échec, fusion refusée, livraison jamais lancée.
+
+**Manques découverts** : la procédure de retour sans GitHub, annoncée par `docs/CHAINE-V1.md` § 5.2, est absente de
+`docs/EXPLOITATION.md` ; le journal du serveur ne garde pas le code HTTP d'un contrôle en échec ; une bascule coupe la
+production 5 à 10 s (502).
+
+---
+
 ## 2026-10-11 (nuit, fin bis) : E1 v2.5, cinq surgénéralisations corrigées
 
 **Manques découverts et corrigés dans E1** (relecture de l'oral E1, chaque point vérifié dans le code ou les preuves) :
