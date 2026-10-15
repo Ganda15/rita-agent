@@ -1,0 +1,19 @@
+# Livraison N2 : passage 38768035437 (releve du 15/10/2026 18:53, heure de Paris)
+
+titre : Merge pull request #95 from Ganda15/develop
+evenement : push sur main
+commit : 2048aec7ab33b9e5bde8b1278f7cb557a6b3410c
+cree : 2026-10-15T16:19:34Z
+
+  secrets : success (2026-10-15T16:19:37Z -> 2026-10-15T16:20:24Z)
+  lint : success (2026-10-15T16:19:36Z -> 2026-10-15T16:19:44Z)
+  construire-et-publier : success (2026-10-15T16:20:27Z -> 2026-10-15T16:24:25Z)
+  attendre-creneau : success (2026-10-15T16:24:27Z -> 2026-10-15T16:24:34Z)
+  deployer : success (2026-10-15T16:24:37Z -> 2026-10-15T16:28:26Z)
+  attendre-reprise : skipped (2026-10-15T16:28:27Z -> 2026-10-15T16:28:27Z)
+  deployer-reprise : skipped (2026-10-15T16:28:27Z -> 2026-10-15T16:28:27Z)
+
+Travail deployer (extrait) :
+2026-10-15T16:24:44.4834441Z script du serveur identique au depot (85c460468dfbb16fe84d3d345c2cc74e08b76e983cad754e221dd21e210a5b6e)
+2026-10-15T16:24:44.4956989Z   ARGUMENT: ghcr.io/ganda15/rita-api@sha256:3373612c5fd7062f86b0221200ff565e606c905132e5578cdb38fd6d77c12e7a
+2026-10-15T16:28:24.4816842Z code rendu par le serveur : 0
