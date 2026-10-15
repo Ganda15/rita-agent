@@ -9,6 +9,17 @@
 
 ---
 
+## 2026-10-15 (nuit) : grille de l'atelier n°2 versée ; passage du tag v2 en échec, non relancé
+
+**Grille** : celle remplie par l'évaluateur (Alpha DIALLO) est versée, transcrite mot pour mot
+(`eval/ateliers/sprint-2-grille.md`) avec l'original (`eval/ateliers/sprint-2-grille-originale.pdf`) : 5 critères ✓,
+conseil « RAS ». **Manque découvert** : le passage `Livraison` déclenché par le tag `livrable-sprint-2-v2`
+(`38776441164`) a échoué à la construction (`429 Too Many Requests` du registre d'images) ; rien n'a été déployé. Il
+n'est pas relancé : une relance reconstruirait l'image et déplacerait l'étiquette `sha-1cbace0`. La v3 remplacera la
+v2 après validation.
+
+---
+
 ## 2026-10-15 (soir, fin) : livrable du sprint 2, version 3, tag `livrable-sprint-2-v3`
 
 **Manque relevé par Era** : deux liens du PDF v2 existaient mais ouvraient la mauvaise page. « Dépôt au tag de remise »
