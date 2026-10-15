@@ -1,0 +1,27 @@
+# Livraison N1 : passage 38636271353 (releve du 15/10/2026 17:42, heure de Paris)
+
+titre : Merge pull request #92 from Ganda15/sprint-2-socle-chaine
+evenement : push sur main
+commit : e06cd17ef9b8d25635d311939ec6ded7880a66a4
+cree : 2026-10-14T20:56:26Z
+
+Tentative 1 (fusion de la PR 92) :
+  secrets : success (2026-10-14T20:56:28Z -> 2026-10-14T20:57:00Z)
+  lint : success (2026-10-14T20:56:28Z -> 2026-10-14T20:56:42Z)
+  construire-et-publier : success (2026-10-14T20:57:03Z -> 2026-10-14T21:01:46Z)
+  attendre-creneau : success (2026-10-14T21:01:49Z -> 2026-10-14T21:01:57Z)
+  deployer : success (2026-10-14T21:01:59Z -> 2026-10-14T21:05:52Z)
+  attendre-reprise : skipped (2026-10-14T21:05:53Z -> 2026-10-14T21:05:52Z)
+  deployer-reprise : skipped (2026-10-14T21:05:53Z -> 2026-10-14T21:05:52Z)
+
+Travail deployer, tentative 1 (extrait) :
+2026-10-14T21:02:05.5636058Z script du serveur identique au depot (85c460468dfbb16fe84d3d345c2cc74e08b76e983cad754e221dd21e210a5b6e)
+2026-10-14T21:02:05.5767856Z   ARGUMENT: ghcr.io/ganda15/rita-api@sha256:75cbf7894c00815a3df2df66e51e7fccb53d10bb1f8e2401df83f5113f31581b
+2026-10-14T21:05:50.3518899Z code rendu par le serveur : 0
+
+Tentative 2 (relivraison apres le retour arriere du 14/10) :
+  deployer : success (2026-10-14T21:10:32Z -> 2026-10-14T21:14:22Z)
+  deployer-reprise : skipped (2026-10-14T21:14:23Z -> 2026-10-14T21:14:23Z)
+Tentative 3 (relivraison apres le retour arriere du 15/10) :
+  deployer : success (2026-10-15T08:45:00Z -> 2026-10-15T08:48:45Z)
+  deployer-reprise : skipped (2026-10-15T08:48:46Z -> 2026-10-15T08:48:46Z)
