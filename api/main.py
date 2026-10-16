@@ -30,6 +30,7 @@ from api.donnees import routeur as routeur_donnees
 from db import audit_mcp
 from graph.workflow import generer_briefing_complet
 from guardrails.sortie import verifier_sortie
+from rag import indexation
 from src import traces
 
 load_dotenv()
@@ -201,12 +202,17 @@ def health():
 
     Il annonce aussi la version servie (commit et date de construction), posées dans l'image par le
     Dockerfile ; « inconnu » hors de l'image (poste, tests). Lues à chaque appel, pas au chargement.
+
+    Sprint 3, tâche A1 : il annonce aussi l'identité de l'index servi (`index`), car une ingestion change
+    l'index sans changer le commit. Des comptes et une empreinte, aucun article : rien à protéger.
+    `None` quand l'index n'a pas encore d'identité.
     """
     return {
         "status": "ok",
         "project": "RITA",
         "commit": os.getenv("RITA_GIT_SHA", "inconnu"),
         "construit_le": os.getenv("RITA_CONSTRUIT_LE", "inconnu"),
+        "index": indexation.lire_identite(),
     }
 
 
