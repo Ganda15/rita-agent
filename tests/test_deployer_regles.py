@@ -56,6 +56,18 @@ def test_ordres_refuses(texte):
         d.analyser_ordre(texte)
 
 
+def test_l_ordre_ingerer_est_accepte_et_rien_d_autre():
+    # Sprint 3, tâche B3 (décision D1) : le quatrième ordre, avec le numéro du passage GitHub comme seul argument.
+    assert d.analyser_ordre("ingerer 123") == d.Ordre("ingerer", "123")
+    for texte in ("ingerer 12; rm -rf /", "ingerer", "ingerer abc", "ingerer " + "1" * 21, "ingerer 12\n",
+                  "INGERER 12", "ingerer  12"):
+        with pytest.raises(d.OrdreRefuse) as erreur:
+            d.analyser_ordre(texte)
+        # Le refus nomme les quatre ordres permis, et ne recopie jamais le texte reçu.
+        assert all(nom in str(erreur.value) for nom in ("livrer", "revenir", "ingerer", "version"))
+        assert "rm -rf" not in str(erreur.value)
+
+
 # --- Le créneau du matin -------------------------------------------------------------------------------------------
 
 @pytest.mark.parametrize("jour", [14, 25])
@@ -130,6 +142,14 @@ def test_apres_retour():
 def test_retour_sans_precedente_leve():
     with pytest.raises(d.AucunePrecedente):
         d.apres_retour(d.Etat(active=A))
+
+
+def test_apres_ingestion_garde_la_version_precedente():
+    # Une ingestion change l'index de la version active, jamais son image ni sa configuration : la version précédente
+    # reste la cible d'un retour arrière logiciel (spec CA3.4).
+    a_reindexee = d.Version(A.image, A.config, A.profil, "rita-index-ing-20261016-100000")
+    assert d.apres_ingestion(d.Etat(active=A, precedente=B), a_reindexee) == d.Etat(active=a_reindexee, precedente=B)
+    assert d.apres_ingestion(d.Etat(active=A), a_reindexee) == d.Etat(active=a_reindexee, precedente=None)
 
 
 # --- L'état sur le disque ------------------------------------------------------------------------------------------
