@@ -64,17 +64,18 @@ pour la date d'arrêt de Google News) et les preuves (D3). Le dossier `D:\KandaW
   vérifiés au tag v3 ; message au formateur envoyé par Era avant la pose du tag.
 
 **Ordre de la livraison (plan, tâches B5 et D2)** :
-1. B5, étapes 1, 2 et 4 (Era, sur le serveur) : compte `rita_ingestion` (`SELECT, INSERT` sur `article`, `USAGE` sur
-   `article_id_seq`, rien d'autre) ; `RITA_DSN_INGESTION` dans `/root/rita-agent/.env` ; `/root/rita-deploy/rapports`
-   au nom de l'UID 10001, avec un essai d'écriture depuis l'image active. **Sans ce dossier, `livrer` refuse aussi.**
-2. PR `sprint-3-donnees-ancrage → develop`, contrôles verts, fusion.
+1. B5, étapes 1, 2 et 4 (Era, sur le serveur) : **faites le 16/10** (`evidence/sprint-3/serveur-preparation-2026-10-16.md`).
+   Reste à vérifier, par leurs noms seulement, que `AZURE_FOUNDRY_ENDPOINT` et `AZURE_FOUNDRY_API_KEY` sont dans
+   `/root/rita-agent/.env` : `livrer` et `ingerer` les exigent depuis la revue de la PR #100.
+2. PR #100 `sprint-3-donnees-ancrage → develop` : ouverte ; revue automatique (deux remarques fondées, corrigées
+   test d'abord) ; contrôles à revoir verts, puis fusion par Era.
 3. B5, étape 3 : installer le nouveau `deployer.py` sur le serveur (la livraison compare son empreinte).
 4. PR `develop → main` ; livraison N5 (rejeu des questions, puis identité de l'index vérifiée dans `/health`).
 5. Première ingestion par le bouton ; évaluation sur la production ; C1 ; D3 ; tag `livrable-sprint-3-v1`.
 
 **Restes et risques** :
-- Les durées maximales ont grandi : le travail de livraison GitHub passe de 110 à 160 minutes (fait dans
-  `livraison.yml`).
+- Les durées maximales ont grandi (ingestion sous le même verrou, rejeu, question de contrôle) : travaux GitHub de
+  livraison et d'ingestion à 165 minutes, retour arrière à 120 (fait dans les workflows).
 - Limite de la règle de pertinence : une question formulée loin du vocabulaire des articles peut échouer (Q2
   version 1). Seuil 0,42 toujours provisoire.
 - Q1 : la raison de la décision (2801, 2802) n'est pas dans les 3 passages rendus ; le modèle le dit.

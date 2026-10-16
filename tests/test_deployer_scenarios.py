@@ -24,7 +24,9 @@ RACINE = Path(__file__).resolve().parent.parent
 REF_A = "ghcr.io/ganda15/rita-api@sha256:" + "a" * 64
 REF_B = "ghcr.io/ganda15/rita-api@sha256:" + "b" * 64
 REF_C = "ghcr.io/ganda15/rita-api@sha256:" + "c" * 64
-ENV = {"RITA_API_KEY": "cle-de-test-smoke-ui-32-caracteres-x", "RITA_DSN_LECTURE": "postgresql://lecture@base/rita"}
+ENV = {"RITA_API_KEY": "cle-de-test-smoke-ui-32-caracteres-x", "RITA_DSN_LECTURE": "postgresql://lecture@base/rita",
+       # Revue de la PR #100 : les questions n'appellent qu'Azure (D5) ; ses variables sont exigées par le script.
+       "AZURE_FOUNDRY_ENDPOINT": "https://azure.exemple.test", "AZURE_FOUNDRY_API_KEY": "cle-azure-fictive"}
 SAIN = {"health": True, "ecran": True, "briefing": "ok", "journal": True}
 
 
@@ -127,17 +129,32 @@ class FauxDocker:
 
 
 def faux_http(docker):
-    def requete(methode, url, entetes=None, delai=None):
+    def requete(methode, url, entetes=None, delai=None, corps=None):
         image = docker.pretest if url.startswith(d.URL_PRETEST) else docker.production
         c = docker.images.get(image, {})
         chemin = url.split("127.0.0.1:")[1].split("/", 1)[1]
         if not c.get("health"):
             raise OSError("connexion refusée")
         if chemin == "health":
-            # Sprint 3, tâche A1 : /health annonce l'identité de l'index servi.
-            index = (docker.identite(docker.index_pretest) if url.startswith(d.URL_PRETEST)
-                     else docker.identite_annoncee())
-            return d.Reponse(200, {}, json.dumps({"status": "ok", "commit": c["commit"], "index": index}).encode())
+            # Sprint 3, tâche A1 : /health annonce l'identité de l'index servi. Une version d'avant le sprint 3
+            # (comportement `index=False`) ne l'annonce pas, et n'a pas de route /question.
+            sante = {"status": "ok", "commit": c["commit"]}
+            if c.get("index", True):
+                sante["index"] = (docker.identite(docker.index_pretest) if url.startswith(d.URL_PRETEST)
+                                  else docker.identite_annoncee())
+            return d.Reponse(200, {}, json.dumps(sante).encode())
+        if chemin == "question":
+            # Revue de la PR #100 : la question de contrôle. « ok » : réponse citée ; « panne » : Azure indisponible ;
+            # « refus » et « sans_reference » : pas de réponse citée ; « absente » : la route n'existe pas.
+            docker.appels.append(("question", image))
+            if c.get("cle") and (entetes or {}).get("X-API-Key") != c["cle"]:
+                return d.Reponse(403, {}, b"{}")
+            corps = {"ok": (200, {"statut": "reponse", "motif": "OK", "references": [{"id": 2788}]}),
+                     "panne": (503, {"statut": "erreur", "motif": "FOURNISSEUR_INDISPONIBLE"}),
+                     "refus": (200, {"statut": "refus", "motif": "OUT_OF_CORPUS", "references": []}),
+                     "sans_reference": (200, {"statut": "reponse", "motif": "OK", "references": []}),
+                     "absente": (404, {"detail": "Not Found"})}[c.get("question", "ok")]
+            return d.Reponse(corps[0], {}, json.dumps(corps[1]).encode())
         if chemin == "donnees/valeurs":
             return d.Reponse(403, {}, b"{}")
         if chemin == "briefing.html":
@@ -181,7 +198,8 @@ def serveur(tmp_path):
     for nom in ("docker-compose.yml", "compose.prod.yml"):
         (tmp_path / "bin" / nom).write_text("services: {}\n", encoding="utf-8")
     env = tmp_path / "env-serveur"
-    env.write_text("RITA_API_KEY=cle-de-test-smoke-ui-32-caracteres-x\nRITA_DSN_LECTURE=postgresql://lecture@base/rita\n",
+    env.write_text("RITA_API_KEY=cle-de-test-smoke-ui-32-caracteres-x\nRITA_DSN_LECTURE=postgresql://lecture@base/rita\n"
+                   "AZURE_FOUNDRY_ENDPOINT=https://azure.exemple.test\nAZURE_FOUNDRY_API_KEY=cle-azure-fictive\n",
                    encoding="utf-8")
     return tmp_path, env
 
@@ -926,7 +944,9 @@ def test_une_version_sans_env_sauvegarde_echoue_au_controle_au_lieu_de_planter(s
     docker = FauxDocker({REF_A: _comportement(commit="aaa", cle=CLE_A), REF_C: _comportement(commit="ccc")},
                         production=REF_C)
     assert d.revenir("7", docker, dossier, ENV, DIX_HEURES, http=faux_http(docker), dormir=lambda s: None) == 1
-    assert _journal(dossier)[-1]["echecs"] == ["briefing"]
+    # Revue de la PR #100 : la version A de ce test annonce un index (comme toute version du sprint 3) ; sans clé, la
+    # question de contrôle échoue aussi, après le briefing.
+    assert _journal(dossier)[-1]["echecs"] == ["briefing", "question"]
     assert d.lire_etat(dossier / "etat.json").observee == REF_C
 
 
@@ -1020,13 +1040,15 @@ def _pire_chemin(serveur, monkeypatch, briefing_rate):
     attentes, delais_http, briefings = [], [], []
     monkeypatch.setattr(d, "attendre_disponible", lambda *args, **kwargs: attentes.append(1) or True)
 
-    def http(methode, url, entetes=None, delai=None):
+    def http(methode, url, entetes=None, delai=None, corps=None):
         delais_http.append(delai)
         fin = url.rsplit("/", 1)[-1]
         if fin == "health":
             return d.Reponse(200, {}, json.dumps({"commit": "ccc", "index": IDENTITE_ENREGISTREE}).encode())
         if fin == "valeurs":
             return d.Reponse(403, {}, b"{}")
+        if fin == "question":   # revue de la PR #100 : la question de contrôle, toujours citée ici
+            return d.Reponse(200, {}, json.dumps({"statut": "reponse", "references": [{"id": 2788}]}).encode())
         if fin.startswith("briefing?"):
             briefings.append(url)
             statut = 500 if len(briefings) == briefing_rate else 200
@@ -1532,3 +1554,81 @@ def test_une_ingestion_dure_toujours_moins_que_l_attente_des_autres_operations(s
     assert _journal(dossier)[-1]["resultat"] == "ingestion refusee, version active du debut restauree"
     duree = _duree(enregistreur, attentes, delais_http)
     assert duree <= d.DUREE_MAX_INGERER < min(d.ATTENTE_VERROU["livrer"], d.ATTENTE_VERROU["revenir"])
+
+
+# === Revue automatique de la PR #100 (16/10/2026) : contrôler /question à chaque livraison et ingestion ============
+#
+# Les questions n'appellent qu'Azure (décision D5), sans repli. `/briefing`, lui, se replie sur d'autres fournisseurs :
+# ne contrôler que lui laissait passer une version dont chaque question rend 503 (clé Azure absente ou fausse). Les
+# contrôles posent donc une vraie question couverte, et le script exige les variables d'Azure. Une version d'avant le
+# sprint 3 (sans identité d'index, sans route /question) n'est pas soumise à ce contrôle : le retour arrière reste
+# possible.
+
+@pytest.mark.parametrize("question", ["panne", "refus", "sans_reference"])
+def test_controler_exige_une_question_citee_quand_l_api_a_un_index(question):
+    docker = FauxDocker({REF_C: _comportement(commit="ccc", question=question)}, production=REF_C)
+    controle = d.controler(d.URL_PRODUCTION, ENV["RITA_API_KEY"], "complet", "ccc",
+                           lambda: docker.journal_du_conteneur(d.CONTENEUR), faux_http(docker))
+    assert controle.sante == "degrade" and "question" in controle.echecs
+
+
+def test_controler_ne_pose_pas_la_question_a_une_version_sans_index():
+    docker = FauxDocker({REF_A: _comportement(commit="aaa", index=False, question="absente")}, production=REF_A)
+    controle = d.controler(d.URL_PRODUCTION, ENV["RITA_API_KEY"], "complet", "aaa",
+                           lambda: docker.journal_du_conteneur(d.CONTENEUR), faux_http(docker))
+    assert controle.sante == "sain" and not any(appel[0] == "question" for appel in docker.appels)
+
+
+def test_une_livraison_dont_la_question_echoue_est_refusee_au_pretest(serveur):
+    # Le cas de la revue : Azure mal configuré, briefing sauvé par un autre fournisseur. Rien ne bascule.
+    dossier, env = serveur
+    a = _version(REF_A, dossier, "a")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=a))
+    docker = FauxDocker({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc", question="panne")},
+                        production=REF_A)
+    assert _livrer(REF_C, docker, dossier, env) == 1
+    assert docker.remplacements() == []
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "refusee au pre-test" and "question" in dernier["echecs"]
+
+
+@pytest.mark.parametrize("operation", ["livrer", "ingerer"])
+def test_les_variables_azure_sont_exigees(serveur, operation):
+    dossier, env = serveur
+    _avec_active(dossier)
+    docker = _docker_a()
+    sans_azure = {cle: valeur for cle, valeur in ENV_INGESTION.items() if cle != "AZURE_FOUNDRY_API_KEY"}
+    if operation == "livrer":
+        code = d.livrer(REF_C, docker, dossier, sans_azure, DIX_HEURES, http=faux_http(docker), dormir=lambda s: None,
+                        source_env=env)
+    else:
+        code = d.ingerer("31", docker, dossier, sans_azure, DIX_HEURES, http=faux_http(docker), dormir=lambda s: None)
+    assert code == 1 and docker.appels == []
+    assert "AZURE_FOUNDRY_API_KEY" in _journal(dossier)[-1]["message"]
+
+
+def test_la_question_de_controle_est_une_question_couverte_du_jeu():
+    # La question posée à chaque contrôle est celle de Q4 dans le jeu validé par Era : son article (2788) est dans le
+    # corpus de production, et un article n'en sort jamais.
+    jeu = json.loads((RACINE / "rag" / "questions_demo.json").read_text(encoding="utf-8"))
+    q4 = next(q for q in jeu["questions"] if q["id"] == "Q4")
+    assert d.QUESTION_CONTROLE == q4["question"] and q4["attendu"] == "reponse"
+
+
+def test_la_question_de_controle_est_bornee():
+    delais, appels = [], []
+
+    def http(methode, url, entetes=None, delai=None, corps=None):
+        delais.append(delai)
+        appels.append(url.rsplit("/", 1)[-1])
+        if url.endswith("/question"):
+            # La question envoyée est bien celle du jeu, en JSON.
+            assert json.loads(corps) == {"question": d.QUESTION_CONTROLE}
+        if url.endswith("/health"):
+            return d.Reponse(200, {}, json.dumps({"commit": "c", "index": {"identifiant": "i"}}).encode())
+        if url.endswith("/question"):
+            return d.Reponse(200, {}, json.dumps({"statut": "reponse", "references": [{"id": 2788}]}).encode())
+        return d.Reponse(200, {}, b"{}")
+    d.controler(d.URL_PRODUCTION, "k", "complet", None, lambda: "", http)
+    assert "question" in appels and None not in delais
+    assert sum(delais) + d.DELAI_COURT <= d.DUREE_MAX_CONTROLE     # plus `docker logs`

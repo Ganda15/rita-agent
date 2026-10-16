@@ -37,8 +37,8 @@ jobs:
       group: ingestion
       cancel-in-progress: false
     # Le serveur attend le verrou au plus ATTENTE_VERROU["ingerer"], puis travaille au plus DUREE_MAX_INGERER
-    # (deploy/deployer.py) : environ 150 minutes ; le travail ne doit pas être coupé avant lui.
-    timeout-minutes: 160
+    # (deploy/deployer.py) : environ 159 minutes ; le travail ne doit pas être coupé avant lui.
+    timeout-minutes: 165
     steps:
       - uses: actions/checkout@v7
 

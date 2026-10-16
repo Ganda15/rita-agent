@@ -36,9 +36,9 @@ jobs:
       group: retour-arriere
       cancel-in-progress: false
     # Le serveur attend le verrou au plus ATTENTE_VERROU["revenir"], puis travaille au plus DUREE_MAX_REVENIR
-    # (deploy/deployer.py) : environ 104 minutes depuis le sprint 3 (une ingestion peut tenir le verrou) ; le travail
-    # ne doit pas être coupé avant lui.
-    timeout-minutes: 110
+    # (deploy/deployer.py) : environ 111 minutes depuis le sprint 3 (une ingestion peut tenir le verrou, et chaque
+    # contrôle pose une question) ; le travail ne doit pas être coupé avant lui.
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v7
 

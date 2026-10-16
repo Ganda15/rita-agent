@@ -352,9 +352,9 @@ jobs:
       group: production
       cancel-in-progress: false
     # Le serveur attend le verrou au plus ATTENTE_VERROU["livrer"], puis travaille au plus DUREE_MAX_LIVRER
-    # (deploy/deployer.py) : environ 150 minutes depuis le sprint 3 (une ingestion peut tenir le verrou, et la
-    # livraison rejoue les questions) ; le travail ne doit pas être coupé avant lui.
-    timeout-minutes: 160
+    # (deploy/deployer.py) : environ 159 minutes depuis le sprint 3 (une ingestion peut tenir le verrou, la livraison
+    # rejoue les questions et chaque contrôle pose une question) ; le travail ne doit pas être coupé avant lui.
+    timeout-minutes: 165
     outputs:
       reporte: ${{ steps.ordre.outputs.reporte }}
     steps:
@@ -399,7 +399,7 @@ jobs:
     concurrency:
       group: production
       cancel-in-progress: false
-    timeout-minutes: 160    # même raison que `deployer`
+    timeout-minutes: 165    # même raison que `deployer`
     steps:
       - uses: actions/checkout@v7
       - name: Livrer la même image après 9 h

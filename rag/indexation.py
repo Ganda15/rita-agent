@@ -307,6 +307,15 @@ def lire_identite(chemin: Path | None = None) -> dict | None:
         return None
 
 
+def effacer_identite(chemin: Path | None = None) -> None:
+    """Retire l'identité AVANT toute modification de l'index (revue automatique de la PR #100, 16/10/2026).
+
+    Une reconstruction sur place retire des articles, puis en ajoute : si l'ajout échoue, l'ancienne identité
+    décrirait un index à moitié modifié. Sans identité, `/health` le dit, et le rejeu le refuse (« identité absente »).
+    """
+    (Path(chemin or CHEMIN_INDEX) / FICHIER_IDENTITE).unlink(missing_ok=True)
+
+
 def indexer(dsn: str | None = None, chemin: Path | None = None) -> Resultat:
     """Reconstruit l'index à partir de la table `article`.
 
@@ -370,6 +379,9 @@ def indexer(dsn: str | None = None, chemin: Path | None = None) -> Resultat:
     # supprimé en base, ou marqué `bloque_injection` APRÈS une première indexation, restait
     # cherchable — le garde-fou en base ne protégeait pas le RAG. Une reconstruction retire
     # donc tout identifiant que la base ne permet plus.
+    # Avant la première modification : un index en cours de reconstruction n'a plus d'identité, et n'en retrouve une
+    # qu'une fois complet (`ecrire_identite`, plus bas).
+    effacer_identite(chemin)
     presents = set(collection.get(include=[])["ids"])
     a_retirer = sorted(presents - set(ids))
     if a_retirer:

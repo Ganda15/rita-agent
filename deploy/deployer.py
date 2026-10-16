@@ -272,9 +272,17 @@ PORT_PRETEST = 8003      # relevé du 14/10 : 8002 est pris sur le serveur par l
 URL_PRODUCTION = f"http://127.0.0.1:{PORT_PRODUCTION}"
 URL_PRETEST = f"http://127.0.0.1:{PORT_PRETEST}"
 VARIABLES_REQUISES = ("RITA_API_KEY", "RITA_DSN_LECTURE")
+# Revue automatique de la PR #100 (16/10/2026) : les questions n'appellent qu'Azure (décision D5), sans repli. Une
+# livraison ou une ingestion dont Azure n'est pas configuré est refusée d'emblée. Le retour arrière ne les exige pas :
+# il doit rester possible même sans Azure.
+VARIABLES_AZURE = ("AZURE_FOUNDRY_ENDPOINT", "AZURE_FOUNDRY_API_KEY")
+VARIABLES_LIVRAISON = (*VARIABLES_REQUISES, *VARIABLES_AZURE)
 # Sprint 3, tâche B3 : l'ingestion écrit dans la base de production avec un compte dédié (tâche B5), jamais avec le
 # compte administrateur ni avec le compte de lecture.
-VARIABLES_INGESTION = (*VARIABLES_REQUISES, "RITA_DSN_INGESTION")
+VARIABLES_INGESTION = (*VARIABLES_LIVRAISON, "RITA_DSN_INGESTION")
+# La question posée à chaque contrôle d'une version qui a un index : Q4 du jeu validé par Era (`rag/questions_demo.json`).
+# Son article (2788) est dans le corpus de production, et un article n'en sort jamais.
+QUESTION_CONTROLE = "Combien de postes Netflix va-t-il supprimer ?"
 FICHIERS_COMPOSE = ("docker-compose.yml", "compose.prod.yml")  # embarqués dans l'image ET installés dans bin/
 # Les identités d'index se comparent sur ces deux champs (tâche A1) : deux index du même corpus ont la même empreinte,
 # seul l'identifiant de construction les distingue.
@@ -306,13 +314,14 @@ DELAI_SONDE = 5           # un appel /health pendant cette attente
 PAUSE_SONDE = 2
 DELAI_CONTROLE = 10       # /health, 403, écran
 DELAI_BRIEFING = 90       # le briefing appelle le modèle
+DELAI_QUESTION = 90       # sprint 3 : la question de contrôle appelle le modèle (Azure)
 DELAI_COLLECTE = 900      # sprint 3 : la collecte RSS de l'ingestion (trois flux, dédoublonnage, écriture)
 DELAI_REJEU = 300         # sprint 3 : le rejeu des questions de démonstration (recherche seule, aucun appel au modèle)
 
 # Bornes calculées (pas mesurées) des durées, phase par phase ; trois tests rejouent le pire chemin et vérifient
 # que la somme des délais réellement demandés reste dessous.
 DUREE_MAX_DISPONIBLE = ECHEANCE_DISPONIBLE + DELAI_SONDE + PAUSE_SONDE
-DUREE_MAX_CONTROLE = 3 * DELAI_CONTROLE + DELAI_BRIEFING + DELAI_COURT                 # plus `docker logs`
+DUREE_MAX_CONTROLE = 3 * DELAI_CONTROLE + DELAI_BRIEFING + DELAI_QUESTION + DELAI_COURT  # plus `docker logs`
 DUREE_MAX_MISE_EN_SERVICE = (DELAI_BASCULE + DELAI_COURT + DUREE_MAX_DISPONIBLE         # bascule, commit, attente
                              + DUREE_MAX_CONTROLE + DELAI_COURT)                       # contrôles, image observée
 DUREE_MAX_ESSAI = (DELAI_COURT + DELAI_COURT + DELAI_INDEXATION + DELAI_COURT           # commit, config, index, run
@@ -354,9 +363,10 @@ class Reponse:
     corps: bytes
 
 
-def requete(methode: str, url: str, entetes: dict | None = None, delai: float = 90) -> Reponse:
-    """Un appel HTTP. Un code d'erreur HTTP est une réponse ; une connexion impossible lève `OSError`."""
-    demande = urllib.request.Request(url, method=methode, headers=entetes or {})
+def requete(methode: str, url: str, entetes: dict | None = None, delai: float = 90, corps: bytes | None = None) -> Reponse:
+    """Un appel HTTP. Un code d'erreur HTTP est une réponse ; une connexion impossible lève `OSError`. `corps` : le
+    contenu envoyé (la question de contrôle, en JSON)."""
+    demande = urllib.request.Request(url, data=corps, method=methode, headers=entetes or {})
     try:
         with urllib.request.urlopen(demande, timeout=delai) as reponse:
             return Reponse(reponse.status, {k.lower(): v for k, v in reponse.headers.items()}, reponse.read())
@@ -601,6 +611,13 @@ def controler(base: str, cle: str, profil: str, commit_attendu: str | None, jour
         if profil == "complet" and http("GET", f"{base}/briefing.html", delai=DELAI_CONTROLE).statut != 200:
             echecs.append("ecran")
         briefing = http("POST", f"{base}/briefing?ticker=OR.PA", {"X-API-Key": cle}, delai=DELAI_BRIEFING)
+        # Revue de la PR #100 : /briefing se replie sur d'autres fournisseurs, les questions non (Azure seul, D5).
+        # Une version qui annonce un index (sprint 3) doit répondre à une vraie question couverte, avec une citation.
+        # Une version plus ancienne n'a ni index ni route /question : elle n'y est pas soumise (retour arrière).
+        question = None
+        if isinstance(_json(sante).get("index"), dict):
+            question = http("POST", f"{base}/question", {"X-API-Key": cle, "Content-Type": "application/json"},
+                            delai=DELAI_QUESTION, corps=json.dumps({"question": QUESTION_CONTROLE}).encode())
     except OSError:
         return Controle("degrade", tuple(echecs) + ("connexion",))
     corps = _json(briefing)
@@ -613,6 +630,11 @@ def controler(base: str, cle: str, profil: str, commit_attendu: str | None, jour
     # `type(...) is int` et non `isinstance` : en Python, True est un entier, et « true » ne vaut pas un article.
     if briefing.statut == 200 and not (type(articles) is int and articles >= 1):
         echecs.append("articles")
+    if question is not None:
+        corps_question = _json(question)
+        if (question.statut != 200 or corps_question.get("statut") != "reponse"
+                or not corps_question.get("references")):
+            echecs.append("question")
     return Controle("sain" if not echecs else "degrade", tuple(echecs))
 
 
@@ -633,8 +655,8 @@ def attendre_disponible(base: str, http=requete, dormir=time.sleep, echeance: fl
     return False
 
 
-def _manquantes(env: dict) -> list[str]:
-    return [nom for nom in VARIABLES_REQUISES if not env.get(nom)]
+def _manquantes(env: dict, noms: tuple = VARIABLES_REQUISES) -> list[str]:
+    return [nom for nom in noms if not env.get(nom)]
 
 
 def _cle(version: Version) -> str:
@@ -753,9 +775,9 @@ def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete,
     Spec § 4 (étapes 5 à 8) et § 5.3 ; périmètre de l'atelier § 11 (première livraison sans retour automatique)."""
     chemin = dossier / "etat.json"
     trace = {"operation": "livrer", "vers": ref}
-    if _manquantes(env):
+    if _manquantes(env, VARIABLES_LIVRAISON):
         journaliser(dossier, maintenant(), **trace, resultat="refusee",
-                    message=f"variable absente du .env du serveur : {', '.join(_manquantes(env))}")
+                    message=f"variable absente du .env du serveur : {', '.join(_manquantes(env, VARIABLES_LIVRAISON))}")
         return 1
     try:
         etat = lire_etat(chemin)

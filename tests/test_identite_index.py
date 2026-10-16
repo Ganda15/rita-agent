@@ -10,6 +10,7 @@ L'identité a deux parties, et ces tests fixent ce que chacune garantit :
 import re
 from datetime import datetime
 
+import pytest
 from fastapi.testclient import TestClient
 
 from api.main import app
@@ -114,3 +115,27 @@ def test_health_expose_l_identite_de_l_index(monkeypatch):
 def test_health_sans_index_rend_index_none(monkeypatch):
     monkeypatch.setattr(indexation, "lire_identite", lambda chemin=None: None)
     assert TestClient(app).get("/health").json()["index"] is None
+
+
+def test_une_reconstruction_ratee_ne_laisse_pas_une_identite_fausse(monkeypatch, tmp_path):
+    # Revue automatique de la PR #100 (16/10/2026) : une reconstruction sur place retire d'abord des articles, puis
+    # ajoute les nouveaux. Si l'ajout échoue, l'ancienne identité décrirait un index à moitié modifié. Un index en
+    # cours de construction ne doit avoir AUCUNE identité : le rejeu le refuse alors (« identité absente »).
+    _indexer(monkeypatch, tmp_path, CORPUS)
+    assert indexation.lire_identite(tmp_path) is not None
+    vraie_collection = indexation._collection
+
+    class CollectionEnPanne:
+        def __init__(self, collection):
+            self._collection = collection
+
+        def __getattr__(self, nom):
+            return getattr(self._collection, nom)
+
+        def upsert(self, *args, **kwargs):
+            raise RuntimeError("disque plein")
+
+    monkeypatch.setattr(indexation, "_collection", lambda chemin=None: CollectionEnPanne(vraie_collection(chemin)))
+    with pytest.raises(RuntimeError, match="disque plein"):
+        _indexer(monkeypatch, tmp_path, CORPUS[:2] + [_ligne(4, "Un nouvel article", "Un autre resume")])
+    assert indexation.lire_identite(tmp_path) is None
