@@ -149,6 +149,18 @@ def test_les_liens_ecrits_par_le_modele_sont_retires_du_texte(monkeypatch):
     assert "[1]" in r.texte
 
 
+def test_les_caracteres_de_controle_du_modele_sont_remplaces_par_une_espace(monkeypatch):
+    # Évaluation en production (16/10/2026) : la réponse de Q4 contenait le caractère U+0000 entre « 1 » et « 000 »,
+    # produit par le modèle à la place d'une espace. Un caractère de contrôle n'a rien à faire dans un texte montré à
+    # l'utilisateur ; les retours à la ligne, eux, restent.
+    _recherche(monkeypatch, _trouve())
+    _modele(monkeypatch, '{"statut": "reponse", "texte": "Netflix va supprimer 1\\u0000000 postes\\u001b,\\nsoit '
+                         '6\\u0007% de ses effectifs [1].", "citations": [1]}')
+    r = question.repondre("Combien de postes Netflix va-t-il supprimer ?")
+    assert r.statut == "reponse"
+    assert r.texte == "Netflix va supprimer 1 000 postes ,\nsoit 6 % de ses effectifs [1]."
+
+
 def test_une_question_de_mots_vides_est_refusee_proprement(monkeypatch, tmp_path):
     # Point de vigilance du plan : une question sans aucun mot porteur de sens, sur un vrai index.
     _indexer(monkeypatch, tmp_path, [_ligne(1, "Netflix va supprimer 1 000 postes", "Soit 6 % de ses effectifs"),
