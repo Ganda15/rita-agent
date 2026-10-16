@@ -1,4 +1,11 @@
-# Livraison N5 et première ingestion (16/10/2026)
+# Livraison N5 et première ingestion : compte rendu (16/10/2026)
+
+Compte rendu rédigé le 16/10/2026 après les opérations, à partir des sorties relevées dans la journée (de 17:00 à
+17:40 UTC). Il raconte et relie ; il ne remplace pas les preuves. Les fichiers écrits par le serveur pendant les
+opérations sont copiés sans modification dans `evidence/sprint-3/` :
+
+- `rejeu-rita-index-20261016-185554-b00a51e6b3ed.json` : le rapport du rejeu écrit pendant la livraison N5 ;
+- `manifeste-2026-10-16-170439.json` : le manifeste de la collecte arrêtée pendant la première ingestion.
 
 Livraison N5 : PR #101 (`develop` vers `main`), fusionnée en `41b1763`. Elle met en production le code du sprint 3
 (PR #100). Les commandes du serveur ont été lancées par Era (Hetzner, `ubuntu-4gb-fsn1-1`) ; les contrôles de GitHub
