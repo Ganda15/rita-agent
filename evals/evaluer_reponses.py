@@ -64,7 +64,8 @@ def _conforme(question: dict, statut: str, motif: str, cites: list[int]) -> bool
 def _ligne(question: dict, statut: str, motif: str, texte: str, cites: list[int]) -> dict:
     validees = set(question.get("sources_validees") or [])
     faits = [{"fait": fait, "reperes": reperes, "retrouve": statut == "reponse" and fait_retrouve(texte, reperes)}
-             for fait, reperes in zip(question.get("faits_attendus") or [], question.get("reperes_attendus") or [])]
+             for fait, reperes in zip(question.get("faits_attendus") or [], question.get("reperes_attendus") or [],
+                                      strict=True)]
     return {"id": question["id"], "question": question["question"], "attendu": question["attendu"],
             "statut": statut, "motif": motif, "conforme": _conforme(question, statut, motif, cites),
             "cites": cites, "hors_sources_validees": [article for article in cites if article not in validees],

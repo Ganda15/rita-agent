@@ -8,7 +8,7 @@ L'identité a deux parties, et ces tests fixent ce que chacune garantit :
 - l'identifiant de construction, tiré à chaque construction : deux index du même corpus ne se confondent pas.
 """
 import re
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from fastapi.testclient import TestClient
@@ -98,6 +98,20 @@ def test_les_articles_bloques_ne_comptent_pas_dans_l_identite(monkeypatch, tmp_p
     b = _indexer(monkeypatch, tmp_path / "b", avec_bloque)
     assert b["nb_articles"] == 3
     assert b["id_max"] == 3
+    assert a["empreinte"] == b["empreinte"]
+
+
+@pytest.mark.parametrize("meme_instant", [datetime(2026, 10, 14, 8, 30, tzinfo=timezone(timedelta(hours=2))),
+                                          datetime(2026, 10, 14, 6, 30)],
+                         ids=["heure_de_paris", "sans_fuseau"])
+def test_l_empreinte_ne_depend_pas_du_fuseau_de_la_session(monkeypatch, tmp_path, meme_instant):
+    # Livraison N5 (16/10/2026) : le même corpus donnait deux empreintes, l'une en `+02:00` sur le poste (session
+    # PostgreSQL à l'heure de Paris), l'autre en `+00:00` sur le serveur (UTC). L'instant est le même, l'empreinte
+    # doit l'être aussi. Une date sans fuseau est lue comme une date UTC.
+    en_utc = [{**ligne, "publie_le": datetime(2026, 10, 14, 6, 30, tzinfo=timezone.utc)} for ligne in CORPUS]
+    autrement = [{**ligne, "publie_le": meme_instant} for ligne in CORPUS]
+    a = _indexer(monkeypatch, tmp_path / "a", en_utc)
+    b = _indexer(monkeypatch, tmp_path / "b", autrement)
     assert a["empreinte"] == b["empreinte"]
 
 

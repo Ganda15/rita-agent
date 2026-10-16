@@ -87,6 +87,17 @@ def test_l_empreinte_publiee_est_une_sortie_du_travail():
     assert r"^ghcr\.io/ganda15/rita-api@sha256:[0-9a-f]{64}$" in etape["run"]
 
 
+def test_l_image_verifiee_sait_nettoyer_un_resume_rss():
+    # Livraison N5 (16/10/2026) : l'ingestion a échoué en production sur une dépendance absente de l'image (`lxml`),
+    # alors que la suite passait sur le poste, où elle est installée. La chaîne essaie donc le nettoyage DANS l'image,
+    # avant de la publier.
+    etapes = _travaux()["construire-et-publier"]["steps"]
+    noms = [e.get("name") for e in etapes]
+    essai = next(e for e in etapes if "_nettoyer_html" in (e.get("run") or ""))
+    assert "rita-api:verification" in essai["run"]
+    assert noms.index(essai["name"]) < noms.index("S'authentifier sur le registre")
+
+
 # --- Le déploiement -----------------------------------------------------------------------------------------------
 
 def test_deployer_attend_tous_les_controles_et_ne_part_que_sur_main():
