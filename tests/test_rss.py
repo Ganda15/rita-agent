@@ -58,6 +58,21 @@ def test_nettoie_le_html_des_resumes():
     assert "maintenu" in resume
 
 
+def test_le_nettoyage_des_resumes_n_exige_pas_lxml(monkeypatch):
+    # Livraison N5 (16/10/2026) : l'image de production n'embarque pas `lxml`, et la première ingestion a échoué sur
+    # `FeatureNotFound` avant d'écrire un seul article. Sur le poste, `lxml` est installé : le test le retire.
+    import bs4
+    vraie = bs4.BeautifulSoup
+
+    def sans_lxml(texte, features=None, *args, **kwargs):
+        if features and "lxml" in str(features):
+            raise bs4.FeatureNotFound("lxml absent, comme dans l'image de production")
+        return vraie(texte, features, *args, **kwargs)
+
+    monkeypatch.setattr(bs4, "BeautifulSoup", sans_lxml)
+    assert rss._nettoyer_html("<p>Un <b>résumé</b> court</p>") == "Un résumé court"
+
+
 def test_bloque_un_article_porteur_d_injection():
     """Le garde-fou OUTILS s'applique au titre autant qu'au résumé."""
     with patch("sources.rss.httpx.get", return_value=_reponse(FLUX_VALIDE)):

@@ -78,9 +78,13 @@ def _horodatage(entree) -> str:
 
 
 def _nettoyer_html(texte: str) -> str:
-    """Retire les balises HTML des résumés RSS, qui en contiennent souvent."""
+    """Retire les balises HTML des résumés RSS, qui en contiennent souvent.
+
+    L'analyseur `html.parser` est fourni avec Python. `lxml` ne l'est pas, et l'image de production ne l'embarque
+    pas : la première ingestion en production a échoué sur `FeatureNotFound` (livraison N5, 16/10/2026).
+    """
     from bs4 import BeautifulSoup
-    return BeautifulSoup(texte or "", "lxml").get_text(" ", strip=True)
+    return BeautifulSoup(texte or "", "html.parser").get_text(" ", strip=True)
 
 
 def lire_flux(nom: str, url: str, limite: int = 10) -> list[Article]:

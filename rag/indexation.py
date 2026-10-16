@@ -256,6 +256,20 @@ def texte_indexable(titre: str | None, resume: str | None) -> str:
     return ". ".join(m for m in (titre, resume) if m)
 
 
+def _date_en_utc(moment: datetime | None) -> str:
+    """La date de publication écrite en UTC, quel que soit le fuseau de la session PostgreSQL ; une date sans fuseau
+    est lue comme une date UTC.
+
+    Livraison N5 (16/10/2026) : le même corpus donnait deux empreintes, `+02:00` sur le poste (session à l'heure de
+    Paris) et `+00:00` sur le serveur. L'instant était le même ; seule son écriture changeait.
+    """
+    if not moment:
+        return ""
+    if moment.tzinfo is None:
+        moment = moment.replace(tzinfo=timezone.utc)
+    return moment.astimezone(timezone.utc).isoformat()
+
+
 def _collection(chemin: Path | None = None):
     """Ouvre — ou crée — la collection persistante des articles.
 
@@ -366,7 +380,7 @@ def indexer(dsn: str | None = None, chemin: Path | None = None) -> Resultat:
             "titre": article["titre"] or "",
             "flux": article["source"] or "",
             "lien": article["lien"] or "",
-            "publie_le": article["publie_le"].isoformat() if article["publie_le"] else "",
+            "publie_le": _date_en_utc(article["publie_le"]),
             # ChromaDB n'accepte pas de liste en métadonnée : on stocke une chaîne
             # entourée de virgules, ce qui permet un filtre `contains ",MC.PA,"`
             # sans confondre « MC.PA » avec un autre ticker qui le contiendrait.

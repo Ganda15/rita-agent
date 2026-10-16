@@ -49,7 +49,7 @@ from indicateurs import socle
 # Même piège que ci-dessus : la route `/donnees/fraicheur` définit une FONCTION
 # `fraicheur()`. Sans alias, elle écraserait le module au chargement.
 from monitorage import fraicheur as monitorage_fraicheur
-from rag.indexation import texte_indexable
+from rag.indexation import editeur, texte_indexable
 from sources import database
 from sources.fred import SERIES
 
@@ -306,7 +306,8 @@ def article(article_id: int) -> dict:
     `extrait` est recalculé par la même fonction que l'indexation (`texte_indexable`) : c'est le passage exact transmis
     au modèle, puisque les lignes de `article` ne sont jamais modifiées après la collecte. Un article bloqué pour
     injection rend 404, comme un identifiant inconnu : le filtre est codé en dur, comme pour la liste. Le lien n'est
-    rendu que s'il est `http` ou `https`.
+    rendu que s'il est `http` ou `https`. `source` est l'éditeur cité par la référence (`editeur`, la même fonction
+    qu'à l'indexation) ; `flux` garde l'identifiant brut du flux, pour le diagnostic.
     """
     sql = """
         SELECT id, source, titre, lien, publie_le, resume, collecte_le
@@ -319,6 +320,7 @@ def article(article_id: int) -> dict:
         raise HTTPException(status_code=404, detail="Article inconnu ou non diffusable.")
     ligne = e.lignes[0]
     return {"table": "article", **ligne, "lien": lien_http(ligne["lien"]),
+            "source": editeur(ligne["source"] or "", ligne["titre"]), "flux": ligne["source"] or "",
             "extrait": texte_indexable(ligne["titre"], ligne["resume"])}
 
 
