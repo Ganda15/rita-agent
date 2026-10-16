@@ -21,6 +21,7 @@
    "faits_attendus": [
     "l'affaire portait sur des soupçons d'entrave à la concurrence (titre de 2799)"
    ],
+   "reperes_attendus": [["entrave", "concurrence"]],
    "faits_possibles": [
     "la sanction pouvait atteindre 10 % du chiffre d'affaires (titre de 2800)",
     "l'engagement de Sanofi sur la promotion de son vaccin antigrippal, attendu seulement si 2801 ou 2802 est rendu (titres de 2801 et 2802)"
@@ -37,7 +38,8 @@
    "faits_attendus": [
     "Lufthansa est désignée pour la reprise de TAP, face à Air France-KLM (titres de 2778 et 2784)",
     "la reprise porte sur 44,9 % du capital (résumé de 2778)"
-   ]
+   ],
+   "reperes_attendus": [["Lufthansa", "Air France-KLM"], ["44,9 %"]]
   },
   {
    "id": "Q3",
@@ -50,6 +52,7 @@
     "le plan s'appelle BEYOND et couvre 2026-2030 (titre de 2795)",
     "il comprend un rachat d'actions historique (titre de 2376)"
    ],
+   "reperes_attendus": [["BEYOND", "2030"], ["rachat d'actions"]],
    "note": "Le corpus ne décrit pas le reste du plan : les résumés répètent les titres. L'abstention est un comportement correct."
   },
   {
@@ -61,7 +64,8 @@
    "faits_attendus": [
     "1 000 postes dans le monde, soit 6 % des effectifs (titre de 2788)",
     "annoncé aux salariés par courriel (résumé de 2788)"
-   ]
+   ],
+   "reperes_attendus": [["1 000 postes", "6 %"], ["courriel"]]
   },
   {
    "id": "Q5",
@@ -73,6 +77,7 @@
     "la croissance française ne dépassera pas 0,5 % en 2027 (titre de 2792)",
     "du fait de l'énergie, du budget et de la hausse des taux (résumé de 2792)"
    ],
+   "reperes_attendus": [["0,5 %", "2027"], ["energie", "budget", "taux"]],
    "note": "Un passage sur 2026 (1165, Insee) est rendu aussi : un chiffre de 2026 présenté pour 2027 est une erreur."
   },
   {
