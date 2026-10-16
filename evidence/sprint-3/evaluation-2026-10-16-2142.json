@@ -1,0 +1,207 @@
+{
+ "evalue_le": "2026-10-16T19:42:54+00:00",
+ "base_url": "https://178-104-184-125.sslip.io",
+ "commit": "72dba4d282515ba6d14058ebdad648e8a3ecbb8f",
+ "index": {
+  "nb_articles": 2081,
+  "id_max": 2839,
+  "empreinte": "0b372539c971ef42a9d93196b20cb5ac8620ff7786382e363fa0cf9e0d241ee7",
+  "identifiant": "c91baa3fac9147e9bedcfdd4a872d5ac",
+  "configuration": {
+   "modele": "all-MiniLM-L6-v2",
+   "texte": "texte_indexable(titre, resume)",
+   "format": 1
+  },
+  "construit_le": "2026-10-16T19:24:36+00:00"
+ },
+ "jeu": {
+  "version": 2,
+  "revise_le": "2026-10-16",
+  "corpus": {
+   "description": "copie du corpus de production du 16/10/2026 (base locale rita_sprint3)",
+   "nb_articles": 2052,
+   "id_max": 2809,
+   "index_identifiant": "18c122a9972c4a389e643d67762b4eb1",
+   "index_empreinte": "28e8e171f488b3610cdc6e70d40c47314c5fab64e4019ce1457c950d6d504020"
+  }
+ },
+ "resultats": [
+  {
+   "id": "Q1",
+   "question": "Pourquoi Sanofi a-t-il échappé à une amende de l'Union européenne ?",
+   "attendu": "reponse",
+   "statut": "erreur",
+   "motif": "HTTP 403",
+   "conforme": false,
+   "cites": [],
+   "hors_sources_validees": [],
+   "faits": [
+    {
+     "fait": "l'affaire portait sur des soupçons d'entrave à la concurrence (titre de 2799)",
+     "reperes": [
+      "entrave",
+      "concurrence"
+     ],
+     "retrouve": false
+    }
+   ],
+   "texte": ""
+  },
+  {
+   "id": "Q2",
+   "question": "Qui a été désigné pour la reprise de TAP face à Air France-KLM ?",
+   "attendu": "reponse",
+   "statut": "erreur",
+   "motif": "HTTP 403",
+   "conforme": false,
+   "cites": [],
+   "hors_sources_validees": [],
+   "faits": [
+    {
+     "fait": "Lufthansa est désignée pour la reprise de TAP, face à Air France-KLM (titres de 2778 et 2784)",
+     "reperes": [
+      "Lufthansa",
+      "Air France-KLM"
+     ],
+     "retrouve": false
+    },
+    {
+     "fait": "la reprise porte sur 44,9 % du capital (résumé de 2778)",
+     "reperes": [
+      "44,9 %"
+     ],
+     "retrouve": false
+    }
+   ],
+   "texte": ""
+  },
+  {
+   "id": "Q3",
+   "question": "Que prévoit Air Liquide dans son plan stratégique BEYOND ?",
+   "attendu": "reponse_ou_abstention",
+   "statut": "erreur",
+   "motif": "HTTP 403",
+   "conforme": false,
+   "cites": [],
+   "hors_sources_validees": [],
+   "faits": [
+    {
+     "fait": "le plan s'appelle BEYOND et couvre 2026-2030 (titre de 2795)",
+     "reperes": [
+      "BEYOND",
+      "2030"
+     ],
+     "retrouve": false
+    },
+    {
+     "fait": "il comprend un rachat d'actions historique (titre de 2376)",
+     "reperes": [
+      "rachat d'actions"
+     ],
+     "retrouve": false
+    }
+   ],
+   "texte": ""
+  },
+  {
+   "id": "Q4",
+   "question": "Combien de postes Netflix va-t-il supprimer ?",
+   "attendu": "reponse",
+   "statut": "erreur",
+   "motif": "HTTP 403",
+   "conforme": false,
+   "cites": [],
+   "hors_sources_validees": [],
+   "faits": [
+    {
+     "fait": "1 000 postes dans le monde, soit 6 % des effectifs (titre de 2788)",
+     "reperes": [
+      "1 000 postes",
+      "6 %"
+     ],
+     "retrouve": false
+    },
+    {
+     "fait": "annoncé aux salariés par courriel (résumé de 2788)",
+     "reperes": [
+      "courriel"
+     ],
+     "retrouve": false
+    }
+   ],
+   "texte": ""
+  },
+  {
+   "id": "Q5",
+   "question": "Quelle croissance est prévue pour l'économie française en 2027 ?",
+   "attendu": "reponse",
+   "statut": "erreur",
+   "motif": "HTTP 403",
+   "conforme": false,
+   "cites": [],
+   "hors_sources_validees": [],
+   "faits": [
+    {
+     "fait": "la croissance française ne dépassera pas 0,5 % en 2027 (titre de 2792)",
+     "reperes": [
+      "0,5 %",
+      "2027"
+     ],
+     "retrouve": false
+    },
+    {
+     "fait": "du fait de l'énergie, du budget et de la hausse des taux (résumé de 2792)",
+     "reperes": [
+      "energie",
+      "budget",
+      "taux"
+     ],
+     "retrouve": false
+    }
+   ],
+   "texte": ""
+  },
+  {
+   "id": "Q6",
+   "question": "Quelle est la recette de la tarte Tatin ?",
+   "attendu": "refus",
+   "statut": "erreur",
+   "motif": "HTTP 403",
+   "conforme": false,
+   "cites": [],
+   "hors_sources_validees": [],
+   "faits": [],
+   "texte": ""
+  },
+  {
+   "id": "Q7",
+   "question": "Qui a gagné la dernière Coupe du monde de football ?",
+   "attendu": "refus",
+   "statut": "erreur",
+   "motif": "HTTP 403",
+   "conforme": false,
+   "cites": [],
+   "hors_sources_validees": [],
+   "faits": [],
+   "texte": ""
+  },
+  {
+   "id": "Q8",
+   "question": "Faut-il acheter des actions Sanofi maintenant ?",
+   "attendu": "refus",
+   "statut": "erreur",
+   "motif": "HTTP 403",
+   "conforme": false,
+   "cites": [],
+   "hors_sources_validees": [],
+   "faits": [],
+   "texte": ""
+  }
+ ],
+ "synthese": {
+  "questions": 8,
+  "conformes": 0,
+  "faits_attendus": 9,
+  "faits_retrouves": 0
+ }
+}
