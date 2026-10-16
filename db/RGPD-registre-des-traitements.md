@@ -11,7 +11,7 @@
 **Base réglementaire** : RGPD (Règlement Général sur la Protection des Données,
 UE 2016/679), **article 30** — registre des activités de traitement.
 
-**Dernière mise à jour** : 2026-10-11 *(exemption domestique de l'article 2.2.c ajoutée au § 0, à examiner ; intérêt légitime de T1 retenu à titre provisoire, justification à documenter ; avant, le 2026-10-10 : glossaire et suites du 02/10 alignés sur la lecture des contrats du 05/10 : clauses contractuelles types prévues, Data Privacy Framework non vérifié ; avant, le 2026-10-09 : Azure AI Foundry passé en Data Zone Standard EU par Era, région mesurée
+**Dernière mise à jour** : 2026-10-16 *(sprint 3, tâche C1 : T7 arrêté (décision D3), date de prise d'effet vérifiée sur le serveur et sur le poste ; corpus d'articles de presse examiné et inscrit ; T8, questions posées dans l'écran de question, inscrit ; avant, le 2026-10-11 : exemption domestique de l'article 2.2.c ajoutée au § 0, à examiner ; intérêt légitime de T1 retenu à titre provisoire, justification à documenter ; avant, le 2026-10-10 : glossaire et suites du 02/10 alignés sur la lecture des contrats du 05/10 : clauses contractuelles types prévues, Data Privacy Framework non vérifié ; avant, le 2026-10-09 : Azure AI Foundry passé en Data Zone Standard EU par Era, région mesurée
 Sweden Central sur trois appels réels, T6 partiellement corrigé ; avant, le 2026-10-05 : règle « UE seule » posée par Era ; T1 corrigé : les noms des sociétés détenues partent vers Google News ; T6, fournisseurs du modèle, et T7, requêtes Google News, inscrits ; traces de test supprimées le 04/10 ; le même jour, garanties contractuelles des destinataires relues : identifiées,
 vérification propre à RITA incomplète, voir § 5)*
 
@@ -45,7 +45,7 @@ d'accès d'un tiers à instruire. Elle ne dispense pas d'encadrer les destinatai
 > T6 (fournisseurs du modèle : depuis le 09/10, Azure, premier de la cascade, traite en Data Zone EU, mais les replis
 > Anthropic et OpenRouter restent sans garantie de région), T7 (Google News), et T3 : le contrat de Langfuse lui-même permet un traitement hors de
 > la région choisie (DPA ClickHouse, § 6.1).
-> Corrections après le gel du 15/10 (§ 5).
+> Corrections après le gel du 15/10 (§ 5). Au 2026-10-16, T7 est arrêté (fiche T7) ; T6 et T3 restent ouverts.
 
 > ⚠️ **Ce que ça change si RITA devient multi-utilisateur** : il faudra déterminer et
 > documenter la base légale de chaque traitement (le consentement n'est qu'une des possibilités ;
@@ -73,8 +73,8 @@ divulgation cause un préjudice réel, donc à protéger sérieusement.
 | **Catégories de données** | Ticker détenu · quantité · prix de revient unitaire (PRU) · date d'achat · devise |
 | **Ce que ça révèle** | La **situation financière** : composition du patrimoine, montants investis, plus ou moins-values (précision du 10/10 : au 10/10, la base de développement et de preuve contient uniquement des positions inventées ; quantités et PRU ne décrivent aucun patrimoine réel ; T1 devient un traitement de portefeuille personnel dès le chargement d'un CSV réel) |
 | **Support** | Table `position` (PostgreSQL) · fichier CSV source |
-| **Destinataires** | Aucun pour les quantités, PRU et dates : elles restent locales. **Les noms des sociétés détenues, eux, partent chaque soir vers Google News** (T7, relevé le 2026-10-05 ; ce registre disait « aucun » à tort) |
-| **Transfert hors UE** | Table et fichier : non. Noms des sociétés détenues : **probable**, voir T7 |
+| **Destinataires** | Aucun pour les quantités, PRU et dates : elles restent locales. **Jusqu'au 2026-10-15, les noms des sociétés détenues partaient chaque soir vers Google News** (T7, relevé le 2026-10-05 ; ce registre disait « aucun » à tort). T7 est arrêté depuis le 2026-10-16 : plus aucun nom ne sort |
+| **Transfert hors UE** | Table et fichier : non. Noms des sociétés détenues : **probable jusqu'au 2026-10-15**, voir T7 (arrêté) |
 | **Durée de conservation** | Position **active** : tant que sa ligne est dans le CSV · position **soldée** : **3 ans après `date_cloture`**, puis suppression (P2). **Depuis le 03/10/2026 (plan 66)** : une ligne retirée du CSV **est** l'acte de vente ; l'import la clôt à la date du jour (la seule date de vente que le projet connaisse, donc en retard du délai entre la vente et l'import suivant) ; une ligne revenue rouvre la même position ; un CSV vide ne clôt rien |
 | **Sécurité** (art. 32) | Fichier source **jamais versionné** (`.gitignore`, vérifié par `git check-ignore`) · base non exposée au réseau · chemin par variable d'environnement `POSITIONS_CSV` |
 
@@ -220,19 +220,86 @@ des données ») et une mesure dans le code plutôt qu'une supposition :
 | **Inventaire champ par champ** | À faire : carte #68 (tableau champ, origine, destinataire, durée, et un test qui échoue si le prompt contient un champ hors liste) |
 | **Correction prévue** (après le gel du 15/10, carte #82) | Ne garder que des fournisseurs approuvés (plan au 10/10, branche `mistral-ue`, PR #88) : Azure AI Foundry en Data Zone Standard EU en premier ; Mistral Large 4 par son adresse européenne en secours, à confirmer par la lecture de son contrat et par le banc C7 ; Anthropic et OpenRouter retirés de la cascade. **Aucun repli vers un fournisseur non approuvé** : sans fournisseur approuvé, l'écran montre les faits et dit « briefing indisponible » (réponse 503 `AUCUN_FOURNISSEUR` prévue par `docs/conception/frontend/refonte-2026-10.md`, § 6) |
 
-### T7 : Recherche d'actualités sur les valeurs détenues (Google News) : ✅ **ACTIF depuis le 2026-08-28**, inscrit le 2026-10-05 (non conforme à la règle UE seule)
+### T7 : Recherche d'actualités sur les valeurs détenues (Google News) : ⛔ **ARRÊTÉ le 2026-10-16** (décision D3), en service du 2026-08-28 au 2026-10-15, inscrit le 2026-10-05
 
-| Rubrique | Contenu (état relu dans le code le 2026-10-05) |
+| Rubrique | Contenu (état relu dans le code le 2026-10-05 ; arrêt ajouté le 2026-10-16) |
 |---|---|
+| **Arrêt et raison** | Décision D3 du sprint 3 : le nom des sociétés du portefeuille ne doit plus sortir vers Google, et T7 ne respectait pas la règle UE seule (§ 0). Code (sprint 3, tâche B1) : la collecte ne lit plus que les trois flux généraux de `FLUX` (`sources/rss.py`) et ne lit plus la table `position` ; au commit `72dba4d`, `git grep "news.google.com" -- sources pipelines` ne rend rien. Les flux généraux restent (voir « Corpus d'articles de presse ») |
+| **Prise d'effet sur le poste** | La tâche planifiée « RITA - collecte quotidienne » exécute le dossier `D:\KandaWork\RITA_PROJECT\rita-agent`. Dernière collecte avec Google News : 2026-10-15 à 19:00 (manifeste du poste, commit `b586072`, « flux OK 9/10 (dont 7 par entreprise) »). Tâche suspendue le 2026-10-16 au matin (`evidence/sprint-3/suspension-collecte-2026-10-16.txt`), dossier passé au commit `72dba4d` le 2026-10-16 à 21:58, tâche réactivée, première collecte le 2026-10-16 à 22:01:39 : `evidence/sprint-3/manifeste-poste-2026-10-16-220139.json` (commit `72dba4d`, « flux OK 3/3 »), preuve complète dans `evidence/sprint-3/reprise-collecte-2026-10-16.txt`. Complément : dans la base locale `rita`, 0 article `ent_%` collecté à partir du 2026-10-16 ; le dernier date du 2026-10-15 à 19:00:37 (requête en lecture, compte `rita`) |
+| **Prise d'effet sur le serveur** | L'ordre `ingerer` existe depuis la livraison N5 (2026-10-16, 18:59, commit `41b1763`), dont le code est déjà sans Google News. D'après le journal des opérations du serveur (`evidence/sprint-3/journal-serveur-2026-10-16.jsonl`), la première ingestion date du 2026-10-16 à 19:04 ; elle s'est arrêtée avant d'écrire (`manifeste-2026-10-16-170439.json`, `FeatureNotFound: lxml`). Première collecte réussie : 2026-10-16 à 21:08, `evidence/sprint-3/manifeste-2026-10-16-190839.json` (« flux OK 3/3 », 29 articles écrits), sur l'image de la livraison N6 (commit `72dba4d`, relevé par `/health` ; le manifeste écrit dans l'image ne porte pas de commit, Git n'y étant pas). Le comptage des articles `ent_%` dans la base de production n'a pas été fait |
+| **Sort des articles déjà collectés** | Ils sont conservés dans le corpus, avec leur origine notée : `source` vaut `ent_<société>` et le lien pointe vers `news.google.com`. 675 articles sur 2052 dans la copie de production du 2026-10-16 (voir « Corpus d'articles de presse ») |
 | **Finalité** | Collecter chaque soir les articles de presse sur les sociétés du portefeuille |
 | **Base légale** | Intérêt légitime |
 | **Catégories de données** | **Le nom de chaque société présente dans la table `position`** (positions closes comprises : `SELECT DISTINCT v.nom_officiel FROM position p JOIN valeur v`, `pipelines/ingest.py:283-289`), placé dans l'adresse d'une requête Google News avec le mot « bourse » et une fenêtre de dates (`sources/rss.py:56-89`) ; l'adresse IP du poste |
 | **Ce que ça révèle** | **La composition du portefeuille**, sans les quantités ni les montants (précision du 10/10 : la base ne contient aujourd'hui que des positions simulées sur des sociétés cotées ; Google reçoit ces noms et l'adresse IP, et recevrait la composition d'un vrai portefeuille dès qu'il serait chargé) |
 | **Destinataire** | Google, service Google News (`news.google.com`) ; entité qui traite et lieu de traitement **non vérifiés** |
 | **Transfert hors UE** | **Probable, non vérifié. Non conforme à la règle UE seule** (§ 0) |
-| **Fréquence** | Chaque soir à 19 h (collecte planifiée) : une requête par société détenue (10 flux le 03/10 : 3 généraux et 7 par société) |
+| **Fréquence** (jusqu'au 2026-10-15) | Chaque soir à 19 h (collecte planifiée) : une requête par société détenue (10 flux le 03/10 : 3 généraux et 7 par société) |
 | **Écart de méthode** | Codé le 28/08 (commit `66ea9f9`) **sans inscription préalable** dans ce registre, alors que la procédure M1 demande d'inscrire un traitement **avant** de le coder. Relevé le 05/10 par une relecture extérieure, confirmé dans le code |
-| **Correction prévue** (après le gel du 15/10, carte #81) | Remplacer les requêtes dérivées des positions par une liste de veille qui n'en dépend pas (par exemple les 111 valeurs suivies), interrogée auprès de sources approuvées ; à défaut, supprimer ces flux |
+| **Correction faite** (carte #81, sprint 3) | Les requêtes dérivées des positions sont **supprimées**, sans liste de veille de remplacement : la collecte garde les trois flux généraux. Une liste de veille indépendante des positions reste possible plus tard, auprès de sources approuvées |
+
+### T8 : Questions posées dans l'écran de question (`POST /question`) : ✅ **ACTIF depuis le 2026-10-16** (livraison N5), inscrit le 2026-10-16
+
+| Rubrique | Contenu (état relu dans le code le 2026-10-16, commit `72dba4d`) |
+|---|---|
+| **Finalité** | Répondre à une question libre à partir du corpus d'articles, avec les références des articles cités, ou refuser de répondre (écran `question.html`, route `POST /question`) |
+| **Base légale** | Intérêt légitime, retenu à titre provisoire comme pour T1 (§ 0) |
+| **Personnes concernées** | Qui pose une question avec la clé d'API : Era, et les personnes à qui il la confie (évaluateurs) |
+| **Catégories de données** | Le texte de la question, qui peut contenir ce que le visiteur choisit d'y écrire, y compris une donnée personnelle ; les passages d'articles transmis au modèle ; la réponse générée ; l'adresse IP et l'heure de la requête, comme pour toute requête HTTP (journal du serveur web non relu) |
+| **Ce que RITA conserve** | Le texte de la question et celui de la réponse : **jamais conservé** par RITA, ni en base, ni dans ses journaux, ni dans ses traces, y compris en cas d'erreur (spec du sprint 3, CA4.3, décision D2 ; prouvé par `tests/test_api_question.py` et `tests/test_traces_question.py`). Ce qui est gardé : dans le journal de l'API, une ligne par question avec l'identifiant de la requête, le statut, le motif, la longueur de la question, les identifiants des articles cités, la durée et l'heure ; dans les traces (T3), les mêmes métadonnées (statut, motif, longueur, identifiants), le texte étant masqué |
+| **Destinataire** | Microsoft Azure AI Foundry, déploiement `gpt-5.4-dzs-eu` en Data Zone Standard, zone UE, **seul fournisseur de ce parcours** : aucun repli vers un autre fournisseur (spec CA2.4). Langfuse Cloud, région UE, pour les métadonnées (T3) |
+| **Transfert hors UE** | Traitement dans la zone de données de l'UE. Microsoft reste une société américaine : même réserve que T6 (§ 5, point 8) |
+| **Ce que Microsoft conserve** (documentation relue le 2026-10-16 : https://learn.microsoft.com/en-us/azure/foundry/responsible-ai/openai/data-privacy et la page « abuse monitoring » qu'elle cite) | Le modèle ne garde pas les questions ni les réponses, et elles ne servent pas à l'entraîner. RITA n'utilise aucune fonction de stockage d'Azure : le paramètre `store` n'est jamais envoyé (`src/llm.py`), ni l'API Responses ni les assistants ne sont appelés. En zone de données UE, le traitement peut avoir lieu dans tout État membre. **Surveillance des abus** : une revue automatique, sans stockage ; un échantillon signalé peut être conservé pour une revue humaine, « stored in the Azure geography where the customer's Foundry resource is deployed » (ici en Europe : la même page réserve le déploiement en zone de données UE aux ressources situées dans un État membre ; région exacte de la ressource non relue, région de traitement mesurée Sweden Central, T6), et relu par des employés de Microsoft situés dans l'Espace économique européen pour un déploiement dans l'EEE. **La durée de cette conservation n'est pas donnée par les deux pages relues.** Une surveillance modifiée, sans stockage ni revue humaine, existe sur demande et sous conditions d'accès ; RITA ne l'a pas demandée |
+| **Durée de conservation** | Texte : aucune chez RITA. Journal de l'API : tant que le conteneur existe ; il est remplacé à chaque livraison et à chaque ingestion (`docker compose up`), et aucune rotation n'est réglée dans les fichiers Compose du dépôt (réglage du démon Docker du serveur non vérifié). Traces : 30 jours (Langfuse, palier gratuit, T3). Chez Microsoft : voir la ligne précédente |
+| **Sécurité** | Route protégée par la clé d'API (403 sans clé) ; texte retiré des journaux et des traces par construction, vérifié par les tests cités |
+| **Droits** | Le texte n'étant pas conservé, il n'y a rien à rendre ni à effacer chez RITA ; les métadonnées se retrouvent par l'identifiant de la requête (journaux) ou dans Langfuse (T3) |
+
+### Corpus d'articles de presse (table `article`) : examiné le 2026-10-16, inscrit comme traitement accessoire
+
+Examen fait sur la copie locale de la production du 2026-10-16 (base `rita_sprint3`, compte en lecture seule
+`rita_lecture`), qui contient les 2052 articles servis avant la première ingestion ; l'ingestion du 16/10 en a ajouté 29,
+tous venus des trois flux généraux.
+
+**Les sources** (spec CA4.1) :
+
+| Source | Nature | Finalité | Ce qui rend l'usage licite | Articles au 2026-10-16 |
+|---|---|---|---|---|
+| `bfm_eco` | Flux RSS public de BFM, rubrique économie (https://www.bfmtv.com/rss/economie/) | Actualité économique générale, citée dans les réponses | Flux publié par l'éditeur pour être repris par des lecteurs de flux ; RITA ne garde que le titre, le résumé du flux, le lien et la date, et chaque citation renvoie à l'article de l'éditeur | 442 |
+| `latribune` | Flux RSS public de La Tribune (https://www.latribune.fr/feed.xml) | Idem | Idem | 474 |
+| `lemonde_eco` | Flux RSS public du Monde, rubrique économie (https://www.lemonde.fr/economie/rss_full.xml) | Idem | Idem | 461 |
+| `ent_<société>` | Anciennes requêtes Google News par société (T7, arrêté le 2026-10-16) ; liens `news.google.com`, éditeur réel noté à la fin du titre | Actualité des sociétés suivies | Mêmes champs que ci-dessus ; plus aucune collecte depuis l'arrêt de T7 ; conservés, origine notée | 675 |
+
+Limite : les conditions de réutilisation propres à chaque éditeur ne sont pas relues (§ 5).
+
+**Les champs réellement indexés** (spec CA4.2) : le texte vectorisé est le titre puis le résumé du flux
+(`texte_indexable`, `rag/indexation.py`) ; les métadonnées gardées avec lui sont la source (l'éditeur), le titre, le
+flux, le lien, la date de publication et les valeurs suivies citées. La table `article` n'a pas de colonne d'auteur :
+**aucun auteur n'est collecté**, ni l'article complet.
+
+**Les personnes qui peuvent y être nommées** : dirigeants d'entreprise, responsables politiques, banquiers centraux,
+économistes ou analystes cités dans un titre ou un résumé. Mesure du 2026-10-16 : 305 des 2052 articles citent une
+fonction de personne (PDG, président, ministre, directeur, économiste, analyste, « M. », « Mme »…) dans leur titre ou
+leur résumé. C'est un repérage par mots-clés, une indication et non un décompte des personnes. Des données publiées
+dans la presse restent des données personnelles, et leur réutilisation reste soumise au RGPD (CNIL,
+https://www.cnil.fr/fr/recommandations-reutilisateurs-donnees-internet) : la non-applicabilité n'est donc pas
+retenue, et le corpus est inscrit ici comme un traitement accessoire.
+
+**Nécessité** : le nom fait partie du fait rapporté (« le PDG annonce… ») ; le retirer déformerait l'information citée.
+RITA ne s'en sert pas pour décrire une personne : aucune recherche par personne, aucune fiche, aucun croisement.
+
+**Mesures de minimisation** : aucun champ de personne ; aucun auteur ; aucun enrichissement ; seul le résumé publié dans
+le flux, jamais l'article complet ; les articles bloqués par le garde-fou d'injection (`bloque_injection`) ne sont jamais
+indexés (aucun dans la copie du 2026-10-16) ; le texte des questions n'est pas conservé (T8).
+
+**Ce que les anciens articles Google News révèlent** : leur `source` porte le nom d'une société de la table `position`
+(`ent_<société>`). Le corpus laisse donc deviner la composition du portefeuille, aujourd'hui simulé (T1). Depuis la
+livraison N6, la fiche d'un article (`GET /donnees/articles/{id}`, protégée par la clé) montre ce nom dans le champ
+`flux`.
+
+**Base légale** : intérêt légitime (information économique des réponses), retenu à titre provisoire (§ 0).
+
+**Durée de conservation** : **aucune limite aujourd'hui**. Aucune purge ne vise la table `article` (§ 2) : les articles
+restent tant que la base existe. Ce point est ouvert (§ 5).
 
 ### Ce qui **n'est pas** un traitement de données personnelles
 
@@ -240,7 +307,9 @@ des données ») et une mesure dans le code plutôt qu'une supposition :
 |---|---|
 | `cotation`, `valeur`, `alias_valeur` | Cours de bourse — **données publiques**, aucune personne identifiable |
 | `taux_change` | Taux BCE — donnée publique |
-| `article` | Presse publique. ⚠️ *Peut* citer des personnes, mais on ne les traite pas en tant que personnes |
+
+La table `article` figurait ici jusqu'au 2026-10-16 ; elle est examinée et inscrite dans « Corpus d'articles de presse »
+ci-dessus.
 
 ---
 
@@ -284,7 +353,7 @@ utilisateur.
 | **Rectification** | 16 | `UPDATE position SET quantite = ... WHERE id = ...;` |
 | **Effacement** | 17 | `DELETE FROM position WHERE id = ...;` puis purge du CSV source |
 | **Portabilité** | 20 | `\copy (SELECT * FROM position) TO 'export.csv' CSV HEADER` — format ouvert |
-| **Limitation** | 18 | Sans objet tant que la personne concernée est le responsable ; les destinataires extérieurs sont listés en T3, T6 et T7 |
+| **Limitation** | 18 | Sans objet tant que la personne concernée est le responsable ; les destinataires extérieurs sont listés en T3, T6, T7 (arrêté) et T8 |
 | **Opposition** | 21 | Sans objet : la personne concernée est le responsable de traitement |
 
 ---
@@ -297,12 +366,14 @@ utilisateur.
 | 2 | **Hook Git `pre-commit`** interdisant l'ajout d'un fichier personnel (P4) | 🟠 moyenne |
 | 3 | Brancher P1 et P2 sur APScheduler (aujourd'hui : lancement manuel) | 🟠 moyenne |
 | 4 | Chiffrer la sauvegarde de la base si elle sort de la machine | 🟡 basse tant que tout est local |
-| 5 | **T7 (carte #81) : arrêter d'envoyer à Google News les noms des sociétés détenues** (liste de veille indépendante des positions, sources approuvées) | 🔴 haute : révèle chaque soir la composition du portefeuille hors de l'UE (précision du 10/10 : aujourd'hui des positions simulées et l'adresse IP ; **bloquante avant tout chargement d'un portefeuille réel**) |
+| 5 | ~~**T7 (carte #81) : arrêter d'envoyer à Google News les noms des sociétés détenues**~~ **Fait le 2026-10-16** (sprint 3, décision D3) : requêtes par société supprimées, prise d'effet vérifiée sur le poste et sur le serveur (fiche T7). Reste : compter les articles `ent_%` collectés après le 2026-10-16 dans la base de production | ✅ fait ; 🟡 basse pour le comptage |
 | 6 | **T6 (cartes #82 et #68) : n'appeler que des fournisseurs de modèle approuvés UE**, sans repli vers un fournisseur non approuvé ; **fait le 2026-10-09 pour le premier fournisseur** (Azure en Data Zone EU, région mesurée) ; reste : retirer les replis Anthropic et OpenRouter (plan du 10/10 : `LLM_ORDRE=foundry,mistral` sur la branche `mistral-ue`, Mistral Large 4 après lecture de son contrat et banc C7 ; test et réponse 503 déjà spécifiés), relire en entier le contrat de Microsoft | 🟠 moyenne : un briefing ne sort de l'UE que si Azure échoue |
 | 7 | **Transferts hors UE (T3, T6)** : pour chaque destinataire, vérifier la certification au Data Privacy Framework ; à défaut, faire l'**analyse d'impact du transfert (AITD)** exigée par la CNIL pour les clauses types ; documenter contrats applicables, données envoyées, sous-traitants, lieux et durées | 🟠 moyenne pour le RGPD ; sans effet sur la règle UE seule, qui interdit le transfert de toute façon |
 | 8 | **T6, Azure** : Microsoft documente des cas limités de transfert hors de son EU Data Boundary, dont l'accès à distance de son personnel (https://learn.microsoft.com/en-us/privacy/eudb/eu-data-boundary-learn) ; un accès à distance depuis un pays tiers est un transfert (CEPD, lignes directrices 05/2021, § 9). Lire ces cas avant de dire T6 conforme à la règle UE seule | 🟠 moyenne |
 | 9 | **T1, jeu de démonstration** : la base contient des positions inventées sur des sociétés réellement cotées (déclaration d'Era du 2026-10-10 : il ne détient pas ces titres) ; 12 lignes dans le fichier d'exemple, 10 gardées par le lecteur, 7 importées (3 hors univers) ; T1 aligné le 10/10 ; reste à documenter comment le fichier local non versionné `data/positions.csv` a été constitué | 🟡 basse |
 | 10 | **yfinance (Yahoo, États-Unis)** : la requête du soir envoie les 108 valeurs encore cotées (les 3 radiées ne sont plus demandées) et l'adresse IP du poste ; elle ne révèle pas les positions ; à inscrire (ce qui part, où, sous quelle lecture du CEPD) | 🟡 basse |
+| 11 | **Corpus d'articles** : fixer une durée de conservation et la purge qui l'applique (aucune limite aujourd'hui) ; décider du sort des 675 articles `ent_%`, dont la source laisse deviner la composition du portefeuille ; relire les conditions de réutilisation de chaque flux | 🟠 moyenne |
+| 12 | **T8, Azure** : la durée de conservation de l'échantillon gardé pour la revue humaine des abus n'est pas donnée par la documentation relue le 2026-10-16 ; la surveillance modifiée (sans stockage) n'est pas demandée ; le journal du serveur web (adresse IP, heure) n'est pas relu | 🟡 basse : seul un échantillon signalé est gardé, dans la géographie de la ressource |
 
 > 🟠 **Statut des transferts au 2026-10-05 : garanties contractuelles identifiées ; vérification propre à RITA
 > incomplète.** Trouver une clause (DPA, clauses contractuelles types) montre qu'une garantie existe, pas que la
