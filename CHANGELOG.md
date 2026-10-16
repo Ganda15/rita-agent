@@ -9,6 +9,36 @@
 
 ---
 
+## 2026-10-16 (nuit) : sprint 3 en production (N5, N6), ingestion par le bouton, évaluation en production, registre RGPD
+
+**Livré** : N5 (PR #101, `41b1763`) puis N6 (PR #103, `72dba4d`), en production le 16/10 ; `/health` annonce `72dba4d`
+et l'index `c91baa3f…` (2081 articles). Tag prévu : `livrable-sprint-3-v1`, posé par Era sur le commit final, après la livraison N7,
+l'atelier 3 et l'intégration de sa grille, et la Definition of Done.
+
+**Manques découverts, et suites** :
+- Première ingestion arrêtée à la collecte : `lxml` absent de l'image, présent sur le poste, si bien que la suite
+  passait. Corrigé en N6 (`html.parser`), avec un essai du nettoyage dans l'image, en CI, avant publication.
+- L'empreinte de l'index dépendait du fuseau de la session PostgreSQL (`+02:00` sur le poste, `+00:00` sur le
+  serveur) : dates écrites en UTC (N6) ; même corpus, même empreinte des deux côtés (`50579b43a651…`).
+- Revue automatique de la PR #100 : la fiche nommait le flux au lieu de l'éditeur, et un jeu aux repères incomplets
+  était accepté ; corrigés en N6. Revue de la PR #102 : un récit rangé dans `evidence/`, alors que la règle veut des
+  preuves constituées au fil de l'eau ; déplacé dans `docs/sprint-3/`, fichiers bruts du serveur copiés dans
+  `evidence/sprint-3/`.
+- Évaluation en production : un caractère de contrôle U+0000 dans une réponse du modèle. Correction implémentée et
+  testée sur la branche (`f089be2`, test d'abord), livraison prévue avec N7.
+- L'outil d'évaluation charge la clé locale du `.env` quand `RITA_API_KEY` manque : relevé, non corrigé.
+- Construction de l'image : quatre 429 de `public.ecr.aws` dans la journée, relancés à la main ; cause non traitée.
+
+**Résultats mesurés** : ingestions à 21:08 (29 articles écrits) et à 21:21 (aucun, dédoublonnage), rejeux sans écart ;
+évaluation, sur ce passage en production : 8 sur 8 conformes aux contrôles du jeu ; 3 faits sur 9 retrouvés
+automatiquement ; aucune affirmation non soutenue selon la relecture d'Era.
+
+**Décisions** : T7 (Google News) arrêté, date vérifiée sur le serveur (première collecte sans lui à 21:08) et sur le
+poste (22:01, dossier d'origine passé sur `main`, tâche réactivée par Era) ; corpus d'articles examiné et inscrit comme
+traitement accessoire ; T8, questions de l'écran, inscrit (`db/RGPD-registre-des-traitements.md`).
+
+---
+
 ## 2026-10-16 : sprint 3, spec et plan validés, code complet sur la branche, évaluation locale
 
 **Décisions structurantes** (spec `docs/sprint-3/SPEC.md`, validée par Era) : D1, une ingestion prépare un nouvel

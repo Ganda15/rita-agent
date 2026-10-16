@@ -34,7 +34,8 @@ Document d'entrée du sprint 3 du fil rouge RITA. Il dit où voir chaque critèr
   l'index. Première tentative arrêtée avant le serveur par un 429 du registre d'images, seconde livrée à 21:05 ;
   index reconstruit avec la même empreinte de contenu que celui de N5.
 - **Ingestions** : à 21:08, 29 articles écrits (2052 à 2081) ; à 21:21, aucun (dédoublonnage). Rejeux sans écart.
-- **Évaluation en production** : 8 questions sur 8 conformes, aucune affirmation non soutenue (relecture d'Era).
+- **Évaluation en production** : sur ce passage, 8 sur 8 conformes aux contrôles du jeu ; 3 faits sur 9 retrouvés
+  automatiquement ; aucune affirmation non soutenue selon la relecture d'Era.
 - **Collecte du poste** : reprise sur le code de N6, sans Google News (première collecte à 22:01, 6 étapes sur 6).
 - **À livrer (N7)** : les caractères de contrôle du texte du modèle remplacés par une espace (relevé par l'évaluation
   en production, commit `f089be2`), avec les documents de fin de sprint.
