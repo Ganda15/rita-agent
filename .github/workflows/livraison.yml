@@ -245,6 +245,14 @@ jobs:
           docker run --rm --entrypoint sh rita-api:verification -c 'test -f /app/deploy/docker-compose.yml && test -f /app/deploy/compose.prod.yml'
           echo "fichiers de déploiement présents dans l'image"
 
+      - name: Vérifier que l'image sait nettoyer un résumé RSS
+        # Livraison N5 (16/10/2026) : la première ingestion a échoué en production sur `FeatureNotFound: lxml`, une
+        # bibliothèque installée sur le poste mais absente de l'image ; la suite de tests passait. L'essai se fait donc
+        # dans l'image elle-même, sans réseau. `SystemExit(True)` rend le code 1 : l'étape échoue si le texte diffère.
+        run: |
+          docker run --rm --network none --entrypoint python rita-api:verification -c 'from sources.rss import _nettoyer_html as nettoyer; texte = nettoyer("<p>Un <b>resume</b> court</p>"); print(texte); raise SystemExit(texte != "Un resume court")'
+          echo "nettoyage des resumes RSS operationnel dans l'image"
+
       - name: Arrêter le conteneur de vérification
         if: always()
         run: docker rm -f verification || true

@@ -67,6 +67,11 @@ def charger_jeu(chemin: Path = JEU) -> dict:
             raise ValueError(f"{identifiant} : une question couverte doit donner ses sources et ses faits")
         if not set(attendues) <= set(validees):
             raise ValueError(f"{identifiant} : une source attendue doit aussi être validée")
+        # Chaque fait attendu a ses repères, dans le même ordre : l'évaluation (evals/evaluer_reponses.py) les lit
+        # deux à deux, et un fait sans repère sortirait du décompte sans rien signaler.
+        reperes = question.get("reperes_attendus")
+        if not isinstance(reperes, list) or len(reperes) != len(question["faits_attendus"]):
+            raise ValueError(f"{identifiant} : chaque fait attendu doit avoir ses repères")
     return jeu
 
 

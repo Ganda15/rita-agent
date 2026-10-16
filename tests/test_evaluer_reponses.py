@@ -116,6 +116,16 @@ def test_les_faits_retrouves_sont_notes_un_par_un():
     assert ligne["texte"] == obtenu["texte"]      # gardé pour la relecture de la fidélité par Era
 
 
+def test_des_reperes_incomplets_arretent_l_evaluation():
+    # Revue automatique de la PR #100 (P2) : `zip` s'arrêtait à la liste la plus courte. Un fait sans repère sortait
+    # du décompte, et le total des faits attendus baissait sans que rien ne le signale.
+    incomplete = _q("Q4", "reponse", validees=[2788], reperes=[["1 000 postes"]])
+    incomplete["faits_attendus"].append("un fait sans repère")
+    obtenu = _reponse("Netflix supprime 1 000 postes [1].", 2788)
+    with pytest.raises(ValueError):
+        ev.evaluer("http://api.test", _jeu(incomplete), transport=_transport({"Question Q4 ?": obtenu}))
+
+
 def test_une_panne_est_notee_sans_arreter_l_evaluation():
     jeu = _jeu(_q("Q1", "reponse", validees=[2799]), _q("Q4", "reponse", validees=[2788]),
                _q("Q5", "reponse", validees=[2792]))

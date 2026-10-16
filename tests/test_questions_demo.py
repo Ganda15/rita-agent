@@ -43,7 +43,8 @@ def _trouve(*ids):
 def _question(identifiant, attendu, sources=(), motif=None):
     question = {"id": identifiant, "question": f"Question {identifiant} ?", "attendu": attendu,
                 "sources_attendues": list(sources), "sources_validees": list(sources),
-                "faits_attendus": ["un fait"] if attendu != "refus" else []}
+                "faits_attendus": ["un fait"] if attendu != "refus" else [],
+                "reperes_attendus": [["fait"]] if attendu != "refus" else []}
     if motif:
         question["motif_attendu"] = motif
     return question
@@ -86,8 +87,19 @@ def test_le_jeu_est_la_version_2_de_la_spec():
     assert par_id["Q8"]["motif_attendu"] == "INTENTION_INTERDITE"
 
 
+def test_un_jeu_bien_forme_est_accepte(tmp_path):
+    # Le témoin des cas mal formés ci-dessous : sans lui, un jeu de départ refusé pour une autre raison les ferait
+    # tous passer.
+    chemin = tmp_path / "jeu.json"
+    chemin.write_text(json.dumps(_jeu(_question("Q1", "reponse", [1]), _question("Q2", "refus", motif="OUT_OF_CORPUS"))),
+                      encoding="utf-8")
+    assert len(controle_questions.charger_jeu(chemin)["questions"]) == 2
+
+
 @pytest.mark.parametrize("defaut", ["attendu_inconnu", "reponse_sans_source", "source_attendue_non_validee",
-                                    "refus_sans_motif", "identifiant_en_double"])
+                                    "refus_sans_motif", "identifiant_en_double",
+                                    # Revue automatique de la PR #100 (P2) : chaque fait attendu a ses repères.
+                                    "reperes_absents", "reperes_incomplets"])
 def test_un_jeu_mal_forme_est_refuse(tmp_path, defaut):
     questions = [_question("Q1", "reponse", [1]), _question("Q2", "refus", motif="OUT_OF_CORPUS")]
     if defaut == "attendu_inconnu":
@@ -98,6 +110,10 @@ def test_un_jeu_mal_forme_est_refuse(tmp_path, defaut):
         questions[0]["sources_validees"] = [2]
     elif defaut == "refus_sans_motif":
         del questions[1]["motif_attendu"]
+    elif defaut == "reperes_absents":
+        del questions[0]["reperes_attendus"]
+    elif defaut == "reperes_incomplets":
+        questions[0]["faits_attendus"].append("un second fait")
     else:
         questions[1]["id"] = "Q1"
     chemin = tmp_path / "jeu.json"

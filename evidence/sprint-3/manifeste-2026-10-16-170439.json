@@ -1,0 +1,27 @@
+{
+ "version_manifeste": 1,
+ "debut": "2026-10-16T17:04:39",
+ "duree_s": 0.8,
+ "mode": "execution",
+ "periode": null,
+ "etapes_demandees": [
+  "rss"
+ ],
+ "code": {
+  "commit": null,
+  "python": "3.13.16"
+ },
+ "etapes": [
+  {
+   "lues": 0,
+   "ecrites": 0,
+   "rejetees": 0,
+   "erreur": "FeatureNotFound: Couldn't find a tree builder with the features you requested: lxml. Do yo",
+   "details": [],
+   "ok": false,
+   "nom": "rss"
+  }
+ ],
+ "etapes_ok": 0,
+ "etapes_total": 1
+}

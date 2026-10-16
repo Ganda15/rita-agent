@@ -13,7 +13,7 @@ from fastapi.testclient import TestClient
 from agents import question
 from api.main import app
 from rag import indexation
-from rag.indexation import texte_indexable
+from rag.indexation import editeur, texte_indexable
 from rag.recherche import Resultat
 from src import traces
 from src.llm import FournisseurIndisponible
@@ -190,6 +190,31 @@ def test_la_fiche_correspond_a_la_reference(client, monkeypatch):
     assert reference["titre"] == fiche["titre"]
     assert reference["lien"] == fiche["lien"]
     assert reference["date"][:10] == fiche["publie_le"][:10]
+
+
+def test_la_fiche_cite_l_editeur_et_garde_le_flux(client, monkeypatch):
+    # Revue automatique de la PR #100 (P2) : la référence nomme l'éditeur (`editeur`, appliqué à l'indexation), la
+    # fiche rendait l'identifiant brut du flux. Les deux doivent nommer la même source ; le flux reste, pour le
+    # diagnostic, sous son propre nom.
+    _base(monkeypatch, [{**LIGNE_2788, "source": "lemonde_eco"}])
+    fiche = client.get("/donnees/articles/2788", headers=CLE).json()
+    assert fiche["source"] == editeur("lemonde_eco", LIGNE_2788["titre"]) == "Le Monde Éco"
+    assert fiche["flux"] == "lemonde_eco"
+
+
+def test_la_source_de_la_fiche_est_celle_de_la_reference(client, monkeypatch, tmp_path):
+    # Même vérification de bout en bout : un vrai index, une vraie référence, puis la fiche du même article. Un
+    # article d'entreprise vient du flux `ent_<société>` et cite l'éditeur écrit à la fin de son titre.
+    lignes = [_ligne(2788, "Netflix va supprimer 1 000 postes - Boursorama", "Soit 6 % de ses effectifs",
+                     source="ent_netflix")]
+    monkeypatch.setattr(question, "generer_json", lambda *a, **k:
+                        '{"statut": "reponse", "texte": "Netflix supprime 1 000 postes [1].", "citations": [1]}')
+    _indexer(monkeypatch, tmp_path, lignes)
+    reference = question.repondre("Combien de postes Netflix va supprimer ?", chemin_index=tmp_path).references[0]
+    _base(monkeypatch, [{**lignes[0], "collecte_le": datetime(2026, 10, 14, 19, 0)}])
+    fiche = client.get("/donnees/articles/2788", headers=CLE).json()
+    assert reference.source == fiche["source"] == "Boursorama"
+    assert fiche["flux"] == "ent_netflix"
 
 
 def test_l_extrait_presente_est_celui_transmis_au_modele(client, monkeypatch, tmp_path):
