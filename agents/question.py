@@ -12,11 +12,16 @@ l'application traduit en titre, source, date et lien à partir des données stoc
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, ValidationError
 
-from rag.recherche import Passage
+from guardrails.entree import MESSAGE_REFUS as MESSAGE_INTENTION_INTERDITE
+from guardrails.sortie import verifier_sortie
+from rag.recherche import Passage, rechercher
+from src.llm import FournisseurIndisponible, ReponseTronquee, generer_json
 
 
 class SortieModele(BaseModel):
@@ -68,9 +73,18 @@ Réponds uniquement par un objet JSON de la forme {"statut": "reponse" ou "abste
 "citations": [numéros des extraits cités]}."""
 
 
+_REMPLACEMENTS = str.maketrans({"<": "‹", ">": "›", "[": "(", "]": ")", "\r": " ", "\n": " "})
+
+
 def _neutraliser(texte: str) -> str:
-    """Remplace les chevrons : une question ou un extrait ne peut pas fermer une balise et sortir de son bloc."""
-    return texte.replace("<", "‹").replace(">", "›")
+    """Rend inoffensif un texte venu d'un visiteur ou d'un article, avant de le placer dans le prompt.
+
+    - Les chevrons deviennent `‹ ›` : le texte ne peut pas fermer une balise et sortir de son bloc.
+    - Les crochets deviennent des parenthèses, et les retours à la ligne des espaces : le texte ne peut pas fabriquer
+      une fausse ligne « [2] (Reuters, date) ... » et faire attribuer une phrase à une fausse source (revue de
+      sécurité des commits A1 à A3, 16/10/2026). Seule l'application écrit des numéros d'extraits.
+    """
+    return texte.translate(_REMPLACEMENTS)
 
 
 def construire_prompt(question: str, passages: list[Passage]) -> str:
@@ -86,3 +100,101 @@ def construire_prompt(question: str, passages: list[Passage]) -> str:
     )
     return (f"{CONSIGNES}\n\n<extraits>\n{extraits}\n</extraits>\n\n"
             f"<question>\n{_neutraliser(question)}\n</question>")
+
+
+# --- Tâche A4 : répondre à une question ----------------------------------------------------------------------------
+# Un refus (« je ne peux pas répondre sur le fond ») est une issue normale ; une erreur (« le service n'a pas pu
+# fonctionner ») est une panne. Les deux ne se confondent jamais : la route rend 200 pour un refus, 503 pour une erreur.
+
+OK = "OK"
+INTENTION_INTERDITE = "INTENTION_INTERDITE"
+OUT_OF_CORPUS = "OUT_OF_CORPUS"
+ABSTENTION = "ABSTENTION"
+CITATIONS_INVALIDES = "CITATIONS_INVALIDES"
+SORTIE_NON_CONFORME = "SORTIE_NON_CONFORME"
+FOURNISSEUR_INDISPONIBLE = "FOURNISSEUR_INDISPONIBLE"
+REPONSE_TRONQUEE = "REPONSE_TRONQUEE"
+FORMAT_INVALIDE = "FORMAT_INVALIDE"
+
+TEXTES_REFUS = {
+    OUT_OF_CORPUS: ("Je ne trouve pas cette information dans les articles dont je dispose. "
+                    "Je préfère ne pas répondre plutôt qu'inventer."),
+    INTENTION_INTERDITE: MESSAGE_INTENTION_INTERDITE,
+    ABSTENTION: "Les articles dont je dispose ne permettent pas de répondre à cette question.",
+    CITATIONS_INVALIDES: "La réponse produite ne citait pas correctement ses sources : elle n'est pas affichée.",
+}
+TEXTE_ERREUR = "Le service n'a pas pu répondre pour le moment. Réessayez plus tard."
+
+
+@dataclass(frozen=True)
+class Reference:
+    """Une source citée, construite à partir des données stockées : jamais à partir du texte du modèle."""
+
+    n: int            # le numéro cité dans le texte de la réponse
+    table: str        # la table d'origine : toujours « article »
+    id: int
+    titre: str
+    source: str
+    date: str
+    lien: str
+    extrait: str      # le texte exact du passage transmis au modèle
+
+
+@dataclass(frozen=True)
+class ReponseQuestion:
+    statut: Literal["reponse", "refus", "erreur"]
+    motif: str
+    texte: str
+    references: list[Reference] = field(default_factory=list)
+
+
+def _refus(motif: str, texte: str | None = None) -> ReponseQuestion:
+    return ReponseQuestion("refus", motif, texte or TEXTES_REFUS.get(motif, TEXTES_REFUS[OUT_OF_CORPUS]))
+
+
+def _erreur(motif: str) -> ReponseQuestion:
+    return ReponseQuestion("erreur", motif, TEXTE_ERREUR)
+
+
+def _reference(numero: int, passage: Passage) -> Reference:
+    return Reference(n=numero, table="article", id=passage.article_id, titre=passage.titre, source=passage.source,
+                     date=passage.publie_le, lien=passage.lien, extrait=passage.texte)
+
+
+def repondre(question: str, chemin_index: Path | None = None, k: int = 3) -> ReponseQuestion:
+    """Répond à `question` à partir du corpus, ou refuse, ou signale une erreur technique.
+
+    Ordre : recherche (refus sans modèle si rien n'est retenu) ; appel au modèle ; validation du format ; abstention ;
+    citations ; garde-fou AMF ; références construites seulement pour les numéros cités, depuis les passages.
+    """
+    resultat = rechercher(question, k=k, chemin=chemin_index)
+    if not resultat.trouve:
+        return _refus(resultat.motif)
+
+    passages = resultat.passages
+    try:
+        brut = generer_json(construire_prompt(question, passages), SCHEMA_SORTIE, "reponse_rita")
+    except FournisseurIndisponible:
+        return _erreur(FOURNISSEUR_INDISPONIBLE)
+    except ReponseTronquee:
+        return _erreur(REPONSE_TRONQUEE)
+
+    # Une `ValidationError` recopie l'entrée dans son message : elle n'est jamais journalisée, seulement traduite.
+    if not isinstance(brut, str):
+        return _erreur(FORMAT_INVALIDE)
+    try:
+        sortie = SortieModele.model_validate_json(brut)
+    except ValidationError:
+        return _erreur(FORMAT_INVALIDE)
+
+    if sortie.statut == "abstention":
+        return _refus(ABSTENTION)
+    if not citations_valides(sortie, len(passages)):
+        return _refus(CITATIONS_INVALIDES)
+
+    verdict = verifier_sortie(sortie.texte)
+    if not verdict["conforme"]:
+        return _refus(SORTIE_NON_CONFORME, verdict["texte_diffusable"])
+
+    references = [_reference(numero, passages[numero - 1]) for numero in sorted(set(sortie.citations))]
+    return ReponseQuestion("reponse", OK, sortie.texte, references)
