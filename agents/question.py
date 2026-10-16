@@ -12,6 +12,7 @@ l'application traduit en titre, source, date et lien à partir des données stoc
 from __future__ import annotations
 
 import re
+import unicodedata
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Literal
@@ -183,6 +184,15 @@ def _retirer_liens(texte: str) -> str:
     return _ADRESSE_ECRITE.sub("(lien retiré)", texte)
 
 
+def _sans_caracteres_de_controle(texte: str) -> str:
+    """Remplace par une espace chaque caractère de contrôle du texte du modèle, sauf le retour à la ligne.
+
+    Évaluation en production (16/10/2026) : une réponse contenait U+0000 entre « 1 » et « 000 », à la place d'une
+    espace. Un caractère de contrôle n'a rien à faire dans un texte montré à l'utilisateur.
+    """
+    return "".join(" " if unicodedata.category(c) == "Cc" and c != "\n" else c for c in texte)
+
+
 def _reference(numero: int, passage: Passage) -> Reference:
     return Reference(n=numero, table="article", id=passage.article_id, titre=passage.titre, source=passage.source,
                      date=passage.publie_le, lien=lien_http(passage.lien), extrait=passage.texte)
@@ -218,7 +228,9 @@ def repondre(question: str, chemin_index: Path | None = None, k: int = 3) -> Rep
         return _refus(ABSTENTION)
     # Les adresses écrites par le modèle sont retirées AVANT le contrôle des citations : si une adresse collée à un
     # « [1] » l'emporte avec elle, les citations ne correspondent plus, et la réponse est refusée plutôt que tronquée.
-    sortie = sortie.model_copy(update={"texte": _retirer_liens(sortie.texte)})
+    # Les caractères de contrôle sont remplacés avant tout le reste : le retrait des liens, les citations et le
+    # garde-fou AMF lisent le texte tel qu'il sera montré.
+    sortie = sortie.model_copy(update={"texte": _retirer_liens(_sans_caracteres_de_controle(sortie.texte))})
     if not citations_valides(sortie, len(passages)):
         return _refus(CITATIONS_INVALIDES)
 

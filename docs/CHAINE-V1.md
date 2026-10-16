@@ -77,9 +77,11 @@ déploiement progressif (un seul utilisateur).
    jamais une bascule commencée. Chaque déploiement figure dans l'onglet *Deployments* du dépôt.
 4. **Connexion au serveur** par SSH, avec une clé dédiée à commande forcée : elle ne peut lancer que
    `deploy/deployer.sh`, qui appelle `deploy/deployer.py` (Python, testé par pytest), tous deux installés par Era dans
-   `/root/rita-deploy/bin/`. Le script n'accepte que trois ordres : `livrer <image>@sha256:<64 caractères
-   hexadécimaux>`, `revenir <numéro de passage>` et `version` (l'empreinte du script, comparée par la chaîne à celle du
-   dépôt avant chaque opération). Il prend un verrou commun au déploiement et au retour arrière, et écrit une marque
+   `/root/rita-deploy/bin/`. Au sprint 2, le script n'acceptait que trois ordres : `livrer <image>@sha256:<64
+   caractères hexadécimaux>`, `revenir <numéro de passage>` et `version` (l'empreinte du script, comparée par la chaîne
+   à celle du dépôt avant chaque opération). Depuis le sprint 3 (16/10/2026), il en accepte un quatrième,
+   `ingerer <numéro de passage>` (décision D1 de `docs/sprint-3/SPEC.md` ; exploitation : `docs/EXPLOITATION.md`,
+   § 8). Il prend un verrou commun à toutes ses opérations, et écrit une marque
    « opération commencée » avant toute bascule. L'image embarque ses fichiers de déploiement (`docker-compose.yml`,
    `deploy/compose.prod.yml`) : le script les en extrait, si bien qu'une empreinte désigne à la fois le code et sa
    configuration. Limite : une nouvelle version du script lui-même se recopie à la main.

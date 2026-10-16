@@ -1,0 +1,82 @@
+Reprise de la collecte quotidienne du poste d'Era (décision D3 : arrêt de Google News, plan de travail D2, étape 8)
+==============================================================================================================
+
+Pourquoi : la tâche planifiée Windows « RITA - collecte quotidienne » avait été suspendue le 16/10/2026 au matin
+(evidence/sprint-3/suspension-collecte-2026-10-16.txt), parce que le dossier qu'elle exécute,
+D:\KandaWork\RITA_PROJECT\rita-agent, contenait encore le code du sprint 2, qui interroge Google News. Condition de
+reprise (plan, D2 étape 8) : ce dossier exécute un commit qui contient la tâche B1, vérifié par le commit relevé et
+l'absence de news.google.com dans son code.
+
+1. Mise à jour du dossier d'origine (faite par l'assistant sur « fais-le » d'Era, le 16/10/2026 à 21:58, heure de Paris)
+-----------------------------------------------------------------------------------------------------------------------
+
+Avant : branche sprint-2-socle-chaine, commit 3c656f9, arbre propre ; git grep "news.google.com" -- sources pipelines
+rendait une occurrence (sources/rss.py).
+
+Commandes, dans D:\KandaWork\RITA_PROJECT\rita-agent :
+  git fetch origin            ->  41b1763..72dba4d  main -> origin/main
+  git switch main             ->  Switched to branch 'main' ; behind 'origin/main' by 204 commits, can be fast-forwarded
+  git merge --ff-only origin/main
+
+Après :
+  branche : main
+  72dba4d Merge pull request #103 from Ganda15/develop      (livraison N6, en production depuis 21 h 05)
+  git status --short : vide
+  git grep -n "news.google.com" -- sources pipelines : aucune occurrence
+  sources/rss.py:87 :     return BeautifulSoup(texte or "", "html.parser").get_text(" ", strip=True)
+
+Heures relevées dans git reflog : « checkout: moving from sprint-2-socle-chaine to main » à 2026-10-16 21:58:38 +0200,
+« merge origin/main: Fast-forward » à 2026-10-16 21:58:48 +0200.
+
+La branche sprint-2-socle-chaine n'est pas modifiée ; la base locale et le .env du dossier ne sont pas touchés.
+
+2. Réactivation de la tâche (commandes lancées par Era, le 16/10/2026 entre 21:58:48 et 22:01:38, heure de Paris)
+-----------------------------------------------------------------------------------------------------------------
+
+  schtasks /Change /TN "\RITA - collecte quotidienne" /ENABLE
+  Réponse : Opération réussie : les paramètres de la tâche planifiée "\RITA - collecte quotidienne" ont été modifiés.
+
+Contrôle : schtasks /Query /TN "\RITA - collecte quotidienne" /V /FO LIST (extraits) :
+  Nom de la tâche                : \RITA - collecte quotidienne
+  Prochaine exécution            : 17/10/2026 19:00:00
+  Statut                         : Prêt
+  Statut de la tâche planifiée   : Activée
+  Heure de la dernière exécution : 15/10/2026 19:00:01
+  Dernier résultat               : 0
+  Tâche à exécuter               : powershell.exe ... 'D:\KandaWork\RITA_PROJECT\rita-agent\scripts\collecte-quotidienne.cmd' ...
+  Type de planification          : Tous les jours, 19:00:00
+
+3. Première collecte sur le nouveau code, lancée à la main par Era
+-----------------------------------------------------------------
+
+  schtasks /Run /TN "\RITA - collecte quotidienne"
+  Réponse : Opération réussie : tentative d'exécution de la tâche planifiée "\RITA - collecte quotidienne".
+
+Début relevé dans logs\collecte-2026-10-16.log : « ==================== 16/10/2026 22:01:38,72 ==================== ».
+
+4. Résultat de la première collecte sur le nouveau code
+------------------------------------------------------
+
+Fin relevée dans logs\collecte-2026-10-16.log (extraits recopiés tels quels) :
+
+  taux_change (BCE)            lues    4 | ecrites    5 | rejetees   0
+  macro (FRED)                 lues   29 | ecrites   29 | rejetees   0
+  cotations (yfinance)         lues  216 | ecrites  216 | rejetees   0
+  articles (RSS)               lues   30 | ecrites   29 | rejetees   1
+      - flux OK 3/3
+  cours du jour (scraping)     lues    3 | ecrites    3 | rejetees   0
+  indexation                   lues 2124 | ecrites 2124 | rejetees   0
+  Etapes reussies : 6/6   Duree : 288.5 s
+  Manifeste : D:\KandaWork\RITA_PROJECT\rita-agent\logs\manifeste-2026-10-16-220139.json
+  Code de sortie : 0
+
+Manifeste copié sans modification dans evidence/sprint-3/manifeste-poste-2026-10-16-220139.json (empreinte SHA-256
+identique à celle de l'original). Il porte "code": {"commit": "72dba4d", "python": "3.14.6"} : la collecte a bien
+exécuté le code de la livraison N6.
+
+Les trois flux lus sont ceux de FLUX dans sources/rss.py au commit 72dba4d : bfm_eco
+(https://www.bfmtv.com/rss/economie/), latribune (https://www.latribune.fr/feed.xml) et lemonde_eco
+(https://www.lemonde.fr/economie/rss_full.xml). Aucun n'est Google News.
+
+Conclusion : la collecte quotidienne du poste reprend sur un code sans Google News. Première collecte après le
+changement : 16/10/2026 à 22:01:39 (heure de Paris) ; prochaine exécution automatique : 17/10/2026 à 19:00.

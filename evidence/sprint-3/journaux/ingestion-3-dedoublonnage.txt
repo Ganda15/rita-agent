@@ -1,0 +1,15 @@
+# Ingestion relancee : 0 article ecrit, dedoublonnage
+
+passage   : 38954283118 (tentative 1)
+workflow  : Ingestion  |  Ingestion
+commit    : 72dba4d282515ba6d14058ebdad648e8a3ecbb8f  |  evenement : workflow_dispatch  |  cree le 2026-10-16T19:21:10Z
+conclusion: success
+
+travaux :
+  ingerer | success | 19:21:14 -> 19:25:23
+
+lignes utiles du journal (extraits, valeurs des secrets jamais affichees) :
+  [ingerer] 2026-10-16T19:21:18.5998525Z ##[start-action display=Comparer le script du serveur à celui du dépôt;id=__self.__run_2]
+  [ingerer] 2026-10-16T19:21:21.3894736Z script du serveur identique au depot (2ed6b98db4817366d4774f837460992506370e2bcf2dcdf005c95e0fc551cbd9)
+  [ingerer] 2026-10-16T19:25:21.7234269Z operation reussie
+  [ingerer] 2026-10-16T19:25:21.7543755Z code rendu par le serveur : 0

@@ -1,0 +1,84 @@
+{
+ "version_manifeste": 1,
+ "debut": "2026-10-16T22:01:39",
+ "duree_s": 288.5,
+ "mode": "execution",
+ "periode": null,
+ "etapes_demandees": [
+  "ecb",
+  "fred",
+  "cotations",
+  "rss",
+  "scraping",
+  "indexation"
+ ],
+ "code": {
+  "commit": "72dba4d",
+  "python": "3.14.6"
+ },
+ "etapes": [
+  {
+   "lues": 4,
+   "ecrites": 5,
+   "rejetees": 0,
+   "erreur": null,
+   "details": [],
+   "ok": true,
+   "nom": "taux_change (BCE)"
+  },
+  {
+   "lues": 29,
+   "ecrites": 29,
+   "rejetees": 0,
+   "erreur": null,
+   "details": [],
+   "ok": true,
+   "nom": "macro (FRED)"
+  },
+  {
+   "lues": 216,
+   "ecrites": 216,
+   "rejetees": 0,
+   "erreur": null,
+   "details": [
+    "3 valeur(s) radiee(s) non demandee(s) : ELE.PA, GTO.PA, ZC.PA",
+    "seances du 2026-10-15 au 2026-10-16"
+   ],
+   "ok": true,
+   "nom": "cotations (yfinance)"
+  },
+  {
+   "lues": 30,
+   "ecrites": 29,
+   "rejetees": 1,
+   "erreur": null,
+   "details": [
+    "flux OK 3/3"
+   ],
+   "ok": true,
+   "nom": "articles (RSS)"
+  },
+  {
+   "lues": 3,
+   "ecrites": 3,
+   "rejetees": 0,
+   "erreur": null,
+   "details": [],
+   "ok": true,
+   "nom": "cours du jour (scraping)"
+  },
+  {
+   "lues": 2124,
+   "ecrites": 2124,
+   "rejetees": 0,
+   "erreur": null,
+   "details": [
+    "786 citant une valeur suivie"
+   ],
+   "ok": true,
+   "nom": "indexation"
+  }
+ ],
+ "etapes_ok": 6,
+ "etapes_total": 6
+}

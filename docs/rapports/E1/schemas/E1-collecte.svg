@@ -94,7 +94,7 @@
 <rect x="1046" y="508" width="398" height="142" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
 <rect x="1046" y="508" width="7" height="142" fill="#1E293B"/>
 <text x="1063" y="529" font-size="14" font-weight="700" fill="#0B2A5B">RGPD (registre art. 30, db/rgpd_purge.py)</text>
-<text x="1063" y="548.0" font-size="11.5" fill="#111827">traitements T1 à T7, procédures de tri P1 à P6</text>
+<text x="1063" y="548.0" font-size="11.5" fill="#111827">traitements T1 à T8, procédures de tri P1 à P6</text>
 <text x="1063" y="563.5" font-size="11.5" fill="#111827">une seule table personnelle : position</text>
 <text x="1063" y="579.0" font-size="11.5" fill="#111827">fichier source hors de Git, jamais envoyé au modèle</text>
 <text x="1063" y="594.5" font-size="11.5" fill="#111827">purge en simulation par défaut ;</text>
