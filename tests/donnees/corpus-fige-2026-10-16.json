@@ -1,0 +1,149 @@
+{
+ "description": "Extrait fige de la copie du corpus de production du 16/10/2026 (base rita_sprint3, 2052 articles, identifiant maximal 2809), lu avec le compte rita_lecture : les sources attendues ou validees du jeu de questions en version 2, et des articles voisins rendus par la recherche (661, 1165, 1167, 1369, 1866). Sert au test du rejeu (tache B2) ; aucun lien d'article n'est garde.",
+ "articles": [
+  {
+   "id": 661,
+   "source": "bfm_eco",
+   "titre": "Qui d'Air-France-KLM ou Lufthansa montera au capital de TAP Air Portugal? Lisbonne veut faire monter les enchères et décide de négocier avec les deux groupes rivaux",
+   "resume": "Alors qu'il prévoit de vendre près de la moitié du capital de la compagnie aérienne nationale, le gouvernement portugais choisit d'ouvrir des négociations avec les acheteurs potentiels pour obtenir des propositions améliorées.",
+   "publie_le": "2026-09-04T18:15:57+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 1165,
+   "source": "latribune",
+   "titre": "Croissance, emploi, pouvoir d’achat… Le grand décrochage de l’économie française",
+   "resume": "Dans sa note de conjoncture publiée jeudi 10 septembre, l’Insee revoit à la baisse la croissance tricolore, anticipe une remontée du taux de chômage et une perte de pouvoir d’achat des ménages en 2026. Par rapport à ses voisins européens, « l’économie française décroche », alerte l’institut.",
+   "publie_le": "2026-09-10T17:00:51+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 1167,
+   "source": "latribune",
+   "titre": "Canicule : le coût réel d’un été record pour l’économie française",
+   "resume": "Les 53 jours de vagues de chaleur de l’été amputeraient la croissance française de 0,1 point en 2026. Le choc se concentre dans l’agriculture, avec un maïs en forte baisse, mais il se diffuse déjà aux légumes, à l’électricité, aux travaux publics et aux chaînes logistiques européennes.",
+   "publie_le": "2026-09-10T17:00:48+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 1369,
+   "source": "lemonde_eco",
+   "titre": "Netflix est devenu le premier financeur privé de la production française en 2025 et devrait dépasser France Télévisions en 2030, selon l’Arcom",
+   "resume": "La place grandissante des acteurs du streaming n’est « pas sans conséquence » car leurs investissements « donnent lieu à moins d’heures de tournage, moins d’œuvres financées et moins de diversité » dans les genres que les chaînes classiques, affirme vendredi le président du régulateur de l’audiovisuel, Martin Ajdari.",
+   "publie_le": "2026-09-18T16:13:43+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 1866,
+   "source": "bfm_eco",
+   "titre": "140 postes sur 577 supprimés: BforBank, filiale du Crédit Agricole, annonce une rupture conventionnelle collective",
+   "resume": "BforBank va supprimer un quart de ses effectifs, a annoncé ce vendredi Les Echos. La filiale du Crédit Agricole s'apprête à lancer une rupture conventionnelle collective pour 140 de ses salariés.",
+   "publie_le": "2026-09-25T19:01:20+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 2370,
+   "source": "ent_air_liquide",
+   "titre": "Air Liquide monte en Bourse après son nouveau plan stratégique - Boursorama",
+   "resume": "Air Liquide monte en Bourse après son nouveau plan stratégique Boursorama",
+   "publie_le": "2026-10-05T11:50:32+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 2376,
+   "source": "ent_air_liquide",
+   "titre": "Air Liquide lance son plan stratégique et un rachat d'actions historique... - Fortuneo",
+   "resume": "Air Liquide lance son plan stratégique et un rachat d'actions historique... Fortuneo",
+   "publie_le": "2026-10-05T11:29:00+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 2429,
+   "source": "ent_air_liquide",
+   "titre": "Air Liquide : Elliott salue le nouveau plan stratégique 2030 - Le Revenu",
+   "resume": "Air Liquide : Elliott salue le nouveau plan stratégique 2030 Le Revenu",
+   "publie_le": "2026-10-06T12:23:00+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 2778,
+   "source": "latribune",
+   "titre": "Reprise de TAP : pourquoi Lufthansa rafle la mise face à Air France-KLM",
+   "resume": "Le gouvernement portugais a sélectionné Lufthansa pour la reprise de 44,9% du capital de TAP Air Portugal. Une issue qui constitue un échec pour l’autre candidat en lice, Air France-KLM.",
+   "publie_le": "2026-10-14T15:20:16+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 2784,
+   "source": "latribune",
+   "titre": "Lufthansa officiellement désignée pour la reprise de TAP face à Air France-KLM",
+   "resume": "L'attribution a été entérinée lors d'une réunion extraordinaire du gouvernement portugais ce mercredi.",
+   "publie_le": "2026-10-14T11:24:56+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 2788,
+   "source": "lemonde_eco",
+   "titre": "Netflix va supprimer 1 000 postes dans le monde, soit 6 % de ses effectifs",
+   "resume": "« Ces décisions ne sont jamais faciles et nous ne les prenons pas à la légère », ont annoncé les dirigeants de la plateforme de streaming, dans un courriel envoyé aux salariés mercredi, consulté par plusieurs médias.",
+   "publie_le": "2026-10-14T18:04:00+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 2792,
+   "source": "lemonde_eco",
+   "titre": "La croissance française ne dépassera pas 0,5 % en 2027, selon l’Institut français d’économie",
+   "resume": "Energie, budget, hausse des taux… Affaiblie par différents chocs, la croissance de la France devrait se limiter à 0,5 % en 2027, estiment les économistes du centre de recherche, dans des prévisions rendues publiques mercredi.",
+   "publie_le": "2026-10-14T15:14:10+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 2795,
+   "source": "ent_air_liquide",
+   "titre": "Air Liquide présente « BEYOND », son nouveau plan stratégique 2026-2030 à horizon 2030 - ABC Bourse",
+   "resume": "Air Liquide présente « BEYOND », son nouveau plan stratégique 2026-2030 à horizon 2030 ABC Bourse",
+   "publie_le": "2026-10-14T11:30:09+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 2799,
+   "source": "ent_sanofi",
+   "titre": "Soupçons d'entrave à la concurrence: Sanofi échappe à une amende de l'UE - Boursorama",
+   "resume": "Soupçons d'entrave à la concurrence: Sanofi échappe à une amende de l'UE Boursorama",
+   "publie_le": "2026-10-14T16:45:52+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 2800,
+   "source": "ent_sanofi",
+   "titre": "Sanofi évite une amende de l'UE : le laboratoire échappe à une sanction pouvant atteindre 10 % de son chiffre d'affaires - Le Revenu",
+   "resume": "Sanofi évite une amende de l'UE : le laboratoire échappe à une sanction pouvant atteindre 10 % de son chiffre d'affaires Le Revenu",
+   "publie_le": "2026-10-14T12:22:00+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 2801,
+   "source": "ent_sanofi",
+   "titre": "Bruxelles accepte les concessions de Sanofi concernant la promotion de son vaccin antigrippal - ABC Bourse",
+   "resume": "Bruxelles accepte les concessions de Sanofi concernant la promotion de son vaccin antigrippal ABC Bourse",
+   "publie_le": "2026-10-14T10:32:06+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 2802,
+   "source": "ent_sanofi",
+   "titre": "Sanofi échappe à une amende après l’acceptation par l’UE de son engagement à cesser de dénigrer un vaccin concurrent - Zonebourse Suisse",
+   "resume": "Sanofi échappe à une amende après l’acceptation par l’UE de son engagement à cesser de dénigrer un vaccin concurrent Zonebourse Suisse",
+   "publie_le": "2026-10-14T09:58:49+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 2803,
+   "source": "ent_sanofi",
+   "titre": "Sanofi s'en tire bien et évite une amende de l'UE - Boursorama",
+   "resume": "Sanofi s'en tire bien et évite une amende de l'UE Boursorama",
+   "publie_le": "2026-10-14T10:48:00+02:00",
+   "bloque_injection": false
+  }
+ ]
+}

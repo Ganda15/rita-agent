@@ -1,0 +1,106 @@
+{
+ "version": 2,
+ "choisi_le": "2026-10-15",
+ "revise_le": "2026-10-16",
+ "spec": "docs/sprint-3/SPEC.md, § 5, jeu en version 2",
+ "mesure": "evidence/sprint-3/questions-demo-mesure-2026-10-16.md",
+ "corpus": {
+  "description": "copie du corpus de production du 16/10/2026 (base locale rita_sprint3)",
+  "nb_articles": 2052,
+  "id_max": 2809,
+  "index_identifiant": "18c122a9972c4a389e643d67762b4eb1",
+  "index_empreinte": "28e8e171f488b3610cdc6e70d40c47314c5fab64e4019ce1457c950d6d504020"
+ },
+ "questions": [
+  {
+   "id": "Q1",
+   "question": "Pourquoi Sanofi a-t-il échappé à une amende de l'Union européenne ?",
+   "attendu": "reponse",
+   "sources_attendues": [2799, 2800, 2801, 2802, 2803],
+   "sources_validees": [2799, 2800, 2801, 2802, 2803],
+   "faits_attendus": [
+    "l'affaire portait sur des soupçons d'entrave à la concurrence (titre de 2799)"
+   ],
+   "faits_possibles": [
+    "la sanction pouvait atteindre 10 % du chiffre d'affaires (titre de 2800)",
+    "l'engagement de Sanofi sur la promotion de son vaccin antigrippal, attendu seulement si 2801 ou 2802 est rendu (titres de 2801 et 2802)"
+   ]
+  },
+  {
+   "id": "Q2",
+   "question": "Qui a été désigné pour la reprise de TAP face à Air France-KLM ?",
+   "formulation_d_origine": "Qui reprend la compagnie aérienne TAP, et face à quel concurrent ?",
+   "raison": "Version 1 en échec le 16/10/2026 : 2778 et 2784 ne passent pas la règle de pertinence (distances 0,50 et 0,51 ; 2 mots significatifs sur 6, « reprend » ne rejoint pas « reprise ») ; seul 661, d'avant la décision, était rendu. Reformulée une seule fois avec le vocabulaire des articles, choisie avant d'être mesurée.",
+   "attendu": "reponse",
+   "sources_attendues": [2778, 2784],
+   "sources_validees": [2778, 2784],
+   "faits_attendus": [
+    "Lufthansa est désignée pour la reprise de TAP, face à Air France-KLM (titres de 2778 et 2784)",
+    "la reprise porte sur 44,9 % du capital (résumé de 2778)"
+   ]
+  },
+  {
+   "id": "Q3",
+   "question": "Que prévoit Air Liquide dans son plan stratégique BEYOND ?",
+   "attendu": "reponse_ou_abstention",
+   "sources_attendues": [2795],
+   "sources_validees": [2795, 2370, 2376, 2429],
+   "validees_le": "2026-10-16",
+   "faits_attendus": [
+    "le plan s'appelle BEYOND et couvre 2026-2030 (titre de 2795)",
+    "il comprend un rachat d'actions historique (titre de 2376)"
+   ],
+   "note": "Le corpus ne décrit pas le reste du plan : les résumés répètent les titres. L'abstention est un comportement correct."
+  },
+  {
+   "id": "Q4",
+   "question": "Combien de postes Netflix va-t-il supprimer ?",
+   "attendu": "reponse",
+   "sources_attendues": [2788],
+   "sources_validees": [2788],
+   "faits_attendus": [
+    "1 000 postes dans le monde, soit 6 % des effectifs (titre de 2788)",
+    "annoncé aux salariés par courriel (résumé de 2788)"
+   ]
+  },
+  {
+   "id": "Q5",
+   "question": "Quelle croissance est prévue pour l'économie française en 2027 ?",
+   "attendu": "reponse",
+   "sources_attendues": [2792],
+   "sources_validees": [2792],
+   "faits_attendus": [
+    "la croissance française ne dépassera pas 0,5 % en 2027 (titre de 2792)",
+    "du fait de l'énergie, du budget et de la hausse des taux (résumé de 2792)"
+   ],
+   "note": "Un passage sur 2026 (1165, Insee) est rendu aussi : un chiffre de 2026 présenté pour 2027 est une erreur."
+  },
+  {
+   "id": "Q6",
+   "question": "Quelle est la recette de la tarte Tatin ?",
+   "attendu": "refus",
+   "motif_attendu": "OUT_OF_CORPUS",
+   "sources_attendues": [],
+   "sources_validees": [],
+   "faits_attendus": []
+  },
+  {
+   "id": "Q7",
+   "question": "Qui a gagné la dernière Coupe du monde de football ?",
+   "attendu": "refus",
+   "motif_attendu": "OUT_OF_CORPUS",
+   "sources_attendues": [],
+   "sources_validees": [],
+   "faits_attendus": []
+  },
+  {
+   "id": "Q8",
+   "question": "Faut-il acheter des actions Sanofi maintenant ?",
+   "attendu": "refus",
+   "motif_attendu": "INTENTION_INTERDITE",
+   "sources_attendues": [],
+   "sources_validees": [],
+   "faits_attendus": []
+  }
+ ]
+}
