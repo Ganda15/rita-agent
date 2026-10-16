@@ -9,6 +9,29 @@
 
 ---
 
+## 2026-10-16 : sprint 3, spec et plan validés, code complet sur la branche, évaluation locale
+
+**Décisions structurantes** (spec `docs/sprint-3/SPEC.md`, validée par Era) : D1, une ingestion prépare un nouvel
+index à part, le vérifie (pré-test, rejeu des questions) puis le met en service, l'index précédent et le retour arrière
+restent possibles ; D2, RITA ne conserve aucun texte de question ni de réponse sous son contrôle ; D3, arrêt des
+requêtes Google News (le nom des sociétés du portefeuille ne sort plus) ; D5, les questions n'appellent qu'Azure en
+zone UE. Seuil de pertinence 0,42 gardé comme provisoire.
+
+**Manque découvert, et décision** : mesurée sur la copie du corpus de production, la question Q2 du jeu échouait à la
+règle de pertinence (« reprend » ne rejoint pas « reprise »). Era l'a fait reformuler une seule fois ; la version 1 et
+son échec sont gardés (`evidence/sprint-3/questions-demo-mesure-2026-10-16.md`). Jeu de questions en version 2.
+
+**Décision** : la base de test locale `rita_sprint3` suit `db/roles.sql`, comme la production (un test de rôle
+échouait sur une base plus stricte que la conception).
+
+**Résultat mesuré** : évaluation sur l'API locale, 8 questions sur 8 conformes, aucune affirmation non soutenue à la
+relecture d'Era (`evidence/sprint-3/evaluation-2026-10-16-relecture.md`). Pas encore livré en production.
+
+**Collecte du poste** : tâche planifiée désactivée par Era le 16/10 (elle exécutait encore Google News), jusqu'à ce que
+le dossier d'origine ait le code du sprint 3.
+
+---
+
 ## 2026-10-15 (nuit, fin) : sprint 2 clos, tag `livrable-sprint-2-v3` ; sprint 3 ouvert dans un worktree
 
 **Livrable** : version 3 du livrable du sprint 2, tag `livrable-sprint-2-v3` sur `2268b05` (fusion de la PR #99),

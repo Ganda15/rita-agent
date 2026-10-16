@@ -15,17 +15,38 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-15 au soir (sprint 2 clos, tag livrable-sprint-2-v3, sprint 3 ouvert dans un worktree) ; avant : 2026-10-11 (E1 v2.5 : cinq surgénéralisations corrigées ; veille S41 : relevé, note d'Era et partage à la promo ; E3 v1.4 : sept corrections, 44 critères en 39 lignes, revue d'E3 close ; E1 v2.4 : seconde passe, MCD lisible, guide § 4.5 corrigé ; avant, E1 v2.3 : passe RGPD et exactitude ; politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-16 au soir (sprint 3 : parcours des questions, Google News arrêté dans le code, ingestion en une opération, jeu de questions en version 2, évaluation locale 8 sur 8 ; reste la livraison) ; avant : 2026-10-15 au soir (sprint 2 clos, tag livrable-sprint-2-v3, sprint 3 ouvert dans un worktree) ; avant : 2026-10-11 (E1 v2.5 : cinq surgénéralisations corrigées ; veille S41 : relevé, note d'Era et partage à la promo ; E3 v1.4 : sept corrections, 44 critères en 39 lignes, revue d'E3 close ; E1 v2.4 : seconde passe, MCD lisible, guide § 4.5 corrigé ; avant, E1 v2.3 : passe RGPD et exactitude ; politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
 
-## ▶️ SPRINT 3 OUVERT (15/10/2026 au soir) : les données et l'ancrage
+## ▶️ SPRINT 3 EN COURS (16/10/2026 au soir) : les données et l'ancrage
 
-**Où on en est** : le sprint 2 est clos ; le sprint 3 commence l'étape 2 (la spec). On travaille dans le worktree
-`D:\KandaWork\RITA_PROJECT\rita-agent-sprint-3`, sur la branche `sprint-3-donnees-ancrage`, créée depuis `2268b05`
-(tag `livrable-sprint-2-v3`). Le dossier `D:\KandaWork\RITA_PROJECT\rita-agent` reste la référence : on n'y écrit
-pas pendant le sprint 3.
+**Où on en est** : tout le code du sprint 3 est écrit, testé et poussé sur la branche `sprint-3-donnees-ancrage`
+(worktree `D:\KandaWork\RITA_PROJECT\rita-agent-sprint-3`, dernier commit `743bf93`). Reste la livraison : la
+préparation du serveur (B5, Era), les PR vers `develop` puis `main` (D2), le registre RGPD (C1, après la livraison
+pour la date d'arrêt de Google News) et les preuves (D3). Le dossier `D:\KandaWork\RITA_PROJECT\rita-agent` n'a pas
+été modifié ; la production sert toujours `2268b05`.
+
+**Fait le 16/10** (spec `e16ec77` et plan `fe312b6` validés ; puis, dans l'ordre) :
+- Partie A, le parcours des questions : A1 identité de l'index dans `/health` (`7088442`) ; A2 format de sortie et
+  contrôle des citations (`f4cbda9`) ; A3 sortie JSON par Azure seul, traces sans texte (`0977c58`) ; A4 répondre ou
+  refuser (`72eae24`) ; A5 `POST /question` et fiche `GET /donnees/articles/{id}` (`57c003f`) ; A6 écran
+  `question.html` (`98177c2`). Trois revues de sécurité automatiques corrigées, test d'abord.
+- B1 plus aucune requête Google News dans le code (`05857a4`) ; B3 ordre `ingerer` et rejeu des questions avant toute
+  mise en service, `livrer` compris (`1a0f977`) ; B4 bouton « Ingestion » (`bbeefcc`).
+- Tâche 0 : base locale `rita_sprint3` (port 5433), copie de `article`, `valeur` et `alias_valeur` de la production
+  (2052 articles, id max 2809, 111 valeurs, 112 alias, identiques) ; `rita_lecture` selon `db/roles.sql` ; index local
+  `18c122a9…` (2052 articles). Le `.env` du worktree a les mots de passe locaux, les trois lignes Azure et une clé
+  d'API locale (tapés par Era, jamais affichés).
+- Jeu de questions en version 2 (`9761f76`) : Q2 reformulée une fois après mesure (version 1 et échec gardés), Q3
+  élargie à 2370, 2376 et 2429, Q1 alignée sur les passages rendus. B2 jeu et rejeu (`504315a`) : rejeu local, 0 écart.
+- D1 évaluation (`b87f330`, `743bf93`) : sur l'API locale (port 8010), 8 questions sur 8 conformes, deux passages
+  identiques, aucune affirmation non soutenue à la relecture d'Era.
+- Suite complète : **1205 passed, 24 skipped, 2 xfailed** ; `ruff` vert ; liens : 12 « cassés » seulement dans le
+  livrable du sprint 2 (pages GitHub d'un dépôt privé, illisibles sans connexion).
+- Collecte du poste : la tâche planifiée « RITA - collecte quotidienne » est **désactivée** depuis le 16/10 (preuve
+  `12696da`) ; à réactiver seulement quand le dossier d'origine aura le code du sprint 3 (D2, étape 8).
 
 **Production** : `/health` donne `2268b05` (N4). Livraison par le run `38802299781`, lancée sur le serveur le 15/10 à
 22 h 33 ; image déployée `ghcr.io/ganda15/rita-api@sha256:086fed50dd3402a4bd5f5a8a03fed326e6223c4f00ef1adf21c253da7b6b7f7e`.
@@ -42,25 +63,29 @@ pas pendant le sprint 3.
 - Grille de l'atelier 2 versée (Alpha DIALLO, 5 critères ✓, conseil « RAS ») ; les 17 liens du livrable sont
   vérifiés au tag v3 ; message au formateur envoyé par Era avant la pose du tag.
 
-**Sprint 3, plan accepté le 15/10** :
-- Étape 0, clôture du sprint 2 : faite. Étape 1, espace de travail (décision D4 : worktree) : faite. Le worktree a
-  son propre `.env` (ignoré par Git), qui vise une base de test `rita_sprint3` à créer, sans mot de passe écrit, sans
-  clé de modèle ni de traces ; son index est le `data/chroma` du worktree, vide au départ.
-- Étapes suivantes : 2 la spec (`docs/sprint-3/SPEC.md`) ; 3 le plan de travail ; 4 le parcours complet (question,
-  recherche, réponse citée, références, refus ; `/briefing` inchangé) ; 5 l'ingestion en production ; 6 réponses et
-  citations vérifiées ; 7 la livraison.
-- Schémas (version 4) et document d'explication, hors dépôt pour l'instant :
-  `C:\Users\kanda\Downloads\SPRINT-3\schemas\` (à verser avec la spec).
-- Décisions ouvertes, à trancher dans la spec : D1 ingestion en production (option A recommandée : un nouvel index
-  préparé à part, sous le verrou du serveur, sans écraser `precedente`) ; D2 questions des visiteurs, jamais de texte
-  brut dans les traces ; D3 Google News (T7) ; D5 sort de la PR #88, qui modifie `src/llm.py`.
+**Ordre de la livraison (plan, tâches B5 et D2)** :
+1. B5, étapes 1, 2 et 4 (Era, sur le serveur) : compte `rita_ingestion` (`SELECT, INSERT` sur `article`, `USAGE` sur
+   `article_id_seq`, rien d'autre) ; `RITA_DSN_INGESTION` dans `/root/rita-agent/.env` ; `/root/rita-deploy/rapports`
+   au nom de l'UID 10001, avec un essai d'écriture depuis l'image active. **Sans ce dossier, `livrer` refuse aussi.**
+2. PR `sprint-3-donnees-ancrage → develop`, contrôles verts, fusion.
+3. B5, étape 3 : installer le nouveau `deployer.py` sur le serveur (la livraison compare son empreinte).
+4. PR `develop → main` ; livraison N5 (rejeu des questions, puis identité de l'index vérifiée dans `/health`).
+5. Première ingestion par le bouton ; évaluation sur la production ; C1 ; D3 ; tag `livrable-sprint-3-v1`.
 
-**Restes et risques** : la procédure de retour sans GitHub manque dans `docs/EXPLOITATION.md` (annoncée par
-`docs/CHAINE-V1.md` § 5.2) ; le code HTTP est à ajouter au journal du serveur ; le registre `public.ecr.aws` a renvoyé
-`429` quatre fois (s'authentifier, ou garder une copie de l'image de base dans notre registre) ; le run d'un tag
-reconstruit l'image au lieu de réétiqueter celle de `main`.
+**Restes et risques** :
+- Les durées maximales ont grandi : le travail de livraison GitHub passe de 110 à 160 minutes (fait dans
+  `livraison.yml`).
+- Limite de la règle de pertinence : une question formulée loin du vocabulaire des articles peut échouer (Q2
+  version 1). Seuil 0,42 toujours provisoire.
+- Q1 : la raison de la décision (2801, 2802) n'est pas dans les 3 passages rendus ; le modèle le dit.
+- Les docs du serveur (`docs/EXPLOITATION.md`, `docs/CHAINE-V1.md`) ne mentionnent pas encore `ingerer`.
+- Restes du sprint 2 : procédure de retour sans GitHub absente de `docs/EXPLOITATION.md` ; code HTTP à ajouter au
+  journal du serveur ; `429` du registre `public.ecr.aws` (quatre fois) ; le run d'un tag reconstruit l'image.
+- Serveur : « System restart required » (mises à jour d'Ubuntu) ; ne pas redémarrer pendant une opération.
+- Date de l'atelier 3 : inconnue.
 
-**Prochaine action** : les tests de départ dans le worktree (`C:\Python314\python.exe -m pytest -q`), puis la spec.
+**Prochaine action** : B5, étape 1, sur le serveur : créer le compte `rita_ingestion` dans `rita-postgres-preprod`
+(mot de passe tapé par Era avec `\password`).
 
 ## ▶️ PROCHAINE ACTION (réécrit le 04/10/2026 ; les ▶️ plus bas sont datés et dépassés)
 
