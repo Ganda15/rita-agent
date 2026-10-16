@@ -25,6 +25,7 @@ ROUTES_PROTEGEES = [
     "/donnees/mouvements",
     "/donnees/volumes-anormaux",
     "/donnees/articles",
+    "/donnees/articles/2788",           # sprint 3, tâche A5 : la fiche d'une source citée
     "/donnees/indicateurs",
     "/donnees/indicateurs-portefeuille",
     "/donnees/indicateurs-risque",

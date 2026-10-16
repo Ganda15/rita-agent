@@ -40,6 +40,7 @@ from fastapi import APIRouter, HTTPException, Query
 #
 # Renommer la route aurait été l'autre solution ; l'alias est plus sûr, car le nom
 # de la fonction de route apparaît ailleurs (tests, OpenAPI).
+from agents.question import lien_http
 from db import audit_mcp
 from indicateurs import portefeuille as indicateurs_portefeuille_module
 from indicateurs import risque as indicateurs_risque_module
@@ -48,6 +49,7 @@ from indicateurs import socle
 # Même piège que ci-dessus : la route `/donnees/fraicheur` définit une FONCTION
 # `fraicheur()`. Sans alias, elle écraserait le module au chargement.
 from monitorage import fraicheur as monitorage_fraicheur
+from rag.indexation import texte_indexable
 from sources import database
 from sources.fred import SERIES
 
@@ -295,6 +297,29 @@ def articles(limite: int = Query(20, ge=1, le=200)) -> dict:
     """
     e = database._executer(sql, "articles", None, limite=limite)
     return {"nb": e.nb, "articles": e.lignes}
+
+
+@routeur.get("/articles/{article_id}", summary="Fiche d'un article cité par une réponse (table article)")
+def article(article_id: int) -> dict:
+    """La fiche d'une source citée par `POST /question` (sprint 3, spec CA1.5 et CA1.8).
+
+    `extrait` est recalculé par la même fonction que l'indexation (`texte_indexable`) : c'est le passage exact transmis
+    au modèle, puisque les lignes de `article` ne sont jamais modifiées après la collecte. Un article bloqué pour
+    injection rend 404, comme un identifiant inconnu : le filtre est codé en dur, comme pour la liste. Le lien n'est
+    rendu que s'il est `http` ou `https`.
+    """
+    sql = """
+        SELECT id, source, titre, lien, publie_le, resume, collecte_le
+        FROM   article
+        WHERE  id = %(id)s
+          AND  bloque_injection = FALSE
+    """
+    e = database._executer(sql, "article", None, id=article_id)
+    if not e.lignes:
+        raise HTTPException(status_code=404, detail="Article inconnu ou non diffusable.")
+    ligne = e.lignes[0]
+    return {"table": "article", **ligne, "lien": lien_http(ligne["lien"]),
+            "extrait": texte_indexable(ligne["titre"], ligne["resume"])}
 
 
 @routeur.get("/fraicheur", summary="Fraîcheur du jeu de données (C20)")

@@ -123,6 +123,32 @@ def test_seuls_les_extraits_cites_deviennent_des_references(monkeypatch):
     assert r.references[0].id == PASSAGES[1].article_id
 
 
+@pytest.mark.parametrize("lien", ["javascript:alert(1)", "data:text/html,<script>alert(1)</script>",
+                                  "//sans-schema.example/page", "ftp://exemple.test/fichier"])
+def test_un_lien_qui_n_est_pas_http_n_est_jamais_rendu(monkeypatch, lien):
+    # Revue de sécurité du commit A4 (16/10/2026) : le lien vient du flux RSS, donc de l'extérieur. Rendu cliquable
+    # par l'écran, un « javascript: » exécuterait un script. Seuls http et https passent ; sinon, aucun lien.
+    from dataclasses import replace
+    _recherche(monkeypatch, _trouve([replace(PASSAGES[0], lien=lien)]))
+    _modele(monkeypatch, '{"statut": "reponse", "texte": "Netflix supprime 1 000 postes [1].", "citations": [1]}')
+    r = question.repondre("Combien de postes Netflix supprime-t-il ?")
+    assert r.statut == "reponse"
+    assert r.references[0].lien == ""
+
+
+def test_les_liens_ecrits_par_le_modele_sont_retires_du_texte(monkeypatch):
+    # Revue de sécurité du commit A4 (16/10/2026) : le texte du modèle n'est pas digne de confiance. Un lien qu'il
+    # écrirait lui-même ne doit jamais être présenté ; les seuls liens montrés sont ceux des références stockées.
+    _recherche(monkeypatch, _trouve())
+    _modele(monkeypatch, '{"statut": "reponse", "texte": "Netflix supprime 1 000 postes [1], voir '
+                         'https://faux.example/piege et www.autre-piege.example.", "citations": [1]}')
+    r = question.repondre("Combien de postes Netflix supprime-t-il ?")
+    assert r.statut == "reponse"
+    assert "faux.example" not in r.texte
+    assert "autre-piege.example" not in r.texte
+    assert "[1]" in r.texte
+
+
 def test_une_question_de_mots_vides_est_refusee_proprement(monkeypatch, tmp_path):
     # Point de vigilance du plan : une question sans aucun mot porteur de sens, sur un vrai index.
     _indexer(monkeypatch, tmp_path, [_ligne(1, "Netflix va supprimer 1 000 postes", "Soit 6 % de ses effectifs"),

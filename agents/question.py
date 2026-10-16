@@ -15,6 +15,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Literal
+from urllib.parse import urlsplit
 
 from pydantic import BaseModel, ConfigDict, ValidationError
 
@@ -38,7 +39,10 @@ class SortieModele(BaseModel):
 # les trois champs obligatoires. Une seule source de vérité pour le format, le modèle et sa validation.
 SCHEMA_SORTIE: dict = SortieModele.model_json_schema()
 
-_NUMERO_CITE = re.compile(r"\[(\d+)\]")
+# Seul un numéro écrit en chiffres ASCII, de 1 à 999 et sans zéro devant, compte comme une citation : `\d` accepterait
+# aussi « ١ » (un arabe-indien) ou « 01 », et ce que lit l'utilisateur différerait de ce que l'application compte
+# (revue de sécurité du commit A4, 16/10/2026).
+_NUMERO_CITE = re.compile(r"\[([1-9][0-9]{0,2})\]")
 
 
 def citations_valides(sortie: SortieModele, nb_extraits: int) -> bool:
@@ -156,9 +160,32 @@ def _erreur(motif: str) -> ReponseQuestion:
     return ReponseQuestion("erreur", motif, TEXTE_ERREUR)
 
 
+def lien_http(lien: str | None) -> str:
+    """Le lien s'il est `http` ou `https` avec un hôte ; sinon une chaîne vide.
+
+    Un lien vient d'un flux RSS, donc de l'extérieur. Rendu cliquable par l'écran, un `javascript:` ou un `data:`
+    exécuterait un script (revue de sécurité du commit A4, 16/10/2026). Utilisé aussi par la fiche d'un article.
+    """
+    try:
+        morceaux = urlsplit((lien or "").strip())
+    except ValueError:
+        return ""
+    return lien.strip() if morceaux.scheme in {"http", "https"} and morceaux.netloc else ""
+
+
+# Une adresse écrite par le modèle lui-même : `http(s)://...` ou `www....`, jusqu'au prochain blanc.
+_ADRESSE_ECRITE = re.compile(r"(?:https?://|www\.)\S+", re.IGNORECASE)
+
+
+def _retirer_liens(texte: str) -> str:
+    """Retire du texte du modèle toute adresse qu'il aurait écrite. Le texte du modèle n'est pas digne de confiance :
+    les seuls liens montrés sont ceux des références, construits depuis les données stockées."""
+    return _ADRESSE_ECRITE.sub("(lien retiré)", texte)
+
+
 def _reference(numero: int, passage: Passage) -> Reference:
     return Reference(n=numero, table="article", id=passage.article_id, titre=passage.titre, source=passage.source,
-                     date=passage.publie_le, lien=passage.lien, extrait=passage.texte)
+                     date=passage.publie_le, lien=lien_http(passage.lien), extrait=passage.texte)
 
 
 def repondre(question: str, chemin_index: Path | None = None, k: int = 3) -> ReponseQuestion:
@@ -189,6 +216,9 @@ def repondre(question: str, chemin_index: Path | None = None, k: int = 3) -> Rep
 
     if sortie.statut == "abstention":
         return _refus(ABSTENTION)
+    # Les adresses écrites par le modèle sont retirées AVANT le contrôle des citations : si une adresse collée à un
+    # « [1] » l'emporte avec elle, les citations ne correspondent plus, et la réponse est refusée plutôt que tronquée.
+    sortie = sortie.model_copy(update={"texte": _retirer_liens(sortie.texte)})
     if not citations_valides(sortie, len(passages)):
         return _refus(CITATIONS_INVALIDES)
 

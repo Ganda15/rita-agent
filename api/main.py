@@ -27,6 +27,7 @@ from fastapi.security.api_key import APIKeyHeader
 from fastapi.staticfiles import StaticFiles
 
 from api.donnees import routeur as routeur_donnees
+from api.question import routeur as routeur_question
 from db import audit_mcp
 from graph.workflow import generer_briefing_complet
 from guardrails.sortie import verifier_sortie
@@ -220,6 +221,11 @@ def health():
 # La dépendance est posée sur le ROUTEUR entier : impossible d'ajouter un point de
 # terminaison non protégé par oubli. C'est un garde-fou de conception, pas de discipline.
 app.include_router(routeur_donnees, dependencies=[Depends(verify_api_key)])
+
+# --- Sprint 3 : les questions libres (tâche A5) ----------------------------------------------------------------------
+# Même garde-fou de conception : la clé est posée sur le routeur entier. Le montage des fichiers statiques sur « / »
+# reste le DERNIER de ce fichier, sinon il capterait `/question` avant la route.
+app.include_router(routeur_question, dependencies=[Depends(verify_api_key)])
 
 
 # --- C9 : le briefing rédigé ------------------------------------------------

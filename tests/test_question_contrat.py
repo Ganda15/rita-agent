@@ -44,6 +44,10 @@ def test_une_sortie_au_mauvais_format_est_rejetee(brut):
     ("", [1], 3, False),                              # texte vide
     ("Texte [4].", [4], 3, False),                    # seulement 3 extraits envoyés
     ("Texte [0].", [0], 3, False),                    # les extraits commencent à 1
+    # Revue de sécurité du commit A4 (16/10/2026) : seul « [1] » écrit en chiffres ASCII, sans zéro devant, compte comme
+    # la citation 1. Sinon, ce que lit l'utilisateur (« [١] », « [01] ») diffère de ce que l'application compte.
+    ("Texte [١].", [1], 3, False),                # le chiffre un arabe-indien
+    ("Texte [01].", [1], 3, False),                   # un zéro devant
 ])
 def test_citations_valides(texte, citations, nb_extraits, attendu):
     sortie = SortieModele(statut="reponse", texte=texte, citations=citations)
