@@ -312,3 +312,46 @@ def vider() -> None:
     """Envoie ce qui attend. Appelé une fois par `generer_texte` : l'API vit longtemps,
     un script court s'arrête juste après, dans les deux cas la trace doit partir."""
     _flush(client_traces())
+
+
+# --- Sprint 3, tâche A3 : le parcours des questions -----------------------------------------------------------------
+# Une question peut contenir une donnée personnelle tapée par un visiteur (décision D2) : sa trace ne porte que des
+# métadonnées. Ni `input` ni `output` ici, contrairement à `appel` et `generation`, que ce parcours n'utilise pas.
+
+@contextmanager
+def question(request_id: str | None = None):
+    """Racine du trace d'UNE question, ouverte à la frontière de l'API ; `None` si le traçage est coupé.
+
+    Même dérivation de l'identifiant que `briefing` : la ligne de journal et la trace se retrouvent par le même
+    `request_id`. Le flush vient après la fermeture de la racine, même si la route lève une erreur.
+    """
+    client = client_traces()
+    if client is None:
+        yield None
+        return
+    options: dict = {"metadata": {"parcours": "question"}}
+    if request_id:
+        options["metadata"]["request_id"] = request_id
+        try:
+            options["trace_context"] = {"trace_id": client.create_trace_id(seed=request_id)}
+        except Exception as erreur:  # noqa: BLE001
+            _signaler("la derivation de l'identifiant de trace", erreur)
+    try:
+        with _observation(client, as_type="span", name="question", **options) as racine:
+            yield racine
+    finally:
+        _flush(client)
+
+
+def noter_issue_question(racine, statut: str, motif: str, longueur: int, ids: list[int]) -> None:
+    """Pose l'issue d'une question sur sa racine : statut, motif, longueur de la question, identifiants cités.
+    Niveau WARNING pour un refus, ERROR pour une erreur technique, afin de les filtrer d'un clic. Jamais le texte."""
+    if racine is None:
+        return
+    champs: dict = {"metadata": {"statut": statut, "motif": motif, "longueur": longueur, "ids": list(ids)}}
+    if statut == "refus":
+        champs["level"] = "WARNING"
+    elif statut == "erreur":
+        champs["level"] = "ERROR"
+        champs["status_message"] = motif
+    _maj(racine, **champs)

@@ -77,7 +77,11 @@ def construire_prompt(question: str, passages: list[Passage]) -> str:
     """Le prompt : les consignes, les extraits numérotés à partir de 1 (avec leur source et leur date), puis la
     question, isolée dans son bloc comme une donnée."""
     extraits = "\n".join(
-        f"[{numero}] ({passage.source}, {passage.publie_le[:10]}) {_neutraliser(passage.texte)}"
+        # Tous les champs venus d'un article sont neutralisés, la source comprise : pour Google News, elle est tirée
+        # du titre (`editeur`, rag/indexation.py), donc d'un texte que le site d'origine contrôle (revue de sécurité
+        # du commit A2, 16/10/2026).
+        f"[{numero}] ({_neutraliser(passage.source)}, {_neutraliser(passage.publie_le[:10])}) "
+        f"{_neutraliser(passage.texte)}"
         for numero, passage in enumerate(passages, start=1)
     )
     return (f"{CONSIGNES}\n\n<extraits>\n{extraits}\n</extraits>\n\n"

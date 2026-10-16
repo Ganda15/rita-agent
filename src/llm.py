@@ -120,6 +120,71 @@ def _appel_openrouter(prompt: str, max_tokens: int) -> Reponse:
 _NOMS_VALIDES = {"foundry", "anthropic", "openrouter"}
 
 
+# --- Sprint 3, tâche A3 : le parcours des questions, en JSON, par Azure seul ---------------------------------------
+# `generer_texte` (la cascade du briefing) ne change pas. Le parcours des questions n'appelle qu'Azure, le seul
+# fournisseur approuvé en zone UE (décision D5), sans repli : une panne est une erreur, jamais un autre fournisseur.
+# Aucun texte ne part dans les traces (décision D2) : ni le prompt (qui contient la question), ni la réponse, ni le
+# message d'une erreur, qui peut recopier l'un ou l'autre. Seuls le type de l'erreur et des comptes sont tracés.
+
+class FournisseurIndisponible(RuntimeError):
+    """Le fournisseur approuvé n'a pas pu répondre. Le message ne porte que le type de l'erreur, jamais le prompt."""
+
+
+class ReponseTronquee(RuntimeError):
+    """Le modèle a atteint la limite de longueur : la réponse est incomplète, donc inutilisable."""
+
+
+def generer_json(prompt: str, schema: dict, nom_schema: str, max_tokens: int = 800) -> str:
+    """Demande à Azure une réponse au format `schema` (mode strict) et rend le JSON brut, à valider par l'appelant.
+
+    Lève `FournisseurIndisponible` (configuration absente, erreur HTTP, délai dépassé, réponse illisible) ou
+    `ReponseTronquee` (`finish_reason == "length"`). Les deux sont levées APRÈS la fermeture de l'étape de trace :
+    aucune exception portant un texte ne la traverse.
+    """
+    modele = _modele_prevu("foundry")
+    contenu: str | None = None
+    panne: str | None = None
+    tronquee = False
+    with traces.etape("llm-foundry", genre="generation", modele=modele) as etape_llm:
+        try:
+            base = os.environ["AZURE_FOUNDRY_ENDPOINT"].rstrip("/")
+            reponse = httpx.post(
+                f"{base}/chat/completions",
+                headers={"Authorization": f"Bearer {os.environ['AZURE_FOUNDRY_API_KEY']}"},
+                json={
+                    "model": modele,
+                    "max_completion_tokens": max_tokens,
+                    "messages": [{"role": "user", "content": prompt}],
+                    "response_format": {"type": "json_schema",
+                                        "json_schema": {"name": nom_schema, "strict": True, "schema": schema}},
+                },
+                timeout=60.0,
+            )
+            reponse.raise_for_status()
+            corps = reponse.json()
+            choix = corps["choices"][0]
+            tronquee = choix.get("finish_reason") == "length"
+            contenu = choix["message"]["content"]
+            usage = corps.get("usage") or {}
+            traces.terminer_etape(etape_llm, metadata={
+                "modele": corps.get("model") or modele,
+                "region": (getattr(reponse, "headers", None) or {}).get("x-ms-region"),
+                "jetons_entree": usage.get("prompt_tokens"),
+                "jetons_sortie": usage.get("completion_tokens"),
+                "tronquee": tronquee,
+            })
+        except Exception as erreur:  # noqa: BLE001, toute panne devient une erreur propre, sans son message
+            panne = type(erreur).__name__
+            traces.terminer_etape(etape_llm, level="ERROR", status_message=panne)
+    traces.vider()
+    if panne is not None:
+        logger.warning("Fournisseur foundry indisponible pour une question : %s", panne)
+        raise FournisseurIndisponible(f"fournisseur indisponible ({panne})")
+    if tronquee or contenu is None:
+        raise ReponseTronquee("reponse tronquee par la limite de longueur")
+    return contenu
+
+
 def generer_texte(prompt: str, max_tokens: int = 500) -> str:
     erreurs: list[str] = []
     module = sys.modules[__name__]
