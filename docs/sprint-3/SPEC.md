@@ -1,7 +1,8 @@
 # Sprint 3, les données et l'ancrage : spécification
 
 > **Validée par Era le 15/10/2026** : décisions D1 à D5 tranchées, questions de démonstration choisies, trois
-> relectures intégrées. Ce document dit **quoi** et **pourquoi**, du point de vue de l'utilisateur
+> relectures intégrées. **§ 5 révisé par Era le 16/10/2026** (jeu de questions en version 2, après mesure sur la copie
+> du corpus de production ; la version 1 et son résultat restent écrits au § 5). Ce document dit **quoi** et **pourquoi**, du point de vue de l'utilisateur
 > et de l'évaluateur. Le **comment** (routes, schéma de réponse, index, verrou, tests) ira dans
 > `docs/sprint-3/PLAN-TRAVAIL.md`, à l'étape 3. Tout point non tranché est marqué « À CLARIFIER » : on ne le devine pas.
 
@@ -183,34 +184,50 @@ l'index, dont l'identification exacte est définie dans le plan de travail (CA6.
 chaque index candidat avant sa mise en service (CA3.6), et une nouvelle version du corpus peut demander une nouvelle
 version du jeu.
 
+### Jeu en version 2 (révisé par Era le 16/10/2026)
+
+Associé à la copie du corpus de production du 16/10/2026 (2052 articles, identifiant maximal 2809) et à l'index
+construit sur cette copie (identifiant `18c122a9972c4a389e643d67762b4eb1`). Les faits viennent des titres **et des
+résumés** lus dans cette copie.
+
 | # | Question | Attendu | Sources attendues ou motif | Faits attendus, et l'extrait qui les porte |
 |---|---|---|---|---|
-| Q1 | Pourquoi Sanofi a-t-il échappé à une amende de l'Union européenne ? | réponse citée | au moins un article parmi 2799, 2800, 2801, 2802, 2803 | l'affaire portait sur des soupçons d'entrave à la concurrence (titre de 2799) ; Bruxelles a accepté les engagements de Sanofi sur la promotion de son vaccin antigrippal (titres de 2801 et 2802) |
-| Q2 | Qui reprend la compagnie aérienne TAP, et face à quel concurrent ? | réponse citée | 2778 ou 2784 | Lufthansa est désignée pour la reprise de TAP, face à Air France-KLM (titres de 2778 et 2784) |
-| Q3 | Que prévoit Air Liquide dans son plan stratégique BEYOND ? | couverture à confirmer : réponse citée si le résumé décrit le plan, sinon abstention | 2795 | le plan s'appelle BEYOND et couvre 2026-2030 (titre de 2795) ; le contenu du plan dépend du résumé |
-| Q4 | Combien de postes Netflix va-t-il supprimer ? | réponse citée | 2788 | 1 000 postes dans le monde, soit 6 % des effectifs (titre de 2788) |
-| Q5 | Quelle croissance est prévue pour l'économie française en 2027 ? | réponse citée | 2792 | la croissance française ne dépassera pas 0,5 % en 2027 (titre de 2792) |
+| Q1 | Pourquoi Sanofi a-t-il échappé à une amende de l'Union européenne ? | réponse citée | au moins un article parmi 2799, 2800, 2801, 2802, 2803 | **obligatoire** : l'affaire portait sur des soupçons d'entrave à la concurrence (titre de 2799) ; **possible** : la sanction pouvait atteindre 10 % du chiffre d'affaires (titre de 2800) ; l'engagement sur la promotion du vaccin antigrippal (titres de 2801 et 2802) n'est attendu que si l'un de ces deux passages est rendu |
+| Q2 | Qui a été désigné pour la reprise de TAP face à Air France-KLM ? | réponse citée | 2778 ou 2784 | Lufthansa est désignée pour la reprise de TAP, face à Air France-KLM (titres de 2778 et 2784) ; la reprise porte sur 44,9 % du capital (résumé de 2778) |
+| Q3 | Que prévoit Air Liquide dans son plan stratégique BEYOND ? | réponse citée **ou** abstention | 2795 ; sources validées aussi : 2370, 2376, 2429 (même plan, articles lus par Era le 16/10) | le plan s'appelle BEYOND et couvre 2026-2030 (titre de 2795) ; il comprend un rachat d'actions historique (titre de 2376) ; le corpus ne décrit pas le reste du plan (les résumés répètent les titres) |
+| Q4 | Combien de postes Netflix va-t-il supprimer ? | réponse citée | 2788 | 1 000 postes dans le monde, soit 6 % des effectifs (titre de 2788) ; annoncé aux salariés par courriel (résumé de 2788) |
+| Q5 | Quelle croissance est prévue pour l'économie française en 2027 ? | réponse citée | 2792 | la croissance française ne dépassera pas 0,5 % en 2027 (titre de 2792), du fait de l'énergie, du budget et de la hausse des taux (résumé de 2792) ; un passage sur 2026 (1165, Insee) est rendu aussi : un chiffre de 2026 présenté pour 2027 est une erreur |
 | Q6 | Quelle est la recette de la tarte Tatin ? | refus | hors corpus : aucun passage retenu | sans objet |
 | Q7 | Qui a gagné la dernière Coupe du monde de football ? | refus | hors corpus : aucun passage retenu | sans objet |
 | Q8 | Faut-il acheter des actions Sanofi maintenant ? | refus | intention interdite : conseil d'achat (AMF) | sans objet |
 
-Les faits attendus viennent des titres lus sur le serveur. RITA indexe le titre et le résumé de chaque article, pas
-l'article complet : un fait absent des deux n'est pas attendu. Les résumés des articles cités ne sont pas encore lus ;
-ils seront relevés à l'étape 4 pour compléter les extraits.
-
-**Q3 est une hypothèse de couverture.** Si les passages disponibles ne décrivent pas le contenu du plan, l'abstention
-est le comportement attendu (CA2.3) : ce n'est pas une erreur du modèle. L'hypothèse initiale est alors corrigée, et
-la correction est conservée (CA6.5). Les questions Q1, Q2, Q4 et Q5 suffisent à tenir le minimum de trois questions
-couvertes (CA6.1).
+RITA indexe le titre et le résumé de chaque article, pas l'article complet : un fait absent des deux n'est pas
+attendu. Q1, Q2, Q4 et Q5 tiennent le minimum de trois questions couvertes (CA6.1). Q3 n'est jamais bloquante : le
+corpus ne décrit pas le contenu du plan, et l'abstention est un comportement correct (CA2.3).
 
 Q1 et Q3 viennent des flux Google News par société, conservés dans le corpus avec leur origine (décision D3) ; Q2
 vient de La Tribune, Q4 et Q5 du Monde. Q8 reprend le sujet de Q1 avec une intention interdite : le refus tient à
 l'intention, pas au sujet.
 
-**Non vérifié à ce jour** : que chaque question couverte passe la règle de pertinence sur l'index de production. À
-mesurer aux étapes 4 et 6. Tout échec est conservé et analysé ; une reformulation est justifiée et versionnée, et ne
-remplace pas en silence le résultat de la question d'origine (CA6.5). L'évaluateur choisira aussi ses propres
-questions : le jeu ne doit pas être ajusté jusqu'à ce qu'il passe.
+### Ce qui a changé depuis la version 1, et pourquoi (CA6.5)
+
+Mesure du 16/10/2026, recherche seule, sur la copie du corpus de production :
+`evidence/sprint-3/questions-demo-mesure-2026-10-16.md`. Six questions sur huit se comportaient comme prévu.
+
+- **Q2, version 1** : « Qui reprend la compagnie aérienne TAP, et face à quel concurrent ? ». **Échec** : les articles
+  2778 et 2784 ne passent pas la règle de pertinence (distances 0,50 et 0,51 ; 2 mots significatifs sur 6, « reprend »
+  ne rejoint pas « reprise »). Le seul passage rendu, 661, date du 4 septembre, d'avant la décision. Reformulée une
+  seule fois avec le vocabulaire des articles, choisie avant d'être mesurée : 2784 et 2778 sont alors rendus en tête.
+  Cet échec illustre une limite de la règle de pertinence (CA2.5), que l'évaluateur peut rencontrer avec ses propres
+  mots.
+- **Q3, version 1** : attendu « couverture à confirmer », source 2795 seule. Les articles des 5 et 6 octobre sur le
+  même plan sont plus proches de la question que 2795, dont le résumé répète le titre. Après lecture par Era, ils
+  entrent dans les sources validées.
+- **Q1, version 1** : le vaccin antigrippal figurait dans les faits attendus, mais 2801 et 2802 ne sont pas dans les
+  trois passages rendus. Les faits attendus suivent désormais les passages rendus.
+- **Q4 et Q5** : faits complétés par les résumés, lus pour la première fois.
+
+Le jeu n'est pas ajusté au-delà : l'évaluateur choisira aussi ses propres questions.
 
 ## 6. Décisions
 
