@@ -24,7 +24,9 @@ RACINE = Path(__file__).resolve().parent.parent
 REF_A = "ghcr.io/ganda15/rita-api@sha256:" + "a" * 64
 REF_B = "ghcr.io/ganda15/rita-api@sha256:" + "b" * 64
 REF_C = "ghcr.io/ganda15/rita-api@sha256:" + "c" * 64
-ENV = {"RITA_API_KEY": "cle-de-test-smoke-ui-32-caracteres-x", "RITA_DSN_LECTURE": "postgresql://lecture@base/rita"}
+ENV = {"RITA_API_KEY": "cle-de-test-smoke-ui-32-caracteres-x", "RITA_DSN_LECTURE": "postgresql://lecture@base/rita",
+       # Revue de la PR #100 : les questions n'appellent qu'Azure (D5) ; ses variables sont exigées par le script.
+       "AZURE_FOUNDRY_ENDPOINT": "https://azure.exemple.test", "AZURE_FOUNDRY_API_KEY": "cle-azure-fictive"}
 SAIN = {"health": True, "ecran": True, "briefing": "ok", "journal": True}
 
 
@@ -42,6 +44,39 @@ class FauxDocker:
         self.fichiers_compose = {"docker-compose.yml": "services: {}\n", "compose.prod.yml": "services: {}\n"}
         self.index_absents = set()    # volumes d'index qui n'existent pas (ou plus)
         self.index_supprimes = []
+        # Sprint 3, tâche B3 : la collecte, le rejeu des questions et l'identité des index.
+        self.index_production = None  # le volume d'index que l'API de production sert
+        self.index_pretest = None
+        self.collecte = "ok"          # « ok », « echec », ou « sans_manifeste » (code 0 sans rien écrire)
+        self.rejeu = "ok"             # « ok », « echec » (rapport écrit puis code 1), ou « sans_rapport »
+        self.alterer_identite = None  # fonction appliquée à l'identité que /health annonce en production
+
+    @staticmethod
+    def identite(nom):
+        """L'identité d'un index, comme `identite.json` la donne : chaque construction a son identifiant."""
+        return {"nb_articles": 40, "empreinte": f"emp-{nom}", "identifiant": f"id-{nom}"}
+
+    def identite_annoncee(self):
+        identite = self.identite(self.index_production)
+        return self.alterer_identite(identite) if self.alterer_identite else identite
+
+    def collecter(self, version, dsn_ingestion, dossier_rapports):
+        self.appels.append(("collecter", version.image, dsn_ingestion))
+        if self.collecte == "echec":
+            raise subprocess.CalledProcessError(1, ["docker", "run"])
+        if self.collecte == "ok":
+            numero = sum(1 for appel in self.appels if appel[0] == "collecter")
+            (dossier_rapports / f"manifeste-2026-10-16-1000{numero:02d}.json").write_text('{"etapes_ok": 1}',
+                                                                                          encoding="utf-8")
+
+    def rejouer_questions(self, version, dsn_lecture, dossier_rapports):
+        self.appels.append(("rejeu", version.index, dsn_lecture))
+        rapport = d.chemin_rapport_rejeu(dossier_rapports, version)
+        if self.rejeu != "sans_rapport":
+            rapport.write_text(json.dumps({"index": self.identite(version.index), "ecarts": []}), encoding="utf-8")
+        if self.rejeu == "echec":
+            raise subprocess.CalledProcessError(1, ["docker", "run"])
+        return rapport
 
     def tirer(self, ref):
         self.appels.append(("tirer", ref))
@@ -69,6 +104,7 @@ class FauxDocker:
 
     def demarrer_pretest(self, version, dsn_lecture):
         self.pretest = version.image
+        self.index_pretest = version.index
         self.appels.append(("pretest", version.image, dsn_lecture, version.index))
 
     def arreter_pretest(self):
@@ -80,6 +116,7 @@ class FauxDocker:
         if version.index in self.index_absents:   # Compose refuse un volume externe absent, sans le créer
             raise subprocess.CalledProcessError(1, ["docker", "compose", "up"])
         self.production = version.image
+        self.index_production = version.index
 
     def journal_du_conteneur(self, nom):
         image = self.pretest if nom == d.CONTENEUR_PRETEST else self.production
@@ -92,14 +129,32 @@ class FauxDocker:
 
 
 def faux_http(docker):
-    def requete(methode, url, entetes=None, delai=None):
+    def requete(methode, url, entetes=None, delai=None, corps=None):
         image = docker.pretest if url.startswith(d.URL_PRETEST) else docker.production
         c = docker.images.get(image, {})
         chemin = url.split("127.0.0.1:")[1].split("/", 1)[1]
         if not c.get("health"):
             raise OSError("connexion refusée")
         if chemin == "health":
-            return d.Reponse(200, {}, json.dumps({"status": "ok", "commit": c["commit"]}).encode())
+            # Sprint 3, tâche A1 : /health annonce l'identité de l'index servi. Une version d'avant le sprint 3
+            # (comportement `index=False`) ne l'annonce pas, et n'a pas de route /question.
+            sante = {"status": "ok", "commit": c["commit"]}
+            if c.get("index", True):
+                sante["index"] = (docker.identite(docker.index_pretest) if url.startswith(d.URL_PRETEST)
+                                  else docker.identite_annoncee())
+            return d.Reponse(200, {}, json.dumps(sante).encode())
+        if chemin == "question":
+            # Revue de la PR #100 : la question de contrôle. « ok » : réponse citée ; « panne » : Azure indisponible ;
+            # « refus » et « sans_reference » : pas de réponse citée ; « absente » : la route n'existe pas.
+            docker.appels.append(("question", image))
+            if c.get("cle") and (entetes or {}).get("X-API-Key") != c["cle"]:
+                return d.Reponse(403, {}, b"{}")
+            corps = {"ok": (200, {"statut": "reponse", "motif": "OK", "references": [{"id": 2788}]}),
+                     "panne": (503, {"statut": "erreur", "motif": "FOURNISSEUR_INDISPONIBLE"}),
+                     "refus": (200, {"statut": "refus", "motif": "OUT_OF_CORPUS", "references": []}),
+                     "sans_reference": (200, {"statut": "reponse", "motif": "OK", "references": []}),
+                     "absente": (404, {"detail": "Not Found"})}[c.get("question", "ok")]
+            return d.Reponse(corps[0], {}, json.dumps(corps[1]).encode())
         if chemin == "donnees/valeurs":
             return d.Reponse(403, {}, b"{}")
         if chemin == "briefing.html":
@@ -135,12 +190,16 @@ DIX_HEURES = _horloge(datetime(2026, 10, 14, 10, 0, tzinfo=PARIS))
 @pytest.fixture
 def serveur(tmp_path):
     (tmp_path / "sauvegardes" / "avant-chaine").mkdir(parents=True)
+    # Sprint 3, tâche B3 : le dossier des manifestes et des rapports de rejeu, créé par Era (tâche B5), jamais par le
+    # script (créé par root, il ne serait pas inscriptible par l'utilisateur de l'image).
+    (tmp_path / "rapports").mkdir()
     # Les fichiers Compose installés par Era à côté du script (tâche 10) : ceux de l'image doivent leur être identiques.
     (tmp_path / "bin").mkdir()
     for nom in ("docker-compose.yml", "compose.prod.yml"):
         (tmp_path / "bin" / nom).write_text("services: {}\n", encoding="utf-8")
     env = tmp_path / "env-serveur"
-    env.write_text("RITA_API_KEY=cle-de-test-smoke-ui-32-caracteres-x\nRITA_DSN_LECTURE=postgresql://lecture@base/rita\n",
+    env.write_text("RITA_API_KEY=cle-de-test-smoke-ui-32-caracteres-x\nRITA_DSN_LECTURE=postgresql://lecture@base/rita\n"
+                   "AZURE_FOUNDRY_ENDPOINT=https://azure.exemple.test\nAZURE_FOUNDRY_API_KEY=cle-azure-fictive\n",
                    encoding="utf-8")
     return tmp_path, env
 
@@ -385,9 +444,11 @@ def test_le_pretest_ne_demande_pas_l_ecran():
 class FauxVerrou:
     def __init__(self):
         self.pris = []
+        self.chemins = []
 
     def __call__(self, chemin, attente_max):
         self.pris.append(attente_max)
+        self.chemins.append(chemin)
         return _ContexteVide()
 
 
@@ -459,6 +520,10 @@ ENV_COMPOSE = {"RITA_API_KEY": "cle-compose-fictive", "LLM_ORDRE": "foundry,anth
                "DATABASE_URL": "postgresql://rita:ADMIN-FICTIF@postgres:5432/rita"}
 
 
+# L'identité que le rejeu « réel » (sur l'Enregistreur) écrit dans son rapport, et que /health annonce dans `_pire_chemin`.
+IDENTITE_ENREGISTREE = {"empreinte": "emp-reelle", "identifiant": "id-reel"}
+
+
 class Enregistreur:
     """Remplace `subprocess.run` : note chaque commande, son environnement et son délai maximal."""
 
@@ -476,6 +541,14 @@ class Enregistreur:
             raise subprocess.CalledProcessError(1, args)
         if args[:2] == ["docker", "cp"]:
             Path(args[-1]).write_text("services: {}\n", encoding="utf-8")
+        # Sprint 3, tâche B3 : la collecte écrit son manifeste et le rejeu son rapport, dans le dossier monté sur
+        # /app/logs (le chemin de l'hôte est tout ce qui précède « :/app/logs », lettre de lecteur Windows comprise).
+        logs = next((str(a)[:-len(":/app/logs")] for a in args if str(a).endswith(":/app/logs")), None)
+        if logs and "pipelines.ingest" in args:
+            Path(logs, "manifeste-2026-10-16-100000.json").write_text("{}", encoding="utf-8")
+        if logs and "rag.controle_questions" in args:
+            Path(logs, Path(args[args.index("--sortie") + 1]).name).write_text(
+                json.dumps({"index": IDENTITE_ENREGISTREE}), encoding="utf-8")
         if "config" in args and "--format" in args:
             sortie = json.dumps({"services": {"api": {"environment": self.environnement}}})
             return subprocess.CompletedProcess(args, 0, stdout=sortie, stderr="")
@@ -778,6 +851,7 @@ class DockerBasculeRatee(FauxDocker):
             self.production = None               # l'ancienne API est arrêtée, la nouvelle n'a pas démarré
             raise self.erreur
         self.production = version.image
+        self.index_production = version.index
 
 
 @pytest.mark.parametrize("erreur", [subprocess.CalledProcessError(1, ["docker", "compose", "up"]),
@@ -870,7 +944,9 @@ def test_une_version_sans_env_sauvegarde_echoue_au_controle_au_lieu_de_planter(s
     docker = FauxDocker({REF_A: _comportement(commit="aaa", cle=CLE_A), REF_C: _comportement(commit="ccc")},
                         production=REF_C)
     assert d.revenir("7", docker, dossier, ENV, DIX_HEURES, http=faux_http(docker), dormir=lambda s: None) == 1
-    assert _journal(dossier)[-1]["echecs"] == ["briefing"]
+    # Revue de la PR #100 : la version A de ce test annonce un index (comme toute version du sprint 3) ; sans clé, la
+    # question de contrôle échoue aussi, après le briefing.
+    assert _journal(dossier)[-1]["echecs"] == ["briefing", "question"]
     assert d.lire_etat(dossier / "etat.json").observee == REF_C
 
 
@@ -902,8 +978,10 @@ def test_toutes_les_commandes_docker_ont_un_delai_maximal(tmp_path):
     docker.index_existe(version.index)
     docker.supprimer_index(version.index)
     docker.journal_du_conteneur(d.CONTENEUR)
-    assert len(enregistreur.delais) >= 13
-    permis = {d.DELAI_COURT, d.DELAI_TIRAGE, d.DELAI_INDEXATION, d.DELAI_BASCULE}
+    docker.collecter(version, DSN_SECRET, tmp_path)               # sprint 3, tâche B3
+    docker.rejouer_questions(version, DSN_SECRET, tmp_path)
+    assert len(enregistreur.delais) >= 15
+    permis = {d.DELAI_COURT, d.DELAI_TIRAGE, d.DELAI_INDEXATION, d.DELAI_BASCULE, d.DELAI_COLLECTE, d.DELAI_REJEU}
     assert all(delai in permis for _, delai in enregistreur.delais), enregistreur.delais
     assert ("docker pull " + REF_C, d.DELAI_TIRAGE) in enregistreur.delais
     assert ("docker run --rm", d.DELAI_INDEXATION) in enregistreur.delais
@@ -962,13 +1040,15 @@ def _pire_chemin(serveur, monkeypatch, briefing_rate):
     attentes, delais_http, briefings = [], [], []
     monkeypatch.setattr(d, "attendre_disponible", lambda *args, **kwargs: attentes.append(1) or True)
 
-    def http(methode, url, entetes=None, delai=None):
+    def http(methode, url, entetes=None, delai=None, corps=None):
         delais_http.append(delai)
         fin = url.rsplit("/", 1)[-1]
         if fin == "health":
-            return d.Reponse(200, {}, json.dumps({"commit": "ccc"}).encode())
+            return d.Reponse(200, {}, json.dumps({"commit": "ccc", "index": IDENTITE_ENREGISTREE}).encode())
         if fin == "valeurs":
             return d.Reponse(403, {}, b"{}")
+        if fin == "question":   # revue de la PR #100 : la question de contrôle, toujours citée ici
+            return d.Reponse(200, {}, json.dumps({"statut": "reponse", "references": [{"id": 2788}]}).encode())
         if fin.startswith("briefing?"):
             briefings.append(url)
             statut = 500 if len(briefings) == briefing_rate else 200
@@ -1158,3 +1238,397 @@ def test_la_vraie_classe_docker_gere_les_index_par_leur_nom(tmp_path):
     assert ["docker", "volume", "rm", "rita-index-candidate"] in commandes
     assert enregistreur.commandes[-2][1]["RITA_INDEX"] == "rita-index-essai"      # la bascule
     assert commandes[-1] == ["docker", "rm", "-f", d.CONTENEUR_PRETEST]          # l'arrêt garde l'index
+
+
+# === Sprint 3, tâche B3 : l'ordre `ingerer` et le rejeu des questions (décision D1, spec CA3.1 à CA3.6) =============
+#
+# Une ingestion garde l'image et la configuration de la version active. Elle collecte les articles, prépare un NOUVEL
+# index à part (pré-test), rejoue les questions de démonstration sur cet index, puis seulement le met en service. Tout
+# échec avant la bascule laisse l'index servi intact. Après la bascule, l'identité de l'index servi est vérifiée, et la
+# version du début revient si elle ne correspond pas. La version précédente reste la cible d'un retour arrière.
+
+ENV_INGESTION = {**ENV, "RITA_DSN_INGESTION": "postgresql://ingestion@base/rita"}
+
+
+def _ingerer(docker, dossier, env=ENV_INGESTION, maintenant=DIX_HEURES):
+    return d.ingerer("31", docker, dossier, env, maintenant, http=faux_http(docker), dormir=lambda s: None)
+
+
+def _avec_active(dossier):
+    """Une version active A (index « rita-index-a ») et une précédente P, comme après deux livraisons."""
+    a, p = _version(REF_A, dossier, "a"), _version(REF_B, dossier, "p")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=a, precedente=p))
+    return a, p
+
+
+def _docker_a():
+    return FauxDocker({REF_A: _comportement(commit="aaa"), REF_B: _comportement(commit="bbb"),
+                       REF_C: _comportement(commit="ccc")}, production=REF_A)
+
+
+def _appel(docker, genre):
+    return next(appel for appel in docker.appels if appel[0] == genre)
+
+
+def test_ingestion_reussie_change_l_index_et_garde_le_retour_logiciel(serveur):
+    dossier, _ = serveur
+    a, p = _avec_active(dossier)
+    docker = _docker_a()
+    assert _ingerer(docker, dossier) == 0
+    etat = d.lire_etat(dossier / "etat.json")
+    nouvelle = etat.active
+    assert (nouvelle.image, nouvelle.config, nouvelle.profil) == (a.image, a.config, a.profil)    # même logiciel
+    assert nouvelle.index.startswith("rita-index-ing-") and nouvelle.index != a.index
+    assert (etat.precedente, etat.observee, etat.sante) == (p, REF_A, "sain")
+    # La collecte écrit avec le compte d'ingestion ; le pré-test et le rejeu portent sur l'index candidat.
+    assert _appel(docker, "collecter") == ("collecter", REF_A, ENV_INGESTION["RITA_DSN_INGESTION"])
+    assert _appel(docker, "pretest")[3] == nouvelle.index
+    assert _appel(docker, "rejeu") == ("rejeu", nouvelle.index, ENV["RITA_DSN_LECTURE"])
+    assert docker.remplacements() == [nouvelle]
+    assert docker.index_supprimes == []                           # l'ancien index est gardé
+    dernier = _journal(dossier)[-1]
+    assert (dernier["resultat"], dernier["passage"]) == ("ingeree", "31")
+    assert (dernier["ancien_index"], dernier["nouvel_index"]) == (a.index, nouvelle.index)
+    assert dernier["empreinte"] == FauxDocker.identite(nouvelle.index)["empreinte"]
+    assert Path(dernier["manifeste"]).is_file() and Path(dernier["rapport"]).is_file()
+    assert not (dossier / "operation-en-cours.json").exists()
+
+
+def test_echec_de_collecte_ne_touche_pas_l_index(serveur):
+    dossier, _ = serveur
+    a, p = _avec_active(dossier)
+    docker = _docker_a()
+    docker.collecte = "echec"
+    assert _ingerer(docker, dossier) == 1
+    assert docker.remplacements() == [] and not any(appel[0] == "pretest" for appel in docker.appels)
+    assert d.lire_etat(dossier / "etat.json") == d.Etat(active=a, precedente=p)
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "echec collecte"
+    assert "restent en base" in dernier["message"]        # CA3.3 : les écritures déjà validées ne sont pas cachées
+    assert not (dossier / "operation-en-cours.json").exists()
+
+
+def test_echec_du_rejeu_bloque_la_mise_en_service(serveur):
+    dossier, _ = serveur
+    a, p = _avec_active(dossier)
+    docker = _docker_a()
+    docker.rejeu = "echec"
+    assert _ingerer(docker, dossier) == 1
+    candidat = _appel(docker, "rejeu")[1]
+    assert docker.remplacements() == [] and docker.index_supprimes == [candidat]
+    assert d.lire_etat(dossier / "etat.json") == d.Etat(active=a, precedente=p)
+    assert _journal(dossier)[-1]["resultat"] == "refusee au rejeu"
+    assert not (dossier / "operation-en-cours.json").exists()
+
+
+def test_pretest_rouge_bloque_l_ingestion(serveur):
+    # Un index candidat vide : le briefing du pré-test ne reçoit aucun article.
+    dossier, _ = serveur
+    a, p = _avec_active(dossier)
+    docker = FauxDocker({REF_A: _comportement(commit="aaa", articles=0)}, production=REF_A)
+    assert _ingerer(docker, dossier) == 1
+    candidat = _appel(docker, "pretest")[3]
+    assert docker.remplacements() == [] and docker.index_supprimes == [candidat]
+    assert not any(appel[0] == "rejeu" for appel in docker.appels)
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "refusee au pre-test" and "articles" in dernier["echecs"]
+    assert d.lire_etat(dossier / "etat.json") == d.Etat(active=a, precedente=p)
+
+
+@pytest.mark.parametrize("cas", ["sans_active", "etat_illisible", "index_actif_absent", "sans_dossier_des_rapports"])
+def test_ingestion_sans_version_active_refusee(serveur, cas):
+    # Les refus d'avant toute opération : rien n'est lancé, aucune marque n'est posée.
+    dossier, _ = serveur
+    docker = _docker_a()
+    if cas == "sans_active":
+        d.ecrire_etat(dossier / "etat.json", d.Etat())
+    elif cas == "etat_illisible":
+        (dossier / "etat.json").write_text("{}", encoding="utf-8")
+    else:
+        a, _ = _avec_active(dossier)
+        if cas == "index_actif_absent":
+            docker.index_absents.add(a.index)
+        else:
+            (dossier / "rapports").rmdir()
+    assert _ingerer(docker, dossier) == 1
+    assert docker.appels == []
+    assert _journal(dossier)[-1]["resultat"] == "refusee"
+    assert not (dossier / "operation-en-cours.json").exists()
+
+
+def test_variable_d_ingestion_absente_refusee(serveur):
+    dossier, _ = serveur
+    _avec_active(dossier)
+    docker = _docker_a()
+    assert _ingerer(docker, dossier, env=ENV) == 1          # ENV n'a pas RITA_DSN_INGESTION
+    assert docker.appels == []
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "refusee" and "RITA_DSN_INGESTION" in dernier["message"]
+
+
+def test_ingestion_pendant_le_creneau_reportee(serveur):
+    docker = _docker_a()
+    code, verrou = _main(serveur, "ingerer 31", docker, maintenant=_horloge(datetime(2026, 10, 14, 8, 30, tzinfo=PARIS)))
+    assert code == d.CODE_CRENEAU and verrou.pris == [] and docker.appels == []
+
+
+def test_creneau_atteint_pendant_l_ingestion_annule_avant_la_bascule(serveur):
+    # L'heure est relue juste avant la bascule : le créneau de 8 h, atteint pendant le rejeu, annule proprement.
+    dossier, _ = serveur
+    a, p = _avec_active(dossier)
+    docker = _docker_a()
+
+    def maintenant():
+        rejoue = any(appel[0] == "rejeu" for appel in docker.appels)
+        return datetime(2026, 10, 14, 8, 1, tzinfo=PARIS) if rejoue else datetime(2026, 10, 14, 7, 50, tzinfo=PARIS)
+    assert _ingerer(docker, dossier, maintenant=maintenant) == d.CODE_CRENEAU
+    assert docker.remplacements() == [] and docker.index_supprimes == [_appel(docker, "rejeu")[1]]
+    assert d.lire_etat(dossier / "etat.json") == d.Etat(active=a, precedente=p)
+    assert not (dossier / "operation-en-cours.json").exists()
+
+
+def test_le_verrou_est_partage_avec_les_livraisons(serveur):
+    dossier, env = serveur
+    _avec_active(dossier)
+    env.write_text(env.read_text(encoding="utf-8") + "RITA_DSN_INGESTION=postgresql://ingestion@base/rita\n",
+                   encoding="utf-8")
+    code, verrou_ingestion = _main(serveur, "ingerer 31", _docker_a())
+    assert code == 0 and verrou_ingestion.pris == [d.ATTENTE_VERROU["ingerer"]]
+    _, verrou_livraison = _main(serveur, "livrer " + REF_C, _docker_a())
+    assert verrou_ingestion.chemins == verrou_livraison.chemins == [dossier / "verrou"]
+    # Chaque opération attend plus longtemps que les deux autres ne peuvent durer : aucune n'abandonne en route.
+    assert d.ATTENTE_VERROU["livrer"] > max(d.DUREE_MAX_REVENIR, d.DUREE_MAX_INGERER)
+    assert d.ATTENTE_VERROU["revenir"] > max(d.DUREE_MAX_LIVRER, d.DUREE_MAX_INGERER)
+    assert d.ATTENTE_VERROU["ingerer"] > max(d.DUREE_MAX_LIVRER, d.DUREE_MAX_REVENIR)
+
+
+def test_un_retour_apres_ingestion_revient_a_la_version_precedente_avec_son_index(serveur):
+    dossier, _ = serveur
+    a, p = _avec_active(dossier)
+    docker = _docker_a()
+    assert _ingerer(docker, dossier) == 0
+    reindexee = d.lire_etat(dossier / "etat.json").active
+    assert d.revenir("32", docker, dossier, ENV, DIX_HEURES, http=faux_http(docker), dormir=lambda s: None) == 0
+    assert docker.remplacements()[-1] == p                    # le logiciel précédent, avec SON index
+    etat = d.lire_etat(dossier / "etat.json")
+    assert (etat.active, etat.precedente) == (p, None)
+    assert a.index not in docker.index_supprimes and reindexee.index not in docker.index_supprimes
+
+
+def test_livraison_bloquee_si_le_rejeu_echoue(serveur):
+    dossier, env = serveur
+    a = _version(REF_A, dossier, "a")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=a))
+    docker = _docker_a()
+    docker.rejeu = "echec"
+    assert _livrer(REF_C, docker, dossier, env) == 1
+    assert docker.remplacements() == [] and docker.index_supprimes == [_appel(docker, "rejeu")[1]]
+    assert d.lire_etat(dossier / "etat.json") == d.Etat(active=a)
+    assert _journal(dossier)[-1]["resultat"] == "refusee au rejeu"
+    assert not (dossier / "operation-en-cours.json").exists()
+
+
+def test_une_collecte_sans_manifeste_est_un_echec(serveur):
+    # La commande rend 0, mais aucun manifeste n'a été écrit PENDANT l'opération : `ecrire_manifeste_sans_casser` ne
+    # fait qu'avertir quand l'écriture échoue. Un manifeste plus ancien, déjà dans le dossier, ne compte pas.
+    dossier, _ = serveur
+    a, p = _avec_active(dossier)
+    (dossier / "rapports" / "manifeste-2026-10-15-190000.json").write_text("{}", encoding="utf-8")
+    docker = _docker_a()
+    docker.collecte = "sans_manifeste"
+    assert _ingerer(docker, dossier) == 1
+    assert not any(appel[0] == "pretest" for appel in docker.appels)
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "echec collecte" and "preuve absente" in dernier["message"]
+    assert d.lire_etat(dossier / "etat.json") == d.Etat(active=a, precedente=p)
+
+
+@pytest.mark.parametrize("operation", ["ingerer", "livrer"])
+def test_un_rejeu_sans_rapport_est_un_echec(serveur, operation):
+    dossier, env = serveur
+    _avec_active(dossier)
+    docker = _docker_a()
+    docker.rejeu = "sans_rapport"
+    code = _ingerer(docker, dossier) if operation == "ingerer" else _livrer(REF_C, docker, dossier, env)
+    assert code == 1 and docker.remplacements() == []
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "refusee au rejeu" and "preuve absente" in dernier["message"]
+
+
+def test_le_rapport_d_un_rejeu_en_echec_est_garde(serveur):
+    dossier, _ = serveur
+    _avec_active(dossier)
+    docker = _docker_a()
+    docker.rejeu = "echec"
+    assert _ingerer(docker, dossier) == 1
+    rapport = Path(_journal(dossier)[-1]["rapport"])
+    assert rapport.parent == dossier / "rapports" and rapport.is_file()
+    assert json.loads(rapport.read_text(encoding="utf-8"))["index"]["identifiant"].startswith("id-rita-index-ing-")
+
+
+@pytest.mark.parametrize("alteration", [
+    lambda identite: {**identite, "empreinte": "emp-autre-corpus"},
+    lambda identite: {**identite, "identifiant": "id-autre-construction"},   # même corpus, autre construction
+    lambda identite: None,                                                   # /health sans identité d'index
+], ids=["autre_empreinte", "meme_empreinte_autre_identifiant", "identite_absente"])
+@pytest.mark.parametrize("operation", ["ingerer", "livrer"])
+def test_la_bascule_verifie_l_identite_de_l_index(serveur, operation, alteration):
+    # Pendant une ingestion, le commit ne change pas : il ne prouve pas que le nouvel index est servi. Deux index du
+    # même corpus ont la même empreinte : elle seule ne suffit pas non plus. Il faut l'empreinte ET l'identifiant.
+    dossier, env = serveur
+    a, p = _avec_active(dossier)
+    docker = _docker_a()
+    docker.alterer_identite = alteration
+    code = _ingerer(docker, dossier) if operation == "ingerer" else _livrer(REF_C, docker, dossier, env)
+    assert code == 1
+    remplacees = docker.remplacements()
+    assert len(remplacees) == 2 and remplacees[1] == a              # la version du début revient, avec son index
+    assert docker.index_supprimes == [remplacees[0].index]
+    etat = d.lire_etat(dossier / "etat.json")
+    assert (etat.active, etat.precedente, etat.sante) == (a, p, "sain")
+    dernier = _journal(dossier)[-1]
+    assert "index" in dernier["echecs"] and "restauree" in dernier["resultat"]
+    assert not (dossier / "operation-en-cours.json").exists()
+
+
+class DockerCollecteEnPanne(FauxDocker):
+    def collecter(self, version, dsn_ingestion, dossier_rapports):
+        self.appels.append(("collecter", version.image, dsn_ingestion))
+        raise subprocess.CalledProcessError(1, ["docker", "run", "-e", f"DATABASE_URL={DSN_SECRET}"],
+                                            stderr=f"echec avec {DSN_SECRET}")
+
+
+def test_un_echec_de_collecte_n_ecrit_jamais_le_mot_de_passe(serveur, capsys):
+    dossier, env = serveur
+    _avec_active(dossier)
+    env.write_text(env.read_text(encoding="utf-8") + f"RITA_DSN_INGESTION={DSN_SECRET}\n", encoding="utf-8")
+    code, _ = _main(serveur, "ingerer 31", DockerCollecteEnPanne({REF_A: _comportement(commit="aaa")}, production=REF_A))
+    sortie = capsys.readouterr()
+    assert code == 1
+    journal = (dossier / "journal.jsonl").read_text(encoding="utf-8")
+    assert "MOTDEPASSE-FICTIF" not in sortie.out + sortie.err + journal
+    assert _journal(dossier)[-1]["message"].startswith("commande en echec : docker run (code 1)")
+
+
+# --- La vraie classe Docker : la collecte et le rejeu ---------------------------------------------------------------
+
+def _seul_lancement(enregistreur):
+    (lancement,) = [(args, env) for args, env in enregistreur.commandes if args[:2] == ["docker", "run"]]
+    return lancement
+
+
+def test_docker_collecte_avec_le_compte_d_ingestion_sans_mot_de_passe_dans_les_arguments(tmp_path):
+    enregistreur = Enregistreur()
+    version = d.Version(REF_C, str(tmp_path), "complet", "rita-index-essai")
+    d.Docker(executer=enregistreur).collecter(version, DSN_SECRET, tmp_path)
+    args, env = _seul_lancement(enregistreur)
+    assert not any("MOTDEPASSE-FICTIF" in a for a in args)
+    assert args[args.index("-e") + 1] == "DATABASE_URL" and env["DATABASE_URL"] == DSN_SECRET
+    assert "--rm" in args and f"{tmp_path}:/app/logs" in args
+    assert args[args.index("--network") + 1] == f"{d.PROJET_COMPOSE}_default"
+    assert args[args.index(REF_C) + 1:] == ["python", "-m", "pipelines.ingest", "--etapes", "rss", "--strict"]
+    assert not any(str(a).endswith(":/app/data/chroma") for a in args)      # la collecte ne touche aucun index
+    assert enregistreur.delais[-1][1] == d.DELAI_COLLECTE
+
+
+def test_docker_rejeu_lit_l_index_de_la_version_et_rend_le_chemin_du_rapport(tmp_path):
+    enregistreur = Enregistreur()
+    version = d.Version(REF_C, str(tmp_path), "complet", "rita-index-essai")
+    rapport = d.Docker(executer=enregistreur).rejouer_questions(version, DSN_SECRET, tmp_path)
+    args, env = _seul_lancement(enregistreur)
+    assert rapport == tmp_path / "rejeu-rita-index-essai.json" == d.chemin_rapport_rejeu(tmp_path, version)
+    assert "rita-index-essai:/app/data/chroma" in args and f"{tmp_path}:/app/logs" in args
+    assert args[args.index("--sortie") + 1] == "/app/logs/rejeu-rita-index-essai.json"
+    assert "rag.controle_questions" in args and "--rm" in args
+    assert not any("MOTDEPASSE-FICTIF" in a for a in args) and env["DATABASE_URL"] == DSN_SECRET
+    assert enregistreur.delais[-1][1] == d.DELAI_REJEU
+
+
+def test_une_ingestion_dure_toujours_moins_que_l_attente_des_autres_operations(serveur, monkeypatch):
+    # Pire chemin : collecte, pré-test et rejeu verts ; la version réindexée échoue après la bascule (2e briefing) ;
+    # la version du début est remise et recontrôlée (3e briefing).
+    dossier, _ = serveur
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=_version(REF_A, dossier, "a")))
+    docker, enregistreur, attentes, delais_http, http = _pire_chemin(serveur, monkeypatch, briefing_rate=2)
+    assert d.ingerer("9", docker, dossier, ENV_INGESTION, DIX_HEURES, http=http, dormir=lambda s: None) == 1
+    assert _journal(dossier)[-1]["resultat"] == "ingestion refusee, version active du debut restauree"
+    duree = _duree(enregistreur, attentes, delais_http)
+    assert duree <= d.DUREE_MAX_INGERER < min(d.ATTENTE_VERROU["livrer"], d.ATTENTE_VERROU["revenir"])
+
+
+# === Revue automatique de la PR #100 (16/10/2026) : contrôler /question à chaque livraison et ingestion ============
+#
+# Les questions n'appellent qu'Azure (décision D5), sans repli. `/briefing`, lui, se replie sur d'autres fournisseurs :
+# ne contrôler que lui laissait passer une version dont chaque question rend 503 (clé Azure absente ou fausse). Les
+# contrôles posent donc une vraie question couverte, et le script exige les variables d'Azure. Une version d'avant le
+# sprint 3 (sans identité d'index, sans route /question) n'est pas soumise à ce contrôle : le retour arrière reste
+# possible.
+
+@pytest.mark.parametrize("question", ["panne", "refus", "sans_reference"])
+def test_controler_exige_une_question_citee_quand_l_api_a_un_index(question):
+    docker = FauxDocker({REF_C: _comportement(commit="ccc", question=question)}, production=REF_C)
+    controle = d.controler(d.URL_PRODUCTION, ENV["RITA_API_KEY"], "complet", "ccc",
+                           lambda: docker.journal_du_conteneur(d.CONTENEUR), faux_http(docker))
+    assert controle.sante == "degrade" and "question" in controle.echecs
+
+
+def test_controler_ne_pose_pas_la_question_a_une_version_sans_index():
+    docker = FauxDocker({REF_A: _comportement(commit="aaa", index=False, question="absente")}, production=REF_A)
+    controle = d.controler(d.URL_PRODUCTION, ENV["RITA_API_KEY"], "complet", "aaa",
+                           lambda: docker.journal_du_conteneur(d.CONTENEUR), faux_http(docker))
+    assert controle.sante == "sain" and not any(appel[0] == "question" for appel in docker.appels)
+
+
+def test_une_livraison_dont_la_question_echoue_est_refusee_au_pretest(serveur):
+    # Le cas de la revue : Azure mal configuré, briefing sauvé par un autre fournisseur. Rien ne bascule.
+    dossier, env = serveur
+    a = _version(REF_A, dossier, "a")
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=a))
+    docker = FauxDocker({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc", question="panne")},
+                        production=REF_A)
+    assert _livrer(REF_C, docker, dossier, env) == 1
+    assert docker.remplacements() == []
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "refusee au pre-test" and "question" in dernier["echecs"]
+
+
+@pytest.mark.parametrize("operation", ["livrer", "ingerer"])
+def test_les_variables_azure_sont_exigees(serveur, operation):
+    dossier, env = serveur
+    _avec_active(dossier)
+    docker = _docker_a()
+    sans_azure = {cle: valeur for cle, valeur in ENV_INGESTION.items() if cle != "AZURE_FOUNDRY_API_KEY"}
+    if operation == "livrer":
+        code = d.livrer(REF_C, docker, dossier, sans_azure, DIX_HEURES, http=faux_http(docker), dormir=lambda s: None,
+                        source_env=env)
+    else:
+        code = d.ingerer("31", docker, dossier, sans_azure, DIX_HEURES, http=faux_http(docker), dormir=lambda s: None)
+    assert code == 1 and docker.appels == []
+    assert "AZURE_FOUNDRY_API_KEY" in _journal(dossier)[-1]["message"]
+
+
+def test_la_question_de_controle_est_une_question_couverte_du_jeu():
+    # La question posée à chaque contrôle est celle de Q4 dans le jeu validé par Era : son article (2788) est dans le
+    # corpus de production, et un article n'en sort jamais.
+    jeu = json.loads((RACINE / "rag" / "questions_demo.json").read_text(encoding="utf-8"))
+    q4 = next(q for q in jeu["questions"] if q["id"] == "Q4")
+    assert d.QUESTION_CONTROLE == q4["question"] and q4["attendu"] == "reponse"
+
+
+def test_la_question_de_controle_est_bornee():
+    delais, appels = [], []
+
+    def http(methode, url, entetes=None, delai=None, corps=None):
+        delais.append(delai)
+        appels.append(url.rsplit("/", 1)[-1])
+        if url.endswith("/question"):
+            # La question envoyée est bien celle du jeu, en JSON.
+            assert json.loads(corps) == {"question": d.QUESTION_CONTROLE}
+        if url.endswith("/health"):
+            return d.Reponse(200, {}, json.dumps({"commit": "c", "index": {"identifiant": "i"}}).encode())
+        if url.endswith("/question"):
+            return d.Reponse(200, {}, json.dumps({"statut": "reponse", "references": [{"id": 2788}]}).encode())
+        return d.Reponse(200, {}, b"{}")
+    d.controler(d.URL_PRODUCTION, "k", "complet", None, lambda: "", http)
+    assert "question" in appels and None not in delais
+    assert sum(delais) + d.DELAI_COURT <= d.DUREE_MAX_CONTROLE     # plus `docker logs`

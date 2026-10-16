@@ -1,16 +1,16 @@
 """Rattrapage d'une periode de collecte manquee (C1) — sources et base simulees.
 
 Contexte : 4 collectes sur 7 coupees du 13 au 17/09/2026 (ETAT.md, 18/09). Ce qui se
-rattrape : les taux BCE (l'API accepte startPeriod/endPeriod) et les articles Google News
-par entreprise (la requete accepte after:/before:). Ce qui ne se rattrape pas : la presse
-generale (flux de 20 a 30 items, tous du jour).
+rattrape : les taux BCE (l'API accepte startPeriod/endPeriod). Ce qui ne se rattrape pas :
+la presse generale (flux de 20 a 30 items, tous du jour). Les articles Google News par
+entreprise se rattrapaient (after:/before:) jusqu'au sprint 3 : la decision D3 a arrete
+ces requetes (tache B1, 16/10/2026), leurs deux tests ont ete retires avec la fonction.
 
 Un seul chemin d'ecriture : les etapes existantes recoivent une `periode` optionnelle.
 """
 from unittest.mock import MagicMock, patch
 
 from pipelines import ingest
-from sources import rss
 from sources.ecb import fetch_taux_change_periode
 
 PERIODE = ("2026-09-12", "2026-09-18")
@@ -35,21 +35,6 @@ def _fausse_reponse_periode():
             {"id": "2026-09-14"}, {"id": "2026-09-15"}, {"id": "2026-09-16"}]}]}},
     }
     return r
-
-
-# --- Google News : la fenetre de dates dans la requete -------------------------
-
-def test_flux_entreprise_avec_periode_porte_after_et_before():
-    flux = rss.flux_par_entreprise(["SANOFI"], periode=PERIODE)
-    (nom, url), = flux.items()
-    assert nom.startswith("ent_")
-    assert "after%3A2026-09-12" in url
-    assert "before%3A2026-09-18" in url
-
-
-def test_flux_entreprise_sans_periode_est_inchange():
-    (_, url), = rss.flux_par_entreprise(["SANOFI"]).items()
-    assert "after" not in url and "before" not in url
 
 
 # --- BCE : une periode, plusieurs observations ---------------------------------
@@ -80,18 +65,16 @@ def test_etape_ecb_avec_periode_ecrit_toutes_les_dates_et_l_euro_pour_chacune():
     assert ("EUR", "2026-09-16", 1.0) in lignes
 
 
-def test_etape_articles_avec_periode_interroge_google_news_sur_la_fenetre():
+def test_etape_articles_avec_periode_ne_remonte_plus_le_temps():
+    # Decision D3 (sprint 3, tache B1) : sans Google News, aucun flux ne sait rendre une periode passee. La periode ne
+    # change plus que le nombre d'items lus par flux ; la presse generale rend ce qu'elle rend ce jour-la.
     cur = _curseur()
-    cur.fetchall.side_effect = [[("SANOFI",)], []]
     with patch("sources.rss.collecter",
                return_value={"articles": [], "articles_bloques": [],
                              "flux_ok": [], "flux_echec": [], "total": 0}) as collecte:
         ingest.etape_articles(cur, simulation=False, periode=PERIODE)
 
-    kwargs = collecte.call_args.kwargs
-    assert kwargs["limite_par_flux"] == 100
-    (url,) = kwargs["flux_supplementaires"].values()
-    assert "after%3A2026-09-12" in url
+    assert collecte.call_args.kwargs == {"limite_par_flux": 100}
 
 
 def test_executer_transmet_la_periode_a_ecb_et_rss_seulement():

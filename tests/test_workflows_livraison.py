@@ -5,6 +5,7 @@ Ce que ces tests vérifient, dans `livraison.yml`, `retour-arriere.yml` et l'act
 - un déploiement qui n'attend que des contrôles verts et ne part que sur `main`, un seul à la fois ;
 - l'attente du créneau du matin hors du groupe de concurrence, et la reprise automatique après un code 75 ;
 - le retour arrière dans son propre groupe, avec un acteur et un motif obligatoires ;
+- l'ingestion (sprint 3, `ingestion.yml`) : manuelle, son propre groupe, l'ordre `ingerer` ;
 - aucune entrée saisie dans GitHub n'arrive dans une commande, et des délais qui laissent au serveur le temps de finir.
 Les étapes bash de l'action sont jouées avec un faux `ssh` : ces simulations tournent dans la chaîne (Linux).
 La structure est lue avec PyYAML, comme `tests/test_lint_config.py` (écart au plan, qui prévoyait une lecture du texte).
@@ -25,6 +26,7 @@ from deploy import deployer as d
 RACINE = Path(__file__).resolve().parent.parent
 LIVRAISON = RACINE / ".github" / "workflows" / "livraison.yml"
 RETOUR = RACINE / ".github" / "workflows" / "retour-arriere.yml"
+INGESTION = RACINE / ".github" / "workflows" / "ingestion.yml"     # sprint 3, tâche B4
 ACTION = RACINE / ".github" / "actions" / "ordre-serveur" / "action.yml"
 EMPREINTE = "${{ needs.construire-et-publier.outputs.empreinte }}"
 BASH = pytest.mark.skipif(sys.platform == "win32" or shutil.which("bash") is None,
@@ -41,6 +43,10 @@ def _travaux():
 
 def _retour():
     return _charger(RETOUR)["jobs"]["revenir"]
+
+
+def _ingestion():
+    return _charger(INGESTION)["jobs"]["ingerer"]
 
 
 def _liste(valeur):
@@ -143,12 +149,46 @@ def test_retour_arriere_envoie_le_numero_du_passage_et_ne_bloque_pas_sur_l_empre
     assert "::warning::" in _etape_action("Comparer le script du serveur à celui du dépôt")["run"]
 
 
+# --- Sprint 3, tâche B4 : l'ingestion en une opération (spec CA3.1) ------------------------------------------------
+
+def test_le_workflow_d_ingestion_est_manuel_et_envoie_ingerer():
+    declencheurs = _charger(INGESTION)[True]          # PyYAML lit la clé `on` comme True
+    assert set(declencheurs) == {"workflow_dispatch"}  # ni push, ni horaire : une décision humaine, notée
+    entrees = declencheurs["workflow_dispatch"]["inputs"]
+    assert set(entrees) == {"acteur", "motif"} and all(e["required"] is True for e in entrees.values())
+    appel = _appel_action(_ingestion())
+    assert appel["with"]["ordre"] == "ingerer" and appel["with"]["argument"] == "${{ github.run_id }}"
+    # Bloquante : un script du serveur qui ne connaît pas encore `ingerer` refuserait l'ordre ; on le dit avant.
+    assert appel["with"]["empreinte-bloquante"] == "true" and appel["with"]["accepter-report"] == "false"
+    assert (appel["with"]["cle-ssh"], appel["with"]["hote"], appel["with"]["known-hosts"]) == (
+        "${{ secrets.DEPLOY_SSH_KEY }}", "${{ secrets.DEPLOY_HOST }}", "${{ secrets.DEPLOY_KNOWN_HOSTS }}")
+
+
+def test_l_ingestion_a_son_propre_groupe_et_l_environnement_production():
+    # Même raison que le retour arrière : dans le groupe `production`, une ingestion en attente pourrait être annulée
+    # par la livraison suivante, ou l'inverse. L'exclusion entre les trois opérations est assurée par le verrou du
+    # serveur (tests/test_deployer_scenarios.py, `test_le_verrou_est_partage_avec_les_livraisons`).
+    travail = _ingestion()
+    assert travail["concurrency"] == {"group": "ingestion", "cancel-in-progress": False}
+    assert _environnement(travail) == "production"
+    assert travail["permissions"] == {"contents": "read"}
+
+
+def test_l_ingestion_laisse_au_serveur_le_temps_de_finir():
+    assert _ingestion()["timeout-minutes"] * 60 >= d.ATTENTE_VERROU["ingerer"] + d.DUREE_MAX_INGERER + 300
+
+
+def test_l_action_connait_l_ordre_ingerer():
+    entrees = _charger(ACTION)["inputs"]
+    assert "ingerer" in entrees["ordre"]["description"] and "ingerer" in entrees["argument"]["description"]
+
+
 # --- Les garde-fous communs ---------------------------------------------------------------------------------------
 
 def test_aucune_entree_utilisateur_dans_une_commande():
     # Une entrée recopiée dans un `run:` serait exécutée par le shell : elle ne passe que par une variable d'un bloc env.
     motif = re.compile(r"^\s+[A-Z_]+: \$\{\{ inputs\.[a-z-]+ \}\}$")
-    for chemin in (LIVRAISON, RETOUR, ACTION):
+    for chemin in (LIVRAISON, RETOUR, INGESTION, ACTION):
         texte = chemin.read_text(encoding="utf-8")
         assert "github.event.inputs" not in texte
         for ligne in texte.splitlines():

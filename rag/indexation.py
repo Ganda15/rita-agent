@@ -43,12 +43,25 @@ Choisi pour trois raisons : il ne demande **pas** PyTorch (l'image Docker fait d
 595 Mo, et `pyspark` en a été volontairement exclu) · il tourne hors ligne, sans clé ni
 coût par appel · c'est **le même modèle que le brief Sorabel**, ce qui rend les deux
 travaux comparables.
+
+## L'identité de l'index (sprint 3, tâche A1)
+
+Le commit dit quel code tourne, pas quels articles l'index contient : une ingestion change
+l'index sans changer le code. À la fin de chaque indexation, `identite.json` est écrit à côté
+de l'index : l'empreinte du contenu indexé (SHA-256 d'une sérialisation JSON déterministe),
+un identifiant tiré à chaque construction (deux index du même corpus ne se confondent pas) et
+la configuration d'indexation. `/health` l'expose.
 """
 from __future__ import annotations
 
+import hashlib
+import json
+import os
 import re
 import unicodedata
+import uuid
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 
 import chromadb
@@ -57,6 +70,10 @@ from sources import database
 
 CHEMIN_INDEX = Path(__file__).resolve().parent.parent / "data" / "chroma"
 NOM_COLLECTION = "articles"
+
+# L'identité de l'index (tâche A1) : le fichier, et la façon d'indexer, notée à part de l'empreinte du contenu.
+FICHIER_IDENTITE = "identite.json"
+CONFIGURATION_INDEX = {"modele": "all-MiniLM-L6-v2", "texte": "texte_indexable(titre, resume)", "format": 1}
 
 # Un alias plus court que ce seuil est écarté du lexique de détection.
 # Raison : « ADP », « AI », « AC » se retrouvent dans n'importe quel texte français et
@@ -252,6 +269,53 @@ def _collection(chemin: Path | None = None):
     )
 
 
+def ecrire_identite(chemin: Path, articles: list[dict]) -> dict:
+    """Écrit `identite.json` à côté de l'index et rend l'identité.
+
+    `articles` : les articles réellement indexés, chacun `{"id", "texte", "source", "lien", "publie_le"}`.
+    L'empreinte porte sur ce contenu, sérialisé en JSON déterministe (articles triés par identifiant, clés
+    triées, sans espace) : un « | » ou un retour à la ligne dans un titre ne peut pas confondre deux corpus.
+    """
+    contenu = sorted(articles, key=lambda article: article["id"])
+    serialise = json.dumps(contenu, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+    identite = {
+        "nb_articles": len(contenu),
+        "id_max": max((article["id"] for article in contenu), default=0),
+        "empreinte": hashlib.sha256(serialise.encode("utf-8")).hexdigest(),
+        "identifiant": uuid.uuid4().hex,
+        "configuration": dict(CONFIGURATION_INDEX),
+        "construit_le": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+    }
+    dossier = Path(chemin)
+    dossier.mkdir(parents=True, exist_ok=True)
+    # Écrit à côté, puis remplacé d'un bloc : `/health` ne lit jamais un fichier à moitié écrit.
+    provisoire = dossier / (FICHIER_IDENTITE + ".tmp")
+    provisoire.write_text(json.dumps(identite, ensure_ascii=False, indent=2), encoding="utf-8")
+    os.replace(provisoire, dossier / FICHIER_IDENTITE)
+    return identite
+
+
+def lire_identite(chemin: Path | None = None) -> dict | None:
+    """L'identité de l'index, ou `None` s'il n'en a pas (index absent, ou construit avant le 16/10/2026).
+
+    Jamais d'exception : `/health` l'appelle, et un fichier illisible ne doit pas le faire tomber.
+    """
+    fichier = Path(chemin or CHEMIN_INDEX) / FICHIER_IDENTITE
+    try:
+        return json.loads(fichier.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
+def effacer_identite(chemin: Path | None = None) -> None:
+    """Retire l'identité AVANT toute modification de l'index (revue automatique de la PR #100, 16/10/2026).
+
+    Une reconstruction sur place retire des articles, puis en ajoute : si l'ajout échoue, l'ancienne identité
+    décrirait un index à moitié modifié. Sans identité, `/health` le dit, et le rejeu le refuse (« identité absente »).
+    """
+    (Path(chemin or CHEMIN_INDEX) / FICHIER_IDENTITE).unlink(missing_ok=True)
+
+
 def indexer(dsn: str | None = None, chemin: Path | None = None) -> Resultat:
     """Reconstruit l'index à partir de la table `article`.
 
@@ -273,6 +337,7 @@ def indexer(dsn: str | None = None, chemin: Path | None = None) -> Resultat:
     collection = _collection(chemin)
 
     ids, textes, metadonnees = [], [], []
+    contenu = []          # ce qui est réellement indexé, pour l'identité de l'index (tâche A1)
     bloques = 0
     avec_ticker = 0
 
@@ -307,11 +372,16 @@ def indexer(dsn: str | None = None, chemin: Path | None = None) -> Resultat:
             # sans confondre « MC.PA » avec un autre ticker qui le contiendrait.
             "tickers": "," + ",".join(tickers) + "," if tickers else "",
         })
+        contenu.append({"id": int(article["id"]), "texte": texte, "source": metadonnees[-1]["source"],
+                        "lien": metadonnees[-1]["lien"], "publie_le": metadonnees[-1]["publie_le"]})
 
     # Revue automatisée, PR #1 (19/09/2026) : `upsert` seul n'enlevait jamais rien. Un article
     # supprimé en base, ou marqué `bloque_injection` APRÈS une première indexation, restait
     # cherchable — le garde-fou en base ne protégeait pas le RAG. Une reconstruction retire
     # donc tout identifiant que la base ne permet plus.
+    # Avant la première modification : un index en cours de reconstruction n'a plus d'identité, et n'en retrouve une
+    # qu'une fois complet (`ecrire_identite`, plus bas).
+    effacer_identite(chemin)
     presents = set(collection.get(include=[])["ids"])
     a_retirer = sorted(presents - set(ids))
     if a_retirer:
@@ -319,6 +389,9 @@ def indexer(dsn: str | None = None, chemin: Path | None = None) -> Resultat:
 
     if ids:
         collection.upsert(ids=ids, documents=textes, metadatas=metadonnees)
+
+    # L'identité est écrite APRÈS l'index : elle décrit ce qui vient d'être indexé, jamais un état d'avant.
+    ecrire_identite(chemin or CHEMIN_INDEX, contenu)
 
     return Resultat(
         lus=len(articles),

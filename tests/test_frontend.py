@@ -505,3 +505,116 @@ def test_l_ecran_briefing_dit_que_la_redaction_prend_du_temps():
 
 def test_l_identifiant_de_requete_est_montre_pour_le_support():
     assert "X-Request-ID" in code_sans_commentaires("briefing.js")
+
+
+# --- Écran 4 : la question libre (sprint 3, tâche A6 ; spec CA1.1, CA1.2, CA1.5, CA2.1, CA2.4) ---------------------
+#
+# Même dispositif que l'écran du briefing : clé en sessionStorage, oubliée sur un 403, rendu par textContent seulement.
+# Le texte d'une réponse vient d'un modèle ; les titres, sources et liens viennent de flux RSS. Tout est une donnée,
+# jamais du code. Les fichiers sont lus dans chaque test, pas au chargement du module : tant que l'écran n'existe pas,
+# seuls ces tests échouent, et les autres tests de ce fichier continuent de tourner.
+
+def _question_html() -> str:
+    return (FRONTEND / "question.html").read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("fichier", ["question.html", "question.js"])
+def test_l_ecran_question_est_servi(client, fichier):
+    assert client.get(f"/{fichier}").status_code == 200
+
+
+def test_l_ecran_question_est_relie_au_portefeuille():
+    assert 'href="question.html"' in (FRONTEND / "index.html").read_text(encoding="utf-8")
+    html = _question_html()
+    assert 'href="index.html"' in html
+    assert 'aria-current="page"' in html
+
+
+def test_l_ecran_question_appelle_la_route_en_post_avec_la_cle():
+    code = code_sans_commentaires("question.js")
+    assert '"/question"' in code
+    assert 'method: "POST"' in code
+    assert '"X-API-Key"' in code
+
+
+def test_l_ecran_question_appelle_la_fiche_avec_la_cle():
+    # CA1.5 : la fiche s'ouvre depuis l'écran, sans autre outil. Elle est protégée par la clé comme le reste.
+    code = code_sans_commentaires("question.js")
+    assert '"/donnees/articles/"' in code
+    assert '"X-API-Key"' in code
+
+
+def test_aucune_cle_d_api_dans_le_code_de_l_ecran_question():
+    code = code_sans_commentaires("question.js") + _question_html()
+    assert "RITA_API_KEY" not in code and "dev-key" not in code
+    assert not re.search(r"['\"][A-Za-z0-9_-]{32,}['\"]", code), "une clé en dur ?"
+
+
+def test_l_ecran_question_garde_la_cle_le_temps_de_l_onglet_et_l_oublie_sur_un_403():
+    code = code_sans_commentaires("question.js")
+    assert "sessionStorage" in code and "localStorage" not in code
+    assert "403" in code and "sessionStorage.removeItem" in code
+
+
+def test_l_ecran_question_n_insere_jamais_de_html():
+    # Une réponse ou un titre qui contient « <script> » reste du texte affiché, jamais du code exécuté (OWASP A03).
+    code = code_sans_commentaires("question.js")
+    for interdit in ("innerHTML", "outerHTML", "insertAdjacentHTML", "document.write"):
+        assert interdit not in code, f"{interdit} dans question.js"
+    assert "textContent" in code
+
+
+def test_un_lien_n_est_rendu_que_s_il_est_http_ou_https():
+    # Seconde barrière, après le filtre de l'API (revue de sécurité du commit A4, 16/10/2026) : l'écran vérifie lui
+    # aussi le protocole avant de créer un lien, et ouvre l'article d'origine sans lui donner la main sur la page.
+    code = code_sans_commentaires("question.js")
+    assert "new URL(" in code
+    assert '"http:"' in code and '"https:"' in code
+    assert '"noopener noreferrer"' in code
+
+
+def test_chaque_reference_montre_titre_source_table_identifiant_date_et_lien():
+    # CA1.2 : les informations d'une référence viennent de l'API, donc des données stockées, jamais du texte du modèle.
+    code = code_sans_commentaires("question.js")
+    for champ in ("n", "titre", "source", "table", "id", "date", "lien"):
+        assert f"reference.{champ}" in code, f"la référence ne montre pas « {champ} »"
+
+
+def test_la_fiche_montre_la_ligne_stockee_et_son_extrait():
+    # CA1.5 et CA1.8 : la fiche montre la ligne telle qu'elle est en base, et le passage transmis au modèle.
+    code = code_sans_commentaires("question.js")
+    for champ in ("table", "id", "titre", "source", "publie_le", "collecte_le", "extrait"):
+        assert f"fiche.{champ}" in code, f"la fiche ne montre pas « {champ} »"
+
+
+def test_un_refus_et_une_erreur_s_affichent_dans_deux_encarts_distincts():
+    # CA2.1 et CA2.4 : un refus (200, statut « refus ») montre son motif ; une panne (503) est une erreur, présentée
+    # ailleurs. Les confondre ferait passer une panne pour un refus propre, ou l'inverse.
+    html = _question_html()
+    assert 'id="refus"' in html and 'id="erreur"' in html
+    code = code_sans_commentaires("question.js")
+    assert '"refus"' in code and "503" in code
+    assert ".motif" in code
+
+
+def test_la_taille_de_la_question_est_bornee_comme_dans_l_api():
+    # Mêmes bornes que `DemandeQuestion` (api/question.py). Le navigateur arrête la saisie avant l'appel ; l'API reste
+    # la vraie barrière (422).
+    html = _question_html()
+    assert 'minlength="3"' in html and 'maxlength="500"' in html
+
+
+@pytest.mark.parametrize("marqueur, regle", [
+    ('lang="fr"', "RGAA 8.3 : langue de la page"),
+    ('<label for="cle">', "RGAA 11.1 : le champ de clé a une étiquette"),
+    ('<label for="question">', "RGAA 11.1 : le champ de question a une étiquette"),
+    ('aria-live="polite"', "RGAA 7.5 : le résultat est annoncé aux lecteurs d'écran"),
+    ('<nav aria-label=', "RGAA 12.6 : la navigation est une zone nommée"),
+    ('aria-current="page"', "la page courante est marquée"),
+])
+def test_les_marqueurs_d_accessibilite_de_l_ecran_question(marqueur, regle):
+    assert marqueur in _question_html(), regle
+
+
+def test_l_avertissement_amf_est_sur_l_ecran_question():
+    assert "Aucune recommandation d'achat ou de vente" in _question_html()

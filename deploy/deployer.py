@@ -10,7 +10,12 @@ Deux parties :
   d'après bascule, retour automatique ou manuel, et `main`, le point d'entrée appelé par SSH.
 Conception : `docs/CHAINE-V1.md` § 4, § 5 et § 11 (périmètre de l'atelier).
 
-Codes de sortie de `main` : 0 réussi ; 1 refusé ou en échec ; 2 ordre refusé ; 75 livraison reportée par le créneau.
+Sprint 3 (tâche B3, décision D1) : l'ordre `ingerer` relance la collecte, prépare un nouvel index à part, le vérifie
+(pré-test, puis rejeu des questions de démonstration), le met en service et contrôle que `/health` annonce bien cet
+index ; `livrer` rejoue aussi les questions et fait le même contrôle. Conception : `docs/sprint-3/PLAN-TRAVAIL.md`.
+
+Codes de sortie de `main` : 0 réussi ; 1 refusé ou en échec ; 2 ordre refusé ; 75 livraison ou ingestion reportée par
+le créneau.
 """
 from __future__ import annotations
 
@@ -39,7 +44,7 @@ CODE_CRENEAU = 75  # « livraison reportée par le créneau du matin, rien n'a c
 
 
 class OrdreRefuse(Exception):
-    """L'ordre reçu par SSH n'est pas l'un des trois ordres permis, écrit en entier."""
+    """L'ordre reçu par SSH n'est pas l'un des quatre ordres permis, écrit en entier."""
 
 
 class EtatIllisible(Exception):
@@ -71,6 +76,7 @@ class Ordre:
 _ORDRES = (
     ("livrer", re.compile(r"livrer (ghcr\.io/ganda15/rita-api@sha256:[0-9a-f]{64})")),
     ("revenir", re.compile(r"revenir ([0-9]{1,20})")),
+    ("ingerer", re.compile(r"ingerer ([0-9]{1,20})")),   # sprint 3 : le numéro du passage GitHub
     ("version", re.compile(r"version")),
 )
 
@@ -80,7 +86,7 @@ def analyser_ordre(texte: str) -> Ordre:
         trouve = motif.fullmatch(texte)
         if trouve:
             return Ordre(nom, trouve.group(1) if motif.groups else None)
-    raise OrdreRefuse(f"ordre refusé ({len(texte)} caractères) : seuls livrer, revenir et version sont permis")
+    raise OrdreRefuse(f"ordre refusé ({len(texte)} caractères) : seuls livrer, revenir, ingerer et version sont permis")
 
 
 # --- Le créneau du matin -------------------------------------------------------------------------------------------
@@ -143,6 +149,12 @@ def apres_retour(etat: Etat) -> Etat:
     if etat.precedente is None:
         raise AucunePrecedente("aucune version précédente validée : retour arrière refusé")
     return Etat(active=etat.precedente, precedente=None)
+
+
+def apres_ingestion(etat: Etat, nouvelle: Version) -> Etat:
+    """Une ingestion change l'index de la version active, jamais son image : la précédente reste la cible d'un retour
+    arrière logiciel (spec CA3.4). L'ancien index n'est pas effacé : son nom est au journal."""
+    return Etat(active=nouvelle, precedente=etat.precedente)
 
 
 def _version(valeur) -> Version | None:
@@ -260,7 +272,36 @@ PORT_PRETEST = 8003      # relevé du 14/10 : 8002 est pris sur le serveur par l
 URL_PRODUCTION = f"http://127.0.0.1:{PORT_PRODUCTION}"
 URL_PRETEST = f"http://127.0.0.1:{PORT_PRETEST}"
 VARIABLES_REQUISES = ("RITA_API_KEY", "RITA_DSN_LECTURE")
+# Revue automatique de la PR #100 (16/10/2026) : les questions n'appellent qu'Azure (décision D5), sans repli. Une
+# livraison ou une ingestion dont Azure n'est pas configuré est refusée d'emblée. Le retour arrière ne les exige pas :
+# il doit rester possible même sans Azure.
+VARIABLES_AZURE = ("AZURE_FOUNDRY_ENDPOINT", "AZURE_FOUNDRY_API_KEY")
+VARIABLES_LIVRAISON = (*VARIABLES_REQUISES, *VARIABLES_AZURE)
+# Sprint 3, tâche B3 : l'ingestion écrit dans la base de production avec un compte dédié (tâche B5), jamais avec le
+# compte administrateur ni avec le compte de lecture.
+VARIABLES_INGESTION = (*VARIABLES_LIVRAISON, "RITA_DSN_INGESTION")
+# La question posée à chaque contrôle d'une version qui a un index : Q4 du jeu validé par Era (`rag/questions_demo.json`).
+# Son article (2788) est dans le corpus de production, et un article n'en sort jamais.
+QUESTION_CONTROLE = "Combien de postes Netflix va-t-il supprimer ?"
 FICHIERS_COMPOSE = ("docker-compose.yml", "compose.prod.yml")  # embarqués dans l'image ET installés dans bin/
+# Les identités d'index se comparent sur ces deux champs (tâche A1) : deux index du même corpus ont la même empreinte,
+# seul l'identifiant de construction les distingue.
+CHAMPS_IDENTITE = ("empreinte", "identifiant")
+
+
+def dossier_rapports(dossier: Path) -> Path:
+    """Les manifestes de collecte et les rapports de rejeu, monté sur `/app/logs` dans les conteneurs. Créé par Era
+    (tâche B5) au nom de l'utilisateur de l'image (UID 10001), JAMAIS par ce script : créé par root, le conteneur ne
+    pourrait pas y écrire. Les rapports des opérations en échec y sont gardés."""
+    return dossier / "rapports"
+
+
+DOSSIER_RAPPORTS = dossier_rapports(DOSSIER)
+
+
+def chemin_rapport_rejeu(rapports: Path, version: Version) -> Path:
+    """Un rapport par index rejoué : le nom de l'index est unique (horodaté), le rapport ne s'écrase jamais."""
+    return rapports / f"rejeu-{version.index}.json"
 
 # Délais maximaux, en secondes (relecture du 14/10) : chaque commande Docker et chaque appel HTTP est borné, pour qu'une
 # opération qui tient le verrou finisse toujours. Valeurs à ajuster aux durées mesurées à la première livraison.
@@ -273,21 +314,31 @@ DELAI_SONDE = 5           # un appel /health pendant cette attente
 PAUSE_SONDE = 2
 DELAI_CONTROLE = 10       # /health, 403, écran
 DELAI_BRIEFING = 90       # le briefing appelle le modèle
+DELAI_QUESTION = 90       # sprint 3 : la question de contrôle appelle le modèle (Azure)
+DELAI_COLLECTE = 900      # sprint 3 : la collecte RSS de l'ingestion (trois flux, dédoublonnage, écriture)
+DELAI_REJEU = 300         # sprint 3 : le rejeu des questions de démonstration (recherche seule, aucun appel au modèle)
 
-# Bornes calculées (pas mesurées) des durées, phase par phase ; deux tests rejouent le pire chemin et vérifient
+# Bornes calculées (pas mesurées) des durées, phase par phase ; trois tests rejouent le pire chemin et vérifient
 # que la somme des délais réellement demandés reste dessous.
 DUREE_MAX_DISPONIBLE = ECHEANCE_DISPONIBLE + DELAI_SONDE + PAUSE_SONDE
-DUREE_MAX_CONTROLE = 3 * DELAI_CONTROLE + DELAI_BRIEFING + DELAI_COURT                 # plus `docker logs`
+DUREE_MAX_CONTROLE = 3 * DELAI_CONTROLE + DELAI_BRIEFING + DELAI_QUESTION + DELAI_COURT  # plus `docker logs`
 DUREE_MAX_MISE_EN_SERVICE = (DELAI_BASCULE + DELAI_COURT + DUREE_MAX_DISPONIBLE         # bascule, commit, attente
                              + DUREE_MAX_CONTROLE + DELAI_COURT)                       # contrôles, image observée
-DUREE_MAX_PRETEST = (DELAI_TIRAGE + 4 * DELAI_COURT + DELAI_COURT                       # pull, extraction, commit
-                     + DELAI_COURT + DELAI_INDEXATION + DELAI_COURT                     # config, index, run
-                     + DUREE_MAX_DISPONIBLE + DUREE_MAX_CONTROLE + DELAI_COURT)         # attente, contrôles, arrêt
-DUREE_MAX_LIVRER = (2 * DELAI_COURT + DUREE_MAX_PRETEST                                 # image d'août, index actif
-                    + 2 * DUREE_MAX_MISE_EN_SERVICE + 2 * DELAI_COURT)                  # observée, index candidat
+DUREE_MAX_ESSAI = (DELAI_COURT + DELAI_COURT + DELAI_INDEXATION + DELAI_COURT           # commit, config, index, run
+                   + DUREE_MAX_DISPONIBLE + DUREE_MAX_CONTROLE + DELAI_COURT)           # attente, contrôles, arrêt
+DUREE_MAX_PRETEST = DELAI_TIRAGE + 4 * DELAI_COURT + DUREE_MAX_ESSAI                   # pull, extraction, essai
+DUREE_MAX_LIVRER = (2 * DELAI_COURT + DUREE_MAX_PRETEST + DELAI_REJEU                   # image d'août, index actif
+                    + 2 * DUREE_MAX_MISE_EN_SERVICE + DELAI_CONTROLE                    # identité de l'index servi
+                    + 2 * DELAI_COURT)                                                  # observée, index candidat
 DUREE_MAX_REVENIR = DELAI_COURT + 2 * DUREE_MAX_MISE_EN_SERVICE + DELAI_COURT           # index de la cible
-# Le retour d'urgence attend plus longtemps qu'une livraison ne peut durer, et inversement : il n'abandonne jamais.
-ATTENTE_VERROU = {"livrer": DUREE_MAX_REVENIR + 60, "revenir": DUREE_MAX_LIVRER + 60}
+DUREE_MAX_INGERER = (DELAI_COURT + DELAI_COLLECTE + DUREE_MAX_ESSAI + DELAI_REJEU       # index actif, collecte
+                     + 2 * DUREE_MAX_MISE_EN_SERVICE + DELAI_CONTROLE                   # identité de l'index servi
+                     + 2 * DELAI_COURT)                                                 # observée, index candidat
+# Chaque opération attend le verrou plus longtemps que les deux autres ne peuvent durer : le retour d'urgence
+# n'abandonne jamais derrière une livraison ou une ingestion, et inversement.
+ATTENTE_VERROU = {"livrer": max(DUREE_MAX_REVENIR, DUREE_MAX_INGERER) + 60,
+                  "revenir": max(DUREE_MAX_LIVRER, DUREE_MAX_INGERER) + 60,
+                  "ingerer": max(DUREE_MAX_LIVRER, DUREE_MAX_REVENIR) + 60}
 
 
 class ComposeNonInstalle(Exception):
@@ -296,6 +347,10 @@ class ComposeNonInstalle(Exception):
 
 class EnvIllisible(Exception):
     """Une variable de l'environnement de production ne peut pas passer au pré-test : livraison refusée."""
+
+
+class PreuveAbsente(Exception):
+    """Une commande a rendu 0 sans laisser sa preuve (manifeste de collecte, rapport de rejeu) : c'est un échec."""
 
 
 _NOM_DE_VARIABLE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
@@ -308,9 +363,10 @@ class Reponse:
     corps: bytes
 
 
-def requete(methode: str, url: str, entetes: dict | None = None, delai: float = 90) -> Reponse:
-    """Un appel HTTP. Un code d'erreur HTTP est une réponse ; une connexion impossible lève `OSError`."""
-    demande = urllib.request.Request(url, method=methode, headers=entetes or {})
+def requete(methode: str, url: str, entetes: dict | None = None, delai: float = 90, corps: bytes | None = None) -> Reponse:
+    """Un appel HTTP. Un code d'erreur HTTP est une réponse ; une connexion impossible lève `OSError`. `corps` : le
+    contenu envoyé (la question de contrôle, en JSON)."""
+    demande = urllib.request.Request(url, data=corps, method=methode, headers=entetes or {})
     try:
         with urllib.request.urlopen(demande, timeout=delai) as reponse:
             return Reponse(reponse.status, {k.lower(): v for k, v in reponse.headers.items()}, reponse.read())
@@ -459,6 +515,29 @@ class Docker:
         """Arrête le conteneur d'essai et GARDE l'index : s'il est vérifié, la production s'en servira."""
         self._essayer(["docker", "rm", "-f", CONTENEUR_PRETEST])
 
+    def collecter(self, version: Version, dsn_ingestion: str, dossier_rapports: Path) -> None:
+        """Sprint 3 : la collecte RSS dans la base de production, avec le compte d'ingestion, dans un conteneur jetable
+        de l'image ACTIVE. Aucun index n'est monté : la collecte n'en touche aucun. Le manifeste s'écrit dans
+        `/app/logs`, monté sur le dossier des rapports. Le DSN passe par l'environnement de la commande (`-e
+        DATABASE_URL` sans valeur), jamais par ses arguments, comme pour le pré-test."""
+        self._lancer(["docker", "run", "--rm", "--network", f"{self.projet}_default", "-e", "DATABASE_URL",
+                      "-v", f"{dossier_rapports}:/app/logs", version.image,
+                      "python", "-m", "pipelines.ingest", "--etapes", "rss", "--strict"],
+                     env={**os.environ, "DATABASE_URL": dsn_ingestion}, delai=DELAI_COLLECTE)
+
+    def rejouer_questions(self, version: Version, dsn_lecture: str, dossier_rapports: Path) -> Path:
+        """Sprint 3 (spec CA3.6) : rejoue les questions de démonstration sur l'index de CETTE version, avec le compte de
+        lecture, et rend le chemin du rapport sur l'hôte. Le rapport porte l'identité de l'index (clé `index`, comme
+        `/health`). Un code non nul lève `CalledProcessError` ; le rapport déjà écrit reste sur le disque."""
+        rapport = chemin_rapport_rejeu(dossier_rapports, version)
+        self._lancer(["docker", "run", "--rm", "--network", f"{self.projet}_default", "-e", "DATABASE_URL",
+                      "-v", f"{version.index}:/app/data/chroma",
+                      "-v", f"{self.projet}_rita_cache_preprod:/home/rita/.cache",
+                      "-v", f"{dossier_rapports}:/app/logs", version.image,
+                      "python", "-m", "rag.controle_questions", "--sortie", f"/app/logs/{rapport.name}"],
+                     env={**os.environ, "DATABASE_URL": dsn_lecture}, delai=DELAI_REJEU)
+        return rapport
+
     def remplacer_production(self, version: Version) -> None:
         """Remplace l'API seule (`--no-deps` : PostgreSQL n'est pas touché), sur l'image désignée par son empreinte,
         avec la configuration sauvegardée et l'index de CETTE version. compose.prod.yml déclare l'index comme volume
@@ -532,6 +611,13 @@ def controler(base: str, cle: str, profil: str, commit_attendu: str | None, jour
         if profil == "complet" and http("GET", f"{base}/briefing.html", delai=DELAI_CONTROLE).statut != 200:
             echecs.append("ecran")
         briefing = http("POST", f"{base}/briefing?ticker=OR.PA", {"X-API-Key": cle}, delai=DELAI_BRIEFING)
+        # Revue de la PR #100 : /briefing se replie sur d'autres fournisseurs, les questions non (Azure seul, D5).
+        # Une version qui annonce un index (sprint 3) doit répondre à une vraie question couverte, avec une citation.
+        # Une version plus ancienne n'a ni index ni route /question : elle n'y est pas soumise (retour arrière).
+        question = None
+        if isinstance(_json(sante).get("index"), dict):
+            question = http("POST", f"{base}/question", {"X-API-Key": cle, "Content-Type": "application/json"},
+                            delai=DELAI_QUESTION, corps=json.dumps({"question": QUESTION_CONTROLE}).encode())
     except OSError:
         return Controle("degrade", tuple(echecs) + ("connexion",))
     corps = _json(briefing)
@@ -544,6 +630,11 @@ def controler(base: str, cle: str, profil: str, commit_attendu: str | None, jour
     # `type(...) is int` et non `isinstance` : en Python, True est un entier, et « true » ne vaut pas un article.
     if briefing.statut == 200 and not (type(articles) is int and articles >= 1):
         echecs.append("articles")
+    if question is not None:
+        corps_question = _json(question)
+        if (question.statut != 200 or corps_question.get("statut") != "reponse"
+                or not corps_question.get("references")):
+            echecs.append("question")
     return Controle("sain" if not echecs else "degrade", tuple(echecs))
 
 
@@ -564,8 +655,8 @@ def attendre_disponible(base: str, http=requete, dormir=time.sleep, echeance: fl
     return False
 
 
-def _manquantes(env: dict) -> list[str]:
-    return [nom for nom in VARIABLES_REQUISES if not env.get(nom)]
+def _manquantes(env: dict, noms: tuple = VARIABLES_REQUISES) -> list[str]:
+    return [nom for nom in noms if not env.get(nom)]
 
 
 def _cle(version: Version) -> str:
@@ -625,15 +716,68 @@ def _details(**controles: Controle) -> dict:
     return {f"detail_{nom}": controle.detail for nom, controle in controles.items() if controle.detail}
 
 
+# --- Sprint 3, tâche B3 : le rejeu des questions et l'identité de l'index servi -------------------------------------
+
+def _identite_du_rapport(rapport: Path) -> dict:
+    """L'identité de l'index candidat, lue dans le rapport de rejeu. `PreuveAbsente` si le rapport manque, ne se lit
+    pas, ou ne porte pas les deux champs de l'identité."""
+    try:
+        contenu = json.loads(rapport.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, ValueError) as erreur:
+        raise PreuveAbsente(f"preuve absente : rapport de rejeu absent ou illisible ({rapport.name})") from erreur
+    identite = contenu.get("index") if isinstance(contenu, dict) else None
+    if not isinstance(identite, dict) or not all(isinstance(identite.get(champ), str) and identite[champ]
+                                                 for champ in CHAMPS_IDENTITE):
+        raise PreuveAbsente(f"preuve absente : le rapport {rapport.name} ne donne pas l'identite de l'index")
+    return identite
+
+
+def _rejouer(version: Version, docker, env: dict, rapports: Path) -> tuple[dict | None, str]:
+    """Rejoue les questions sur l'index de `version`. Rend (identité de l'index, ""), ou (None, motif de l'échec)."""
+    try:
+        docker.rejouer_questions(version, env["RITA_DSN_LECTURE"], rapports)
+        return _identite_du_rapport(chemin_rapport_rejeu(rapports, version)), ""
+    except PreuveAbsente as erreur:
+        return None, str(erreur)
+    except ERREURS_AVANT_BASCULE as erreur:
+        return None, _decrire(erreur)
+
+
+def _si_present(chemin: Path) -> str | None:
+    return str(chemin) if chemin.exists() else None
+
+
+def _verifier_index(controle: Controle, attendue: dict, http) -> Controle:
+    """Après une bascule saine, `/health` doit annoncer l'index vérifié par le rejeu : même empreinte ET même
+    identifiant de construction. Pendant une ingestion le commit ne change pas, il ne prouve rien ; et deux index du
+    même corpus ont la même empreinte. Sinon, le contrôle passe à « degrade » avec l'échec « index »."""
+    if controle.sante != "sain":
+        return controle
+    try:
+        servie = _json(http("GET", f"{URL_PRODUCTION}/health", delai=DELAI_CONTROLE)).get("index")
+    except OSError:
+        servie = None
+    if isinstance(servie, dict) and all(servie.get(champ) == attendue[champ] for champ in CHAMPS_IDENTITE):
+        return controle
+    return Controle("degrade", (*controle.echecs, "index"), controle.detail)
+
+
+def _refus_dossier_rapports(dossier: Path) -> str | None:
+    rapports = dossier_rapports(dossier)
+    if rapports.is_dir():
+        return None
+    return f"dossier des rapports absent ({rapports}) : a creer par Era au nom de l'utilisateur de l'image (tache B5)"
+
+
 def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete, dormir=time.sleep,
            source_env: Path | None = None) -> int:
     """Livre une image par son empreinte : pré-test, bascule de l'API, contrôles, retour automatique si échec.
     Spec § 4 (étapes 5 à 8) et § 5.3 ; périmètre de l'atelier § 11 (première livraison sans retour automatique)."""
     chemin = dossier / "etat.json"
     trace = {"operation": "livrer", "vers": ref}
-    if _manquantes(env):
+    if _manquantes(env, VARIABLES_LIVRAISON):
         journaliser(dossier, maintenant(), **trace, resultat="refusee",
-                    message=f"variable absente du .env du serveur : {', '.join(_manquantes(env))}")
+                    message=f"variable absente du .env du serveur : {', '.join(_manquantes(env, VARIABLES_LIVRAISON))}")
         return 1
     try:
         etat = lire_etat(chemin)
@@ -650,6 +794,11 @@ def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete,
         journaliser(dossier, maintenant(), **trace, resultat="refusee",
                     message=f"index de la version active absent ({etat.active.index}) : retour automatique impossible")
         return 1
+    refus = _refus_dossier_rapports(dossier)
+    if refus:
+        journaliser(dossier, maintenant(), **trace, resultat="refusee", message=refus)
+        return 1
+    rapports = dossier_rapports(dossier)
 
     ouvrir_operation(dossier, Ordre("livrer", ref), maintenant())
     version = None
@@ -669,6 +818,14 @@ def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete,
         journaliser(dossier, maintenant(), **trace, resultat="refusee au pre-test", echecs=list(pretest.echecs))
         fermer_operation(dossier)
         return 1
+    # Sprint 3 (choix 9 du plan) : l'index candidat rejoue les questions de démonstration avant toute bascule.
+    identite, echec_rejeu = _rejouer(version, docker, env, rapports)
+    if identite is None:
+        docker.supprimer_index(version.index)
+        journaliser(dossier, maintenant(), **trace, resultat="refusee au rejeu", message=echec_rejeu,
+                    rapport=_si_present(chemin_rapport_rejeu(rapports, version)))
+        fermer_operation(dossier)
+        return 1
     if secondes_avant_ouverture(maintenant()) > 0:  # l'heure relue juste avant la bascule
         docker.supprimer_index(version.index)       # la reprise de 9 h préparera une nouvelle livraison
         journaliser(dossier, maintenant(), **trace, resultat="reportee",
@@ -676,7 +833,7 @@ def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete,
         fermer_operation(dossier)
         return CODE_CRENEAU
 
-    apres = _mettre_en_service(version, docker, http, dormir)
+    apres = _verifier_index(_mettre_en_service(version, docker, http, dormir), identite, http)
     if apres.sante == "sain":
         nouvel = replace(apres_livraison(etat, version), observee=docker.image_du_conteneur(CONTENEUR), sante="sain")
         ecrire_etat(chemin, nouvel)
@@ -749,10 +906,122 @@ def revenir(numero: str, docker, dossier: Path, env: dict, maintenant, http=requ
     return 1
 
 
+def ingerer(numero: str, docker, dossier: Path, env: dict, maintenant, http=requete, dormir=time.sleep) -> int:
+    """Sprint 3, décision D1 (spec CA3.1 à CA3.6) : relance la collecte, prépare un NOUVEL index à part, le vérifie
+    (pré-test, puis rejeu des questions), le met en service et contrôle que `/health` l'annonce bien.
+
+    L'image et la configuration de la version active ne changent pas : la précédente reste la cible d'un retour
+    arrière logiciel, et l'ancien index n'est pas effacé (son nom est au journal). Tout échec avant la bascule laisse
+    l'index servi intact ; les articles déjà écrits en base par la collecte y restent, et le journal le dit. Après la
+    bascule, un échec remet la version du début, comme pour `livrer`.
+    """
+    chemin = dossier / "etat.json"
+    trace = {"operation": "ingerer", "passage": numero}
+    manquantes = [nom for nom in VARIABLES_INGESTION if not env.get(nom)]
+    if manquantes:
+        journaliser(dossier, maintenant(), **trace, resultat="refusee",
+                    message=f"variable absente du .env du serveur : {', '.join(manquantes)}")
+        return 1
+    try:
+        etat = lire_etat(chemin)
+    except EtatIllisible as erreur:
+        journaliser(dossier, maintenant(), **trace, resultat="refusee", message=str(erreur))
+        return 1
+    if etat.active is None:
+        journaliser(dossier, maintenant(), **trace, resultat="refusee",
+                    message="aucune version active : rien a reindexer (une livraison d'abord)")
+        return 1
+    if not docker.index_existe(etat.active.index):
+        journaliser(dossier, maintenant(), **trace, resultat="refusee",
+                    message=f"index de la version active absent ({etat.active.index}) : retour automatique impossible")
+        return 1
+    refus = _refus_dossier_rapports(dossier)
+    if refus:
+        journaliser(dossier, maintenant(), **trace, resultat="refusee", message=refus)
+        return 1
+    rapports = dossier_rapports(dossier)
+    active = etat.active
+
+    ouvrir_operation(dossier, Ordre("ingerer", numero), maintenant())
+    # 1. La collecte, et sa preuve : un manifeste écrit PENDANT l'opération (un ancien ne compte pas).
+    avant = set(rapports.glob("manifeste-*.json"))
+    try:
+        docker.collecter(active, env["RITA_DSN_INGESTION"], rapports)
+        nouveaux = sorted(set(rapports.glob("manifeste-*.json")) - avant)
+        if not nouveaux:
+            raise PreuveAbsente("preuve absente : aucun manifeste de collecte ecrit pendant l'operation")
+    except (PreuveAbsente, *ERREURS_AVANT_BASCULE) as erreur:
+        cause = str(erreur) if isinstance(erreur, PreuveAbsente) else _decrire(erreur)
+        journaliser(dossier, maintenant(), **trace, resultat="echec collecte",
+                    message=f"{cause} ; index servi inchange, les ecritures deja validees restent en base")
+        fermer_operation(dossier)
+        return 1
+    manifeste = nouveaux[-1]
+
+    # 2. Le nouvel index, à part : même image, même configuration, un volume neuf rempli et contrôlé par le pré-test.
+    nouvelle = Version(active.image, active.config, active.profil, f"rita-index-ing-{maintenant():%Y%m%d-%H%M%S}")
+    try:
+        pretest = _essai_en_preproduction(nouvelle, docker, env, http, dormir)
+    except ERREURS_AVANT_BASCULE as erreur:
+        docker.supprimer_index(nouvelle.index)
+        journaliser(dossier, maintenant(), **trace, resultat="refusee", message=_decrire(erreur),
+                    manifeste=str(manifeste), observee=docker.image_du_conteneur(CONTENEUR))
+        fermer_operation(dossier)
+        return 1
+    if pretest.sante != "sain":
+        docker.supprimer_index(nouvelle.index)
+        journaliser(dossier, maintenant(), **trace, resultat="refusee au pre-test", echecs=list(pretest.echecs),
+                    manifeste=str(manifeste))
+        fermer_operation(dossier)
+        return 1
+
+    # 3. Le rejeu des questions de démonstration sur l'index candidat, et son rapport (gardé même en échec).
+    rapport = chemin_rapport_rejeu(rapports, nouvelle)
+    identite, echec_rejeu = _rejouer(nouvelle, docker, env, rapports)
+    if identite is None:
+        docker.supprimer_index(nouvelle.index)
+        journaliser(dossier, maintenant(), **trace, resultat="refusee au rejeu", message=echec_rejeu,
+                    manifeste=str(manifeste), rapport=_si_present(rapport))
+        fermer_operation(dossier)
+        return 1
+    if secondes_avant_ouverture(maintenant()) > 0:  # l'heure relue juste avant la bascule
+        docker.supprimer_index(nouvelle.index)
+        journaliser(dossier, maintenant(), **trace, resultat="reportee",
+                    message="creneau du matin atteint pendant l'ingestion : index servi inchange",
+                    manifeste=str(manifeste))
+        fermer_operation(dossier)
+        return CODE_CRENEAU
+
+    # 4. La bascule, puis le contrôle de l'identité de l'index servi.
+    apres = _verifier_index(_mettre_en_service(nouvelle, docker, http, dormir), identite, http)
+    if apres.sante == "sain":
+        ecrire_etat(chemin, replace(apres_ingestion(etat, nouvelle), observee=docker.image_du_conteneur(CONTENEUR),
+                                    sante="sain"))
+        journaliser(dossier, maintenant(), **trace, resultat="ingeree", ancien_index=active.index,
+                    nouvel_index=nouvelle.index, empreinte=identite["empreinte"], manifeste=str(manifeste),
+                    rapport=str(rapport))
+        fermer_operation(dossier)
+        return 0
+
+    restaure = _mettre_en_service(active, docker, http, dormir)
+    ecrire_etat(chemin, replace(etat, observee=docker.image_du_conteneur(CONTENEUR), sante=restaure.sante))
+    if restaure.sante == "sain":
+        docker.supprimer_index(nouvelle.index)      # l'index candidat n'est plus servi
+        resultat = "ingestion refusee, version active du debut restauree"
+    else:
+        resultat = "restauration en echec, intervention necessaire"
+    journaliser(dossier, maintenant(), **trace, resultat=resultat, nouvel_index=nouvelle.index,
+                echecs=list(apres.echecs), echecs_restauration=list(restaure.echecs), manifeste=str(manifeste),
+                rapport=str(rapport), **_details(bascule=apres, restauration=restaure))
+    fermer_operation(dossier)
+    return 1
+
+
 def main(environ=None, docker=None, dossier: Path = DOSSIER, maintenant=None, http=requete,
          verrou=prendre_verrou, dormir=time.sleep, source_env: Path | None = None) -> int:
-    """Point d'entrée de la clé SSH à commande forcée. Ordre : analyser l'ordre ; pour `livrer`, refuser le créneau
-    AVANT tout verrou ; prendre le verrou ; exécuter ; l'heure est relue juste avant la bascule."""
+    """Point d'entrée de la clé SSH à commande forcée. Ordre : analyser l'ordre ; pour `livrer` et `ingerer`, refuser
+    le créneau AVANT tout verrou ; prendre le verrou (le même pour les trois opérations) ; exécuter ; l'heure est
+    relue juste avant la bascule."""
     environ = os.environ if environ is None else environ
     maintenant = maintenant or (lambda: datetime.now(PARIS))
     try:
@@ -763,8 +1032,9 @@ def main(environ=None, docker=None, dossier: Path = DOSSIER, maintenant=None, ht
     if ordre.nom == "version":
         print(empreinte_du_script())
         return 0
-    if ordre.nom == "livrer" and secondes_avant_ouverture(maintenant()) > 0:
-        print("livraison reportee : creneau du matin (8 h a 9 h, heure de Paris), rien n'a change")
+    operation = {"livrer": "livraison", "ingerer": "ingestion"}.get(ordre.nom)
+    if operation and secondes_avant_ouverture(maintenant()) > 0:
+        print(f"{operation} reportee : creneau du matin (8 h a 9 h, heure de Paris), rien n'a change")
         return CODE_CRENEAU
 
     source_env = source_env or DEPOT / ".env"
@@ -774,6 +1044,8 @@ def main(environ=None, docker=None, dossier: Path = DOSSIER, maintenant=None, ht
         with verrou(dossier / "verrou", attente_max=ATTENTE_VERROU[ordre.nom]):
             if ordre.nom == "livrer":
                 code = livrer(ordre.argument, docker, dossier, env, maintenant, http, dormir, source_env)
+            elif ordre.nom == "ingerer":
+                code = ingerer(ordre.argument, docker, dossier, env, maintenant, http, dormir)
             else:
                 code = revenir(ordre.argument, docker, dossier, env, maintenant, http, dormir)
     except VerrouOccupe as erreur:
@@ -791,7 +1063,7 @@ def main(environ=None, docker=None, dossier: Path = DOSSIER, maintenant=None, ht
         journaliser(dossier, maintenant(), operation=ordre.nom, resultat="interrompue", message=_decrire(erreur))
         print(f"{_decrire(erreur)} ; operation interrompue, voir journal.jsonl", file=sys.stderr)
         return 1
-    print({0: "operation reussie", CODE_CRENEAU: "livraison reportee par le creneau du matin"}.get(
+    print({0: "operation reussie", CODE_CRENEAU: f"{operation or 'operation'} reportee par le creneau du matin"}.get(
         code, "operation refusee ou en echec : voir journal.jsonl sur le serveur"))
     return code
 

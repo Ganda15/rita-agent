@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RITA : Question</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>RITA : poser une question</h1>
+    <p class="sous-titre">Retrieval Intelligence pour le Tracking et l'Analyse</p>
+    <p class="avertissement">
+      Aide à la lecture. Aucune recommandation d'achat ou de vente.
+    </p>
+    <nav aria-label="Navigation principale">
+      <a href="index.html">Mon portefeuille</a>
+      <a href="indicateurs.html">Indicateurs</a>
+      <a href="briefing.html">Briefing</a>
+      <span aria-current="page">Question</span>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ÉTAT 1 : pas de clé d'API, on la demande. Même clé et même sessionStorage que les autres écrans. -->
+    <section id="connexion" hidden>
+      <h2>Connexion</h2>
+      <form id="form-cle">
+        <label for="cle">Clé d'API</label>
+        <input type="password" id="cle" name="cle" required autocomplete="off">
+        <button type="submit">Se connecter</button>
+      </form>
+    </section>
+
+    <!-- ÉTAT 2 : la question. Mêmes bornes que l'API (3 à 500 caractères) : le navigateur arrête la saisie avant
+         l'appel, l'API reste la vraie barrière. -->
+    <section id="demande" hidden>
+      <h2>Poser une question</h2>
+      <form id="form-question">
+        <label for="question">Votre question sur l'actualité collectée</label>
+        <textarea id="question" name="question" rows="3" cols="60" required minlength="3" maxlength="500"
+                  placeholder="Combien de postes Netflix va-t-il supprimer ?"></textarea>
+        <button type="submit">Poser la question</button>
+      </form>
+      <p class="precision">
+        La réponse est rédigée uniquement à partir des articles collectés par RITA, et chaque affirmation renvoie à
+        sa source. Si aucun article ne permet de répondre, RITA refuse plutôt que d'inventer.
+      </p>
+    </section>
+
+    <!-- Le statut (chargement, clé refusée, question trop courte) : annoncé sans interrompre la lecture. -->
+    <p id="statut" role="status" aria-live="polite"></p>
+
+    <!-- ÉTAT 3 : le résultat. Un refus et une erreur technique ont chacun leur encart : une panne n'est pas un
+         refus (CA2.4). Le motif est écrit en mots ; la couleur ne fait que le répéter (RGAA 3.1). -->
+    <div id="zone-resultat" aria-live="polite">
+      <!-- Seulement la classe de couleur : `.fraicheur` impose display:flex, qui l'emporte sur l'attribut hidden
+           (constaté à l'écran le 16/10/2026, l'encart restait visible). -->
+      <section id="refus" class="fraicheur-orange" hidden>
+        <h2>Pas de réponse</h2>
+        <p id="texte-refus"></p>
+        <p id="motif-refus" class="precision"></p>
+      </section>
+
+      <section id="erreur" class="fraicheur-rouge" hidden>
+        <h2>Erreur technique</h2>
+        <p id="texte-erreur"></p>
+        <p id="motif-erreur" class="precision"></p>
+      </section>
+
+      <section id="resultat" hidden aria-labelledby="titre-resultat">
+        <h2 id="titre-resultat">Réponse</h2>
+        <div id="texte-reponse"></div>
+        <h3>Sources citées</h3>
+        <ol id="references"></ol>
+        <p id="index-servi" class="precision"></p>
+      </section>
+    </div>
+
+    <p id="reference-requete" class="precision"></p>
+
+    <!-- ÉTAT 4 : la fiche d'une source, telle qu'elle est stockée (CA1.5). Le focus y est posé à l'ouverture. -->
+    <section id="fiche" hidden tabindex="-1" aria-labelledby="titre-fiche">
+      <h2 id="titre-fiche">Fiche de la source</h2>
+      <dl id="fiche-donnees"></dl>
+      <h3>Passage transmis au modèle</h3>
+      <blockquote id="fiche-extrait"></blockquote>
+    </section>
+
+    <details>
+      <summary>D'où vient cette réponse&nbsp;?</summary>
+      <dl>
+        <dt>Les articles</dt>
+        <dd>Les articles collectés par RITA sur des flux RSS de presse. La recherche retient au plus trois passages
+            proches de la question ; si aucun ne l'est assez, la question est refusée sans appeler le modèle.</dd>
+        <dt>Le modèle</dt>
+        <dd>Un modèle de langage hébergé dans l'Union européenne. Il ne reçoit que la question et les passages
+            retenus, numérotés, et doit citer le numéro du passage qui soutient chaque affirmation.</dd>
+        <dt>Les sources</dt>
+        <dd>Le titre, la source, la date et le lien d'une référence viennent de la base de RITA, jamais du texte du
+            modèle. La fiche montre l'article tel qu'il est stocké, et le passage exact transmis au modèle.</dd>
+        <dt>Ce qui est conservé</dt>
+        <dd>RITA ne garde ni votre question ni la réponse : seulement leur longueur, le motif et les numéros
+            d'articles cités, pour le suivi du service.</dd>
+      </dl>
+    </details>
+  </main>
+
+  <footer>
+    <p>RNCP 37827 · Eramalingam GANDAKUMAR · la réponse est produite par un modèle de langage à partir des articles collectés ; elle n'engage aucun conseil</p>
+  </footer>
+
+  <script src="question.js"></script>
+</body>
+</html>
