@@ -18,7 +18,7 @@ Document d'entrée du sprint 3 du fil rouge RITA. Il dit où voir chaque critèr
 | 1. Sources licites | Registre RGPD : section « Corpus d'articles de presse » (les sources, leurs champs, la minimisation) ; fiche T7 (Google News arrêté le 16/10, date vérifiée sur le serveur et sur le poste) ; fiche T8 (le texte des questions n'est jamais conservé). Décisions D2 et D3 dans la spec |
 | 2. Traçabilité | `POST /question` rend la réponse et ses références (titre, éditeur, date, lien, extrait transmis au modèle), construites depuis les données stockées et jamais depuis le texte du modèle (`agents/question.py`) ; la fiche d'une source, `GET /donnees/articles/{id}` (`api/donnees.py`) ; l'écran `frontend/question.html`. Évaluation en production : `evidence/sprint-3/evaluation-production-2026-10-16-relecture.md` |
 | 3. Refus hors corpus | Règle de pertinence de la recherche (`rag/recherche.py`) ; refus sans appel au modèle pour une question hors corpus ou une demande de conseil d'achat, abstention quand les passages ne suffisent pas, citations contrôlées (`agents/question.py`) ; questions Q6 à Q8 du jeu, refusées en production |
-| 4. Pipeline rejouable | Bouton « Ingestion » (`.github/workflows/ingestion.yml`) et ordre `ingerer` du script du serveur (`deploy/deployer.py`) : collecte, nouvel index à part, pré-test, rejeu des questions, bascule, identité vérifiée. Relancée le 16/10, la collecte relit les mêmes 30 articles et n'en écrit aucun : `evidence/sprint-3/manifeste-2026-10-16-192124.json` |
+| 4. Pipeline rejouable | Bouton « Ingestion » (`.github/workflows/ingestion.yml`) et ordre `ingerer` du script du serveur (`deploy/deployer.py`) : collecte, nouvel index à part, pré-test, rejeu des questions, bascule, identité vérifiée. Relancée le 16/10, la collecte relit les mêmes 30 articles et n'en écrit aucun : `evidence/sprint-3/manifeste-2026-10-16-192124.json`. Mode d'emploi : `docs/EXPLOITATION.md`, § 8 |
 | 5. En production | Livraisons N5 et N6, deux ingestions, évaluation : tout sur l'adresse déployée, version lue dans `/health` (captures et journaux dans `evidence/sprint-3/`) |
 | Livrable : questions de démonstration | `rag/questions_demo.json` (version 2) et son rejeu `rag/controle_questions.py` ; rapports de rejeu dans `evidence/sprint-3/` |
 | Journal des retours | Après l'atelier 3 (voir « Ce qui n'est pas fait ») |
@@ -45,7 +45,6 @@ Document d'entrée du sprint 3 du fil rouge RITA. Il dit où voir chaque critèr
   après l'atelier.
 - **Aucune capture d'une réponse à l'écran** : l'écran demande la clé, que seul Era tape ; les comportements sont
   prouvés par l'évaluation en production.
-- **L'ordre `ingerer` n'est pas encore décrit** dans `docs/EXPLOITATION.md` ni dans `docs/CHAINE-V1.md`.
 - **Construction de l'image fragile** : l'image de base est téléchargée sans authentification depuis
   `public.ecr.aws` ; quatre constructions ont échoué sur un 429 le 16/10, chaque fois relancées à la main.
 - **Le manifeste écrit sur le serveur ne porte pas le commit** (`"commit": null`, Git n'est pas dans l'image).
