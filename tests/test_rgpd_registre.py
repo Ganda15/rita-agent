@@ -83,3 +83,14 @@ def test_t8_existe_et_ne_conserve_pas_le_texte():
     assert "Azure" in fiche and "UE" in fiche
     assert "learn.microsoft.com/en-us/azure/foundry/responsible-ai/openai/data-privacy" in fiche
     assert "journaux" in fiche and "traces" in fiche
+
+
+def test_t8_distingue_le_parcours_de_l_outil_d_evaluation():
+    # Revue automatique de la PR #104 (P2) : l'outil d'évaluation écrit les questions et les réponses dans ses rapports
+    # JSON, versionnés dans evidence/. La fiche doit nommer cette exception à côté du parcours /question, qui, lui, ne
+    # garde aucun texte. Le test vérifie la distinction, pas une phrase exacte.
+    fiche = _fiche("### T8")
+    assert "/question" in fiche
+    assert "evals/evaluer_reponses.py" in fiche
+    assert "evidence/" in fiche
+    assert "exception" in fiche.lower()
