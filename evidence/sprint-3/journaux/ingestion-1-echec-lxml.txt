@@ -1,0 +1,17 @@
+# Premiere ingestion, arretee a la collecte (lxml)
+
+passage   : 38936863197 (tentative 1)
+workflow  : Ingestion  |  Ingestion
+commit    : 41b1763c8799585342a113c59028696a95ecfd71  |  evenement : workflow_dispatch  |  cree le 2026-10-16T17:04:27Z
+conclusion: failure
+
+travaux :
+  ingerer | failure | 17:04:31 -> 17:04:42
+
+lignes utiles du journal (extraits, valeurs des secrets jamais affichees) :
+  [ingerer] 2026-10-16T17:04:34.8322340Z ##[start-action display=Comparer le script du serveur à celui du dépôt;id=__self.__run_2]
+  [ingerer] 2026-10-16T17:04:37.3108402Z script du serveur identique au depot (2ed6b98db4817366d4774f837460992506370e2bcf2dcdf005c95e0fc551cbd9)
+  [ingerer] 2026-10-16T17:04:40.9109963Z operation refusee ou en echec : voir journal.jsonl sur le serveur
+  [ingerer] 2026-10-16T17:04:40.9352228Z code rendu par le serveur : 1
+  [ingerer] 2026-10-16T17:04:40.9369731Z ##[error]le serveur a rendu le code 1 : voir journal.jsonl sur le serveur
+  [ingerer] 2026-10-16T17:04:40.9371839Z ##[error]Process completed with exit code 1.

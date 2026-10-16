@@ -1,0 +1,15 @@
+# Ingestion apres N6 : 29 articles ecrits
+
+passage   : 38952685069 (tentative 1)
+workflow  : Ingestion  |  Ingestion
+commit    : 72dba4d282515ba6d14058ebdad648e8a3ecbb8f  |  evenement : workflow_dispatch  |  cree le 2026-10-16T19:08:25Z
+conclusion: success
+
+travaux :
+  ingerer | success | 19:08:30 -> 19:12:38
+
+lignes utiles du journal (extraits, valeurs des secrets jamais affichees) :
+  [ingerer] 2026-10-16T19:08:34.0508135Z ##[start-action display=Comparer le script du serveur à celui du dépôt;id=__self.__run_2]
+  [ingerer] 2026-10-16T19:08:36.7609976Z script du serveur identique au depot (2ed6b98db4817366d4774f837460992506370e2bcf2dcdf005c95e0fc551cbd9)
+  [ingerer] 2026-10-16T19:12:36.5499731Z operation reussie
+  [ingerer] 2026-10-16T19:12:36.5899163Z code rendu par le serveur : 0
