@@ -27,9 +27,11 @@ from fastapi.security.api_key import APIKeyHeader
 from fastapi.staticfiles import StaticFiles
 
 from api.donnees import routeur as routeur_donnees
+from api.question import routeur as routeur_question
 from db import audit_mcp
 from graph.workflow import generer_briefing_complet
 from guardrails.sortie import verifier_sortie
+from rag import indexation
 from src import traces
 
 load_dotenv()
@@ -201,12 +203,17 @@ def health():
 
     Il annonce aussi la version servie (commit et date de construction), posées dans l'image par le
     Dockerfile ; « inconnu » hors de l'image (poste, tests). Lues à chaque appel, pas au chargement.
+
+    Sprint 3, tâche A1 : il annonce aussi l'identité de l'index servi (`index`), car une ingestion change
+    l'index sans changer le commit. Des comptes et une empreinte, aucun article : rien à protéger.
+    `None` quand l'index n'a pas encore d'identité.
     """
     return {
         "status": "ok",
         "project": "RITA",
         "commit": os.getenv("RITA_GIT_SHA", "inconnu"),
         "construit_le": os.getenv("RITA_CONSTRUIT_LE", "inconnu"),
+        "index": indexation.lire_identite(),
     }
 
 
@@ -214,6 +221,11 @@ def health():
 # La dépendance est posée sur le ROUTEUR entier : impossible d'ajouter un point de
 # terminaison non protégé par oubli. C'est un garde-fou de conception, pas de discipline.
 app.include_router(routeur_donnees, dependencies=[Depends(verify_api_key)])
+
+# --- Sprint 3 : les questions libres (tâche A5) ----------------------------------------------------------------------
+# Même garde-fou de conception : la clé est posée sur le routeur entier. Le montage des fichiers statiques sur « / »
+# reste le DERNIER de ce fichier, sinon il capterait `/question` avant la route.
+app.include_router(routeur_question, dependencies=[Depends(verify_api_key)])
 
 
 # --- C9 : le briefing rédigé ------------------------------------------------

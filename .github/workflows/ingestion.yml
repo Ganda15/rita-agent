@@ -1,0 +1,69 @@
+# =============================================================================
+# INGESTION EN UNE OPÉRATION (sprint 3, tâche B4) : spec CA3.1, décision D1
+#
+# Onglet Actions > « Ingestion » > Run workflow, avec son nom et le motif. Le serveur collecte les articles, prépare
+# un nouvel index à part, le vérifie (pré-test, puis rejeu des questions de démonstration), le met en service et
+# contrôle que /health annonce bien cet index ; sinon, l'index servi ne change pas, ou la version du début revient.
+# Comme pour le retour arrière, le nom et le motif restent dans GitHub : le serveur ne reçoit que le numéro du passage.
+# Le manifeste de la collecte et le rapport du rejeu restent sur le serveur (/root/rita-deploy/rapports).
+# =============================================================================
+
+name: Ingestion
+
+on:
+  workflow_dispatch:
+    inputs:
+      acteur:
+        description: "Qui demande l'ingestion"
+        required: true
+        type: string
+      motif:
+        description: "Pourquoi relancer la collecte et l'indexation"
+        required: true
+        type: string
+
+jobs:
+  ingerer:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    environment:
+      name: production
+      url: https://178-104-184-125.sslip.io
+    # Son PROPRE groupe, comme le retour arrière : dans le groupe `production`, une ingestion en attente pourrait être
+    # annulée par la livraison suivante, ou l'inverse. L'exclusion entre livraison, retour et ingestion est assurée
+    # par le verrou du serveur.
+    concurrency:
+      group: ingestion
+      cancel-in-progress: false
+    # Le serveur attend le verrou au plus ATTENTE_VERROU["ingerer"], puis travaille au plus DUREE_MAX_INGERER
+    # (deploy/deployer.py) : environ 159 minutes ; le travail ne doit pas être coupé avant lui.
+    timeout-minutes: 165
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Noter qui demande l'ingestion et pourquoi
+        env:
+          ACTEUR: ${{ inputs.acteur }}
+          MOTIF: ${{ inputs.motif }}
+        run: |
+          {
+            echo "### Ingestion demandee"
+            echo ""
+            printf -- '- par : %s\n' "$ACTEUR"
+            printf -- '- motif : %s\n' "$MOTIF"
+            printf -- '- passage : %s\n' "$GITHUB_RUN_ID"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Collecter, réindexer, vérifier, mettre en service
+        uses: ./.github/actions/ordre-serveur
+        with:
+          ordre: ingerer
+          argument: ${{ github.run_id }}
+          cle-ssh: ${{ secrets.DEPLOY_SSH_KEY }}
+          hote: ${{ secrets.DEPLOY_HOST }}
+          known-hosts: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          # Bloquante : tant que le script installé ne connaît pas `ingerer` (tâche B5), on s'arrête avant l'envoi.
+          empreinte-bloquante: "true"
+          # Pas de reprise automatique : une ingestion reportée par le créneau du matin se relance après 9 h.
+          accepter-report: "false"

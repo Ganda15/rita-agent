@@ -9,6 +9,48 @@
 
 ---
 
+## 2026-10-16 : sprint 3, spec et plan validés, code complet sur la branche, évaluation locale
+
+**Décisions structurantes** (spec `docs/sprint-3/SPEC.md`, validée par Era) : D1, une ingestion prépare un nouvel
+index à part, le vérifie (pré-test, rejeu des questions) puis le met en service, l'index précédent et le retour arrière
+restent possibles ; D2, RITA ne conserve aucun texte de question ni de réponse sous son contrôle ; D3, arrêt des
+requêtes Google News (le nom des sociétés du portefeuille ne sort plus) ; D5, les questions n'appellent qu'Azure en
+zone UE. Seuil de pertinence 0,42 gardé comme provisoire.
+
+**Manque découvert, et décision** : mesurée sur la copie du corpus de production, la question Q2 du jeu échouait à la
+règle de pertinence (« reprend » ne rejoint pas « reprise »). Era l'a fait reformuler une seule fois ; la version 1 et
+son échec sont gardés (`evidence/sprint-3/questions-demo-mesure-2026-10-16.md`). Jeu de questions en version 2.
+
+**Décision** : la base de test locale `rita_sprint3` suit `db/roles.sql`, comme la production (un test de rôle
+échouait sur une base plus stricte que la conception).
+
+**Résultat mesuré** : évaluation sur l'API locale, 8 questions sur 8 conformes, aucune affirmation non soutenue à la
+relecture d'Era (`evidence/sprint-3/evaluation-2026-10-16-relecture.md`). Pas encore livré en production.
+
+**Collecte du poste** : tâche planifiée désactivée par Era le 16/10 (elle exécutait encore Google News), jusqu'à ce que
+le dossier d'origine ait le code du sprint 3.
+
+---
+
+## 2026-10-15 (nuit, fin) : sprint 2 clos, tag `livrable-sprint-2-v3` ; sprint 3 ouvert dans un worktree
+
+**Livrable** : version 3 du livrable du sprint 2, tag `livrable-sprint-2-v3` sur `2268b05` (fusion de la PR #99),
+livrée en production par N4 (`/health` = `2268b05`). Les 17 liens du livrable sont vérifiés au tag. Le message au
+formateur avait été envoyé par Era avant la pose du tag.
+
+**Deux empreintes pour le même commit** : image déployée par N4
+`sha256:086fed50dd3402a4bd5f5a8a03fed326e6223c4f00ef1adf21c253da7b6b7f7e` ; image publiée par le run du tag
+`sha256:f2e95c71470ab4c0dfa04ed3dfb7ef23080d7c387725afa0210f45d17d872c92`. **Manque découvert** : le run d'un tag
+reconstruit l'image au lieu de réétiqueter celle de `main`, et déplace ainsi `sha-2268b05` et `latest`. La production
+n'est pas touchée : elle est lancée par son empreinte. Le `429` du registre `public.ecr.aws` a frappé une quatrième
+fois (PR #99) ; relancé sans effet sur le registre, puisqu'un run de PR construit sans publier.
+
+**Décision structurante (D4)** : le sprint 3 se développe dans un worktree séparé,
+`D:\KandaWork\RITA_PROJECT\rita-agent-sprint-3`, branche `sprint-3-donnees-ancrage`, avec un `.env` et une base de test
+dédiés ; le dossier d'origine n'est pas modifié pendant le sprint.
+
+---
+
 ## 2026-10-15 (nuit) : grille de l'atelier n°2 versée ; passage du tag v2 en échec, non relancé
 
 **Grille** : celle remplie par l'évaluateur (Alpha DIALLO) est versée, transcrite mot pour mot

@@ -1,0 +1,31 @@
+Suspension de la collecte quotidienne du poste d'Era (décision D3 : arrêt de Google News pendant le sprint 3)
+==========================================================================================================
+
+Pourquoi : la tâche planifiée Windows « RITA - collecte quotidienne » exécute chaque soir à 19 h le code du dossier
+D:\KandaWork\RITA_PROJECT\rita-agent, qui est encore celui du sprint 2 et interroge Google News (traitement T7 du
+registre RGPD). La tâche est suspendue en attendant que ce dossier exécute le code du sprint 3 (tâche B1).
+Conséquence acceptée par Era : les six étapes de la collecte locale (BCE, FRED, cotations, RSS, scraping,
+indexation) sont suspendues ; la base locale garde ses données mais ne se met plus à jour.
+
+Commande lancée par Era le 16/10/2026, avant 8 h 42 (heure de Paris) :
+  schtasks /Change /TN "\RITA - collecte quotidienne" /DISABLE
+  Réponse : Opération réussie : les paramètres de la tâche planifiée "\RITA - collecte quotidienne" ont été modifiés.
+
+Contrôle lancé par Era : schtasks /Query /TN "\RITA - collecte quotidienne" /V /FO LIST (extraits) :
+  Nom de la tâche                : \RITA - collecte quotidienne
+  Prochaine exécution            : N/A
+  Statut                         : Désactivé
+  Heure de la dernière exécution : 15/10/2026 19:00:01
+  Dernier résultat               : 0
+  Tâche à exécuter               : powershell.exe ... 'D:\KandaWork\RITA_PROJECT\rita-agent\scripts\collecte-quotidienne.cmd' ...
+  Statut de la tâche planifiée   : Désactivée
+  Type de planification          : Tous les jours, heure de début 19:00:00, depuis le 24/08/2026
+
+Relecture indépendante par l'assistant le 16/10/2026 à 08:42:54, même commande : Prochaine exécution N/A, Statut
+Désactivé, Statut de la tâche planifiée Désactivée, dernière exécution 15/10/2026 19:00:01.
+
+Dernier manifeste écrit avant la suspension : D:\KandaWork\RITA_PROJECT\rita-agent\logs\manifeste-2026-10-15-190005.json
+(étapes demandées : ecb, fred, cotations, rss, scraping, indexation).
+
+Reprise prévue (plan de travail, tâche D2, étape 8) : seulement quand le dossier d'origine exécute un commit qui
+contient la tâche B1 ; Era réactive alors la tâche (/ENABLE), et le premier manifeste est relu et versionné.

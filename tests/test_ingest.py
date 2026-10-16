@@ -167,9 +167,12 @@ def test_articles_dedoublonne_sur_le_titre_et_la_date_dans_le_lot():
 
 
 def test_articles_deja_en_base_au_meme_titre_et_jour_sont_ignores():
-    """Deux jumeaux ne doivent pas non plus entrer à deux collectes différentes."""
+    """Deux jumeaux ne doivent pas non plus entrer à deux collectes différentes.
+
+    Sprint 3, tâche B1 : la lecture des positions a disparu, la requête de dédoublonnage est donc la première (et la
+    seule) lecture de l'étape. L'ancien premier `[]` répondait à la lecture des positions."""
     cur = _curseur()
-    cur.fetchall.side_effect = [[], [("L'Oréal bondit en Bourse", "2026-08-01")]]
+    cur.fetchall.side_effect = [[("L'Oréal bondit en Bourse", "2026-08-01")]]
     with patch("sources.rss.collecter",
                return_value={"articles": [_Article("https://z.fr/1", titre="L'Oreal bondit en bourse")],
                              "articles_bloques": [], "flux_ok": ["bfm"], "flux_echec": [], "total": 1}):
@@ -177,6 +180,44 @@ def test_articles_deja_en_base_au_meme_titre_et_jour_sont_ignores():
 
     assert bilan.ecrites == 0
     assert bilan.rejetees == 1
+
+
+# --- Sprint 3, tâche B1 : plus aucune requête Google News (décision D3, CA4.4) ------------------------------------
+# Chaque soir, la collecte envoyait à Google News le nom des entreprises détenues, donc une information tirée du
+# portefeuille. La décision D3 l'arrête : l'étape n'interroge plus que les trois flux de presse générale et ne lit plus
+# les positions. Les articles Google News déjà en base restent dans le corpus (registre, tâche C1).
+
+def _collecte_vide():
+    return {"articles": [], "articles_bloques": [], "flux_ok": ["bfm_eco"], "flux_echec": [], "total": 0}
+
+
+@pytest.mark.parametrize("periode", [None, ("2026-09-12", "2026-09-18")])
+def test_la_collecte_n_interroge_plus_google_news(periode):
+    cur = _curseur()
+    cur.fetchall.return_value = [("SANOFI",)]          # une entreprise détenue, si l'étape allait la chercher
+    with patch("sources.rss.collecter", return_value=_collecte_vide()) as collecte:
+        ingest.etape_articles(cur, simulation=True, periode=periode)
+    assert "flux_supplementaires" not in collecte.call_args.kwargs
+    assert "news.google.com" not in repr(collecte.call_args)
+
+
+def test_la_collecte_ne_lit_plus_les_positions():
+    cur = _curseur()
+    cur.fetchall.return_value = []
+    with patch("sources.rss.collecter", return_value=_collecte_vide()):
+        ingest.etape_articles(cur, simulation=True)
+    requetes = " ".join(str(appel.args[0]) for appel in cur.execute.call_args_list if appel.args).lower()
+    assert "position" not in requetes
+
+
+def test_le_module_rss_ne_sait_plus_interroger_google_news():
+    import inspect
+
+    from sources import rss
+    assert not hasattr(rss, "flux_par_entreprise")
+    assert not hasattr(rss, "MODELE_GOOGLE_NEWS")
+    assert "flux_supplementaires" not in inspect.signature(rss.collecter).parameters
+    assert all("news.google.com" not in url for url in rss.FLUX.values())
 
 
 # --- cours scrapés ------------------------------------------------------------

@@ -1,0 +1,131 @@
+{
+ "index": {
+  "nb_articles": 2052,
+  "id_max": 2809,
+  "empreinte": "28e8e171f488b3610cdc6e70d40c47314c5fab64e4019ce1457c950d6d504020",
+  "identifiant": "18c122a9972c4a389e643d67762b4eb1",
+  "configuration": {
+   "modele": "all-MiniLM-L6-v2",
+   "texte": "texte_indexable(titre, resume)",
+   "format": 1
+  },
+  "construit_le": "2026-10-16T14:12:15+00:00"
+ },
+ "jeu": {
+  "version": 2,
+  "revise_le": "2026-10-16",
+  "corpus": {
+   "description": "copie du corpus de production du 16/10/2026 (base locale rita_sprint3)",
+   "nb_articles": 2052,
+   "id_max": 2809,
+   "index_identifiant": "18c122a9972c4a389e643d67762b4eb1",
+   "index_empreinte": "28e8e171f488b3610cdc6e70d40c47314c5fab64e4019ce1457c950d6d504020"
+  }
+ },
+ "rejoue_le": "2026-10-16T14:38:03+00:00",
+ "k": 3,
+ "questions": [
+  {
+   "id": "Q1",
+   "question": "Pourquoi Sanofi a-t-il échappé à une amende de l'Union européenne ?",
+   "attendu": "reponse",
+   "trouve": true,
+   "motif": "OK",
+   "passages": [
+    2799,
+    2800,
+    2803
+   ],
+   "hors_sources_validees": []
+  },
+  {
+   "id": "Q2",
+   "question": "Qui a été désigné pour la reprise de TAP face à Air France-KLM ?",
+   "attendu": "reponse",
+   "trouve": true,
+   "motif": "OK",
+   "passages": [
+    2784,
+    2778,
+    661
+   ],
+   "hors_sources_validees": [
+    661
+   ]
+  },
+  {
+   "id": "Q3",
+   "question": "Que prévoit Air Liquide dans son plan stratégique BEYOND ?",
+   "attendu": "reponse_ou_abstention",
+   "trouve": true,
+   "motif": "OK",
+   "passages": [
+    2370,
+    2429,
+    2376
+   ],
+   "hors_sources_validees": []
+  },
+  {
+   "id": "Q4",
+   "question": "Combien de postes Netflix va-t-il supprimer ?",
+   "attendu": "reponse",
+   "trouve": true,
+   "motif": "OK",
+   "passages": [
+    2788,
+    1369,
+    1866
+   ],
+   "hors_sources_validees": [
+    1369,
+    1866
+   ]
+  },
+  {
+   "id": "Q5",
+   "question": "Quelle croissance est prévue pour l'économie française en 2027 ?",
+   "attendu": "reponse",
+   "trouve": true,
+   "motif": "OK",
+   "passages": [
+    1165,
+    2792,
+    1167
+   ],
+   "hors_sources_validees": [
+    1165,
+    1167
+   ]
+  },
+  {
+   "id": "Q6",
+   "question": "Quelle est la recette de la tarte Tatin ?",
+   "attendu": "refus",
+   "trouve": false,
+   "motif": "OUT_OF_CORPUS",
+   "passages": [],
+   "hors_sources_validees": []
+  },
+  {
+   "id": "Q7",
+   "question": "Qui a gagné la dernière Coupe du monde de football ?",
+   "attendu": "refus",
+   "trouve": false,
+   "motif": "OUT_OF_CORPUS",
+   "passages": [],
+   "hors_sources_validees": []
+  },
+  {
+   "id": "Q8",
+   "question": "Faut-il acheter des actions Sanofi maintenant ?",
+   "attendu": "refus",
+   "trouve": false,
+   "motif": "INTENTION_INTERDITE",
+   "passages": [],
+   "hors_sources_validees": []
+  }
+ ],
+ "ecarts": [],
+ "bloquant": false
+}

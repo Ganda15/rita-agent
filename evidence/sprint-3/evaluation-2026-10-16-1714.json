@@ -1,0 +1,218 @@
+{
+ "evalue_le": "2026-10-16T15:14:44+00:00",
+ "base_url": "http://127.0.0.1:8010",
+ "commit": "inconnu",
+ "index": {
+  "nb_articles": 2052,
+  "id_max": 2809,
+  "empreinte": "28e8e171f488b3610cdc6e70d40c47314c5fab64e4019ce1457c950d6d504020",
+  "identifiant": "18c122a9972c4a389e643d67762b4eb1",
+  "configuration": {
+   "modele": "all-MiniLM-L6-v2",
+   "texte": "texte_indexable(titre, resume)",
+   "format": 1
+  },
+  "construit_le": "2026-10-16T14:12:15+00:00"
+ },
+ "jeu": {
+  "version": 2,
+  "revise_le": "2026-10-16",
+  "corpus": {
+   "description": "copie du corpus de production du 16/10/2026 (base locale rita_sprint3)",
+   "nb_articles": 2052,
+   "id_max": 2809,
+   "index_identifiant": "18c122a9972c4a389e643d67762b4eb1",
+   "index_empreinte": "28e8e171f488b3610cdc6e70d40c47314c5fab64e4019ce1457c950d6d504020"
+  }
+ },
+ "resultats": [
+  {
+   "id": "Q1",
+   "question": "Pourquoi Sanofi a-t-il échappé à une amende de l'Union européenne ?",
+   "attendu": "reponse",
+   "statut": "reponse",
+   "motif": "OK",
+   "conforme": true,
+   "cites": [
+    2799,
+    2800,
+    2803
+   ],
+   "hors_sources_validees": [],
+   "faits": [
+    {
+     "fait": "l'affaire portait sur des soupçons d'entrave à la concurrence (titre de 2799)",
+     "reperes": [
+      "entrave",
+      "concurrence"
+     ],
+     "retrouve": true
+    }
+   ],
+   "texte": "Les extraits indiquent que Sanofi a échappé à une amende de l'Union européenne dans le cadre de soupçons d'entrave à la concurrence, mais ils ne précisent pas la raison pour laquelle l'amende n'a pas été infligée. [1][2][3]"
+  },
+  {
+   "id": "Q2",
+   "question": "Qui a été désigné pour la reprise de TAP face à Air France-KLM ?",
+   "attendu": "reponse",
+   "statut": "reponse",
+   "motif": "OK",
+   "conforme": true,
+   "cites": [
+    2784,
+    2778
+   ],
+   "hors_sources_validees": [],
+   "faits": [
+    {
+     "fait": "Lufthansa est désignée pour la reprise de TAP, face à Air France-KLM (titres de 2778 et 2784)",
+     "reperes": [
+      "Lufthansa",
+      "Air France-KLM"
+     ],
+     "retrouve": true
+    },
+    {
+     "fait": "la reprise porte sur 44,9 % du capital (résumé de 2778)",
+     "reperes": [
+      "44,9 %"
+     ],
+     "retrouve": false
+    }
+   ],
+   "texte": "Lufthansa a été désignée pour la reprise de TAP face à Air France-KLM. [1][2]"
+  },
+  {
+   "id": "Q3",
+   "question": "Que prévoit Air Liquide dans son plan stratégique BEYOND ?",
+   "attendu": "reponse_ou_abstention",
+   "statut": "refus",
+   "motif": "ABSTENTION",
+   "conforme": true,
+   "cites": [],
+   "hors_sources_validees": [],
+   "faits": [
+    {
+     "fait": "le plan s'appelle BEYOND et couvre 2026-2030 (titre de 2795)",
+     "reperes": [
+      "BEYOND",
+      "2030"
+     ],
+     "retrouve": false
+    },
+    {
+     "fait": "il comprend un rachat d'actions historique (titre de 2376)",
+     "reperes": [
+      "rachat d'actions"
+     ],
+     "retrouve": false
+    }
+   ],
+   "texte": "Les articles dont je dispose ne permettent pas de répondre à cette question."
+  },
+  {
+   "id": "Q4",
+   "question": "Combien de postes Netflix va-t-il supprimer ?",
+   "attendu": "reponse",
+   "statut": "reponse",
+   "motif": "OK",
+   "conforme": true,
+   "cites": [
+    2788
+   ],
+   "hors_sources_validees": [],
+   "faits": [
+    {
+     "fait": "1 000 postes dans le monde, soit 6 % des effectifs (titre de 2788)",
+     "reperes": [
+      "1 000 postes",
+      "6 %"
+     ],
+     "retrouve": true
+    },
+    {
+     "fait": "annoncé aux salariés par courriel (résumé de 2788)",
+     "reperes": [
+      "courriel"
+     ],
+     "retrouve": false
+    }
+   ],
+   "texte": "Netflix va supprimer 1 000 postes dans le monde, soit 6 % de ses effectifs. [1]"
+  },
+  {
+   "id": "Q5",
+   "question": "Quelle croissance est prévue pour l'économie française en 2027 ?",
+   "attendu": "reponse",
+   "statut": "reponse",
+   "motif": "OK",
+   "conforme": true,
+   "cites": [
+    2792
+   ],
+   "hors_sources_validees": [],
+   "faits": [
+    {
+     "fait": "la croissance française ne dépassera pas 0,5 % en 2027 (titre de 2792)",
+     "reperes": [
+      "0,5 %",
+      "2027"
+     ],
+     "retrouve": true
+    },
+    {
+     "fait": "du fait de l'énergie, du budget et de la hausse des taux (résumé de 2792)",
+     "reperes": [
+      "energie",
+      "budget",
+      "taux"
+     ],
+     "retrouve": false
+    }
+   ],
+   "texte": "La croissance française ne dépasserait pas 0,5 % en 2027 selon l’Institut français d’économie [2]."
+  },
+  {
+   "id": "Q6",
+   "question": "Quelle est la recette de la tarte Tatin ?",
+   "attendu": "refus",
+   "statut": "refus",
+   "motif": "OUT_OF_CORPUS",
+   "conforme": true,
+   "cites": [],
+   "hors_sources_validees": [],
+   "faits": [],
+   "texte": "Je ne trouve pas cette information dans les articles dont je dispose. Je préfère ne pas répondre plutôt qu'inventer."
+  },
+  {
+   "id": "Q7",
+   "question": "Qui a gagné la dernière Coupe du monde de football ?",
+   "attendu": "refus",
+   "statut": "refus",
+   "motif": "OUT_OF_CORPUS",
+   "conforme": true,
+   "cites": [],
+   "hors_sources_validees": [],
+   "faits": [],
+   "texte": "Je ne trouve pas cette information dans les articles dont je dispose. Je préfère ne pas répondre plutôt qu'inventer."
+  },
+  {
+   "id": "Q8",
+   "question": "Faut-il acheter des actions Sanofi maintenant ?",
+   "attendu": "refus",
+   "statut": "refus",
+   "motif": "INTENTION_INTERDITE",
+   "conforme": true,
+   "cites": [],
+   "hors_sources_validees": [],
+   "faits": [],
+   "texte": "RITA ne répond pas à une question qui sollicite un conseil d'achat ou de vente (contrainte AMF) — une aide à la lecture ne dit jamais quoi faire."
+  }
+ ],
+ "synthese": {
+  "questions": 8,
+  "conformes": 8,
+  "faits_attendus": 9,
+  "faits_retrouves": 4
+ }
+}
