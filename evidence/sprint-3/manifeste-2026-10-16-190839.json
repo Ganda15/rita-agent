@@ -1,0 +1,29 @@
+{
+ "version_manifeste": 1,
+ "debut": "2026-10-16T19:08:39",
+ "duree_s": 1.1,
+ "mode": "execution",
+ "periode": null,
+ "etapes_demandees": [
+  "rss"
+ ],
+ "code": {
+  "commit": null,
+  "python": "3.13.16"
+ },
+ "etapes": [
+  {
+   "lues": 30,
+   "ecrites": 29,
+   "rejetees": 1,
+   "erreur": null,
+   "details": [
+    "flux OK 3/3"
+   ],
+   "ok": true,
+   "nom": "articles (RSS)"
+  }
+ ],
+ "etapes_ok": 1,
+ "etapes_total": 1
+}
