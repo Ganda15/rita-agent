@@ -1,21 +1,22 @@
 # Action composite du sprint 2 (tâche 9) : envoyer UN ordre au script du serveur, par la clé SSH dédiée.
 #
-# Utilisée par les trois travaux qui parlent au serveur : `deployer` et `deployer-reprise` (livraison.yml),
-# `revenir` (retour-arriere.yml). La clé ne peut lancer que /root/rita-deploy/bin/deployer.sh (commande forcée) :
-# l'ordre envoyé arrive dans SSH_ORIGINAL_COMMAND, et deploy/deployer.py n'accepte que trois ordres écrits en entier.
+# Utilisée par les quatre travaux qui parlent au serveur : `deployer` et `deployer-reprise` (livraison.yml),
+# `revenir` (retour-arriere.yml) et, depuis le sprint 3, `ingerer` (ingestion.yml). La clé ne peut lancer que
+# /root/rita-deploy/bin/deployer.sh (commande forcée) : l'ordre envoyé arrive dans SSH_ORIGINAL_COMMAND, et
+# deploy/deployer.py n'accepte que quatre ordres écrits en entier (livrer, revenir, ingerer, version).
 #
 # Règle de sécurité : aucune entrée n'est recopiée dans une commande ; chacune passe par une variable d'un bloc `env`
 # (contrôlé par tests/test_workflows_livraison.py).
 
 name: Ordre au serveur
-description: Compare le script du serveur à celui du dépôt, puis envoie un ordre (livrer, revenir) par la clé dédiée.
+description: Compare le script du serveur à celui du dépôt, puis envoie un ordre (livrer, revenir, ingerer) par la clé dédiée.
 
 inputs:
   ordre:
-    description: "livrer ou revenir"
+    description: "livrer, revenir ou ingerer"
     required: true
   argument:
-    description: "l'empreinte de l'image (livrer) ou le numéro du passage (revenir)"
+    description: "l'empreinte de l'image (livrer) ou le numéro du passage (revenir, ingerer)"
     required: true
   cle-ssh:
     description: "la clé privée dédiée (secret DEPLOY_SSH_KEY de l'environnement production)"
@@ -54,8 +55,8 @@ runs:
 
     - name: Comparer le script du serveur à celui du dépôt
       # L'ordre `version` rend le sha256 du script installé ; s'il diffère du dépôt, le serveur n'exécuterait pas le
-      # code relu. Bloquant pour une livraison ; simple avertissement pour un retour arrière, qui utilise le script
-      # déjà installé et ne doit jamais être empêché.
+      # code relu. Bloquant pour une livraison ou une ingestion ; simple avertissement pour un retour arrière, qui
+      # utilise le script déjà installé et ne doit jamais être empêché.
       shell: bash
       env:
         HOTE: ${{ inputs.hote }}
