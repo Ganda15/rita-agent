@@ -1,6 +1,7 @@
 # CONTINUITE — RITA (fil rouge RNCP 37827)
 
-> Dernière mise à jour : 2026-10-11 · par : Claude (skill `continuity`), sur « do it » d'Era
+> Dernière mise à jour : 2026-10-17 · par : Claude (skill `continuity`), sur « fais-le » d'Era ;
+> sprint 3 « Les données et l'ancrage » (15 au 17/10) ajouté en D, E, F, G, I, J, K et L
 > ⚠️ Ce ledger avait 9 jours de retard (18 → 27/09) : les décisions du 19 au 27/09 sont ajoutées ce soir depuis
 > `ETAT.md`, `CHANGELOG.md` et `git log`, avec leur date réelle. Un ledger en retard laisse une décision
 > se réinverser en silence ; le mettre à jour fait partie de la fin de session (question posée en G).
@@ -115,6 +116,19 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | **Azure seul pour les appels réels tant que le contrat de Mistral n'est pas lu** : `LLM_ORDRE=foundry` et `MISTRAL_MODEL=mistral-large-4-0` écrits explicitement dans `.env` ; Mistral Large 4 sert seulement au banc C7, sur des données publiques ou simulées ; `foundry,mistral` seulement après la lecture du contrat (DPA, sous-traitants, conservation, entraînement) et le banc. Les valeurs par défaut de la branche `mistral-ue` (`src/llm.py:34`, `docker-compose.yml:91`, `.env.example:43`, aujourd'hui `foundry,mistral`) passent à `foundry` avant la fusion de la PR #88. Précise la ligne du 10/10 « Azure GPT-5.4 reste premier » | règle UE seule (registre § 0 et § 5 ; CEPD, lignes directrices 05/2021, § 9) : un fournisseur dont le contrat n'est pas lu n'est pas approuvé, et un repli automatique y enverrait les mêmes données qu'à Azure ; le `.env` ne protège que le poste d'Era, les valeurs par défaut protègent Docker, la CI et un évaluateur. Un secours n'est pas exigé par le référentiel, c'est un choix de résilience (C8). Panne de tous les fournisseurs : **état actuel** 500 générique avec identifiant, sans détail interne (`src/llm.py:174`, `api/main.py:96-106`, branche, lu le 11/10) ; **cible après le gel** : 503 `AUCUN_FOURNISSEUR` testé, sans détail ni fournisseur hors UE (carte #75, constat S6 de la revue OWASP du 03/10). Une réponse refusée par un garde-fou ne déclenche jamais un second modèle (la cascade ne passe au suivant que sur une erreur technique) | 11/10 | `LLM_ORDRE`, `src/llm.py`, `docker-compose.yml`, `.env.example` | ce fichier ; `evidence/C17/revue-owasp-top10-2025-2026-10-03.md` (S6) | oui, par Era, après le contrat et le banc C7 |
 | **Prompt du rédacteur corrigé le 16/10, avant le banc C7 (option B)** : date de la séance affichée ; la consigne « point à surveiller pour la séance suivante » devient « un élément observable à suivre, tiré des seules données fournies, sans présenter un cours comme un seuil » ; règle ajoutée « ne décris pas une durée ou une tendance que les performances fournies ne montrent pas ». Le reste (comparaison de deux briefings, actualités récentes séparées, indice, volumes relatifs, alertes) après le 05/11 | briefing réel de LVMH du 11/10 : « séance » sans date, durée non étayée, « seuil des 380 EUR » induit par la consigne n° 3 ; un banc lancé avant mesurerait ce défaut chez les deux modèles ; corrections de fidélité, pas des fonctionnalités, donc compatibles avec « aucune fonctionnalité nouvelle avant le 20/10 » | 11/10 | `agents/analyst.py` (`construire_prompt`) | ce fichier ; `ETAT.md` | oui, par Era |
 | **Calendrier final** : contenus d'E1 à E5 terminés, PDF compris, le **20/10** ; gel final le **23/10** ; simulation personnelle le **26/10** ; examen blanc complet le **29/10**. **Aucune fonctionnalité nouvelle avant le 20/10**, sauf une correction indispensable à la validité d'une preuve. Ordre : jusqu'au 14/10 relecture d'E1 et d'E3 et veille S41 ; 15/10 gel d'E1 et d'E3 ; 16/10 date de séance dans le prompt (test d'abord), puis banc C7 dans un dossier de résultats neuf ; 17-20/10 E2, E4 et E5 | E4 et E5 n'ont encore aucun rapport : cinq jours ne suffisent que sans ajout ; un banc lancé avant la correction du prompt mesurerait un prompt qui va changer, et le défaut de date pénaliserait les deux modèles. Précise le calendrier du 06/10 (« 15-25/10 ») | 11/10 | `ETAT.md` | ce fichier | oui, par Era |
+| **Sprint 3, D1 : une ingestion construit un nouvel index à part, le vérifie (pré-test, rejeu des 8 questions), puis bascule l'API ; l'index précédent reste en place** | une ingestion ratée ne doit jamais toucher la version servie, et le retour arrière doit rester immédiat | 15/10 | `deploy/deployer.py` (ordre `ingerer`), `.github/workflows/ingestion.yml` | `docs/sprint-3/SPEC.md` (D1) ; `evidence/sprint-3/journaux/ingestion-1-echec-lxml.txt` (arrêt à la collecte, version servie intacte), `ingestion-2-reussie.txt`, `ingestion-3-dedoublonnage.txt` | non, livrée (N5) |
+| **Sprint 3, D2 : le texte des questions des visiteurs n'est jamais gardé** ; seulement le statut, le motif, la longueur, les identifiants cités et l'heure | une question libre peut contenir une donnée personnelle (minimisation, RGPD) | 15/10 | `api/question.py` (journal par question) | `docs/sprint-3/SPEC.md` (D2) ; fiche T8 du registre (`edd8934`, `8364181`) | non |
+| **Sprint 3, D3 : plus aucune requête à Google News (T7)** ; les flux généraux restent, les articles déjà collectés aussi, avec leur origine | la recherche envoyait à Google le nom des sociétés du portefeuille | 15/10, effet le 16/10 | collecte (`sources/`) | `05857a4` ; registre « ⛔ ARRÊTÉ le 2026-10-16 » (`edd8934`) ; `evidence/sprint-3/suspension-collecte-2026-10-16.txt`, `reprise-collecte-2026-10-16.txt` | le remplacement par des sources approuvées reste la carte #81 |
+| **Sprint 3, D4 : développement dans un worktree séparé**, `.env` et base de test dédiés | le dossier d'origine porte la collecte de 19 h et ne doit pas bouger pendant le sprint | 15/10 | poste | `docs/sprint-3/SPEC.md` (D4) ; worktree `D:\KandaWork\RITA_PROJECT\rita-agent-sprint-3` | non |
+| **Sprint 3, D5 : la PR #88 (Mistral UE) attend la fin de l'atelier 3** | elle modifie l'appel au modèle et entre en conflit avec `develop` sur 5 fichiers ; le parcours des questions n'appelle qu'Azure | 15/10 | `src/llm.py` | `docs/sprint-3/SPEC.md` (D5) ; PR #88 encore ouverte le 17/10 | oui, après l'atelier |
+| **Résumés RSS nettoyés par `html.parser`**, et une étape de la chaîne qui l'essaie dans l'image construite | la première ingestion s'est arrêtée à la collecte : `lxml` manque dans l'image, alors que les tests passaient sur le poste, qui l'a | 16/10 | `sources/rss.py`, `.github/workflows/livraison.yml` | `ad390f6` (N6) ; `ingestion-1-echec-lxml.txt` | non |
+| **Dates en UTC dans l'empreinte de l'index** | l'empreinte du poste différait de celle du serveur pour le seul fuseau horaire de la session | 16/10 | `rag/indexation.py` (`_date_en_utc`) | `ad390f6` ; test `test_l_empreinte_ne_depend_pas_du_fuseau_de_la_session` | non |
+| **Récit dans `docs/`, fichiers bruts du serveur dans `evidence/`** (choix d'Era) | revue Codex P1 sur la PR #102 : un texte rédigé ne doit pas passer pour une trace brute | 16/10 | `docs/sprint-3/`, `evidence/sprint-3/` | `0d127cf` ; `docs/sprint-3/COMPTE-RENDU-N5-2026-10-16.md` | non |
+| **Lecture des 8 réponses de production validée par Era** : Q1, Q2, Q4, Q5 fidèles ; Q3 abstention correcte ; Q6 à Q8 refus corrects | l'outil vérifie les contrôles du jeu (statut, motif, références) ; la fidélité d'une réponse demande une lecture humaine | 16/10 | évaluation | `6024c52` ; `evidence/sprint-3/evaluation-production-2026-10-16-relecture.md` | non |
+| **Le caractère de contrôle écrit par le modèle est remplacé par une espace (N7)**, option recommandée choisie par Era | un texte montré à l'utilisateur ne doit pas en contenir, et l'évaluation automatique en dépend | 16/10 | `agents/question.py` | `f089be2` (test d'abord) ; livraison N7 `66963da` | non |
+| **Les deux évaluations en 403 (21:40 et 21:42) restent dans les preuves** | traces brutes écrites au moment de l'essai ; elles montrent aussi que la production refuse une clé qui n'est pas la sienne | 16/10 | `evidence/sprint-3/` | `evaluation-2026-10-16-2140.json`, `evaluation-2026-10-16-2142.json`, expliqués dans la relecture | non |
+| **Livrable du sprint 3 en PDF, comme au sprint 2 ; tag `livrable-sprint-3-v1` posé par Era le dimanche 18/10** (« version préparée pour l'atelier du 19 octobre ; retours à venir ») ; `v2` après l'atelier, avec la grille et les retours | l'atelier a besoin d'un lien figé ; une version écrite avant ne peut pas contenir les retours | 17/10 | `docs/sprint-3/livrable/` | `ETAT.md` (bloc du 17/10), `CHANGELOG.md` (entrée du 17/10) | non |
+| **Ordre du samedi 17/10** : ce registre, puis les 3 captures, puis le livrable régénéré et relu, puis l'oral et une répétition chronométrée ; PR et livraison le jour même si le livrable est validé, dimanche gardé en marge | une construction arrêtée par un 429 se relance après une attente d'environ 15 min : la marge doit exister avant le tag, qui construit et publie l'image | 17/10 | pilotage | relecture collée par Era le 17/10 | oui |
 
 ## E. Alternatives rejetées
 
@@ -140,6 +154,9 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | Mistral Large 4 avec sa réflexion par défaut | sous la limite de 500 jetons, la réflexion consomme tout : liste de blocs sans texte, 500 au lieu d'un briefing, 20 s | 10/10 |
 | Mistral Medium 3.5 | le plus rapide (1,3 s) mais trois fois plus cher que Large 4, et le même défaut de date | 10/10 |
 | Réécrire la règle UE seule en « transferts encadrés par le RGPD » | aurait seulement déplacé la question vers les contrats de Google, Yahoo, de la FRED et de Langfuse, chacun à lire, sans conformité acquise ; et E1 et E3 décrivent la règle stricte | 10/10 |
+| Noter le caractère de contrôle de Q4 comme une limite, sans code | un caractère invisible dans un texte affiché reste un défaut, et l'évaluation automatique en dépend | 16/10 |
+| Supprimer les deux évaluations en 403 | ce sont des traces brutes ; les effacer aurait caché un essai raté | 16/10 |
+| Lancer l'ingestion au début de la démonstration | sa bascule remplace le conteneur de l'API et couperait une réponse en cours : elle passe après les questions de l'évaluateur | 17/10 |
 
 ## F. Modifications d'Era (après la baseline)
 
@@ -159,8 +176,17 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | 29/09 | changé | **Gel 2 à 3 semaines avant chaque oral** ; E3 passe devant E4 et C7 ; Langfuse avancé en S40 | ordre des livrables, plan S40-S45 |
 | 26/09 | rendu obligatoire | **Écriture humaine partout** : zéro tiret long, pas de tournures qui sonnent IA, relecture à voix haute avant de rendre (mesuré : 38 tirets longs dans le rapport E1). Vaut pour le chat, les livrables, les commits, les skills | tous les livrables |
 | 02/10 | changé | **Gel de E3 et de E1 repoussé du 11/10 au jeudi 15/10** (décision d'Era). Raison : une semaine de brief de création occupe les journées du 05 au 11/10, et l'audit chiffre le travail de E3 restant à 30 à 45 h. Le gel garde au moins 2 semaines avant l'oral blanc du 29/10. **Ce que le gel permet** : on ne construit plus rien ; on corrige seulement ce que les retours de l'oral blanc montrent, par une nouvelle version taguée (`v2`), jamais par une modification silencieuse ; les diapositives et le discours suivent la `v2`. Limites : 05/11 pour la relecture d'Elbby, 23/11 pour le partage au jury | ordre des livrables, plan S41-S42 |
+| 16/10 | choisi | Le caractère de contrôle du modèle corrigé en N7, plutôt que noté comme limite | critère 2 de l'atelier 3 (réponse citée) |
+| 17/10 | ajouté | Un livrable PDF pour l'atelier 3 ; tag v1 avant l'atelier (dimanche 18/10), v2 après, avec la grille | livraison du sprint 3 |
+| 17/10 | changé | La livraison commence dès samedi si le livrable est validé ; dimanche reste la marge ; le tag reste dimanche | calendrier du sprint 3 |
 
 ## G. Questions ouvertes
+
+- 🆕 (17/10) **« System restart required » sur le serveur** : quels paquets l'ont demandé, quels services sont touchés,
+  à quel moment le faire ? À diagnostiquer avant toute décision ; pas de redémarrage improvisé, jamais pendant une
+  livraison ou une ingestion. **Era décide.**
+- 🆕 (17/10) Pour la question du rafraîchissement serveur (plus bas) : depuis le 16/10, l'ingestion par le bouton
+  existe et a tourné deux fois. Sa **fréquence** n'est pas tranchée.
 
 - 🆕 **E1 : annexe de schémas hors des 5 pages, et support visuel à l'oral E1** (04/10) : le règlement ne dit rien des
   annexes. Question rédigée dans `ETAT.md` (point 3 du message au formateur). **Era envoie, le formateur tranche.**
@@ -273,8 +299,25 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | Cascade réelle de `develop` dans README, CLAUDE et le guide ; 500 au lieu de 502, 10/10 | **FAIT + VÉRIFIÉ** (diff, `tests/test_alerte_incident.py` 8 passed, PDF regardé) | `000ca50` |
 | Mistral Large 4 sans réflexion, 10/10 | **TESTÉ + EXÉCUTÉ** (847 passed, briefing réel 200, AMF conforme) | `2a7f18c`, `b3c76b5`, preuve C8 (branche) |
 | Verrou de démonstration MCP : défaut mesuré, E3 v1.3, erratum C20, 10/10 | **MESURÉ** (le vrai verrou rend `False` sur la base du 03/10 : 7 servies, 7 dans l'exemple, 3 de l'exemple absentes) ; E3 toujours 20 pages, page 5 regardée | `evidence/C20/erratum-verrou-demonstration-2026-10-10.md` |
+| Sprint 3, parcours des questions A1 à A6, 15-16/10 | **TESTÉ** | `98177c2` (A6, écran de question) et les commits A1 à A5 ; suite complète **1230 passed, 24 skipped, 2 xfailed** (sortie collée par Era) |
+| Sprint 3, N5 en production, 16/10 | **EXÉCUTÉ + VÉRIFIÉ** | `41b1763` (PR #100 puis #101), 9 min 48 s de la fusion à la production ; `evidence/sprint-3/journaux/livraison-N5.txt` |
+| Sprint 3, première ingestion, 16/10 | **ÉCHEC MESURÉ**, version servie intacte | `lxml` absent de l'image ; `evidence/sprint-3/journaux/ingestion-1-echec-lxml.txt` |
+| Sprint 3, N6 en production, 16/10 | **EXÉCUTÉ + VÉRIFIÉ** | `72dba4d` ; première tentative arrêtée par un 429 avant le serveur (`livraison-N6-tentative-1-429.txt`), seconde en 9 min 07 s (`livraison-N6.txt`) |
+| Sprint 3, deux ingestions par le bouton, 16/10 | **EXÉCUTÉ + VÉRIFIÉ** | 21:08, 29 articles écrits ; 21:21, aucun (dédoublonnage) ; rejeux sans écart ; `ingestion-2-reussie.txt`, `ingestion-3-dedoublonnage.txt`, manifestes `190839` et `192124`, rapports `rejeu-rita-index-ing-*.json` |
+| Sprint 3, évaluation en production, 16/10 | **EXÉCUTÉ + VALIDÉ par Era** | 8 sur 8 conformes aux contrôles du jeu, 3 faits sur 9 retrouvés automatiquement ; `evaluation-2026-10-16-2146.json`, `evaluation-production-2026-10-16-relecture.md` (`6024c52`) |
+| Sprint 3, N7 en production, nuit du 16 au 17/10 | **EXÉCUTÉ + VÉRIFIÉ** | `66963da`, 22:10 UTC, vert du premier coup ; `/health` relu le 17/10 : commit `66963da`, index `13f15d84f80b4a9bbd2d21ff1a9de140`, 2081 articles ; `livraison-N7.txt` et `production-health-N7-2026-10-17.png` (non commités au 17/10) |
+| Sprint 3, collecte du poste reprise sans Google News, 16/10 | **EXÉCUTÉ** | `91f7c1e` ; `reprise-collecte-2026-10-16.txt` ; `manifeste-poste-2026-10-16-220139.json` (6 étapes sur 6) |
+| Sprint 3, C1 : registre RGPD, 16/10 | **FAIT + TESTÉ** | `edd8934`, `8364181` : T7 arrêté, corpus examiné, T8 inscrit, schéma E1 régénéré ; `tests/test_rgpd_registre.py` |
+| Sprint 3, D3 : documents et preuves, 16/10 | **FAIT, relu par Era** | `9c58d14`, `53462b2`, `6e9453d` ; `docs/sprint-3/README.md`, `evidence/sprint-3/README.md`, `docs/EXPLOITATION.md` § 8 |
+| Sprint 3, livrable version 1, 17/10 | **IMPLÉMENTÉ, non validé** | `docs/sprint-3/livrable/livrable-sprint-3.md` et `.pdf` (8 pages), non commités ; attend les 3 captures et la relecture d'Era |
 
 ## J. En cours
+
+**Au 17/10, matin (sprint 3)** : production sur `66963da` (N7). Worktree `D:\KandaWork\RITA_PROJECT\rita-agent-sprint-3`,
+branche `sprint-3-donnees-ancrage`, HEAD `8364181`, déjà dans `origin/main`. Non commités : le livrable (md et pdf),
+le journal et la capture de N7, `docs/sprint-3/README.md`, `evidence/sprint-3/README.md`, `ETAT.md`, `CHANGELOG.md`
+et ce registre. En cours : les trois captures, puis le livrable régénéré. Le dossier d'origine reste sur `72dba4d`
+(N6), où tourne la collecte de 19 h. Seule PR ouverte : #88.
 
 **Au 04/10, après-midi** : rien en cours dans le dépôt ; arbre propre, `develop` = `origin/develop`. La suite est
 personnelle, hors dépôt.
@@ -310,6 +353,21 @@ deux fois du risque. Décision assumée et tracée.
 rapport E3 (#37, 0 page, gel le 15/10), rapport E4 (#28, 0 page, gel le 25/10).
 
 ## K. Reste à faire
+
+- 🆕 (17/10) **Trois captures** prises par Era sur l'écran de question de production, clé absente des images : la
+  réponse à « Combien de postes Netflix va-t-il supprimer ? » avec sa référence, la fiche de cette source, le refus de
+  « Quelle est la recette de la tarte Tatin ? ». Dossier : `evidence/sprint-3/captures/`.
+- 🆕 (17/10) **Captures dans le livrable** (§ 6.1 et 6.2), PDF régénéré et relu page par page, puis validation d'Era.
+- 🆕 (17/10) **Oral de l'atelier 3** dans Obsidian (`Projets/RITA/oral-atelier-3.md`), sur quatre points : pourquoi
+  RITA cite, pourquoi elle refuse, ce que le rejeu vérifie sans le modèle, pourquoi 8 conformes ne veut pas dire
+  8 réponses parfaites. Puis une répétition chronométrée. Journal Obsidian court.
+- 🆕 (17/10) **Si le livrable est validé** : PR `sprint-3-donnees-ancrage → develop`, puis `develop → main` (Era
+  fusionne), livraison N8 ; noter la version servie, l'image et l'identité de l'index ; Definition of Done
+  `scripts/verifier_livrable.py livrable-sprint-3-v1` sur le commit final.
+- 🆕 (18/10) **Era pose `livrable-sprint-3-v1`** ; vérifier la construction et la publication de l'image que le tag
+  déclenche (risque de 429).
+- 🆕 (19/10) **Atelier 3 après 9 h** : grille recopiée mot pour mot dans `eval/ateliers/sprint-3-grille.md`, journal
+  des retours ; puis la v2.
 
 - 🆕 (04/10) **Constater le retour à OK des deux alertes** et **capturer le tableau « RITA C11 »** (Era, Langfuse).
 - 🆕 (04/10) **Borner la clôture entre bas et haut ?** Contrainte `CHECK` à ajouter dans `db/schema.sql` (zone sous garde :
@@ -348,6 +406,18 @@ rapport E3 (#37, 0 page, gel le 15/10), rapport E4 (#28, 0 page, gel le 25/10).
 - Gel final du 05/11 (#44) : relecture, liens, tests verts, envoi.
 
 ## L. Risques et bloqueurs
+
+- 🆕 (17/10) **429 de `public.ecr.aws`** à la construction de l'image : cinq le 16/10, chaque fois relancés à la main
+  après une attente ; cause non traitée. La livraison N8 et le tag en dépendent : c'est pourquoi la livraison part
+  samedi, et dimanche reste la marge.
+- 🆕 (17/10) **La collecte de 19 h écrit dans la base du poste** (dossier d'origine) : un chiffre ou un rejeu local
+  relevé avant 19 h peut différer après. Les preuves de l'atelier viennent de la production, dont l'index ne change
+  qu'à une ingestion.
+- 🆕 (17/10) **« System restart required » sur le serveur**, non diagnostiqué (voir G).
+- 🆕 (16/10) **L'outil d'évaluation charge la clé locale** du `.env` quand `RITA_API_KEY` manque : la clé du poste part
+  vers l'adresse donnée (les deux 403 du 16/10). Relevé, non corrigé.
+- 🆕 (16/10) Manifeste du serveur sans commit ; corpus sans durée de conservation ni purge ; clés Langfuse du serveur
+  non revérifiées ; durée pendant laquelle Microsoft garde un échantillon pour la revue des abus non documentée.
 
 - ~~🔴 **La question AMF reçoit à nouveau 2 articles (06/09)**~~ → **fermé le 18/09** : le garde-fou
   d'entrée la refuse avant la recherche (`INTENTION_INTERDITE`), quel que soit le corpus. Le seuil

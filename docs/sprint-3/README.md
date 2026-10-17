@@ -37,8 +37,10 @@ Document d'entrée du sprint 3 du fil rouge RITA. Il dit où voir chaque critèr
 - **Évaluation en production** : sur ce passage, 8 sur 8 conformes aux contrôles du jeu ; 3 faits sur 9 retrouvés
   automatiquement ; aucune affirmation non soutenue selon la relecture d'Era.
 - **Collecte du poste** : reprise sur le code de N6, sans Google News (première collecte à 22:01, 6 étapes sur 6).
-- **À livrer (N7)** : les caractères de contrôle du texte du modèle remplacés par une espace (relevé par l'évaluation
-  en production, commit `f089be2`), avec les documents de fin de sprint.
+- **N7** (PR #105, commit `66963da`) : les caractères de contrôle du texte du modèle remplacés par une espace (relevé
+  par l'évaluation en production), avec les documents de fin de sprint ; livrée à 22:10 UTC, vert du premier coup,
+  même empreinte d'index.
+- **Livrable** : `docs/sprint-3/livrable/livrable-sprint-3.pdf` (version 1, préparée pour l'atelier du 19/10).
 
 ## Ce qui n'est pas fait
 
@@ -47,7 +49,7 @@ Document d'entrée du sprint 3 du fil rouge RITA. Il dit où voir chaque critèr
 - **Aucune capture d'une réponse à l'écran** : l'écran demande la clé, que seul Era tape ; les comportements sont
   prouvés par l'évaluation en production.
 - **Construction de l'image fragile** : l'image de base est téléchargée sans authentification depuis
-  `public.ecr.aws` ; quatre constructions ont échoué sur un 429 le 16/10, chaque fois relancées à la main.
+  `public.ecr.aws` ; cinq constructions ont échoué sur un 429 le 16/10, chaque fois relancées à la main.
 - **Le manifeste écrit sur le serveur ne porte pas le commit** (`"commit": null`, Git n'est pas dans l'image).
 - **L'outil d'évaluation charge la clé locale** : ses imports lisent le `.env` du poste ; sans `RITA_API_KEY` dans
   la session, la clé locale part vers l'adresse donnée en argument. Relevé le 16/10, non corrigé.

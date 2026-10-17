@@ -37,7 +37,7 @@ Critères de la grille : 1. sources licites ; 2. traçabilité ; 3. refus hors c
 | Ingestion relancée : 30 lus, 0 écrit (dédoublonnage), même empreinte de contenu | `manifeste-2026-10-16-192124.json`, `journaux/ingestion-3-dedoublonnage.txt` | 4 |
 | Journal des opérations du serveur, copié le 16/10 à 19:35 UTC | `journal-serveur-2026-10-16.jsonl` | 4, 5 |
 
-## Les livraisons N5 et N6
+## Les livraisons N5, N6 et N7
 
 | Preuve | Fichier | Critère |
 |---|---|---|
@@ -45,6 +45,8 @@ Critères de la grille : 1. sources licites ; 2. traçabilité ; 3. refus hors c
 | Livraison N6 (PR #103), tentative 1 arrêtée avant le serveur par un 429 du registre d'images | `journaux/livraison-N6-tentative-1-429.txt` | 5 |
 | Livraison N6, tentative 2 : nettoyage d'un résumé RSS essayé dans l'image, mise en service | `journaux/livraison-N6.txt` | 4, 5 |
 | `/health` en production après l'ingestion (commit `72dba4d`, 2081 articles, index `c91baa3f…`), capture par Chrome sans connexion, 16/10 à 22:29 | `captures/production-health-2026-10-16.png` | 5 |
+| Livraison N7 (PR #105), vert du premier coup : nettoyage RSS essayé dans l'image, mise en service | `journaux/livraison-N7.txt` | 5 |
+| `/health` après N7 (commit `66963da`, 2081 articles, index `13f15d84…`, même empreinte de contenu), capture par Chrome sans connexion, 17/10 à 00:23 | `captures/production-health-N7-2026-10-17.png` | 5 |
 | L'écran de question en production, sans clé : il demande la clé avant toute question | `captures/production-question-2026-10-16.png` | 5 |
 
 ## L'arrêt de Google News (T7) et la collecte du poste
@@ -84,4 +86,8 @@ gh run view 38952685069 --repo Ganda15/rita-agent
 
 ```
 gh run view 38954283118 --repo Ganda15/rita-agent
+```
+
+```
+gh run view 38973167532 --repo Ganda15/rita-agent
 ```

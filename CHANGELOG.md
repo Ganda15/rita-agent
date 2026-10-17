@@ -9,6 +9,25 @@
 
 ---
 
+## 2026-10-17 (nuit) : N7 en production ; livrable du sprint 3, version 1 ; tag avant l'atelier
+
+**Livré** : N7 (PR #105, `66963da`), le 16/10 à 22:10 UTC, vert du premier coup ; `/health` annonce `66963da` et l'index
+`13f15d84…`, même empreinte de contenu (`0b372539c971…`, 2081 articles). La PR #104 avait d'abord corrigé la fiche T8
+du registre après la revue Codex : l'outil d'évaluation conserve les questions et les réponses dans ses rapports.
+
+**Décision d'Era** : le tag `livrable-sprint-3-v1` est posé avant l'atelier 3 (lundi 19/10 au matin), comme au
+sprint 2, et présenté comme la version préparée pour l'atelier ; la grille et les suites données aux retours iront
+dans une version 2. Cela remplace l'ordre écrit le 16/10 (tag seulement après l'atelier).
+
+**Livrable** : `docs/sprint-3/livrable/livrable-sprint-3.pdf` (8 pages), lisible sans accès au dépôt privé : preuves
+reprises en extraits datés, journaux recopiés en annexe, déroulé de la démonstration (ingestion lancée après les
+questions de l'évaluateur, car sa bascule remplace le conteneur de l'API).
+
+**Manque découvert** : un cinquième 429 de `public.ecr.aws`, sur la construction après la fusion de la PR #104 dans
+`develop`, réussie à la troisième tentative.
+
+---
+
 ## 2026-10-16 (nuit) : sprint 3 en production (N5, N6), ingestion par le bouton, évaluation en production, registre RGPD
 
 **Livré** : N5 (PR #101, `41b1763`) puis N6 (PR #103, `72dba4d`), en production le 16/10 ; `/health` annonce `72dba4d`
