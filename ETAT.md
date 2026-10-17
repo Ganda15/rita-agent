@@ -15,21 +15,23 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-16, nuit (sprint 3 en production : N5 et N6, ingestion par le bouton, évaluation en production 8 sur 8, registre RGPD, documents de fin de sprint ; restent N7, l'atelier 3 et le tag) ; avant : 2026-10-16 au soir (sprint 3 : parcours des questions, Google News arrêté dans le code, ingestion en une opération, jeu de questions en version 2, évaluation locale 8 sur 8 ; reste la livraison) ; avant : 2026-10-15 au soir (sprint 2 clos, tag livrable-sprint-2-v3, sprint 3 ouvert dans un worktree) ; avant : 2026-10-11 (E1 v2.5 : cinq surgénéralisations corrigées ; veille S41 : relevé, note d'Era et partage à la promo ; E3 v1.4 : sept corrections, 44 critères en 39 lignes, revue d'E3 close ; E1 v2.4 : seconde passe, MCD lisible, guide § 4.5 corrigé ; avant, E1 v2.3 : passe RGPD et exactitude ; politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
+**Dernière mise à jour : 2026-10-17, nuit (N7 en production ; livrable du sprint 3, version 1 ; atelier 3 lundi 19/10
+au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en production : N5 et N6, ingestion par le bouton, évaluation en production 8 sur 8, registre RGPD, documents de fin de sprint ; restent N7, l'atelier 3 et le tag) ; avant : 2026-10-16 au soir (sprint 3 : parcours des questions, Google News arrêté dans le code, ingestion en une opération, jeu de questions en version 2, évaluation locale 8 sur 8 ; reste la livraison) ; avant : 2026-10-15 au soir (sprint 2 clos, tag livrable-sprint-2-v3, sprint 3 ouvert dans un worktree) ; avant : 2026-10-11 (E1 v2.5 : cinq surgénéralisations corrigées ; veille S41 : relevé, note d'Era et partage à la promo ; E3 v1.4 : sept corrections, 44 critères en 39 lignes, revue d'E3 close ; E1 v2.4 : seconde passe, MCD lisible, guide § 4.5 corrigé ; avant, E1 v2.3 : passe RGPD et exactitude ; politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
 
-## ▶️ SPRINT 3 EN PRODUCTION (16/10/2026, nuit) : les données et l'ancrage
+## ▶️ SPRINT 3 EN PRODUCTION (17/10/2026, après-midi) : les données et l'ancrage
 
-**Où on en est** : le sprint 3 est livré en production (N6, commit `72dba4d`) et l'ingestion marche par le bouton.
-La correction N7 (caractères de contrôle du texte du modèle) et les documents de fin de sprint sont sur la branche
-`sprint-3-donnees-ancrage` (worktree `D:\KandaWork\RITA_PROJECT\rita-agent-sprint-3`) ; ils partiront vers `main` par
-la PR finale (livraison N7). Restent l'atelier 3 (date inconnue), sa grille et le journal des retours, la Definition
-of Done, puis le tag `livrable-sprint-3-v1`, posé par Era.
+**Où on en est** : tout le sprint 3 est en production (N7, commit `66963da`). Le livrable (version 1, 10 pages, avec les trois
+captures de production) est **validé par Era le 17/10**, après deux relectures, sur la branche `sprint-3-donnees-ancrage` (worktree `D:\KandaWork\RITA_PROJECT\rita-agent-sprint-3`) :
+`docs/sprint-3/livrable/livrable-sprint-3.pdf`. **Atelier 3 : lundi 19/10/2026, le matin, après 9 h**, présentation et
+démonstration en direct. Tag `livrable-sprint-3-v1` prévu dimanche 18/10 (« version préparée pour l'atelier ; retours
+à venir »), puis `v2` avec la grille et les retours.
 
-**Production** : `/health` donne `72dba4d` ; index `c91baa3f…`, 2081 articles, identifiant maximal 2839, empreinte
-`0b372539…` ; image de N6 `sha256:c582ddc608b453695fa6ed797f826edc90aaea0a7dbed1dff14d40b3688d22b9`.
+**Production** (17/10, 00 h 23) : `/health` donne `66963da` ; index `13f15d84…`, 2081 articles, identifiant maximal
+2839, empreinte `0b372539…` ; image publiée par N7 `sha256:240d71432c2b6e2337dbb806c7e3b42d4aa4ecf444baac4b882284839496734b`
+(journal de construction ; le journal du serveur reste à relire).
 
 **Fait le 16/10 après le code** (preuves : `evidence/sprint-3/README.md` ; récit : `docs/sprint-3/COMPTE-RENDU-N5-2026-10-16.md`) :
 - Serveur préparé par Era (B5) ; PR #100 et #101 ; livraison N5 (`41b1763`) à 18:59, rejeu sans écart.
@@ -46,26 +48,34 @@ of Done, puis le tag `livrable-sprint-3-v1`, posé par Era.
   T8 inscrit ; schéma E1 régénéré (T1 à T8).
 - D3 : document d'entrée `docs/sprint-3/README.md`, index des preuves, journaux de chaîne et captures (`9c58d14`) ;
   l'ingestion décrite dans `docs/EXPLOITATION.md` § 8 et `docs/CHAINE-V1.md` (`53462b2`, relue par Era).
-- Suite complète : **1229 passed, 24 skipped, 2 xfailed** (sortie collée par Era).
+- PR #104 (correction de la fiche T8 après la revue Codex, `8364181`) et PR #105 : **livraison N7** (`66963da`) à
+  22:10 UTC, vert du premier coup, même empreinte d'index.
+- Suite complète : **1230 passed, 24 skipped, 2 xfailed** (sortie collée par Era).
 
 **Ordre de la suite** :
-1. PR `sprint-3-donnees-ancrage → develop`, puis `develop → main` : livraison N7, contrôlée comme les autres (rejeu,
-   identité de l'index dans `/health`).
-2. Atelier 3 : grille recopiée mot pour mot dans `eval/ateliers/sprint-3-grille.md`, journal des retours.
-3. Après l'atelier : intégrer la grille et les suites données aux retours par PR (branche, `develop`, `main`), ce qui
+1. ✅ Samedi 17/10 : trois captures prises par Era avec sa clé, à 16 h 25 (réponse citée et fiche de la source) et
+   16 h 31 (refus), clé absente des images ; intégrées au livrable (§ 6.1, 6.2), index `evidence/sprint-3/README.md`.
+   Reste : texte d'oral dans Obsidian (`Projets/RITA/oral-atelier-3.md`) et répétition chronométrée.
+2. Livrable dans `main` par PR (nouvelle livraison, version servie vérifiée) ; Definition of Done sur le commit final ;
+   Era pose `livrable-sprint-3-v1` dimanche ; identifiant et empreinte de l'index de référence notés (le tag fige le
+   code, pas les données).
+3. Lundi 19/10 après 9 h, atelier 3 : grille recopiée mot pour mot dans `eval/ateliers/sprint-3-grille.md`, journal
+   des retours.
+4. Après l'atelier : intégrer la grille et les suites données aux retours par PR (branche, `develop`, `main`), ce qui
    déclenche une nouvelle livraison, à contrôler ; vérifier la Definition of Done
-   (`scripts/verifier_livrable.py livrable-sprint-3-v1`) sur le commit final destiné au tag ; puis Era pose le tag
-   `livrable-sprint-3-v1`, et sa publication est contrôlée. Le script vérifie un arbre propre et la présence du nom
+   (`scripts/verifier_livrable.py livrable-sprint-3-v2`) sur le commit final destiné au tag ; puis Era pose le tag
+   `livrable-sprint-3-v2`, et sa publication est contrôlée. Le script vérifie un arbre propre et la présence du nom
    du tag ; il ne garantit pas, à lui seul, que les retours de l'atelier sont inclus.
 
 **Restes et risques** (liste complète : `docs/sprint-3/README.md`, « Ce qui n'est pas fait ») :
-- Construction de l'image : quatre 429 de `public.ecr.aws` le 16/10, relancés à la main ; cause non traitée.
+- Construction de l'image : cinq 429 de `public.ecr.aws` le 16/10, relancés à la main ; cause non traitée.
 - L'outil d'évaluation charge la clé locale du `.env` quand `RITA_API_KEY` manque : relevé, non corrigé.
 - Manifeste du serveur sans commit ; corpus sans durée de conservation ; traces Langfuse en production non revérifiées.
 - Serveur : « System restart required » ; ne pas redémarrer pendant une opération.
-- Date de l'atelier 3 : inconnue.
 
-**Prochaine action** : PR `sprint-3-donnees-ancrage → develop` (Era), pour la livraison N7.
+**Prochaine action** : l'oral de l'atelier 3, sur quatre points (pourquoi RITA cite, pourquoi elle refuse, ce que le
+rejeu vérifie sans le modèle, pourquoi 8 conformes ne veut pas dire 8 réponses parfaites), puis une répétition
+chronométrée ; ensuite la PR `sprint-3-donnees-ancrage → develop` et la livraison N8, samedi si possible.
 
 ## ▶️ PROCHAINE ACTION (réécrit le 04/10/2026 ; les ▶️ plus bas sont datés et dépassés)
 

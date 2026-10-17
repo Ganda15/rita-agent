@@ -1,0 +1,23 @@
+# Livraison N7 (fusion de la PR #105 dans main)
+
+passage   : 38973167532 (tentative 1)
+workflow  : Livraison  |  Merge pull request #105 from Ganda15/develop
+commit    : 66963dab4c6741990e51b9e1a74b560aba8f2e2b  |  evenement : push  |  cree le 2026-10-16T22:01:16Z
+conclusion: success
+
+travaux :
+  secrets | success | 22:01:18 -> 22:01:58
+  lint | success | 22:01:18 -> 22:01:26
+  construire-et-publier | success | 22:02:01 -> 22:06:06
+  attendre-creneau | success | 22:06:09 -> 22:06:16
+  deployer | success | 22:06:19 -> 22:10:28
+  attendre-reprise | skipped | 22:10:29 -> 22:10:28
+  deployer-reprise | skipped | 22:10:29 -> 22:10:29
+
+lignes utiles du journal (extraits, valeurs des secrets jamais affichees) :
+  [construire-et-publier] 2026-10-16T22:05:24.7831490Z Un resume court
+  [construire-et-publier] 2026-10-16T22:05:24.8520952Z nettoyage des resumes RSS operationnel dans l'image
+  [deployer] 2026-10-16T22:06:24.3982788Z ##[start-action display=Comparer le script du serveur à celui du dépôt;id=ordre.__run_2]
+  [deployer] 2026-10-16T22:06:27.0345899Z script du serveur identique au depot (2ed6b98db4817366d4774f837460992506370e2bcf2dcdf005c95e0fc551cbd9)
+  [deployer] 2026-10-16T22:10:26.2130031Z operation reussie
+  [deployer] 2026-10-16T22:10:26.2480889Z code rendu par le serveur : 0
