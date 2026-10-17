@@ -56,8 +56,10 @@ démonstration en direct. Tag `livrable-sprint-3-v1` prévu dimanche 18/10 (« v
 1. ✅ Samedi 17/10 : trois captures prises par Era avec sa clé, à 16 h 25 (réponse citée et fiche de la source) et
    16 h 31 (refus), clé absente des images ; intégrées au livrable (§ 6.1, 6.2), index `evidence/sprint-3/README.md`.
    Reste : texte d'oral dans Obsidian (`Projets/RITA/oral-atelier-3.md`) et répétition chronométrée.
-2. Livrable dans `main` par PR (nouvelle livraison, version servie vérifiée) ; Definition of Done sur le commit final ;
-   Era pose `livrable-sprint-3-v1` dimanche ; identifiant et empreinte de l'index de référence notés (le tag fige le
+2. Livrable dans `main` par PR : #106 (`sprint-3-donnees-ancrage → develop`) fusionnée le 17/10 (`608c92c`) ; #108
+   (suites de la revue Codex) à fusionner dans `develop` ; puis #107 (`develop → main`), dont la fusion lance la
+   livraison N8 (version servie vérifiée). Definition of Done sur le commit final ; Era pose `livrable-sprint-3-v1`
+   dimanche ; identifiant et empreinte de l'index de référence notés (le tag fige le
    code, pas les données).
 3. Lundi 19/10 après 9 h, atelier 3 : grille recopiée mot pour mot dans `eval/ateliers/sprint-3-grille.md`, journal
    des retours.
@@ -73,9 +75,11 @@ démonstration en direct. Tag `livrable-sprint-3-v1` prévu dimanche 18/10 (« v
 - Manifeste du serveur sans commit ; corpus sans durée de conservation ; traces Langfuse en production non revérifiées.
 - Serveur : « System restart required » ; ne pas redémarrer pendant une opération.
 
-**Prochaine action** : l'oral de l'atelier 3, sur quatre points (pourquoi RITA cite, pourquoi elle refuse, ce que le
-rejeu vérifie sans le modèle, pourquoi 8 conformes ne veut pas dire 8 réponses parfaites), puis une répétition
-chronométrée ; ensuite la PR `sprint-3-donnees-ancrage → develop` et la livraison N8, samedi si possible.
+**Prochaine action** : Era fusionne la PR #108 dans `develop` quand ses contrôles sont verts et que la revue Codex n'a
+plus de point ouvert, puis la PR #107 (`develop → main`), qui lance la livraison N8 ; relever la version servie,
+l'image et l'identité de l'index. En parallèle : l'oral de l'atelier 3, sur quatre points (pourquoi RITA cite,
+pourquoi elle refuse, ce que le rejeu vérifie sans le modèle, pourquoi 8 conformes ne veut pas dire 8 réponses
+parfaites), puis une répétition chronométrée.
 
 ## ▶️ PROCHAINE ACTION (réécrit le 04/10/2026 ; les ▶️ plus bas sont datés et dépassés)
 
