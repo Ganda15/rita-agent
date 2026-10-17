@@ -21,10 +21,10 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ---
 
-## ▶️ SPRINT 3 EN PRODUCTION (17/10/2026, nuit) : les données et l'ancrage
+## ▶️ SPRINT 3 EN PRODUCTION (17/10/2026, après-midi) : les données et l'ancrage
 
-**Où on en est** : tout le sprint 3 est en production (N7, commit `66963da`). Le livrable (version 1, 8 pages) est
-écrit sur la branche `sprint-3-donnees-ancrage` (worktree `D:\KandaWork\RITA_PROJECT\rita-agent-sprint-3`) :
+**Où on en est** : tout le sprint 3 est en production (N7, commit `66963da`). Le livrable (version 1, 10 pages, avec les trois
+captures de production) est **validé par Era le 17/10**, après deux relectures, sur la branche `sprint-3-donnees-ancrage` (worktree `D:\KandaWork\RITA_PROJECT\rita-agent-sprint-3`) :
 `docs/sprint-3/livrable/livrable-sprint-3.pdf`. **Atelier 3 : lundi 19/10/2026, le matin, après 9 h**, présentation et
 démonstration en direct. Tag `livrable-sprint-3-v1` prévu dimanche 18/10 (« version préparée pour l'atelier ; retours
 à venir »), puis `v2` avec la grille et les retours.
@@ -53,8 +53,9 @@ démonstration en direct. Tag `livrable-sprint-3-v1` prévu dimanche 18/10 (« v
 - Suite complète : **1230 passed, 24 skipped, 2 xfailed** (sortie collée par Era).
 
 **Ordre de la suite** :
-1. Samedi 17/10 : trois captures prises par Era avec sa clé (une réponse citée, la fiche d'une source, un refus),
-   ajoutées au livrable ; texte d'oral dans Obsidian (`Projets/RITA/oral-atelier-3.md`).
+1. ✅ Samedi 17/10 : trois captures prises par Era avec sa clé, à 16 h 25 (réponse citée et fiche de la source) et
+   16 h 31 (refus), clé absente des images ; intégrées au livrable (§ 6.1, 6.2), index `evidence/sprint-3/README.md`.
+   Reste : texte d'oral dans Obsidian (`Projets/RITA/oral-atelier-3.md`) et répétition chronométrée.
 2. Livrable dans `main` par PR (nouvelle livraison, version servie vérifiée) ; Definition of Done sur le commit final ;
    Era pose `livrable-sprint-3-v1` dimanche ; identifiant et empreinte de l'index de référence notés (le tag fige le
    code, pas les données).
@@ -72,8 +73,9 @@ démonstration en direct. Tag `livrable-sprint-3-v1` prévu dimanche 18/10 (« v
 - Manifeste du serveur sans commit ; corpus sans durée de conservation ; traces Langfuse en production non revérifiées.
 - Serveur : « System restart required » ; ne pas redémarrer pendant une opération.
 
-**Prochaine action** : Era relit le livrable (`docs/sprint-3/livrable/livrable-sprint-3.pdf`) ; samedi, les trois
-captures avec la clé.
+**Prochaine action** : l'oral de l'atelier 3, sur quatre points (pourquoi RITA cite, pourquoi elle refuse, ce que le
+rejeu vérifie sans le modèle, pourquoi 8 conformes ne veut pas dire 8 réponses parfaites), puis une répétition
+chronométrée ; ensuite la PR `sprint-3-donnees-ancrage → develop` et la livraison N8, samedi si possible.
 
 ## ▶️ PROCHAINE ACTION (réécrit le 04/10/2026 ; les ▶️ plus bas sont datés et dépassés)
 

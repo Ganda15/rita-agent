@@ -9,6 +9,24 @@
 
 ---
 
+## 2026-10-17 (après-midi) : captures de production ; livrable du sprint 3, version 1, validé
+
+**Livré** : trois captures de l'écran de question en production, prises par Era avec sa clé (16 h 25 : la réponse
+citée sur Netflix et la fiche de l'article 2788 ; 16 h 31 : le refus `OUT_OF_CORPUS` de la question sur la tarte
+Tatin). Les captures entières sont gardées, et les découpes du livrable sont faites dedans sans retouche
+(`evidence/sprint-3/captures/`). Le livrable passe à 10 pages.
+
+**Décision d'Era** : livrable v1 validé le 17/10, après deux relectures. Corrections apportées : plus de garantie
+absolue sur les conseils d'achat (des contrôles détectent et bloquent) ; « 8 sur 8 » limité aux contrôles de statut
+et de références ; « 3 faits sur 9 » expliqué (2 faits de Q3, abstention acceptée ; 1 fait de Q4 manqué à cause du
+caractère de contrôle) ; Q1 qualifiée de réponse partielle ; N7 daté du 17/10 à 00 h 01, heure de Paris ; version de
+chaque mesure (N5, N6, N7) ; prérequis de l'atelier après 9 h et ingestion reportée relancée à la main.
+
+**Manque découvert** : les vérifications juridiques des sources restent ouvertes (base légale du corpus retenue à titre
+provisoire, conditions de réutilisation des éditeurs non relues) ; elles sont maintenant écrites dans le livrable, § 9.
+
+---
+
 ## 2026-10-17 (nuit) : N7 en production ; livrable du sprint 3, version 1 ; tag avant l'atelier
 
 **Livré** : N7 (PR #105, `66963da`), le 16/10 à 22:10 UTC, vert du premier coup ; `/health` annonce `66963da` et l'index
