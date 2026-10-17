@@ -1,6 +1,6 @@
 # Preuves du sprint 3 : les données et l'ancrage
 
-Preuves versionnées du sprint 3 (15 et 16/10/2026), rangées par critère de la grille de l'atelier 3 (spec
+Preuves versionnées du sprint 3 (15 au 17/10/2026), rangées par critère de la grille de l'atelier 3 (spec
 `docs/sprint-3/SPEC.md`, § 9). Les fichiers bruts du serveur (manifestes, rapports de rejeu, journal des opérations)
 ont été copiés par `scp` sans modification. Les journaux de chaîne sont des extraits des passages GitHub, relevés avec
 `gh` : ils ne gardent que les lignes utiles, et les valeurs des secrets n'y figurent pas. Le récit qui relie ces
@@ -37,7 +37,7 @@ Critères de la grille : 1. sources licites ; 2. traçabilité ; 3. refus hors c
 | Ingestion relancée : 30 lus, 0 écrit (dédoublonnage), même empreinte de contenu | `manifeste-2026-10-16-192124.json`, `journaux/ingestion-3-dedoublonnage.txt` | 4 |
 | Journal des opérations du serveur, copié le 16/10 à 19:35 UTC | `journal-serveur-2026-10-16.jsonl` | 4, 5 |
 
-## Les livraisons N5 et N6
+## Les livraisons N5, N6 et N7
 
 | Preuve | Fichier | Critère |
 |---|---|---|
@@ -45,7 +45,23 @@ Critères de la grille : 1. sources licites ; 2. traçabilité ; 3. refus hors c
 | Livraison N6 (PR #103), tentative 1 arrêtée avant le serveur par un 429 du registre d'images | `journaux/livraison-N6-tentative-1-429.txt` | 5 |
 | Livraison N6, tentative 2 : nettoyage d'un résumé RSS essayé dans l'image, mise en service | `journaux/livraison-N6.txt` | 4, 5 |
 | `/health` en production après l'ingestion (commit `72dba4d`, 2081 articles, index `c91baa3f…`), capture par Chrome sans connexion, 16/10 à 22:29 | `captures/production-health-2026-10-16.png` | 5 |
+| Livraison N7 (PR #105), vert du premier coup : nettoyage RSS essayé dans l'image, mise en service | `journaux/livraison-N7.txt` | 5 |
+| `/health` après N7 (commit `66963da`, 2081 articles, index `13f15d84…`, même empreinte de contenu), capture par Chrome sans connexion, 17/10 à 00:23 | `captures/production-health-N7-2026-10-17.png` | 5 |
 | L'écran de question en production, sans clé : il demande la clé avant toute question | `captures/production-question-2026-10-16.png` | 5 |
+
+## L'écran de question en production, avec la clé (17/10)
+
+Captures prises par Era dans Chrome, après N7. La clé est tapée dans un champ masqué, qui disparaît après la
+connexion : elle n'apparaît sur aucune image. Les découpes sont faites dans la capture entière, sans retouche
+(recadrage seul).
+
+| Preuve | Fichier | Critère |
+|---|---|---|
+| Page entière : question « Combien de postes Netflix va-t-il supprimer ? », réponse, référence, fiche de la source ; 17/10 à 16:25, requête `8e27c6afeb4741d1b4270a4186826b1a` | `captures/production-reponse-et-fiche-2026-10-17.png` | 2 |
+| Découpe : la question, la réponse avec le renvoi [1], la référence (article 2788), l'index interrogé (2081 articles, empreinte `0b372539c971`) | `captures/production-reponse-citee-2026-10-17.png` | 2 |
+| Découpe : la fiche de l'article 2788 et le passage transmis au modèle | `captures/production-fiche-source-2026-10-17.png` | 2 |
+| Page entière : question « Quelle est la recette de la tarte Tatin ? », refus ; 17/10 à 16:31, requête `eefffc27c457410da1d953582dfcb9b8` | `captures/production-refus-page-2026-10-17.png` | 3 |
+| Découpe : la question, le refus et son motif (`OUT_OF_CORPUS`) | `captures/production-refus-2026-10-17.png` | 3 |
 
 ## L'arrêt de Google News (T7) et la collecte du poste
 
@@ -57,9 +73,10 @@ Critères de la grille : 1. sources licites ; 2. traçabilité ; 3. refus hors c
 
 ## Ce qui manque à ces preuves
 
-- Aucune capture d'une réponse avec ses références, ni d'un refus hors corpus, à l'écran : l'écran demande la clé
-  d'API, que seul Era tape. Les mêmes comportements sont prouvés par l'évaluation en production (fichier
-  `evaluation-2026-10-16-2146.json`).
+- Les captures de l'écran avec la clé datent du 17/10, après N7 : il n'y en a pas pour les passages N5 et N6, dont
+  les mêmes comportements sont prouvés par l'évaluation en production (fichier `evaluation-2026-10-16-2146.json`).
+  Aucune capture ne montre le refus d'une demande de conseil d'achat (`INTENTION_INTERDITE`) : il est prouvé par la
+  même évaluation.
 - Le journal des retours de l'atelier 3 n'existe pas encore : il se remplit après l'atelier.
 - Le manifeste écrit sur le serveur ne porte pas le commit (`"commit": null`, Git n'est pas dans l'image) : la version
   du code se lit dans le journal des opérations et dans `/health`.
@@ -84,4 +101,8 @@ gh run view 38952685069 --repo Ganda15/rita-agent
 
 ```
 gh run view 38954283118 --repo Ganda15/rita-agent
+```
+
+```
+gh run view 38973167532 --repo Ganda15/rita-agent
 ```
