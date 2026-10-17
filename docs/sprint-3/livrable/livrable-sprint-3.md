@@ -66,7 +66,7 @@ journaux sont recopiés en annexe (§ 12). Les liens vers la production et vers 
 | E3. Un mécanisme d'ancrage | recherche hybride (vecteurs et mots), règle de pertinence, réponse construite seulement sur les passages retenus | § 5 |
 | E4. Chaque réponse cite sa source : document, table, identifiant, date | références construites depuis la table `article` (identifiant, titre, éditeur, date, lien, extrait), jamais depuis le texte du modèle | § 6.1 |
 | E5. Un refus hors corpus, sous un seuil de pertinence | refus sans appel au modèle quand aucun passage ne passe la règle ; abstention quand les passages ne suffisent pas | § 6.2 |
-| E6. Des sources licites, la minimisation documentée | trois flux RSS publics ; Google News arrêté ; aucun auteur, aucun champ dédié aux personnes (des noms peuvent figurer dans les titres et les résumés) ; registre mis à jour | § 6.6 |
+| E6. Des sources licites, la minimisation documentée | **partiel** : trois flux RSS publics ; Google News arrêté ; aucun auteur, aucun champ dédié aux personnes (des noms peuvent figurer dans les titres et les résumés) ; registre mis à jour ; base légale provisoire et conditions de réutilisation des éditeurs non relues | § 6.6, § 9 |
 | E7. Tout est visible en production | écran, route, ingestion et `/health` sur l'adresse déployée | § 6.5 |
 | E8. Un jeu versionné de questions de démonstration | 8 questions : 4 réponses attendues, 1 réponse ou abstention, 2 hors corpus, 1 demande de conseil d'achat | § 6.3 |
 | E9. Le journal des retours | conseil de l'atelier n°2 et suite donnée | § 7 |

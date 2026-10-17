@@ -309,11 +309,16 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | Sprint 3, collecte du poste reprise sans Google News, 16/10 | **EXÉCUTÉ** | `91f7c1e` ; `reprise-collecte-2026-10-16.txt` ; `manifeste-poste-2026-10-16-220139.json` (6 étapes sur 6) |
 | Sprint 3, C1 : registre RGPD, 16/10 | **FAIT + TESTÉ** | `edd8934`, `8364181` : T7 arrêté, corpus examiné, T8 inscrit, schéma E1 régénéré ; `tests/test_rgpd_registre.py` |
 | Sprint 3, D3 : documents et preuves, 16/10 | **FAIT, relu par Era** | `9c58d14`, `53462b2`, `6e9453d` ; `docs/sprint-3/README.md`, `evidence/sprint-3/README.md`, `docs/EXPLOITATION.md` § 8 |
-| Sprint 3, livrable version 1, 17/10 | **IMPLÉMENTÉ, non validé** | `docs/sprint-3/livrable/livrable-sprint-3.md` et `.pdf` (8 pages), non commités ; attend les 3 captures et la relecture d'Era |
+| Sprint 3, livrable version 1, 17/10 | **VALIDÉ par Era** (après deux relectures) | `docs/sprint-3/livrable/livrable-sprint-3.md` et `.pdf` (10 pages), `fc4722a` ; trois captures de production du 17/10 dans `evidence/sprint-3/captures/` ; PR #106 fusionnée dans `develop` |
 
 ## J. En cours
 
-**Au 17/10, matin (sprint 3)** : production sur `66963da` (N7). Worktree `D:\KandaWork\RITA_PROJECT\rita-agent-sprint-3`,
+**Au 17/10, après-midi (sprint 3)** : production sur `66963da` (N7). Livrable v1 validé par Era et commité (`fc4722a`),
+avec les trois captures ; PR #106 fusionnée dans `develop` (`608c92c`) ; PR #107 (`develop → main`, livraison N8)
+ouverte, en attente des suites de la revue Codex (README du sprint, ce registre, ligne E6 du livrable). Le dossier
+d'origine reste sur `72dba4d` (N6), où tourne la collecte de 19 h.
+
+~~**Au 17/10, matin (sprint 3)**~~ : production sur `66963da` (N7). Worktree `D:\KandaWork\RITA_PROJECT\rita-agent-sprint-3`,
 branche `sprint-3-donnees-ancrage`, HEAD `8364181`, déjà dans `origin/main`. Non commités : le livrable (md et pdf),
 le journal et la capture de N7, `docs/sprint-3/README.md`, `evidence/sprint-3/README.md`, `ETAT.md`, `CHANGELOG.md`
 et ce registre. En cours : les trois captures, puis le livrable régénéré. Le dossier d'origine reste sur `72dba4d`
@@ -354,15 +359,16 @@ rapport E3 (#37, 0 page, gel le 15/10), rapport E4 (#28, 0 page, gel le 25/10).
 
 ## K. Reste à faire
 
-- 🆕 (17/10) **Trois captures** prises par Era sur l'écran de question de production, clé absente des images : la
+- ✅ (17/10, fait : 16 h 25 et 16 h 31, `fc4722a`) **Trois captures** prises par Era sur l'écran de question de production, clé absente des images : la
   réponse à « Combien de postes Netflix va-t-il supprimer ? » avec sa référence, la fiche de cette source, le refus de
   « Quelle est la recette de la tarte Tatin ? ». Dossier : `evidence/sprint-3/captures/`.
-- 🆕 (17/10) **Captures dans le livrable** (§ 6.1 et 6.2), PDF régénéré et relu page par page, puis validation d'Era.
+- ✅ (17/10, fait : `fc4722a`) **Captures dans le livrable** (§ 6.1 et 6.2), PDF régénéré et relu page par page,
+  puis validation d'Era.
 - 🆕 (17/10) **Oral de l'atelier 3** dans Obsidian (`Projets/RITA/oral-atelier-3.md`), sur quatre points : pourquoi
   RITA cite, pourquoi elle refuse, ce que le rejeu vérifie sans le modèle, pourquoi 8 conformes ne veut pas dire
   8 réponses parfaites. Puis une répétition chronométrée. Journal Obsidian court.
-- 🆕 (17/10) **Si le livrable est validé** : PR `sprint-3-donnees-ancrage → develop`, puis `develop → main` (Era
-  fusionne), livraison N8 ; noter la version servie, l'image et l'identité de l'index ; Definition of Done
+- 🆕 (17/10, en cours : PR #106 fusionnée dans `develop`, PR #107 ouverte) **Si le livrable est validé** : PR
+  `sprint-3-donnees-ancrage → develop`, puis `develop → main` (Era fusionne), livraison N8 ; noter la version servie, l'image et l'identité de l'index ; Definition of Done
   `scripts/verifier_livrable.py livrable-sprint-3-v1` sur le commit final.
 - 🆕 (18/10) **Era pose `livrable-sprint-3-v1`** ; vérifier la construction et la publication de l'image que le tag
   déclenche (risque de 429).
