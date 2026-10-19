@@ -364,7 +364,7 @@ rapport E3 (#37, 0 page, gel le 15/10), rapport E4 (#28, 0 page, gel le 25/10).
   « Quelle est la recette de la tarte Tatin ? ». Dossier : `evidence/sprint-3/captures/`.
 - ✅ (17/10, fait : `fc4722a`) **Captures dans le livrable** (§ 6.1 et 6.2), PDF régénéré et relu page par page,
   puis validation d'Era.
-- 🆕 (17/10) **Oral de l'atelier 3** dans Obsidian (`Projets/RITA/oral-atelier-3.md`), sur quatre points : pourquoi
+- 🆕 (17/10) **Oral de l'atelier 3** dans Obsidian (`Projets/RITA/03-Oraux/oral-sprint3-questions-reponses (2026-10-18).md`), sur quatre points : pourquoi
   RITA cite, pourquoi elle refuse, ce que le rejeu vérifie sans le modèle, pourquoi 8 conformes ne veut pas dire
   8 réponses parfaites. Puis une répétition chronométrée. Journal Obsidian court.
 - 🆕 (17/10, en cours : PR #106 fusionnée dans `develop`, PR #107 ouverte) **Si le livrable est validé** : PR

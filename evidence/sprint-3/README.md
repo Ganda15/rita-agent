@@ -1,6 +1,6 @@
 # Preuves du sprint 3 : les données et l'ancrage
 
-Preuves versionnées du sprint 3 (15 au 17/10/2026), rangées par critère de la grille de l'atelier 3 (spec
+Preuves versionnées du sprint 3 (15 au 19/10/2026), rangées par critère de la grille de l'atelier 3 (spec
 `docs/sprint-3/SPEC.md`, § 9). Les fichiers bruts du serveur (manifestes, rapports de rejeu, journal des opérations)
 ont été copiés par `scp` sans modification. Les journaux de chaîne sont des extraits des passages GitHub, relevés avec
 `gh` : ils ne gardent que les lignes utiles, et les valeurs des secrets n'y figurent pas. Le récit qui relie ces
@@ -71,13 +71,25 @@ connexion : elle n'apparaît sur aucune image. Les découpes sont faites dans la
 | Reprise sur le code sans Google News : dossier passé à `72dba4d`, tâche réactivée, première collecte (6 étapes sur 6, 3 flux sur 3) | `reprise-collecte-2026-10-16.txt`, `manifeste-poste-2026-10-16-220139.json` | 1, 4 |
 | Registre des traitements : T7 arrêté, corpus d'articles examiné, T8 inscrit | `../../db/RGPD-registre-des-traitements.md` | 1 |
 
+## Après la version 1 du livrable (17 au 19/10)
+
+| Preuve | Fichier ou passage | Critère |
+|---|---|---|
+| Livraison N8 (PR #107, `7f2a855`) : trois tentatives arrêtées par un 429, la quatrième réussie | passage GitHub `39050211790` | 5 |
+| Ingestion de répétition, 18/10 : 30 lus, 29 écrits, 1 rejeté (manifeste relu sur le serveur) ; rejeu sans écart ; 2110 articles | passage GitHub `39115076808` | 4, 5 |
+| Ingestion lancée pendant l'atelier, 19/10 : « operation reussie », code 0 ; 2140 articles | passage GitHub `39265862974` | 4, 5 |
+| `/health` après l'ingestion de l'atelier (commit `7f2a855`, 2140 articles, index `fc87b92a…`), capture par Chrome sans connexion, 19/10 à 17:40 UTC ; page entière et découpe (recadrage seul) | `captures/production-health-atelier-2026-10-19-page.png`, `captures/production-health-atelier-2026-10-19.png` | 5 |
+| Retours de l'atelier 3 : grille non remplie, retours oraux du formateur et suite donnée | `../../eval/ateliers/sprint-3-grille.md` | journal |
+
 ## Ce qui manque à ces preuves
 
 - Les captures de l'écran avec la clé datent du 17/10, après N7 : il n'y en a pas pour les passages N5 et N6, dont
   les mêmes comportements sont prouvés par l'évaluation en production (fichier `evaluation-2026-10-16-2146.json`).
   Aucune capture ne montre le refus d'une demande de conseil d'achat (`INTENTION_INTERDITE`) : il est prouvé par la
   même évaluation.
-- Le journal des retours de l'atelier 3 n'existe pas encore : il se remplit après l'atelier.
+- Les journaux du serveur, manifestes et rapports de rejeu des ingestions du 18 et du 19/10 ne sont pas copiés
+  dans le dépôt : les passages GitHub et `/health` en tiennent lieu.
+- L'atelier 3 n'a pas donné de grille remplie : les retours sont oraux (`../../eval/ateliers/sprint-3-grille.md`).
 - Le manifeste écrit sur le serveur ne porte pas le commit (`"commit": null`, Git n'est pas dans l'image) : la version
   du code se lit dans le journal des opérations et dans `/health`.
 
