@@ -15,13 +15,32 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-17, nuit (N7 en production ; livrable du sprint 3, version 1 ; atelier 3 lundi 19/10
+**Dernière mise à jour : 2026-10-19, soir (atelier 3 fait avec le formateur ; livrable du sprint 3, version 2 ; tag `livrable-sprint-3-v2` à poser) ; avant : 2026-10-17, nuit (N7 en production ; livrable du sprint 3, version 1 ; atelier 3 lundi 19/10
 au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en production : N5 et N6, ingestion par le bouton, évaluation en production 8 sur 8, registre RGPD, documents de fin de sprint ; restent N7, l'atelier 3 et le tag) ; avant : 2026-10-16 au soir (sprint 3 : parcours des questions, Google News arrêté dans le code, ingestion en une opération, jeu de questions en version 2, évaluation locale 8 sur 8 ; reste la livraison) ; avant : 2026-10-15 au soir (sprint 2 clos, tag livrable-sprint-2-v3, sprint 3 ouvert dans un worktree) ; avant : 2026-10-11 (E1 v2.5 : cinq surgénéralisations corrigées ; veille S41 : relevé, note d'Era et partage à la promo ; E3 v1.4 : sept corrections, 44 critères en 39 lignes, revue d'E3 close ; E1 v2.4 : seconde passe, MCD lisible, guide § 4.5 corrigé ; avant, E1 v2.3 : passe RGPD et exactitude ; politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
 
-## ▶️ SPRINT 3 EN PRODUCTION (17/10/2026, après-midi) : les données et l'ancrage
+## ▶️ SPRINT 3 : ATELIER FAIT (19/10/2026), LIVRABLE VERSION 2
+
+**Où on en est** : l'atelier croisé n°3 a eu lieu le 19/10, avec le formateur, en direct sur la production. Une
+ingestion a été lancée par le bouton pendant l'atelier (passage `39265862974`, réussi, 2110 puis 2140 articles). La
+grille n'a pas été remplie ; les retours, oraux, portent sur la présentation : `eval/ateliers/sprint-3-grille.md`.
+Livrable version 2 (16 pages, format maison, liens GitHub vers le tag, capture `/health` du 19/10) :
+`docs/sprint-3/livrable/livrable-sprint-3.pdf`.
+
+**Production** (19/10, 19 h 40) : commit `7f2a855` (N8, tag `livrable-sprint-3-v1`) ; index `fc87b92a…`, 2140
+articles, identifiant maximal 2898, empreinte `fd8542955c1b…`.
+
+**Ordre de la suite** :
+1. PR `sprint-3-donnees-ancrage → develop` (livrable version 2), commentaires de Codex lus avant toute fusion ; puis
+   PR `develop → main`, dont la fusion lance la livraison N9 (version servie vérifiée).
+2. Definition of Done sur le commit final : `C:\Python314\python.exe scripts\verifier_livrable.py livrable-sprint-3-v2`.
+3. Era pose le tag `livrable-sprint-3-v2` ; les liens du PDF sont revérifiés au tag ; le lien du tag et le PDF sont
+   déposés sur Simplonline.
+4. Sprint 4 : avenant `/question` (décision A du 18/10) ; retours de l'atelier 3 appliqués à l'oral de l'atelier 4.
+
+## 🕘 Sprint 3, état du 17/10/2026 (historique)
 
 **Où on en est** : tout le sprint 3 est en production (N7, commit `66963da`). Le livrable (version 1, 10 pages, avec les trois
 captures de production) est **validé par Era le 17/10**, après deux relectures, sur la branche `sprint-3-donnees-ancrage` (worktree `D:\KandaWork\RITA_PROJECT\rita-agent-sprint-3`) :
@@ -55,7 +74,7 @@ démonstration en direct. Tag `livrable-sprint-3-v1` prévu dimanche 18/10 (« v
 **Ordre de la suite** :
 1. ✅ Samedi 17/10 : trois captures prises par Era avec sa clé, à 16 h 25 (réponse citée et fiche de la source) et
    16 h 31 (refus), clé absente des images ; intégrées au livrable (§ 6.1, 6.2), index `evidence/sprint-3/README.md`.
-   Reste : texte d'oral dans Obsidian (`Projets/RITA/oral-atelier-3.md`) et répétition chronométrée.
+   Reste : texte d'oral dans Obsidian (`Projets/RITA/03-Oraux/oral-sprint3-questions-reponses (2026-10-18).md`) et répétition chronométrée.
 2. Livrable dans `main` par PR : #106 (`sprint-3-donnees-ancrage → develop`) fusionnée le 17/10 (`608c92c`) ; #108
    (suites de la revue Codex) à fusionner dans `develop` ; puis #107 (`develop → main`), dont la fusion lance la
    livraison N8 (version servie vérifiée). Definition of Done sur le commit final ; Era pose `livrable-sprint-3-v1`
