@@ -9,6 +9,27 @@
 
 ---
 
+## 2026-10-19 : atelier croisé n°3 ; livrable du sprint 3, version 2
+
+**Livré** : démonstration en direct sur la production, avec le formateur ; ingestion lancée par le bouton pendant
+l'atelier (passage `39265862974`, 4 min 16 s, réussie ; 2110 puis 2140 articles, index `fc87b92a…`). Livrable
+version 2, 16 pages, au format maison : le brief et le projet d'abord, couche par couche ; une section qui dit ce que
+montre chaque lien GitHub ; tous les chemins cliquables vers le tag `livrable-sprint-3-v2` ; la capture de `/health`
+du 19/10 ; N8, le tag v1 et les onze 429 ; le journal des retours de l'atelier n°3.
+
+**Correction** : ligne E4 du livrable. Les références sont construites à partir des passages retrouvés dans l'index
+(`agents/question.py`, ligne 196), pas lues dans la table au moment de répondre ; la fiche de la source relit la base.
+
+**Retours de l'atelier n°3** : grille non remplie ; retours oraux du formateur sur la présentation (trop dense et non
+linéaire ; aller droit au but, couche par couche ; partie technique en cinq minutes ; schémas déjà vus montrés vite ;
+point positif : un travail réel, une évolution visible). Suite : appliqués au livrable, reportés au sprint 4 pour
+l'oral (`eval/ateliers/sprint-3-grille.md`).
+
+**Manque découvert** : les preuves du serveur (journal, manifeste, rejeu) des ingestions du 18 et du 19/10 ne sont
+pas copiées dans le dépôt ; les passages GitHub et `/health` en tiennent lieu.
+
+---
+
 ## 2026-10-17 (après-midi) : captures de production ; livrable du sprint 3, version 1, validé
 
 **Livré** : trois captures de l'écran de question en production, prises par Era avec sa clé (16 h 25 : la réponse
