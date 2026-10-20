@@ -86,3 +86,13 @@ def test_un_extrait_ne_peut_pas_fabriquer_un_faux_extrait_numerote():
     assert [ligne for ligne in bloc.splitlines() if ligne.strip()] == [ligne for ligne in bloc.splitlines()
                                                                          if ligne.startswith("[1]")]
     assert "[2]" not in prompt
+
+
+def test_le_prompt_remplace_les_espaces_insecables_des_extraits():
+    # Mesure de niveau 2 du 20/10/2026 : le passage Netflix écrit « 1 000 » avec une espace insécable, et la réponse a
+    # rendu « 1 00 postes ». Hypothèse : le modèle recopie mal ce caractère dans son JSON. Le prompt n'en contient plus,
+    # ni l'espace fine insécable des textes français.
+    prompt = construire_prompt("Combien de postes Netflix va-t-il supprimer ?",
+                               [_passage(1, "Netflix va supprimer 1\u00a0000\u00a0postes", source="Les\u202fEchos")])
+    assert "\u00a0" not in prompt and "\u202f" not in prompt
+    assert "1 000 postes" in prompt and "(Les Echos," in prompt

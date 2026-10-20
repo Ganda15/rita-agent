@@ -83,7 +83,8 @@ Réponds uniquement par un objet JSON de la forme {"statut": "reponse" ou "abste
 "citations": [numéros des extraits cités]}."""
 
 
-_REMPLACEMENTS = str.maketrans({"<": "‹", ">": "›", "[": "(", "]": ")", "\r": " ", "\n": " "})
+_REMPLACEMENTS = str.maketrans({"<": "‹", ">": "›", "[": "(", "]": ")", "\r": " ", "\n": " ",
+                                "\u00a0": " ", "\u202f": " "})
 
 
 def _neutraliser(texte: str) -> str:
@@ -93,6 +94,9 @@ def _neutraliser(texte: str) -> str:
     - Les crochets deviennent des parenthèses, et les retours à la ligne des espaces : le texte ne peut pas fabriquer
       une fausse ligne « [2] (Reuters, date) ... » et faire attribuer une phrase à une fausse source (revue de
       sécurité des commits A1 à A3, 16/10/2026). Seule l'application écrit des numéros d'extraits.
+    - Les espaces insécables, ordinaire et fine, deviennent des espaces normales. Mesure de niveau 2 du 20/10/2026 : Q4
+      a rendu « 1 00 postes » pour « 1 000 » écrit avec une espace insécable ; hypothèse, le modèle recopiait mal ce
+      caractère dans son JSON.
     """
     return texte.translate(_REMPLACEMENTS)
 
