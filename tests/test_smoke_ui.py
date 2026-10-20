@@ -191,3 +191,45 @@ def test_l_ecran_briefing_affiche_le_refus_de_debit(page, serveur):
     statut = _statut_du_briefing(page, serveur, "MC.PA", 429, {"detail": refus}, {"Retry-After": "42"})
     assert "trop de demandes" in statut, statut
     assert page.erreurs_js == []
+
+
+def _ecran_question(page, serveur, statut_http, corps, entetes=None):
+    """Sert la réponse donnée à la place de `/question`, pose une question et rend ce que montrent les encarts."""
+    import json
+
+    page.route("**/question", lambda route: route.fulfill(
+        status=statut_http, content_type="application/json", headers=entetes or {}, body=json.dumps(corps)))
+    page.goto(serveur + "/question.html", wait_until="networkidle")
+    page.evaluate("sessionStorage.setItem('rita_api_key', 'cle-de-test-smoke-ui-32-caracteres-x')")
+    page.goto(serveur + "/question.html", wait_until="networkidle")
+    page.fill("#question", "Combien de postes Netflix va-t-il supprimer ?")
+    page.click("#form-question button[type=submit], #form-question button")
+    page.wait_for_timeout(1500)
+    return {"refus_visible": page.locator("#refus").is_visible(),
+            "erreur_visible": page.locator("#erreur").is_visible(),
+            "texte_refus": page.locator("#texte-refus").inner_text(),
+            "motif_refus": page.locator("#motif-refus").inner_text().lower()}
+
+
+def test_l_ecran_question_affiche_le_refus_de_debit(page, serveur):
+    # Tâche C3 : une limite de débit est un refus poli, pas une panne ; FastAPI range le refus sous `detail`.
+    refus = {"statut": "refus", "motif": "LIMITE_DE_DEBIT",
+             "texte": "Trop de demandes en peu de temps. Réessayez dans une minute."}
+    ecran = _ecran_question(page, serveur, 429, {"detail": refus}, {"Retry-After": "42"})
+    assert ecran["refus_visible"] and not ecran["erreur_visible"], ecran
+    assert "Trop de demandes" in ecran["texte_refus"], ecran
+    assert "trop de demandes en une minute" in ecran["motif_refus"], ecran
+    assert page.erreurs_js == []
+
+
+@pytest.mark.parametrize("motif, mots", [
+    ("TENTATIVE_DETOURNEMENT", "détourner le service"),
+    ("FUITE_BLOQUEE", "informations internes"),
+])
+def test_l_ecran_question_dit_le_motif_en_mots(page, serveur, motif, mots):
+    # Les motifs du sprint 4 se lisent en mots, comme ceux du sprint 3, et non comme un code brut.
+    ecran = _ecran_question(page, serveur, 200,
+                            {"statut": "refus", "motif": motif, "texte": "Je ne peux pas traiter cette demande."})
+    assert ecran["refus_visible"], ecran
+    assert mots in ecran["motif_refus"], ecran
+    assert page.erreurs_js == []
