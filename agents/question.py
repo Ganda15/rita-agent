@@ -11,6 +11,7 @@ l'application traduit en titre, source, date et lien à partir des données stoc
 """
 from __future__ import annotations
 
+import logging
 import re
 import unicodedata
 from dataclasses import dataclass, field
@@ -20,10 +21,14 @@ from urllib.parse import urlsplit
 
 from pydantic import BaseModel, ConfigDict, ValidationError
 
+from guardrails.detournement import MESSAGE_REFUS as MESSAGE_TENTATIVE_DETOURNEMENT
 from guardrails.entree import MESSAGE_REFUS as MESSAGE_INTENTION_INTERDITE
-from guardrails.sortie import verifier_sortie
+from guardrails.injection import neutraliser
+from guardrails.sortie import MESSAGE_REFUS_FUITE, verifier_fuite, verifier_sortie
 from rag.recherche import Passage, rechercher
 from src.llm import FournisseurIndisponible, ReponseTronquee, generer_json
+
+logger = logging.getLogger(__name__)
 
 
 class SortieModele(BaseModel):
@@ -78,7 +83,8 @@ Réponds uniquement par un objet JSON de la forme {"statut": "reponse" ou "abste
 "citations": [numéros des extraits cités]}."""
 
 
-_REMPLACEMENTS = str.maketrans({"<": "‹", ">": "›", "[": "(", "]": ")", "\r": " ", "\n": " "})
+_REMPLACEMENTS = str.maketrans({"<": "‹", ">": "›", "[": "(", "]": ")", "\r": " ", "\n": " ",
+                                "\u00a0": " ", "\u202f": " "})
 
 
 def _neutraliser(texte: str) -> str:
@@ -88,6 +94,9 @@ def _neutraliser(texte: str) -> str:
     - Les crochets deviennent des parenthèses, et les retours à la ligne des espaces : le texte ne peut pas fabriquer
       une fausse ligne « [2] (Reuters, date) ... » et faire attribuer une phrase à une fausse source (revue de
       sécurité des commits A1 à A3, 16/10/2026). Seule l'application écrit des numéros d'extraits.
+    - Les espaces insécables, ordinaire et fine, deviennent des espaces normales. Mesure de niveau 2 du 20/10/2026 : Q4
+      a rendu « 1 00 postes » pour « 1 000 » écrit avec une espace insécable ; hypothèse, le modèle recopiait mal ce
+      caractère dans son JSON.
     """
     return texte.translate(_REMPLACEMENTS)
 
@@ -112,11 +121,13 @@ def construire_prompt(question: str, passages: list[Passage]) -> str:
 # fonctionner ») est une panne. Les deux ne se confondent jamais : la route rend 200 pour un refus, 503 pour une erreur.
 
 OK = "OK"
+TENTATIVE_DETOURNEMENT = "TENTATIVE_DETOURNEMENT"
 INTENTION_INTERDITE = "INTENTION_INTERDITE"
 OUT_OF_CORPUS = "OUT_OF_CORPUS"
 ABSTENTION = "ABSTENTION"
 CITATIONS_INVALIDES = "CITATIONS_INVALIDES"
 SORTIE_NON_CONFORME = "SORTIE_NON_CONFORME"
+FUITE_BLOQUEE = "FUITE_BLOQUEE"
 FOURNISSEUR_INDISPONIBLE = "FOURNISSEUR_INDISPONIBLE"
 REPONSE_TRONQUEE = "REPONSE_TRONQUEE"
 FORMAT_INVALIDE = "FORMAT_INVALIDE"
@@ -125,8 +136,11 @@ TEXTES_REFUS = {
     OUT_OF_CORPUS: ("Je ne trouve pas cette information dans les articles dont je dispose. "
                     "Je préfère ne pas répondre plutôt qu'inventer."),
     INTENTION_INTERDITE: MESSAGE_INTENTION_INTERDITE,
+    # Poli, en français, avec le motif dit en mots ; ni les motifs de détection ni les consignes (CA2.5).
+    TENTATIVE_DETOURNEMENT: MESSAGE_TENTATIVE_DETOURNEMENT,
     ABSTENTION: "Les articles dont je dispose ne permettent pas de répondre à cette question.",
     CITATIONS_INVALIDES: "La réponse produite ne citait pas correctement ses sources : elle n'est pas affichée.",
+    FUITE_BLOQUEE: MESSAGE_REFUS_FUITE,
 }
 TEXTE_ERREUR = "Le service n'a pas pu répondre pour le moment. Réessayez plus tard."
 
@@ -198,6 +212,24 @@ def _reference(numero: int, passage: Passage) -> Reference:
                      date=passage.publie_le, lien=lien_http(passage.lien), extrait=passage.texte)
 
 
+def passages_surs(passages: list[Passage]) -> list[Passage]:
+    """Les passages qui peuvent entrer dans le prompt (sprint 4, tâche A4 ; spec CA2.8).
+
+    Le filtre de la collecte RSS écarte un article piégé à l'entrée ; celui-ci le refait au moment où l'article entre
+    dans un prompt, pour un article déjà indexé. Un passage qui porte une injection (`guardrails/injection.py`) est
+    écarté, avec une ligne de journal : son identifiant et les noms des motifs, jamais son texte.
+    """
+    surs = []
+    for passage in passages:
+        verdict = neutraliser(passage.texte, source="index")
+        if verdict["bloque"]:
+            logger.warning("passage ecarte avant le prompt : article_id=%s motifs=%s", passage.article_id,
+                           ",".join(verdict["motifs_detectes"]))
+            continue
+        surs.append(passage)
+    return surs
+
+
 def repondre(question: str, chemin_index: Path | None = None, k: int = 3) -> ReponseQuestion:
     """Répond à `question` à partir du corpus, ou refuse, ou signale une erreur technique.
 
@@ -208,7 +240,11 @@ def repondre(question: str, chemin_index: Path | None = None, k: int = 3) -> Rep
     if not resultat.trouve:
         return _refus(resultat.motif)
 
-    passages = resultat.passages
+    # Sprint 4 (A4) : les passages piégés sont écartés avant le prompt ; s'il n'en reste aucun, c'est un refus hors
+    # corpus, sans appel au modèle. Les extraits restants sont numérotés à partir de 1 par `construire_prompt`.
+    passages = passages_surs(resultat.passages)
+    if not passages:
+        return _refus(OUT_OF_CORPUS)
     try:
         brut = generer_json(construire_prompt(question, passages), SCHEMA_SORTIE, "reponse_rita")
     except FournisseurIndisponible:
@@ -233,6 +269,13 @@ def repondre(question: str, chemin_index: Path | None = None, k: int = 3) -> Rep
     sortie = sortie.model_copy(update={"texte": _retirer_liens(_sans_caracteres_de_controle(sortie.texte))})
     if not citations_valides(sortie, len(passages)):
         return _refus(CITATIONS_INVALIDES)
+
+    # Sprint 4 (B2) : ni secret, ni valeur de configuration, ni morceau des consignes (CA3.1, CA3.2). Le journal reçoit
+    # les noms des motifs, jamais le texte refusé.
+    fuite = verifier_fuite(sortie.texte, (CONSIGNES,))
+    if not fuite["conforme"]:
+        logger.warning("reponse refusee par le controle de fuite : motifs=%s", ",".join(fuite["motifs_detectes"]))
+        return _refus(FUITE_BLOQUEE)
 
     verdict = verifier_sortie(sortie.texte)
     if not verdict["conforme"]:

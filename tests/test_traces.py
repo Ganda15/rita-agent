@@ -82,14 +82,13 @@ def test_un_appel_reussi_produit_un_trace_et_une_generation_complete(monkeypatch
     # Un appel = UN trace (le span racine), qui contient les tentatives : une ligne par
     # briefing dans Langfuse, pas une par fournisseur (mesuré le 02/10 : 9 racines pour 3 appels).
     assert [r["name"] for r in racines] == ["briefing-llm"]
-    assert racines[0]["input"] == "prompt public"
     assert len(generations) == 1
     assert generations[0]["name"] == "llm-anthropic"
     assert generations[0]["model"] == "claude-sonnet-5"
-    assert generations[0]["input"] == "prompt public"
     assert generations[0]["metadata"]["fournisseur"] == "anthropic"
-    sorties = [k for (ev, k) in client.journal if ev == "update" and "output" in k]
-    assert [s["output"] for s in sorties] == ["texte du briefing", "texte du briefing"]  # génération puis racine
+    # Sprint 4 (B3, D9) : ni le prompt ni la réponse ne partent vers la trace, à aucun niveau.
+    assert "input" not in racines[0] and "input" not in generations[0]
+    assert not any("output" in k for (ev, k) in client.journal if ev == "update")
     assert client.flushs == 1
 
 
@@ -108,7 +107,8 @@ def test_une_cascade_produit_une_generation_par_tentative_avec_l_echec_marque(mo
     assert sum(1 for k in ouvertures if k["as_type"] == "span") == 1
     erreurs = [k for (ev, k) in client.journal if ev == "update" and k.get("level") == "ERROR"]
     assert len(erreurs) == 1
-    assert "quota" in erreurs[0]["status_message"]
+    # Sprint 4 (B3, D9) : le type de l'erreur seulement ; son message peut recopier le prompt.
+    assert erreurs[0]["status_message"] == "RuntimeError"
 
 
 def test_l_usage_en_tokens_est_transmis_quand_le_fournisseur_le_donne(monkeypatch):

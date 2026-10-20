@@ -1,7 +1,7 @@
 """Superviseur — StateGraph LangGraph : Scout puis Rédacteur (C8, C14)."""
 from langgraph.graph import StateGraph, END
 
-from agents.analyst import generate_briefing
+from agents.analyst import articles_surs, generate_briefing
 from agents.scout import collect
 from graph.state import RitaState
 from rag.recherche import rechercher
@@ -53,7 +53,8 @@ def _noeud_rag(state: RitaState, span) -> RitaState:
     # articles dont on sait déjà qu'ils parlent de Crédit Agricole.)
     nom = state["indicateurs"].get("nom_officiel") or state["ticker"]
     resultat = rechercher(f"actualite {nom.split()[0]}", ticker=state["ticker"])
-    passages = [p.en_dict() for p in resultat.passages]
+    # Sprint 4 (A4) : un article piégé n'est pas transmis ; le compte et les sources de la trace le disent.
+    passages = articles_surs([p.en_dict() for p in resultat.passages])
     # Le compte et les sources, pas le texte des articles : il est déjà dans la génération.
     traces.terminer_etape(span, output={"motif": resultat.motif, "nb_passages": len(passages),
                                         "sources": [p.get("source") for p in passages]})

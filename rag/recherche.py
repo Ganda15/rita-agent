@@ -75,6 +75,7 @@ from typing import Any
 
 from rank_bm25 import BM25Okapi
 
+from guardrails.detournement import verifier_detournement
 from guardrails.entree import verifier_intention
 from rag.indexation import _collection
 from src import traces
@@ -160,7 +161,7 @@ class Resultat:
     """Ce que la recherche rend : des passages, ou un refus motivé."""
 
     trouve: bool
-    motif: str          # "OK" ou "OUT_OF_CORPUS"
+    motif: str          # "OK", "OUT_OF_CORPUS", ou le refus d'un garde-fou ("TENTATIVE_DETOURNEMENT", "INTENTION_INTERDITE")
     passages: list[Passage]
     nb_candidats: int
 
@@ -221,6 +222,16 @@ def rechercher(question: str, ticker: str | None = None, k: int = 3,
     # Placé ICI, avant `_collection()` : un refus ne coûte ni chargement du corpus
     # ni appel à l'embedder — la question la plus chère à ignorer est ignorée au
     # prix le plus bas.
+    #
+    # Sprint 4 (tâche A3) : le garde-fou de détournement passe en premier. Une injection ou une tentative
+    # d'extraction est refusée sur la question elle-même, avant l'intention AMF ; quand une question est les deux à la
+    # fois, le journal dit qu'il s'agit d'une attaque. Voir guardrails/detournement.py.
+    with traces.etape("garde-fou-detournement") as span:
+        detournement = verifier_detournement(question)
+        traces.noter_garde_fou(span, detournement["bloque"], detournement["motifs_detectes"])
+    if detournement["bloque"]:
+        return Resultat(False, "TENTATIVE_DETOURNEMENT", [], 0)
+
     with traces.etape("garde-fou-entree") as span:
         verification = verifier_intention(question)
         traces.noter_garde_fou(span, verification["bloque"], verification["motifs_detectes"])

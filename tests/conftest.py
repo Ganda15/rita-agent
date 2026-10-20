@@ -59,3 +59,33 @@ def couper_le_tracage(monkeypatch):
     traces.reinitialiser()
     yield
     traces.reinitialiser()
+
+
+@pytest.fixture(autouse=True)
+def valeurs_connues_par_defaut(monkeypatch):
+    """Pendant les tests, toute valeur demandée à `/briefing` est connue du référentiel (sprint 4, tâche C1).
+
+    La route vérifie dans la base que la valeur existe avant tout appel au modèle (critère 3 du contrat du sprint 1).
+    Les tests de la route n'ont pas de base (la CI) ou une base de test vide : sans cette règle, tous ceux qui appellent
+    `/briefing` recevraient une erreur ou un 422 sans rapport avec ce qu'ils vérifient. Les tests du 422
+    (`tests/test_briefing_422.py`) remplacent cette règle ; `raising=False` la pose même avant que la vérification
+    n'existe.
+    """
+    import api.main
+
+    monkeypatch.setattr(api.main, "valeur_existe", lambda ticker: True, raising=False)
+    yield
+
+
+@pytest.fixture(autouse=True)
+def limiteur_neuf(monkeypatch):
+    """Chaque test part d'un limiteur de débit neuf, au quota assez haut pour ne jamais gêner (sprint 4, tâche C3).
+
+    Le limiteur garde son compte en mémoire, d'un appel à l'autre : sans cette règle, la suite complète atteindrait le
+    quota de `/briefing` et `/question`, et les tests suivants recevraient un 429 sans rapport avec ce qu'ils vérifient.
+    Les tests du limiteur (`tests/test_limiteur.py`) posent leur propre quota.
+    """
+    from api import limiteur
+
+    monkeypatch.setattr(limiteur, "LIMITEUR", limiteur.Limiteur(10_000))
+    yield

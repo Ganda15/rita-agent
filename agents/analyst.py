@@ -1,5 +1,45 @@
 """Rédacteur — génère le briefing en français via src/llm.py (C8, C9, C10)."""
+import logging
+
+from guardrails.injection import neutraliser
 from src.llm import generer_texte
+
+logger = logging.getLogger(__name__)
+
+# Les parties fixes du prompt du rédacteur (sprint 4, tâche B2) : le contrôle de fuite (`guardrails/sortie.py`,
+# `verifier_fuite`) refuse un briefing qui en recopierait un morceau. `construire_prompt` les assemble sans changer un
+# caractère du prompt d'avant.
+ROLE_REDACTEUR = ("Tu es un analyste financier français qui rédige des briefings courts pour des investisseurs "
+                  "particuliers.")
+CONSIGNES_REDACTION = """Rédige un briefing de 3 à 5 phrases en français qui :
+1. Résume la performance du jour avec un ton factuel
+2. Indique le niveau de variation (faible / modérée / forte)
+3. Signale un point à surveiller pour la séance suivante
+
+Règles strictes :
+- AUCUNE recommandation d'achat ou de vente
+- Pas d'invention de chiffres ou d'événements non fournis
+- Ne présente JAMAIS ces capitaux moyens ni comme un volume du jour, ni comme un nombre de titres
+- Ton neutre, professionnel, accessible"""
+
+
+def articles_surs(passages: list[dict] | None) -> list[dict]:
+    """Les articles qui peuvent entrer dans le prompt du briefing (sprint 4, tâche A4 ; spec CA2.8).
+
+    Même filtre que le parcours des questions (`agents/question.py`, `passages_surs`) : un article qui porte une
+    injection (`guardrails/injection.py`) est écarté, avec une ligne de journal sans son texte. Appelé par le nœud `rag`
+    du graphe, pour que le compte des articles transmis et la trace disent la vérité, et par `_bloc_articles`, pour
+    que tout appelant du prompt soit couvert.
+    """
+    surs = []
+    for passage in passages or []:
+        verdict = neutraliser(passage.get("texte") or "", source="index")
+        if verdict["bloque"]:
+            logger.warning("passage ecarte avant le prompt : article_id=%s motifs=%s", passage.get("article_id"),
+                           ",".join(verdict["motifs_detectes"]))
+            continue
+        surs.append(passage)
+    return surs
 
 
 def _bloc_articles(passages: list[dict] | None) -> str:
@@ -14,6 +54,7 @@ def _bloc_articles(passages: list[dict] | None) -> str:
     mesuré le 30/08, MC.PA remonte une dépêche de **2023**. L'en-tête doit demander
     au modèle de vérifier la date, pas lui affirmer une fraîcheur que rien ne garantit.
     """
+    passages = articles_surs(passages)
     if not passages:
         return (
             "\n\nArticles : aucun article pertinent n'a été trouvé dans le corpus."
@@ -107,7 +148,7 @@ def construire_prompt(ticker: str, price: float, change_pct: float,
     articles = _bloc_articles(passages)
     bloc_indicateurs = _bloc_indicateurs(indicateurs, currency)
 
-    prompt = f"""Tu es un analyste financier français qui rédige des briefings courts pour des investisseurs particuliers.
+    prompt = f"""{ROLE_REDACTEUR}
 
 Données de la dernière séance collectée :
 - Action : {ticker}
@@ -115,16 +156,7 @@ Données de la dernière séance collectée :
 - Variation sur 1 jour : {change_pct}% ({direction})
 - Capitaux échangés en moyenne par séance sur 20 séances : {capitaux_moyens}{avertissement}{bloc_indicateurs}{articles}
 
-Rédige un briefing de 3 à 5 phrases en français qui :
-1. Résume la performance du jour avec un ton factuel
-2. Indique le niveau de variation (faible / modérée / forte)
-3. Signale un point à surveiller pour la séance suivante
-
-Règles strictes :
-- AUCUNE recommandation d'achat ou de vente
-- Pas d'invention de chiffres ou d'événements non fournis
-- Ne présente JAMAIS ces capitaux moyens ni comme un volume du jour, ni comme un nombre de titres
-- Ton neutre, professionnel, accessible"""
+{CONSIGNES_REDACTION}"""
 
     return prompt
 
