@@ -117,6 +117,33 @@ def test_une_question_verifiee_est_fidele_si_elle_cite_sa_source_et_son_fait(mon
     assert (cas["issue"], cas["fidele"], cas["resultat_autorise"]) == ("reponse_autorisee", True, True)
 
 
+def _reference(article_id):
+    return Reference(1, "article", article_id, "titre", "essai", "2026-10-14", "https://exemple.test/a", "extrait")
+
+
+def test_une_bonne_reference_avec_un_fait_principal_faux_n_est_pas_autorisee(monkeypatch, tmp_path):
+    # Mesure du 20/10 : Q4 a répondu « 1 00 postes » en citant le bon article, et la référence seule la faisait passer.
+    # Le premier groupe de repères est le fait principal : il doit figurer dans la réponse.
+    question = dict(_q("Q4", "reponse", sources=[2788]), reperes_attendus=[["1 000 postes", "6 %"], ["courriel"]])
+    texte = "Netflix va supprimer 1 00 postes dans le monde, soit 6 % de ses effectifs. [1]"
+    _reponses(monkeypatch, {"Question Q4 ?": ReponseQuestion("reponse", "OK", texte, [_reference(2788)])})
+    resultat = mq.mesurer(2, tmp_path, jeu=_jeu(question), reformulations=[])
+    cas = _cas(resultat)["Q4"]
+    assert (cas["issue"], cas["resultat_autorise"]) == ("reponse_non_autorisee", False)
+    assert resultat["verdict"]["questions_sprint_3"] is False
+
+
+def test_un_detail_secondaire_absent_ne_bloque_pas_la_reponse(monkeypatch, tmp_path):
+    # Le témoin du test précédent : Q5 donne le chiffre demandé sans les facteurs. Incomplète, pas fausse : seule
+    # `fidele` le dit. Sans ce témoin, une règle qui exigerait tous les repères passerait inaperçue.
+    question = dict(_q("Q5", "reponse", sources=[2792]),
+                    reperes_attendus=[["0,5 %", "2027"], ["energie", "budget", "taux"]])
+    texte = "La croissance française ne dépasserait pas 0,5 % en 2027 [1]."
+    _reponses(monkeypatch, {"Question Q5 ?": ReponseQuestion("reponse", "OK", texte, [_reference(2792)])})
+    cas = _cas(mq.mesurer(2, tmp_path, jeu=_jeu(question), reformulations=[]))["Q5"]
+    assert (cas["issue"], cas["resultat_autorise"], cas["fidele"]) == ("reponse_autorisee", True, False)
+
+
 # --- le verdict D5 -------------------------------------------------------------------------------------------------
 
 def _resultat(niveau, *cas):
