@@ -41,8 +41,10 @@ MOTIFS_DETOURNEMENT = [
     # --- extraction -------------------------------------------------------------------------------------------------
     (r"\b(affiche|montre|r[ée]v[èe]le|donne|r[ée]p[èe]te|dis|[ée]cris|liste|partage)[sz]?(?:[-\s]moi)?\b[^.?!]{0,40}"
      r"\b(tes|vos|ton|votre)\s+(consignes|instructions|r[èe]gles|prompt)\b", "consignes_du_systeme", "extraction"),
-    (r"\b(prompt|message)\s+(syst[èe]me|initial)\b", "prompt_systeme", "extraction"),
-    (r"\bsystem\s+prompt\b", "system_prompt", "extraction"),
+    # Revue Codex de la PR #112 (20/10/2026) : adressés au système (« ton prompt système »), jamais les mots
+    # seuls (« le message initial de la BCE », « un article sur le prompt système »).
+    (r"\b(ton|votre|tes|vos)\s+(prompt|message)\s+(syst[èe]me|initial)\b", "prompt_systeme", "extraction"),
+    (r"\b(your|ton|votre|tes|vos)\s+system\s+prompt\b", "system_prompt", "extraction"),
     (r"\b(ta|ton|tes|votre|vos)\s+(cl[ée]f?s?|mots?\s+de\s+passe|jetons?|tokens?|secrets?|identifiants?)\b",
      "secret_du_systeme", "extraction"),
     (r"\b(your)\s+(api\s+keys?|passwords?|secret\s+keys?|access\s+tokens?)\b", "system_secret", "extraction"),

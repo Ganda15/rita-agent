@@ -25,6 +25,10 @@ const MOTIFS = new Map([
   ["REPONSE_TRONQUEE", "la réponse du modèle était incomplète"],
   ["FORMAT_INVALIDE", "la réponse du modèle n'avait pas le format attendu"],
   ["ERREUR_INTERNE", "erreur interne du service"],
+  // Sprint 4 : les garde-fous de détournement et de fuite, et la limite de débit (revue Codex de la PR #112).
+  ["TENTATIVE_DETOURNEMENT", "la question cherche à détourner le service ou à obtenir des informations internes"],
+  ["FUITE_BLOQUEE", "la réponse produite contenait des informations internes et a été retenue"],
+  ["LIMITE_DE_DEBIT", "trop de demandes en une minute"],
 ]);
 
 // --- Les éléments ------------------------------------------------------------
@@ -145,6 +149,14 @@ async function poserQuestion(cle, question) {
     ? `Référence de la requête : ${requestId}`
     : "";
   afficherStatut("");
+
+  // 429 (sprint 4, C3) : la limite de débit est un REFUS poli, pas une panne. FastAPI range ce refus sous `detail`.
+  if (reponse.status === 429) {
+    afficherRefus(corps?.detail ?? {
+      motif: "LIMITE_DE_DEBIT", texte: "Trop de demandes en peu de temps. Réessayez dans une minute.",
+    });
+    return;
+  }
 
   // 503 : panne du fournisseur ou réponse inexploitable ; 500 : erreur imprévue. Les deux sont des ERREURS, montrées
   // dans leur propre encart, jamais comme un refus.
