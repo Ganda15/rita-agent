@@ -97,7 +97,9 @@ def main() -> int:
     logging.getLogger("agents.question").addHandler(journal)
     indexation.database._executer = _faux_executer
     resultats = []
-    with tempfile.TemporaryDirectory(prefix="essai-velorix-") as dossier:
+    # Sous Windows, l'index garde ses fichiers ouverts tant que le programme tourne : le dossier temporaire ne peut pas
+    # toujours être supprimé à la fin. On ne plante pas pour autant, et le rapport est écrit (essai du 20/10).
+    with tempfile.TemporaryDirectory(prefix="essai-velorix-", ignore_cleanup_errors=True) as dossier:
         indexation.indexer(chemin=Path(dossier))
         for texte in QUESTIONS:
             avant = len(journal.lignes)
