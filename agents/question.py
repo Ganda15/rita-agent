@@ -24,7 +24,7 @@ from pydantic import BaseModel, ConfigDict, ValidationError
 from guardrails.detournement import MESSAGE_REFUS as MESSAGE_TENTATIVE_DETOURNEMENT
 from guardrails.entree import MESSAGE_REFUS as MESSAGE_INTENTION_INTERDITE
 from guardrails.injection import neutraliser
-from guardrails.sortie import verifier_sortie
+from guardrails.sortie import MESSAGE_REFUS_FUITE, verifier_fuite, verifier_sortie
 from rag.recherche import Passage, rechercher
 from src.llm import FournisseurIndisponible, ReponseTronquee, generer_json
 
@@ -123,6 +123,7 @@ OUT_OF_CORPUS = "OUT_OF_CORPUS"
 ABSTENTION = "ABSTENTION"
 CITATIONS_INVALIDES = "CITATIONS_INVALIDES"
 SORTIE_NON_CONFORME = "SORTIE_NON_CONFORME"
+FUITE_BLOQUEE = "FUITE_BLOQUEE"
 FOURNISSEUR_INDISPONIBLE = "FOURNISSEUR_INDISPONIBLE"
 REPONSE_TRONQUEE = "REPONSE_TRONQUEE"
 FORMAT_INVALIDE = "FORMAT_INVALIDE"
@@ -135,6 +136,7 @@ TEXTES_REFUS = {
     TENTATIVE_DETOURNEMENT: MESSAGE_TENTATIVE_DETOURNEMENT,
     ABSTENTION: "Les articles dont je dispose ne permettent pas de répondre à cette question.",
     CITATIONS_INVALIDES: "La réponse produite ne citait pas correctement ses sources : elle n'est pas affichée.",
+    FUITE_BLOQUEE: MESSAGE_REFUS_FUITE,
 }
 TEXTE_ERREUR = "Le service n'a pas pu répondre pour le moment. Réessayez plus tard."
 
@@ -263,6 +265,13 @@ def repondre(question: str, chemin_index: Path | None = None, k: int = 3) -> Rep
     sortie = sortie.model_copy(update={"texte": _retirer_liens(_sans_caracteres_de_controle(sortie.texte))})
     if not citations_valides(sortie, len(passages)):
         return _refus(CITATIONS_INVALIDES)
+
+    # Sprint 4 (B2) : ni secret, ni valeur de configuration, ni morceau des consignes (CA3.1, CA3.2). Le journal reçoit
+    # les noms des motifs, jamais le texte refusé.
+    fuite = verifier_fuite(sortie.texte, (CONSIGNES,))
+    if not fuite["conforme"]:
+        logger.warning("reponse refusee par le controle de fuite : motifs=%s", ",".join(fuite["motifs_detectes"]))
+        return _refus(FUITE_BLOQUEE)
 
     verdict = verifier_sortie(sortie.texte)
     if not verdict["conforme"]:

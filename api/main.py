@@ -26,11 +26,12 @@ from typing import Literal
 from fastapi.security.api_key import APIKeyHeader
 from fastapi.staticfiles import StaticFiles
 
+from agents.analyst import CONSIGNES_REDACTION, ROLE_REDACTEUR
 from api.donnees import routeur as routeur_donnees
 from api.question import routeur as routeur_question
 from db import audit_mcp
 from graph.workflow import generer_briefing_complet
-from guardrails.sortie import verifier_sortie
+from guardrails.sortie import verifier_fuite, verifier_sortie
 from rag import indexation
 from src import traces
 
@@ -255,9 +256,14 @@ def briefing(ticker: str, api_key: str = Security(verify_api_key)):
         # est une consigne, pas un contrôle. Ajouté le 17/08/2026 : il était invoqué par le
         # docstring de guardrails/injection.py sans exister. Fail-closed : en cas de doute,
         # on ne diffuse pas.
+        #
+        # Sprint 4 (B2) : dans la même étape, le contrôle de fuite. Un briefing qui laisserait sortir un secret, une
+        # valeur de configuration ou un morceau des consignes du rédacteur n'est pas diffusé (CA3.1, CA3.2).
         with traces.etape("garde-fou-sortie") as span_sortie:
             verdict = verifier_sortie(resultat["briefing"])
-            traces.noter_garde_fou(span_sortie, not verdict["conforme"], verdict["motifs_detectes"])
+            fuite = verifier_fuite(resultat["briefing"], (ROLE_REDACTEUR, CONSIGNES_REDACTION))
+            traces.noter_garde_fou(span_sortie, not (verdict["conforme"] and fuite["conforme"]),
+                                   verdict["motifs_detectes"] + fuite["motifs_detectes"])
         traces.noter_verdict_amf(racine, resultat["ticker"], verdict["conforme"],
                                  verdict["motifs_detectes"], request_id=request_id)
 
@@ -268,6 +274,11 @@ def briefing(ticker: str, api_key: str = Security(verify_api_key)):
     if not verdict["conforme"]:
         logger.warning("briefing refuse par le garde-fou de sortie : request_id=%s ticker=%r motifs=%s",
                        request_id, resultat["ticker"], ",".join(verdict["motifs_detectes"]))
+    if not fuite["conforme"]:
+        logger.warning("briefing refuse par le controle de fuite : request_id=%s ticker=%r motifs=%s",
+                       request_id, resultat["ticker"], ",".join(fuite["motifs_detectes"]))
+    # Une fuite l'emporte sur tout : son message remplace le texte, même si le contrôle AMF l'acceptait.
+    texte_diffuse = verdict["texte_diffusable"] if fuite["conforme"] else fuite["texte_diffusable"]
 
     # Une ligne INFO par briefing servi : identifiant, valeur, verdict, durée. Jamais le texte.
     # C'est la matière première du monitorage (C20) : combien, pour qui, en combien de temps.
@@ -280,7 +291,7 @@ def briefing(ticker: str, api_key: str = Security(verify_api_key)):
         "price": resultat["price"],
         "change_pct": resultat["change_pct"],
         "currency": resultat["currency"],
-        "briefing": verdict["texte_diffusable"],
+        "briefing": texte_diffuse,
         "conforme_amf": verdict["conforme"],
         "motifs_amf": verdict["motifs_detectes"],
         # Sprint 2 (14/10) : le nombre d'articles distincts transmis au modèle. Un briefing est rédigé même sans

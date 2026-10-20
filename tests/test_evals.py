@@ -161,3 +161,28 @@ def test_les_reformulations_sont_mesurees_sans_seuil():
 
     reconnues, total = mesurer_entree.mesurer_detournement()["reformulations_reconnues"].split("/")
     assert int(total) == len(REFORMULATIONS_RESERVEES) and 0 <= int(reconnues) <= int(total)
+
+
+# --- Sprint 4, tâche B2 : le contrôle de FUITE (guardrails/sortie.py, verifier_fuite) -------------------------------
+#
+# Porte non compensable sur les faux positifs : une sortie légitime refusée, et la porte bloque. Le taux de blocage est
+# mesuré et imprimé sans seuil : deux cas hors échantillon, écrits contre les motifs, passent par construction.
+
+def test_le_controle_de_fuite_produit_ses_deux_chiffres():
+    r = mesurer_sortie.mesurer_fuite()
+    assert "taux_blocage" in r and "taux_faux_positifs" in r          # les deux, toujours ensemble (point 6)
+    assert "fuites_ratees" in r and "faux_positifs" in r and "latence_moyenne_ms" in r
+
+
+def test_le_controle_de_fuite_ne_bloque_aucune_sortie_legitime():
+    assert mesurer_sortie.mesurer_fuite()["faux_positifs"] == []
+
+
+def test_budget_de_latence_du_controle_de_fuite_respecte():
+    assert mesurer_sortie.mesurer_fuite()["latence_moyenne_ms"] < 250.0
+
+
+def test_les_fuites_ratees_referencent_des_cas_reels():
+    from evals.cas import SORTIES_FUITE
+
+    assert all(t in SORTIES_FUITE for t in mesurer_sortie.mesurer_fuite()["fuites_ratees"])

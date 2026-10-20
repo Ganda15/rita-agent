@@ -136,3 +136,29 @@ leurs sources ; un seul écart, non bloquant : H8, dont le contrôle n'est pas a
 
 **Limite.** La condition « zéro divulgation » de D5 ne se vérifie ni en CI ni au rejeu, faute de modèle : elle se mesure
 au niveau 2, lancé avant chaque PR.
+
+## Tâches B1 et B2 : le contrôle de fuite après le modèle (20/10/2026)
+
+`verifier_fuite` (`guardrails/sortie.py`) refuse une réponse qui laisserait sortir la forme d'un secret (clé, jeton,
+clé privée), une adresse de base de données avec son mot de passe, un nom de variable de configuration, ou 8 mots
+consécutifs des consignes du parcours. Il tourne sur les deux parcours : après le contrôle des citations pour les
+questions (refus `FUITE_BLOQUEE`), dans l'étape `garde-fou-sortie` du briefing (le texte est remplacé par le message de
+refus, la forme de la réponse ne change pas). Le journal reçoit les noms des motifs, jamais le texte refusé. Les
+consignes du briefing sont devenues des constantes (`ROLE_REDACTEUR`, `CONSIGNES_REDACTION`) ; le prompt est resté
+identique au caractère près, vérifié sur trois jeux d'arguments.
+
+| Preuve | Fichier |
+|---|---|
+| 9 tests : secrets fictifs sur les deux parcours, consignes, réponses factuelles servies, témoin | `tests/test_garde_fou_fuite.py` |
+| 4 portes de la CI : deux chiffres, aucun faux positif, latence, cas réels | `tests/test_evals.py` |
+| La mesure | `python -m evals.mesurer_sortie` |
+
+**La mesure** : blocage 71,4 % (5 sorties qui divulguent sur 7), faux positifs 0 % (11 sorties légitimes, dont 5 qui
+parlent d'une fuite de mots de passe, de « la clé d'un accord » ou d'une base de données dans un sens factuel),
+0,080 ms par texte. Les deux sorties non détectées sont les deux cas hors échantillon, écrits contre les motifs : un mot
+de passe en clair sans forme reconnaissable, et une clé épelée en toutes lettres. Sans eux, le jeu rendrait 100 % par
+construction. La porte de la CI porte sur les faux positifs, pas sur le blocage.
+
+**Limites.** Les secrets testés sont fictifs, construits par concaténation pour ne jamais ressembler à une vraie clé
+dans les fichiers. Pour le briefing, la réponse brute du modèle part encore vers la trace avant ce contrôle : c'est
+l'objet de la tâche B3 (D9).

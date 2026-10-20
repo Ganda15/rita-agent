@@ -71,3 +71,57 @@ def verifier_sortie(texte: str) -> dict:
         "texte_diffusable": texte if conforme else MESSAGE_REFUS,
         "texte_brut": texte,
     }
+
+
+# --- Sprint 4, tâche B2 : le contrôle de FUITE (spec CA3.1, CA3.2, CA3.5) ---------------------------------------------
+# Une réponse ne laisse jamais sortir un secret, une valeur de configuration ou un morceau des consignes. Même forme de
+# résultat que `verifier_sortie`, pour que les appelants le traitent pareil. Les consignes sont passées par chaque
+# parcours : `guardrails/` n'importe jamais `agents/`. Parler d'une fuite de mots de passe ou de « la clé d'un accord »
+# n'est pas divulguer : chaque motif vise la FORME d'un secret, jamais un mot.
+MOTIFS_FUITE = [
+    (r"\bsk-[A-Za-z0-9_-]{16,}", "forme_de_cle"),
+    (r"\b(?i:bearer)\s+[A-Za-z0-9._~+/=-]{16,}", "forme_de_cle"),
+    (r"\b(?:ghp|gho|ghs|github_pat)_[A-Za-z0-9_]{20,}", "forme_de_cle"),
+    (r"\bAKIA[0-9A-Z]{16}\b", "forme_de_cle"),
+    (r"-----BEGIN [A-Z ]*PRIVATE KEY-----", "forme_de_cle"),
+    # Une adresse de base de données AVEC compte et mot de passe : « postgresql://compte:secret@hote ».
+    (r"\b(?i:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|redis)://[^\s/@:]+:[^\s/@]+@", "chaine_de_connexion"),
+    # Un nom de variable de configuration, en majuscules : RITA_API_KEY, DATABASE_URL, AZURE_FOUNDRY_ENDPOINT…
+    (r"\b[A-Z][A-Z0-9]*_(?:API_KEY|SECRET_KEY|PUBLIC_KEY|ACCESS_KEY|PASSWORD|TOKEN|SECRET|ENDPOINT|URL|DSN[A-Z0-9_]*)\b",
+     "nom_de_variable"),
+]
+_COMPILES_FUITE = [(re.compile(motif), nom) for motif, nom in MOTIFS_FUITE]
+
+# Un fragment de consigne, c'est 8 mots consécutifs des consignes retrouvés dans la réponse : huit mots ne se
+# rencontrent pas par hasard, un mot isolé (« instructions », « système ») ne suffit jamais.
+FENETRE_CONSIGNES = 8
+
+MESSAGE_REFUS_FUITE = "La réponse produite contenait une information interne : elle n'est pas affichée."
+
+
+def _fenetres(texte: str) -> set[tuple[str, ...]]:
+    mots = re.findall(r"\w+", texte.casefold())
+    return {tuple(mots[i:i + FENETRE_CONSIGNES]) for i in range(len(mots) - FENETRE_CONSIGNES + 1)}
+
+
+def verifier_fuite(texte: str, consignes: tuple[str, ...] = ()) -> dict:
+    """Contrôle que le texte du modèle ne laisse sortir ni secret, ni configuration, ni consigne.
+
+    Args:
+        texte: la réponse ou le briefing rédigé par le modèle.
+        consignes: les textes fixes du prompt de ce parcours.
+
+    Returns:
+        {conforme, motifs_detectes, texte_diffusable}. Si conforme=False, `texte_diffusable` porte le message de
+        refus : le texte d'origine n'est jamais diffusé, ni écrit au journal. Les noms des motifs, eux, y vont.
+    """
+    motifs = list(dict.fromkeys(nom for regex, nom in _COMPILES_FUITE if regex.search(texte)))
+    fenetres = _fenetres(texte)
+    if any(fenetres & _fenetres(consigne) for consigne in consignes):
+        motifs.append("fragment_consignes")
+    conforme = not motifs
+    return {
+        "conforme": conforme,
+        "motifs_detectes": motifs,
+        "texte_diffusable": texte if conforme else MESSAGE_REFUS_FUITE,
+    }
