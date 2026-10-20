@@ -33,8 +33,10 @@ def test_une_fausse_cle_laisse_une_ligne_sans_la_cle(nom, caplog):
     lignes = [r.getMessage() for r in caplog.records if "cle d'API refusee" in r.getMessage()]
     assert len(lignes) == 1
     assert identifiant in lignes[0] and "motif=invalide" in lignes[0] and ROUTES[nom][1].split("?")[0] in lignes[0]
-    # Ni la clé, ni un morceau reconnaissable, ni sa longueur.
-    assert FAUSSE_CLE not in caplog.text and "FAUSSE-CLE" not in caplog.text and str(len(FAUSSE_CLE)) not in lignes[0]
+    # Ni la clé, ni un morceau reconnaissable, ni sa longueur. La longueur (35) se cherche dans la ligne SANS
+    # l'identifiant : tiré au hasard, il contient « 35 » une fois sur dix environ, et le test échouait au hasard.
+    assert FAUSSE_CLE not in caplog.text and "FAUSSE-CLE" not in caplog.text \
+        and str(len(FAUSSE_CLE)) not in lignes[0].replace(identifiant, "")
 
 
 def test_une_cle_absente_laisse_une_ligne(caplog):
