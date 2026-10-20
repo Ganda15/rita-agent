@@ -17,7 +17,9 @@ valeur cotée (un ticker). Le § 1 met hors périmètre de la V1 « pas de nouve
   en français, une réponse citée ou un refus motivé. Il est en production depuis la livraison N5 (16/10/2026).
 - **Le brief du sprint 4** demande des garde-fous contre des contenus hostiles, des injections et des tentatives
   d'extraction, que l'évaluateur tire lui-même en direct. Ces attaques sont du texte libre. `POST /briefing` ne reçoit
-  qu'un ticker : elles ne peuvent viser que le parcours des questions.
+  qu'un ticker : les prompts que l'évaluateur tape ne peuvent viser que le parcours des questions. Une instruction
+  hostile peut aussi arriver de façon indirecte, cachée dans le texte d'un article : elle concerne les deux parcours,
+  et le sprint 4 la teste aussi.
 
 Sans avenant, la composante annoncée au sprint 1 ne contiendrait pas la seule partie de RITA qui reçoit du texte
 libre, et les critères 2 à 4 de la grille ne pourraient pas se démontrer sur elle.
@@ -42,6 +44,7 @@ libre.
   mémoire. L'avenant le déclare comme une partie de la composante plutôt que de le laisser hors du dossier.
 - **Lecture seule.** RITA lit et rédige ; elle n'écrit dans aucun système extérieur et n'envoie rien.
 - **Les engagements du sprint 3 restent** : Azure, zone de données de l'UE, seul fournisseur du parcours des
-  questions ; le texte des questions n'est jamais conservé.
+  questions ; le texte des questions n'est jamais conservé dans les stockages et les traces de RITA, avec la seule
+  exception écrite au registre (T8) : l'outil d'évaluation, lancé volontairement sur le jeu de démonstration.
 - **Le contrat personnel du § 6** n'est pas modifié par cet avenant. Son état critère par critère est suivi à part
   (`docs/sprint-4/CONTRAT.md`, à écrire au sprint 4).
