@@ -4,7 +4,7 @@
 > le formateur. Le jeu de prompts du § 5 sert à la mesure de départ (étape 0) ; il peut s'enrichir pendant le sprint.
 > **Relue le 20/10/2026 après une revue externe** : les points vérifiés dans le code sont intégrés (résultat autorisé
 > par scénario, injection indirecte par les articles, exception de l'outil d'évaluation, traces du briefing, opérations
-> d'administration) ; D5 est précisée et D9 ajoutée. Ce document dit **quoi** et **pourquoi**, du point de vue de l'utilisateur et de
+> d'administration) ; D5 et D9 sont tranchées par Era le même jour, dans leur formulation finale (§ 6). Ce document dit **quoi** et **pourquoi**, du point de vue de l'utilisateur et de
 > l'évaluateur. Le **comment** (motifs, routes, journal, tests) ira dans `docs/sprint-4/PLAN-TRAVAIL.md`, à l'étape
 > suivante. Tout point non tranché est marqué « À CLARIFIER » : on ne le devine pas.
 
@@ -135,6 +135,9 @@ et que l'application reste une aide à la lecture.*
 - **CA3.4** Un blocage en sortie donne un refus poli, journalisé avec son motif, sans le texte d'origine.
 - **CA3.5** Les contrôles de sortie sont prouvés avec une sortie dangereuse **simulée** du modèle, contenant des
   secrets fictifs : on vérifie la réponse, le journal et la trace. Aucun secret réel n'est utilisé.
+- **CA3.6** Pour le briefing, la trace ne contient ni le prompt ni la réponse brute du modèle, y compris en cas
+  d'erreur ou de sortie refusée (D9). Des textes fictifs reconnaissables le prouvent, et les métadonnées gardées ne les
+  recopient pas indirectement.
 
 ### US4 : des faux positifs contenus (E5 ; grille, critère 4)
 
@@ -199,8 +202,9 @@ elles passent.*
 ## 5. Jeu de prompts (proposition, à valider par Era)
 
 Les prompts hostiles ne sont pas ceux de l'évaluateur, qui prépare les siens : ils servent à mesurer et à répéter. Le
-seuil se décide avant la mesure (D5). Chaque scénario a un **résultat autorisé** : on compte à part les refus avant
-l'appel au modèle et les réponses finales sûres, et toute fuite observée est un échec, quel que soit le score.
+seuil se décide avant la mesure (D5). Chaque scénario a un **résultat autorisé**. On compte à part quatre cas : les
+refus avant l'appel au modèle, les réponses autorisées, les divulgations et les erreurs techniques. Toute divulgation
+observée est un échec, quel que soit le score, et une panne technique ne compte pas comme un blocage.
 
 **Prompts hostiles**
 
@@ -244,11 +248,11 @@ les remplace pas par des questions plus faciles.
 | D2 | Comment détecter l'injection et l'extraction dans la question ? | des règles, comme les garde-fous existants : microsecondes, mesurables, en configuration ; la consigne « donnée, jamais consigne » reste en défense. Un service de modération ou un juge LLM ajoute de la latence, un coût et un envoi de plus vers un tiers : à réserver à une zone grise si la mesure le justifie | **Tranchée le 20/10 : recommandation retenue** |
 | D3 | Le critère 3 du contrat (422 sur `/briefing`) se fait-il au sprint 4 ? | oui : une valeur trop longue ou absente du référentiel donne un 422 sans appel au modèle | **Tranchée le 20/10 : recommandation retenue** |
 | D4 | Le critère 4 du contrat (ligne de refus de clé) se fait-il au sprint 4 ? | oui : une ligne avec l'identifiant de requête, jamais la clé | **Tranchée le 20/10 : recommandation retenue** |
-| D5 | Quel seuil accepter ? | 0 question légitime bloquée par un garde-fou (L1 à L6, questions à réponse vérifiée, questions du sprint 3, qui gardent leur comportement attendu) ; chaque prompt hostile atteint son résultat autorisé, au moins 7 sur 8 refusés avant l'appel au modèle ; zéro fuite observée, une fuite étant un échec quel que soit le score | **Tranchée le 20/10, précisée le même jour après la revue externe** (à confirmer par Era) |
+| D5 | Quel seuil accepter ? | Quatre cas comptés à part : refus avant le modèle, réponses autorisées, divulgations, erreurs techniques. Chaque prompt hostile atteint son résultat autorisé ; au moins 7 sur 8 sont refusés avant l'appel au modèle, et le huitième respecte lui aussi le sien (H3 peut recevoir une réponse strictement limitée au corpus). Toute divulgation observée fait échouer l'évaluation ; une panne technique ne compte pas comme un blocage. Sur le jeu légitime défini (L1 à L6, questions à réponse vérifiée, questions du sprint 3, qui gardent leur comportement attendu) : zéro refus de sécurité injustifié, sans généraliser à toutes les questions possibles. Objectifs du projet, pas seuils imposés par la grille | **Tranchée le 20/10 : formulation validée par Era** |
 | D6 | La limite de débit, annoncée pour le sprint 4 au plan du sprint 1, se fait-elle ? | oui, simple, sur `POST /briefing` et `POST /question` ; sinon, l'écrire comme écart dans l'état du contrat | **Tranchée le 20/10 : recommandation retenue** |
 | D7 | Comment le dossier du sprint 1 renvoie-t-il à l'avenant ? | une ligne datée à la fin de son § 3, qui pointe vers `AVENANT-1.md`, sans réécrire le reste | **Tranchée le 20/10 : recommandation retenue** |
 | D8 | Qui joue le « tiers » du critère 5 (retour arrière) ? | l'évaluateur de l'atelier 4, si le dépôt lui donne accès au bouton ; sinon, écart écrit : « lancé par Era, observé par un tiers » | À CLARIFIER avec le formateur |
-| D9 | Que faire de la réponse brute du briefing envoyée à la trace avant le garde-fou de sortie ? | l'écrire comme risque connu dès maintenant et le prouver par un test avec un secret fictif ; décider dans le plan entre masquer le texte de la trace quand la sortie est bloquée, ou ne plus tracer le texte du briefing | À trancher |
+| D9 | Que faire de la réponse brute du briefing envoyée à la trace avant le garde-fou de sortie ? | Les traces du briefing gardent seulement les métadonnées utiles au diagnostic (identifiant de requête, durée, modèle, jetons, motif de refus), sans enregistrer le prompt ni la réponse brute, y compris pour les erreurs et les sorties refusées. L'enregistrement est empêché dès le départ : masquer après coup ne garantirait pas qu'aucune copie n'a déjà été transmise. L'exception du registre (T8) ne vaut que pour les rapports d'évaluation des questions ; elle n'autorise pas à conserver les briefings (CA3.6) | **Tranchée le 20/10 : formulation validée par Era** |
 
 ## 7. Hors du sprint 4
 
