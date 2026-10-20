@@ -48,8 +48,9 @@ pour chacune ; on n'y efface ni n'y modifie jamais rien. Exemple mesuré : le re
   `POST /audit/mcp` et écrits dans la table `mcp_calls` (`tests/test_audit_mcp.py`, `tests/test_passerelle_mcp.py`).
 - **API** : les routes de données et d'IA (`/donnees/…`, `/briefing`, `/question`, `/audit/mcp`) exigent la clé ; un
   refus de clé laisse une ligne de journal (critère 4 du contrat). Au plus 10 appels par minute, partagés par
-  `/briefing` et `/question` (tâche C3). Restent publics, vérifié en production le 20/10 : `/health`, les pages de
-  l'interface (qui demandent la clé avant d'appeler l'API) et la documentation `/docs` avec `/openapi.json` (voir § 5).
+  `/briefing` et `/question` (tâche C3) ; ce quota est fixe en production, la variable `RITA_QUOTA_PAR_MINUTE` n'étant
+  pas transmise au conteneur. Restent publics, vérifié en production le 20/10 : `/health`, les pages de l'interface (qui
+  demandent la clé avant d'appeler l'API) et la documentation `/docs` avec `/openapi.json` (voir § 5).
 
 ## 4. Les signaux du sprint 5 (CA7.1)
 

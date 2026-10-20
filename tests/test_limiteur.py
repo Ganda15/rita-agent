@@ -6,7 +6,9 @@ Condition vérifiée le 20/10/2026 sur le serveur : l'API de production tourne a
 `--workers`, pas de `WEB_CONCURRENCY`) ; plusieurs processus ne partageraient pas leurs compteurs. Limite écrite : le
 compteur repart à zéro à chaque redémarrage.
 """
+import ast
 import importlib
+import inspect
 import logging
 import threading
 from unittest.mock import patch
@@ -106,3 +108,28 @@ def test_health_n_est_jamais_limite(monkeypatch):
     monkeypatch.setattr(_module(), "LIMITEUR", _module().Limiteur(1))
     client = TestClient(app)
     assert [client.get("/health").status_code for _ in range(5)] == [200] * 5
+
+
+# --- le réglage du quota ---------------------------------------------------------------------------------------------
+
+def test_le_module_charge_le_env_avant_de_lire_le_quota():
+    # Revue Codex de la PR #111 (20/10/2026) : le .env n'était chargé avant LIMITEUR que grâce à l'ordre des imports
+    # d'api/main.py (sources.database, indicateurs.socle et monitorage.fraicheur le chargent plus haut). Comme eux, le
+    # module le charge lui-même : déplacer un import ne doit pas faire ignorer RITA_QUOTA_PAR_MINUTE en silence.
+    arbre = ast.parse(inspect.getsource(_module()))
+    chargements = [n.lineno for n in ast.walk(arbre)
+                   if isinstance(n, ast.Call) and getattr(n.func, "id", None) == "load_dotenv"]
+    creation = next(n.lineno for n in arbre.body if isinstance(n, ast.Assign)
+                    and any(getattr(cible, "id", None) == "LIMITEUR" for cible in n.targets))
+    assert chargements and min(chargements) < creation
+
+
+def test_le_quota_se_regle_par_la_variable(monkeypatch):
+    # Le témoin : la variable, quand elle est présente au chargement du module, fixe le quota.
+    monkeypatch.setenv("RITA_QUOTA_PAR_MINUTE", "3")
+    module = importlib.reload(_module())
+    try:
+        assert module.LIMITEUR.quota == 3
+    finally:
+        monkeypatch.delenv("RITA_QUOTA_PAR_MINUTE")
+        importlib.reload(module)

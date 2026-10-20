@@ -10,7 +10,10 @@ Pourquoi en mémoire, et pas `slowapi` : un seul compteur ne justifie pas une d�
 leur compteur, et il faudrait alors un stockage partagé, avec `slowapi` comme avec ce module. Limite écrite : le
 compteur repart à zéro à chaque redémarrage.
 
-Le quota se règle par la variable `RITA_QUOTA_PAR_MINUTE` (10 par défaut).
+Le quota se règle par la variable `RITA_QUOTA_PAR_MINUTE` (10 par défaut), lue dans l'environnement ou dans le `.env`
+du dépôt. Le module charge ce `.env` lui-même, comme `sources/database.py` : il ne dépend pas de l'ordre des imports
+d'`api/main.py` (revue Codex de la PR #111, 20/10/2026). En production, la variable n'est pas transmise au conteneur
+(absente du bloc `environment` de `docker-compose.yml`) : le quota y vaut 10.
 """
 import logging
 import math
@@ -19,7 +22,9 @@ import threading
 import time
 from collections import deque
 from collections.abc import Callable
+from pathlib import Path
 
+from dotenv import load_dotenv
 from fastapi import HTTPException, Request
 
 logger = logging.getLogger(__name__)
@@ -49,6 +54,7 @@ class Limiteur:
             return False, max(1, math.ceil(self._acceptes[0] + self.fenetre_s - maintenant))
 
 
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 LIMITEUR = Limiteur(int(os.environ.get("RITA_QUOTA_PAR_MINUTE", "10")))
 
 
