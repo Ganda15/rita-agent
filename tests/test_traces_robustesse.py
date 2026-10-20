@@ -93,7 +93,10 @@ def test_une_panne_de_langfuse_ne_fait_pas_tomber_le_briefing(casse, caplog):
 @pytest.mark.parametrize("casse", ["flush", "ouverture", "update"])
 def test_une_panne_de_langfuse_ne_fait_pas_tomber_generer_texte(casse, monkeypatch, caplog):
     monkeypatch.setenv("LLM_ORDRE", "anthropic")
-    with patch.object(traces, "client_traces", return_value=_ClientCasse(casse)),          patch("src.llm._appel_anthropic", return_value="ok anthropic"),          caplog.at_level(logging.WARNING, logger="src.traces"):
+    # Sprint 4 (B3, D9) : la réponse ne part plus vers la trace ; seuls le modèle et les jetons s'y écrivent. Le modèle
+    # simulé les fournit, pour qu'une mise à jour ait encore lieu et que la panne de `update` soit mise à l'épreuve.
+    reponse = traces.Reponse(texte="ok anthropic", modele="claude-sonnet-5", usage={"input": 1, "output": 1})
+    with patch.object(traces, "client_traces", return_value=_ClientCasse(casse)),          patch("src.llm._appel_anthropic", return_value=reponse),          caplog.at_level(logging.WARNING, logger="src.traces"):
         texte = generer_texte("prompt test")
     assert texte == "ok anthropic"
     assert any(r.levelno == logging.WARNING for r in caplog.records)

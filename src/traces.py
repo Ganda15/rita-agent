@@ -244,9 +244,16 @@ def noter_garde_fou(span, bloque: bool, motifs: list[str]) -> None:
     _maj(span, **champs)
 
 
+# --- Sprint 4, tâche B3 : le briefing ne trace que des métadonnées (décision D9, spec CA3.6) ------------------------
+# Jusqu'ici, le prompt et la réponse brute du modèle partaient vers la trace AVANT les contrôles de sortie : un texte
+# refusé à l'écran restait dans Langfuse. Désormais, ni `appel`, ni `generation`, ni `terminer`, ni `echouer`
+# n'envoient de texte : le modèle, les jetons, la durée (ouverture et fermeture des étapes), le fournisseur, la
+# tentative, et le TYPE d'une erreur, jamais son message, qui peut recopier le prompt. L'envoi est empêché à la source :
+# masquer après coup ne garantirait pas qu'aucune copie n'est partie.
+
 @contextmanager
-def appel(prompt: str):
-    """Ouvre le trace d'UN appel au rédacteur : un span racine `briefing-llm`.
+def appel():
+    """Ouvre le trace d'UN appel au rédacteur : un span racine `briefing-llm`, sans le prompt.
 
     Les tentatives (une génération par fournisseur) se rangent dessous. Mesuré le 02/10/2026
     avant cette structure : trois appels donnaient neuf lignes racines dans Langfuse, une par
@@ -257,19 +264,13 @@ def appel(prompt: str):
     if client is None:
         yield None
         return
-    with _observation(client, as_type="span", name="briefing-llm", input=prompt) as racine:
+    with _observation(client, as_type="span", name="briefing-llm") as racine:
         yield racine
 
 
-def terminer_appel(racine, texte: str) -> None:
-    """Pose la sortie finale sur le trace : ce que le rédacteur a vraiment reçu."""
-    if racine is not None:
-        _maj(racine, output=texte)
-
-
 @contextmanager
-def generation(fournisseur: str, modele: str, prompt: str, tentative: int):
-    """Ouvre une génération Langfuse pour une tentative ; rend `None` si le traçage est coupé.
+def generation(fournisseur: str, modele: str, tentative: int):
+    """Ouvre une génération Langfuse pour une tentative, sans le prompt ; rend `None` si le traçage est coupé.
 
     Nommée par fournisseur (`llm-anthropic`…) : dans l'arbre du trace, on lit d'un coup qui a
     répondu et qui a échoué avant.
@@ -283,29 +284,29 @@ def generation(fournisseur: str, modele: str, prompt: str, tentative: int):
         as_type="generation",
         name=f"llm-{fournisseur}",
         model=modele,
-        input=prompt,
         metadata={"fournisseur": fournisseur, "tentative": tentative},
     ) as gen:
         yield gen
 
 
 def terminer(gen, reponse: Reponse) -> None:
-    """Complète la génération avec la sortie, le modèle réel et l'usage s'ils existent."""
+    """Complète la génération avec le modèle réel et l'usage s'ils existent ; jamais le texte produit (D9)."""
     if gen is None:
         return
-    details: dict = {"output": reponse.texte}
+    details: dict = {}
     if reponse.modele:
         details["model"] = reponse.modele
     if reponse.usage:
         details["usage_details"] = reponse.usage
-    _maj(gen, **details)
+    if details:
+        _maj(gen, **details)
 
 
 def echouer(gen, erreur: BaseException) -> None:
-    """Marque la tentative en erreur ; le message est tronqué, jamais la clé d'API."""
+    """Marque l'étape en erreur avec le seul TYPE de l'erreur : son message peut recopier le prompt (D9)."""
     if gen is None:
         return
-    _maj(gen, level="ERROR", status_message=f"{type(erreur).__name__}: {erreur}"[:300])
+    _maj(gen, level="ERROR", status_message=type(erreur).__name__)
 
 
 def vider() -> None:

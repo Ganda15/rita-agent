@@ -192,14 +192,15 @@ def generer_texte(prompt: str, max_tokens: int = 500) -> str:
     texte_final: str | None = None
     # Un appel = un trace Langfuse (span racine), les tentatives dessous. Sans clés,
     # `appel` et `generation` rendent None et tout ce qui suit est un no-op (src/traces.py).
-    with traces.appel(prompt) as racine:
+    # Sprint 4 (B3, D9) : ni le prompt ni la réponse ne partent vers la trace, seulement des métadonnées.
+    with traces.appel() as racine:
         for nom in _ordre_fournisseurs():
             if nom not in _NOMS_VALIDES:
                 logger.warning("Fournisseur inconnu ignoré : %s", nom)
                 continue
             tentative += 1
             fonction = getattr(module, f"_appel_{nom}")
-            with traces.generation(nom, _modele_prevu(nom), prompt, tentative) as gen:
+            with traces.generation(nom, _modele_prevu(nom), tentative) as gen:
                 try:
                     resultat = fonction(prompt, max_tokens)
                     # Un fournisseur (ou un test) peut rendre une simple chaîne : accepté.
@@ -212,7 +213,6 @@ def generer_texte(prompt: str, max_tokens: int = 500) -> str:
                     logger.warning("Fournisseur %s indisponible — %s", nom, erreur)
                     continue
             texte_final = reponse.texte
-            traces.terminer_appel(racine, texte_final)
             break
         if texte_final is None:
             traces.echouer(racine, RuntimeError("aucun fournisseur disponible"))
