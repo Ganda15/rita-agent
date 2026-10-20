@@ -1,5 +1,29 @@
 """Rédacteur — génère le briefing en français via src/llm.py (C8, C9, C10)."""
+import logging
+
+from guardrails.injection import neutraliser
 from src.llm import generer_texte
+
+logger = logging.getLogger(__name__)
+
+
+def articles_surs(passages: list[dict] | None) -> list[dict]:
+    """Les articles qui peuvent entrer dans le prompt du briefing (sprint 4, tâche A4 ; spec CA2.8).
+
+    Même filtre que le parcours des questions (`agents/question.py`, `passages_surs`) : un article qui porte une
+    injection (`guardrails/injection.py`) est écarté, avec une ligne de journal sans son texte. Appelé par le nœud `rag`
+    du graphe, pour que le compte des articles transmis et la trace disent la vérité, et par `_bloc_articles`, pour
+    que tout appelant du prompt soit couvert.
+    """
+    surs = []
+    for passage in passages or []:
+        verdict = neutraliser(passage.get("texte") or "", source="index")
+        if verdict["bloque"]:
+            logger.warning("passage ecarte avant le prompt : article_id=%s motifs=%s", passage.get("article_id"),
+                           ",".join(verdict["motifs_detectes"]))
+            continue
+        surs.append(passage)
+    return surs
 
 
 def _bloc_articles(passages: list[dict] | None) -> str:
@@ -14,6 +38,7 @@ def _bloc_articles(passages: list[dict] | None) -> str:
     mesuré le 30/08, MC.PA remonte une dépêche de **2023**. L'en-tête doit demander
     au modèle de vérifier la date, pas lui affirmer une fraîcheur que rien ne garantit.
     """
+    passages = articles_surs(passages)
     if not passages:
         return (
             "\n\nArticles : aucun article pertinent n'a été trouvé dans le corpus."

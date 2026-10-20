@@ -11,6 +11,7 @@ l'application traduit en titre, source, date et lien à partir des données stoc
 """
 from __future__ import annotations
 
+import logging
 import re
 import unicodedata
 from dataclasses import dataclass, field
@@ -22,9 +23,12 @@ from pydantic import BaseModel, ConfigDict, ValidationError
 
 from guardrails.detournement import MESSAGE_REFUS as MESSAGE_TENTATIVE_DETOURNEMENT
 from guardrails.entree import MESSAGE_REFUS as MESSAGE_INTENTION_INTERDITE
+from guardrails.injection import neutraliser
 from guardrails.sortie import verifier_sortie
 from rag.recherche import Passage, rechercher
 from src.llm import FournisseurIndisponible, ReponseTronquee, generer_json
+
+logger = logging.getLogger(__name__)
 
 
 class SortieModele(BaseModel):
@@ -202,6 +206,24 @@ def _reference(numero: int, passage: Passage) -> Reference:
                      date=passage.publie_le, lien=lien_http(passage.lien), extrait=passage.texte)
 
 
+def passages_surs(passages: list[Passage]) -> list[Passage]:
+    """Les passages qui peuvent entrer dans le prompt (sprint 4, tâche A4 ; spec CA2.8).
+
+    Le filtre de la collecte RSS écarte un article piégé à l'entrée ; celui-ci le refait au moment où l'article entre
+    dans un prompt, pour un article déjà indexé. Un passage qui porte une injection (`guardrails/injection.py`) est
+    écarté, avec une ligne de journal : son identifiant et les noms des motifs, jamais son texte.
+    """
+    surs = []
+    for passage in passages:
+        verdict = neutraliser(passage.texte, source="index")
+        if verdict["bloque"]:
+            logger.warning("passage ecarte avant le prompt : article_id=%s motifs=%s", passage.article_id,
+                           ",".join(verdict["motifs_detectes"]))
+            continue
+        surs.append(passage)
+    return surs
+
+
 def repondre(question: str, chemin_index: Path | None = None, k: int = 3) -> ReponseQuestion:
     """Répond à `question` à partir du corpus, ou refuse, ou signale une erreur technique.
 
@@ -212,7 +234,11 @@ def repondre(question: str, chemin_index: Path | None = None, k: int = 3) -> Rep
     if not resultat.trouve:
         return _refus(resultat.motif)
 
-    passages = resultat.passages
+    # Sprint 4 (A4) : les passages piégés sont écartés avant le prompt ; s'il n'en reste aucun, c'est un refus hors
+    # corpus, sans appel au modèle. Les extraits restants sont numérotés à partir de 1 par `construire_prompt`.
+    passages = passages_surs(resultat.passages)
+    if not passages:
+        return _refus(OUT_OF_CORPUS)
     try:
         brut = generer_json(construire_prompt(question, passages), SCHEMA_SORTIE, "reponse_rita")
     except FournisseurIndisponible:
