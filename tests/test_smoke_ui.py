@@ -157,3 +157,37 @@ def test_l_ecran_briefing_dit_quand_le_ticker_est_introuvable(page, serveur):
     statut = page.locator("#statut").inner_text().lower()
     assert "introuvable" in statut, statut
     assert page.erreurs_js == []
+
+
+# --- Revue Codex de la PR #112 (20/10/2026) : l'écran comprend les réponses ajoutées au sprint 4 ------------------------
+
+def _statut_du_briefing(page, serveur, ticker, statut_http, corps, entetes=None):
+    """Sert la réponse donnée à la place de `/briefing`, saisit le code et rend le message affiché."""
+    import json
+
+    page.route("**/briefing?ticker=*", lambda route: route.fulfill(
+        status=statut_http, content_type="application/json", headers=entetes or {}, body=json.dumps(corps)))
+    page.goto(serveur + "/briefing.html", wait_until="networkidle")
+    page.evaluate("sessionStorage.setItem('rita_api_key', 'cle-de-test-smoke-ui-32-caracteres-x')")
+    page.goto(serveur + "/briefing.html", wait_until="networkidle")
+    page.fill("#ticker", ticker)
+    page.click("#form-briefing button[type=submit], #form-briefing button")
+    page.wait_for_timeout(1500)
+    return page.locator("#statut").inner_text().lower()
+
+
+def test_l_ecran_briefing_dit_quand_la_valeur_est_inconnue(page, serveur):
+    # Depuis la tâche C1, une valeur absente du référentiel donne un 422, plus un 502.
+    statut = _statut_du_briefing(page, serveur, "XXX", 422,
+                                 {"detail": "Valeur inconnue : aucun briefing n'est possible pour ce code."})
+    assert "introuvable" in statut, statut
+    assert page.erreurs_js == []
+
+
+def test_l_ecran_briefing_affiche_le_refus_de_debit(page, serveur):
+    # Tâche C3 : au-delà du quota, 429 et un refus poli, rangé sous `detail` par FastAPI.
+    refus = {"statut": "refus", "motif": "LIMITE_DE_DEBIT",
+             "texte": "Trop de demandes en peu de temps. Réessayez dans une minute."}
+    statut = _statut_du_briefing(page, serveur, "MC.PA", 429, {"detail": refus}, {"Retry-After": "42"})
+    assert "trop de demandes" in statut, statut
+    assert page.erreurs_js == []
