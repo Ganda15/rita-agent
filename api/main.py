@@ -158,7 +158,7 @@ def cle_attendue() -> str:
     return cle
 
 
-def verify_api_key(api_key: str = Security(API_KEY_HEADER)):
+def verify_api_key(request: Request, api_key: str = Security(API_KEY_HEADER)):
     """Autorisation par clé d'API.
 
     Volontairement simple : une seule clé, comparée à `RITA_API_KEY`. RITA est
@@ -169,7 +169,13 @@ def verify_api_key(api_key: str = Security(API_KEY_HEADER)):
     # `compare_digest` et non `!=` : une comparaison de chaînes ordinaire s'arrête au
     # premier caractère différent, et son temps d'exécution renseigne donc un attaquant
     # sur le nombre de caractères devinés. La différence est infime, la parade gratuite.
-    if api_key is None or not secrets.compare_digest(api_key, cle_attendue()):
+    if not api_key or not secrets.compare_digest(api_key, cle_attendue()):
+        # Sprint 4 (C2) : critère 4 du contrat du sprint 1. Un refus laisse UNE ligne de journal : l'identifiant de
+        # requête (le même que l'en-tête X-Request-ID), la route et le motif. Jamais la clé, ni un morceau, ni sa
+        # longueur : elle pourrait être une vraie clé mal collée, et la journaliser la ferait fuiter.
+        motif = "absente" if not api_key else "invalide"
+        logger.warning("cle d'API refusee : request_id=%s route=%s motif=%s",
+                       request_id_courant(), request.url.path, motif)
         raise HTTPException(status_code=403, detail="Cle d'API invalide ou absente")
     return api_key
 

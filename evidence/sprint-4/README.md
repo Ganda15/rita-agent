@@ -207,3 +207,14 @@ dans le texte SQL.
 Dans les tests, une règle par défaut (`tests/conftest.py`, `valeurs_connues_par_defaut`) tient toute valeur pour connue :
 la CI n'a pas de base. Les tests du 422 la remplacent. Limite : la casse n'est pas normalisée ; `mc.pa` est une valeur
 inconnue, le référentiel étant écrit en majuscules.
+
+## Tâche C2 : le refus de clé journalisé, critère 4 du contrat du sprint 1 (20/10/2026)
+
+« Étant donné une fausse clé, quand j'appelle une route protégée, alors je reçois un 403 et une ligne de journal le
+dit. » `verify_api_key` (`api/main.py`), par laquelle passent toutes les routes protégées, écrit une ligne
+`cle d'API refusee : request_id=… route=… motif=absente|invalide` avant le 403. L'identifiant est celui de l'en-tête
+`X-Request-ID` de la réponse. La clé n'y figure jamais, ni en partie, ni par sa longueur.
+
+| Preuve | Fichier |
+|---|---|
+| 5 tests : fausse clé sur `/donnees/valeurs`, `/question` et `/briefing`, clé absente, bonne clé sans ligne de refus | `tests/test_refus_cle_journal.py` |
