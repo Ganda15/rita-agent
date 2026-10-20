@@ -20,7 +20,8 @@ from tests.test_workflow import scout_lvmh
 client_http = TestClient(app)
 TEXTE_CONFORME = "Le titre recule de 1,10 % sur la séance."
 TEXTE_INTERDIT = "Nous recommandons l'achat de cette valeur."
-ORDRE_ATTENDU = ["briefing", "scout", "rag", "garde-fou-entree", "redacteur",
+# Sprint 4 (tâche A3) : toute recherche passe d'abord par le garde-fou de détournement, celle du briefing comprise.
+ORDRE_ATTENDU = ["briefing", "scout", "rag", "garde-fou-detournement", "garde-fou-entree", "redacteur",
                  "briefing-llm", "llm-anthropic", "garde-fou-sortie"]
 
 

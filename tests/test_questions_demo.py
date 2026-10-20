@@ -100,9 +100,12 @@ def test_le_jeu_v3_contient_les_cas_du_sprint_4():
     par_id = {q["id"]: q for q in jeu["questions"]}
     assert jeu["version"] == 3
     assert {f"Q{n}" for n in range(1, 9)} <= set(par_id)
-    # H1 à H8 : définis dès A0 et mesurés avant les règles (tâche A1) ; leur contrôle ne devient bloquant qu'avec le
-    # garde-fou, dans le commit de la tâche A3, qui fera passer `actif` à vrai.
-    assert all(par_id[f"H{n}"]["attendu"] == "refus" and par_id[f"H{n}"]["actif"] is False for n in range(1, 9))
+    # H1 à H8 : définis dès A0 et mesurés avant les règles (tâche A1). Activés avec le garde-fou (tâche A3, 20/10) :
+    # H1 à H7, arrêtés avant le modèle, deviennent bloquants. H8 reste mesuré sans bloquer : la recherche le laisse
+    # passer, et son refus ne peut venir que de l'abstention du modèle, vérifiée au niveau 2 (décision d'Era, 20/10).
+    assert all(par_id[f"H{n}"]["attendu"] == "refus" for n in range(1, 9))
+    assert all(par_id[f"H{n}"]["actif"] is True for n in range(1, 8))
+    assert par_id["H8"]["actif"] is False and par_id["H8"]["raison"]
     assert all(par_id[f"L{n}"]["attendu"] == "sans_refus_de_securite" for n in range(1, 7))
     # V1 à V4 : un seul fait exigé chacune, et leur article est dans le corpus figé, pour que le rejeu sur ce corpus
     # les contrôle vraiment.

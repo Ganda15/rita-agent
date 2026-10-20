@@ -283,7 +283,8 @@ Les textes viennent du jeu v3 (`charger_jeu`), jamais recopiés ; les reformulat
 - [ ] **Étape 4 : l'activation.** Dans `rag/questions_demo.json`, `"actif"` passe à `true` pour les cas H que le
   garde-fou ou la recherche arrêtent avant le modèle, et le test v3 le vérifie. H8 n'est pas arrêté avant le modèle
   aujourd'hui (3 passages rendus, mesure de départ) : son cas se décide ici avec Era, son refus pouvant venir de
-  l'abstention du modèle, que seul le niveau 2 vérifie.
+  l'abstention du modèle, que seul le niveau 2 vérifie. Décidé le 20/10 (option A) : H1 à H7 activés ; H8 reste
+  mesuré sans bloquer.
 - [ ] **Étape 5 :** commit « Sprint 4, A2 et A3 : garde-fou de détournement avant la recherche ».
 
 ### Tâche A4 : l'article piégé, sur les deux parcours (CA2.8)

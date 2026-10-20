@@ -20,6 +20,7 @@ from urllib.parse import urlsplit
 
 from pydantic import BaseModel, ConfigDict, ValidationError
 
+from guardrails.detournement import MESSAGE_REFUS as MESSAGE_TENTATIVE_DETOURNEMENT
 from guardrails.entree import MESSAGE_REFUS as MESSAGE_INTENTION_INTERDITE
 from guardrails.sortie import verifier_sortie
 from rag.recherche import Passage, rechercher
@@ -112,6 +113,7 @@ def construire_prompt(question: str, passages: list[Passage]) -> str:
 # fonctionner ») est une panne. Les deux ne se confondent jamais : la route rend 200 pour un refus, 503 pour une erreur.
 
 OK = "OK"
+TENTATIVE_DETOURNEMENT = "TENTATIVE_DETOURNEMENT"
 INTENTION_INTERDITE = "INTENTION_INTERDITE"
 OUT_OF_CORPUS = "OUT_OF_CORPUS"
 ABSTENTION = "ABSTENTION"
@@ -125,6 +127,8 @@ TEXTES_REFUS = {
     OUT_OF_CORPUS: ("Je ne trouve pas cette information dans les articles dont je dispose. "
                     "Je préfère ne pas répondre plutôt qu'inventer."),
     INTENTION_INTERDITE: MESSAGE_INTENTION_INTERDITE,
+    # Poli, en français, avec le motif dit en mots ; ni les motifs de détection ni les consignes (CA2.5).
+    TENTATIVE_DETOURNEMENT: MESSAGE_TENTATIVE_DETOURNEMENT,
     ABSTENTION: "Les articles dont je dispose ne permettent pas de répondre à cette question.",
     CITATIONS_INVALIDES: "La réponse produite ne citait pas correctement ses sources : elle n'est pas affichée.",
 }
