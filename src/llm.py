@@ -185,6 +185,14 @@ def generer_json(prompt: str, schema: dict, nom_schema: str, max_tokens: int = 8
     return contenu
 
 
+def _resume_erreur(erreur: BaseException) -> str:
+    """Le type de l'erreur, et son code HTTP s'il y en a un ; jamais son message, qui peut recopier le prompt (sprint 4,
+    D9 ; revue de sécurité automatique du commit dc2b323). Le code suffit à distinguer une clé refusée (401), un quota
+    atteint (429) ou une panne du fournisseur (5xx)."""
+    code = getattr(getattr(erreur, "response", None), "status_code", None)
+    return f"{type(erreur).__name__} (HTTP {code})" if code else type(erreur).__name__
+
+
 def generer_texte(prompt: str, max_tokens: int = 500) -> str:
     erreurs: list[str] = []
     module = sys.modules[__name__]
@@ -209,8 +217,8 @@ def generer_texte(prompt: str, max_tokens: int = 500) -> str:
                     logger.info("Réponse obtenue via %s", nom)
                 except Exception as erreur:  # noqa: BLE001, on passe au fournisseur suivant
                     traces.echouer(gen, erreur)
-                    erreurs.append(f"{nom} : {erreur}")
-                    logger.warning("Fournisseur %s indisponible — %s", nom, erreur)
+                    erreurs.append(f"{nom} : {_resume_erreur(erreur)}")
+                    logger.warning("Fournisseur %s indisponible : %s", nom, _resume_erreur(erreur))
                     continue
             texte_final = reponse.texte
             break

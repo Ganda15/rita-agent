@@ -183,3 +183,11 @@ le modèle ne suit pas l'instruction : aucune mention d'achat, contrôles AMF et
 diffusé, aucun conseil servi. Comme pour les questions, c'est la consigne du prompt qui a tenu. Le rapport ne garde
 que des verdicts et la longueur : D9 n'autorise pas à conserver le texte d'un briefing, l'exception T8 ne valant que
 pour les questions. Limite : un seul essai, un seul modèle, des données fictives.
+
+**Correction après une revue de sécurité automatique du commit `dc2b323`.** Un trou restait : quand tous les
+fournisseurs échouaient, l'erreur finale de `generer_texte` reprenait le message de chaque fournisseur et traversait
+les étapes `redacteur` et `briefing`, qui transmettaient l'exception entière au SDK ; le même message allait au journal.
+Un test le prouvait (`test_ni_prompt_ni_reponse_quand_tous_les_fournisseurs_echouent`, rouge avant la correction).
+Désormais, `_observation` ne transmet jamais une exception au SDK avec son message : l'étape est marquée en erreur avec
+son type, puis l'exception continue son chemin ; la copie réservée à la racine `question` devient inutile. L'erreur
+finale et la ligne de journal ne gardent que le nom du fournisseur, le type d'erreur et le code HTTP.
