@@ -56,13 +56,19 @@ def _jeu(*questions):
 
 # --- le jeu lui-même ----------------------------------------------------------------------------------------------
 
+def _groupe(jeu, prefixe):
+    return [q for q in jeu["questions"] if q["id"].startswith(prefixe)]
+
+
 def test_le_jeu_respecte_la_spec():
-    # CA6.1 et CA6.2 : 5 à 10 questions, au moins 3 couvertes, au moins 2 hors corpus ; chaque question couverte a ses
-    # sources et ses faits ; une source validée par Era englobe toujours les sources attendues.
+    # CA6.1 et CA6.2 du sprint 3, pour le groupe des questions de démonstration Q1 à Q8 (le jeu v3 du sprint 4 ajoute
+    # d'autres groupes, contrôlés à part) : 5 à 10 questions, au moins 3 couvertes, au moins 2 hors corpus ; chaque
+    # question couverte a ses sources et ses faits ; une source validée par Era englobe toujours les sources attendues.
     jeu = controle_questions.charger_jeu()
-    questions = jeu["questions"]
+    identifiants = [q["id"] for q in jeu["questions"]]
+    assert len(set(identifiants)) == len(identifiants)
+    questions = _groupe(jeu, "Q")
     assert 5 <= len(questions) <= 10
-    assert len({q["id"] for q in questions}) == len(questions)
     assert sum(q["attendu"] == "reponse" for q in questions) >= 3
     assert sum(q["attendu"] == "refus" and q["motif_attendu"] == "OUT_OF_CORPUS" for q in questions) >= 2
     for q in questions:
@@ -71,11 +77,11 @@ def test_le_jeu_respecte_la_spec():
             assert set(q["sources_attendues"]) <= set(q["sources_validees"]), q["id"]
 
 
-def test_le_jeu_est_la_version_2_de_la_spec():
-    # CA6.4 et CA6.5 : le jeu est lié à une version identifiée du corpus et de l'index ; la reformulation de Q2 garde
-    # la question d'origine et sa raison ; les sources de Q3 validées par Era le 16/10 y sont.
+def test_le_groupe_q_reste_la_version_2_de_la_spec():
+    # CA6.4 et CA6.5 du sprint 3 : le jeu est lié à une version identifiée du corpus et de l'index ; la reformulation
+    # de Q2 garde la question d'origine et sa raison ; les sources de Q3 validées par Era le 16/10 y sont. Le fichier
+    # passe en version 3 au sprint 4 (test suivant) ; le groupe Q garde ses questions et ses attentes de la version 2.
     jeu = controle_questions.charger_jeu()
-    assert jeu["version"] == 2 and jeu["revise_le"] == "2026-10-16"
     assert (jeu["corpus"]["nb_articles"], jeu["corpus"]["id_max"]) == (2052, 2809)
     assert jeu["corpus"]["index_identifiant"] == "18c122a9972c4a389e643d67762b4eb1"
     par_id = {q["id"]: q for q in jeu["questions"]}
@@ -85,6 +91,27 @@ def test_le_jeu_est_la_version_2_de_la_spec():
     assert par_id["Q3"]["attendu"] == "reponse_ou_abstention"
     assert {2795, 2370, 2376, 2429} <= set(par_id["Q3"]["sources_validees"])
     assert par_id["Q8"]["motif_attendu"] == "INTENTION_INTERDITE"
+
+
+def test_le_jeu_v3_contient_les_cas_du_sprint_4():
+    # Sprint 4, tâche A0 : un seul jeu, rejoué aussi par la livraison (plan du sprint 4, choix 4). Les questions
+    # légitimes ne doivent être refusées par aucun garde-fou.
+    jeu = controle_questions.charger_jeu()
+    par_id = {q["id"]: q for q in jeu["questions"]}
+    assert jeu["version"] == 3
+    assert {f"Q{n}" for n in range(1, 9)} <= set(par_id)
+    # H1 à H8 : définis dès A0 et mesurés avant les règles (tâche A1) ; leur contrôle ne devient bloquant qu'avec le
+    # garde-fou, dans le commit de la tâche A3, qui fera passer `actif` à vrai.
+    assert all(par_id[f"H{n}"]["attendu"] == "refus" and par_id[f"H{n}"]["actif"] is False for n in range(1, 9))
+    assert all(par_id[f"L{n}"]["attendu"] == "sans_refus_de_securite" for n in range(1, 7))
+    # V1 à V4 : un seul fait exigé chacune, et leur article est dans le corpus figé, pour que le rejeu sur ce corpus
+    # les contrôle vraiment.
+    corpus_fige = {a["id"] for a in json.loads(DONNEES.read_text(encoding="utf-8"))["articles"]}
+    questions_v = _groupe(jeu, "V")
+    assert [q["id"] for q in questions_v] == ["V1", "V2", "V3", "V4"]
+    for q in questions_v:
+        assert q["attendu"] == "reponse" and len(q["faits_attendus"]) == 1, q["id"]
+        assert set(q["sources_attendues"]) <= corpus_fige, q["id"]
 
 
 def test_un_jeu_bien_forme_est_accepte(tmp_path):
@@ -99,7 +126,9 @@ def test_un_jeu_bien_forme_est_accepte(tmp_path):
 @pytest.mark.parametrize("defaut", ["attendu_inconnu", "reponse_sans_source", "source_attendue_non_validee",
                                     "refus_sans_motif", "identifiant_en_double",
                                     # Revue automatique de la PR #100 (P2) : chaque fait attendu a ses repères.
-                                    "reperes_absents", "reperes_incomplets"])
+                                    "reperes_absents", "reperes_incomplets",
+                                    # Sprint 4 : la clé `actif` est un booléen, jamais un texte qui vaudrait « vrai ».
+                                    "actif_non_booleen"])
 def test_un_jeu_mal_forme_est_refuse(tmp_path, defaut):
     questions = [_question("Q1", "reponse", [1]), _question("Q2", "refus", motif="OUT_OF_CORPUS")]
     if defaut == "attendu_inconnu":
@@ -114,6 +143,8 @@ def test_un_jeu_mal_forme_est_refuse(tmp_path, defaut):
         del questions[0]["reperes_attendus"]
     elif defaut == "reperes_incomplets":
         questions[0]["faits_attendus"].append("un second fait")
+    elif defaut == "actif_non_booleen":
+        questions[1]["actif"] = "non"
     else:
         questions[1]["id"] = "Q1"
     chemin = tmp_path / "jeu.json"
@@ -186,6 +217,44 @@ def test_reponse_ou_abstention_n_est_jamais_bloquante(monkeypatch, resultat):
     _recherche(monkeypatch, {"Question Q3 ?": resultat})
     (ecart,) = controle_questions.rejouer(jeu)
     assert (ecart.id, ecart.bloquant) == ("Q3", False)
+
+
+# --- sprint 4, tâche A0 : une question légitime n'est jamais refusée par un garde-fou -------------------------------
+
+@pytest.mark.parametrize("resultat", [Resultat(False, "OUT_OF_CORPUS", [], 0), _trouve(2799)])
+def test_un_refus_hors_corpus_sur_une_question_legitime_n_est_pas_un_faux_positif(monkeypatch, resultat):
+    # CA4.2 : une recherche qui ne retrouve rien est un défaut de recherche, mesuré à part ; ce n'est pas un faux positif.
+    jeu = _jeu(_question("L1", "sans_refus_de_securite"))
+    _recherche(monkeypatch, {"Question L1 ?": resultat})
+    assert controle_questions.rejouer(jeu) == []
+
+
+@pytest.mark.parametrize("motif", ["TENTATIVE_DETOURNEMENT", "INTENTION_INTERDITE"])
+def test_un_refus_de_securite_sur_une_question_legitime_est_bloquant(monkeypatch, motif):
+    # D5 : zéro refus de sécurité injustifié sur le jeu légitime.
+    jeu = _jeu(_question("L2", "sans_refus_de_securite"))
+    _recherche(monkeypatch, {"Question L2 ?": Resultat(False, motif, [], 0)})
+    (ecart,) = controle_questions.rejouer(jeu)
+    assert ecart.bloquant and motif in ecart.message
+
+
+def test_un_cas_non_active_est_mesure_sans_bloquer(monkeypatch):
+    # Sprint 4 : un cas défini avant sa règle (H1 à H8, jusqu'à la tâche A3) est rejoué et noté, mais ne bloque pas.
+    question = _question("H1", "refus", motif="TENTATIVE_DETOURNEMENT")
+    question["actif"] = False
+    _recherche(monkeypatch, {"Question H1 ?": _trouve(2803)})
+    (ecart,) = controle_questions.rejouer(_jeu(question))
+    assert (ecart.id, ecart.bloquant) == ("H1", False)
+    assert "non activé" in ecart.message
+
+
+def test_un_cas_active_explicitement_reste_bloquant(monkeypatch):
+    # Le témoin du test précédent : `actif` à vrai ne doit pas être confondu avec la seule présence de la clé.
+    question = _question("H1", "refus", motif="TENTATIVE_DETOURNEMENT")
+    question["actif"] = True
+    _recherche(monkeypatch, {"Question H1 ?": _trouve(2803)})
+    (ecart,) = controle_questions.rejouer(_jeu(question))
+    assert (ecart.id, ecart.bloquant) == ("H1", True)
 
 
 # --- le module en ligne de commande, et son rapport ---------------------------------------------------------------

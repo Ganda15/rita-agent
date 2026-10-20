@@ -1,5 +1,5 @@
 {
- "description": "Extrait fige de la copie du corpus de production du 16/10/2026 (base rita_sprint3, 2052 articles, identifiant maximal 2809), lu avec le compte rita_lecture : les sources attendues ou validees du jeu de questions en version 2, et des articles voisins rendus par la recherche (661, 1165, 1167, 1369, 1866). Sert au test du rejeu (tache B2) ; aucun lien d'article n'est garde.",
+ "description": "Extrait fige de la copie du corpus de production du 16/10/2026 (base rita_sprint3, 2052 articles, identifiant maximal 2809), lu avec le compte rita_lecture : les sources attendues ou validees du jeu de questions en version 2, et des articles voisins rendus par la recherche (661, 1165, 1167, 1369, 1866). Sert au test du rejeu (tache B2) ; aucun lien d'article n'est garde. Ajout du 20/10/2026 (sprint 4, tâche A0) : les articles 2696, 2772, 2780 et 2785, sources des questions V1 à V4, lus dans une copie de l'index 18c122a9 ; leur titre et leur résumé redonnent exactement le texte indexé.",
  "articles": [
   {
    "id": 661,
@@ -66,6 +66,22 @@
    "bloque_injection": false
   },
   {
+   "id": 2696,
+   "source": "latribune",
+   "titre": "Flying Whales lève enfin 90 millions d’euros pour financer ses dirigeables XXL",
+   "resume": "Négocié depuis deux ans, le nouveau tour de table de Flying Whales est enfin bouclé. Des investisseurs tricolores stratégiques rejoignent les actionnaires historiques pour un total de 90 millions d'euros. Moins élevé que prévu, ce montant met néanmoins l’entreprise à l’abri jusqu’au premier vol de son dirigeable XXL annoncé pour fin 2028 en Gironde.",
+   "publie_le": "2026-10-12T17:30:02+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 2772,
+   "source": "bfm_eco",
+   "titre": "INFO BFM BUSINESS. Retraites complémentaires: les pensions de 14 millions de retraités vont augmenter de 1,4% au 1er novembre (moins que l'inflation)",
+   "resume": "Les syndicats et le patronat se sont accordés ce mercredi 14 octobre sur une revalorisation de 1,4% des retraites complémentaires des anciens salariés du privé. Une décision particulièrement attendue après le gel des pensions l'an dernier et alors que le gouvernement cherche à réaliser plusieurs milliards d'euros d'économies sur les retraites.",
+   "publie_le": "2026-10-14T17:59:11+02:00",
+   "bloque_injection": false
+  },
+  {
    "id": 2778,
    "source": "latribune",
    "titre": "Reprise de TAP : pourquoi Lufthansa rafle la mise face à Air France-KLM",
@@ -74,11 +90,27 @@
    "bloque_injection": false
   },
   {
+   "id": 2780,
+   "source": "latribune",
+   "titre": "Airbus est confronté au défi inédit d'honorer la livraison de plus de 9 300 avions",
+   "resume": "Le carnet de commandes d’Airbus a atteint cette année un niveau record, supérieur à 9 300 commandes. Malgré les tensions au sein de la chaîne d'approvisionnement, l’avionneur européen compte atteindre son objectif de livraisons cette année.",
+   "publie_le": "2026-10-14T15:00:03+02:00",
+   "bloque_injection": false
+  },
+  {
    "id": 2784,
    "source": "latribune",
    "titre": "Lufthansa officiellement désignée pour la reprise de TAP face à Air France-KLM",
    "resume": "L'attribution a été entérinée lors d'une réunion extraordinaire du gouvernement portugais ce mercredi.",
    "publie_le": "2026-10-14T11:24:56+02:00",
+   "bloque_injection": false
+  },
+  {
+   "id": 2785,
+   "source": "lemonde_eco",
+   "titre": "Un nouveau plan vélo pour Paris, avec un objectif de « zéro mort et zéro blessé grave sur la route »",
+   "resume": "La municipalité, qui s’est engagée à sécuriser 420 carrefours jusqu’en 2032, prévoit la création de 140 kilomètres de pistes cyclables nouvelles, qui s’ajouteront aux 454 kilomètres existants.",
+   "publie_le": "2026-10-14T18:33:46+02:00",
    "bloque_injection": false
   },
   {

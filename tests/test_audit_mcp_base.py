@@ -13,9 +13,9 @@ from db import rgpd_purge  # noqa: E402
 
 @pytest.fixture
 def curseur():
-    from tests.test_role_lecture import dsn_proprietaire
+    from tests.garde_base import dsn_de_test
     try:
-        con = psycopg2.connect(dsn_proprietaire(), connect_timeout=3)
+        con = psycopg2.connect(dsn_de_test(), connect_timeout=3)
     except psycopg2.OperationalError as e:
         pytest.skip(f"PostgreSQL injoignable : {e}")
     con.autocommit = False

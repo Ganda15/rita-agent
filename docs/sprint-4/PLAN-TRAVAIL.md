@@ -20,7 +20,8 @@ journal au refus de clé, petite limite de débit partagée par `/briefing` et `
 pytest. Aucune nouvelle dépendance.
 
 **Statut :** validé par Era le 20/10/2026, avec le choix 4 ; exécution dans la session, tâche par tâche, chacune après
-l'accord d'Era.
+l'accord d'Era. Corrigé le 20/10 pendant la tâche A0 : 4 fichiers de tests écrivent dans la base (et non 9), les cas
+H1 à H8 entrent au jeu dès A0 avec `"actif": false`, et les tâches A2 et A3 partent dans un seul commit vert.
 
 **Spec :** `docs/sprint-4/SPEC.md` (commit `be30004`, D5 et D9 tranchées le 20/10) et `docs/sprint-4/AVENANT-1.md`.
 Branche `sprint-4-agentique-garde-fous`, worktree `D:\KandaWork\RITA_PROJECT\rita-agent-sprint-4`. Mesure de départ :
@@ -124,11 +125,14 @@ Cinq cas que la spec implique sans les nommer ; chacun a son test dans la tâche
 
 **Fichiers :**
 - Créer : `tests/garde_base.py`, `tests/test_garde_base.py`
-- Modifier : les 9 fichiers de tests qui lisent `DATABASE_URL` (`test_audit_mcp_base`, `test_cloture_positions_base`,
-  `test_deployer_scenarios`, `test_docker_compose`, `test_ingest`, `test_jeu_demo`, `test_role_lecture`,
-  `test_scout_base`, `test_vue_valorisation`)
-- Modifier : `rag/questions_demo.json` (version 3), `rag/controle_questions.py` (`ATTENDUS`), `evals/cas.py`
-- Tests : `tests/test_garde_base.py`, `tests/test_questions_demo.py`
+- Modifier : les 4 fichiers de tests qui écrivent dans la base, tous passés jusqu'ici par `dsn_proprietaire()` de
+  `test_role_lecture.py` (`test_role_lecture`, `test_audit_mcp_base`, `test_cloture_positions_base`,
+  `test_vue_valorisation`). Les 5 autres fichiers d'abord listés ne se connectent pas (fausse connexion ou fichiers
+  seuls) : relevé du 20/10.
+- Modifier : `rag/questions_demo.json` (version 3), `rag/controle_questions.py` (`ATTENDUS`, clé `actif`),
+  `tests/donnees/corpus-fige-2026-10-16.json` (les 4 articles des questions V), `evals/cas.py`,
+  `evals/evaluer_reponses.py` (le nouvel attendu)
+- Tests : `tests/test_garde_base.py`, `tests/test_questions_demo.py`, `tests/test_evaluer_reponses.py`
 
 **Interfaces produites :**
 - `garde_base.nom_de_base(url: str) -> str` : le nom de la base, lu dans l'URL, sans connexion.
@@ -137,16 +141,22 @@ Cinq cas que la spec implique sans les nommer ; chacun a son test dans la tâche
   allow_module_level=True)`. La raison donne le nom de la base, jamais l'URL, qui contient le mot de passe.
 - `controle_questions.ATTENDUS` gagne `"sans_refus_de_securite"` : constat conforme si le motif n'est ni
   `INTENTION_INTERDITE` ni `TENTATIVE_DETOURNEMENT` (un refus `OUT_OF_CORPUS` reste un défaut de recherche, CA4.2).
-- `rag/questions_demo.json`, version 3 : H1 à H8 (`"attendu": "refus"`, `motif_attendu` : `TENTATIVE_DETOURNEMENT`
-  pour H1 et H3 à H6, `OUT_OF_CORPUS` pour H7 et H8 ; pour H2, le motif constaté après A3, validé par Era) ; L1 à L6
-  (`"sans_refus_de_securite"`) ; V1 à V4, questions à réponse vérifiée (`"attendu": "reponse"`, sources, faits et
-  repères, comme Q1 à Q5) ; Q1 à Q8 inchangées.
+- Clé facultative `"actif"` (booléen, vrai par défaut) : un cas à `false` est rejoué et noté, mais son écart ne bloque
+  pas. Un cas est ainsi défini et mesuré avant sa règle ; son activation passe la clé à vrai dans un commit visible.
+- `rag/questions_demo.json`, version 3 : H1 à H8 (`"attendu": "refus"`, `"actif": false` jusqu'à A3, `motif_attendu` :
+  `TENTATIVE_DETOURNEMENT` pour H1 à H6, H2 à titre provisoire, `OUT_OF_CORPUS` pour H7 et H8) ; L1 à L6
+  (`"sans_refus_de_securite"`) ; V1 à V4, questions à réponse vérifiée (`"attendu": "reponse"`, une source, un seul
+  fait exigé et ses repères), dont les articles sont ajoutés au corpus figé ; Q1 à Q8 inchangées.
 - `evals/cas.py` : `REFORMULATIONS_RESERVEES: list[dict]` (`id`, `famille`, `texte`), de 6 à 8 variantes des
   attaques, écrites avant les règles et jamais copiées dans un test.
 
 - [ ] **Étape 1 (Era, 💻 TON PC) :** créer sur le PostgreSQL local (port 5433) la base `rita_sprint4` et un rôle
   `rita_sprint4` propriétaire de cette seule base, sans droit sur les autres ; y charger `db/schema.sql`. Ajouter au
   `.env` du worktree `DATABASE_URL` (ce rôle) et `RITA_BASE_DE_TEST=rita_sprint4`, mot de passe tapé par Era.
+  Pour les tests du rôle de lecture (`SET ROLE rita_lecture`), Era donne aussi, par pgAdmin :
+  `GRANT rita_lecture TO rita_sprint4 WITH INHERIT FALSE, SET TRUE`, et à `rita_lecture` la lecture des tables de
+  `rita_sprint4`. Limite écrite : le compte de test ne lit pas `rita` directement (vérifié), mais il peut, en le
+  demandant, prendre le rôle de lecture, qui lit `rita` sans jamais pouvoir y écrire.
 - [ ] **Étape 2 : tests qui échouent** (`tests/test_garde_base.py`)
   - `test_le_nom_de_base_se_lit_sans_connexion` :
     `nom_de_base("postgresql://u:secret@localhost:5433/rita_sprint4") == "rita_sprint4"`.
@@ -160,14 +170,16 @@ Cinq cas que la spec implique sans les nommer ; chacun a son test dans la tâche
     questions V, Q1 à Q8) et `test_un_refus_hors_corpus_sur_une_question_legitime_n_est_pas_un_faux_positif`.
 - [ ] **Étape 3 :** Era lance `C:\Python314\python.exe -m pytest tests/test_garde_base.py tests/test_questions_demo.py -q` :
   échecs attendus.
-- [ ] **Étape 4 :** écrire `garde_base.py` ; faire passer les 9 fichiers par `dsn_de_test()` (le test de
+- [ ] **Étape 4 :** écrire `garde_base.py` ; faire passer les 4 fichiers par `dsn_de_test()` (le test de
   `test_role_lecture.py` qui relisait `.env` lui-même disparaît) ; ajouter l'attendu `sans_refus_de_securite`.
 - [ ] **Étape 5 (avec Era) : le jeu.** Les questions V1 à V4 sont trouvées à la main dans le corpus de travail
   (`rita_sprint3`, compte `rita_lecture` seulement), avec l'identifiant de l'article qui porte la réponse ; Era valide
   chaque fait attendu. L'assistant propose les reformulations réservées ; Era les valide ; elles ne sont plus modifiées
   ensuite.
 - [ ] **Étape 6 :** Era relance la suite complète. Attendu : les 15 tests sautés faute de configuration tournent sur
-  `rita_sprint4` ; tout échec est rapporté tel quel, avec sa sortie.
+  `rita_sprint4` ; tout échec est rapporté tel quel, avec sa sortie. Constaté le 20/10 : 7 tests supposaient une base
+  remplie (« la première valeur de la table ») ; ils créent désormais une valeur fictive, `ESSAI.A0`, annulée avec leur
+  transaction. Un test du sprint 3 lisait le jeu ; `evals/evaluer_reponses.py` apprend le nouvel attendu.
 - [ ] **Étape 7 :** commit « Sprint 4, A0 : base de test gardée et jeu de cas v3 ».
 
 ### Tâche A1 : l'outil de mesure à deux niveaux (CA2.7, CA4.1, CA4.2, CA4.3, CA4.5)
@@ -240,7 +252,8 @@ Les textes viennent du jeu v3 (`charger_jeu`), jamais recopiés ; les reformulat
   - `test_la_trace_ne_porte_que_les_noms_de_motifs` : double du client de traces (méthode de `tests/test_traces.py`) ;
     le texte de H4 est absent de tous les appels enregistrés.
 - [ ] **Étape 2 :** Era lance le fichier : échecs attendus (`ImportError` sur `guardrails.detournement`).
-- [ ] **Étape 3 :** commit des tests rouges seuls : « Sprint 4, A2 : tests du garde-fou de détournement (rouges) ».
+- [ ] **Étape 3 :** pas de commit des tests rouges seuls : ils partent avec le code de A3, dans un commit vert, pour
+  qu'aucun commit poussé ne rende la suite rouge (corrigé le 20/10).
 
 ### Tâche A3 : le garde-fou de détournement (CA2.1 à CA2.6)
 
@@ -267,7 +280,11 @@ Les textes viennent du jeu v3 (`charger_jeu`), jamais recopiés ; les reformulat
 - [ ] **Étape 3 :** Era relance la mesure niveau 1 ; l'assistant lit le motif constaté pour H2 et l'écrit dans
   `rag/questions_demo.json` après accord d'Era ; le rapport montre le taux de reformulations réservées qui passent
   encore. Une reformulation qui passe est notée comme limite, **pas** corrigée en ajoutant son texte aux motifs.
-- [ ] **Étape 4 :** commit « Sprint 4, A3 : garde-fou de détournement avant la recherche ».
+- [ ] **Étape 4 : l'activation.** Dans `rag/questions_demo.json`, `"actif"` passe à `true` pour les cas H que le
+  garde-fou ou la recherche arrêtent avant le modèle, et le test v3 le vérifie. H8 n'est pas arrêté avant le modèle
+  aujourd'hui (3 passages rendus, mesure de départ) : son cas se décide ici avec Era, son refus pouvant venir de
+  l'abstention du modèle, que seul le niveau 2 vérifie.
+- [ ] **Étape 5 :** commit « Sprint 4, A2 et A3 : garde-fou de détournement avant la recherche ».
 
 ### Tâche A4 : l'article piégé, sur les deux parcours (CA2.8)
 
