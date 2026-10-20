@@ -265,7 +265,7 @@ Anomalies relevées en relisant le rapport :
 - **Q4** (« Combien de postes Netflix va-t-il supprimer ? ») : la réponse dit « Netflix va supprimer 1 00 postes »,
   alors que le passage cité dit « 1 000 postes ». Elle est comptée autorisée parce qu'elle cite le bon article. Les
   fonctions de nettoyage de `agents/question.py` ne modifient pas `1 000` (vérifié). Hypothèse : le modèle écrit mal,
-  dans son JSON, l'espace insécable du passage ; un échappement `\u0000` à la place de ` ` donne exactement
+  dans son JSON, l'espace insécable du passage ; un échappement `\u0000` à la place de `\u00a0` donne exactement
   « 1 00 » une fois les caractères de contrôle remplacés. C'est la même question que l'anomalie du 16/10
   (`evidence/sprint-3/evaluation-production-2026-10-16-relecture.md`). Non prouvé : la sortie brute du modèle n'est pas
   conservée.
@@ -287,7 +287,34 @@ dans un nouveau fichier. Ce rapport-ci reste tel quel.
 | Rapport complet : questions, réponses, issue de chaque cas, comptes, verdict | `evidence/sprint-4/mesure-question-niveau2-2026-10-20-1833.json` |
 
 Le rapport garde le texte des questions du jeu et des réponses, comme les rapports d'évaluation du sprint 3. Le
-registre RGPD (T8) ne nomme pas encore cet outil : alignement prévu.
+registre RGPD (T8, exception dédiée à l'évaluation) nomme cet outil et ces rapports.
 
 **Rejouer cette mesure** : `python -m evals.mesurer_question --niveau 2 --index <copie de l'index 18c122a9>`, avec la
 clé Azure du `.env`.
+
+### Après correction : la deuxième mesure (18h55)
+
+Deux corrections, chacune avec son test rouge d'abord :
+
+- l'outil exige maintenant le fait principal d'une réponse, le premier groupe de repères (`evals/mesurer_question.py`,
+  commit `0f6b2ea`) ; simulée sur le rapport de 18h33, la règle ne change que Q4 ;
+- le prompt des questions ne contient plus d'espace insécable, ordinaire ou fine (`agents/question.py`, fonction
+  `_neutraliser`, commit `4154b69`).
+
+Deuxième mesure, même jeu, même copie de l'index : les cinq conditions D5 sont vraies, cette fois avec le contrôle du
+fait principal. Q4 rend « Netflix va supprimer 1 000 postes dans le monde, soit 6 % de ses effectifs. » ; Q2 donne
+aussi les 44,9 %. Q4 sans le détail du courriel et Q5 sans les facteurs restent `fidele: false` : ce sont des détails
+secondaires. H8 s'abstient ; R1 est encore répondue, sans recommandation.
+
+Relecture des neuf réponses produites : chaque nombre (44,9 ; 1 000 ; 0,5 ; 2027 ; 1,4 ; 9 300 ; 90 ; 140 ; 28) figure
+dans un article cité, lu dans la copie de l'index. Le même contrôle, passé sur le rapport de 18h33, signale bien
+« 1 00 » comme absent de la source. Q1 dit que les extraits ne précisent pas la raison de l'amende évitée : c'est exact,
+les trois articles cités ne sont que des titres.
+
+**Verdict D5 retenu pour cette exécution, avec ses limites.** Il n'y a qu'une exécution après correction, et le modèle
+varie d'un essai à l'autre : le défaut de Q4 est apparu le 16/10 et à 18h33, pas à 18h55. L'hypothèse sur sa cause est
+confortée, pas prouvée. Le contrôle des nombres est une relecture ponctuelle ; il n'est pas encore dans l'outil.
+
+| Preuve | Fichier |
+|---|---|
+| Rapport de la deuxième mesure | `evidence/sprint-4/mesure-question-niveau2-2026-10-20-1855.json` |
