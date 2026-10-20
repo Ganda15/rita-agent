@@ -191,3 +191,19 @@ Un test le prouvait (`test_ni_prompt_ni_reponse_quand_tous_les_fournisseurs_echo
 Désormais, `_observation` ne transmet jamais une exception au SDK avec son message : l'étape est marquée en erreur avec
 son type, puis l'exception continue son chemin ; la copie réservée à la racine `question` devient inutile. L'erreur
 finale et la ligne de journal ne gardent que le nom du fournisseur, le type d'erreur et le code HTTP.
+
+## Tâche C1 : le 422 sur `/briefing`, critère 3 du contrat du sprint 1 (20/10/2026)
+
+« Étant donné une valeur inconnue ou de plus de 20 caractères, quand je demande un briefing, alors je reçois un 422 et
+le modèle n'est pas appelé. » La longueur (1 à 20 caractères) est contrôlée par FastAPI avant d'entrer dans la route ;
+une valeur absente du référentiel est refusée par `valeur_existe` (`indicateurs/socle.py`), avant la trace et le graphe,
+avec une ligne de journal `briefing refuse : valeur inconnue`. La requête est paramétrée : la valeur ne passe jamais
+dans le texte SQL.
+
+| Preuve | Fichier |
+|---|---|
+| 5 tests : 21 caractères (ni modèle ni base), valeur vide, valeur inconnue (ni modèle, ligne de journal), valeur connue (même réponse), requête paramétrée face à une tentative d'injection SQL | `tests/test_briefing_422.py` |
+
+Dans les tests, une règle par défaut (`tests/conftest.py`, `valeurs_connues_par_defaut`) tient toute valeur pour connue :
+la CI n'a pas de base. Les tests du 422 la remplacent. Limite : la casse n'est pas normalisée ; `mc.pa` est une valeur
+inconnue, le référentiel étant écrit en majuscules.

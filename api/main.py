@@ -18,7 +18,7 @@ import uuid
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, HTTPException, Request, Security
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, Security
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 from starlette.background import BackgroundTask, BackgroundTasks
@@ -32,6 +32,7 @@ from api.question import routeur as routeur_question
 from db import audit_mcp
 from graph.workflow import generer_briefing_complet
 from guardrails.sortie import verifier_fuite, verifier_sortie
+from indicateurs.socle import valeur_existe
 from rag import indexation
 from src import traces
 
@@ -232,7 +233,7 @@ app.include_router(routeur_question, dependencies=[Depends(verify_api_key)])
 # --- C9 : le briefing rédigé ------------------------------------------------
 @app.post("/briefing", tags=["briefing IA"],
           summary="Générer un briefing rédigé pour une valeur")
-def briefing(ticker: str, api_key: str = Security(verify_api_key)):
+def briefing(ticker: str = Query(min_length=1, max_length=20), api_key: str = Security(verify_api_key)):
     """Produit un texte en français à partir des données de la valeur.
 
     Relève de **C9** (exposer un modèle), pas de C5 : la sortie est une rédaction, pas de
@@ -240,6 +241,12 @@ def briefing(ticker: str, api_key: str = Security(verify_api_key)):
     """
     request_id = request_id_courant()
     debut = time.perf_counter()
+    # Sprint 4 (C1) : critère 3 du contrat du sprint 1. La longueur (1 à 20 caractères) est contrôlée par FastAPI avant
+    # d'entrer ici ; une valeur absente du référentiel est refusée maintenant, avant tout appel au modèle, avec une ligne
+    # de journal. `%r` neutralise une valeur saisie qui voudrait forger de fausses lignes.
+    if not valeur_existe(ticker):
+        logger.warning("briefing refuse : valeur inconnue : request_id=%s ticker=%r", request_id, ticker)
+        raise HTTPException(status_code=422, detail="Valeur inconnue : aucun briefing n'est possible pour ce code.")
     # Une racine de trace par briefing (C11) : tout ce qui suit, y compris l'appel au modèle,
     # se range dessous, et le verdict du garde-fou y est posé. Sans clés Langfuse, `racine`
     # vaut None et rien ne change (src/traces.py). L'identifiant de requête devient celui
