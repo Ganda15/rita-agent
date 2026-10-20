@@ -114,6 +114,20 @@ async function demanderBriefing(cle, ticker) {
     return;
   }
 
+  if (reponse.status === 422) {
+    // Sprint 4 (C1) : une valeur absente du référentiel est refusée en 422, avant tout appel au modèle. Un code trop
+    // long n'arrive pas jusqu'ici : le champ le refuse avant l'envoi (attribut `pattern`).
+    afficherStatut(`Valeur introuvable : « ${ticker} » n'est pas dans l'univers suivi.`);
+    return;
+  }
+
+  if (reponse.status === 429) {
+    // Sprint 4 (C3) : la limite de débit. FastAPI range le refus poli sous `detail`.
+    const refus = await texteDuRefus(reponse);
+    afficherStatut(refus || "Trop de demandes en peu de temps. Réessayez dans une minute.");
+    return;
+  }
+
   if (!reponse.ok) {
     afficherStatut(`Erreur ${reponse.status} — le serveur n'a pas pu répondre.`);
     return;
@@ -126,6 +140,15 @@ async function demanderBriefing(cle, ticker) {
   // L'identifiant de requête est dans l'en-tête de TOUTE réponse (C11) : c'est le même
   // dans le journal de l'API et dans la trace du monitorage. On le montre pour le support.
   afficher(donnees, reponse.headers.get("X-Request-ID"));
+}
+
+async function texteDuRefus(reponse) {
+  try {
+    const corps = await reponse.json();
+    return String(corps?.detail?.texte ?? "");
+  } catch (erreur) {
+    return "";
+  }
 }
 
 async function detailErreur(reponse) {

@@ -18,7 +18,7 @@ import uuid
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, HTTPException, Request, Security
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, Security
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 from starlette.background import BackgroundTask, BackgroundTasks
@@ -26,11 +26,14 @@ from typing import Literal
 from fastapi.security.api_key import APIKeyHeader
 from fastapi.staticfiles import StaticFiles
 
+from agents.analyst import CONSIGNES_REDACTION, ROLE_REDACTEUR
 from api.donnees import routeur as routeur_donnees
+from api.limiteur import limiter_debit
 from api.question import routeur as routeur_question
 from db import audit_mcp
 from graph.workflow import generer_briefing_complet
-from guardrails.sortie import verifier_sortie
+from guardrails.sortie import verifier_fuite, verifier_sortie
+from indicateurs.socle import valeur_existe
 from rag import indexation
 from src import traces
 
@@ -156,7 +159,7 @@ def cle_attendue() -> str:
     return cle
 
 
-def verify_api_key(api_key: str = Security(API_KEY_HEADER)):
+def verify_api_key(request: Request, api_key: str = Security(API_KEY_HEADER)):
     """Autorisation par clé d'API.
 
     Volontairement simple : une seule clé, comparée à `RITA_API_KEY`. RITA est
@@ -167,7 +170,13 @@ def verify_api_key(api_key: str = Security(API_KEY_HEADER)):
     # `compare_digest` et non `!=` : une comparaison de chaînes ordinaire s'arrête au
     # premier caractère différent, et son temps d'exécution renseigne donc un attaquant
     # sur le nombre de caractères devinés. La différence est infime, la parade gratuite.
-    if api_key is None or not secrets.compare_digest(api_key, cle_attendue()):
+    if not api_key or not secrets.compare_digest(api_key, cle_attendue()):
+        # Sprint 4 (C2) : critère 4 du contrat du sprint 1. Un refus laisse UNE ligne de journal : l'identifiant de
+        # requête (le même que l'en-tête X-Request-ID), la route et le motif. Jamais la clé, ni un morceau, ni sa
+        # longueur : elle pourrait être une vraie clé mal collée, et la journaliser la ferait fuiter.
+        motif = "absente" if not api_key else "invalide"
+        logger.warning("cle d'API refusee : request_id=%s route=%s motif=%s",
+                       request_id_courant(), request.url.path, motif)
         raise HTTPException(status_code=403, detail="Cle d'API invalide ou absente")
     return api_key
 
@@ -225,13 +234,16 @@ app.include_router(routeur_donnees, dependencies=[Depends(verify_api_key)])
 # --- Sprint 3 : les questions libres (tâche A5) ----------------------------------------------------------------------
 # Même garde-fou de conception : la clé est posée sur le routeur entier. Le montage des fichiers statiques sur « / »
 # reste le DERNIER de ce fichier, sinon il capterait `/question` avant la route.
-app.include_router(routeur_question, dependencies=[Depends(verify_api_key)])
+# Sprint 4 (C3) : la limite de débit vient APRÈS la clé, dans cet ordre : un appel sans clé valide ne consomme pas le
+# quota. Le même compteur sert `/briefing` (api/limiteur.py).
+app.include_router(routeur_question, dependencies=[Depends(verify_api_key), Depends(limiter_debit)])
 
 
 # --- C9 : le briefing rédigé ------------------------------------------------
 @app.post("/briefing", tags=["briefing IA"],
           summary="Générer un briefing rédigé pour une valeur")
-def briefing(ticker: str, api_key: str = Security(verify_api_key)):
+def briefing(ticker: str = Query(min_length=1, max_length=20), api_key: str = Security(verify_api_key),
+             _debit: None = Depends(limiter_debit)):
     """Produit un texte en français à partir des données de la valeur.
 
     Relève de **C9** (exposer un modèle), pas de C5 : la sortie est une rédaction, pas de
@@ -239,6 +251,12 @@ def briefing(ticker: str, api_key: str = Security(verify_api_key)):
     """
     request_id = request_id_courant()
     debut = time.perf_counter()
+    # Sprint 4 (C1) : critère 3 du contrat du sprint 1. La longueur (1 à 20 caractères) est contrôlée par FastAPI avant
+    # d'entrer ici ; une valeur absente du référentiel est refusée maintenant, avant tout appel au modèle, avec une ligne
+    # de journal. `%r` neutralise une valeur saisie qui voudrait forger de fausses lignes.
+    if not valeur_existe(ticker):
+        logger.warning("briefing refuse : valeur inconnue : request_id=%s ticker=%r", request_id, ticker)
+        raise HTTPException(status_code=422, detail="Valeur inconnue : aucun briefing n'est possible pour ce code.")
     # Une racine de trace par briefing (C11) : tout ce qui suit, y compris l'appel au modèle,
     # se range dessous, et le verdict du garde-fou y est posé. Sans clés Langfuse, `racine`
     # vaut None et rien ne change (src/traces.py). L'identifiant de requête devient celui
@@ -255,9 +273,14 @@ def briefing(ticker: str, api_key: str = Security(verify_api_key)):
         # est une consigne, pas un contrôle. Ajouté le 17/08/2026 : il était invoqué par le
         # docstring de guardrails/injection.py sans exister. Fail-closed : en cas de doute,
         # on ne diffuse pas.
+        #
+        # Sprint 4 (B2) : dans la même étape, le contrôle de fuite. Un briefing qui laisserait sortir un secret, une
+        # valeur de configuration ou un morceau des consignes du rédacteur n'est pas diffusé (CA3.1, CA3.2).
         with traces.etape("garde-fou-sortie") as span_sortie:
             verdict = verifier_sortie(resultat["briefing"])
-            traces.noter_garde_fou(span_sortie, not verdict["conforme"], verdict["motifs_detectes"])
+            fuite = verifier_fuite(resultat["briefing"], (ROLE_REDACTEUR, CONSIGNES_REDACTION))
+            traces.noter_garde_fou(span_sortie, not (verdict["conforme"] and fuite["conforme"]),
+                                   verdict["motifs_detectes"] + fuite["motifs_detectes"])
         traces.noter_verdict_amf(racine, resultat["ticker"], verdict["conforme"],
                                  verdict["motifs_detectes"], request_id=request_id)
 
@@ -268,6 +291,11 @@ def briefing(ticker: str, api_key: str = Security(verify_api_key)):
     if not verdict["conforme"]:
         logger.warning("briefing refuse par le garde-fou de sortie : request_id=%s ticker=%r motifs=%s",
                        request_id, resultat["ticker"], ",".join(verdict["motifs_detectes"]))
+    if not fuite["conforme"]:
+        logger.warning("briefing refuse par le controle de fuite : request_id=%s ticker=%r motifs=%s",
+                       request_id, resultat["ticker"], ",".join(fuite["motifs_detectes"]))
+    # Une fuite l'emporte sur tout : son message remplace le texte, même si le contrôle AMF l'acceptait.
+    texte_diffuse = verdict["texte_diffusable"] if fuite["conforme"] else fuite["texte_diffusable"]
 
     # Une ligne INFO par briefing servi : identifiant, valeur, verdict, durée. Jamais le texte.
     # C'est la matière première du monitorage (C20) : combien, pour qui, en combien de temps.
@@ -280,7 +308,7 @@ def briefing(ticker: str, api_key: str = Security(verify_api_key)):
         "price": resultat["price"],
         "change_pct": resultat["change_pct"],
         "currency": resultat["currency"],
-        "briefing": verdict["texte_diffusable"],
+        "briefing": texte_diffuse,
         "conforme_amf": verdict["conforme"],
         "motifs_amf": verdict["motifs_detectes"],
         # Sprint 2 (14/10) : le nombre d'articles distincts transmis au modèle. Un briefing est rédigé même sans

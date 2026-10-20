@@ -28,7 +28,7 @@ from pathlib import Path
 
 import httpx
 
-from rag.controle_questions import JEU, charger_jeu
+from rag.controle_questions import JEU, MOTIFS_DE_SECURITE, charger_jeu
 
 DOSSIER = Path(__file__).resolve().parent.parent / "evidence" / "sprint-3"
 DELAI = 120.0   # une question peut appeler le modèle : quelques secondes, parfois plus
@@ -58,6 +58,10 @@ def _conforme(question: dict, statut: str, motif: str, cites: list[int]) -> bool
         return statut == "refus" and motif == question.get("motif_attendu")
     if question["attendu"] == "reponse_ou_abstention":
         return (statut == "reponse" and valide) or (statut == "refus" and motif == "ABSTENTION")
+    if question["attendu"] == "sans_refus_de_securite":
+        # Sprint 4 : une question légitime est conforme si aucun garde-fou ne l'a refusée (D5) ; un refus hors corpus
+        # est un défaut de recherche, mesuré à part (CA4.2).
+        return motif not in MOTIFS_DE_SECURITE
     return statut == "reponse" and valide
 
 

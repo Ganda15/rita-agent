@@ -29,7 +29,6 @@ from __future__ import annotations
 
 import logging
 import os
-import sys
 from contextlib import contextmanager
 from dataclasses import dataclass
 
@@ -78,11 +77,18 @@ def _signaler(operation: str, erreur: BaseException) -> None:
 
 @contextmanager
 def _observation(client, **options):
-    """Ouvre une observation Langfuse sans jamais laisser une erreur du SDK remonter.
+    """Ouvre une observation Langfuse sans jamais laisser une erreur du SDK remonter, ni un texte y partir.
 
     Si l'ouverture échoue, le corps reçoit `None` et tout ce qui suit est un no-op. Si la
-    fermeture échoue, on la signale et on continue. Une exception du corps (le métier), elle,
-    traverse : on la transmet au SDK pour qu'il marque l'observation, puis on la relance.
+    fermeture échoue, on la signale et on continue. Une exception du corps (le métier) n'est
+    JAMAIS transmise au SDK : son message peut recopier un prompt, une question ou une réponse.
+    Seul son type est noté (niveau ERROR), l'observation se ferme sans exception, puis
+    l'exception est relancée telle quelle pour l'appelant.
+
+    Sprint 4 (D9) : ce comportement était réservé à la racine `question` (revue de sécurité du
+    16/10/2026). La revue de sécurité automatique du commit dc2b323 (20/10/2026) a montré que
+    l'erreur finale de `generer_texte` traversait encore `redacteur` et `briefing` avec son
+    message : il vaut désormais pour toutes les observations.
     """
     try:
         gestionnaire = client.start_as_current_observation(**options)
@@ -93,13 +99,10 @@ def _observation(client, **options):
         return
     try:
         yield observation
-    except BaseException:
-        try:
-            gestionnaire.__exit__(*sys.exc_info())
-        except Exception as erreur:  # noqa: BLE001
-            _signaler(f"la fermeture de {options.get('name')!r}", erreur)
+    except BaseException as erreur:
+        _maj(observation, level="ERROR", status_message=type(erreur).__name__)
         raise
-    else:
+    finally:
         try:
             gestionnaire.__exit__(None, None, None)
         except Exception as erreur:  # noqa: BLE001
@@ -244,9 +247,16 @@ def noter_garde_fou(span, bloque: bool, motifs: list[str]) -> None:
     _maj(span, **champs)
 
 
+# --- Sprint 4, tâche B3 : le briefing ne trace que des métadonnées (décision D9, spec CA3.6) ------------------------
+# Jusqu'ici, le prompt et la réponse brute du modèle partaient vers la trace AVANT les contrôles de sortie : un texte
+# refusé à l'écran restait dans Langfuse. Désormais, ni `appel`, ni `generation`, ni `terminer`, ni `echouer`
+# n'envoient de texte : le modèle, les jetons, la durée (ouverture et fermeture des étapes), le fournisseur, la
+# tentative, et le TYPE d'une erreur, jamais son message, qui peut recopier le prompt. L'envoi est empêché à la source :
+# masquer après coup ne garantirait pas qu'aucune copie n'est partie.
+
 @contextmanager
-def appel(prompt: str):
-    """Ouvre le trace d'UN appel au rédacteur : un span racine `briefing-llm`.
+def appel():
+    """Ouvre le trace d'UN appel au rédacteur : un span racine `briefing-llm`, sans le prompt.
 
     Les tentatives (une génération par fournisseur) se rangent dessous. Mesuré le 02/10/2026
     avant cette structure : trois appels donnaient neuf lignes racines dans Langfuse, une par
@@ -257,19 +267,13 @@ def appel(prompt: str):
     if client is None:
         yield None
         return
-    with _observation(client, as_type="span", name="briefing-llm", input=prompt) as racine:
+    with _observation(client, as_type="span", name="briefing-llm") as racine:
         yield racine
 
 
-def terminer_appel(racine, texte: str) -> None:
-    """Pose la sortie finale sur le trace : ce que le rédacteur a vraiment reçu."""
-    if racine is not None:
-        _maj(racine, output=texte)
-
-
 @contextmanager
-def generation(fournisseur: str, modele: str, prompt: str, tentative: int):
-    """Ouvre une génération Langfuse pour une tentative ; rend `None` si le traçage est coupé.
+def generation(fournisseur: str, modele: str, tentative: int):
+    """Ouvre une génération Langfuse pour une tentative, sans le prompt ; rend `None` si le traçage est coupé.
 
     Nommée par fournisseur (`llm-anthropic`…) : dans l'arbre du trace, on lit d'un coup qui a
     répondu et qui a échoué avant.
@@ -283,29 +287,29 @@ def generation(fournisseur: str, modele: str, prompt: str, tentative: int):
         as_type="generation",
         name=f"llm-{fournisseur}",
         model=modele,
-        input=prompt,
         metadata={"fournisseur": fournisseur, "tentative": tentative},
     ) as gen:
         yield gen
 
 
 def terminer(gen, reponse: Reponse) -> None:
-    """Complète la génération avec la sortie, le modèle réel et l'usage s'ils existent."""
+    """Complète la génération avec le modèle réel et l'usage s'ils existent ; jamais le texte produit (D9)."""
     if gen is None:
         return
-    details: dict = {"output": reponse.texte}
+    details: dict = {}
     if reponse.modele:
         details["model"] = reponse.modele
     if reponse.usage:
         details["usage_details"] = reponse.usage
-    _maj(gen, **details)
+    if details:
+        _maj(gen, **details)
 
 
 def echouer(gen, erreur: BaseException) -> None:
-    """Marque la tentative en erreur ; le message est tronqué, jamais la clé d'API."""
+    """Marque l'étape en erreur avec le seul TYPE de l'erreur : son message peut recopier le prompt (D9)."""
     if gen is None:
         return
-    _maj(gen, level="ERROR", status_message=f"{type(erreur).__name__}: {erreur}"[:300])
+    _maj(gen, level="ERROR", status_message=type(erreur).__name__)
 
 
 def vider() -> None:
@@ -316,31 +320,8 @@ def vider() -> None:
 
 # --- Sprint 3, tâche A3 : le parcours des questions -----------------------------------------------------------------
 # Une question peut contenir une donnée personnelle tapée par un visiteur (décision D2) : sa trace ne porte que des
-# métadonnées. Ni `input` ni `output` ici, contrairement à `appel` et `generation`, que ce parcours n'utilise pas.
-
-@contextmanager
-def _observation_masquee(client, **options):
-    """Comme `_observation`, mais une exception du corps n'est JAMAIS transmise au SDK : son message peut recopier une
-    question. Seul son type est noté (niveau ERROR), l'observation se ferme sans exception, puis l'exception est
-    relancée telle quelle pour l'appelant (revue de sécurité des commits A1 à A3, 16/10/2026)."""
-    try:
-        gestionnaire = client.start_as_current_observation(**options)
-        observation = gestionnaire.__enter__()
-    except Exception as erreur:  # noqa: BLE001
-        _signaler(f"l'ouverture de {options.get('name')!r}", erreur)
-        yield None
-        return
-    try:
-        yield observation
-    except BaseException as erreur:
-        _maj(observation, level="ERROR", status_message=type(erreur).__name__)
-        raise
-    finally:
-        try:
-            gestionnaire.__exit__(None, None, None)
-        except Exception as erreur:  # noqa: BLE001
-            _signaler(f"la fermeture de {options.get('name')!r}", erreur)
-
+# métadonnées. Ni `input` ni `output` ici. Une exception n'est jamais transmise au SDK avec son message : c'est désormais
+# le comportement de `_observation` pour toutes les observations (sprint 4, D9), et non plus d'une copie réservée ici.
 
 @contextmanager
 def question(request_id: str | None = None):
@@ -361,7 +342,7 @@ def question(request_id: str | None = None):
         except Exception as erreur:  # noqa: BLE001
             _signaler("la derivation de l'identifiant de trace", erreur)
     try:
-        with _observation_masquee(client, as_type="span", name="question", **options) as racine:
+        with _observation(client, as_type="span", name="question", **options) as racine:
             yield racine
     finally:
         _flush(client)

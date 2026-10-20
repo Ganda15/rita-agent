@@ -5,33 +5,17 @@ Le rôle `rita_lecture` a SELECT sur toutes les tables et vues du schéma public
 On le prouve sans mot de passe : connecté en propriétaire, `SET ROLE rita_lecture`, puis on
 tente d'écrire — la base doit refuser. Item 8 du harnais (rapport Agentic SD, 19/09/2026).
 """
-import os
-import re
-from pathlib import Path
-
 import pytest
 
+from tests.garde_base import dsn_de_test
+
 psycopg2 = pytest.importorskip("psycopg2")
-
-RACINE = Path(__file__).parent.parent
-
-
-def dsn_proprietaire() -> str:
-    if os.environ.get("DATABASE_URL"):
-        return os.environ["DATABASE_URL"]
-    env = RACINE / ".env"
-    if env.exists():
-        for l in env.read_text(encoding="utf-8").splitlines():
-            m = re.match(r"^\s*DATABASE_URL\s*=\s*(.*)$", l)
-            if m:
-                return m.group(1).strip().strip('"').strip("'")
-    pytest.skip("pas de DATABASE_URL : base locale absente (CI)", allow_module_level=True)
 
 
 @pytest.fixture
 def curseur():
     try:
-        con = psycopg2.connect(dsn_proprietaire(), connect_timeout=3)
+        con = psycopg2.connect(dsn_de_test(), connect_timeout=3)
     except psycopg2.OperationalError as e:
         pytest.skip(f"PostgreSQL injoignable : {e}")
     con.autocommit = False

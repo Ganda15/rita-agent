@@ -89,6 +89,11 @@ def test_les_nombres_sont_compares_sans_espaces_insecables():
     ("reponse_ou_abstention", None, _refus("ABSTENTION"), True),
     ("reponse_ou_abstention", None, _reponse("Texte [1].", 2788), True),
     ("reponse_ou_abstention", None, _refus("CITATIONS_INVALIDES"), False),
+    # Sprint 4, jeu v3 : une question légitime est conforme si aucun garde-fou ne l'a refusée ; un refus hors corpus
+    # est un défaut de recherche, mesuré à part (CA4.2), pas un faux positif.
+    ("sans_refus_de_securite", None, _refus("OUT_OF_CORPUS"), True),
+    ("sans_refus_de_securite", None, _refus("TENTATIVE_DETOURNEMENT"), False),
+    ("sans_refus_de_securite", None, _reponse("Texte [1].", 2788), True),
 ])
 def test_un_statut_contraire_a_l_attendu_est_signale(attendu, motif_attendu, obtenu, conforme):
     jeu = _jeu(_q("Q", attendu, validees=[2788] if attendu != "refus" else [], motif=motif_attendu))
@@ -179,7 +184,8 @@ def test_sans_cle_aucune_requete_n_est_envoyee(monkeypatch):
 def test_le_jeu_porte_des_reperes_pour_chaque_fait():
     from rag.controle_questions import charger_jeu
     for q in charger_jeu()["questions"]:
-        if q["attendu"] == "refus":
+        # Les refus et les questions légitimes du sprint 4 (L1 à L6) n'ont pas de fait attendu, donc pas de repère.
+        if q["attendu"] in ("refus", "sans_refus_de_securite"):
             continue
         reperes = q.get("reperes_attendus")
         assert isinstance(reperes, list) and len(reperes) == len(q["faits_attendus"]), q["id"]

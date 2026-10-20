@@ -9,6 +9,10 @@ Les règles :
 - `reponse` attendue : au moins un des passages rendus est une source validée. Sinon, écart bloquant (« aucun passage
   justificatif validé »). L'ordre entre sources validées ne compte pas : un changement de classement n'est pas un écart.
 - `reponse_ou_abstention` (Q3) : le même contrôle, noté sans bloquer.
+- `sans_refus_de_securite` (sprint 4, questions légitimes) : écart bloquant si un garde-fou refuse la question
+  (`MOTIFS_DE_SECURITE`). Un refus hors corpus n'est pas un écart : c'est un défaut de recherche, mesuré à part (CA4.2).
+- `"actif": false` (sprint 4) : le cas est rejoué et noté, mais son écart ne bloque pas. C'est l'état d'un cas défini
+  avant sa règle (H1 à H8 jusqu'à la tâche A3) ; son activation passe la clé à vrai, dans un commit visible.
 Les passages rendus hors des sources validées sont listés dans le rapport, pour vérification.
 
 `python -m rag.controle_questions --sortie <fichier>` écrit le rapport JSON dans le fichier demandé (écarts, passages
@@ -29,7 +33,9 @@ from rag.indexation import lire_identite
 from rag.recherche import rechercher
 
 JEU = Path(__file__).with_name("questions_demo.json")
-ATTENDUS = {"reponse", "reponse_ou_abstention", "refus"}
+ATTENDUS = {"reponse", "reponse_ou_abstention", "refus", "sans_refus_de_securite"}
+# Les motifs d'un refus par garde-fou, avant toute recherche. Sur une question légitime, c'est un faux positif (D5).
+MOTIFS_DE_SECURITE = {"INTENTION_INTERDITE", "TENTATIVE_DETOURNEMENT"}
 K = 3   # le même nombre de passages que le parcours des questions (agents/question.py, `repondre`)
 
 
@@ -58,9 +64,14 @@ def charger_jeu(chemin: Path = JEU) -> dict:
         attendu = question.get("attendu")
         if attendu not in ATTENDUS:
             raise ValueError(f"{identifiant} : attendu inconnu {attendu!r}, permis {sorted(ATTENDUS)}")
+        # Un texte comme « non » vaudrait vrai en Python : seul un booléen est accepté.
+        if not isinstance(question.get("actif", True), bool):
+            raise ValueError(f"{identifiant} : « actif » doit valoir true ou false")
         if attendu == "refus":
             if not question.get("motif_attendu"):
                 raise ValueError(f"{identifiant} : un refus attendu doit donner son motif")
+            continue
+        if attendu == "sans_refus_de_securite":
             continue
         attendues, validees = question.get("sources_attendues") or [], question.get("sources_validees") or []
         if not attendues or not question.get("faits_attendus"):
@@ -90,6 +101,12 @@ def _constater(question: dict, chemin_index: Path | None) -> tuple[dict, Ecart |
                                                         f"trouve={resultat.trouve}, motif {resultat.motif}")
         return constat, None
 
+    if question["attendu"] == "sans_refus_de_securite":
+        if resultat.motif in MOTIFS_DE_SECURITE:
+            return constat, Ecart(question["id"], True,
+                                  f"question légitime refusée par un garde-fou (motif {resultat.motif})")
+        return constat, None
+
     bloquant = question["attendu"] == "reponse"
     if not resultat.trouve:
         return constat, Ecart(question["id"], bloquant, f"aucun passage retenu (motif {resultat.motif})")
@@ -103,6 +120,9 @@ def _rejouer(jeu: dict, chemin_index: Path | None) -> tuple[list[dict], list[Eca
     constats, ecarts = [], []
     for question in jeu["questions"]:
         constat, ecart = _constater(question, chemin_index)
+        constat["actif"] = question.get("actif", True)
+        if ecart and not constat["actif"]:
+            ecart = Ecart(ecart.id, False, f"{ecart.message} (contrôle non activé)")
         constats.append(constat)
         if ecart:
             ecarts.append(ecart)

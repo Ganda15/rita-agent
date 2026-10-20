@@ -147,6 +147,15 @@ def _executer(sql: str, parametres: tuple | None = None) -> list[dict[str, Any]]
             return [dict(l) for l in cur.fetchall()]
 
 
+def valeur_existe(ticker: str) -> bool:
+    """La valeur est-elle dans le référentiel ? (sprint 4, tâche C1 ; critère 3 du contrat du sprint 1)
+
+    Lue par la route `/briefing` avant tout appel au modèle. La valeur passe en paramètre de la requête, jamais dans son
+    texte : une valeur comme « X'; DROP TABLE valeur; -- » ne peut rien y faire.
+    """
+    return bool(_executer("SELECT 1 AS present FROM valeur WHERE ticker = %s", (ticker,)))
+
+
 def lire_socle(tickers: list[str] | None = None) -> list[IndicateursValeur]:
     """Les 11 indicateurs du lot 1, pour tout l'univers ou pour une sélection.
 

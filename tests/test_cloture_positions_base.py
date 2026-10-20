@@ -13,9 +13,9 @@ from db import rgpd_purge  # noqa: E402
 
 @pytest.fixture
 def curseur():
-    from tests.test_role_lecture import dsn_proprietaire
+    from tests.garde_base import dsn_de_test
     try:
-        con = psycopg2.connect(dsn_proprietaire(), connect_timeout=3)
+        con = psycopg2.connect(dsn_de_test(), connect_timeout=3)
     except psycopg2.OperationalError as e:
         pytest.skip(f"PostgreSQL injoignable : {e}")
     con.autocommit = False
@@ -26,8 +26,11 @@ def curseur():
 
 
 def _ticker(cur):
-    cur.execute("SELECT ticker FROM valeur ORDER BY ticker LIMIT 1")
-    return cur.fetchone()[0]
+    # Sprint 4 (A0) : une valeur fictive, créée dans la transaction du test et annulée avec elle. Le test ne dépend plus
+    # du contenu de la base : la base de test dédiée n'a que le schéma.
+    cur.execute("INSERT INTO valeur (ticker, nom_officiel) VALUES ('ESSAI.A0', 'Valeur d''essai des tests') "
+                "ON CONFLICT (ticker) DO NOTHING")
+    return "ESSAI.A0"
 
 
 def test_la_base_refuse_la_meme_ligne_deux_fois(curseur):
