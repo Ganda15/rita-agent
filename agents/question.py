@@ -24,6 +24,7 @@ from pydantic import BaseModel, ConfigDict, ValidationError
 from guardrails.detournement import MESSAGE_REFUS as MESSAGE_TENTATIVE_DETOURNEMENT
 from guardrails.entree import MESSAGE_REFUS as MESSAGE_INTENTION_INTERDITE
 from guardrails.injection import neutraliser
+from guardrails.nombres import MESSAGE_REFUS_NOMBRE, espaces_simples, nombres_absents
 from guardrails.sortie import MESSAGE_REFUS_FUITE, verifier_fuite, verifier_sortie
 from rag.recherche import Passage, rechercher
 from src.llm import FournisseurIndisponible, ReponseTronquee, generer_json
@@ -94,11 +95,12 @@ def _neutraliser(texte: str) -> str:
     - Les crochets deviennent des parenthèses, et les retours à la ligne des espaces : le texte ne peut pas fabriquer
       une fausse ligne « [2] (Reuters, date) ... » et faire attribuer une phrase à une fausse source (revue de
       sécurité des commits A1 à A3, 16/10/2026). Seule l'application écrit des numéros d'extraits.
-    - Les espaces insécables, ordinaire et fine, deviennent des espaces normales. Mesure de niveau 2 du 20/10/2026 : Q4
-      a rendu « 1 00 postes » pour « 1 000 » écrit avec une espace insécable ; hypothèse, le modèle recopiait mal ce
-      caractère dans son JSON.
+    - Toutes les espaces Unicode (insécable, fine, fine ordinaire...) deviennent une espace simple. Mesure de niveau 2
+      du 20/10/2026 : Q4 a rendu « 1 00 postes » pour « 1 000 » écrit avec une espace insécable. La cause n'est pas
+      prouvée (le défaut est revenu une fois en production après la correction) : le contrôle des nombres
+      (`guardrails/nombres.py`) vérifie la réponse avant qu'elle soit servie.
     """
-    return texte.translate(_REMPLACEMENTS)
+    return espaces_simples(texte.translate(_REMPLACEMENTS))
 
 
 def construire_prompt(question: str, passages: list[Passage]) -> str:
@@ -128,6 +130,7 @@ ABSTENTION = "ABSTENTION"
 CITATIONS_INVALIDES = "CITATIONS_INVALIDES"
 SORTIE_NON_CONFORME = "SORTIE_NON_CONFORME"
 FUITE_BLOQUEE = "FUITE_BLOQUEE"
+NOMBRE_NON_SOURCE = "NOMBRE_NON_SOURCE"
 FOURNISSEUR_INDISPONIBLE = "FOURNISSEUR_INDISPONIBLE"
 REPONSE_TRONQUEE = "REPONSE_TRONQUEE"
 FORMAT_INVALIDE = "FORMAT_INVALIDE"
@@ -141,6 +144,7 @@ TEXTES_REFUS = {
     ABSTENTION: "Les articles dont je dispose ne permettent pas de répondre à cette question.",
     CITATIONS_INVALIDES: "La réponse produite ne citait pas correctement ses sources : elle n'est pas affichée.",
     FUITE_BLOQUEE: MESSAGE_REFUS_FUITE,
+    NOMBRE_NON_SOURCE: MESSAGE_REFUS_NOMBRE,
 }
 TEXTE_ERREUR = "Le service n'a pas pu répondre pour le moment. Réessayez plus tard."
 
@@ -280,6 +284,14 @@ def repondre(question: str, chemin_index: Path | None = None, k: int = 3) -> Rep
     verdict = verifier_sortie(sortie.texte)
     if not verdict["conforme"]:
         return _refus(SORTIE_NON_CONFORME, verdict["texte_diffusable"])
+
+    # Après le rejeu en production du 20/10/2026 (Q4 servie avec « 1 0 postes » pour « 1 000 ») : chaque nombre de la
+    # réponse doit figurer dans un des articles cités. En dernier : la sécurité (fuite) et la conformité (AMF) gardent
+    # leur motif quand une réponse est refusée pour plusieurs raisons. Le journal reçoit le compte, jamais le texte.
+    absents = nombres_absents(sortie.texte, [passages[numero - 1].texte for numero in sorted(set(sortie.citations))])
+    if absents:
+        logger.warning("reponse refusee par le controle des nombres : nombres_absents=%d", len(absents))
+        return _refus(NOMBRE_NON_SOURCE)
 
     references = [_reference(numero, passages[numero - 1]) for numero in sorted(set(sortie.citations))]
     return ReponseQuestion("reponse", OK, sortie.texte, references)
