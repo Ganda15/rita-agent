@@ -28,6 +28,7 @@ from fastapi.staticfiles import StaticFiles
 
 from agents.analyst import CONSIGNES_REDACTION, ROLE_REDACTEUR
 from api.donnees import routeur as routeur_donnees
+from api.limiteur import limiter_debit
 from api.question import routeur as routeur_question
 from db import audit_mcp
 from graph.workflow import generer_briefing_complet
@@ -233,13 +234,16 @@ app.include_router(routeur_donnees, dependencies=[Depends(verify_api_key)])
 # --- Sprint 3 : les questions libres (tâche A5) ----------------------------------------------------------------------
 # Même garde-fou de conception : la clé est posée sur le routeur entier. Le montage des fichiers statiques sur « / »
 # reste le DERNIER de ce fichier, sinon il capterait `/question` avant la route.
-app.include_router(routeur_question, dependencies=[Depends(verify_api_key)])
+# Sprint 4 (C3) : la limite de débit vient APRÈS la clé, dans cet ordre : un appel sans clé valide ne consomme pas le
+# quota. Le même compteur sert `/briefing` (api/limiteur.py).
+app.include_router(routeur_question, dependencies=[Depends(verify_api_key), Depends(limiter_debit)])
 
 
 # --- C9 : le briefing rédigé ------------------------------------------------
 @app.post("/briefing", tags=["briefing IA"],
           summary="Générer un briefing rédigé pour une valeur")
-def briefing(ticker: str = Query(min_length=1, max_length=20), api_key: str = Security(verify_api_key)):
+def briefing(ticker: str = Query(min_length=1, max_length=20), api_key: str = Security(verify_api_key),
+             _debit: None = Depends(limiter_debit)):
     """Produit un texte en français à partir des données de la valeur.
 
     Relève de **C9** (exposer un modèle), pas de C5 : la sortie est une rédaction, pas de

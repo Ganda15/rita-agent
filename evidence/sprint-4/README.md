@@ -218,3 +218,27 @@ dit. » `verify_api_key` (`api/main.py`), par laquelle passent toutes les routes
 | Preuve | Fichier |
 |---|---|
 | 5 tests : fausse clé sur `/donnees/valeurs`, `/question` et `/briefing`, clé absente, bonne clé sans ligne de refus | `tests/test_refus_cle_journal.py` |
+
+## Tâche C3 : la limite de débit partagée par `/briefing` et `/question` (D6, CA1.4) (20/10/2026)
+
+Les deux routes qui appellent le modèle partagent un seul compteur (`api/limiteur.py`) : au plus 10 appels acceptés
+sur les 60 dernières secondes (fenêtre glissante), valeur réglable par `RITA_QUOTA_PAR_MINUTE`. Au-delà, la réponse est
+un 429 avec l'en-tête `Retry-After` et le refus `LIMITE_DE_DEBIT`, au même format que les autres refus, et une ligne de
+journal `limite de debit atteinte : request_id=… route=… quota=…` est écrite. Le contrôle passe après la clé : un appel
+sans clé valide ne consomme pas le quota. `/health` n'est pas limité.
+
+Condition vérifiée par Era le 20/10/2026 sur le serveur, en lecture seule : une seule ligne `uvicorn` dans le conteneur
+de l'API, sans `--workers`, et aucune variable `WEB_CONCURRENCY` (0 occurrence). Un compteur en mémoire suffit donc, sans
+dépendance de plus.
+
+| Preuve | Fichier |
+|---|---|
+| 5 tests : quota atteint puis libéré au bout de 60 s (horloge simulée), 20 appels simultanés pour 10 places (exactement 10 acceptés), quota partagé entre `/question` et `/briefing` (429, `Retry-After`, texte du refus, ligne de journal avec l'identifiant de requête), fausse clé qui ne consomme rien, `/health` jamais limité | `tests/test_limiteur.py` |
+
+Dans les tests, une règle par défaut (`tests/conftest.py`, `limiteur_neuf`) pose un compteur neuf, au quota de 10 000,
+avant chaque test : sinon la suite complète atteindrait le quota. Les tests du limiteur posent leur propre quota.
+
+Limites : le compteur vit en mémoire, il repart donc à zéro à chaque redémarrage, et plusieurs processus auraient chacun
+le leur (il faudrait alors un stockage partagé). Le quota est global et non par utilisateur, RITA n'ayant qu'une clé.
+Une demande mal formée, ou une valeur inconnue (le 422 de C1), consomme une place, car FastAPI exécute les dépendances
+avant de valider le reste de la demande.

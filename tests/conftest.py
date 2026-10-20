@@ -75,3 +75,17 @@ def valeurs_connues_par_defaut(monkeypatch):
 
     monkeypatch.setattr(api.main, "valeur_existe", lambda ticker: True, raising=False)
     yield
+
+
+@pytest.fixture(autouse=True)
+def limiteur_neuf(monkeypatch):
+    """Chaque test part d'un limiteur de débit neuf, au quota assez haut pour ne jamais gêner (sprint 4, tâche C3).
+
+    Le limiteur garde son compte en mémoire, d'un appel à l'autre : sans cette règle, la suite complète atteindrait le
+    quota de `/briefing` et `/question`, et les tests suivants recevraient un 429 sans rapport avec ce qu'ils vérifient.
+    Les tests du limiteur (`tests/test_limiteur.py`) posent leur propre quota.
+    """
+    from api import limiteur
+
+    monkeypatch.setattr(limiteur, "LIMITEUR", limiteur.Limiteur(10_000))
+    yield
