@@ -51,6 +51,10 @@ principal (une phrase qui conseille) est bloqué par un contrôle après le mod�
 et difficile à auditer ; en finance, chaque texte doit pouvoir s'expliquer. Le menu du
 dispositif est demandé au formateur pour confronter ce choix.
 
+> **Avenant n°1 (décidé le 18/10/2026)** : depuis le sprint 4, le parcours des questions (`POST /question`) fait aussi
+> partie de la composante agentique. Ce qui change, pourquoi, et ce qui ne change pas : `docs/sprint-4/AVENANT-1.md`.
+> Validation du formateur attendue. Le texte ci-dessus reste celui du sprint 1.
+
 ## 4. Stack
 
 | Outil | Rôle et raison |
