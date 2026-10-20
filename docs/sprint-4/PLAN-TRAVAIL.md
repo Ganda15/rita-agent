@@ -44,6 +44,8 @@ Branche `sprint-4-agentique-garde-fous`, worktree `D:\KandaWork\RITA_PROJECT\rit
   pour que `gitleaks` ne les prenne pas pour de vrais secrets. Aucun secret réel, jamais.
 - Couverture au moins 90 % (`.coveragerc`, `fail_under = 90`), `ruff`, `gitleaks` : les contrôles restent bloquants.
 - Pas de nouvelle dépendance Python.
+- Les anciens jeux d'évaluation sont conservés tels quels (`evals/cas.py`, `evals/questions_rag.txt`, Q1 à Q8,
+  `evidence/sprint-4/mesurer_depart.py` et son rapport) : on ajoute des cas, on n'en remplace aucun.
 - Era fait lui-même ce qui touche le serveur, les réglages GitHub, les fusions et le tag ; il tape lui-même toute clé
   et tout mot de passe, jamais affichés dans le chat. L'assistant n'ouvre jamais `.env`.
 - Commits en français, sans co-auteur ; jamais de push direct sur `main`.
@@ -312,6 +314,8 @@ Les textes viennent du jeu v3 (`charger_jeu`), jamais recopiés ; les reformulat
 - [ ] **Étape 3 :** Era lance `C:\Python314\python.exe -m rag.controle_questions` sur l'index de travail : zéro écart
   bloquant. C'est le même contrôle que la livraison fera sur son index candidat : H7 et H8 refusés hors corpus,
   donc au moins 7 sur 8 avant le modèle (D5), et aucune légitime refusée par un garde-fou.
+- **Limite écrite :** la condition « zéro divulgation » de D5 ne se vérifie pas en CI (ni modèle ni corpus) : elle est
+  vérifiée par la mesure de niveau 2, lancée par Era avant chaque PR (D2, étape 1), et son rapport est versionné.
 - [ ] **Étape 4 :** commit « Sprint 4, A5 : portes du détournement en CI et au rejeu de la livraison ».
 
 ---
