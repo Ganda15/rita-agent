@@ -9,6 +9,33 @@
 
 ---
 
+## 2026-10-21 : manque connu, confirmé : le traçage Langfuse est coupé en production
+
+**Manque connu, confirmé** (et non découvert : il est écrit depuis le 04/10 dans `evidence/C11/`, puis au sprint 2,
+`docs/sprint-2/README.md`) : en cherchant une trace de briefing de production (CA3.6), Era n'en a trouvé aucune. Vérifié sur
+le serveur, en lecture seule et sans afficher de valeur : aucune clé Langfuse dans le `.env` du serveur, ni dans le
+conteneur de l'API ; `src/traces.py` n'envoie donc rien. D9 est tenu de la façon la plus stricte (aucun texte
+conservé), mais les durées par étape, les jetons et le coût ne se lisent qu'en local. Les documents qui situent ces
+signaux dans Langfuse sans préciser « en local » sont à relire. Poser les clés : décision d'Era, sprint 5.
+
+## 2026-10-20 et 21 : sprint 4 en production (N10, N11), contrôle des nombres, image de base tirée d'un miroir
+
+**Livré** : N10 le 20/10 à 21 h 48 (commit `27da943`) : garde-fou de détournement avant la recherche, passages piégés
+écartés avant le prompt, contrôle de fuite après le modèle, traces du briefing réduites aux métadonnées (D9), 422 sur
+`/briefing`, refus de clé journalisé, limite de débit partagée. N11 le 21/10 à 11 h 05 (commit `4fc63f5`) : contrôle
+des nombres et image de base tirée du miroir. Rejeu en production après N11 : 5 appels conformes sur 5, deux fois.
+
+**Décisions** : avenant n°1, le parcours des questions entre dans la composante agentique (`docs/sprint-4/AVENANT-1.md`) ;
+chaque nombre d'une réponse doit figurer, entier, dans le texte d'un article cité, sinon refus `NOMBRE_NON_SOURCE` ; la
+date de publication et le nom de la source ne servent pas de source au contrôle (option B, décision d'Era) ; l'image
+de base est tirée de `mirror.gcr.io`, même empreinte que la galerie d'Amazon.
+
+**Manques découverts** : Q4 servie en production avec « 1 0 postes » pour un passage qui dit « 1 000 postes »
+(20/10, 21 h 53), cause non établie, d'où le contrôle des nombres ; la galerie d'Amazon a refusé 19 constructions du
+16 au 21/10 ; OR.PA sans cotation depuis 64 jours en production, et le briefing la dit « probablement radiée » (non
+corrigé, critère 1 du contrat « en cours ») ; le garde-fou de détournement ne reconnaît aucune des 8 reformulations
+réservées.
+
 ## 2026-10-19 : atelier croisé n°3 ; livrable du sprint 3, version 2
 
 **Livré** : démonstration en direct sur la production, avec le formateur ; ingestion lancée par le bouton pendant
