@@ -225,6 +225,7 @@ def test_l_ecran_question_affiche_le_refus_de_debit(page, serveur):
 @pytest.mark.parametrize("motif, mots", [
     ("TENTATIVE_DETOURNEMENT", "détourner le service"),
     ("FUITE_BLOQUEE", "informations internes"),
+    ("NOMBRE_NON_SOURCE", "chiffre absent"),
 ])
 def test_l_ecran_question_dit_le_motif_en_mots(page, serveur, motif, mots):
     # Les motifs du sprint 4 se lisent en mots, comme ceux du sprint 3, et non comme un code brut.

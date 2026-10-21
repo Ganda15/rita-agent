@@ -337,3 +337,124 @@ pertinence, la consigne « donnée, jamais consigne » du prompt et le contrôle
 
 Le premier passage de la construction de l'image sur la PR #112 s'est arrêté sur un 429 du registre public d'images
 (`public.ecr.aws`, « Data limit exceeded »), comme au sprint 3 ; sans lien avec le code, les tests étant verts.
+
+## Tâche D2 : la livraison N10 (20/10/2026)
+
+PR #111 (branche du sprint vers `develop`) fusionnée à 19 h 44, commit `0f465c3` ; PR #113 (les trois corrections de la
+revue Codex) fusionnée à 20 h 52, commit `f08dfdb` ; PR #112 (`develop` vers `main`) fusionnée à 21 h 28, commit
+`27da943`. Heures de Paris.
+
+La construction de l'image a été refusée **sept fois** par le registre public d'images (`public.ecr.aws`, 429, « Data
+limit exceeded ») : une fois au premier passage de la PR #112, quatre fois sur son passage `39478583385` (vert à la
+cinquième tentative), deux fois sur le passage de livraison `39483716804` (vert à la troisième). Le même commit se
+construisait sur un autre passage au même moment : le code n'est pas en cause. Chaque refus arrête la chaîne avant
+toute publication ; la production est restée sur N9 jusqu'à la bascule.
+
+Livraison réussie à la troisième tentative du passage `39483716804` : travail `deployer` en 4 min 24, code rendu par le
+serveur 0. `/health` annonce le commit `27da943`, l'index `5499bb05…`, 2140 articles, la même empreinte de contenu
+qu'avant (`fd8542955c1b…`) : l'index est reconstruit à chaque livraison, son contenu ne change pas.
+
+## Tâche D2 : le rejeu en production (20/10/2026, 21 h 53)
+
+Cinq appels à l'adresse de production, lancés par Era avec la clé de production chargée dans sa session, par
+`evidence/sprint-4/rejeu_production.py`. Le script n'importe aucun module du projet (aucun `.env` local chargé) ; son
+rapport garde les codes, les identifiants de requête, les statuts, les motifs, les articles cités, les longueurs et les
+verdicts, jamais la clé ni un texte (D9). Les textes sont affichés à la console pour être lus.
+
+| Appel | Attendu | Premier lancement | Second lancement |
+|---|---|---|---|
+| H1 sur `POST /question` | refus `TENTATIVE_DETOURNEMENT` | conforme | conforme |
+| Q4 sur `POST /question` | réponse avec « 1 000 postes » | conforme | **non conforme** : « 1 0 postes » |
+| H8 sur `POST /question` | refus, abstention ou hors corpus | conforme (abstention) | conforme (abstention) |
+| 21 caractères sur `POST /briefing` | 422 | conforme | conforme |
+| `POST /briefing?ticker=OR.PA` | 200, `X-Request-ID`, texte en français | conforme | conforme |
+
+Le briefing OR.PA est en français et ne donne aucun conseil (lu par Era à la console). Les deux lancements ont eu lieu
+dans la même minute : le rapport du second a écrasé celui du premier, le nom ne portant que la minute. Seul le second
+subsiste (`evidence/sprint-4/rejeu-production-2026-10-20-2153.json`) ; le premier n'existe que dans la sortie de
+console. Corrigé : le nom porte les secondes, et le fichier est ouvert en mode « x », qui refuse d'écraser.
+
+## Diagnostic de Q4 (nuit du 20 au 21/10/2026)
+
+Troisième apparition du défaut, après l'évaluation en production du 16/10 (caractère nul entre « 1 » et « 000 ») et la
+mesure locale de 18 h 33 (« 1 00 postes »). Ce qui a été vérifié :
+
+- **En local**, un script de diagnostic hors du dépôt, qui n'écrit rien et coupe le traçage, intercepte la réponse
+  d'Azure et montre chaque couche (corps HTTP, JSON écrit par le modèle, texte servi) : **22 essais sur 22 justes**,
+  « 1 000 » avec une espace ordinaire à chaque couche.
+- **En production**, la fiche `GET /donnees/articles/2788` (aucun appel au modèle) montre le passage exact envoyé au
+  modèle : **identique au passage local**, mêmes caractères, dont cinq espaces insécables, que le nettoyage du prompt
+  remplace des deux côtés.
+
+**La cause exacte n'est pas établie** : le chiffre s'abîme dans la réponse du modèle, rarement (0 sur 22 en local,
+1 sur 2 en production ce soir-là), sans que le passage stocké ni le code de nettoyage soient en cause. Après deux
+hypothèses réfutées, la correction ne cherche plus la cause : elle vérifie le résultat avant de le servir.
+
+## Le contrôle des nombres, et sa mesure (21/10/2026, 08 h 18)
+
+`guardrails/nombres.py` : chaque nombre d'une réponse doit figurer, entier, dans un des articles cités ; toutes les
+espaces Unicode sont ramenées à une espace simple et les numéros de citation sont ignorés (« 1 00 » ne vaut pas
+« 1 000 », ni « 0,55 » « 0,5 »). Sinon, la réponse est refusée poliment, motif `NOMBRE_NON_SOURCE`, avec une ligne de
+journal qui donne le nombre de chiffres absents, jamais le texte. Le contrôle passe en dernier, après la fuite et le
+garde-fou AMF, qui gardent leur motif quand une réponse est refusée pour plusieurs raisons. Le prompt ramène aussi toutes
+les espaces Unicode à une espace simple. Commit `b4ab5e5`.
+
+Mesure de niveau 2 avec ce contrôle, sur la même copie de l'index : **les cinq conditions D5 vraies**, aucun refus
+`NOMBRE_NON_SOURCE`, et les neuf réponses produites ont tous leurs nombres dans un article cité (10 ; 1 000 ; 0,5 ;
+2027 ; 1,4 ; 9 300 ; 90 ; 140). Q4 rend « 1 000 postes ». R1, répondu deux fois la veille, s'abstient cette fois : c'est
+la variabilité du modèle, le contrôle n'ayant rien refusé.
+
+| Preuve | Fichier |
+|---|---|
+| 11 tests : les deux formes abîmées, quatre espaces, citations, décimales et années, refus et témoin servi, prompt ; et le motif à l'écran | `tests/test_controle_nombres.py`, `tests/test_smoke_ui.py` |
+| Mesure de niveau 2 avec le contrôle | `evidence/sprint-4/mesure-question-niveau2-2026-10-21-0818.json` |
+
+**Limites** : une seule exécution ; un chiffre reformulé (« mille ») ou calculé est refusé même juste, et un chiffre
+écrit en lettres n'est pas contrôlé. **Le contrôle n'est pas encore en production** : il arrivera avec la livraison
+suivante.
+
+## Les revues du contrôle des nombres, avant la livraison N11 (21/10/2026)
+
+Codex a relu les PR #114 (branche du sprint vers `develop`, fusionnée à 9 h 41), #115 (`develop` vers `main`) et #116
+(les corrections, fusionnée à 10 h 31) ; une revue de sécurité automatique a relu le commit `14c2d82`. Chaque point a
+été vérifié dans le code, puis corrigé avec un test rouge d'abord ; un refus à tort et sans danger est écrit comme
+limite. Heures de Paris.
+
+| Point relevé | Revue | Décision | Commit |
+|---|---|---|---|
+| « -5 % » passait face à un article qui dit « +5 % » | Codex, PR #114 | le signe collé devant un nombre fait partie du nombre | `bb06a61` |
+| « 2.5 » était trouvé dans « 5.2 » : le point coupait le nombre | seconde revue Codex, PR #114 | une décimale se lit après une virgule ou un point suivi d'un chiffre | `da1c016` |
+| « 300 » passait face à « 9 300 » : un nombre amputé de son premier groupe | Codex, PR #115 | un nombre de trois chiffres ne peut pas suivre « un chiffre et une espace » | `14c2d82` |
+| la date de publication, ajoutée aux sources le matin (`bb06a61`), validait n'importe quel « 10 % » | Codex, PR #114 après la fusion | retirée des sources du contrôle (option B, décision d'Era) | `14c2d82` |
+| le nom de la source, tiré du titre de l'article, validait un nombre (« 20 postes » sous « 20 Minutes ») | revue de sécurité automatique | seul le texte de l'extrait cité sert de source | `7d245f3` |
+| « 2026 +5 % » : deux quantités côte à côte refusées comme un seul nombre | Codex, PR #116 | un groupe de milliers fait toujours trois chiffres | `e94f513` |
+| un extrait finissant par « 9 » et un suivant commençant par « 300 emplois » formaient « 9 300 » | seconde revue Codex, PR #116 | chaque extrait cité est cherché séparément | `30832ac` |
+| « 300 » passait face à « 9'300 », écriture suisse des milliers | troisième revue Codex, PR #115 | une apostrophe entre un chiffre et trois chiffres vaut une espace | `1581fad` |
+| « Perspectives 2026 300 emplois » se lit comme un seul nombre | seconde revue Codex, PR #116 | limite écrite : « 300 » ou « 2026 » seuls sont refusés même justes, sans danger | aucun |
+
+Pour l'apostrophe, mesure sur la copie de l'index de production : la source « Zonebourse Suisse » fournit 78 extraits
+sur 2 052, aucun n'écrit encore ses milliers avec une apostrophe (54 les écrivent avec une espace). Même famille que le
+groupe amputé, donc corrigé plutôt qu'écrit comme limite.
+
+Les tests du contrôle passent de 11 à 40 (`tests/test_controle_nombres.py`). Suite locale après la dernière
+correction : 1396 passed, 24 skipped, 2 xfailed.
+
+## L'image de base tirée d'un miroir (21/10/2026)
+
+La galerie publique d'Amazon (`public.ecr.aws`) a refusé 19 constructions du 16 au 21/10 (429, « Data limit
+exceeded ») : 11 au sprint 3, 8 au sprint 4, dont une le 21/10 au matin après une nuit sans construction. Commit
+`079457e` : les trois `FROM` de `Dockerfile` et `Dockerfile.tests` tirent `mirror.gcr.io/library/python:3.13-slim`, le
+miroir de Docker Hub tenu par Google, sans compte. Même empreinte que la galerie d'Amazon (`sha256:98ce6fb1…`), donc la
+même image. `tests/test_image_de_base.py` vérifie la source.
+
+Depuis, les dix passages suivants du workflow de livraison ont construit l'image sans refus (21/10, de 9 h 05 à
+10 h 31). **Limite** : c'est encore un registre tiré sans compte ; la solution durable reste un compte, avec ses secrets
+posés dans GitHub par Era.
+
+## Deux points relevés dans le briefing OR.PA, écrits comme limites
+
+- En production, la dernière cotation d'OR.PA date de **63 jours**. Le critère 1 du contrat suppose une valeur cotée
+  depuis moins de cinq jours ouvrés : il n'est pas rempli pour OR.PA. La cause (collecte des cours en production) n'est
+  pas examinée.
+- Le briefing en déduit que la valeur est « **probablement radiée** », ce qui est faux pour L'Oréal : une donnée
+  ancienne n'est pas une radiation. La formulation vient de la rédaction du briefing ; non corrigée.

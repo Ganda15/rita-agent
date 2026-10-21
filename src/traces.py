@@ -4,6 +4,8 @@ Décision d'Era du 28/09/2026 (`CONTINUITE.md` D, registre RGPD §T3) : Langfuse
 région UE, palier gratuit. Mesuré avant de décider : le prompt du rédacteur ne contient
 aucune donnée personnelle (ticker, cours, ADTV20, passages de presse), donc rien à masquer
 aujourd'hui ; la condition est écrite dans le registre pour le jour où ça changerait.
+Ancien fonctionnement, remplacé au sprint 4 par la décision D9 (20/10/2026) : le prompt et le
+texte produit ne partent plus du tout vers Langfuse, seulement des métadonnées.
 
 **Pourquoi un module séparé de `src/llm.py`.** Le traçage ne doit jamais faire échouer un
 briefing : sans clés (CI, tests, poste sans compte), tout ici est un no-op silencieux. Et un
@@ -16,9 +18,10 @@ l'erreur et laissent une ligne WARNING. L'isolation va dans un seul sens : une e
 métier remonte toujours, une erreur du traçage jamais.
 
 **Ce qu'une trace porte** : une *génération* par tentative de la cascade, avec le fournisseur,
-le modèle, le prompt en entrée, le texte en sortie, l'usage en tokens quand le fournisseur le
-donne (Langfuse en déduit le coût), et `level="ERROR"` avec le message quand une tentative
-échoue : c'est le repli d'un fournisseur à l'autre rendu visible, le cœur de C11.
+le modèle et l'usage en tokens quand le fournisseur le donne (Langfuse en déduit le coût) ;
+jamais le prompt ni le texte produit (D9). Quand une tentative échoue : `level="ERROR"` avec
+le seul type de l'erreur, jamais son message, qui peut recopier le prompt. C'est le repli d'un
+fournisseur à l'autre rendu visible, le cœur de C11.
 
 Variables lues (jamais écrites ici) : LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY,
 LANGFUSE_HOST (ou LANGFUSE_BASE_URL), LANGFUSE_TRACING_ENABLED (`false` coupe tout).
@@ -194,8 +197,8 @@ def noter_verdict_amf(racine, ticker: str, conforme: bool, motifs: list[str],
     WARNING quand le texte est refusé (filtrable), et une note booléenne `conforme_amf`
     (1 ou 0) qu'un tableau peut compter et qu'une alerte peut surveiller.
 
-    **Jamais le texte refusé ici** : il reste dans la génération, pour comprendre pourquoi un
-    motif a déclenché, mais la racine, celle qu'on regarde en premier, ne le répète pas.
+    **Jamais le texte refusé** : il n'est enregistré ni dans la génération ni dans la racine
+    (D9, sprint 4) ; seuls le verdict et les motifs sont transmis.
     """
     if racine is None:
         return
