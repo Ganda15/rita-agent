@@ -43,7 +43,10 @@ fusionner par Era ; elle partira avec la livraison suivante, celle des documents
 **Ordre de la suite** :
 1. Era fusionne la PR #118 quand ses contrôles sont verts.
 2. CA3.6 : vérifier dans Langfuse qu'une trace de briefing ne garde ni prompt ni texte (accès Langfuse d'Era).
-3. D3 : livrable du sprint 4, journal des retours (atelier 3), oral court, Definition of Done
+3. D3 : étape 1 faite (index des preuves, CHANGELOG, `b173782`) ; livrable version 1 écrit
+   (`docs/sprint-4/livrable/livrable-sprint-4.md` et `.pdf`, 14 pages, sommaire vérifié, liens au tag à revérifier
+   après sa pose). Restent : relecture par Era, synthèse courte (plus de 10 pages), retours de l'atelier 4 et grille
+   `eval/ateliers/sprint-4-grille.md`, oral court (hors dépôt), Definition of Done
    (`scripts/verifier_livrable.py livrable-sprint-4-v1`), PR `develop` vers `main`, tag posé par Era.
 4. Ouverts : critère 1 du contrat « en cours » (OR.PA : dernière cotation à 64 jours, « probablement radiée ») ; D8 (le
    tiers du critère 5) ; validation de l'avenant n°1 par le formateur ; registre d'images sans compte ; dates de

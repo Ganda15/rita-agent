@@ -10,6 +10,7 @@ surveillera, et ce qui n'est pas fait.
   dossier du sprint 1 y renvoie par une ligne datée (`docs/CADRAGE-V1.md`, § 3).
 - **Contrat du sprint 1, critère par critère** : `docs/sprint-4/CONTRAT.md`.
 - **Preuves** : index dans `evidence/sprint-4/README.md`.
+- **Livrable du sprint** : `docs/sprint-4/livrable/livrable-sprint-4.md` et sa version PDF, dans le même dossier.
 
 ## 1. Pourquoi la composante n'a pas d'action sensible (CA5.1)
 
@@ -75,7 +76,7 @@ Les lignes de journal se lisent dans le journal du conteneur de l'API sur le ser
   protège le coût du modèle, pas contre une clé devinée par essais répétés.
 - **Le tiers du critère 5 du contrat** (D8) : question au formateur, sans réponse au 20/10.
 - **L'avenant n°1** attend la validation du formateur.
-- **Les traces Langfuse de production** ne sont pas revérifiées : à faire au rejeu de la livraison (tâche D2).
+- **Les traces Langfuse de production** ne sont pas revérifiées : aucune trace de briefing de production n'a été ouverte pour constater qu'elle ne garde ni prompt ni réponse ; seuls les tests le prouvent.
 - **Garde-fou de détournement** : les reformulations R1 à R8, gardées hors du jeu pour une mesure honnête, sont
   reconnues 0 fois sur 8 par les règles ; le cas H8 n'est pas activé (décision du 20/10).
 - **Contrôle de fuite** : 71,4 % des sorties de fuite bloquées, deux cas hors échantillon passent.
