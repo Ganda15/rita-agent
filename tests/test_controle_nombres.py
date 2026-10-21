@@ -84,3 +84,37 @@ def test_le_prompt_ramene_toutes_les_espaces_unicode_a_une_espace_simple():
     # En défense : la correction du 20/10 ne traitait que l'insécable ordinaire et l'insécable fine.
     prompt = question.construire_prompt("Combien ?", [_passage(f"Netflix va supprimer 1{FINE_ORDINAIRE}000 postes")])
     assert FINE_ORDINAIRE not in prompt and "1 000 postes" in prompt
+
+
+# --- revue Codex de la PR #114 (21/10/2026) : le signe, et ce que le modèle a reçu ------------------------------------
+
+MOINS = chr(0x2212)   # le vrai signe moins, que certains textes emploient à la place du trait d'union
+
+
+def test_un_signe_inverse_est_signale():
+    # P1 : « -5 % » face à « +5 % » passait. En finance, une hausse devenait une baisse sous une source juste.
+    assert _nombres().nombres_absents("La variation est de -5 %. [1]", ["La variation est de +5 % sur la séance."]) == ["-5"]
+
+
+@pytest.mark.parametrize("texte, source", [
+    ("Le titre progresse de +3,00 %. [1]", "Le titre progresse de +3,00 % sur la semaine."),
+    ("Le titre recule de 5 %. [1]", "Le titre recule de -5 % sur la semaine."),
+    ("Sur la période 2026-2027. [1]", "Les prévisions portent sur la période 2026-2027."),
+    (f"Le titre recule de {MOINS}3,00 %. [1]", "Le titre recule de -3,00 % sur la semaine."),
+], ids=["meme_signe", "sans_signe_dans_la_reponse", "trait_d_union_entre_deux_nombres", "vrai_signe_moins"])
+def test_les_signes_justes_passent(texte, source):
+    # Les témoins du test précédent : un signe juste, une réponse sans signe, un trait d'union qui n'est pas un signe.
+    assert _nombres().nombres_absents(texte, [source]) == []
+
+
+def test_une_date_de_publication_recue_par_le_modele_est_acceptee(monkeypatch):
+    # P2 : le modèle reçoit la source et la date de chaque extrait (« [1] (Le Monde, 2026-10-14) ... ») ; une date de
+    # publication juste était refusée, parce que seul le texte de l'article servait de source.
+    reponse = _repondre(monkeypatch, "L'article est publié le 14 octobre 2026. [1]")
+    assert (reponse.statut, reponse.motif) == ("reponse", "OK")
+
+
+def test_une_date_de_publication_fausse_est_refusee(monkeypatch):
+    # Le témoin : la date ajoutée aux sources ne doit pas faire passer n'importe quelle date.
+    reponse = _repondre(monkeypatch, "L'article est publié le 15 octobre 2026. [1]")
+    assert (reponse.statut, reponse.motif) == ("refus", "NOMBRE_NON_SOURCE")
