@@ -15,7 +15,9 @@ phrase n'est pas une décimale. Il doit apparaître ENTIER dans les sources : «
 « 0,5 », ni « 2.5 » « 5.2 » (seconde revue Codex de la PR #114 : le point coupait le nombre en deux), ni « 300 » la
 fin de « 9 300 » (revue Codex de la PR #115 : un nombre amputé de son premier groupe passait). Un groupe de milliers fait
 toujours trois chiffres : c'est lui seul qui prolonge un nombre, si bien que « 2026 +5 % » ou « 2026 5 % » restent deux
-quantités distinctes (revue Codex de la PR #116).
+quantités distinctes (revue Codex de la PR #116). Une apostrophe entre un chiffre et trois chiffres sépare des
+milliers, à la suisse : « 9'300 » vaut « 9 300 », et « 300 » seul n'en est pas la fin (troisième revue Codex de la
+PR #115 ; la source « Zonebourse Suisse » fait partie du corpus).
 
 **Le signe** (revue Codex de la PR #114, 21/10/2026) : un « + » ou un « - » collé devant un nombre, et précédé d'une
 espace, d'une parenthèse ou du début du texte, fait partie du nombre, et doit se retrouver tel quel : « -5 » ne vaut pas
@@ -40,6 +42,10 @@ _CITATION = re.compile(r"\[\d+\]")
 # Le signe facultatif n'est lu que s'il suit une espace, une parenthèse ou le début du texte.
 _NOMBRE = re.compile(r"(?:(?<![^\s(])[+-])?\d+(?: \d+)*(?:[,.]\d+)?")
 _SIGNE_MOINS = chr(0x2212)
+# Une apostrophe (droite ou typographique) entre un chiffre et un groupe de trois chiffres sépare des milliers, à la
+# suisse (« 9'300 ») : elle devient une espace, et la règle des groupes s'applique comme pour « 9 300 ».
+_APOSTROPHES = "'" + chr(0x2019)
+_APOSTROPHE_DE_MILLIERS = re.compile(r"(?<=\d)[" + _APOSTROPHES + r"](?=\d{3}(?!\d))")
 # Un premier groupe de trois chiffres exactement : seul un tel nombre peut être la fin d'un nombre groupé (« 300 »
 # dans « 9 300 ») ; « 5 » ou « +5 » ne le peuvent pas.
 _GROUPE_DE_MILLIERS = re.compile(r"\d{3}(?!\d)")
@@ -51,8 +57,8 @@ def espaces_simples(texte: str) -> str:
 
 
 def _normaliser(texte: str) -> str:
-    """Espaces simples, et le vrai signe moins écrit comme un trait d'union."""
-    return espaces_simples(texte).replace(_SIGNE_MOINS, "-")
+    """Espaces simples, le vrai signe moins écrit comme un trait d'union, l'apostrophe des milliers comme une espace."""
+    return _APOSTROPHE_DE_MILLIERS.sub(" ", espaces_simples(texte).replace(_SIGNE_MOINS, "-"))
 
 
 def nombres_absents(texte: str, sources: list[str]) -> list[str]:

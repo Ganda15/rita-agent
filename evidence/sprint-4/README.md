@@ -413,6 +413,44 @@ la variabilité du modèle, le contrôle n'ayant rien refusé.
 écrit en lettres n'est pas contrôlé. **Le contrôle n'est pas encore en production** : il arrivera avec la livraison
 suivante.
 
+## Les revues du contrôle des nombres, avant la livraison N11 (21/10/2026)
+
+Codex a relu les PR #114 (branche du sprint vers `develop`, fusionnée à 9 h 41), #115 (`develop` vers `main`) et #116
+(les corrections, fusionnée à 10 h 31) ; une revue de sécurité automatique a relu le commit `14c2d82`. Chaque point a
+été vérifié dans le code, puis corrigé avec un test rouge d'abord ; un refus à tort et sans danger est écrit comme
+limite. Heures de Paris.
+
+| Point relevé | Revue | Décision | Commit |
+|---|---|---|---|
+| « -5 % » passait face à un article qui dit « +5 % » | Codex, PR #114 | le signe collé devant un nombre fait partie du nombre | `bb06a61` |
+| « 2.5 » était trouvé dans « 5.2 » : le point coupait le nombre | seconde revue Codex, PR #114 | une décimale se lit après une virgule ou un point suivi d'un chiffre | `da1c016` |
+| « 300 » passait face à « 9 300 » : un nombre amputé de son premier groupe | Codex, PR #115 | un nombre de trois chiffres ne peut pas suivre « un chiffre et une espace » | `14c2d82` |
+| la date de publication, ajoutée aux sources le matin (`bb06a61`), validait n'importe quel « 10 % » | Codex, PR #114 après la fusion | retirée des sources du contrôle (option B, décision d'Era) | `14c2d82` |
+| le nom de la source, tiré du titre de l'article, validait un nombre (« 20 postes » sous « 20 Minutes ») | revue de sécurité automatique | seul le texte de l'extrait cité sert de source | `7d245f3` |
+| « 2026 +5 % » : deux quantités côte à côte refusées comme un seul nombre | Codex, PR #116 | un groupe de milliers fait toujours trois chiffres | `e94f513` |
+| un extrait finissant par « 9 » et un suivant commençant par « 300 emplois » formaient « 9 300 » | seconde revue Codex, PR #116 | chaque extrait cité est cherché séparément | `30832ac` |
+| « 300 » passait face à « 9'300 », écriture suisse des milliers | troisième revue Codex, PR #115 | une apostrophe entre un chiffre et trois chiffres vaut une espace | `1581fad` |
+| « Perspectives 2026 300 emplois » se lit comme un seul nombre | seconde revue Codex, PR #116 | limite écrite : « 300 » ou « 2026 » seuls sont refusés même justes, sans danger | aucun |
+
+Pour l'apostrophe, mesure sur la copie de l'index de production : la source « Zonebourse Suisse » fournit 78 extraits
+sur 2 052, aucun n'écrit encore ses milliers avec une apostrophe (54 les écrivent avec une espace). Même famille que le
+groupe amputé, donc corrigé plutôt qu'écrit comme limite.
+
+Les tests du contrôle passent de 11 à 40 (`tests/test_controle_nombres.py`). Suite locale après la dernière
+correction : 1396 passed, 24 skipped, 2 xfailed.
+
+## L'image de base tirée d'un miroir (21/10/2026)
+
+La galerie publique d'Amazon (`public.ecr.aws`) a refusé 19 constructions du 16 au 21/10 (429, « Data limit
+exceeded ») : 11 au sprint 3, 8 au sprint 4, dont une le 21/10 au matin après une nuit sans construction. Commit
+`079457e` : les trois `FROM` de `Dockerfile` et `Dockerfile.tests` tirent `mirror.gcr.io/library/python:3.13-slim`, le
+miroir de Docker Hub tenu par Google, sans compte. Même empreinte que la galerie d'Amazon (`sha256:98ce6fb1…`), donc la
+même image. `tests/test_image_de_base.py` vérifie la source.
+
+Depuis, les dix passages suivants du workflow de livraison ont construit l'image sans refus (21/10, de 9 h 05 à
+10 h 31). **Limite** : c'est encore un registre tiré sans compte ; la solution durable reste un compte, avec ses secrets
+posés dans GitHub par Era.
+
 ## Deux points relevés dans le briefing OR.PA, écrits comme limites
 
 - En production, la dernière cotation d'OR.PA date de **63 jours**. Le critère 1 du contrat suppose une valeur cotée
