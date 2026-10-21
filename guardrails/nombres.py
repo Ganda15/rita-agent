@@ -25,13 +25,14 @@ espace, d'une parenthèse ou du début du texte, fait partie du nombre, et doit 
 « +5 ». Un nombre sans signe dans la réponse reste accepté face à un nombre signé dans la source (« recule de 5 % »
 face à « -5 % ») ; un trait d'union entre deux nombres (« 2026-2027 ») n'est pas un signe.
 
-**Limites connues et acceptées.** Une réponse qui reformule un chiffre (« mille » pour « 1 000 ») ou qui en calcule un
-est refusée, même juste ; une réponse qui ajoute un signe absent de la source (« +5 % » face à « progresse de 5 % ») est
+**Limites connues et acceptées.** Une réponse qui calcule un nombre (une somme, un écart) est refusée, même juste ; une réponse qui ajoute un signe absent de la source (« +5 % » face à « progresse de 5 % ») est
 refusée, même juste ; une date de publication que le texte de l'article ne contient pas est refusée (la date n'est pas
 une source : ses nombres valideraient n'importe quel « 10 % » ou « 14 euros ») ; une année suivie sans ponctuation
 d'un nombre de trois chiffres (« Perspectives 2026 300 emplois ») se lit comme un nombre groupé, si bien que « 300 » ou
 « 2026 » seuls sont refusés, même justes (avec une ponctuation, « 2026 : 300 emplois », ils passent ; seconde revue Codex
-de la PR #116) ; une réponse qui écrit un chiffre en lettres n'est pas contrôlée.
+de la PR #116). Ce que le contrôle ne vérifie pas : un nombre écrit en lettres (« mille ») est ignoré ; la présence d'un
+nombre dans un article cité ne garantit ni son sens, ni son unité, ni son attribution (« 1 000 euros » passe face à
+« 1 000 postes ») ; relecture du livrable du 21/10/2026.
 """
 import re
 import unicodedata

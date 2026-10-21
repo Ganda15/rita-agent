@@ -9,6 +9,28 @@
 
 ---
 
+## 2026-10-21 (soir) : livrable du sprint 4, version 1, tag `livrable-sprint-4-v1`
+
+**Livrable** : version 1 du livrable du sprint 4 (`docs/sprint-4/livrable/livrable-sprint-4.md` et `.pdf`, 16 pages,
+table des matières vérifiée) et sa synthèse de quatre pages (`synthese-sprint-4.md` et `.pdf`), relus et validés par
+Era le 21/10. Les chemins cliquables visent le tag `livrable-sprint-4-v1`, posé par Era sur `main` après la livraison
+N13, qui porte ces documents. **Ajouts depuis N12** : le schéma complet de la composante et de ses garde-fous
+(`docs/sprint-4/schemas/`, chaque boîte avec son fichier, sa ligne et ses tests) ; le journal des retours de l'atelier
+n°3 complété : quatre retours oraux manquaient aux notes de séance (l'ordre des modalités du brief, montrer le
+construit, rien sur le non-attendu, le code seulement sur question), neuf au total.
+
+**Correction** : la documentation de `guardrails/nombres.py`, les preuves et le livrable disaient qu'un nombre écrit en
+lettres (« mille ») était refusé ; il est ignoré. Corrigé, avec deux tests qui fixent les limites du contrôle (nombres
+en lettres, unité non vérifiée).
+
+## 2026-10-21 : livraison N12, le traçage Langfuse actif en production
+
+**Décision d'Era** : poser les clés Langfuse sur le serveur (projet de production, région UE) ; il les a saisies
+lui-même, après une sauvegarde du `.env`. **Livré** : N12 à 12 h 47 (commit `27e41d3`, PR #120) : le livrable du sprint 4
+en version 1, les quatre apostrophes du contrôle des nombres, et le traçage, par le `.env` copié à la livraison.
+**Prouvé** : la trace du briefing OR.PA du rejeu de 12 h 51 (`7da0ec8c…`) ne garde ni prompt ni réponse, sur la
+racine comme sur la génération du modèle (D9, CA3.6). Le manque de l'entrée suivante est levé.
+
 ## 2026-10-21 : manque connu, confirmé : le traçage Langfuse est coupé en production
 
 **Manque connu, confirmé** (et non découvert : il est écrit depuis le 04/10 dans `evidence/C11/`, puis au sprint 2,
