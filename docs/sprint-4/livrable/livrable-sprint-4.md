@@ -157,7 +157,7 @@ Les exigences du brief et de la grille, reformulées dans la spécification ; ch
 | E7. Le contrat personnel déroulé, état versionné | `docs/sprint-4/CONTRAT.md` : 3 critères tenus, 2 en cours, écarts écrits | § 7.7 |
 | E8. Les signaux du sprint 5 repérés | latence, coût, taux de refus par motif, erreurs : où chacun se lit, et ce qui manque | § 7.10 |
 | E9. En production, garde-fous actifs, par la chaîne du sprint 2 | N10, N11 et N12 livrées par fusion dans `main` ; rejeu en production après chacune | § 7.9 |
-| E10. Le journal des retours reprend le conseil de l'atelier n°3 | les cinq retours oraux de l'atelier n°3 et la suite donnée à chacun | § 8 |
+| E10. Le journal des retours reprend le conseil de l'atelier n°3 | les neuf retours oraux de l'atelier n°3 et la suite donnée à chacun | § 8 |
 
 ## 5. Les critères de la grille : ce qui sera montré, et la preuve
 
@@ -443,13 +443,19 @@ l'index `35806d6e…` et 2140 articles (annexe 12.1).
 L'atelier n°3 s'est tenu avec le formateur. La grille n'a pas été remplie ; les retours ont été donnés à l'oral et
 relevés dans les notes de séance
 ([`eval/ateliers/sprint-3-grille.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-4-v1/eval/ateliers/sprint-3-grille.md)).
+Quatre retours de la même séance manquaient à ces notes ; ils ont été relevés le 21/10/2026 dans la transcription de
+la séance, et occupent les lignes 5 à 8 du tableau.
 
 | Retour de l'atelier n°3 | Ce qui en a été fait au sprint 4 |
 |---|---|
-| Présentation trop dense et non linéaire | l'oral de l'atelier n°4 suit un seul fil : le projet, les garde-fous couche par couche, puis la démonstration |
+| Présentation trop dense et non linéaire | l'oral de l'atelier n°4 suit un seul fil : le projet en deux phrases, les six points du brief dans leur ordre, puis la démonstration |
 | Aller droit au but, couche par couche : le projet en deux ou trois phrases, puis creuser seulement si on le demande | appliqué à ce document : § 1.2 en trois phrases, § 1.3 et 1.4 couche par couche, le détail renvoyé aux § 6 et 7 |
 | Une présentation technique tient en cinq minutes | partie technique de l'oral limitée à cinq minutes ; le détail est gardé pour les questions |
 | Les schémas déjà vus : les montrer vite | aucun schéma des sprints précédents n'est recommenté, sauf question |
+| Suivre l'ordre des « modalités pédagogiques » du brief, comme une liste à cocher | l'oral présente les six points des modalités dans leur ordre ; dans ce document, les § 4 et 5 suivent le brief et la grille point par point |
+| Montrer ce qui est construit, pas le cadrage du sprint 1 | l'oral montre les garde-fous construits et les fait jouer en production ; le cadrage n'est pas redit |
+| Ne pas passer de temps sur ce qui n'est pas attendu (démonstration des sources, livrables) | la démonstration de l'oral n'ouvre pas la fiche d'une source et ne présente pas les livrables |
+| Le code en dernier, et seulement si on le demande | l'oral ne montre le code que sur question, fichier par fichier ; le § 3 donne le lien GitHub des fichiers clés |
 | Point positif : un travail réel, une évolution visible | rien à faire |
 | Grille non remplie | signalé ici, comme prévu |
 
