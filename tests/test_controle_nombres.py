@@ -222,10 +222,12 @@ def test_un_nombre_present_dans_un_seul_des_extraits_passe():
 
 # --- troisième revue Codex de la PR #115 (21/10/2026) : l'apostrophe des milliers, écriture suisse ---------------------
 
-APOSTROPHES = ["'", chr(0x2019)]
+# Les quatre apostrophes que `guardrails/detournement.py` traite déjà comme une apostrophe (revue Codex de la PR #117).
+APOSTROPHES = ["'", chr(0x2019), chr(0x2018), chr(0x02BC)]
+NOMS_APOSTROPHES = ["droite", "typographique", "ouvrante", "lettre_modificative"]
 
 
-@pytest.mark.parametrize("apostrophe", APOSTROPHES, ids=["droite", "typographique"])
+@pytest.mark.parametrize("apostrophe", APOSTROPHES, ids=NOMS_APOSTROPHES)
 def test_un_groupe_apres_une_apostrophe_ne_vaut_pas_le_nombre_entier(apostrophe):
     # P2 : un article suisse écrit « 9'300 » ; l'apostrophe passait pour une simple frontière, et une réponse abîmée qui
     # ne garde que « 300 » était acceptée. La source « Zonebourse Suisse » fait partie du corpus (78 extraits sur 2 052
@@ -234,7 +236,7 @@ def test_un_groupe_apres_une_apostrophe_ne_vaut_pas_le_nombre_entier(apostrophe)
     assert _nombres().nombres_absents("Le groupe compte 300 salariés. [1]", [source]) == ["300"]
 
 
-@pytest.mark.parametrize("apostrophe", APOSTROPHES, ids=["droite", "typographique"])
+@pytest.mark.parametrize("apostrophe", APOSTROPHES, ids=NOMS_APOSTROPHES)
 def test_le_meme_nombre_ecrit_avec_une_apostrophe_ou_une_espace_passe(apostrophe):
     # Le témoin : « 9'300 » et « 9 300 » sont le même nombre, dans un sens comme dans l'autre.
     nombres = _nombres()

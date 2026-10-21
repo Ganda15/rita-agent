@@ -1,5 +1,33 @@
 # Preuves du sprint 4 : la composante agentique et les garde-fous
 
+Preuves versionnées du sprint 4 (20 et 21/10/2026), dans l'ordre où elles ont été produites. L'index ci-dessous donne,
+pour chaque preuve, le critère d'acceptation de la spec (`docs/sprint-4/SPEC.md`) et la section qui l'explique. Les
+rapports ne gardent jamais de clé ni de texte de briefing (D9).
+
+## Index des preuves
+
+| Ce qui est prouvé | Fichiers | Critères | Section |
+|---|---|---|---|
+| Le comportement de l'existant mesuré avant tout changement | `mesurer_depart.py`, `mesure-depart-2026-10-20.json` | CA2.7 | Étape 0 |
+| La deuxième mesure de départ, avec l'outil à deux niveaux | `mesure-question-niveau1-2026-10-20-1533.json` | CA2.7, CA4.1, CA4.2 | Tâche A1 |
+| Le garde-fou de détournement : 7 prompts hostiles sur 8 refusés avant le modèle, 0 faux positif sur 17 questions légitimes ; aucune des 8 reformulations réservées reconnue (limite) | `mesure-question-niveau1-2026-10-20-1552.json` | CA2.1 à CA2.6, CA4.1, CA4.2 | Tâche A3 |
+| Un article piégé ne détourne pas la réponse à une question | `essai_article_piege.py`, `essai-article-piege-2026-10-20-1623.json` | CA2.8 | Tâche A4 |
+| Le jeu de questions v3 rejoué par la chaîne, porte bloquante | `rejeu-questions-v3-2026-10-20.json` | CA4.3, CA4.4 | Tâche A5 |
+| Le contrôle de fuite après le modèle, prouvé avec des sorties dangereuses simulées | tests cités dans la section | CA3.1 à CA3.5 | Tâches B1 et B2 |
+| Les traces du briefing réduites aux métadonnées, et l'essai réel du briefing piégé | `essai_briefing_piege.py`, `essai-briefing-piege-2026-10-20-1658.json` | CA2.8, CA3.6 | Tâche B3 |
+| Le 422 sur `/briefing` sans appel au modèle | tests cités dans la section | CA6.2 | Tâche C1 |
+| Le refus de clé journalisé, sans la clé | tests cités dans la section | CA6.3 | Tâche C2 |
+| La limite de débit partagée par `/briefing` et `/question` | tests cités dans la section | CA1.4 | Tâche C3 |
+| Les mesures de niveau 2 avec le vrai modèle, dont celle gardée avec ses anomalies | `mesure-question-niveau2-2026-10-20-1833.json`, `mesure-question-niveau2-2026-10-20-1855.json` | CA4.1, CA4.2, CA4.5 | Tâche D2 |
+| La livraison N10 et son rejeu en production | `rejeu_production.py`, `rejeu-production-2026-10-20-2153.json` | CA8.1, CA8.2 | Tâche D2 |
+| Le contrôle des nombres et sa mesure de niveau 2 | `mesure-question-niveau2-2026-10-21-0818.json` | CA4.1, CA4.2, CA4.5 | Le contrôle des nombres |
+| Les dix points des revues du jour, avec décision et commit | tableau dans la section | aucun (qualité du contrôle) | Les revues du contrôle des nombres |
+| La livraison N11 et ses deux rejeux en production, 5 appels conformes sur 5 | `rejeu-production-2026-10-21-111136.json`, `rejeu-production-2026-10-21-111201.json` | CA8.1, CA8.2 | La livraison N11 |
+| Le traçage Langfuse coupé en production : aucune trace envoyée, donc rien de conservé | commandes et résultat dans la section | CA3.6 | CA3.6 en production |
+
+Les tests cités se trouvent dans `tests/` ; la suite locale compte 1400 passed, 24 skipped, 2 xfailed au 21/10. L'état du
+contrat du sprint 1, critère par critère, est dans `docs/sprint-4/CONTRAT.md` (CA6.1, CA6.4).
+
 ## Étape 0 : la mesure de départ (20/10/2026)
 
 Avant tout garde-fou nouveau (spec, CA2.7), sur le code de `d6a9314` et la copie de l'index local `18c122a9`
@@ -413,10 +441,11 @@ la variabilité du modèle, le contrôle n'ayant rien refusé.
 écrit en lettres n'est pas contrôlé. **Le contrôle n'est pas encore en production** : il arrivera avec la livraison
 suivante.
 
-## Les revues du contrôle des nombres, avant la livraison N11 (21/10/2026)
+## Les revues du contrôle des nombres (21/10/2026)
 
-Codex a relu les PR #114 (branche du sprint vers `develop`, fusionnée à 9 h 41), #115 (`develop` vers `main`) et #116
-(les corrections, fusionnée à 10 h 31) ; une revue de sécurité automatique a relu le commit `14c2d82`. Chaque point a
+Codex a relu les PR #114 (branche du sprint vers `develop`, fusionnée à 9 h 41), #115 (`develop` vers `main`), #116
+et #117 (les corrections, fusionnées à 10 h 31 et 10 h 45) ; une revue de sécurité automatique a relu le commit
+`14c2d82`. Chaque point a
 été vérifié dans le code, puis corrigé avec un test rouge d'abord ; un refus à tort et sans danger est écrit comme
 limite. Heures de Paris.
 
@@ -430,14 +459,15 @@ limite. Heures de Paris.
 | « 2026 +5 % » : deux quantités côte à côte refusées comme un seul nombre | Codex, PR #116 | un groupe de milliers fait toujours trois chiffres | `e94f513` |
 | un extrait finissant par « 9 » et un suivant commençant par « 300 emplois » formaient « 9 300 » | seconde revue Codex, PR #116 | chaque extrait cité est cherché séparément | `30832ac` |
 | « 300 » passait face à « 9'300 », écriture suisse des milliers | troisième revue Codex, PR #115 | une apostrophe entre un chiffre et trois chiffres vaut une espace | `1581fad` |
+| « 300 » passait encore face à « 9‘300 » ou « 9ʼ300 » : deux autres apostrophes, que `guardrails/detournement.py` traite déjà | Codex, PR #117 | les quatre apostrophes du garde-fou de détournement | `be39f73`, livraison suivante |
 | « Perspectives 2026 300 emplois » se lit comme un seul nombre | seconde revue Codex, PR #116 | limite écrite : « 300 » ou « 2026 » seuls sont refusés même justes, sans danger | aucun |
 
 Pour l'apostrophe, mesure sur la copie de l'index de production : la source « Zonebourse Suisse » fournit 78 extraits
 sur 2 052, aucun n'écrit encore ses milliers avec une apostrophe (54 les écrivent avec une espace). Même famille que le
 groupe amputé, donc corrigé plutôt qu'écrit comme limite.
 
-Les tests du contrôle passent de 11 à 40 (`tests/test_controle_nombres.py`). Suite locale après la dernière
-correction : 1396 passed, 24 skipped, 2 xfailed.
+Les tests du contrôle passent de 11 à 44 (`tests/test_controle_nombres.py`). Suite locale après la dernière
+correction : 1400 passed, 24 skipped, 2 xfailed.
 
 ## L'image de base tirée d'un miroir (21/10/2026)
 
@@ -451,9 +481,81 @@ Depuis, les dix passages suivants du workflow de livraison ont construit l'image
 10 h 31). **Limite** : c'est encore un registre tiré sans compte ; la solution durable reste un compte, avec ses secrets
 posés dans GitHub par Era.
 
+## La livraison N11 (21/10/2026)
+
+PR #117 (l'apostrophe des milliers et les preuves des revues) fusionnée dans `develop` à 10 h 45, commit `d621fa7`,
+alors que ses contrôles `pytest` et `construire-et-publier` tournaient encore ; ils ont fini verts, et les mêmes
+contrôles sont passés sur la PR #115 avant sa fusion. PR #115 (`develop` vers `main`) fusionnée par Era à 10 h 53,
+commit `4fc63f5`. Heures de Paris.
+
+Passage de livraison `39572719574`, réussi du premier coup, **sans aucun refus du registre d'images** : construction de
+l'image en 6 min (tirée de `mirror.gcr.io`), déploiement en 4 min 50, code rendu par le serveur 0 (le jeu de questions
+v3 rejoué sur le serveur avant la bascule). `/health` annonce le commit `4fc63f5`, construit le 21/10 à 10 h 57,
+l'index `98ea614a…` reconstruit à 11 h 04, 2140 articles, la même empreinte de contenu qu'avant (`fd8542955c1b…`).
+
+Ce qui arrive en production : le contrôle des nombres (motif `NOMBRE_NON_SOURCE`) avec les corrections des revues du
+jour, sauf les deux dernières apostrophes (U+2018 et U+02BC, PR #118, livraison suivante) ; l'image de base tirée du
+miroir.
+
+### Le rejeu en production après N11 (21/10/2026, 11 h 11 et 11 h 12)
+
+Cinq appels, deux lancements, par Era, avec `evidence/sprint-4/rejeu_production.py` ; la clé de production a été
+chargée dans sa session depuis le `.env` du serveur sans être affichée, puis effacée. Les deux rapports annoncent le
+commit servi `4fc63f5` et l'index `98ea614a…`.
+
+| Appel | Attendu | 11 h 11 | 11 h 12 |
+|---|---|---|---|
+| H1 sur `POST /question` | refus `TENTATIVE_DETOURNEMENT` | conforme | conforme |
+| Q4 sur `POST /question` | réponse avec « 1 000 postes » | conforme, article 2788 cité | conforme, article 2788 cité |
+| H8 sur `POST /question` | refus, abstention ou hors corpus | conforme (abstention) | conforme (abstention) |
+| 21 caractères sur `POST /briefing` | 422 | conforme | conforme |
+| `POST /briefing?ticker=OR.PA` | 200, `X-Request-ID`, texte en français | conforme, conforme AMF | conforme, conforme AMF |
+
+Q4 rend « 1 000 postes » aux deux lancements, et aucun refus `NOMBRE_NON_SOURCE` n'a eu lieu : le contrôle laisse
+passer une réponse juste en production. Deux lancements justes ne prouvent pas que le modèle n'abîmera plus le chiffre,
+le défaut étant rare ; s'il l'abîme, la réponse est désormais refusée au lieu d'être servie. Ce refus est prouvé par les
+tests, il n'a pas été observé en production.
+
+Rapports : `evidence/sprint-4/rejeu-production-2026-10-21-111136.json` et
+`evidence/sprint-4/rejeu-production-2026-10-21-111201.json`. Vérifiés avant le commit : ni clé ni texte ; la seule
+suite longue de caractères est le commit servi.
+
+Le briefing OR.PA, lu par Era à la console, est en français et ne donne aucun conseil. Il annonce une dernière cotation
+vieille de **64 jours** et dit encore la valeur « probablement radiée » : les deux limites de la section suivante
+restent ouvertes.
+
+## CA3.6 en production : le traçage Langfuse est coupé (21/10/2026)
+
+Era n'a trouvé aucune trace de production dans le projet Langfuse. Vérification en lecture seule sur le serveur, le
+21/10 en fin de matinée, par deux commandes qui n'affichent que le nom des variables Langfuse ayant une valeur, jamais la
+valeur : `grep -o '^LANGFUSE_[A-Z_]*=.' /root/rita-agent/.env | cut -d= -f1`, puis la même lecture sur
+`docker exec rita-api-preprod printenv`.
+
+| Où | Variables Langfuse qui ont une valeur |
+|---|---|
+| `.env` du serveur (`/root/rita-agent/.env`) | aucune |
+| Conteneur de l'API en marche (`rita-api-preprod`) | `LANGFUSE_HOST` et `LANGFUSE_TRACING_ENABLED`, les valeurs par défaut de `docker-compose.yml` |
+
+`src/traces.py` n'active le traçage que si `LANGFUSE_PUBLIC_KEY` et `LANGFUSE_SECRET_KEY` ont une valeur : en
+production, aucune trace n'est envoyée.
+
+Lecture :
+
+- **CA3.6 est tenu en production de la façon la plus stricte** : aucune trace ne part, donc ni prompt ni réponse n'est
+  conservé chez Langfuse. Ce que garderait une trace si le traçage était activé est prouvé par les tests
+  (`tests/test_traces_briefing_sans_texte.py`).
+- **Les signaux qui se lisent dans Langfuse n'existent qu'en local** : durées des étapes, jetons, erreurs typées. En
+  production, la latence, les refus et les erreurs se lisent seulement dans le journal du conteneur de l'API.
+- **Ce manque était connu** : le 04/10, `evidence/C11/preuve-alertes-2026-10-04.md` notait déjà que le serveur n'envoyait
+  aucune trace, et `evidence/C11/README.md` garde « Variables Langfuse sur le serveur Hetzner » comme tâche ouverte ; au
+  sprint 2, `docs/sprint-2/README.md` écrivait « aucune clé Langfuse sur le serveur ». Les traces citées dans le rapport E3
+  venaient du poste de développement. La mesure du 21/10 confirme que les clés n'ont jamais été posées depuis.
+- Poser les clés sur le serveur est une décision d'Era, qui saisit lui-même tout secret ; elle relève du sprint 5
+  (surveillance).
+
 ## Deux points relevés dans le briefing OR.PA, écrits comme limites
 
-- En production, la dernière cotation d'OR.PA date de **63 jours**. Le critère 1 du contrat suppose une valeur cotée
+- En production, la dernière cotation d'OR.PA date de **63 jours** le 20/10, de 64 jours le 21/10. Le critère 1 du contrat suppose une valeur cotée
   depuis moins de cinq jours ouvrés : il n'est pas rempli pour OR.PA. La cause (collecte des cours en production) n'est
   pas examinée.
 - Le briefing en déduit que la valeur est « **probablement radiée** », ce qui est faux pour L'Oréal : une donnée
