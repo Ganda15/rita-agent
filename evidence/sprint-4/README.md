@@ -413,10 +413,11 @@ la variabilité du modèle, le contrôle n'ayant rien refusé.
 écrit en lettres n'est pas contrôlé. **Le contrôle n'est pas encore en production** : il arrivera avec la livraison
 suivante.
 
-## Les revues du contrôle des nombres, avant la livraison N11 (21/10/2026)
+## Les revues du contrôle des nombres (21/10/2026)
 
-Codex a relu les PR #114 (branche du sprint vers `develop`, fusionnée à 9 h 41), #115 (`develop` vers `main`) et #116
-(les corrections, fusionnée à 10 h 31) ; une revue de sécurité automatique a relu le commit `14c2d82`. Chaque point a
+Codex a relu les PR #114 (branche du sprint vers `develop`, fusionnée à 9 h 41), #115 (`develop` vers `main`), #116
+et #117 (les corrections, fusionnées à 10 h 31 et 10 h 45) ; une revue de sécurité automatique a relu le commit
+`14c2d82`. Chaque point a
 été vérifié dans le code, puis corrigé avec un test rouge d'abord ; un refus à tort et sans danger est écrit comme
 limite. Heures de Paris.
 
@@ -430,14 +431,15 @@ limite. Heures de Paris.
 | « 2026 +5 % » : deux quantités côte à côte refusées comme un seul nombre | Codex, PR #116 | un groupe de milliers fait toujours trois chiffres | `e94f513` |
 | un extrait finissant par « 9 » et un suivant commençant par « 300 emplois » formaient « 9 300 » | seconde revue Codex, PR #116 | chaque extrait cité est cherché séparément | `30832ac` |
 | « 300 » passait face à « 9'300 », écriture suisse des milliers | troisième revue Codex, PR #115 | une apostrophe entre un chiffre et trois chiffres vaut une espace | `1581fad` |
+| « 300 » passait encore face à « 9‘300 » ou « 9ʼ300 » : deux autres apostrophes, que `guardrails/detournement.py` traite déjà | Codex, PR #117 | les quatre apostrophes du garde-fou de détournement | `be39f73`, livraison suivante |
 | « Perspectives 2026 300 emplois » se lit comme un seul nombre | seconde revue Codex, PR #116 | limite écrite : « 300 » ou « 2026 » seuls sont refusés même justes, sans danger | aucun |
 
 Pour l'apostrophe, mesure sur la copie de l'index de production : la source « Zonebourse Suisse » fournit 78 extraits
 sur 2 052, aucun n'écrit encore ses milliers avec une apostrophe (54 les écrivent avec une espace). Même famille que le
 groupe amputé, donc corrigé plutôt qu'écrit comme limite.
 
-Les tests du contrôle passent de 11 à 40 (`tests/test_controle_nombres.py`). Suite locale après la dernière
-correction : 1396 passed, 24 skipped, 2 xfailed.
+Les tests du contrôle passent de 11 à 44 (`tests/test_controle_nombres.py`). Suite locale après la dernière
+correction : 1400 passed, 24 skipped, 2 xfailed.
 
 ## L'image de base tirée d'un miroir (21/10/2026)
 
