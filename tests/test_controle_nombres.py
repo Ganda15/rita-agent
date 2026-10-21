@@ -167,3 +167,19 @@ def test_un_nombre_a_point_decimal_se_cherche_entier(texte, source, absent):
 def test_un_point_decimal_juste_ou_un_point_final_passent(texte, source):
     # Les témoins : une décimale juste passe ; un point de fin de phrase n'est pas une décimale.
     assert _nombres().nombres_absents(texte, [source]) == []
+
+
+# --- revue de sécurité automatique du commit 14c2d82 (21/10/2026) : le nom de la source ------------------------------
+
+def test_le_nom_de_la_source_ne_valide_pas_un_nombre(monkeypatch):
+    # Le nom de la source est tiré du titre (« Titre - Éditeur », `rag/indexation.py`, `editeur`), donc d'un texte
+    # qu'un site extérieur contrôle. Il faisait partie des sources du contrôle : ses chiffres validaient n'importe quel
+    # nombre de la réponse. Seul le texte de l'extrait cité sert désormais de source.
+    passage = Passage(article_id=2790, texte="Le groupe annonce un plan social", titre="Le groupe annonce un plan social",
+                      source="20 Minutes", lien="https://exemple.test/2790", publie_le="2026-10-14T18:04:00+02:00",
+                      tickers=[], rang_dense=1, rang_lexical=1, distance_dense=0.3, score_lexical=1.0)
+    monkeypatch.setattr(question, "rechercher", lambda *a, **k: Resultat(True, "OK", [passage], 1))
+    sortie = {"statut": "reponse", "texte": "Le groupe supprime 20 postes. [1]", "citations": [1]}
+    monkeypatch.setattr(question, "generer_json", lambda *a, **k: json.dumps(sortie, ensure_ascii=False))
+    reponse = question.repondre("Combien de postes le groupe supprime-t-il ?")
+    assert (reponse.statut, reponse.motif) == ("refus", "NOMBRE_NON_SOURCE")
