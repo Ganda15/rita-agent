@@ -9,6 +9,24 @@
 
 ---
 
+## 2026-10-21 (nuit, fin) : livrable du sprint 4, version 3 (tag `livrable-sprint-4-v3`)
+
+**Relecture finale de la version 2** (tag `livrable-sprint-4-v2`) : le lien « `guardrails/nombres.py`, ligne 67 »
+ouvrait une ligne vide, la fonction `nombres_absents` étant à la ligne 68 ; la version servie était encore donnée pour
+N12 (`27e41d3`), alors que N13 et N14 l'avaient remplacée ; les livraisons s'arrêtaient à N12. **Version 3** : le lien
+corrigé ; l'état de la production à N14 (`81a9718`), avec le comportement de N12 ; N13 et N14 ajoutées au § 7.9, au
+glossaire et à la synthèse ; `/health` après N14 en annexe. Les liens visent `livrable-sprint-4-v3`, posé par Era sur
+le commit de la livraison suivante, désigné par son SHA complet. Le tag v2 reste, figé, sur N14.
+
+## 2026-10-21 (nuit) : livraison N14 ; tag `livrable-sprint-4-v2` posé, remise du sprint 4
+
+**Livré** : N14 à 21 h 24 (commit `81a9718`, PR #124 ; passage `39659810301`, réussi du premier coup), sans changement
+de code. **Remise** : le tag `livrable-sprint-4-v2`, posé par Era à 21 h 25 sur
+`81a9718c528cea18ad533aae5fd3c2ffd1ea5e49` (SHA complet), après `/health` vérifié. Sa livraison (passage
+`39661606759`) a passé la porte de livraison (tests, portes d'évaluation, liens, tag cité : « VERDICT : ✅ livrable »)
+et publié l'image `ghcr.io/ganda15/rita-api:livrable-sprint-4-v2`. Les 49 liens du livrable et de la synthèse
+répondent au tag.
+
 ## 2026-10-21 (soir, fin) : livraison N13 ; le tag v1 posé sur N12 par erreur ; la remise passe au tag `livrable-sprint-4-v2`
 
 **Livré** : N13 à 20 h 49 (commit `ce5b2c7`, PR #122 ; passage `39654392710`, réussi du premier coup) : le livrable

@@ -25,7 +25,7 @@ rapports ne gardent jamais de clé ni de texte de briefing (D9).
 | La livraison N11 et ses deux rejeux en production, 5 appels conformes sur 5 | `rejeu-production-2026-10-21-111136.json`, `rejeu-production-2026-10-21-111201.json` | CA8.1, CA8.2 | La livraison N11 |
 | Le traçage Langfuse coupé en production jusqu'au 21/10 : aucune trace envoyée, donc rien de conservé | commandes et résultat dans la section | CA3.6 | CA3.6 en production |
 | La livraison N12, les clés Langfuse posées, et une trace de briefing de production sans prompt ni réponse | `rejeu-production-2026-10-21-125121.json`, `captures/langfuse-trace-briefing-racine-2026-10-21.png`, `captures/langfuse-trace-briefing-generation-2026-10-21.png` | CA3.6, CA8.1, CA8.2 | La livraison N12 |
-| La livraison N13, et le tag v1 posé sur N12 refusé par la porte de livraison, figé par la règle du dépôt | passages et sorties cités dans la section | CA8.1 | La livraison N13 et le tag |
+| Les livraisons N13 et N14, le tag v1 posé sur N12 refusé par la porte de livraison, figé par la règle du dépôt, et le tag v2 de la remise, livré | passages et sorties cités dans la section | CA8.1 | La livraison N13 et le tag |
 
 Les tests cités se trouvent dans `tests/` ; la suite locale compte 1402 passed, 24 skipped, 2 xfailed au 21/10. L'état du
 contrat du sprint 1, critère par critère, est dans `docs/sprint-4/CONTRAT.md` (CA6.1, CA6.4).
@@ -614,6 +614,17 @@ PR #122 : il désigne `27e41d3` (N12). Deux garde-fous ont joué :
 
 **Suite** : le tag v1 reste sur N12 et n'est pas envoyé ; la remise est le tag `livrable-sprint-4-v2`, posé par Era sur
 le commit de la livraison suivante, désigné par son SHA complet (étape 5 du plan de travail).
+
+**La livraison N14 et le tag v2.** PR #123 puis PR #124 (`develop` vers `main`), contrôles verts et revue Codex sans
+remarque ; PR #124 fusionnée par Era à 21 h 13, commit `81a9718` ; passage `39659810301`, réussi, déploiement terminé à
+21 h 24 ; `/health` annonce `81a9718`, 2140 articles, la même empreinte de contenu. Era a posé le tag
+`livrable-sprint-4-v2` à 21 h 25 sur `81a9718c528cea18ad533aae5fd3c2ffd1ea5e49`, écrit en entier. Sa livraison (passage
+`39661606759`) a passé la porte : tests (1379 passed, 35 skipped, 2 xfailed en CI), portes d'évaluation (16 passed),
+liens internes, tag cité, « VERDICT : ✅ livrable » ; image `ghcr.io/ganda15/rita-api:livrable-sprint-4-v2` publiée,
+sans déploiement. Les 49 liens du livrable et de la synthèse répondent au tag (vérifiés par l'API GitHub, le dépôt
+étant privé).
+
+**La version 3.** La relecture finale de la version 2 a trouvé un lien de ligne décalé (`guardrails/nombres.py`, ligne 67 au lieu de 68) et un état de la production arrêté à N12. La version 3 les corrige ; la remise passe au tag `livrable-sprint-4-v3`, posé sur le commit de la livraison suivante.
 
 ## Deux points relevés dans le briefing OR.PA, écrits comme limites
 
