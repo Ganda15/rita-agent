@@ -1,5 +1,32 @@
 # Preuves du sprint 4 : la composante agentique et les garde-fous
 
+Preuves versionnées du sprint 4 (20 et 21/10/2026), dans l'ordre où elles ont été produites. L'index ci-dessous donne,
+pour chaque preuve, le critère d'acceptation de la spec (`docs/sprint-4/SPEC.md`) et la section qui l'explique. Les
+rapports ne gardent jamais de clé ni de texte de briefing (D9).
+
+## Index des preuves
+
+| Ce qui est prouvé | Fichiers | Critères | Section |
+|---|---|---|---|
+| Le comportement de l'existant mesuré avant tout changement | `mesurer_depart.py`, `mesure-depart-2026-10-20.json` | CA2.7 | Étape 0 |
+| La deuxième mesure de départ, avec l'outil à deux niveaux | `mesure-question-niveau1-2026-10-20-1533.json` | CA2.7, CA4.1, CA4.2 | Tâche A1 |
+| Le garde-fou de détournement : 7 prompts hostiles sur 8 refusés avant le modèle, 0 faux positif sur 17 questions légitimes ; aucune des 8 reformulations réservées reconnue (limite) | `mesure-question-niveau1-2026-10-20-1552.json` | CA2.1 à CA2.6, CA4.1, CA4.2 | Tâche A3 |
+| Un article piégé ne détourne pas la réponse à une question | `essai_article_piege.py`, `essai-article-piege-2026-10-20-1623.json` | CA2.8 | Tâche A4 |
+| Le jeu de questions v3 rejoué par la chaîne, porte bloquante | `rejeu-questions-v3-2026-10-20.json` | CA4.3, CA4.4 | Tâche A5 |
+| Le contrôle de fuite après le modèle, prouvé avec des sorties dangereuses simulées | tests cités dans la section | CA3.1 à CA3.5 | Tâches B1 et B2 |
+| Les traces du briefing réduites aux métadonnées, et l'essai réel du briefing piégé | `essai_briefing_piege.py`, `essai-briefing-piege-2026-10-20-1658.json` | CA2.8, CA3.6 | Tâche B3 |
+| Le 422 sur `/briefing` sans appel au modèle | tests cités dans la section | CA6.2 | Tâche C1 |
+| Le refus de clé journalisé, sans la clé | tests cités dans la section | CA6.3 | Tâche C2 |
+| La limite de débit partagée par `/briefing` et `/question` | tests cités dans la section | CA1.4 | Tâche C3 |
+| Les mesures de niveau 2 avec le vrai modèle, dont celle gardée avec ses anomalies | `mesure-question-niveau2-2026-10-20-1833.json`, `mesure-question-niveau2-2026-10-20-1855.json` | CA4.1, CA4.2, CA4.5 | Tâche D2 |
+| La livraison N10 et son rejeu en production | `rejeu_production.py`, `rejeu-production-2026-10-20-2153.json` | CA8.1, CA8.2 | Tâche D2 |
+| Le contrôle des nombres et sa mesure de niveau 2 | `mesure-question-niveau2-2026-10-21-0818.json` | CA4.1, CA4.2, CA4.5 | Le contrôle des nombres |
+| Les dix points des revues du jour, avec décision et commit | tableau dans la section | aucun (qualité du contrôle) | Les revues du contrôle des nombres |
+| La livraison N11 et ses deux rejeux en production, 5 appels conformes sur 5 | `rejeu-production-2026-10-21-111136.json`, `rejeu-production-2026-10-21-111201.json` | CA8.1, CA8.2 | La livraison N11 |
+
+Les tests cités se trouvent dans `tests/` ; la suite locale compte 1400 passed, 24 skipped, 2 xfailed au 21/10. L'état du
+contrat du sprint 1, critère par critère, est dans `docs/sprint-4/CONTRAT.md` (CA6.1, CA6.4).
+
 ## Étape 0 : la mesure de départ (20/10/2026)
 
 Avant tout garde-fou nouveau (spec, CA2.7), sur le code de `d6a9314` et la copie de l'index local `18c122a9`
