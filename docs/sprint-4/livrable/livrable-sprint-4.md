@@ -359,7 +359,8 @@ ligne datée, sans que son texte d'origine soit réécrit.
 | 5 | un tiers suit la procédure de retour arrière, N-1 servie en moins de 10 minutes | en cours | retour arrière du 14/10 : N0 servie 19 s après le lancement. **Écart** : lancé par Era, pas par un tiers ; question posée au formateur (D8) |
 
 La limite de débit, annoncée au sprint 1 pour le sprint 4, est faite : au plus 10 appels par minute, partagés par
-`/briefing` et `/question`, 7 tests (`tests/test_limiteur.py`).
+`/briefing` et `/question`, 7 tests (`tests/test_limiteur.py`). Un autre écart au dossier du sprint 1 est écrit dans le même fichier : il
+annonçait que Langfuse tracerait chaque briefing en production, or aucune clé n'est posée sur le serveur (§ 9).
 
 ### 7.8 Pas d'action sensible, et le périmètre d'accès (critère 5)
 
