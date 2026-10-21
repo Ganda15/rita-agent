@@ -118,3 +118,24 @@ def test_une_date_de_publication_fausse_est_refusee(monkeypatch):
     # Le témoin : la date ajoutée aux sources ne doit pas faire passer n'importe quelle date.
     reponse = _repondre(monkeypatch, "L'article est publié le 15 octobre 2026. [1]")
     assert (reponse.statut, reponse.motif) == ("refus", "NOMBRE_NON_SOURCE")
+
+
+# --- seconde revue Codex de la PR #114 (21/10/2026) : le point décimal ------------------------------------------------
+
+@pytest.mark.parametrize("texte, source, absent", [
+    ("Le taux est 2.5 %. [1]", "Le taux est 5.2 %.", "2.5"),
+    ("Le taux est 2.7 %. [1]", "Le taux est 2.5 % et le délai de 7 jours.", "2.7"),
+], ids=["parties_inversees", "decimale_changee"])
+def test_un_nombre_a_point_decimal_se_cherche_entier(texte, source, absent):
+    # P2 : « 2.5 » était coupé en « 2 » et « 5 » ; un taux inversé ou changé passait dès que les morceaux figuraient
+    # ailleurs dans l'article. Le point entre deux chiffres est une décimale, comme la virgule.
+    assert _nombres().nombres_absents(texte, [source]) == [absent]
+
+
+@pytest.mark.parametrize("texte, source", [
+    ("Le taux est 2.5 %. [1]", "Le taux est 2.5 % sur un an."),
+    ("La croissance est prévue en 2027. [1]", "La croissance en 2027 sera faible."),
+], ids=["meme_decimale", "point_de_fin_de_phrase"])
+def test_un_point_decimal_juste_ou_un_point_final_passent(texte, source):
+    # Les témoins : une décimale juste passe ; un point de fin de phrase n'est pas une décimale.
+    assert _nombres().nombres_absents(texte, [source]) == []

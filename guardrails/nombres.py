@@ -10,8 +10,9 @@ le résultat avant qu'il soit servi.
 **Comment.** Toutes les espaces Unicode (catégorie Zs : ordinaire, insécable, fine...) sont ramenées à une espace
 simple, dans la réponse comme dans les sources ; le vrai signe moins (U+2212) devient un trait d'union ; les numéros de
 citation « [1] » sont retirés. Un nombre est une suite de chiffres, avec ses groupes séparés par une espace et sa partie
-décimale après une virgule (« 1 000 », « 0,5 », « 2027 »). Il doit apparaître ENTIER dans les sources : « 1 00 » ne
-vaut pas « 1 000 », ni « 0,55 » « 0,5 ».
+décimale après une virgule ou un point suivi d'un chiffre (« 1 000 », « 0,5 », « 2.5 », « 2027 ») ; un point de fin de
+phrase n'est pas une décimale. Il doit apparaître ENTIER dans les sources : « 1 00 » ne vaut pas « 1 000 », ni « 0,55 »
+« 0,5 », ni « 2.5 » « 5.2 » (seconde revue Codex de la PR #114 : le point coupait le nombre en deux).
 
 **Le signe** (revue Codex de la PR #114, 21/10/2026) : un « + » ou un « - » collé devant un nombre, et précédé d'une
 espace, d'une parenthèse ou du début du texte, fait partie du nombre, et doit se retrouver tel quel : « -5 » ne vaut pas
@@ -30,7 +31,7 @@ MESSAGE_REFUS_NOMBRE = ("La réponse produite contenait un chiffre absent des ar
 
 _CITATION = re.compile(r"\[\d+\]")
 # Le signe facultatif n'est lu que s'il suit une espace, une parenthèse ou le début du texte.
-_NOMBRE = re.compile(r"(?:(?<![^\s(])[+-])?\d+(?: \d+)*(?:,\d+)?")
+_NOMBRE = re.compile(r"(?:(?<![^\s(])[+-])?\d+(?: \d+)*(?:[,.]\d+)?")
 _SIGNE_MOINS = chr(0x2212)
 
 
@@ -49,8 +50,8 @@ def nombres_absents(texte: str, sources: list[str]) -> list[str]:
     reference = " ".join(_normaliser(source) for source in sources)
     absents: list[str] = []
     for nombre in _NOMBRE.findall(_CITATION.sub(" ", _normaliser(texte))):
-        # Le nombre entier : ni chiffre ni virgule devant ; ni chiffre, ni décimale, ni groupe de chiffres derrière.
-        entier = r"(?<![\d,])" + re.escape(nombre) + r"(?!\d|,\d| \d)"
+        # Le nombre entier : ni chiffre, ni virgule, ni point devant ; ni chiffre, ni décimale, ni groupe derrière.
+        entier = r"(?<![\d,.])" + re.escape(nombre) + r"(?!\d|[,.]\d| \d)"
         if not re.search(entier, reference) and nombre not in absents:
             absents.append(nombre)
     return absents
