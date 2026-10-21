@@ -626,6 +626,8 @@ sans déploiement. Les 49 liens du livrable et de la synthèse répondent au tag
 
 **La version 3.** La relecture finale de la version 2 a trouvé un lien de ligne décalé (`guardrails/nombres.py`, ligne 67 au lieu de 68) et un état de la production arrêté à N12. La version 3 les corrige ; la remise passe au tag `livrable-sprint-4-v3`, posé sur le commit de la livraison suivante.
 
+**La livraison N15 et le tag v3.** PR #125 puis PR #126 (`develop` vers `main`), contrôles verts et revue Codex sans remarque ; PR #126 fusionnée par Era à 22 h 34, commit `3c35398` ; passage `39671479884`, réussi, déploiement terminé à 22 h 44 ; `/health` annonce `3c35398`, 2140 articles, la même empreinte de contenu. Era a posé `livrable-sprint-4-v3` à 22 h 56 sur `3c35398db5fd3312cb6fc0e1a952796771d66330`. Sa livraison (passage `39674645796`) a passé la porte (tests, portes d'évaluation, liens internes, tag cité : « VERDICT : ✅ livrable ») et publié l'image `ghcr.io/ganda15/rita-api:livrable-sprint-4-v3`. Les 53 liens du livrable et de la synthèse répondent au tag.
+
 ## Deux points relevés dans le briefing OR.PA, écrits comme limites
 
 - En production, la dernière cotation d'OR.PA date de **63 jours** le 20/10, de 64 jours le 21/10. Le critère 1 du contrat suppose une valeur cotée

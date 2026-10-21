@@ -9,6 +9,14 @@
 
 ---
 
+## 2026-10-21 (nuit) : livraison N15 ; tag `livrable-sprint-4-v3` posé, remise du sprint 4
+
+**Livré** : N15 à 22 h 44 (commit `3c35398`, PR #126 ; passage `39671479884`, réussi du premier coup), sans changement
+de code. **Remise** : le tag `livrable-sprint-4-v3`, posé par Era à 22 h 56 sur
+`3c35398db5fd3312cb6fc0e1a952796771d66330` (SHA complet), après `/health` vérifié. Sa livraison (passage
+`39674645796`) a passé la porte (« VERDICT : ✅ livrable ») et publié l'image du tag. Les 53 liens du livrable et de la
+synthèse répondent au tag ; le lien `nombres.py` ouvre la ligne 68.
+
 ## 2026-10-21 (nuit, fin) : livrable du sprint 4, version 3 (tag `livrable-sprint-4-v3`)
 
 **Relecture finale de la version 2** (tag `livrable-sprint-4-v2`) : le lien « `guardrails/nombres.py`, ligne 67 »
