@@ -453,9 +453,52 @@ Depuis, les dix passages suivants du workflow de livraison ont construit l'image
 10 h 31). **Limite** : c'est encore un registre tiré sans compte ; la solution durable reste un compte, avec ses secrets
 posés dans GitHub par Era.
 
+## La livraison N11 (21/10/2026)
+
+PR #117 (l'apostrophe des milliers et les preuves des revues) fusionnée dans `develop` à 10 h 45, commit `d621fa7`,
+alors que ses contrôles `pytest` et `construire-et-publier` tournaient encore ; ils ont fini verts, et les mêmes
+contrôles sont passés sur la PR #115 avant sa fusion. PR #115 (`develop` vers `main`) fusionnée par Era à 10 h 53,
+commit `4fc63f5`. Heures de Paris.
+
+Passage de livraison `39572719574`, réussi du premier coup, **sans aucun refus du registre d'images** : construction de
+l'image en 6 min (tirée de `mirror.gcr.io`), déploiement en 4 min 50, code rendu par le serveur 0 (le jeu de questions
+v3 rejoué sur le serveur avant la bascule). `/health` annonce le commit `4fc63f5`, construit le 21/10 à 10 h 57,
+l'index `98ea614a…` reconstruit à 11 h 04, 2140 articles, la même empreinte de contenu qu'avant (`fd8542955c1b…`).
+
+Ce qui arrive en production : le contrôle des nombres (motif `NOMBRE_NON_SOURCE`) avec les corrections des revues du
+jour, sauf les deux dernières apostrophes (U+2018 et U+02BC, PR #118, livraison suivante) ; l'image de base tirée du
+miroir.
+
+### Le rejeu en production après N11 (21/10/2026, 11 h 11 et 11 h 12)
+
+Cinq appels, deux lancements, par Era, avec `evidence/sprint-4/rejeu_production.py` ; la clé de production a été
+chargée dans sa session depuis le `.env` du serveur sans être affichée, puis effacée. Les deux rapports annoncent le
+commit servi `4fc63f5` et l'index `98ea614a…`.
+
+| Appel | Attendu | 11 h 11 | 11 h 12 |
+|---|---|---|---|
+| H1 sur `POST /question` | refus `TENTATIVE_DETOURNEMENT` | conforme | conforme |
+| Q4 sur `POST /question` | réponse avec « 1 000 postes » | conforme, article 2788 cité | conforme, article 2788 cité |
+| H8 sur `POST /question` | refus, abstention ou hors corpus | conforme (abstention) | conforme (abstention) |
+| 21 caractères sur `POST /briefing` | 422 | conforme | conforme |
+| `POST /briefing?ticker=OR.PA` | 200, `X-Request-ID`, texte en français | conforme, conforme AMF | conforme, conforme AMF |
+
+Q4 rend « 1 000 postes » aux deux lancements, et aucun refus `NOMBRE_NON_SOURCE` n'a eu lieu : le contrôle laisse
+passer une réponse juste en production. Deux lancements justes ne prouvent pas que le modèle n'abîmera plus le chiffre,
+le défaut étant rare ; s'il l'abîme, la réponse est désormais refusée au lieu d'être servie. Ce refus est prouvé par les
+tests, il n'a pas été observé en production.
+
+Rapports : `evidence/sprint-4/rejeu-production-2026-10-21-111136.json` et
+`evidence/sprint-4/rejeu-production-2026-10-21-111201.json`. Vérifiés avant le commit : ni clé ni texte ; la seule
+suite longue de caractères est le commit servi.
+
+Le briefing OR.PA, lu par Era à la console, est en français et ne donne aucun conseil. Il annonce une dernière cotation
+vieille de **64 jours** et dit encore la valeur « probablement radiée » : les deux limites de la section suivante
+restent ouvertes.
+
 ## Deux points relevés dans le briefing OR.PA, écrits comme limites
 
-- En production, la dernière cotation d'OR.PA date de **63 jours**. Le critère 1 du contrat suppose une valeur cotée
+- En production, la dernière cotation d'OR.PA date de **63 jours** le 20/10, de 64 jours le 21/10. Le critère 1 du contrat suppose une valeur cotée
   depuis moins de cinq jours ouvrés : il n'est pas rempli pour OR.PA. La cause (collecte des cours en production) n'est
   pas examinée.
 - Le briefing en déduit que la valeur est « **probablement radiée** », ce qui est faux pour L'Oréal : une donnée
