@@ -26,7 +26,7 @@ rapports ne gardent jamais de clé ni de texte de briefing (D9).
 | Le traçage Langfuse coupé en production jusqu'au 21/10 : aucune trace envoyée, donc rien de conservé | commandes et résultat dans la section | CA3.6 | CA3.6 en production |
 | La livraison N12, les clés Langfuse posées, et une trace de briefing de production sans prompt ni réponse | `rejeu-production-2026-10-21-125121.json`, `captures/langfuse-trace-briefing-racine-2026-10-21.png`, `captures/langfuse-trace-briefing-generation-2026-10-21.png` | CA3.6, CA8.1, CA8.2 | La livraison N12 |
 
-Les tests cités se trouvent dans `tests/` ; la suite locale compte 1400 passed, 24 skipped, 2 xfailed au 21/10. L'état du
+Les tests cités se trouvent dans `tests/` ; la suite locale compte 1402 passed, 24 skipped, 2 xfailed au 21/10. L'état du
 contrat du sprint 1, critère par critère, est dans `docs/sprint-4/CONTRAT.md` (CA6.1, CA6.4).
 
 ## Étape 0 : la mesure de départ (20/10/2026)
@@ -438,8 +438,9 @@ la variabilité du modèle, le contrôle n'ayant rien refusé.
 | 11 tests : les deux formes abîmées, quatre espaces, citations, décimales et années, refus et témoin servi, prompt ; et le motif à l'écran | `tests/test_controle_nombres.py`, `tests/test_smoke_ui.py` |
 | Mesure de niveau 2 avec le contrôle | `evidence/sprint-4/mesure-question-niveau2-2026-10-21-0818.json` |
 
-**Limites** : une seule exécution ; un chiffre reformulé (« mille ») ou calculé est refusé même juste, et un chiffre
-écrit en lettres n'est pas contrôlé. **Le contrôle n'est pas encore en production** : il arrivera avec la livraison
+**Limites** : une seule exécution ; un nombre calculé est refusé même juste ; un nombre écrit en lettres n'est pas
+contrôlé (corrigé le 21/10 : « mille » avait été donné à tort comme refusé) ; la présence d'un nombre ne garantit ni son
+sens ni son unité. **Le contrôle n'est pas encore en production** : il arrivera avec la livraison
 suivante.
 
 ## Les revues du contrôle des nombres (21/10/2026)
@@ -467,8 +468,9 @@ Pour l'apostrophe, mesure sur la copie de l'index de production : la source « Z
 sur 2 052, aucun n'écrit encore ses milliers avec une apostrophe (54 les écrivent avec une espace). Même famille que le
 groupe amputé, donc corrigé plutôt qu'écrit comme limite.
 
-Les tests du contrôle passent de 11 à 44 (`tests/test_controle_nombres.py`). Suite locale après la dernière
-correction : 1400 passed, 24 skipped, 2 xfailed.
+Les tests du contrôle passent de 11 à 44 (`tests/test_controle_nombres.py`), puis à 46 avec les deux limites fixées
+par la relecture du livrable (un nombre en lettres ignoré, l'unité non vérifiée). Suite locale : 1402 passed, 24 skipped,
+2 xfailed.
 
 ## L'image de base tirée d'un miroir (21/10/2026)
 

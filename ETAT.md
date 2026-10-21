@@ -42,7 +42,7 @@ charge sans affichage : `$env:RITA_API_KEY = ssh root@178.104.184.125 "sed -n 's
 puis `Remove-Item Env:RITA_API_KEY` après le rejeu.
 
 **Revues du jour** : 10 points relevés par Codex (PR #114 à #117) et par la revue de sécurité automatique ; 9 corrigés
-avec un test rouge d'abord, 1 écrit comme limite. Tableau dans `evidence/sprint-4/README.md`. Suite locale : 1400
+avec un test rouge d'abord, 1 écrit comme limite. Tableau dans `evidence/sprint-4/README.md`. Suite locale : 1402
 passed, 24 skipped, 2 xfailed.
 
 **PR du jour** : #118, #119 (vers `develop`) et #120 (vers `main`, N12) fusionnées ; rien en attente.

@@ -1,6 +1,6 @@
 # Sprint 4 : la composante agentique et les garde-fous
 
-> RITA, fil rouge de la phase 6 : une aide à la lecture de l'actualité économique, qui répond en citant ses sources ou refuse, et qui ne se laisse pas détourner. Version 1, avant l'atelier croisé n°4.
+> RITA, fil rouge de la phase 6 : une aide à la lecture de l'actualité économique, qui répond en citant ses sources ou refuse, protégée par des garde-fous d'entrée et de sortie. Version 1, avant l'atelier croisé n°4.
 
 ## Sommaire
 
@@ -33,8 +33,8 @@ prompts hostiles qu'il a préparés (injection, hors-périmètre, tentative d'ex
 RITA aide un investisseur particulier à lire l'actualité des sociétés cotées, sans lire trente articles et en sachant
 d'où vient chaque information. Elle fait deux choses : le briefing d'une valeur cotée, et la réponse à une question libre
 en français, toujours avec ses sources. Elle refuse ce que ses articles ne couvrent pas, les demandes de conseil d'achat
-ou de vente et les tentatives de détournement ; à une question, elle ne répond jamais avec un chiffre absent des
-articles qu'elle cite.
+ou de vente et les tentatives de détournement qu'elle reconnaît ; à une question, elle ne répond pas avec un nombre
+écrit en chiffres absent des articles qu'elle cite.
 
 ### 1.3 Les données, en bref
 
@@ -57,11 +57,11 @@ le seul à recevoir du texte libre, donc le seul que les prompts de l'évaluateu
 | Entrée de la question | détournement (nouveau) | injection, changement de rôle, extraction de la clé, des consignes ou des données internes ; refus `TENTATIVE_DETOURNEMENT` avant la recherche | 6 attaques sur 6, 0 faux positif sur 17 questions légitimes, 0 reformulation reconnue sur 8 |
 | Entrée de la question | intention (sprint 3) | une demande de conseil d'achat ou de vente ; refus `INTENTION_INTERDITE` | non remesuré au sprint 4 |
 | Recherche | règle de pertinence (sprint 3) | le hors-périmètre et le hors corpus ; refus `OUT_OF_CORPUS` sans appel au modèle | H7 et 6 reformulations sur 8 refusées ici |
-| Articles qui entrent dans un prompt | filtre d'injection, appliqué au moment du prompt (nouveau) | un passage piégé est écarté, sur les deux parcours | essai réel : aucun conseil servi sur 3 essais |
+| Articles qui entrent dans un prompt | filtre d'injection, appliqué au moment du prompt (nouveau) | un passage reconnu comme piégé est écarté, sur les deux parcours | essai réel : aucun conseil servi sur 3 essais |
 | Prompt | consigne « donnée, jamais consigne » | défense en profondeur, quand une instruction échappe aux règles | elle a tenu sur les deux articles piégés non reconnus |
 | Sortie | contrôle de fuite (nouveau) | une forme de secret, une adresse de base avec mot de passe, un nom de variable de configuration, 8 mots des consignes ; refus `FUITE_BLOQUEE` | 5 sorties dangereuses sur 7, 0 faux positif sur 11 |
 | Sortie | garde-fou AMF (sprint 3) | un conseil d'achat ou de vente | inchangé |
-| Sortie | contrôle des nombres (nouveau), sur les questions | un chiffre absent des articles cités ; refus `NOMBRE_NON_SOURCE` | Q4 juste à chaque rejeu en production depuis N11 |
+| Sortie | contrôle des nombres (nouveau), sur les questions | un nombre écrit en chiffres absent des articles cités ; refus `NOMBRE_NON_SOURCE` | Q4 juste à chaque rejeu en production depuis N11 |
 | API | clé, valeur du briefing, débit | une fausse clé (403 journalisé), une valeur inconnue ou trop longue (422 sans appel au modèle), plus de 10 appels par minute (429) | critères 3 et 4 du contrat tenus |
 | Journal et traces | une ligne par refus, jamais le texte ; traces du briefing réduites aux métadonnées | la conservation d'un texte de question ou de briefing | 5 tests à marqueurs fictifs ; une trace de production vérifiée sans texte |
 
@@ -74,7 +74,7 @@ le seul à recevoir du texte libre, donc le seul que les prompts de l'évaluateu
 | Rejeu en production | 5 appels conformes sur 5 après N11 (deux fois) et après N12 (12 h 51) | § 7.9 |
 | Livraisons du sprint | N10 le 20/10 à 21 h 48 (les garde-fous), N11 le 21/10 à 11 h 05 (le contrôle des nombres), N12 le 21/10 à 12 h 47 (le traçage en production) | § 7.9 |
 | Traçage | actif en production depuis N12 ; une trace de briefing ouverte : ni prompt ni réponse | § 7.6 |
-| Tests | 1400 passés, 24 ignorés, 2 échecs attendus, suite locale du 21/10 | § 7 |
+| Tests | 1402 passés, 24 ignorés, 2 échecs attendus, suite locale du 21/10 | § 7 |
 
 Production : <https://178-104-184-125.sslip.io/question.html> (écran de question, clé d'API demandée) et
 <https://178-104-184-125.sslip.io/health> (version servie, identité de l'index). Heures de Paris, sauf mention UTC.
@@ -82,8 +82,8 @@ Production : <https://178-104-184-125.sslip.io/question.html> (écran de questio
 ### 1.6 Comment lire ce document
 
 Les sections 1 à 3 se lisent en cinq minutes : le brief, les livrables et les liens. Les sections 4 à 8 donnent le
-détail critère par critère, avec les preuves. Chaque lien GitHub vise le tag `livrable-sprint-4-v1`, c'est-à-dire
-l'état exact du dépôt au moment de la remise.
+détail critère par critère, avec les preuves. Chaque lien GitHub vise le tag `livrable-sprint-4-v1`, posé à la
+remise : il fige l'état exact du dépôt à ce moment.
 
 ## 2. Les livrables demandés, et où les trouver
 
@@ -185,8 +185,9 @@ production ; la dernière, où retrouver la preuve enregistrée.
 3. **Garde-fou d'intention** : une demande de conseil d'achat ou de vente est refusée `INTENTION_INTERDITE`.
 4. **Recherche** : les trois meilleurs passages, par le sens et par les mots. Sans passage assez proche, refus
    `OUT_OF_CORPUS` sans appel au modèle.
-5. **Passages piégés écartés** : un passage qui porte une injection n'entre pas dans le prompt ; une ligne de journal
-   donne son identifiant, jamais son texte.
+5. **Passages piégés écartés** : un passage reconnu comme piégé par le filtre d'injection (12 motifs) n'entre pas dans
+   le prompt ; une ligne de journal donne son identifiant, jamais son texte. Une instruction reformulée peut échapper au
+   filtre (§ 7.2).
 6. **Rédaction** : le modèle (Azure, zone de données de l'UE) reçoit la question et les passages, déclarés comme des
    données et jamais comme des consignes, et rend un JSON imposé. Il peut s'abstenir.
 7. **Contrôles de sortie**, dans l'ordre : citations vérifiées, puis fuite (`FUITE_BLOQUEE`), garde-fou AMF, et
@@ -203,6 +204,10 @@ Sur les deux parcours, le journal garde l'identifiant de requête, le statut, le
 jamais le texte. Les traces du briefing ne gardent ni le prompt ni la réponse brute du modèle (D9).
 
 ## 7. Les preuves
+
+Deux terrains de mesure, à ne pas confondre : les mesures de niveau 1 et de niveau 2 tournent en local, sur une copie
+de l'index de production (2 052 articles, identifiant `18c122a9`) ; la production sert 2 140 articles, et chaque rejeu
+en production fait cinq appels de vérification (§ 7.9).
 
 ### 7.1 Les prompts hostiles, en entrée (critère 2)
 
@@ -277,29 +282,30 @@ stocké en production est identique au passage local, et 22 essais locaux sur 22
 dans la réponse du modèle, rarement, sans cause établie. Un chiffre faux sous une source juste est le pire cas pour un
 lecteur, qui croit l'information vérifiée. Plutôt que de deviner la cause, le résultat est vérifié avant d'être servi.
 
-**Comment.** Chaque nombre de la réponse doit figurer, entier, dans le texte d'un des articles cités : « 1 00 » ne vaut
-pas « 1 000 », ni « 300 » la fin de « 9 300 », ni « -5 % » un « +5 % ». Le nom de la source et la date de publication ne
-servent pas de source. Sinon, la réponse est refusée poliment, motif `NOMBRE_NON_SOURCE`, et le journal donne le nombre
-de chiffres absents, jamais le texte.
+**Comment.** Sur le parcours des questions, chaque nombre écrit en chiffres doit figurer, entier, dans le texte d'un des
+articles cités : « 1 00 » ne vaut pas « 1 000 », ni « 300 » la fin de « 9 300 », ni « -5 % » un « +5 % ». Le nom de la
+source et la date de publication ne servent pas de source. Sinon, la réponse est refusée poliment, motif
+`NOMBRE_NON_SOURCE`, et le journal donne le nombre de chiffres absents, jamais le texte. Le contrôle ne vérifie ni le
+sens d'un nombre, ni son unité ; un nombre écrit en lettres n'est pas contrôlé.
 
-**Revu dix fois.** Les revues automatiques des PR #114 à #117 (Codex) et une revue de sécurité ont relevé dix cas
+**Dix cas limites examinés.** Les revues automatiques des PR #114 à #117 (Codex) et une revue de sécurité ont relevé dix cas
 d'écriture des nombres : le signe, le point décimal, un groupe de milliers amputé, la date de publication, le nom de la
 source, deux quantités côte à côte, la frontière entre deux articles, l'apostrophe suisse des milliers et deux autres
 apostrophes. Chacun a été vérifié dans le code. Neuf ont été corrigés, chaque fois avec un test qui échouait d'abord ;
-le dixième, un refus à tort sans danger, est écrit comme limite (§ 9). Le contrôle compte 44 tests
+le dixième, un refus à tort sans danger, est écrit comme limite (§ 9). Le contrôle compte 46 tests, dont deux qui fixent ce qu'il ne vérifie pas
 (`tests/test_controle_nombres.py`).
 
 **Mesuré.** Mesure de niveau 2 du 21/10 à 08 h 18 avec le contrôle : les cinq conditions D5 vraies, aucun refus
 `NOMBRE_NON_SOURCE`, tous les nombres des neuf réponses retrouvés dans un article cité
 ([`mesure-question-niveau2-2026-10-21-0818.json`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-4-v1/evidence/sprint-4/mesure-question-niveau2-2026-10-21-0818.json)).
-En production, Q4 contient « 1 000 postes » aux deux rejeux après N11 et au rejeu après N12. Deux réponses justes ne prouvent pas que le
+En production, Q4 contient « 1 000 postes » aux deux rejeux après N11 et au rejeu après N12. Ces trois réponses justes ne prouvent pas que le
 modèle n'abîmera plus un chiffre ; s'il le fait, la réponse est refusée au lieu d'être servie. Ce refus est prouvé par
 les tests, il n'a pas été observé en production.
 
 ### 7.5 Les faux positifs contenus (critère 4)
 
 Un faux positif est une question légitime bloquée par un garde-fou. Le jeu légitime compte 17 questions : les sept
-questions couvertes du sprint 3 (Q1 à Q7), quatre questions dont la réponse a été retrouvée à la main dans le corpus
+questions non hostiles du sprint 3 (Q1 à Q7, dont deux hors corpus : la tarte Tatin et la Coupe du monde), quatre questions dont la réponse a été retrouvée à la main dans le corpus
 (V1 à V4), et six questions qui contiennent volontairement les mots des attaques (L1 à L6).
 
 | # | Question | Mot piège |
@@ -336,7 +342,10 @@ gardent que le modèle, les jetons, la durée, le fournisseur, la tentative et l
 qui peut recopier le prompt. L'envoi est empêché à la source : masquer après coup ne garantirait pas qu'aucune copie
 n'est déjà partie. 5 tests le prouvent avec des marqueurs fictifs, y compris en erreur et quand la sortie est refusée
 (`tests/test_traces_briefing_sans_texte.py`). Une revue de sécurité automatique a trouvé un dernier passage, l'erreur
-finale quand tous les fournisseurs échouent : corrigé, avec son test.
+finale quand tous les fournisseurs échouent : corrigé, avec son test. Une seule exception est écrite au registre (T8) :
+les outils d'évaluation, lancés volontairement sur le jeu de démonstration, gardent les questions et les réponses du jeu
+dans `evidence/`, contrairement aux journaux de l'application ; elle ne couvre pas les briefings, dont aucun texte n'est
+conservé (D9).
 
 **En production, une vraie trace le confirme.** Jusqu'au 21/10, le serveur n'avait aucune clé Langfuse : aucune trace
 ne partait de la production (manque connu depuis le sprint 2). Era a posé les clés, actives depuis la livraison N12 ;
@@ -454,8 +463,9 @@ relevés dans les notes de séance
   de l'Australie, passe la recherche et ne doit son refus qu'à l'abstention du modèle : son contrôle n'est pas activé.
 - **Contrôle de fuite** : 5 sorties dangereuses sur 7 ; un mot de passe en clair sans forme reconnaissable et une clé
   épelée en toutes lettres passent.
-- **Contrôle des nombres** : un chiffre reformulé (« mille ») ou calculé est refusé même juste ; un chiffre écrit en
-  lettres n'est pas contrôlé ; « Perspectives 2026 300 emplois », sans ponctuation, se lit comme un seul nombre, si bien
+- **Contrôle des nombres** : un nombre calculé est refusé même juste ; un nombre écrit en lettres (« mille ») n'est pas
+  contrôlé ; la présence d'un nombre ne garantit ni son sens, ni son unité, ni son attribution (« 1 000 euros » passe
+  face à « 1 000 postes ») ; « Perspectives 2026 300 emplois », sans ponctuation, se lit comme un seul nombre, si bien
   que « 300 » ou « 2026 » seuls sont refusés même justes. La cause exacte du chiffre abîmé par le modèle n'est
   pas établie. **Le briefing n'a pas ce contrôle** : ses chiffres (cours, indicateurs, articles) ne sont pas revérifiés
   après le modèle ; seuls le garde-fou AMF et le contrôle de fuite relisent son texte.
