@@ -288,10 +288,13 @@ def repondre(question: str, chemin_index: Path | None = None, k: int = 3) -> Rep
     # Après le rejeu en production du 20/10/2026 (Q4 servie avec « 1 0 postes » pour « 1 000 ») : chaque nombre de la
     # réponse doit figurer dans un des articles cités. En dernier : la sécurité (fuite) et la conformité (AMF) gardent
     # leur motif quand une réponse est refusée pour plusieurs raisons. Le journal reçoit le compte, jamais le texte.
-    # Les sources sont ce que le modèle a reçu pour chaque extrait cité : sa source, sa date et son texte, comme dans
-    # `construire_prompt` (revue Codex de la PR #114 : une date de publication juste était refusée).
-    recus = [f"({p.source}, {p.publie_le[:10]}) {p.texte}" for p in (passages[n - 1] for n in sorted(set(sortie.citations)))]
-    absents = nombres_absents(sortie.texte, recus)
+    # Les sources sont le TEXTE de chaque extrait cité, et lui seul (21/10/2026). Ni sa date de publication : son jour,
+    # son mois et son année validaient n'importe quel nombre égal (revue Codex des PR #114 et #115, option B). Ni le nom
+    # de sa source : tiré du titre, donc d'un texte qu'un site extérieur contrôle, ses chiffres validaient eux aussi
+    # n'importe quel nombre (revue de sécurité automatique du commit 14c2d82). Limites : une date de publication absente
+    # du texte est refusée (l'écran l'affiche sous chaque référence), et un nombre pris du seul nom de l'éditeur aussi.
+    textes = [passages[n - 1].texte for n in sorted(set(sortie.citations))]
+    absents = nombres_absents(sortie.texte, textes)
     if absents:
         logger.warning("reponse refusee par le controle des nombres : nombres_absents=%d", len(absents))
         return _refus(NOMBRE_NON_SOURCE)

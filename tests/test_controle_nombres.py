@@ -107,17 +107,45 @@ def test_les_signes_justes_passent(texte, source):
     assert _nombres().nombres_absents(texte, [source]) == []
 
 
-def test_une_date_de_publication_recue_par_le_modele_est_acceptee(monkeypatch):
-    # P2 : le modèle reçoit la source et la date de chaque extrait (« [1] (Le Monde, 2026-10-14) ... ») ; une date de
-    # publication juste était refusée, parce que seul le texte de l'article servait de source.
+def test_une_date_de_publication_absente_du_texte_est_refusee(monkeypatch):
+    # Changement voulu (option B, décidée par Era le 21/10/2026). Le matin, la date de chaque extrait avait été ajoutée
+    # aux sources (revue Codex de la PR #114, P2), pour qu'une date de publication juste soit servie. La relecture
+    # suivante (P1) a montré l'effet de bord : le jour, le mois et l'année de la date validaient n'importe quel nombre
+    # égal (« 10 % », « 14 euros »). La date est donc retirée des sources : une date de publication que le texte de
+    # l'article ne contient pas est refusée. L'écran affiche déjà « publié le ... » sous chaque référence.
     reponse = _repondre(monkeypatch, "L'article est publié le 14 octobre 2026. [1]")
-    assert (reponse.statut, reponse.motif) == ("reponse", "OK")
+    assert (reponse.statut, reponse.motif) == ("refus", "NOMBRE_NON_SOURCE")
 
 
 def test_une_date_de_publication_fausse_est_refusee(monkeypatch):
-    # Le témoin : la date ajoutée aux sources ne doit pas faire passer n'importe quelle date.
     reponse = _repondre(monkeypatch, "L'article est publié le 15 octobre 2026. [1]")
     assert (reponse.statut, reponse.motif) == ("refus", "NOMBRE_NON_SOURCE")
+
+
+# --- revue Codex des PR #114 et #115 (21/10/2026) : la date qui valide tout, le groupe amputé --------------------------
+
+@pytest.mark.parametrize("texte", ["Le titre monte de 10 %. [1]", "Le titre coûte 14 euros. [1]",
+                                   "Le résultat de 2026 sera bon. [1]"], ids=["le_mois", "le_jour", "l_annee"])
+def test_la_date_de_publication_ne_valide_pas_d_autres_nombres(monkeypatch, texte):
+    # P1 : l'extrait cité est daté du 2026-10-14 et son texte ne contient ni 10, ni 14, ni 2026 ; ces nombres inventés
+    # passaient, parce que la date faisait partie des sources.
+    reponse = _repondre(monkeypatch, texte)
+    assert (reponse.statut, reponse.motif) == ("refus", "NOMBRE_NON_SOURCE")
+
+
+@pytest.mark.parametrize("texte, source, absent", [
+    ("Le carnet compte 300 commandes. [1]", "Le carnet de commandes atteint 9 300 commandes.", "300"),
+    ("Le plan touche 234 postes. [1]", "Le plan touche 1 234 postes.", "234"),
+], ids=["fin_de_9_300", "fin_de_1_234"])
+def test_un_nombre_ampute_de_son_premier_groupe_est_signale(texte, source, absent):
+    # P1 : « 300 » était trouvé à l'intérieur de « 9 300 », parce qu'une espace le précède. Perdre le premier groupe
+    # d'un nombre est exactement la corruption que le contrôle doit arrêter (Q4 : « 1 0 postes »).
+    assert _nombres().nombres_absents(texte, [source]) == [absent]
+
+
+def test_un_nombre_groupe_entier_passe():
+    # Le témoin : le nombre complet, groupes compris, reste trouvé.
+    assert _nombres().nombres_absents("Le carnet atteint 9 300 commandes. [1]", ["Le carnet atteint 9 300 commandes."]) == []
 
 
 # --- seconde revue Codex de la PR #114 (21/10/2026) : le point décimal ------------------------------------------------
@@ -139,3 +167,54 @@ def test_un_nombre_a_point_decimal_se_cherche_entier(texte, source, absent):
 def test_un_point_decimal_juste_ou_un_point_final_passent(texte, source):
     # Les témoins : une décimale juste passe ; un point de fin de phrase n'est pas une décimale.
     assert _nombres().nombres_absents(texte, [source]) == []
+
+
+# --- revue de sécurité automatique du commit 14c2d82 (21/10/2026) : le nom de la source ------------------------------
+
+def test_le_nom_de_la_source_ne_valide_pas_un_nombre(monkeypatch):
+    # Le nom de la source est tiré du titre (« Titre - Éditeur », `rag/indexation.py`, `editeur`), donc d'un texte
+    # qu'un site extérieur contrôle. Il faisait partie des sources du contrôle : ses chiffres validaient n'importe quel
+    # nombre de la réponse. Seul le texte de l'extrait cité sert désormais de source.
+    passage = Passage(article_id=2790, texte="Le groupe annonce un plan social", titre="Le groupe annonce un plan social",
+                      source="20 Minutes", lien="https://exemple.test/2790", publie_le="2026-10-14T18:04:00+02:00",
+                      tickers=[], rang_dense=1, rang_lexical=1, distance_dense=0.3, score_lexical=1.0)
+    monkeypatch.setattr(question, "rechercher", lambda *a, **k: Resultat(True, "OK", [passage], 1))
+    sortie = {"statut": "reponse", "texte": "Le groupe supprime 20 postes. [1]", "citations": [1]}
+    monkeypatch.setattr(question, "generer_json", lambda *a, **k: json.dumps(sortie, ensure_ascii=False))
+    reponse = question.repondre("Combien de postes le groupe supprime-t-il ?")
+    assert (reponse.statut, reponse.motif) == ("refus", "NOMBRE_NON_SOURCE")
+
+
+# --- revue Codex de la PR #116 (21/10/2026) : la vraie règle des milliers ---------------------------------------------
+
+@pytest.mark.parametrize("texte, source", [
+    ("La croissance attendue est de +5 %. [1]", "Perspectives 2026 +5 % de croissance"),
+    ("La croissance attendue est de 5 %. [1]", "Perspectives 2026 5 % de croissance"),
+    ("Les perspectives pour 2026 sont bonnes. [1]", "Perspectives 2026 5 % de croissance"),
+], ids=["signe_apres_une_annee", "nombre_court_apres_une_annee", "annee_avant_un_nombre_court"])
+def test_deux_quantites_cote_a_cote_restent_distinctes(texte, source):
+    # P2 : la garde du groupe amputé refusait aussi deux quantités différentes écrites côte à côte, comme si l'une
+    # prolongeait l'autre. Un groupe de milliers fait toujours trois chiffres : « 5 » ou « +5 » ne peuvent pas être la
+    # fin de « 2026 », et « 2026 » n'est pas prolongé par « 5 ».
+    assert _nombres().nombres_absents(texte, [source]) == []
+
+
+def test_le_premier_groupe_seul_reste_signale():
+    # Le témoin côté droit, qui complète « 300 » contre « 9 300 » (côté gauche) : « 9 » n'est pas « 9 300 ».
+    assert _nombres().nombres_absents("Le carnet compte 9 commandes. [1]", ["Le carnet compte 9 300 commandes."]) == ["9"]
+
+
+# --- seconde revue Codex de la PR #116 (21/10/2026) : la frontière entre deux extraits --------------------------------
+
+def test_deux_extraits_colles_ne_fabriquent_pas_un_nombre():
+    # P1 : les textes des extraits cités étaient collés avec une espace ; un extrait qui finit par « 9 » et un suivant
+    # qui commence par « 300 emplois » formaient « 9 300 », qu'aucun extrait ne contient. Chaque nombre se cherche
+    # désormais dans chaque extrait séparément.
+    sources = ["Le plan compte 9", "300 emplois sont prévus"]
+    assert _nombres().nombres_absents("Le groupe crée 9 300 emplois. [1][2]", sources) == ["9 300"]
+
+
+def test_un_nombre_present_dans_un_seul_des_extraits_passe():
+    # Le témoin : un nombre entier dans l'un des extraits cités suffit, même si l'autre ne le contient pas.
+    sources = ["Le plan social est confirmé", "Le groupe crée 9 300 emplois en Europe"]
+    assert _nombres().nombres_absents("Le groupe crée 9 300 emplois. [1][2]", sources) == []
