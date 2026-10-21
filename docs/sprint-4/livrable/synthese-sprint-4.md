@@ -1,6 +1,6 @@
 # Sprint 4 : synthèse
 
-> RITA, fil rouge de la phase 6 : la composante agentique et ses garde-fous, l'essentiel en quatre pages. Le détail et toutes les preuves sont dans le livrable complet. Version 1, avant l'atelier croisé n°4.
+> RITA, fil rouge de la phase 6 : la composante agentique et ses garde-fous, l'essentiel en quatre pages. Le détail et toutes les preuves sont dans le livrable complet. Version 2, avant l'atelier croisé n°4.
 
 ## Sommaire
 
@@ -30,11 +30,11 @@ production avec ses garde-fous depuis la livraison N10 du 20/10. N11 a ajouté l
 
 | Livrable du brief (mot pour mot) | Où le trouver | État |
 |---|---|---|
-| « La composante agentique en production, garde-fous actifs » | [l'écran de question](https://178-104-184-125.sslip.io/question.html), [`/health`](https://178-104-184-125.sslip.io/health) ; le garde-fou de détournement [`guardrails/detournement.py`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-4-v1/guardrails/detournement.py) | en production depuis N10 ; rejoué après chaque livraison, 5 appels conformes sur 5 après N11 et N12 |
-| « l'état du contrat personnel (critère par critère : tenu / en cours / avenant) versionné » | [`docs/sprint-4/CONTRAT.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-4-v1/docs/sprint-4/CONTRAT.md) | 3 critères tenus, 2 en cours, écarts écrits ; la composante relève de l'avenant n°1 |
+| « La composante agentique en production, garde-fous actifs » | [l'écran de question](https://178-104-184-125.sslip.io/question.html), [`/health`](https://178-104-184-125.sslip.io/health) ; le garde-fou de détournement [`guardrails/detournement.py`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-4-v2/guardrails/detournement.py) | en production depuis N10 ; rejoué après chaque livraison, 5 appels conformes sur 5 après N11 et N12 |
+| « l'état du contrat personnel (critère par critère : tenu / en cours / avenant) versionné » | [`docs/sprint-4/CONTRAT.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-4-v2/docs/sprint-4/CONTRAT.md) | 3 critères tenus, 2 en cours, écarts écrits ; la composante relève de l'avenant n°1 |
 
 Complètent ces livrables l'avenant n°1
-([`docs/sprint-4/AVENANT-1.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-4-v1/docs/sprint-4/AVENANT-1.md))
+([`docs/sprint-4/AVENANT-1.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-4-v2/docs/sprint-4/AVENANT-1.md))
 et le journal des retours de l'atelier n°3 (livrable complet, § 8).
 
 ## 3. Les exigences : comment elles sont tenues, et la preuve
@@ -82,7 +82,7 @@ de production (2 052 articles). La production sert 2 140 articles ; chaque rejeu
   métadonnées.
 - **Signaux du sprint 5** : ni comptage, ni tableau, ni seuil.
 - **Méthode** : quatre PR de corrections ont été fusionnées pendant que deux contrôles tournaient encore ; tous ont fini
-  verts.
+  verts ; le tag `livrable-sprint-4-v1` a été posé avant la fusion de la livraison N13, donc sur N12 : la porte de livraison l'a refusé et la règle du dépôt l'a figé ; la remise est le tag `livrable-sprint-4-v2`.
 
 ## 6. Où trouver le détail
 
@@ -95,8 +95,8 @@ de production (2 052 articles). La production sert 2 140 articles ; chaque rejeu
 | La liste complète de ce qui n'est pas fait | § 9 |
 
 Le livrable complet, au tag de la remise :
-[`docs/sprint-4/livrable/livrable-sprint-4.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-4-v1/docs/sprint-4/livrable/livrable-sprint-4.md)
+[`docs/sprint-4/livrable/livrable-sprint-4.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-4-v2/docs/sprint-4/livrable/livrable-sprint-4.md)
 et sa version PDF :
-<https://github.com/Ganda15/rita-agent/raw/livrable-sprint-4-v1/docs/sprint-4/livrable/livrable-sprint-4.pdf>.
+<https://github.com/Ganda15/rita-agent/raw/livrable-sprint-4-v2/docs/sprint-4/livrable/livrable-sprint-4.pdf>.
 Les preuves sont indexées dans
-[`evidence/sprint-4/README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-4-v1/evidence/sprint-4/README.md).
+[`evidence/sprint-4/README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-4-v2/evidence/sprint-4/README.md).
