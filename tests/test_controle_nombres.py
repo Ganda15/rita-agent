@@ -183,3 +183,22 @@ def test_le_nom_de_la_source_ne_valide_pas_un_nombre(monkeypatch):
     monkeypatch.setattr(question, "generer_json", lambda *a, **k: json.dumps(sortie, ensure_ascii=False))
     reponse = question.repondre("Combien de postes le groupe supprime-t-il ?")
     assert (reponse.statut, reponse.motif) == ("refus", "NOMBRE_NON_SOURCE")
+
+
+# --- revue Codex de la PR #116 (21/10/2026) : la vraie règle des milliers ---------------------------------------------
+
+@pytest.mark.parametrize("texte, source", [
+    ("La croissance attendue est de +5 %. [1]", "Perspectives 2026 +5 % de croissance"),
+    ("La croissance attendue est de 5 %. [1]", "Perspectives 2026 5 % de croissance"),
+    ("Les perspectives pour 2026 sont bonnes. [1]", "Perspectives 2026 5 % de croissance"),
+], ids=["signe_apres_une_annee", "nombre_court_apres_une_annee", "annee_avant_un_nombre_court"])
+def test_deux_quantites_cote_a_cote_restent_distinctes(texte, source):
+    # P2 : la garde du groupe amputé refusait aussi deux quantités différentes écrites côte à côte, comme si l'une
+    # prolongeait l'autre. Un groupe de milliers fait toujours trois chiffres : « 5 » ou « +5 » ne peuvent pas être la
+    # fin de « 2026 », et « 2026 » n'est pas prolongé par « 5 ».
+    assert _nombres().nombres_absents(texte, [source]) == []
+
+
+def test_le_premier_groupe_seul_reste_signale():
+    # Le témoin côté droit, qui complète « 300 » contre « 9 300 » (côté gauche) : « 9 » n'est pas « 9 300 ».
+    assert _nombres().nombres_absents("Le carnet compte 9 commandes. [1]", ["Le carnet compte 9 300 commandes."]) == ["9"]

@@ -13,7 +13,9 @@ citation « [1] » sont retirés. Un nombre est une suite de chiffres, avec ses 
 décimale après une virgule ou un point suivi d'un chiffre (« 1 000 », « 0,5 », « 2.5 », « 2027 ») ; un point de fin de
 phrase n'est pas une décimale. Il doit apparaître ENTIER dans les sources : « 1 00 » ne vaut pas « 1 000 », ni « 0,55 »
 « 0,5 », ni « 2.5 » « 5.2 » (seconde revue Codex de la PR #114 : le point coupait le nombre en deux), ni « 300 » la
-fin de « 9 300 » (revue Codex de la PR #115 : un nombre amputé de son premier groupe passait).
+fin de « 9 300 » (revue Codex de la PR #115 : un nombre amputé de son premier groupe passait). Un groupe de milliers fait
+toujours trois chiffres : c'est lui seul qui prolonge un nombre, si bien que « 2026 +5 % » ou « 2026 5 % » restent deux
+quantités distinctes (revue Codex de la PR #116).
 
 **Le signe** (revue Codex de la PR #114, 21/10/2026) : un « + » ou un « - » collé devant un nombre, et précédé d'une
 espace, d'une parenthèse ou du début du texte, fait partie du nombre, et doit se retrouver tel quel : « -5 » ne vaut pas
@@ -36,6 +38,9 @@ _CITATION = re.compile(r"\[\d+\]")
 # Le signe facultatif n'est lu que s'il suit une espace, une parenthèse ou le début du texte.
 _NOMBRE = re.compile(r"(?:(?<![^\s(])[+-])?\d+(?: \d+)*(?:[,.]\d+)?")
 _SIGNE_MOINS = chr(0x2212)
+# Un premier groupe de trois chiffres exactement : seul un tel nombre peut être la fin d'un nombre groupé (« 300 »
+# dans « 9 300 ») ; « 5 » ou « +5 » ne le peuvent pas.
+_GROUPE_DE_MILLIERS = re.compile(r"\d{3}(?!\d)")
 
 
 def espaces_simples(texte: str) -> str:
@@ -53,9 +58,11 @@ def nombres_absents(texte: str, sources: list[str]) -> list[str]:
     reference = " ".join(_normaliser(source) for source in sources)
     absents: list[str] = []
     for nombre in _NOMBRE.findall(_CITATION.sub(" ", _normaliser(texte))):
-        # Le nombre entier : ni chiffre, ni virgule, ni point devant, ni « chiffre et espace » (sinon « 300 » serait
-        # trouvé dans « 9 300 ») ; ni chiffre, ni décimale, ni groupe derrière.
-        entier = r"(?<![\d,.])(?<!\d )" + re.escape(nombre) + r"(?!\d|[,.]\d| \d)"
+        # Le nombre entier. Devant : ni chiffre, ni virgule, ni point ; et, pour un nombre qui commence par un groupe de
+        # trois chiffres, ni « chiffre et espace » (sinon « 300 » serait trouvé dans « 9 300 »). Derrière : ni chiffre,
+        # ni décimale, ni groupe de trois chiffres (sinon « 9 » serait trouvé dans « 9 300 »).
+        gauche = r"(?<![\d,.])" + (r"(?<!\d )" if _GROUPE_DE_MILLIERS.match(nombre) else "")
+        entier = gauche + re.escape(nombre) + r"(?!\d|[,.]\d| \d{3}(?!\d))"
         if not re.search(entier, reference) and nombre not in absents:
             absents.append(nombre)
     return absents
