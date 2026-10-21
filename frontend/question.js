@@ -29,6 +29,8 @@ const MOTIFS = new Map([
   ["TENTATIVE_DETOURNEMENT", "la question cherche à détourner le service ou à obtenir des informations internes"],
   ["FUITE_BLOQUEE", "la réponse produite contenait des informations internes et a été retenue"],
   ["LIMITE_DE_DEBIT", "trop de demandes en une minute"],
+  // Le contrôle des nombres, après le rejeu en production du 20/10 (guardrails/nombres.py).
+  ["NOMBRE_NON_SOURCE", "la réponse produite contenait un chiffre absent des articles cités"],
 ]);
 
 // --- Les éléments ------------------------------------------------------------
