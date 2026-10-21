@@ -530,9 +530,10 @@ morceau, ni sa longueur.
 - [ ] **Étape 4 :** `/health` donne le commit de fusion (CA8.1).
 - [ ] **Étape 5 (Era, 💻 TON PC, clé de production mise dans le presse-papiers par la commande habituelle) :** un prompt
   hostile et une question légitime sur `POST /question`, une valeur de 21 caractères sur `POST /briefing`, et un appel
-  normal `POST /briefing?ticker=OR.PA` (critère 1 du contrat : le code 200, l'en-tête `X-Request-ID`, la longueur et le
-  texte servi, qui montre qu'il est en français ; un résumé de marché public, sans donnée personnelle ; ajouté le 20/10
-  pendant la tâche C4) ; réponses gardées dans `evidence/sprint-4/` (CA8.2). Si Langfuse est actif en production, une
+  normal `POST /briefing?ticker=OR.PA` (critère 1 du contrat : le rapport garde le code 200, l'en-tête `X-Request-ID`
+  et la longueur du texte, sans le texte ; celui-ci est affiché pour une relecture par Era, sans transcription,
+  redirection ni capture, conformément à D9 ; ajouté le 20/10 pendant la tâche C4, corrigé le 21/10) ; réponses gardées
+  dans `evidence/sprint-4/` (CA8.2). Si Langfuse est actif en production, une
   trace de briefing ouverte par Era : ni prompt ni réponse (CA3.6).
 
 ### Tâche D3 : livrable, journal des retours, tag (CA9.1, CA9.2)
