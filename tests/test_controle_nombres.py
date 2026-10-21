@@ -218,3 +218,31 @@ def test_un_nombre_present_dans_un_seul_des_extraits_passe():
     # Le témoin : un nombre entier dans l'un des extraits cités suffit, même si l'autre ne le contient pas.
     sources = ["Le plan social est confirmé", "Le groupe crée 9 300 emplois en Europe"]
     assert _nombres().nombres_absents("Le groupe crée 9 300 emplois. [1][2]", sources) == []
+
+
+# --- troisième revue Codex de la PR #115 (21/10/2026) : l'apostrophe des milliers, écriture suisse ---------------------
+
+APOSTROPHES = ["'", chr(0x2019)]
+
+
+@pytest.mark.parametrize("apostrophe", APOSTROPHES, ids=["droite", "typographique"])
+def test_un_groupe_apres_une_apostrophe_ne_vaut_pas_le_nombre_entier(apostrophe):
+    # P2 : un article suisse écrit « 9'300 » ; l'apostrophe passait pour une simple frontière, et une réponse abîmée qui
+    # ne garde que « 300 » était acceptée. La source « Zonebourse Suisse » fait partie du corpus (78 extraits sur 2 052
+    # le 21/10, aucun avec une apostrophe ce jour-là).
+    source = f"Le groupe compte 9{apostrophe}300 salariés en Suisse."
+    assert _nombres().nombres_absents("Le groupe compte 300 salariés. [1]", [source]) == ["300"]
+
+
+@pytest.mark.parametrize("apostrophe", APOSTROPHES, ids=["droite", "typographique"])
+def test_le_meme_nombre_ecrit_avec_une_apostrophe_ou_une_espace_passe(apostrophe):
+    # Le témoin : « 9'300 » et « 9 300 » sont le même nombre, dans un sens comme dans l'autre.
+    nombres = _nombres()
+    assert nombres.nombres_absents("Le groupe compte 9 300 salariés. [1]", [f"9{apostrophe}300 salariés"]) == []
+    assert nombres.nombres_absents(f"Le groupe compte 9{apostrophe}300 salariés. [1]", ["9 300 salariés"]) == []
+
+
+def test_une_apostrophe_d_elision_ne_change_rien():
+    # Le témoin : l'apostrophe ordinaire du français, devant une lettre, reste une apostrophe.
+    assert _nombres().nombres_absents("Les résultats de l'exercice 2026 sont publiés. [1]",
+                                      ["Résultats de l'exercice 2026 publiés"]) == []
