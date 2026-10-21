@@ -56,7 +56,8 @@ passed, 24 skipped, 2 xfailed.
    celui de production (décision d'Era du 02/10).
 3. D3 : étape 1 faite (index des preuves, CHANGELOG, `b173782`) ; livrable version 1 écrit
    (`docs/sprint-4/livrable/livrable-sprint-4.md` et `.pdf`, 14 pages, sommaire vérifié, liens au tag à revérifier
-   après sa pose). Restent : relecture par Era, synthèse courte (plus de 10 pages), retours de l'atelier 4 et grille
+   après sa pose). Relu et validé par Era le 21/10 après une relecture externe ; synthèse de 4 pages écrite
+   (`docs/sprint-4/livrable/synthese-sprint-4.md` et `.pdf`). Restent : retours de l'atelier 4 et grille
    `eval/ateliers/sprint-4-grille.md`, oral court (hors dépôt), Definition of Done
    (`scripts/verifier_livrable.py livrable-sprint-4-v1`), PR `develop` vers `main`, tag posé par Era.
 4. Ouverts : critère 1 du contrat « en cours » (OR.PA : dernière cotation à 64 jours, « probablement radiée ») ; D8 (le

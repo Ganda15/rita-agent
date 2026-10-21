@@ -10,6 +10,7 @@ surveillera, et ce qui n'est pas fait.
   dossier du sprint 1 y renvoie par une ligne datée (`docs/CADRAGE-V1.md`, § 3).
 - **Contrat du sprint 1, critère par critère** : `docs/sprint-4/CONTRAT.md`.
 - **Preuves** : index dans `evidence/sprint-4/README.md`.
+- **Synthèse du sprint, à lire en premier** (4 pages) : `docs/sprint-4/livrable/synthese-sprint-4.md` et sa version PDF.
 - **Livrable du sprint** : `docs/sprint-4/livrable/livrable-sprint-4.md` et sa version PDF, dans le même dossier.
 
 ## 1. Pourquoi la composante n'a pas d'action sensible (CA5.1)
