@@ -40,6 +40,7 @@ ROLES = {
     "stock":  ("#6D28D9", "#F1EAFE", "#4C1D95"),   # réserve de données, service externe, artefact
     "manque": ("#D32F2F", "#FDECEC", "#C62828"),   # conçu non construit, limite, défaut connu (pointillé)
     "note":   ("#475569", "#F1F5F9", NAVY),        # preuve, fichier à ouvrir, contexte
+    "neuf":   ("#15803D", "#E8F5E9", "#14532D"),   # codé au sprint 4 (schéma de la composante, 21/10/2026)
 }
 # Une couleur par sens de flèche : (couleur, pointillé).
 SENS = {

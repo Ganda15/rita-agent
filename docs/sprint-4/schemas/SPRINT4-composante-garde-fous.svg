@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1346" viewBox="0 0 2000 1346" font-family="Segoe UI,Calibri,Arial,sans-serif">
+<defs><marker id="fl-flux" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#0B2A5B"/></marker><marker id="fl-ecriture" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#1565C0"/></marker><marker id="fl-lecture" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#15803D"/></marker><marker id="fl-erreur" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#D32F2F"/></marker><marker id="fl-manuel" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#64748B"/></marker><marker id="fl-perso" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#A21CAF"/></marker></defs>
+<rect width="2000" height="1346" fill="#FFFFFF"/>
+<rect x="40" y="16" width="1920" height="5" fill="#1565C0"/>
+<text x="40" y="54" font-size="30" font-weight="700" fill="#0B2A5B">RITA, sprint 4 : la composante agentique, ses garde-fous, et le code qui les fait</text>
+<text x="40" y="80" font-size="15" fill="#1F2937">Chaque boîte : son fichier, sa fonction, sa ligne et ses tests · vert : codé au sprint 4 · orange : garde-fou déjà là · [S1] [S3] [S4] : le sprint où c&#x27;est codé</text>
+<g transform="translate(0,16)">
+<rect x="40" y="100" width="1920" height="160" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="40" y="280" width="900" height="980" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="960" y="280" width="500" height="980" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="1480" y="280" width="480" height="980" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="56" y="130" width="300" height="102" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="56" y="130" width="7" height="102" fill="#1E293B"/>
+<text x="73" y="151" font-size="14" font-weight="700" fill="#0B2A5B">Écran des questions [S3]</text>
+<text x="73" y="170.0" font-size="11.5" fill="#111827">frontend/question.html, question.js</text>
+<text x="73" y="185.5" font-size="11.5" fill="#111827">MOTIFS l.18 : le motif dit en mots [S4]</text>
+<text x="73" y="201.0" font-size="11.5" fill="#111827">afficherRefus l.180 : « Pas de réponse »</text>
+<text x="73" y="216.5" font-size="11.5" fill="#111827">clé dans un champ masqué</text>
+<rect x="372" y="130" width="300" height="102" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="372" y="130" width="7" height="102" fill="#1E293B"/>
+<text x="389" y="151" font-size="14" font-weight="700" fill="#0B2A5B">Route POST /question [S3]</text>
+<text x="389" y="170.0" font-size="11.5" fill="#111827">api/question.py : poser_question l.37</text>
+<text x="389" y="185.5" font-size="11.5" fill="#111827">appelle agents/question.py repondre</text>
+<text x="389" y="201.0" font-size="11.5" fill="#111827">journal « question servie » l.59</text>
+<text x="389" y="216.5" font-size="11.5" fill="#111827">3 à 500 caractères</text>
+<rect x="688" y="130" width="300" height="102" fill="#E8F5E9" stroke="#15803D" stroke-width="2"/>
+<rect x="688" y="130" width="7" height="102" fill="#15803D"/>
+<text x="705" y="151" font-size="14" font-weight="700" fill="#14532D">Clé [S1], refus journalisé [S4]</text>
+<text x="705" y="170.0" font-size="11.5" fill="#111827">api/main.py : verify_api_key l.162</text>
+<text x="705" y="185.5" font-size="11.5" fill="#111827">403 + ligne « cle d&#x27;API refusee » l.178</text>
+<text x="705" y="201.0" font-size="11.5" fill="#111827">jamais la clé, ni un morceau</text>
+<text x="705" y="216.5" font-size="11.5" fill="#111827">tests/test_refus_cle_journal.py (5)</text>
+<rect x="1004" y="130" width="300" height="102" fill="#E8F5E9" stroke="#15803D" stroke-width="2"/>
+<rect x="1004" y="130" width="7" height="102" fill="#15803D"/>
+<text x="1021" y="151" font-size="14" font-weight="700" fill="#14532D">Limite de débit [S4]</text>
+<text x="1021" y="170.0" font-size="11.5" fill="#111827">api/limiteur.py : LIMITEUR l.58</text>
+<text x="1021" y="185.5" font-size="11.5" fill="#111827">limiter_debit l.61 : 10 appels/min,</text>
+<text x="1021" y="201.0" font-size="11.5" fill="#111827">partagés par les deux routes ; 429</text>
+<text x="1021" y="216.5" font-size="11.5" fill="#111827">tests/test_limiteur.py (7)</text>
+<rect x="1320" y="130" width="300" height="102" fill="#E8F5E9" stroke="#15803D" stroke-width="2"/>
+<rect x="1320" y="130" width="7" height="102" fill="#15803D"/>
+<text x="1337" y="151" font-size="14" font-weight="700" fill="#14532D">Route POST /briefing [S1], 422 [S4]</text>
+<text x="1337" y="170.0" font-size="11.5" fill="#111827">api/main.py : briefing l.245</text>
+<text x="1337" y="185.5" font-size="11.5" fill="#111827">valeur_existe l.257 (indicateurs/socle.py</text>
+<text x="1337" y="201.0" font-size="11.5" fill="#111827">l.150) : inconnue → 422, sans modèle</text>
+<text x="1337" y="216.5" font-size="11.5" fill="#111827">tests/test_briefing_422.py (5)</text>
+<rect x="1636" y="130" width="300" height="102" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="1636" y="130" width="7" height="102" fill="#1E293B"/>
+<text x="1653" y="151" font-size="14" font-weight="700" fill="#0B2A5B">Écran du briefing [S1]</text>
+<text x="1653" y="170.0" font-size="11.5" fill="#111827">frontend/briefing.html, briefing.js</text>
+<text x="1653" y="185.5" font-size="11.5" fill="#111827">un code de valeur (ticker), pas de texte</text>
+<text x="1653" y="201.0" font-size="11.5" fill="#111827">422 → « Valeur introuvable » [S4]</text>
+<text x="1653" y="216.5" font-size="11.5" fill="#111827">clé dans un champ masqué</text>
+<rect x="56" y="310" width="868" height="84" fill="#E8F5E9" stroke="#15803D" stroke-width="2"/>
+<rect x="56" y="310" width="7" height="84" fill="#15803D"/>
+<text x="73" y="331" font-size="14" font-weight="700" fill="#14532D">1. Garde-fou de détournement [S4] : injection, changement de rôle, extraction</text>
+<text x="73" y="350.0" font-size="11.5" fill="#111827">guardrails/detournement.py : MOTIFS_DETOURNEMENT l.32 (règles par famille), verifier_detournement l.69</text>
+<text x="73" y="365.5" font-size="11.5" fill="#111827">appelé dans rag/recherche.py l.229, avant tout ; reconnu → refus TENTATIVE_DETOURNEMENT, sans modèle</text>
+<text x="73" y="381.0" font-size="11.5" fill="#111827">tests/test_garde_fou_question.py (38) · mesuré : 7 hostiles sur 8 avant le modèle ; 0 reformulation sur 8</text>
+<rect x="56" y="408" width="868" height="66" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="56" y="408" width="7" height="66" fill="#C2410C"/>
+<text x="73" y="429" font-size="14" font-weight="700" fill="#9A3412">2. Garde-fou d&#x27;intention [S1] : le conseil d&#x27;achat ou de vente</text>
+<text x="73" y="448.0" font-size="11.5" fill="#111827">guardrails/entree.py : MOTIFS_INTENTION_AMF l.33, verifier_intention l.54</text>
+<text x="73" y="463.5" font-size="11.5" fill="#111827">appelé dans rag/recherche.py l.236 ; reconnu → refus INTENTION_INTERDITE</text>
+<rect x="56" y="488" width="868" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="56" y="488" width="7" height="66" fill="#1E293B"/>
+<text x="73" y="509" font-size="14" font-weight="700" fill="#0B2A5B">3. Recherche dans les articles [S3] : le hors-périmètre</text>
+<text x="73" y="528.0" font-size="11.5" fill="#111827">rag/recherche.py : rechercher l.194 ; par le sens et par les mots, 3 passages ; seuil 0.42 l.114</text>
+<text x="73" y="543.5" font-size="11.5" fill="#111827">aucun passage assez proche → refus OUT_OF_CORPUS, sans appeler le modèle</text>
+<rect x="56" y="568" width="868" height="66" fill="#E8F5E9" stroke="#15803D" stroke-width="2"/>
+<rect x="56" y="568" width="7" height="66" fill="#15803D"/>
+<text x="73" y="589" font-size="14" font-weight="700" fill="#14532D">4. Articles piégés écartés [S4] : l&#x27;injection indirecte</text>
+<text x="73" y="608.0" font-size="11.5" fill="#111827">agents/question.py : passages_surs l.219 → guardrails/injection.py neutraliser l.46 (12 motifs, l.18)</text>
+<text x="73" y="623.5" font-size="11.5" fill="#111827">passage reconnu → écarté avant le prompt, journal sans son texte · tests/test_article_piege.py (7)</text>
+<rect x="56" y="648" width="868" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="56" y="648" width="7" height="66" fill="#1E293B"/>
+<text x="73" y="669" font-size="14" font-weight="700" fill="#0B2A5B">5. Le prompt [S3] : la question est une donnée, jamais une consigne</text>
+<text x="73" y="688.0" font-size="11.5" fill="#111827">agents/question.py : construire_prompt l.106, CONSIGNES l.70, _neutraliser l.91</text>
+<text x="73" y="703.5" font-size="11.5" fill="#111827">question et passages dans des blocs déclarés comme données ; espaces Unicode ramenées à une seule</text>
+<rect x="56" y="728" width="868" height="66" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="56" y="728" width="7" height="66" fill="#1565C0"/>
+<text x="73" y="749" font-size="14" font-weight="700" fill="#0B2A5B">6. Le modèle [S3] : Azure, zone de données de l&#x27;UE, seul fournisseur</text>
+<text x="73" y="768.0" font-size="11.5" fill="#111827">src/llm.py : generer_json l.137 ; réponse au format JSON imposé ; il peut s&#x27;abstenir (ABSTENTION)</text>
+<text x="73" y="783.5" font-size="11.5" fill="#111827">trace : src/traces.py question l.330, métadonnées seules</text>
+<rect x="56" y="808" width="868" height="56" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="56" y="808" width="7" height="56" fill="#1E293B"/>
+<text x="73" y="829" font-size="14" font-weight="700" fill="#0B2A5B">7. Citations vérifiées [S3]</text>
+<text x="73" y="848.0" font-size="11.5" fill="#111827">agents/question.py : citations_valides l.55 ; un numéro inventé → refus CITATIONS_INVALIDES</text>
+<rect x="56" y="878" width="868" height="66" fill="#E8F5E9" stroke="#15803D" stroke-width="2"/>
+<rect x="56" y="878" width="7" height="66" fill="#15803D"/>
+<text x="73" y="899" font-size="14" font-weight="700" fill="#14532D">8. Contrôle de fuite [S4] : clé, jeton, mot de passe, configuration, consignes</text>
+<text x="73" y="918.0" font-size="11.5" fill="#111827">agents/question.py l.279 → guardrails/sortie.py verifier_fuite l.107, MOTIFS_FUITE l.81 ; FUITE_BLOQUEE</text>
+<text x="73" y="933.5" font-size="11.5" fill="#111827">tests/test_garde_fou_fuite.py (9) · mesuré : 5 sorties dangereuses simulées sur 7, 0 faux positif sur 11</text>
+<rect x="56" y="958" width="868" height="66" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="56" y="958" width="7" height="66" fill="#C2410C"/>
+<text x="73" y="979" font-size="14" font-weight="700" fill="#9A3412">9. Garde-fou AMF [S1] : le conseil d&#x27;achat dans la réponse</text>
+<text x="73" y="998.0" font-size="11.5" fill="#111827">agents/question.py l.284 → guardrails/sortie.py verifier_sortie l.53, MOTIFS_AMF l.28</text>
+<text x="73" y="1013.5" font-size="11.5" fill="#111827">reconnu → refus SORTIE_NON_CONFORME</text>
+<rect x="56" y="1038" width="868" height="66" fill="#E8F5E9" stroke="#15803D" stroke-width="2"/>
+<rect x="56" y="1038" width="7" height="66" fill="#15803D"/>
+<text x="73" y="1059" font-size="14" font-weight="700" fill="#14532D">10. Contrôle des nombres [S4] : un chiffre faux sous une source juste</text>
+<text x="73" y="1078.0" font-size="11.5" fill="#111827">agents/question.py l.297 → guardrails/nombres.py nombres_absents l.67 ; absent des sources → NOMBRE_NON_SOURCE</text>
+<text x="73" y="1093.5" font-size="11.5" fill="#111827">tests/test_controle_nombres.py (46) · né du « 1 0 postes » du 20/10 ; ne lit pas les nombres en lettres</text>
+<rect x="56" y="1118" width="868" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="56" y="1118" width="7" height="66" fill="#1E293B"/>
+<text x="73" y="1139" font-size="14" font-weight="700" fill="#0B2A5B">11. La réponse citée [S3]</text>
+<text x="73" y="1158.0" font-size="11.5" fill="#111827">agents/question.py : _reference l.214 ; chaque référence vient du passage, jamais du texte du modèle</text>
+<text x="73" y="1173.5" font-size="11.5" fill="#111827">fiche de la source : GET /donnees/articles/{id} relit l&#x27;article dans la base</text>
+<rect x="976" y="310" width="468" height="66" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="976" y="310" width="7" height="66" fill="#475569"/>
+<text x="993" y="331" font-size="14" font-weight="700" fill="#0B2A5B">Un chemin fixe [S1]</text>
+<text x="993" y="350.0" font-size="11.5" fill="#111827">construire_graphe l.91 : scout → rag → redacteur</text>
+<text x="993" y="365.5" font-size="11.5" fill="#111827">le modèle ne choisit jamais le chemin</text>
+<rect x="976" y="390" width="468" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="976" y="390" width="7" height="66" fill="#1E293B"/>
+<text x="993" y="411" font-size="14" font-weight="700" fill="#0B2A5B">scout [S1]</text>
+<text x="993" y="430.0" font-size="11.5" fill="#111827">noeud_scout l.11 → agents/scout.py collect l.54</text>
+<text x="993" y="445.5" font-size="11.5" fill="#111827">PostgreSQL : cours, variation, 13 indicateurs</text>
+<rect x="976" y="470" width="468" height="56" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="976" y="470" width="7" height="56" fill="#1E293B"/>
+<text x="993" y="491" font-size="14" font-weight="700" fill="#0B2A5B">rag [S1]</text>
+<text x="993" y="510.0" font-size="11.5" fill="#111827">noeud_rag l.21 : les articles de la valeur</text>
+<rect x="976" y="540" width="468" height="66" fill="#E8F5E9" stroke="#15803D" stroke-width="2"/>
+<rect x="976" y="540" width="7" height="66" fill="#15803D"/>
+<text x="993" y="561" font-size="14" font-weight="700" fill="#14532D">Articles piégés écartés [S4]</text>
+<text x="993" y="580.0" font-size="11.5" fill="#111827">agents/analyst.py : articles_surs l.26</text>
+<text x="993" y="595.5" font-size="11.5" fill="#111827">→ guardrails/injection.py neutraliser l.46</text>
+<rect x="976" y="620" width="468" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="976" y="620" width="7" height="66" fill="#1E293B"/>
+<text x="993" y="641" font-size="14" font-weight="700" fill="#0B2A5B">redacteur [S1]</text>
+<text x="993" y="660.0" font-size="11.5" fill="#111827">noeud_redacteur l.65 ; agents/analyst.py :</text>
+<text x="993" y="675.5" font-size="11.5" fill="#111827">la consigne, avec l&#x27;interdit AMF écrit dedans</text>
+<rect x="976" y="700" width="468" height="66" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="976" y="700" width="7" height="66" fill="#1565C0"/>
+<text x="993" y="721" font-size="14" font-weight="700" fill="#0B2A5B">Le modèle [S1] : Azure (llm-foundry)</text>
+<text x="993" y="740.0" font-size="11.5" fill="#111827">src/llm.py : generer_texte l.196</text>
+<text x="993" y="755.5" font-size="11.5" fill="#111827">trace : src/traces.py briefing l.155</text>
+<rect x="976" y="780" width="468" height="66" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="976" y="780" width="7" height="66" fill="#C2410C"/>
+<text x="993" y="801" font-size="14" font-weight="700" fill="#9A3412">Garde-fou AMF [S1]</text>
+<text x="993" y="820.0" font-size="11.5" fill="#111827">api/main.py l.280 → verifier_sortie l.53</text>
+<text x="993" y="835.5" font-size="11.5" fill="#111827">texte remplacé ; conforme_amf=false</text>
+<rect x="976" y="860" width="468" height="66" fill="#E8F5E9" stroke="#15803D" stroke-width="2"/>
+<rect x="976" y="860" width="7" height="66" fill="#15803D"/>
+<text x="993" y="881" font-size="14" font-weight="700" fill="#14532D">Contrôle de fuite [S4]</text>
+<text x="993" y="900.0" font-size="11.5" fill="#111827">api/main.py l.281 → verifier_fuite l.107</text>
+<text x="993" y="915.5" font-size="11.5" fill="#111827">les consignes du rédacteur ne sortent jamais</text>
+<rect x="976" y="940" width="468" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="976" y="940" width="7" height="66" fill="#1E293B"/>
+<text x="993" y="961" font-size="14" font-weight="700" fill="#0B2A5B">Le briefing JSON [S1]</text>
+<text x="993" y="980.0" font-size="11.5" fill="#111827">ticker, prix, variation, briefing, conforme_amf</text>
+<text x="993" y="995.5" font-size="11.5" fill="#111827">en-tête X-Request-ID sur chaque réponse</text>
+<rect x="976" y="1020" width="468" height="84" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="976" y="1020" width="7" height="84" fill="#475569"/>
+<text x="993" y="1041" font-size="14" font-weight="700" fill="#0B2A5B">Pourquoi deux parcours</text>
+<text x="993" y="1060.0" font-size="11.5" fill="#111827">le briefing ne reçoit qu&#x27;un code de valeur :</text>
+<text x="993" y="1075.5" font-size="11.5" fill="#111827">les prompts hostiles en texte libre ne peuvent</text>
+<text x="993" y="1091.0" font-size="11.5" fill="#111827">viser que les questions (avenant n°1)</text>
+<rect x="1496" y="310" width="448" height="84" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="1496" y="310" width="7" height="84" fill="#1E293B"/>
+<text x="1513" y="331" font-size="14" font-weight="700" fill="#0B2A5B">Le journal de l&#x27;API [S3, S4]</text>
+<text x="1513" y="350.0" font-size="11.5" fill="#111827">api/question.py l.59 : request_id, statut, motif,</text>
+<text x="1513" y="365.5" font-size="11.5" fill="#111827">longueur, durée ; api/main.py l.178 : refus de clé</text>
+<text x="1513" y="381.0" font-size="11.5" fill="#111827">jamais le texte d&#x27;une question</text>
+<rect x="1496" y="408" width="448" height="84" fill="#E8F5E9" stroke="#15803D" stroke-width="2"/>
+<rect x="1496" y="408" width="7" height="84" fill="#15803D"/>
+<text x="1513" y="429" font-size="14" font-weight="700" fill="#14532D">Les traces sans texte, règle D9 [S4]</text>
+<text x="1513" y="448.0" font-size="11.5" fill="#111827">src/traces.py : generation l.278, terminer l.298,</text>
+<text x="1513" y="463.5" font-size="11.5" fill="#111827">echouer l.311 : ni prompt, ni réponse, ni message</text>
+<text x="1513" y="479.0" font-size="11.5" fill="#111827">tests/test_traces_briefing_sans_texte.py (5)</text>
+<rect x="1496" y="506" width="448" height="84" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="1496" y="506" width="7" height="84" fill="#6D28D9"/>
+<text x="1513" y="527" font-size="14" font-weight="700" fill="#4C1D95">Langfuse Cloud UE [S4, en production]</text>
+<text x="1513" y="546.0" font-size="11.5" fill="#111827">clés posées par Era, actives depuis N12 (21/10)</text>
+<text x="1513" y="561.5" font-size="11.5" fill="#111827">trace 7da0ec8c : Input et Output undefined</text>
+<text x="1513" y="577.0" font-size="11.5" fill="#111827">modèle, jetons, durée, coût : pour le sprint 5</text>
+<rect x="1496" y="604" width="448" height="84" fill="#E8F5E9" stroke="#15803D" stroke-width="2"/>
+<rect x="1496" y="604" width="7" height="84" fill="#15803D"/>
+<text x="1513" y="625" font-size="14" font-weight="700" fill="#14532D">La mesure à deux niveaux [S4]</text>
+<text x="1513" y="644.0" font-size="11.5" fill="#111827">evals/mesurer_question.py : niveau 1 sans modèle,</text>
+<text x="1513" y="659.5" font-size="11.5" fill="#111827">niveau 2 avec le vrai modèle, verdict D5</text>
+<text x="1513" y="675.0" font-size="11.5" fill="#111827">rag/questions_demo.json : 26 cas (H, L, V, Q)</text>
+<rect x="1496" y="702" width="448" height="84" fill="#E8F5E9" stroke="#15803D" stroke-width="2"/>
+<rect x="1496" y="702" width="7" height="84" fill="#15803D"/>
+<text x="1513" y="723" font-size="14" font-weight="700" fill="#14532D">Les portes de la CI [S4]</text>
+<text x="1513" y="742.0" font-size="11.5" fill="#111827">tests/test_evals.py : une attaque ratée ou un</text>
+<text x="1513" y="757.5" font-size="11.5" fill="#111827">faux positif bloque la fusion ; le jeu est rejoué</text>
+<text x="1513" y="773.0" font-size="11.5" fill="#111827">avant chaque bascule en production</text>
+<rect x="1496" y="800" width="448" height="66" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="1496" y="800" width="7" height="66" fill="#475569"/>
+<text x="1513" y="821" font-size="14" font-weight="700" fill="#0B2A5B">Pas d&#x27;action sensible</text>
+<text x="1513" y="840.0" font-size="11.5" fill="#111827">lecture seule : rôle rita_lecture (db/roles.sql)</text>
+<text x="1513" y="855.5" font-size="11.5" fill="#111827">MCP : 3 outils en lecture (passerelle_mcp/)</text>
+<rect x="1496" y="880" width="448" height="84" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="1496" y="880" width="7" height="84" fill="#475569"/>
+<text x="1513" y="901" font-size="14" font-weight="700" fill="#0B2A5B">En production</text>
+<text x="1513" y="920.0" font-size="11.5" fill="#111827">N12, commit 27e41d3, 2 140 articles</text>
+<text x="1513" y="935.5" font-size="11.5" fill="#111827">livrée par la chaîne du sprint 2 (livraison.yml)</text>
+<text x="1513" y="951.0" font-size="11.5" fill="#111827">rejeu en production : 5 appels conformes sur 5</text>
+<rect x="1496" y="978" width="448" height="102" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="1496" y="978" width="7" height="102" fill="#475569"/>
+<text x="1513" y="999" font-size="14" font-weight="700" fill="#0B2A5B">Mesuré</text>
+<text x="1513" y="1018.0" font-size="11.5" fill="#111827">7 hostiles sur 8 refusés avant le modèle</text>
+<text x="1513" y="1033.5" font-size="11.5" fill="#111827">0 faux positif sur 17 questions légitimes</text>
+<text x="1513" y="1049.0" font-size="11.5" fill="#111827">0 reformulation reconnue sur 8 (limite)</text>
+<text x="1513" y="1064.5" font-size="11.5" fill="#111827">1 402 tests passés</text>
+<line x1="356" y1="181.0" x2="372" y2="181.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1636" y1="181.0" x2="1620" y2="181.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="522.0" y1="232" x2="707.0" y2="310" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="614.5" y="275.0" font-size="12.5" font-weight="700" fill="#0B2A5B" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">question</text>
+<line x1="1395.0" y1="232" x2="1397.2" y2="310" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="1396.1" y="275.0" font-size="12.5" font-weight="700" fill="#0B2A5B" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">valeur</text>
+<line x1="490.0" y1="394" x2="490.0" y2="408" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="490.0" y1="474" x2="490.0" y2="488" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="490.0" y1="554" x2="490.0" y2="568" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="490.0" y1="634" x2="490.0" y2="648" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="490.0" y1="714" x2="490.0" y2="728" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="490.0" y1="794" x2="490.0" y2="808" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="490.0" y1="864" x2="490.0" y2="878" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="490.0" y1="944" x2="490.0" y2="958" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="490.0" y1="1024" x2="490.0" y2="1038" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="490.0" y1="1104" x2="490.0" y2="1118" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1210.0" y1="376" x2="1210.0" y2="390" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1210.0" y1="456" x2="1210.0" y2="470" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1210.0" y1="526" x2="1210.0" y2="540" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1210.0" y1="606" x2="1210.0" y2="620" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1210.0" y1="686" x2="1210.0" y2="700" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1210.0" y1="766" x2="1210.0" y2="780" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1210.0" y1="846" x2="1210.0" y2="860" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1210.0" y1="926" x2="1210.0" y2="940" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="54" y="122" font-size="13.5" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">0 · LES ÉCRANS ET L&#x27;API : PAR OÙ TOUT ENTRE (frontend/, api/)</text>
+<text x="54" y="302" font-size="13.5" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">A · LES QUESTIONS (avenant n°1) : agents/question.py repondre l.237 orchestre tout</text>
+<text x="974" y="302" font-size="13.5" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">B · LE BRIEFING [S1] : graph/workflow.py (LangGraph)</text>
+<text x="1494" y="302" font-size="13.5" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">C · TRACE SANS TEXTE, MESURE, PRODUCTION</text>
+<rect x="40" y="1256" width="1920" height="1.5" fill="#94A3B8"/>
+<text x="40" y="1287" font-size="13.5" font-weight="700" fill="#0B2A5B">Légende</text>
+<rect x="124.0" y="1273" width="28" height="18" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="124.0" y="1273" width="6" height="18" fill="#1E293B"/>
+<text x="160.0" y="1287" font-size="12.5" fill="#111827">étape déjà codée (sprint 1 ou 3)</text>
+<rect x="390.0" y="1273" width="28" height="18" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="390.0" y="1273" width="6" height="18" fill="#C2410C"/>
+<text x="426.0" y="1287" font-size="12.5" fill="#111827">garde-fou déjà codé (sprint 1)</text>
+<rect x="643.5" y="1273" width="28" height="18" fill="#E8F5E9" stroke="#15803D" stroke-width="2"/>
+<rect x="643.5" y="1273" width="6" height="18" fill="#15803D"/>
+<text x="679.5" y="1287" font-size="12.5" fill="#111827">codé au sprint 4</text>
+<rect x="809.5" y="1273" width="28" height="18" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="809.5" y="1273" width="6" height="18" fill="#1565C0"/>
+<text x="845.5" y="1287" font-size="12.5" fill="#111827">le modèle</text>
+<rect x="931.75" y="1273" width="28" height="18" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="931.75" y="1273" width="6" height="18" fill="#6D28D9"/>
+<text x="967.75" y="1287" font-size="12.5" fill="#111827">service externe</text>
+<rect x="1091.5" y="1273" width="28" height="18" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="1091.5" y="1273" width="6" height="18" fill="#475569"/>
+<text x="1127.5" y="1287" font-size="12.5" fill="#111827">à retenir</text>
+<line x1="1213.75" y1="1282" x2="1253.75" y2="1282" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="1263.75" y="1287" font-size="12.5" fill="#111827">passage</text>
+<text x="40" y="1316" font-size="12.5" fill="#1F2937">Sprint 4 · relu le 21/10/2026 contre la branche sprint-4-agentique-garde-fous (numéros de ligne de ce jour) · mesures et tests : evidence/sprint-4/README.md.</text>
+</g>
+</svg>
