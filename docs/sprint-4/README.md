@@ -62,9 +62,9 @@ pour chacune ; on n'y efface ni n'y modifie jamais rien. Exemple mesuré : le re
 | Taux de refus par motif | une ligne de journal par refus : clé (`cle d'API refusee`), valeur inconnue, garde-fou de sortie, contrôle de fuite, débit (`limite de debit atteinte`), et pour les questions la ligne « question servie » avec `statut` et `motif` (dont `TENTATIVE_DETOURNEMENT`) ; refus MCP dans `mcp_calls` | aucun comptage : le taux demande de compter les lignes à la main |
 | Erreurs | lignes « briefing en erreur 502 » et « erreur interne » (500), avec l'identifiant de requête ; étapes marquées ERROR dans Langfuse, avec le seul type de l'exception | aucun tableau ; deux alertes Langfuse seulement (le maximum du palier gratuit), qui ouvrent une issue « incident » par `.github/workflows/alerte-incident.yml` |
 
-Les lignes de journal se lisent dans le journal du conteneur de l'API sur le serveur. **En production, le traçage
-Langfuse est coupé** (aucune clé sur le serveur, mesuré le 21/10) : ce que ce tableau situe dans Langfuse ne se lit
-qu'en local ; en production, seules les lignes de journal existent.
+Les lignes de journal se lisent dans le journal du conteneur de l'API sur le serveur. Le traçage Langfuse est
+actif en production depuis la livraison N12 (21/10) : ce que ce tableau situe dans Langfuse se lit aussi pour la
+production, à partir de ce jour.
 
 ## 5. Ce qui n'est pas fait
 
@@ -78,9 +78,9 @@ qu'en local ; en production, seules les lignes de journal existent.
   protège le coût du modèle, pas contre une clé devinée par essais répétés.
 - **Le tiers du critère 5 du contrat** (D8) : question au formateur, sans réponse au 20/10.
 - **L'avenant n°1** attend la validation du formateur.
-- **Le traçage Langfuse est coupé en production** (mesuré le 21/10 : aucune clé Langfuse dans le `.env` du serveur ni
-  dans le conteneur de l'API). Aucune trace n'est envoyée, ce qui tient D9 de la façon la plus stricte ; mais les
-  signaux lus dans Langfuse (§ 4) n'existent qu'en local. Poser les clés relève d'Era, au sprint 5.
+- **Traçage Langfuse en production** : actif depuis le 21/10 seulement (livraison N12), donc sans historique avant ;
+  la valeur demandée d'un briefing part avec les métadonnées ; le contrat de Langfuse permet un traitement hors de la
+  région choisie (registre, T3).
 - **Garde-fou de détournement** : les reformulations R1 à R8, gardées hors du jeu pour une mesure honnête, sont
   reconnues 0 fois sur 8 par les règles ; le cas H8 n'est pas activé (décision du 20/10).
 - **Contrôle de fuite** : 71,4 % des sorties de fuite bloquées, deux cas hors échantillon passent.

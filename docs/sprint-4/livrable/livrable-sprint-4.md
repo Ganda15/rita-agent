@@ -61,18 +61,19 @@ le seul à recevoir du texte libre, donc le seul que les prompts de l'évaluateu
 | Prompt | consigne « donnée, jamais consigne » | défense en profondeur, quand une instruction échappe aux règles | elle a tenu sur les deux articles piégés non reconnus |
 | Sortie | contrôle de fuite (nouveau) | une forme de secret, une adresse de base avec mot de passe, un nom de variable de configuration, 8 mots des consignes ; refus `FUITE_BLOQUEE` | 5 sorties dangereuses sur 7, 0 faux positif sur 11 |
 | Sortie | garde-fou AMF (sprint 3) | un conseil d'achat ou de vente | inchangé |
-| Sortie | contrôle des nombres (nouveau), sur les questions | un chiffre absent des articles cités ; refus `NOMBRE_NON_SOURCE` | Q4 juste deux fois sur deux en production après N11 |
+| Sortie | contrôle des nombres (nouveau), sur les questions | un chiffre absent des articles cités ; refus `NOMBRE_NON_SOURCE` | Q4 juste à chaque rejeu en production depuis N11 |
 | API | clé, valeur du briefing, débit | une fausse clé (403 journalisé), une valeur inconnue ou trop longue (422 sans appel au modèle), plus de 10 appels par minute (429) | critères 3 et 4 du contrat tenus |
-| Journal et traces | une ligne par refus, jamais le texte ; traces du briefing réduites aux métadonnées | la conservation d'un texte de question ou de briefing | 5 tests à marqueurs fictifs |
+| Journal et traces | une ligne par refus, jamais le texte ; traces du briefing réduites aux métadonnées | la conservation d'un texte de question ou de briefing | 5 tests à marqueurs fictifs ; une trace de production vérifiée sans texte |
 
 ### 1.5 L'état de la production, le 21/10/2026
 
 | Mesure | Valeur | Preuve |
 |---|---|---|
-| Version servie | commit `4fc63f5`, livraison N11, en production le 21/10 à 11 h 05 | § 7.9 |
-| Corpus servi | 2140 articles, index `98ea614a…`, empreinte de contenu `fd8542955c1b…` | § 7.9 |
-| Rejeu en production après N11 | 5 appels conformes sur 5, deux fois (11 h 11 et 11 h 12) | § 7.9 |
-| Livraisons du sprint | N10 le 20/10 à 21 h 48 (les garde-fous), N11 le 21/10 à 11 h 05 (le contrôle des nombres) | § 7.9 |
+| Version servie | commit `27e41d3`, livraison N12, en production le 21/10 à 12 h 47 | § 7.9 |
+| Corpus servi | 2140 articles, index `35806d6e…`, empreinte de contenu `fd8542955c1b…` | § 7.9 |
+| Rejeu en production | 5 appels conformes sur 5 après N11 (deux fois) et après N12 (12 h 51) | § 7.9 |
+| Livraisons du sprint | N10 le 20/10 à 21 h 48 (les garde-fous), N11 le 21/10 à 11 h 05 (le contrôle des nombres), N12 le 21/10 à 12 h 47 (le traçage en production) | § 7.9 |
+| Traçage | actif en production depuis N12 ; une trace de briefing ouverte : ni prompt ni réponse | § 7.6 |
 | Tests | 1400 passés, 24 ignorés, 2 échecs attendus, suite locale du 21/10 | § 7 |
 
 Production : <https://178-104-184-125.sslip.io/question.html> (écran de question, clé d'API demandée) et
@@ -155,7 +156,7 @@ Les exigences du brief et de la grille, reformulées dans la spécification ; ch
 | E6. Si la composante agit : confirmation et périmètre | non applicable : les deux parcours lisent et rédigent, sans outil d'action ; les opérations d'administration sont distinguées ; accès en lecture seule | § 7.8 |
 | E7. Le contrat personnel déroulé, état versionné | `docs/sprint-4/CONTRAT.md` : 3 critères tenus, 2 en cours, écarts écrits | § 7.7 |
 | E8. Les signaux du sprint 5 repérés | latence, coût, taux de refus par motif, erreurs : où chacun se lit, et ce qui manque | § 7.10 |
-| E9. En production, garde-fous actifs, par la chaîne du sprint 2 | N10 et N11 livrées par fusion dans `main` ; rejeu en production après chacune | § 7.9 |
+| E9. En production, garde-fous actifs, par la chaîne du sprint 2 | N10, N11 et N12 livrées par fusion dans `main` ; rejeu en production après chacune | § 7.9 |
 | E10. Le journal des retours reprend le conseil de l'atelier n°3 | les cinq retours oraux de l'atelier n°3 et la suite donnée à chacun | § 8 |
 
 ## 5. Les critères de la grille : ce qui sera montré, et la preuve
@@ -291,7 +292,7 @@ le dixième, un refus à tort sans danger, est écrit comme limite (§ 9). Le co
 **Mesuré.** Mesure de niveau 2 du 21/10 à 08 h 18 avec le contrôle : les cinq conditions D5 vraies, aucun refus
 `NOMBRE_NON_SOURCE`, tous les nombres des neuf réponses retrouvés dans un article cité
 ([`mesure-question-niveau2-2026-10-21-0818.json`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-4-v1/evidence/sprint-4/mesure-question-niveau2-2026-10-21-0818.json)).
-En production après N11, Q4 contient « 1 000 postes » aux deux rejeux. Deux réponses justes ne prouvent pas que le
+En production, Q4 contient « 1 000 postes » aux deux rejeux après N11 et au rejeu après N12. Deux réponses justes ne prouvent pas que le
 modèle n'abîmera plus un chiffre ; s'il le fait, la réponse est refusée au lieu d'être servie. Ce refus est prouvé par
 les tests, il n'a pas été observé en production.
 
@@ -337,10 +338,21 @@ n'est déjà partie. 5 tests le prouvent avec des marqueurs fictifs, y compris e
 (`tests/test_traces_briefing_sans_texte.py`). Une revue de sécurité automatique a trouvé un dernier passage, l'erreur
 finale quand tous les fournisseurs échouent : corrigé, avec son test.
 
-**En production, le traçage est coupé.** Aucune trace de production n'apparaît dans Langfuse. Vérifié le 21/10 sur le
-serveur, en lecture seule et sans afficher de valeur : aucune clé Langfuse dans son `.env`, ni dans le conteneur de
-l'API. Aucune trace n'est donc envoyée : ni prompt ni réponse n'est conservé chez Langfuse, ce qui tient la règle de
-la façon la plus stricte. Les tests prouvent ce que garderait une trace si le traçage était activé.
+**En production, une vraie trace le confirme.** Jusqu'au 21/10, le serveur n'avait aucune clé Langfuse : aucune trace
+ne partait de la production (manque connu depuis le sprint 2). Era a posé les clés, actives depuis la livraison N12 ;
+vérifié sans afficher de valeur (noms et préfixes présents, `200` de l'API Langfuse, quatre variables dans le
+conteneur). Au rejeu de 12 h 51, la trace du briefing OR.PA (`7da0ec8c…`, identifiant déduit de celui de la requête
+`4d8a375c…`) montre, sur la racine comme sur la génération du modèle, **Input `undefined` et Output `undefined`**.
+Restent le modèle (`gpt-5.4-2026-03-05`), environ 1 000 jetons, la durée (6,88 s, dont 4,69 s pour le modèle), le coût
+et le verdict AMF ; l'étape de recherche ne garde que le motif, le nombre de passages et le nom des sources.
+
+![Langfuse, trace de production du briefing OR.PA : la racine, Input et Output undefined](../../../evidence/sprint-4/captures/langfuse-trace-briefing-racine-2026-10-21.png)
+
+*Capture 1 : la racine `briefing` de la trace du 21/10 à 12 h 51, découpée sans la barre latérale du compte.*
+
+![Langfuse, même trace : la génération llm-foundry, Input et Output undefined](../../../evidence/sprint-4/captures/langfuse-trace-briefing-generation-2026-10-21.png)
+
+*Capture 2 : la génération `llm-foundry`, l'appel au modèle : modèle, jetons, durée et coût, aucun texte.*
 
 ### 7.7 Conforme à l'annonce, et le contrat personnel (critères 1 et 6)
 
@@ -360,8 +372,9 @@ ligne datée, sans que son texte d'origine soit réécrit.
 | 5 | un tiers suit la procédure de retour arrière, N-1 servie en moins de 10 minutes | en cours | retour arrière du 14/10 : N0 servie 19 s après le lancement. **Écart** : lancé par Era, pas par un tiers ; question posée au formateur (D8) |
 
 La limite de débit, annoncée au sprint 1 pour le sprint 4, est faite : au plus 10 appels par minute, partagés par
-`/briefing` et `/question`, 7 tests (`tests/test_limiteur.py`). Un autre écart au dossier du sprint 1 est écrit dans le même fichier : il
-annonçait que Langfuse tracerait chaque briefing en production, or aucune clé n'est posée sur le serveur (§ 9).
+`/briefing` et `/question`, 7 tests (`tests/test_limiteur.py`). Un autre écart au dossier du sprint 1, écrit dans le même fichier, est levé le
+21/10 : il annonçait que Langfuse tracerait chaque briefing en production ; c'est le cas depuis N12, sans consigne ni
+réponse (§ 7.6).
 
 ### 7.8 Pas d'action sensible, et le périmètre d'accès (critère 5)
 
@@ -387,31 +400,32 @@ fois et ajoute une ligne à son journal pour chacune. Seul un compte qui a accè
 |---|---|---|---|
 | N10 | [PR #112](https://github.com/Ganda15/rita-agent/pull/112), `27da943`, 20/10 à 21 h 28 | les garde-fous d'entrée et de sortie, les traces sans texte, le 422, le refus de clé journalisé, la limite de débit | [`39483716804`](https://github.com/Ganda15/rita-agent/actions/runs/39483716804), réussi à la troisième tentative, après deux refus du registre d'images |
 | N11 | [PR #115](https://github.com/Ganda15/rita-agent/pull/115), `4fc63f5`, 21/10 à 10 h 53 | le contrôle des nombres ; l'image de base tirée d'un miroir | [`39572719574`](https://github.com/Ganda15/rita-agent/actions/runs/39572719574), réussi du premier coup |
+| N12 | [PR #120](https://github.com/Ganda15/rita-agent/pull/120), `27e41d3`, 21/10 à 12 h 36 | le livrable en version 1 et ses preuves ; les quatre apostrophes du contrôle des nombres ; le traçage Langfuse, par le `.env` du serveur | [`39585879939`](https://github.com/Ganda15/rita-agent/actions/runs/39585879939), réussi du premier coup |
 
 Chaque livraison rejoue le jeu de questions v3 sur l'index candidat avant la bascule : un écart bloquant refuse la
 nouvelle version. Après chaque livraison, cinq appels ont été rejoués sur l'adresse de production avec la clé de
 production (`evidence/sprint-4/rejeu_production.py`). Le rapport garde les codes, les identifiants de requête, les
 statuts et les motifs, jamais la clé ni un texte.
 
-| Appel | Attendu | Après N10 (20/10, 21 h 53) | Après N11 (21/10, 11 h 11 et 11 h 12) |
-|---|---|---|---|
-| H1 sur `POST /question` | refus `TENTATIVE_DETOURNEMENT` | conforme | conforme, deux fois |
-| Q4 sur `POST /question` | réponse avec « 1 000 postes » | **non conforme** au second lancement : « 1 0 postes » | conforme, deux fois |
-| H8 sur `POST /question` | refus ou abstention | conforme (abstention) | conforme (abstention), deux fois |
-| 21 caractères sur `POST /briefing` | 422 | conforme | conforme, deux fois |
-| `POST /briefing?ticker=OR.PA` | 200, `X-Request-ID`, texte en français | conforme | conforme, deux fois |
+| Appel | Attendu | Après N10 (20/10, 21 h 53) | Après N11 (21/10, 11 h 11 et 11 h 12) | Après N12 (21/10, 12 h 51) |
+|---|---|---|---|---|
+| H1 sur `POST /question` | refus `TENTATIVE_DETOURNEMENT` | conforme | conforme, deux fois | conforme |
+| Q4 sur `POST /question` | réponse avec « 1 000 postes » | **non conforme** au second lancement : « 1 0 postes » | conforme, deux fois | conforme |
+| H8 sur `POST /question` | refus ou abstention | conforme (abstention) | conforme (abstention), deux fois | conforme (abstention) |
+| 21 caractères sur `POST /briefing` | 422 | conforme | conforme, deux fois | conforme |
+| `POST /briefing?ticker=OR.PA` | 200, `X-Request-ID`, texte en français | conforme | conforme, deux fois | conforme |
 
-Le défaut de Q4 après N10 est à l'origine du contrôle des nombres (§ 7.4). `/health` annonce le commit `4fc63f5`,
-l'index `98ea614a…` et 2140 articles (annexe 12.1).
+Le défaut de Q4 après N10 est à l'origine du contrôle des nombres (§ 7.4). `/health` annonce le commit `27e41d3`,
+l'index `35806d6e…` et 2140 articles (annexe 12.1).
 
 ### 7.10 Les signaux du sprint 5
 
 | Signal | Où il se lit aujourd'hui | Ce qui manque |
 |---|---|---|
-| Latence | `duree_ms` dans les lignes « briefing servi » et « question servie », avec l'identifiant de requête ; durées des étapes dans Langfuse, en local seulement | ni médiane, ni p95, ni seuil |
-| Coût | modèle et jetons de chaque génération dans Langfuse, en local seulement | en production, aucune donnée de coût ; ni cumul par jour, ni budget |
+| Latence | `duree_ms` dans les lignes « briefing servi » et « question servie », avec l'identifiant de requête ; durées des étapes dans Langfuse, en production depuis N12 | ni médiane, ni p95, ni seuil |
+| Coût | modèle, jetons et coût de chaque génération dans Langfuse, en production depuis N12 | ni cumul par jour, ni budget ; données de production depuis le 21/10 seulement |
 | Taux de refus par motif | une ligne de journal par refus, avec son motif | aucun comptage automatique |
-| Erreurs | lignes 502 et 500 avec l'identifiant de requête ; étapes en erreur dans Langfuse, en local seulement | aucun tableau ; deux alertes Langfuse seulement |
+| Erreurs | lignes 502 et 500 avec l'identifiant de requête ; étapes en erreur dans Langfuse, avec le seul type d'exception | aucun tableau ; deux alertes Langfuse seulement |
 
 ## 8. Journal des retours
 
@@ -442,8 +456,7 @@ relevés dans les notes de séance
   épelée en toutes lettres passent.
 - **Contrôle des nombres** : un chiffre reformulé (« mille ») ou calculé est refusé même juste ; un chiffre écrit en
   lettres n'est pas contrôlé ; « Perspectives 2026 300 emplois », sans ponctuation, se lit comme un seul nombre, si bien
-  que « 300 » ou « 2026 » seuls sont refusés même justes. Les deux dernières apostrophes de milliers (U+2018, U+02BC)
-  ne sont pas dans N11 : elles arrivent avec la livraison suivante. La cause exacte du chiffre abîmé par le modèle n'est
+  que « 300 » ou « 2026 » seuls sont refusés même justes. La cause exacte du chiffre abîmé par le modèle n'est
   pas établie. **Le briefing n'a pas ce contrôle** : ses chiffres (cours, indicateurs, articles) ne sont pas revérifiés
   après le modèle ; seuls le garde-fou AMF et le contrôle de fuite relisent son texte.
 - **Critère 1 du contrat** : OR.PA sans cotation depuis 64 jours en production ; le briefing en déduit que la valeur
@@ -452,9 +465,9 @@ relevés dans les notes de séance
 - **Critère 5 du contrat** : le retour arrière n'a pas été lancé par un tiers ; la question est posée au formateur (D8),
   sans réponse.
 - **L'avenant n°1** attend la validation du formateur.
-- **Le traçage Langfuse est coupé en production** : aucune clé sur le serveur, manque connu depuis le sprint 2 et
-  confirmé le 21/10. Aucun texte n'est donc conservé, mais la latence par étape, les jetons et le coût ne se lisent qu'en local ; en production, seules les
-  lignes de journal existent. Poser les clés relève du sprint 5.
+- **Traçage Langfuse en production** : actif depuis le 21/10 seulement (N12), donc sans historique avant ; une seule
+  trace ouverte pour la vérification ; la valeur demandée d'un briefing (le ticker) part avec les métadonnées ; le
+  contrat de Langfuse permet un traitement hors de la région choisie (registre, T3).
 - **Accès** : l'API de production lit la base avec le rôle propriétaire (un rôle dédié est prévu, pas fait) ; la
   documentation `/docs` et `/openapi.json` reste publique ; les essais de clé sont journalisés mais pas freinés, le
   limiteur passant après la vérification de la clé.
@@ -463,7 +476,7 @@ relevés dans les notes de séance
 - **Construction de l'image** : l'image de base est tirée d'un miroir public sans compte. Le registre précédent avait
   refusé 19 constructions du 16 au 21/10 ; aucun refus depuis le changement, mais la solution durable reste un compte.
 - **Signaux du sprint 5** : ni comptage, ni tableau, ni seuil.
-- **Méthode** : trois PR de corrections (#116, #117, #118) ont été fusionnées pendant que deux contrôles tournaient
+- **Méthode** : quatre PR de corrections (#116 à #119) ont été fusionnées pendant que deux contrôles tournaient
   encore. Ils ont tous fini verts, et les mêmes contrôles sont passés sur la PR de livraison avant sa fusion.
 
 ## 10. Glossaire
@@ -490,7 +503,7 @@ relevés dans les notes de séance
 | Rejeu | le passage d'un jeu de questions ou d'appels sur un index ou sur la production |
 | Commit, tag | un état enregistré du code ; une étiquette posée sur un commit, dont le lien ne change plus |
 | Pull request (PR) | une demande de fusion d'une branche dans une autre, relue avant d'être acceptée |
-| Livraison N10, N11 | les mises en production du sprint, chacune déclenchée par une fusion dans `main` |
+| Livraison N10 à N12 | les mises en production du sprint, chacune déclenchée par une fusion dans `main` |
 | 403, 422, 429 | les réponses de l'API pour une clé refusée, une valeur invalide, trop de demandes |
 
 ## 11. Sources et liens
@@ -508,32 +521,32 @@ relevés dans les notes de séance
 
 ## 12. Annexe : les preuves recopiées
 
-### 12.1 `/health` en production, 21/10/2026 à 09:06 UTC
+### 12.1 `/health` en production, 21/10/2026 à 10:47 UTC
 
 ```text
-{"status":"ok","project":"RITA","commit":"4fc63f5decb1e8cc31728e9a5dbaf7f926a0a353","construit_le":"2026-10-21T08:57:18Z",
- "index":{"nb_articles":2140,"empreinte":"fd8542955c1b...","identifiant":"98ea614a...","construit_le":"2026-10-21T09:04:40+00:00"}}
+{"status":"ok","project":"RITA","commit":"27e41d322c9fb4986d745260d1561cffa27cc693","construit_le":"2026-10-21T10:40:50Z",
+ "index":{"nb_articles":2140,"empreinte":"fd8542955c1b...","identifiant":"35806d6e...","construit_le":"2026-10-21T10:46:02+00:00"}}
 ```
 
-Champs relevés le 21/10 à 09:06 UTC ; empreinte et identifiant abrégés (`...`).
+Champs relevés le 21/10 à 10:47 UTC ; empreinte et identifiant abrégés (`...`).
 
-### 12.2 La livraison N11 (horaires UTC)
+### 12.2 La livraison N12 (horaires UTC)
 
 ```text
-passage   : 39572719574  |  evenement : push  |  commit 4fc63f5  |  cree le 2026-10-21T08:53:38Z
+passage   : 39585879939  |  evenement : push  |  commit 27e41d3  |  cree le 2026-10-21T10:36:58Z
 conclusion: success
-  lint                  | success | 08:53:41 -> 08:53:52
-  secrets               | success | 08:53:41 -> 08:54:37
-  construire-et-publier | success | 08:54:39 -> 09:00:37
-  attendre-creneau      | success | 09:00:40 -> 09:00:48
-  deployer              | success | 09:00:51 -> 09:05:41
+  lint                  | success | 10:37:01 -> 10:37:13
+  secrets               | success | 10:37:01 -> 10:38:02
+  construire-et-publier | success | 10:38:04 -> 10:42:15
+  attendre-creneau      | success | 10:42:17 -> 10:42:26
+  deployer              | success | 10:42:28 -> 10:47:01
   [deployer] code rendu par le serveur : 0
 ```
 
-### 12.3 Le rejeu en production après N11, 21/10/2026 à 11 h 11 (verdicts)
+### 12.3 Le rejeu en production après N12, 21/10/2026 à 12 h 51 (verdicts)
 
 ```text
-commit servi : 4fc63f5decb1e8cc31728e9a5dbaf7f926a0a353 | index : 98ea614afdb8462591e92d07ce4a81eb
+commit servi : 27e41d322c9fb4986d745260d1561cffa27cc693 | index : 35806d6e723945b7b0f321da2abebe50
             H1 | POST /question  | HTTP 200 | statut refus | motif TENTATIVE_DETOURNEMENT | conforme True
             Q4 | POST /question  | HTTP 200 | statut reponse | motif OK | conforme True
             H8 | POST /question  | HTTP 200 | statut refus | motif ABSTENTION | conforme True
@@ -541,8 +554,9 @@ commit servi : 4fc63f5decb1e8cc31728e9a5dbaf7f926a0a353 | index : 98ea614afdb846
          OR.PA | POST /briefing  | HTTP 200 | statut None | motif None | conforme True
 ```
 
-Le second lancement, à 11 h 12, donne les mêmes cinq lignes. Les textes affichés à la console ne sont pas recopiés :
-le rapport n'en garde aucun (D9). Rapports :
+Les textes affichés à la console ne sont pas recopiés : le rapport n'en garde aucun (D9). Rapports : après N12,
+[`rejeu-production-2026-10-21-125121.json`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-4-v1/evidence/sprint-4/rejeu-production-2026-10-21-125121.json) ;
+après N11,
 [`rejeu-production-2026-10-21-111136.json`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-4-v1/evidence/sprint-4/rejeu-production-2026-10-21-111136.json)
 et
 [`rejeu-production-2026-10-21-111201.json`](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-4-v1/evidence/sprint-4/rejeu-production-2026-10-21-111201.json).

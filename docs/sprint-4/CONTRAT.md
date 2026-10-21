@@ -22,15 +22,13 @@ sont cités par leur nom : les numéros de ligne donnés au § 6 ont changé dep
 | Sprint 4 : « Débit, refus journalisés » (`docs/CADRAGE-V1.md` § 7) | Débit : fait, tâche C3 (`api/limiteur.py`, `tests/test_limiteur.py`), au plus 10 appels par minute partagés par `/briefing` et `/question` ; limites écrites dans `evidence/sprint-4/README.md`. Refus journalisés : clé (critère 4) ; prompt hostile, par la ligne `question servie` qui porte `statut=refus` et le motif (`api/question.py`) ; garde-fou de sortie et contrôle de fuite du briefing (`api/main.py`) |
 | La composante agentique est le graphe du briefing seul (§ 3) | Avenant n°1 (`docs/sprint-4/AVENANT-1.md`) : le parcours des questions y entre. Validation du formateur attendue |
 | Tests des jours 3 et 5, vérification chronométrée du jour 2 (§ 6) | Jours 3 et 5 : faits au sprint 4 (critères 3 et 4). Jour 2 : fait le 14/10, sans tiers (critère 5) |
-| « Langfuse trace chaque briefing » en production, la trace portant « consigne, réponse, jetons, durée » (§ 4 et § 5) | **Écart.** En production, aucune clé Langfuse sur le serveur, donc aucune trace : manque connu depuis le sprint 2 (`docs/sprint-2/README.md`), confirmé le 21/10 (`evidence/sprint-4/README.md`, section « CA3.6 en production »). Et depuis la décision D9 du sprint 4 (20/10), une trace ne garde plus ni la consigne ni la réponse : seulement modèle, fournisseur, jetons, durée et type d'erreur. Poser les clés sur le serveur : décision d'Era |
+| « Langfuse trace chaque briefing » en production, la trace portant « consigne, réponse, jetons, durée » (§ 4 et § 5) | **Écart levé le 21/10 pour la trace, voulu pour son contenu.** Jusqu'au 21/10, aucune clé Langfuse sur le serveur, donc aucune trace en production (manque connu depuis le sprint 2, confirmé le 21/10). Era a posé les clés ; elles sont actives depuis la livraison N12, et une trace de briefing de production a été ouverte (`evidence/sprint-4/README.md`, section « La livraison N12 »). Depuis la décision D9 du sprint 4 (20/10), une trace ne garde plus ni la consigne ni la réponse : seulement modèle, fournisseur, jetons, durée, coût et type d'erreur. Cet écart-là est voulu |
 
 ## 3. Ce qui reste ouvert
 
 - Le tiers du critère 5 (D8) : la réponse du formateur décide si le retour arrière est rejoué par quelqu'un d'autre ou
   si l'écart reste écrit.
 - La validation de l'avenant n°1 par le formateur.
-- Le traçage Langfuse en production : les clés sont à poser sur le serveur par Era, puis une trace de briefing à ouvrir
-  pour vérifier qu'elle ne garde ni prompt ni réponse.
 - Les cours d'OR.PA en production (dernière cotation vieille de 64 jours le 21/10) : à actualiser, puis le critère 1 à vérifier
   dans les conditions du contrat.
 - Le briefing déduit d'une cotation ancienne que la valeur est « probablement radiée » : une cotation ancienne ne permet

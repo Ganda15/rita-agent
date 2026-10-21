@@ -9,6 +9,14 @@
 
 ---
 
+## 2026-10-21 : livraison N12, le traçage Langfuse actif en production
+
+**Décision d'Era** : poser les clés Langfuse sur le serveur (projet de production, région UE) ; il les a saisies
+lui-même, après une sauvegarde du `.env`. **Livré** : N12 à 12 h 47 (commit `27e41d3`, PR #120) : le livrable du sprint 4
+en version 1, les quatre apostrophes du contrôle des nombres, et le traçage, par le `.env` copié à la livraison.
+**Prouvé** : la trace du briefing OR.PA du rejeu de 12 h 51 (`7da0ec8c…`) ne garde ni prompt ni réponse, sur la
+racine comme sur la génération du modèle (D9, CA3.6). Le manque de l'entrée suivante est levé.
+
 ## 2026-10-21 : manque connu, confirmé : le traçage Langfuse est coupé en production
 
 **Manque connu, confirmé** (et non découvert : il est écrit depuis le 04/10 dans `evidence/C11/`, puis au sprint 2,

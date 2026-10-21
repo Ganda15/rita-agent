@@ -23,7 +23,8 @@ rapports ne gardent jamais de clé ni de texte de briefing (D9).
 | Le contrôle des nombres et sa mesure de niveau 2 | `mesure-question-niveau2-2026-10-21-0818.json` | CA4.1, CA4.2, CA4.5 | Le contrôle des nombres |
 | Les dix points des revues du jour, avec décision et commit | tableau dans la section | aucun (qualité du contrôle) | Les revues du contrôle des nombres |
 | La livraison N11 et ses deux rejeux en production, 5 appels conformes sur 5 | `rejeu-production-2026-10-21-111136.json`, `rejeu-production-2026-10-21-111201.json` | CA8.1, CA8.2 | La livraison N11 |
-| Le traçage Langfuse coupé en production : aucune trace envoyée, donc rien de conservé | commandes et résultat dans la section | CA3.6 | CA3.6 en production |
+| Le traçage Langfuse coupé en production jusqu'au 21/10 : aucune trace envoyée, donc rien de conservé | commandes et résultat dans la section | CA3.6 | CA3.6 en production |
+| La livraison N12, les clés Langfuse posées, et une trace de briefing de production sans prompt ni réponse | `rejeu-production-2026-10-21-125121.json`, `captures/langfuse-trace-briefing-racine-2026-10-21.png`, `captures/langfuse-trace-briefing-generation-2026-10-21.png` | CA3.6, CA8.1, CA8.2 | La livraison N12 |
 
 Les tests cités se trouvent dans `tests/` ; la suite locale compte 1400 passed, 24 skipped, 2 xfailed au 21/10. L'état du
 contrat du sprint 1, critère par critère, est dans `docs/sprint-4/CONTRAT.md` (CA6.1, CA6.4).
@@ -550,8 +551,47 @@ Lecture :
   aucune trace, et `evidence/C11/README.md` garde « Variables Langfuse sur le serveur Hetzner » comme tâche ouverte ; au
   sprint 2, `docs/sprint-2/README.md` écrivait « aucune clé Langfuse sur le serveur ». Les traces citées dans le rapport E3
   venaient du poste de développement. La mesure du 21/10 confirme que les clés n'ont jamais été posées depuis.
-- Poser les clés sur le serveur est une décision d'Era, qui saisit lui-même tout secret ; elle relève du sprint 5
-  (surveillance).
+- Poser les clés sur le serveur est une décision d'Era, qui saisit lui-même tout secret. **Fait le 21/10** : clés actives
+  depuis la livraison N12 (section suivante).
+
+## La livraison N12 et le traçage Langfuse en production (21/10/2026)
+
+**Les clés.** Era a créé une paire de clés dans le projet Langfuse de production (région UE) et l'a écrite lui-même
+dans `/root/rita-agent/.env`, après une sauvegarde du fichier. Vérifié sur le serveur, sans afficher de valeur : les
+deux noms présents ; un préfixe `pk-lf-` et un préfixe `sk-lf-` (une ligne chacun) ; aucune espace en fin de ligne ;
+l'API Langfuse (`/api/public/projects`) répond `200` avec la paire.
+
+**La livraison N12.** PR #120 (`develop` vers `main`) fusionnée par Era à 12 h 36, commit `27e41d3` ; passage
+`39585879939`, réussi du premier coup, sans refus du registre d'images ; déploiement terminé à 12 h 47, code rendu par
+le serveur 0. `/health` annonce le commit `27e41d3`, l'index `35806d6e…` reconstruit à 12 h 46, 2140 articles, la même
+empreinte de contenu (`fd8542955c1b…`). La livraison a copié le `.env` du serveur : le conteneur de l'API reçoit
+désormais quatre variables Langfuse, dont les deux clés (noms seulement, lus par `docker exec … printenv`).
+
+**Le rejeu après N12** (12 h 51, `rejeu-production-2026-10-21-125121.json`) : 5 appels conformes sur 5, Q4 avec
+« 1 000 postes » ; rapport vérifié sans clé ni texte.
+
+**La trace du briefing OR.PA**, ouverte par Era dans Langfuse : identifiant `7da0ec8c8b9f7ff05d9b0c51fb5926f2`,
+exactement celui que le code déduit de l'identifiant de requête du rejeu (`4d8a375c…`, `create_trace_id(seed=…)`,
+recalculé par trois moyens). Constaté :
+
+| Observation | Input | Output | Ce qui est gardé |
+|---|---|---|---|
+| racine `briefing` (12:51:13, 6,88 s) | `undefined` | `undefined` | verdict `conforme_amf: True`, coût et jetons agrégés |
+| génération `llm-foundry` (12:51:15, 4,69 s) | `undefined` | `undefined` | modèle `gpt-5.4-2026-03-05`, environ 1 000 jetons, 0,006 $ |
+| étape `rag` | | motif `OK`, 3 passages, nom des sources (Boursier.com, Boursorama) | aucun texte d'article |
+
+**CA3.6 est prouvé en production** sur une vraie trace : ni prompt ni réponse, sur la racine comme sur la génération.
+
+| Preuve | Fichier |
+|---|---|
+| Rapport du rejeu après N12 | `evidence/sprint-4/rejeu-production-2026-10-21-125121.json` |
+| La racine de la trace (découpe, sans la barre latérale du compte) | `evidence/sprint-4/captures/langfuse-trace-briefing-racine-2026-10-21.png` |
+| La génération du modèle (découpe) | `evidence/sprint-4/captures/langfuse-trace-briefing-generation-2026-10-21.png` |
+
+Une troisième capture d'Era (onglet « Log View ») n'est pas versionnée : elle affiche la clé publique Langfuse en
+entier. **Limites** : une seule trace ouverte ; la valeur demandée (le ticker) part vers Langfuse avec les métadonnées ;
+le contrat de Langfuse permet un traitement hors de la région choisie (registre, T3) ; le traçage de production ne
+couvre que la période qui commence le 21/10.
 
 ## Deux points relevés dans le briefing OR.PA, écrits comme limites
 
