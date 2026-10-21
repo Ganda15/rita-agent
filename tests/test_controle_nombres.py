@@ -248,3 +248,16 @@ def test_une_apostrophe_d_elision_ne_change_rien():
     # Le témoin : l'apostrophe ordinaire du français, devant une lettre, reste une apostrophe.
     assert _nombres().nombres_absents("Les résultats de l'exercice 2026 sont publiés. [1]",
                                       ["Résultats de l'exercice 2026 publiés"]) == []
+
+
+# --- relecture du livrable (21/10/2026) : ce que le contrôle ne vérifie pas, fixé par des tests ---------------------
+
+def test_un_nombre_ecrit_en_lettres_n_est_pas_controle():
+    # Limite : seuls les nombres écrits en chiffres sont lus. « mille » n'est ni accepté ni refusé : il est ignoré. Le
+    # livrable et la docstring l'avaient donné à tort comme refusé.
+    assert _nombres().nombres_absents("Netflix va supprimer mille postes. [1]", ["Netflix va supprimer 1 000 postes"]) == []
+
+
+def test_la_presence_d_un_nombre_ne_garantit_pas_son_unite():
+    # Limite : le contrôle vérifie qu'un nombre figure dans un article cité, pas ce qu'il compte.
+    assert _nombres().nombres_absents("Netflix supprime 1 000 euros. [1]", ["Netflix va supprimer 1 000 postes"]) == []

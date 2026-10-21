@@ -32,6 +32,17 @@ rien à traiter.
 - Les schémas ont déjà été vus la dernière fois : les montrer vite, sans s'y attarder.
 - Point positif : un travail réel, et une évolution visible depuis la dernière fois.
 
+Quatre retours de la même séance manquaient à ces notes. Ils ont été relevés le 21/10/2026 dans la transcription de la
+séance :
+
+- Les points n'ont pas suivi l'ordre des « modalités pédagogiques » du brief : les présenter dans cet ordre, comme une
+  liste à cocher.
+- La partie données a été présentée comme le cadrage du sprint 1 : montrer ce qui est construit (la collecte, sa mise
+  en œuvre), sans redire le cadrage.
+- Trop de temps sur ce qui n'est pas attendu, comme la démonstration des sources (« c'est pas attendu ») et les
+  livrables.
+- Le code en dernier, et seulement si on le demande : « tel fichier qui permet de faire ça ».
+
 ---
 
 ## Suite donnée par le présenté
@@ -44,5 +55,9 @@ Pour chaque retour : traité (commit), reporté (sprint et raison) ou écarté (
 | Couche par couche : le projet, puis les sources, le stockage, la fréquence d'ingestion | traité dans le livrable ; reporté au sprint 4 pour l'oral | livrable du sprint 3, version 2, § 1.2 et 1.3 |
 | Une présentation technique tient en cinq minutes | reporté au sprint 4 | partie technique limitée à cinq minutes, le détail gardé pour les questions |
 | Schémas déjà vus : les montrer vite | reporté au sprint 4 | un schéma déjà présenté n'est plus commenté, sauf question |
+| Suivre l'ordre des modalités pédagogiques, comme une liste | reporté au sprint 4 | l'oral de l'atelier n°4 présente les six points des modalités, dans leur ordre |
+| Montrer ce qui est construit, pas le cadrage du sprint 1 | reporté au sprint 4 | l'oral montre les garde-fous construits et les fait jouer en production ; le cadrage n'est pas redit |
+| Pas de temps sur ce qui n'est pas attendu | reporté au sprint 4 | ni démonstration des sources ni présentation des livrables pendant l'oral |
+| Le code en dernier, seulement si on le demande | reporté au sprint 4 | l'oral ne montre le code que sur question, fichier par fichier |
 | Point positif | rien à faire | point positif |
-| Grille non remplie | à signaler | à reporter dans le journal des retours de l'atelier n°4 |
+| Grille non remplie | traité | signalé au § 8.1 du livrable du sprint 4 |

@@ -1,0 +1,71 @@
+{
+ "date": "2026-10-21T10:51:08+00:00",
+ "adresse": "https://178-104-184-125.sslip.io",
+ "commit_servi": "27e41d322c9fb4986d745260d1561cffa27cc693",
+ "index_servi": "35806d6e723945b7b0f321da2abebe50",
+ "appels": [
+  {
+   "cas": "H1",
+   "route": "POST /question",
+   "code": 200,
+   "request_id": "14301bc8033343a2a953dfb1544b0243",
+   "statut": "refus",
+   "motif": "TENTATIVE_DETOURNEMENT",
+   "articles_cites": [],
+   "longueur_texte": 199,
+   "conforme": true
+  },
+  {
+   "cas": "Q4",
+   "route": "POST /question",
+   "code": 200,
+   "request_id": "7e8115f7f0ac49f9bf2839bdf613f2af",
+   "statut": "reponse",
+   "motif": "OK",
+   "articles_cites": [
+    2788
+   ],
+   "longueur_texte": 79,
+   "conforme": true
+  },
+  {
+   "cas": "H8",
+   "route": "POST /question",
+   "code": 200,
+   "request_id": "44ef178f04af4642a195010eaddeb0d8",
+   "statut": "refus",
+   "motif": "ABSTENTION",
+   "articles_cites": [],
+   "longueur_texte": 76,
+   "conforme": true
+  },
+  {
+   "cas": "21 caractères",
+   "route": "POST /briefing",
+   "code": 422,
+   "request_id": "ed8befc878bd4237931c495f530ee430",
+   "conforme": true
+  },
+  {
+   "cas": "OR.PA",
+   "route": "POST /briefing",
+   "code": 200,
+   "request_id": "4d8a375cb862427e9ebfa9a29822138c",
+   "conforme_amf": true,
+   "longueur_texte": 1114,
+   "mots_francais_reperes": [
+    "de",
+    "en",
+    "est",
+    "et",
+    "la",
+    "le",
+    "les",
+    "pour",
+    "sur",
+    "une"
+   ],
+   "conforme": true
+  }
+ ]
+}

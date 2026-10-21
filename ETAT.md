@@ -15,13 +15,23 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-21, 11 h 20 (sprint 4 : livraison N11 en production, contrôle des nombres ; rejeu en production 5 sur 5, deux fois ; PR #118 en attente ; reste D3) ; avant : 2026-10-20, nuit (sprint 4 : livraison N10 en production ; rejeu en production, Q4 abîmée une fois ; contrôle des nombres commité en local) ; avant : 2026-10-19, soir (atelier 3 fait avec le formateur ; livrable du sprint 3, version 2 ; tag `livrable-sprint-3-v2` à poser) ; avant : 2026-10-17, nuit (N7 en production ; livrable du sprint 3, version 1 ; atelier 3 lundi 19/10
+**Dernière mise à jour : 2026-10-21, 20 h 15 (sprint 4 : livrable v1 et synthèse validés, schéma complet, journal des retours complété, tag cité au CHANGELOG ; restent N13, la Definition of Done et le tag) ; avant : 2026-10-21, 13 h 20 (sprint 4 : livraison N12 en production, traçage Langfuse actif en production, CA3.6 prouvé sur une vraie trace ; livrable v1 ; reste D3) ; avant : 2026-10-21, 11 h 20 (sprint 4 : livraison N11 en production, contrôle des nombres ; rejeu en production 5 sur 5, deux fois ; PR #118 en attente ; reste D3) ; avant : 2026-10-20, nuit (sprint 4 : livraison N10 en production ; rejeu en production, Q4 abîmée une fois ; contrôle des nombres commité en local) ; avant : 2026-10-19, soir (atelier 3 fait avec le formateur ; livrable du sprint 3, version 2 ; tag `livrable-sprint-3-v2` à poser) ; avant : 2026-10-17, nuit (N7 en production ; livrable du sprint 3, version 1 ; atelier 3 lundi 19/10
 au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en production : N5 et N6, ingestion par le bouton, évaluation en production 8 sur 8, registre RGPD, documents de fin de sprint ; restent N7, l'atelier 3 et le tag) ; avant : 2026-10-16 au soir (sprint 3 : parcours des questions, Google News arrêté dans le code, ingestion en une opération, jeu de questions en version 2, évaluation locale 8 sur 8 ; reste la livraison) ; avant : 2026-10-15 au soir (sprint 2 clos, tag livrable-sprint-2-v3, sprint 3 ouvert dans un worktree) ; avant : 2026-10-11 (E1 v2.5 : cinq surgénéralisations corrigées ; veille S41 : relevé, note d'Era et partage à la promo ; E3 v1.4 : sept corrections, 44 critères en 39 lignes, revue d'E3 close ; E1 v2.4 : seconde passe, MCD lisible, guide § 4.5 corrigé ; avant, E1 v2.3 : passe RGPD et exactitude ; politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
 
-## ▶️ SPRINT 4 : LIVRAISON N11 EN PRODUCTION (21/10/2026), RESTE LE LIVRABLE (D3)
+## ▶️ SPRINT 4 : LIVRABLE V1 VALIDÉ (21/10/2026) ; RESTENT LA LIVRAISON N13 ET LE TAG
+
+**Mise à jour du 21/10, 20 h 15** : le livrable en version 1 (16 pages) et la synthèse (4 pages) sont relus et validés par Era. Depuis N12, la branche du sprint porte six commits de documents, aucun de code : les preuves de N12 (`b99d246`), le livrable corrigé après relecture (`12ffef4`), la synthèse (`137d258`), le schéma complet (`37db21e`, `58300dd`), le journal des retours de l'atelier 3 complété (`f054f5f`, neuf retours), puis l'entrée du CHANGELOG qui cite le tag `livrable-sprint-4-v1`. Ils partent par une PR vers `develop`, puis par la livraison N13 (`develop` vers `main`) ; le tag se pose sur `main` après N13.
+
+**Mise à jour du 21/10, 13 h 20** : N12 est en production depuis 12 h 47 : commit `27e41d3` (fusion de la PR #120),
+index `35806d6e…`, 2140 articles, même empreinte de contenu. Elle apporte le livrable en version 1, les quatre
+apostrophes du contrôle des nombres et **le traçage Langfuse en production** : Era a posé les clés dans le `.env` du
+serveur (vérifié sans afficher de valeur, `200` de l'API Langfuse), la livraison l'a copié. Rejeu après N12 : 5 sur 5.
+La trace du briefing OR.PA (`7da0ec8c…`) ne garde ni prompt ni réponse, sur la racine comme sur la génération :
+**CA3.6 prouvé en production** (`evidence/sprint-4/README.md`, section « La livraison N12 », deux captures). Ce qui
+suit, jusqu'à « Ordre de la suite », décrit l'état de 11 h 20.
 
 **Où on en est** : N11 est en production depuis le 21/10 à 11 h 05 : commit `4fc63f5` (fusion de la PR #115), index
 `98ea614a…`, 2140 articles, même empreinte de contenu `fd8542955c1b…`. Elle apporte le contrôle des nombres
@@ -34,24 +44,24 @@ charge sans affichage : `$env:RITA_API_KEY = ssh root@178.104.184.125 "sed -n 's
 puis `Remove-Item Env:RITA_API_KEY` après le rejeu.
 
 **Revues du jour** : 10 points relevés par Codex (PR #114 à #117) et par la revue de sécurité automatique ; 9 corrigés
-avec un test rouge d'abord, 1 écrit comme limite. Tableau dans `evidence/sprint-4/README.md`. Suite locale : 1400
+avec un test rouge d'abord, 1 écrit comme limite. Tableau dans `evidence/sprint-4/README.md`. Suite locale : 1402
 passed, 24 skipped, 2 xfailed.
 
-**En attente** : PR #118 vers `develop` (les deux dernières apostrophes, U+2018 et U+02BC, et les preuves de N11), à
-fusionner par Era ; elle partira avec la livraison suivante, celle des documents du livrable.
+**PR du jour** : #118, #119 (vers `develop`) et #120 (vers `main`, N12) fusionnées ; rien en attente.
 
 **Ordre de la suite** :
-1. Era fusionne la PR #118 quand ses contrôles sont verts.
-2. CA3.6 vérifié le 21/10 : **le traçage Langfuse est coupé en production** (aucune clé Langfuse dans le `.env` du
-   serveur ni dans le conteneur de l'API ; manque connu depuis le 04/10, `evidence/C11/`, et le sprint 2). Aucune trace envoyée, donc rien de conservé ; mais latence par étape, jetons
-   et coût ne se lisent qu'en local. Décision d'Era au sprint 5 : poser les clés (il les saisit lui-même) ou non. À
-   relire : les documents antérieurs qui situent des signaux de production dans Langfuse (`docs/EXPLOITATION.md`,
-   rapport E3, registre RGPD T3).
-3. D3 : étape 1 faite (index des preuves, CHANGELOG, `b173782`) ; livrable version 1 écrit
-   (`docs/sprint-4/livrable/livrable-sprint-4.md` et `.pdf`, 14 pages, sommaire vérifié, liens au tag à revérifier
-   après sa pose). Restent : relecture par Era, synthèse courte (plus de 10 pages), retours de l'atelier 4 et grille
-   `eval/ateliers/sprint-4-grille.md`, oral court (hors dépôt), Definition of Done
-   (`scripts/verifier_livrable.py livrable-sprint-4-v1`), PR `develop` vers `main`, tag posé par Era.
+1. Fait : PR #118, #119 et #120 fusionnées, N12 en production.
+2. Fait : CA3.6 prouvé en production le 21/10 (traçage activé par N12, trace `7da0ec8c…` sans prompt ni réponse) ;
+   registre RGPD (T3, T6, T8) et contrat remis d'accord. À relire encore : les documents antérieurs qui parlent de
+   Langfuse sans dire « en local » (`docs/EXPLOITATION.md`, `docs/ARCHITECTURE.md`, rapport E2) ; pour E3, gelé, un
+   erratum éventuel (décision d'Era). Les clés Langfuse du poste : vérifier qu'elles visent le projet `rita-dev` et non
+   celui de production (décision d'Era du 02/10).
+3. D3 : livrable version 1 (`docs/sprint-4/livrable/livrable-sprint-4.md` et `.pdf`, 16 pages, sommaire vérifié)
+   et synthèse de 4 pages, relus et validés par Era le 21/10 ; schéma complet ; journal des retours de l'atelier 3
+   complété ; oral de l'atelier 4 prêt (hors dépôt) ; tag cité au CHANGELOG. Restent : PR de la branche vers
+   `develop`, PR `develop` vers `main` (livraison N13) et rejeu en production, Definition of Done
+   (`scripts/verifier_livrable.py livrable-sprint-4-v1`), tag posé par Era sur `main`, liens au tag revérifiés ;
+   après l'atelier 4, sa grille `eval/ateliers/sprint-4-grille.md`.
 4. Ouverts : critère 1 du contrat « en cours » (OR.PA : dernière cotation à 64 jours, « probablement radiée ») ; D8 (le
    tiers du critère 5) ; validation de l'avenant n°1 par le formateur ; registre d'images sans compte ; dates de
    l'atelier 4 et du livrable à demander.
