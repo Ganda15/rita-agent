@@ -107,17 +107,45 @@ def test_les_signes_justes_passent(texte, source):
     assert _nombres().nombres_absents(texte, [source]) == []
 
 
-def test_une_date_de_publication_recue_par_le_modele_est_acceptee(monkeypatch):
-    # P2 : le modèle reçoit la source et la date de chaque extrait (« [1] (Le Monde, 2026-10-14) ... ») ; une date de
-    # publication juste était refusée, parce que seul le texte de l'article servait de source.
+def test_une_date_de_publication_absente_du_texte_est_refusee(monkeypatch):
+    # Changement voulu (option B, décidée par Era le 21/10/2026). Le matin, la date de chaque extrait avait été ajoutée
+    # aux sources (revue Codex de la PR #114, P2), pour qu'une date de publication juste soit servie. La relecture
+    # suivante (P1) a montré l'effet de bord : le jour, le mois et l'année de la date validaient n'importe quel nombre
+    # égal (« 10 % », « 14 euros »). La date est donc retirée des sources : une date de publication que le texte de
+    # l'article ne contient pas est refusée. L'écran affiche déjà « publié le ... » sous chaque référence.
     reponse = _repondre(monkeypatch, "L'article est publié le 14 octobre 2026. [1]")
-    assert (reponse.statut, reponse.motif) == ("reponse", "OK")
+    assert (reponse.statut, reponse.motif) == ("refus", "NOMBRE_NON_SOURCE")
 
 
 def test_une_date_de_publication_fausse_est_refusee(monkeypatch):
-    # Le témoin : la date ajoutée aux sources ne doit pas faire passer n'importe quelle date.
     reponse = _repondre(monkeypatch, "L'article est publié le 15 octobre 2026. [1]")
     assert (reponse.statut, reponse.motif) == ("refus", "NOMBRE_NON_SOURCE")
+
+
+# --- revue Codex des PR #114 et #115 (21/10/2026) : la date qui valide tout, le groupe amputé --------------------------
+
+@pytest.mark.parametrize("texte", ["Le titre monte de 10 %. [1]", "Le titre coûte 14 euros. [1]",
+                                   "Le résultat de 2026 sera bon. [1]"], ids=["le_mois", "le_jour", "l_annee"])
+def test_la_date_de_publication_ne_valide_pas_d_autres_nombres(monkeypatch, texte):
+    # P1 : l'extrait cité est daté du 2026-10-14 et son texte ne contient ni 10, ni 14, ni 2026 ; ces nombres inventés
+    # passaient, parce que la date faisait partie des sources.
+    reponse = _repondre(monkeypatch, texte)
+    assert (reponse.statut, reponse.motif) == ("refus", "NOMBRE_NON_SOURCE")
+
+
+@pytest.mark.parametrize("texte, source, absent", [
+    ("Le carnet compte 300 commandes. [1]", "Le carnet de commandes atteint 9 300 commandes.", "300"),
+    ("Le plan touche 234 postes. [1]", "Le plan touche 1 234 postes.", "234"),
+], ids=["fin_de_9_300", "fin_de_1_234"])
+def test_un_nombre_ampute_de_son_premier_groupe_est_signale(texte, source, absent):
+    # P1 : « 300 » était trouvé à l'intérieur de « 9 300 », parce qu'une espace le précède. Perdre le premier groupe
+    # d'un nombre est exactement la corruption que le contrôle doit arrêter (Q4 : « 1 0 postes »).
+    assert _nombres().nombres_absents(texte, [source]) == [absent]
+
+
+def test_un_nombre_groupe_entier_passe():
+    # Le témoin : le nombre complet, groupes compris, reste trouvé.
+    assert _nombres().nombres_absents("Le carnet atteint 9 300 commandes. [1]", ["Le carnet atteint 9 300 commandes."]) == []
 
 
 # --- seconde revue Codex de la PR #114 (21/10/2026) : le point décimal ------------------------------------------------

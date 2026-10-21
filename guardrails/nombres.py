@@ -12,7 +12,8 @@ simple, dans la réponse comme dans les sources ; le vrai signe moins (U+2212) d
 citation « [1] » sont retirés. Un nombre est une suite de chiffres, avec ses groupes séparés par une espace et sa partie
 décimale après une virgule ou un point suivi d'un chiffre (« 1 000 », « 0,5 », « 2.5 », « 2027 ») ; un point de fin de
 phrase n'est pas une décimale. Il doit apparaître ENTIER dans les sources : « 1 00 » ne vaut pas « 1 000 », ni « 0,55 »
-« 0,5 », ni « 2.5 » « 5.2 » (seconde revue Codex de la PR #114 : le point coupait le nombre en deux).
+« 0,5 », ni « 2.5 » « 5.2 » (seconde revue Codex de la PR #114 : le point coupait le nombre en deux), ni « 300 » la
+fin de « 9 300 » (revue Codex de la PR #115 : un nombre amputé de son premier groupe passait).
 
 **Le signe** (revue Codex de la PR #114, 21/10/2026) : un « + » ou un « - » collé devant un nombre, et précédé d'une
 espace, d'une parenthèse ou du début du texte, fait partie du nombre, et doit se retrouver tel quel : « -5 » ne vaut pas
@@ -21,7 +22,9 @@ face à « -5 % ») ; un trait d'union entre deux nombres (« 2026-2027 ») n'es
 
 **Limites connues et acceptées.** Une réponse qui reformule un chiffre (« mille » pour « 1 000 ») ou qui en calcule un
 est refusée, même juste ; une réponse qui ajoute un signe absent de la source (« +5 % » face à « progresse de 5 % ») est
-refusée, même juste ; une réponse qui écrit un chiffre en lettres n'est pas contrôlée.
+refusée, même juste ; une date de publication que le texte de l'article ne contient pas est refusée (la date n'est pas
+une source : ses nombres valideraient n'importe quel « 10 % » ou « 14 euros ») ; une réponse qui écrit un chiffre en
+lettres n'est pas contrôlée.
 """
 import re
 import unicodedata
@@ -50,8 +53,9 @@ def nombres_absents(texte: str, sources: list[str]) -> list[str]:
     reference = " ".join(_normaliser(source) for source in sources)
     absents: list[str] = []
     for nombre in _NOMBRE.findall(_CITATION.sub(" ", _normaliser(texte))):
-        # Le nombre entier : ni chiffre, ni virgule, ni point devant ; ni chiffre, ni décimale, ni groupe derrière.
-        entier = r"(?<![\d,.])" + re.escape(nombre) + r"(?!\d|[,.]\d| \d)"
+        # Le nombre entier : ni chiffre, ni virgule, ni point devant, ni « chiffre et espace » (sinon « 300 » serait
+        # trouvé dans « 9 300 ») ; ni chiffre, ni décimale, ni groupe derrière.
+        entier = r"(?<![\d,.])(?<!\d )" + re.escape(nombre) + r"(?!\d|[,.]\d| \d)"
         if not re.search(entier, reference) and nombre not in absents:
             absents.append(nombre)
     return absents
