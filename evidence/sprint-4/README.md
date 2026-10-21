@@ -25,6 +25,7 @@ rapports ne gardent jamais de clé ni de texte de briefing (D9).
 | La livraison N11 et ses deux rejeux en production, 5 appels conformes sur 5 | `rejeu-production-2026-10-21-111136.json`, `rejeu-production-2026-10-21-111201.json` | CA8.1, CA8.2 | La livraison N11 |
 | Le traçage Langfuse coupé en production jusqu'au 21/10 : aucune trace envoyée, donc rien de conservé | commandes et résultat dans la section | CA3.6 | CA3.6 en production |
 | La livraison N12, les clés Langfuse posées, et une trace de briefing de production sans prompt ni réponse | `rejeu-production-2026-10-21-125121.json`, `captures/langfuse-trace-briefing-racine-2026-10-21.png`, `captures/langfuse-trace-briefing-generation-2026-10-21.png` | CA3.6, CA8.1, CA8.2 | La livraison N12 |
+| La livraison N13, et le tag v1 posé sur N12 refusé par la porte de livraison, figé par la règle du dépôt | passages et sorties cités dans la section | CA8.1 | La livraison N13 et le tag |
 
 Les tests cités se trouvent dans `tests/` ; la suite locale compte 1402 passed, 24 skipped, 2 xfailed au 21/10. L'état du
 contrat du sprint 1, critère par critère, est dans `docs/sprint-4/CONTRAT.md` (CA6.1, CA6.4).
@@ -594,6 +595,25 @@ Une troisième capture d'Era (onglet « Log View ») n'est pas versionnée : ell
 entier. **Limites** : une seule trace ouverte ; la valeur demandée (le ticker) part vers Langfuse avec les métadonnées ;
 le contrat de Langfuse permet un traitement hors de la région choisie (registre, T3) ; le traçage de production ne
 couvre que la période qui commence le 21/10.
+
+## La livraison N13 et le tag (21/10/2026)
+
+**La livraison N13.** PR #121 (branche du sprint vers `develop`, commit `4455fe2`) puis PR #122 (`develop` vers `main`),
+contrôles verts et revue Codex sans remarque sur les deux ; PR #122 fusionnée par Era à 20 h 37, commit `ce5b2c7` ;
+passage `39654392710`, réussi du premier coup (construction 6 min, déploiement terminé à 20 h 49). `/health` annonce le
+commit `ce5b2c7`, 2140 articles, la même empreinte de contenu (`fd8542955c1b…`). Aucun changement de code : les
+documents du livrable validé, la synthèse, le schéma complet, le journal des retours.
+
+**Le tag v1 posé sur N12.** Le tag `livrable-sprint-4-v1` a été posé à 20 h 30 sur `origin/main`, avant la fusion de la
+PR #122 : il désigne `27e41d3` (N12). Deux garde-fous ont joué :
+
+| Garde-fou | Ce qui s'est passé |
+|---|---|
+| La porte de livraison du tag (`scripts/verifier_livrable.py --ci`) | passage `39653430203` en échec : « Tag livrable-sprint-4-v1 cité dans ETAT.md et CHANGELOG.md : absent de : CHANGELOG.md » ; verdict « PAS livrable » ; aucune image publiée |
+| La règle du dépôt « tags livrable-* figés : ni suppression ni déplacement » | la suppression du tag sur GitHub est refusée : « GH013: Repository rule violations found… Cannot delete this tag » |
+
+**Suite** : le tag v1 reste sur N12 et n'est pas envoyé ; la remise est le tag `livrable-sprint-4-v2`, posé par Era sur
+le commit de la livraison suivante, désigné par son SHA complet (étape 5 du plan de travail).
 
 ## Deux points relevés dans le briefing OR.PA, écrits comme limites
 
