@@ -99,8 +99,9 @@ divulgation cause un préjudice réel, donc à protéger sérieusement.
 >   le sprint 2 (`docs/sprint-2/README.md`), mesuré le 21/10 sans afficher de valeur (`evidence/sprint-4/README.md`,
 >   section « CA3.6 en production »). Aucune trace n'en part ; les traces réelles citées depuis le 02/10 viennent du poste.
 > - **Métadonnées seules depuis le 20/10** (décision D9 du sprint 4, `docs/sprint-4/SPEC.md`) : une trace ne garde plus
->   ni le prompt ni la réponse du modèle. Restent l'identifiant de requête, le modèle, le fournisseur, la tentative, les
->   jetons, la durée, le type d'une erreur (jamais son message) et le verdict des garde-fous. La rubrique « Catégories de
+>   ni le prompt ni la réponse du modèle. Restent l'identifiant de requête, **la valeur demandée (le ticker) pour un
+>   briefing**, qui peut révéler les valeurs d'intérêt de l'utilisateur, le modèle, le fournisseur, la tentative, les
+>   jetons, la durée, le type d'une erreur (jamais son message) et le verdict des garde-fous (`src/traces.py`). La rubrique « Catégories de
 >   données » ci-dessous décrit l'état du 02/10.
 > - Si les clés sont posées sur le serveur (décision d'Era), ces métadonnées partiront aussi de la production.
 

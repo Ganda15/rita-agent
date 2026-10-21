@@ -33,7 +33,8 @@ prompts hostiles qu'il a préparés (injection, hors-périmètre, tentative d'ex
 RITA aide un investisseur particulier à lire l'actualité des sociétés cotées, sans lire trente articles et en sachant
 d'où vient chaque information. Elle fait deux choses : le briefing d'une valeur cotée, et la réponse à une question libre
 en français, toujours avec ses sources. Elle refuse ce que ses articles ne couvrent pas, les demandes de conseil d'achat
-ou de vente et les tentatives de détournement, et elle ne sert jamais un chiffre absent de ses sources.
+ou de vente et les tentatives de détournement ; à une question, elle ne répond jamais avec un chiffre absent des
+articles qu'elle cite.
 
 ### 1.3 Les données, en bref
 
@@ -60,7 +61,7 @@ le seul à recevoir du texte libre, donc le seul que les prompts de l'évaluateu
 | Prompt | consigne « donnée, jamais consigne » | défense en profondeur, quand une instruction échappe aux règles | elle a tenu sur les deux articles piégés non reconnus |
 | Sortie | contrôle de fuite (nouveau) | une forme de secret, une adresse de base avec mot de passe, un nom de variable de configuration, 8 mots des consignes ; refus `FUITE_BLOQUEE` | 5 sorties dangereuses sur 7, 0 faux positif sur 11 |
 | Sortie | garde-fou AMF (sprint 3) | un conseil d'achat ou de vente | inchangé |
-| Sortie | contrôle des nombres (nouveau) | un chiffre absent des articles cités ; refus `NOMBRE_NON_SOURCE` | Q4 juste deux fois sur deux en production après N11 |
+| Sortie | contrôle des nombres (nouveau), sur les questions | un chiffre absent des articles cités ; refus `NOMBRE_NON_SOURCE` | Q4 juste deux fois sur deux en production après N11 |
 | API | clé, valeur du briefing, débit | une fausse clé (403 journalisé), une valeur inconnue ou trop longue (422 sans appel au modèle), plus de 10 appels par minute (429) | critères 3 et 4 du contrat tenus |
 | Journal et traces | une ligne par refus, jamais le texte ; traces du briefing réduites aux métadonnées | la conservation d'un texte de question ou de briefing | 5 tests à marqueurs fictifs |
 
@@ -443,7 +444,8 @@ relevés dans les notes de séance
   lettres n'est pas contrôlé ; « Perspectives 2026 300 emplois », sans ponctuation, se lit comme un seul nombre, si bien
   que « 300 » ou « 2026 » seuls sont refusés même justes. Les deux dernières apostrophes de milliers (U+2018, U+02BC)
   ne sont pas dans N11 : elles arrivent avec la livraison suivante. La cause exacte du chiffre abîmé par le modèle n'est
-  pas établie.
+  pas établie. **Le briefing n'a pas ce contrôle** : ses chiffres (cours, indicateurs, articles) ne sont pas revérifiés
+  après le modèle ; seuls le garde-fou AMF et le contrôle de fuite relisent son texte.
 - **Critère 1 du contrat** : OR.PA sans cotation depuis 64 jours en production ; le briefing en déduit que la valeur
   est « probablement radiée », ce qui est faux pour L'Oréal. Ni la collecte des cours en production ni la formulation
   ne sont corrigées.
