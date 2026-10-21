@@ -100,7 +100,7 @@
 <rect x="56" y="1038" width="868" height="66" fill="#E8F5E9" stroke="#15803D" stroke-width="2"/>
 <rect x="56" y="1038" width="7" height="66" fill="#15803D"/>
 <text x="73" y="1059" font-size="14" font-weight="700" fill="#14532D">10. Contrôle des nombres [S4] : un chiffre faux sous une source juste</text>
-<text x="73" y="1078.0" font-size="11.5" fill="#111827">agents/question.py l.297 → guardrails/nombres.py nombres_absents l.67 ; absent des sources → NOMBRE_NON_SOURCE</text>
+<text x="73" y="1078.0" font-size="11.5" fill="#111827">agents/question.py l.297 → guardrails/nombres.py nombres_absents l.68 ; absent des sources → NOMBRE_NON_SOURCE</text>
 <text x="73" y="1093.5" font-size="11.5" fill="#111827">tests/test_controle_nombres.py (46) · né du « 1 0 postes » du 20/10 ; ne lit pas les nombres en lettres</text>
 <rect x="56" y="1118" width="868" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
 <rect x="56" y="1118" width="7" height="66" fill="#1E293B"/>

@@ -100,7 +100,7 @@ COMPOSANTE = Schema(
             "agents/question.py l.284 → guardrails/sortie.py verifier_sortie l.53, MOTIFS_AMF l.28",
             "reconnu → refus SORTIE_NON_CONFORME"], "garde"),
         Boite("a10", AX, 1038, AW, 66, "10. Contrôle des nombres [S4] : un chiffre faux sous une source juste", [
-            "agents/question.py l.297 → guardrails/nombres.py nombres_absents l.67 ; absent des sources → NOMBRE_NON_SOURCE",
+            "agents/question.py l.297 → guardrails/nombres.py nombres_absents l.68 ; absent des sources → NOMBRE_NON_SOURCE",
             "tests/test_controle_nombres.py (46) · né du « 1 0 postes » du 20/10 ; ne lit pas les nombres en lettres"], "neuf"),
         Boite("a11", AX, 1118, AW, 66, "11. La réponse citée [S3]", [
             "agents/question.py : _reference l.214 ; chaque référence vient du passage, jamais du texte du modèle",
