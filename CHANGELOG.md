@@ -9,6 +9,14 @@
 
 ---
 
+## 2026-10-21 : manque découvert, le traçage Langfuse est coupé en production
+
+**Manque découvert** : en cherchant une trace de briefing de production (CA3.6), Era n'en a trouvé aucune. Vérifié sur
+le serveur, en lecture seule et sans afficher de valeur : aucune clé Langfuse dans le `.env` du serveur, ni dans le
+conteneur de l'API ; `src/traces.py` n'envoie donc rien. D9 est tenu de la façon la plus stricte (aucun texte
+conservé), mais les durées par étape, les jetons et le coût ne se lisent qu'en local. Les documents qui situent ces
+signaux dans Langfuse sans préciser « en local » sont à relire. Poser les clés : décision d'Era, sprint 5.
+
 ## 2026-10-20 et 21 : sprint 4 en production (N10, N11), contrôle des nombres, image de base tirée d'un miroir
 
 **Livré** : N10 le 20/10 à 21 h 48 (commit `27da943`) : garde-fou de détournement avant la recherche, passages piégés

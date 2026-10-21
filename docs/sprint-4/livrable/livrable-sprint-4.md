@@ -336,7 +336,10 @@ n'est déjà partie. 5 tests le prouvent avec des marqueurs fictifs, y compris e
 (`tests/test_traces_briefing_sans_texte.py`). Une revue de sécurité automatique a trouvé un dernier passage, l'erreur
 finale quand tous les fournisseurs échouent : corrigé, avec son test.
 
-**Non vérifié** : l'ouverture d'une trace de briefing de production dans Langfuse (§ 9).
+**En production, le traçage est coupé.** Aucune trace de production n'apparaît dans Langfuse. Vérifié le 21/10 sur le
+serveur, en lecture seule et sans afficher de valeur : aucune clé Langfuse dans son `.env`, ni dans le conteneur de
+l'API. Aucune trace n'est donc envoyée : ni prompt ni réponse n'est conservé chez Langfuse, ce qui tient la règle de
+la façon la plus stricte. Les tests prouvent ce que garderait une trace si le traçage était activé.
 
 ### 7.7 Conforme à l'annonce, et le contrat personnel (critères 1 et 6)
 
@@ -403,10 +406,10 @@ l'index `98ea614a…` et 2140 articles (annexe 12.1).
 
 | Signal | Où il se lit aujourd'hui | Ce qui manque |
 |---|---|---|
-| Latence | `duree_ms` dans les lignes « briefing servi » et « question servie », avec l'identifiant de requête ; durées des étapes dans Langfuse | ni médiane, ni p95, ni seuil |
-| Coût | modèle et jetons de chaque génération dans Langfuse | ni cumul par jour, ni budget |
+| Latence | `duree_ms` dans les lignes « briefing servi » et « question servie », avec l'identifiant de requête ; durées des étapes dans Langfuse, en local seulement | ni médiane, ni p95, ni seuil |
+| Coût | modèle et jetons de chaque génération dans Langfuse, en local seulement | en production, aucune donnée de coût ; ni cumul par jour, ni budget |
 | Taux de refus par motif | une ligne de journal par refus, avec son motif | aucun comptage automatique |
-| Erreurs | lignes 502 et 500 avec l'identifiant de requête ; étapes en erreur dans Langfuse, avec le seul type d'exception | aucun tableau ; deux alertes Langfuse seulement |
+| Erreurs | lignes 502 et 500 avec l'identifiant de requête ; étapes en erreur dans Langfuse, en local seulement | aucun tableau ; deux alertes Langfuse seulement |
 
 ## 8. Journal des retours
 
@@ -446,8 +449,9 @@ relevés dans les notes de séance
 - **Critère 5 du contrat** : le retour arrière n'a pas été lancé par un tiers ; la question est posée au formateur (D8),
   sans réponse.
 - **L'avenant n°1** attend la validation du formateur.
-- **La trace Langfuse d'un briefing de production** n'a pas été ouverte pour vérifier qu'elle ne garde ni prompt ni
-  réponse : seuls les tests le prouvent.
+- **Le traçage Langfuse est coupé en production** : aucune clé sur le serveur (mesuré le 21/10). Aucun texte n'est
+  donc conservé, mais la latence par étape, les jetons et le coût ne se lisent qu'en local ; en production, seules les
+  lignes de journal existent. Poser les clés relève du sprint 5.
 - **Accès** : l'API de production lit la base avec le rôle propriétaire (un rôle dédié est prévu, pas fait) ; la
   documentation `/docs` et `/openapi.json` reste publique ; les essais de clé sont journalisés mais pas freinés, le
   limiteur passant après la vérification de la clé.

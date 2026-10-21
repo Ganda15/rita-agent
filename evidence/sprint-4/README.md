@@ -23,6 +23,7 @@ rapports ne gardent jamais de clé ni de texte de briefing (D9).
 | Le contrôle des nombres et sa mesure de niveau 2 | `mesure-question-niveau2-2026-10-21-0818.json` | CA4.1, CA4.2, CA4.5 | Le contrôle des nombres |
 | Les dix points des revues du jour, avec décision et commit | tableau dans la section | aucun (qualité du contrôle) | Les revues du contrôle des nombres |
 | La livraison N11 et ses deux rejeux en production, 5 appels conformes sur 5 | `rejeu-production-2026-10-21-111136.json`, `rejeu-production-2026-10-21-111201.json` | CA8.1, CA8.2 | La livraison N11 |
+| Le traçage Langfuse coupé en production : aucune trace envoyée, donc rien de conservé | commandes et résultat dans la section | CA3.6 | CA3.6 en production |
 
 Les tests cités se trouvent dans `tests/` ; la suite locale compte 1400 passed, 24 skipped, 2 xfailed au 21/10. L'état du
 contrat du sprint 1, critère par critère, est dans `docs/sprint-4/CONTRAT.md` (CA6.1, CA6.4).
@@ -522,6 +523,33 @@ suite longue de caractères est le commit servi.
 Le briefing OR.PA, lu par Era à la console, est en français et ne donne aucun conseil. Il annonce une dernière cotation
 vieille de **64 jours** et dit encore la valeur « probablement radiée » : les deux limites de la section suivante
 restent ouvertes.
+
+## CA3.6 en production : le traçage Langfuse est coupé (21/10/2026)
+
+Era n'a trouvé aucune trace de production dans le projet Langfuse. Vérification en lecture seule sur le serveur, le
+21/10 en fin de matinée, par deux commandes qui n'affichent que le nom des variables Langfuse ayant une valeur, jamais la
+valeur : `grep -o '^LANGFUSE_[A-Z_]*=.' /root/rita-agent/.env | cut -d= -f1`, puis la même lecture sur
+`docker exec rita-api-preprod printenv`.
+
+| Où | Variables Langfuse qui ont une valeur |
+|---|---|
+| `.env` du serveur (`/root/rita-agent/.env`) | aucune |
+| Conteneur de l'API en marche (`rita-api-preprod`) | `LANGFUSE_HOST` et `LANGFUSE_TRACING_ENABLED`, les valeurs par défaut de `docker-compose.yml` |
+
+`src/traces.py` n'active le traçage que si `LANGFUSE_PUBLIC_KEY` et `LANGFUSE_SECRET_KEY` ont une valeur : en
+production, aucune trace n'est envoyée.
+
+Lecture :
+
+- **CA3.6 est tenu en production de la façon la plus stricte** : aucune trace ne part, donc ni prompt ni réponse n'est
+  conservé chez Langfuse. Ce que garderait une trace si le traçage était activé est prouvé par les tests
+  (`tests/test_traces_briefing_sans_texte.py`).
+- **Les signaux qui se lisent dans Langfuse n'existent qu'en local** : durées des étapes, jetons, erreurs typées. En
+  production, la latence, les refus et les erreurs se lisent seulement dans le journal du conteneur de l'API.
+- Depuis quand les clés manquent sur le serveur n'est pas établi ici, ni l'origine (poste ou serveur) des traces citées
+  dans les documents antérieurs.
+- Poser les clés sur le serveur est une décision d'Era, qui saisit lui-même tout secret ; elle relève du sprint 5
+  (surveillance).
 
 ## Deux points relevés dans le briefing OR.PA, écrits comme limites
 

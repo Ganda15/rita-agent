@@ -42,7 +42,11 @@ fusionner par Era ; elle partira avec la livraison suivante, celle des documents
 
 **Ordre de la suite** :
 1. Era fusionne la PR #118 quand ses contrôles sont verts.
-2. CA3.6 : vérifier dans Langfuse qu'une trace de briefing ne garde ni prompt ni texte (accès Langfuse d'Era).
+2. CA3.6 vérifié le 21/10 : **le traçage Langfuse est coupé en production** (aucune clé Langfuse dans le `.env` du
+   serveur ni dans le conteneur de l'API). Aucune trace envoyée, donc rien de conservé ; mais latence par étape, jetons
+   et coût ne se lisent qu'en local. Décision d'Era au sprint 5 : poser les clés (il les saisit lui-même) ou non. À
+   relire : les documents antérieurs qui situent des signaux de production dans Langfuse (`docs/EXPLOITATION.md`,
+   rapport E3, registre RGPD T3).
 3. D3 : étape 1 faite (index des preuves, CHANGELOG, `b173782`) ; livrable version 1 écrit
    (`docs/sprint-4/livrable/livrable-sprint-4.md` et `.pdf`, 14 pages, sommaire vérifié, liens au tag à revérifier
    après sa pose). Restent : relecture par Era, synthèse courte (plus de 10 pages), retours de l'atelier 4 et grille
