@@ -25,9 +25,9 @@
 # Un fichier : docker run --rm rita-tests python -m pytest tests/test_mesurer_rag.py -q
 # =============================================================================
 
-# Même source que l'image livrée (Dockerfile, carte #85) : galerie publique d'Amazon, même image que
-# `python:3.13-slim` de Docker Hub, sans la limite des téléchargements anonymes (10/10/2026).
-FROM public.ecr.aws/docker/library/python:3.13-slim
+# Même source que l'image livrée (Dockerfile) : `mirror.gcr.io`, le miroir public de Docker Hub tenu par Google, depuis
+# le 21/10/2026 (après Docker Hub le 09/10 et la galerie d'Amazon jusqu'au 21/10), même image `python:3.13-slim`.
+FROM mirror.gcr.io/library/python:3.13-slim
 
 RUN apt-get update \
  && apt-get install --no-install-recommends -y gcc libpq-dev \
