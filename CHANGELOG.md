@@ -9,9 +9,10 @@
 
 ---
 
-## 2026-10-21 : manque découvert, le traçage Langfuse est coupé en production
+## 2026-10-21 : manque connu, confirmé : le traçage Langfuse est coupé en production
 
-**Manque découvert** : en cherchant une trace de briefing de production (CA3.6), Era n'en a trouvé aucune. Vérifié sur
+**Manque connu, confirmé** (et non découvert : il est écrit depuis le 04/10 dans `evidence/C11/`, puis au sprint 2,
+`docs/sprint-2/README.md`) : en cherchant une trace de briefing de production (CA3.6), Era n'en a trouvé aucune. Vérifié sur
 le serveur, en lecture seule et sans afficher de valeur : aucune clé Langfuse dans le `.env` du serveur, ni dans le
 conteneur de l'API ; `src/traces.py` n'envoie donc rien. D9 est tenu de la façon la plus stricte (aucun texte
 conservé), mais les durées par étape, les jetons et le coût ne se lisent qu'en local. Les documents qui situent ces

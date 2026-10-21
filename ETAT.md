@@ -43,7 +43,7 @@ fusionner par Era ; elle partira avec la livraison suivante, celle des documents
 **Ordre de la suite** :
 1. Era fusionne la PR #118 quand ses contrôles sont verts.
 2. CA3.6 vérifié le 21/10 : **le traçage Langfuse est coupé en production** (aucune clé Langfuse dans le `.env` du
-   serveur ni dans le conteneur de l'API). Aucune trace envoyée, donc rien de conservé ; mais latence par étape, jetons
+   serveur ni dans le conteneur de l'API ; manque connu depuis le 04/10, `evidence/C11/`, et le sprint 2). Aucune trace envoyée, donc rien de conservé ; mais latence par étape, jetons
    et coût ne se lisent qu'en local. Décision d'Era au sprint 5 : poser les clés (il les saisit lui-même) ou non. À
    relire : les documents antérieurs qui situent des signaux de production dans Langfuse (`docs/EXPLOITATION.md`,
    rapport E3, registre RGPD T3).

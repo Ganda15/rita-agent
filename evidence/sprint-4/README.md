@@ -546,8 +546,10 @@ Lecture :
   (`tests/test_traces_briefing_sans_texte.py`).
 - **Les signaux qui se lisent dans Langfuse n'existent qu'en local** : durées des étapes, jetons, erreurs typées. En
   production, la latence, les refus et les erreurs se lisent seulement dans le journal du conteneur de l'API.
-- Depuis quand les clés manquent sur le serveur n'est pas établi ici, ni l'origine (poste ou serveur) des traces citées
-  dans les documents antérieurs.
+- **Ce manque était connu** : le 04/10, `evidence/C11/preuve-alertes-2026-10-04.md` notait déjà que le serveur n'envoyait
+  aucune trace, et `evidence/C11/README.md` garde « Variables Langfuse sur le serveur Hetzner » comme tâche ouverte ; au
+  sprint 2, `docs/sprint-2/README.md` écrivait « aucune clé Langfuse sur le serveur ». Les traces citées dans le rapport E3
+  venaient du poste de développement. La mesure du 21/10 confirme que les clés n'ont jamais été posées depuis.
 - Poser les clés sur le serveur est une décision d'Era, qui saisit lui-même tout secret ; elle relève du sprint 5
   (surveillance).
 

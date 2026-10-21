@@ -449,8 +449,8 @@ relevés dans les notes de séance
 - **Critère 5 du contrat** : le retour arrière n'a pas été lancé par un tiers ; la question est posée au formateur (D8),
   sans réponse.
 - **L'avenant n°1** attend la validation du formateur.
-- **Le traçage Langfuse est coupé en production** : aucune clé sur le serveur (mesuré le 21/10). Aucun texte n'est
-  donc conservé, mais la latence par étape, les jetons et le coût ne se lisent qu'en local ; en production, seules les
+- **Le traçage Langfuse est coupé en production** : aucune clé sur le serveur, manque connu depuis le sprint 2 et
+  confirmé le 21/10. Aucun texte n'est donc conservé, mais la latence par étape, les jetons et le coût ne se lisent qu'en local ; en production, seules les
   lignes de journal existent. Poser les clés relève du sprint 5.
 - **Accès** : l'API de production lit la base avec le rôle propriétaire (un rôle dédié est prévu, pas fait) ; la
   documentation `/docs` et `/openapi.json` reste publique ; les essais de clé sont journalisés mais pas freinés, le
