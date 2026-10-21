@@ -202,3 +202,19 @@ def test_deux_quantites_cote_a_cote_restent_distinctes(texte, source):
 def test_le_premier_groupe_seul_reste_signale():
     # Le témoin côté droit, qui complète « 300 » contre « 9 300 » (côté gauche) : « 9 » n'est pas « 9 300 ».
     assert _nombres().nombres_absents("Le carnet compte 9 commandes. [1]", ["Le carnet compte 9 300 commandes."]) == ["9"]
+
+
+# --- seconde revue Codex de la PR #116 (21/10/2026) : la frontière entre deux extraits --------------------------------
+
+def test_deux_extraits_colles_ne_fabriquent_pas_un_nombre():
+    # P1 : les textes des extraits cités étaient collés avec une espace ; un extrait qui finit par « 9 » et un suivant
+    # qui commence par « 300 emplois » formaient « 9 300 », qu'aucun extrait ne contient. Chaque nombre se cherche
+    # désormais dans chaque extrait séparément.
+    sources = ["Le plan compte 9", "300 emplois sont prévus"]
+    assert _nombres().nombres_absents("Le groupe crée 9 300 emplois. [1][2]", sources) == ["9 300"]
+
+
+def test_un_nombre_present_dans_un_seul_des_extraits_passe():
+    # Le témoin : un nombre entier dans l'un des extraits cités suffit, même si l'autre ne le contient pas.
+    sources = ["Le plan social est confirmé", "Le groupe crée 9 300 emplois en Europe"]
+    assert _nombres().nombres_absents("Le groupe crée 9 300 emplois. [1][2]", sources) == []

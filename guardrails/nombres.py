@@ -25,8 +25,10 @@ face à « -5 % ») ; un trait d'union entre deux nombres (« 2026-2027 ») n'es
 **Limites connues et acceptées.** Une réponse qui reformule un chiffre (« mille » pour « 1 000 ») ou qui en calcule un
 est refusée, même juste ; une réponse qui ajoute un signe absent de la source (« +5 % » face à « progresse de 5 % ») est
 refusée, même juste ; une date de publication que le texte de l'article ne contient pas est refusée (la date n'est pas
-une source : ses nombres valideraient n'importe quel « 10 % » ou « 14 euros ») ; une réponse qui écrit un chiffre en
-lettres n'est pas contrôlée.
+une source : ses nombres valideraient n'importe quel « 10 % » ou « 14 euros ») ; une année suivie sans ponctuation
+d'un nombre de trois chiffres (« Perspectives 2026 300 emplois ») se lit comme un nombre groupé, si bien que « 300 » ou
+« 2026 » seuls sont refusés, même justes (avec une ponctuation, « 2026 : 300 emplois », ils passent ; seconde revue Codex
+de la PR #116) ; une réponse qui écrit un chiffre en lettres n'est pas contrôlée.
 """
 import re
 import unicodedata
@@ -54,8 +56,12 @@ def _normaliser(texte: str) -> str:
 
 
 def nombres_absents(texte: str, sources: list[str]) -> list[str]:
-    """Les nombres de `texte` qui ne figurent dans aucune des `sources`, dans leur ordre d'apparition, sans doublon."""
-    reference = " ".join(_normaliser(source) for source in sources)
+    """Les nombres de `texte` qui ne figurent dans aucune des `sources`, dans leur ordre d'apparition, sans doublon.
+
+    Chaque source est cherchée SÉPARÉMENT (seconde revue Codex de la PR #116) : collées avec une espace, deux sources
+    qui finissent par « 9 » et commencent par « 300 » formaient un « 9 300 » qu'aucune ne contient.
+    """
+    references = [_normaliser(source) for source in sources]
     absents: list[str] = []
     for nombre in _NOMBRE.findall(_CITATION.sub(" ", _normaliser(texte))):
         # Le nombre entier. Devant : ni chiffre, ni virgule, ni point ; et, pour un nombre qui commence par un groupe de
@@ -63,6 +69,6 @@ def nombres_absents(texte: str, sources: list[str]) -> list[str]:
         # ni décimale, ni groupe de trois chiffres (sinon « 9 » serait trouvé dans « 9 300 »).
         gauche = r"(?<![\d,.])" + (r"(?<!\d )" if _GROUPE_DE_MILLIERS.match(nombre) else "")
         entier = gauche + re.escape(nombre) + r"(?!\d|[,.]\d| \d{3}(?!\d))"
-        if not re.search(entier, reference) and nombre not in absents:
+        if not any(re.search(entier, reference) for reference in references) and nombre not in absents:
             absents.append(nombre)
     return absents
