@@ -9,6 +9,15 @@
 
 ---
 
+## 2026-10-21 (nuit) : livraison N14 ; tag `livrable-sprint-4-v2` posé, remise du sprint 4
+
+**Livré** : N14 à 21 h 24 (commit `81a9718`, PR #124 ; passage `39659810301`, réussi du premier coup), sans changement
+de code. **Remise** : le tag `livrable-sprint-4-v2`, posé par Era à 21 h 25 sur
+`81a9718c528cea18ad533aae5fd3c2ffd1ea5e49` (SHA complet), après `/health` vérifié. Sa livraison (passage
+`39661606759`) a passé la porte de livraison (tests, portes d'évaluation, liens, tag cité : « VERDICT : ✅ livrable »)
+et publié l'image `ghcr.io/ganda15/rita-api:livrable-sprint-4-v2`. Les 49 liens du livrable et de la synthèse
+répondent au tag.
+
 ## 2026-10-21 (soir, fin) : livraison N13 ; le tag v1 posé sur N12 par erreur ; la remise passe au tag `livrable-sprint-4-v2`
 
 **Livré** : N13 à 20 h 49 (commit `ce5b2c7`, PR #122 ; passage `39654392710`, réussi du premier coup) : le livrable
