@@ -15,13 +15,46 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-19, soir (atelier 3 fait avec le formateur ; livrable du sprint 3, version 2 ; tag `livrable-sprint-3-v2` à poser) ; avant : 2026-10-17, nuit (N7 en production ; livrable du sprint 3, version 1 ; atelier 3 lundi 19/10
+**Dernière mise à jour : 2026-10-20, nuit (sprint 4 : livraison N10 en production ; rejeu en production, Q4 abîmée une fois ; contrôle des nombres commité en local) ; avant : 2026-10-19, soir (atelier 3 fait avec le formateur ; livrable du sprint 3, version 2 ; tag `livrable-sprint-3-v2` à poser) ; avant : 2026-10-17, nuit (N7 en production ; livrable du sprint 3, version 1 ; atelier 3 lundi 19/10
 au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en production : N5 et N6, ingestion par le bouton, évaluation en production 8 sur 8, registre RGPD, documents de fin de sprint ; restent N7, l'atelier 3 et le tag) ; avant : 2026-10-16 au soir (sprint 3 : parcours des questions, Google News arrêté dans le code, ingestion en une opération, jeu de questions en version 2, évaluation locale 8 sur 8 ; reste la livraison) ; avant : 2026-10-15 au soir (sprint 2 clos, tag livrable-sprint-2-v3, sprint 3 ouvert dans un worktree) ; avant : 2026-10-11 (E1 v2.5 : cinq surgénéralisations corrigées ; veille S41 : relevé, note d'Era et partage à la promo ; E3 v1.4 : sept corrections, 44 critères en 39 lignes, revue d'E3 close ; E1 v2.4 : seconde passe, MCD lisible, guide § 4.5 corrigé ; avant, E1 v2.3 : passe RGPD et exactitude ; politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
 
-## ▶️ SPRINT 3 : ATELIER FAIT (19/10/2026), LIVRABLE VERSION 2
+## ▶️ SPRINT 4 : LIVRAISON N10 EN PRODUCTION (20/10/2026), CONTRÔLE DES NOMBRES À LIVRER
+
+**Où on en est** : le sprint 4 (« la composante agentique et les garde-fous ») est en production depuis le 20/10 à
+21 h 48 : livraison N10, commit `27da943` (fusion de la PR #112), index `5499bb05…`, 2140 articles, même empreinte de
+contenu `fd8542955c1b…`. Chemin suivi : PR #111 (branche du sprint vers `develop`), PR #113 (les trois corrections de
+la revue Codex de la PR #112, revue Codex sans remarque), PR #112 (`develop` vers `main`). La construction de l'image
+s'est arrêtée au moins sept fois sur un 429 du registre public `public.ecr.aws` (« Data limit exceeded ») avant de
+passer : défaut connu depuis le sprint 3, non corrigé.
+
+**Rejeu en production** (20/10, 21 h 53, `evidence/sprint-4/rejeu_production.py`) : H1 refusé
+(`TENTATIVE_DETOURNEMENT`), H8 en abstention, 21 caractères en 422, briefing OR.PA en 200, en français et sans conseil.
+Q4 est juste au premier lancement, « 1 0 postes » au second. Le rapport du premier a été écrasé (corrigé : secondes dans
+le nom, ouverture en mode « x ») ; reste `evidence/sprint-4/rejeu-production-2026-10-20-2153.json`.
+
+**Q4** : diagnostic fait (passage 2788 de production identique au local ; 22 essais locaux justes) ; cause non établie.
+Correction : contrôle des nombres (`guardrails/nombres.py`, motif `NOMBRE_NON_SOURCE`), commit `b4ab5e5`, 1367 passed.
+**En local, non poussé, pas en production.**
+
+**Relevé dans le briefing OR.PA** : en production, la dernière cotation d'OR.PA date de 63 jours, et le texte en déduit
+« probablement radiée », ce qui est faux pour L'Oréal. À examiner.
+
+**Ordre de la suite** :
+1. Mesure de niveau 2 en local avec le contrôle des nombres (Era), depuis la racine du worktree :
+   `C:/Python314/python.exe -m evals.mesurer_question --niveau 2 --index D:/KandaWork/RITA_PROJECT/transferts/index-18c122a9`.
+2. Preuves dans `evidence/sprint-4/README.md` : N10, rejeu, diagnostic de Q4, contrôle des nombres, OR.PA.
+3. Push, PR vers `develop`, PR vers `main` (livraison N11), puis rejeu en production à refaire.
+4. D3 : livrable, journal des retours, plan (D2, étape 5) et contrat (critère 1) corrigés sur D9 (le texte du briefing
+   n'est pas conservé), Definition of Done, tag `livrable-sprint-4-v1` posé par Era.
+5. Ouverts : D8 (le tiers du critère 5), validation de l'avenant n°1 par le formateur, accès authentifié à l'image de
+   base (429), cours d'OR.PA en production.
+
+**Branche** : `sprint-4-agentique-garde-fous`, deux commits d'avance sur GitHub (`b4ab5e5`, `1ce5c04`).
+
+## 🕘 Sprint 3 : atelier fait (19/10/2026), livrable version 2 (historique)
 
 **Où on en est** : l'atelier croisé n°3 a eu lieu le 19/10, avec le formateur, en direct sur la production. Une
 ingestion a été lancée par le bouton pendant l'atelier (passage `39265862974`, réussi, 2110 puis 2140 articles). La
