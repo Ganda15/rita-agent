@@ -15,13 +15,43 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-20, nuit (sprint 4 : livraison N10 en production ; rejeu en production, Q4 abîmée une fois ; contrôle des nombres commité en local) ; avant : 2026-10-19, soir (atelier 3 fait avec le formateur ; livrable du sprint 3, version 2 ; tag `livrable-sprint-3-v2` à poser) ; avant : 2026-10-17, nuit (N7 en production ; livrable du sprint 3, version 1 ; atelier 3 lundi 19/10
+**Dernière mise à jour : 2026-10-21, 11 h 20 (sprint 4 : livraison N11 en production, contrôle des nombres ; rejeu en production 5 sur 5, deux fois ; PR #118 en attente ; reste D3) ; avant : 2026-10-20, nuit (sprint 4 : livraison N10 en production ; rejeu en production, Q4 abîmée une fois ; contrôle des nombres commité en local) ; avant : 2026-10-19, soir (atelier 3 fait avec le formateur ; livrable du sprint 3, version 2 ; tag `livrable-sprint-3-v2` à poser) ; avant : 2026-10-17, nuit (N7 en production ; livrable du sprint 3, version 1 ; atelier 3 lundi 19/10
 au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en production : N5 et N6, ingestion par le bouton, évaluation en production 8 sur 8, registre RGPD, documents de fin de sprint ; restent N7, l'atelier 3 et le tag) ; avant : 2026-10-16 au soir (sprint 3 : parcours des questions, Google News arrêté dans le code, ingestion en une opération, jeu de questions en version 2, évaluation locale 8 sur 8 ; reste la livraison) ; avant : 2026-10-15 au soir (sprint 2 clos, tag livrable-sprint-2-v3, sprint 3 ouvert dans un worktree) ; avant : 2026-10-11 (E1 v2.5 : cinq surgénéralisations corrigées ; veille S41 : relevé, note d'Era et partage à la promo ; E3 v1.4 : sept corrections, 44 critères en 39 lignes, revue d'E3 close ; E1 v2.4 : seconde passe, MCD lisible, guide § 4.5 corrigé ; avant, E1 v2.3 : passe RGPD et exactitude ; politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
 
-## ▶️ SPRINT 4 : LIVRAISON N10 EN PRODUCTION (20/10/2026), CONTRÔLE DES NOMBRES À LIVRER
+## ▶️ SPRINT 4 : LIVRAISON N11 EN PRODUCTION (21/10/2026), RESTE LE LIVRABLE (D3)
+
+**Où on en est** : N11 est en production depuis le 21/10 à 11 h 05 : commit `4fc63f5` (fusion de la PR #115), index
+`98ea614a…`, 2140 articles, même empreinte de contenu `fd8542955c1b…`. Elle apporte le contrôle des nombres
+(`guardrails/nombres.py`, motif `NOMBRE_NON_SOURCE`) et l'image de base tirée de `mirror.gcr.io`. Livraison réussie du
+premier coup (passage `39572719574`), sans refus du registre d'images.
+
+**Rejeu en production** (21/10, 11 h 11 et 11 h 12, deux lancements) : 5 appels conformes sur 5, deux fois ; Q4 rend
+« 1 000 postes ». Rapports `evidence/sprint-4/rejeu-production-2026-10-21-111136.json` et `-111201.json`. La clé se
+charge sans affichage : `$env:RITA_API_KEY = ssh root@178.104.184.125 "sed -n 's/^RITA_API_KEY=//p' /root/rita-agent/.env"`,
+puis `Remove-Item Env:RITA_API_KEY` après le rejeu.
+
+**Revues du jour** : 10 points relevés par Codex (PR #114 à #117) et par la revue de sécurité automatique ; 9 corrigés
+avec un test rouge d'abord, 1 écrit comme limite. Tableau dans `evidence/sprint-4/README.md`. Suite locale : 1400
+passed, 24 skipped, 2 xfailed.
+
+**En attente** : PR #118 vers `develop` (les deux dernières apostrophes, U+2018 et U+02BC, et les preuves de N11), à
+fusionner par Era ; elle partira avec la livraison suivante, celle des documents du livrable.
+
+**Ordre de la suite** :
+1. Era fusionne la PR #118 quand ses contrôles sont verts.
+2. CA3.6 : vérifier dans Langfuse qu'une trace de briefing ne garde ni prompt ni texte (accès Langfuse d'Era).
+3. D3 : livrable du sprint 4, journal des retours (atelier 3), oral court, Definition of Done
+   (`scripts/verifier_livrable.py livrable-sprint-4-v1`), PR `develop` vers `main`, tag posé par Era.
+4. Ouverts : critère 1 du contrat « en cours » (OR.PA : dernière cotation à 64 jours, « probablement radiée ») ; D8 (le
+   tiers du critère 5) ; validation de l'avenant n°1 par le formateur ; registre d'images sans compte ; dates de
+   l'atelier 4 et du livrable à demander.
+
+**Branche** : `sprint-4-agentique-garde-fous`, à jour avec GitHub.
+
+## 🕘 Sprint 4 : livraison N10 (20/10/2026) (historique)
 
 **Où on en est** : le sprint 4 (« la composante agentique et les garde-fous ») est en production depuis le 20/10 à
 21 h 48 : livraison N10, commit `27da943` (fusion de la PR #112), index `5499bb05…`, 2140 articles, même empreinte de

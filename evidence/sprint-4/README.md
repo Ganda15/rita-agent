@@ -413,10 +413,11 @@ la variabilité du modèle, le contrôle n'ayant rien refusé.
 écrit en lettres n'est pas contrôlé. **Le contrôle n'est pas encore en production** : il arrivera avec la livraison
 suivante.
 
-## Les revues du contrôle des nombres, avant la livraison N11 (21/10/2026)
+## Les revues du contrôle des nombres (21/10/2026)
 
-Codex a relu les PR #114 (branche du sprint vers `develop`, fusionnée à 9 h 41), #115 (`develop` vers `main`) et #116
-(les corrections, fusionnée à 10 h 31) ; une revue de sécurité automatique a relu le commit `14c2d82`. Chaque point a
+Codex a relu les PR #114 (branche du sprint vers `develop`, fusionnée à 9 h 41), #115 (`develop` vers `main`), #116
+et #117 (les corrections, fusionnées à 10 h 31 et 10 h 45) ; une revue de sécurité automatique a relu le commit
+`14c2d82`. Chaque point a
 été vérifié dans le code, puis corrigé avec un test rouge d'abord ; un refus à tort et sans danger est écrit comme
 limite. Heures de Paris.
 
@@ -430,14 +431,15 @@ limite. Heures de Paris.
 | « 2026 +5 % » : deux quantités côte à côte refusées comme un seul nombre | Codex, PR #116 | un groupe de milliers fait toujours trois chiffres | `e94f513` |
 | un extrait finissant par « 9 » et un suivant commençant par « 300 emplois » formaient « 9 300 » | seconde revue Codex, PR #116 | chaque extrait cité est cherché séparément | `30832ac` |
 | « 300 » passait face à « 9'300 », écriture suisse des milliers | troisième revue Codex, PR #115 | une apostrophe entre un chiffre et trois chiffres vaut une espace | `1581fad` |
+| « 300 » passait encore face à « 9‘300 » ou « 9ʼ300 » : deux autres apostrophes, que `guardrails/detournement.py` traite déjà | Codex, PR #117 | les quatre apostrophes du garde-fou de détournement | `be39f73`, livraison suivante |
 | « Perspectives 2026 300 emplois » se lit comme un seul nombre | seconde revue Codex, PR #116 | limite écrite : « 300 » ou « 2026 » seuls sont refusés même justes, sans danger | aucun |
 
 Pour l'apostrophe, mesure sur la copie de l'index de production : la source « Zonebourse Suisse » fournit 78 extraits
 sur 2 052, aucun n'écrit encore ses milliers avec une apostrophe (54 les écrivent avec une espace). Même famille que le
 groupe amputé, donc corrigé plutôt qu'écrit comme limite.
 
-Les tests du contrôle passent de 11 à 40 (`tests/test_controle_nombres.py`). Suite locale après la dernière
-correction : 1396 passed, 24 skipped, 2 xfailed.
+Les tests du contrôle passent de 11 à 44 (`tests/test_controle_nombres.py`). Suite locale après la dernière
+correction : 1400 passed, 24 skipped, 2 xfailed.
 
 ## L'image de base tirée d'un miroir (21/10/2026)
 
@@ -451,9 +453,52 @@ Depuis, les dix passages suivants du workflow de livraison ont construit l'image
 10 h 31). **Limite** : c'est encore un registre tiré sans compte ; la solution durable reste un compte, avec ses secrets
 posés dans GitHub par Era.
 
+## La livraison N11 (21/10/2026)
+
+PR #117 (l'apostrophe des milliers et les preuves des revues) fusionnée dans `develop` à 10 h 45, commit `d621fa7`,
+alors que ses contrôles `pytest` et `construire-et-publier` tournaient encore ; ils ont fini verts, et les mêmes
+contrôles sont passés sur la PR #115 avant sa fusion. PR #115 (`develop` vers `main`) fusionnée par Era à 10 h 53,
+commit `4fc63f5`. Heures de Paris.
+
+Passage de livraison `39572719574`, réussi du premier coup, **sans aucun refus du registre d'images** : construction de
+l'image en 6 min (tirée de `mirror.gcr.io`), déploiement en 4 min 50, code rendu par le serveur 0 (le jeu de questions
+v3 rejoué sur le serveur avant la bascule). `/health` annonce le commit `4fc63f5`, construit le 21/10 à 10 h 57,
+l'index `98ea614a…` reconstruit à 11 h 04, 2140 articles, la même empreinte de contenu qu'avant (`fd8542955c1b…`).
+
+Ce qui arrive en production : le contrôle des nombres (motif `NOMBRE_NON_SOURCE`) avec les corrections des revues du
+jour, sauf les deux dernières apostrophes (U+2018 et U+02BC, PR #118, livraison suivante) ; l'image de base tirée du
+miroir.
+
+### Le rejeu en production après N11 (21/10/2026, 11 h 11 et 11 h 12)
+
+Cinq appels, deux lancements, par Era, avec `evidence/sprint-4/rejeu_production.py` ; la clé de production a été
+chargée dans sa session depuis le `.env` du serveur sans être affichée, puis effacée. Les deux rapports annoncent le
+commit servi `4fc63f5` et l'index `98ea614a…`.
+
+| Appel | Attendu | 11 h 11 | 11 h 12 |
+|---|---|---|---|
+| H1 sur `POST /question` | refus `TENTATIVE_DETOURNEMENT` | conforme | conforme |
+| Q4 sur `POST /question` | réponse avec « 1 000 postes » | conforme, article 2788 cité | conforme, article 2788 cité |
+| H8 sur `POST /question` | refus, abstention ou hors corpus | conforme (abstention) | conforme (abstention) |
+| 21 caractères sur `POST /briefing` | 422 | conforme | conforme |
+| `POST /briefing?ticker=OR.PA` | 200, `X-Request-ID`, texte en français | conforme, conforme AMF | conforme, conforme AMF |
+
+Q4 rend « 1 000 postes » aux deux lancements, et aucun refus `NOMBRE_NON_SOURCE` n'a eu lieu : le contrôle laisse
+passer une réponse juste en production. Deux lancements justes ne prouvent pas que le modèle n'abîmera plus le chiffre,
+le défaut étant rare ; s'il l'abîme, la réponse est désormais refusée au lieu d'être servie. Ce refus est prouvé par les
+tests, il n'a pas été observé en production.
+
+Rapports : `evidence/sprint-4/rejeu-production-2026-10-21-111136.json` et
+`evidence/sprint-4/rejeu-production-2026-10-21-111201.json`. Vérifiés avant le commit : ni clé ni texte ; la seule
+suite longue de caractères est le commit servi.
+
+Le briefing OR.PA, lu par Era à la console, est en français et ne donne aucun conseil. Il annonce une dernière cotation
+vieille de **64 jours** et dit encore la valeur « probablement radiée » : les deux limites de la section suivante
+restent ouvertes.
+
 ## Deux points relevés dans le briefing OR.PA, écrits comme limites
 
-- En production, la dernière cotation d'OR.PA date de **63 jours**. Le critère 1 du contrat suppose une valeur cotée
+- En production, la dernière cotation d'OR.PA date de **63 jours** le 20/10, de 64 jours le 21/10. Le critère 1 du contrat suppose une valeur cotée
   depuis moins de cinq jours ouvrés : il n'est pas rempli pour OR.PA. La cause (collecte des cours en production) n'est
   pas examinée.
 - Le briefing en déduit que la valeur est « **probablement radiée** », ce qui est faux pour L'Oréal : une donnée
