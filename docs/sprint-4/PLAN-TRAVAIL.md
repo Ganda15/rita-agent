@@ -545,8 +545,8 @@ morceau, ni sa longueur.
   deux ou trois phrases, les données couche par couche, la technique en cinq minutes (CA9.2). Le kit d'oral reste
   personnel, hors du dépôt.
 - [ ] **Étape 4 :** `ETAT.md` et `CHANGELOG.md` à jour ; Definition of Done verte
-  (`scripts/verifier_livrable.py livrable-sprint-4-v2`).
-- [ ] **Étape 5 (Era) :** le tag `livrable-sprint-4-v2`, posé sur le commit choisi, désigné par son SHA complet (le tag `livrable-sprint-4-v1`, posé le 21/10 sur N12 avant la fusion de N13, est figé par la règle du dépôt) ; le
+  (`scripts/verifier_livrable.py livrable-sprint-4-v3`).
+- [ ] **Étape 5 (Era) :** le tag `livrable-sprint-4-v3`, posé sur le commit choisi, désigné par son SHA complet (le tag `livrable-sprint-4-v1`, posé le 21/10 sur N12 avant la fusion de N13, est figé par la règle du dépôt ; le v2, sur N14, est remplacé par le v3) ; le
   run du tag vérifié, comme au sprint 3.
 
 ---

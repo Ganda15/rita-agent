@@ -624,6 +624,8 @@ liens internes, tag cité, « VERDICT : ✅ livrable » ; image `ghcr.io/ganda15
 sans déploiement. Les 49 liens du livrable et de la synthèse répondent au tag (vérifiés par l'API GitHub, le dépôt
 étant privé).
 
+**La version 3.** La relecture finale de la version 2 a trouvé un lien de ligne décalé (`guardrails/nombres.py`, ligne 67 au lieu de 68) et un état de la production arrêté à N12. La version 3 les corrige ; la remise passe au tag `livrable-sprint-4-v3`, posé sur le commit de la livraison suivante.
+
 ## Deux points relevés dans le briefing OR.PA, écrits comme limites
 
 - En production, la dernière cotation d'OR.PA date de **63 jours** le 20/10, de 64 jours le 21/10. Le critère 1 du contrat suppose une valeur cotée

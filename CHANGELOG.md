@@ -9,6 +9,15 @@
 
 ---
 
+## 2026-10-21 (nuit, fin) : livrable du sprint 4, version 3 (tag `livrable-sprint-4-v3`)
+
+**Relecture finale de la version 2** (tag `livrable-sprint-4-v2`) : le lien « `guardrails/nombres.py`, ligne 67 »
+ouvrait une ligne vide, la fonction `nombres_absents` étant à la ligne 68 ; la version servie était encore donnée pour
+N12 (`27e41d3`), alors que N13 et N14 l'avaient remplacée ; les livraisons s'arrêtaient à N12. **Version 3** : le lien
+corrigé ; l'état de la production à N14 (`81a9718`), avec le comportement de N12 ; N13 et N14 ajoutées au § 7.9, au
+glossaire et à la synthèse ; `/health` après N14 en annexe. Les liens visent `livrable-sprint-4-v3`, posé par Era sur
+le commit de la livraison suivante, désigné par son SHA complet. Le tag v2 reste, figé, sur N14.
+
 ## 2026-10-21 (nuit) : livraison N14 ; tag `livrable-sprint-4-v2` posé, remise du sprint 4
 
 **Livré** : N14 à 21 h 24 (commit `81a9718`, PR #124 ; passage `39659810301`, réussi du premier coup), sans changement
