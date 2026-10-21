@@ -9,6 +9,18 @@
 
 ---
 
+## 2026-10-21 (soir, fin) : livraison N13 ; le tag v1 posé sur N12 par erreur ; la remise passe au tag `livrable-sprint-4-v2`
+
+**Livré** : N13 à 20 h 49 (commit `ce5b2c7`, PR #122 ; passage `39654392710`, réussi du premier coup) : le livrable
+validé, la synthèse, le schéma complet et le journal des retours complété, sans changement de code. **Erreur de
+méthode** : le tag `livrable-sprint-4-v1` a été posé à 20 h 30, avant la fusion de la PR #122 (20 h 37), sur
+`origin/main` qui était encore N12 (`27e41d3`). La porte de livraison du tag l'a refusé (passage `39653430203` :
+« Tag livrable-sprint-4-v1 cité dans ETAT.md et CHANGELOG.md : absent de : CHANGELOG.md ») : aucune image publiée.
+La règle du dépôt « tags livrable-* figés » a refusé sa suppression (GH013) : il reste sur N12, et ne sera pas
+envoyé. **Décision** : la remise est le tag `livrable-sprint-4-v2`, même contenu que la version 1 validée, posé par
+Era sur le commit de la livraison suivante, désigné par son SHA complet comme le prévoit le plan de travail. Les liens
+du livrable et de la synthèse visent `livrable-sprint-4-v2`.
+
 ## 2026-10-21 (soir) : livrable du sprint 4, version 1, tag `livrable-sprint-4-v1`
 
 **Livrable** : version 1 du livrable du sprint 4 (`docs/sprint-4/livrable/livrable-sprint-4.md` et `.pdf`, 16 pages,
