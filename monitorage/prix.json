@@ -1,0 +1,19 @@
+{
+  "modele": "GPT-5.4, Azure, Data Zone (UE), contexte de moins de 272 000 jetons",
+  "deploiement": "gpt-5.4-dzs-eu",
+  "devise": "USD",
+  "entree_par_million": 2.75,
+  "entree_en_cache_par_million": 0.275,
+  "sortie_par_million": 16.5,
+  "en_vigueur_depuis": "2026-03-01",
+  "releve_le": "2026-10-22",
+  "compteurs_azure": ["5.4 inp Dz 1M Tokens", "5.4 cd inp Dz 1M Tokens", "5.4 opt Dz 1M Tokens"],
+  "regions_verifiees": ["swedencentral", "francecentral", "germanywestcentral", "westeurope", "northeurope",
+                        "polandcentral", "spaincentral"],
+  "source": "https://prices.azure.com/api/retail/prices?$filter=meterName%20eq%20'5.4%20inp%20Dz%201M%20Tokens'",
+  "limites": [
+    "Les jetons servis depuis le cache sont comptés au prix plein : le coût affiché est un majorant.",
+    "Un repli du briefing vers un autre fournisseur est compté au prix Azure.",
+    "Prix publics de détail, hors remise et hors taxes."
+  ]
+}
