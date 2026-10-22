@@ -1,7 +1,7 @@
 # RITA : cadrage V1 (fil rouge, sprint 1)
 
 > Ce dossier consolide l'existant ; il ne le réécrit pas. Le détail vit dans
-> [ARCHITECTURE.md](ARCHITECTURE.md) et [EXPLOITATION.md](EXPLOITATION.md).
+> [ARCHITECTURE.md](ARCHITECTURE.md) et [exploitation.md](exploitation.md).
 
 ## 1. Le besoin
 

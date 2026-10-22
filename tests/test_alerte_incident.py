@@ -84,7 +84,7 @@ def test_aucun_secret_n_est_ecrit_dans_le_workflow():
 
 
 def test_le_document_d_exploitation_decrit_la_chaine_d_alerte():
-    doc = (RACINE / "docs/EXPLOITATION.md").read_text(encoding="utf-8")
+    doc = (RACINE / "docs/exploitation.md").read_text(encoding="utf-8")
     assert "alerte-incident.yml" in doc and "Langfuse" in doc
 
 

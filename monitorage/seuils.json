@@ -56,7 +56,7 @@
       "rouge": 5.0,
       "pourquoi": "Une question coûte environ 0,01 € au prix public : 1 € par jour, c'est déjà une centaine de questions pour un service mono-utilisateur ; 5 € signalent une consommation qui s'emballe.",
       "action": "docs/exploitation.md#alerte-cout",
-      "que_faire": "Regarder qui appelle dans le journal ; si un client boucle, baisser le quota RITA_QUOTA_PAR_MINUTE.",
+      "que_faire": "Regarder combien d'appels sont servis dans le journal ; si un client boucle, changer la clé d'API puis redéployer, ou arrêter l'API.",
       "resolution": "Un coût estimé sous 5 € sur les 24 dernières heures disponibles."
     },
     "fraicheur": {
