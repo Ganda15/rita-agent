@@ -122,7 +122,10 @@ def _lien(action: str) -> str:
 
 
 def _corps(libelle: str, nom: str, verdict_mot: str, valeur: str, seuil: str, pourquoi: str, action: str,
-           resolution: str, adresse: str, maintenant: float) -> str:
+           resolution: str, adresse: str, maintenant: float, exercice: dict | None = None) -> str:
+    # Étape 6 : une alerte ouverte pendant une panne simulée le dit, pour ne pas passer pour un vrai incident.
+    ligne_exercice = ([f"| Exercice | Exercice de panne simulée en cours depuis {exercice['depuis'][11:16]} "
+                       f"({exercice['nom']} : {exercice['motif']}) |"] if exercice else [])
     return "\n".join([
         f"## Alerte de la vigie, le {_heure(maintenant)} (heure du poste de la vigie)",
         "",
@@ -133,6 +136,7 @@ def _corps(libelle: str, nom: str, verdict_mot: str, valeur: str, seuil: str, po
         f"| Valeur | {valeur} |",
         f"| Seuil | {seuil} |",
         f"| Adresse surveillée | {adresse} |",
+        *ligne_exercice,
         "",
         f"**Pourquoi ce seuil** : {pourquoi}",
         "",
@@ -195,7 +199,7 @@ def passage(adresse: str, cle: str, http_get, github, dormir, horloge, config: d
             if cle_titre not in ouvertes:
                 github.ouvrir(cle_titre, _corps(verdict["libelle"], nom, "problème", _valeur_lisible(nom, verdict),
                                                 _seuil_lisible(nom, verdict), verdict["pourquoi"], verdict["action"],
-                                                verdict["resolution"], adresse, maintenant))
+                                                verdict["resolution"], adresse, maintenant, etat.get("exercice")))
                 actions.append(f"ouverte : {cle_titre}")
                 continue
         if cle_titre not in ouvertes:

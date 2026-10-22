@@ -87,3 +87,9 @@ def test_la_carte_du_service_garde_la_consigne_des_seuils():
     # test vérifie qu'elle reste celle de monitorage/seuils.json (une seule source de vérité).
     consigne = seuils.charger()["signaux"]["service"]["que_faire"]
     assert json.dumps(consigne, ensure_ascii=False) in (FRONTEND / SCRIPT).read_text(encoding="utf-8")
+
+
+def test_la_page_a_un_bandeau_pour_l_exercice_de_panne():
+    # Étape 6 : pendant une panne simulée, le tableau le dit, pour qu'on ne la prenne pas pour une vraie panne.
+    html = (FRONTEND / PAGE).read_text(encoding="utf-8")
+    assert '<p id="bandeau-exercice"' in html and "hidden" in html.split('id="bandeau-exercice"')[1].split(">")[0]

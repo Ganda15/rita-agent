@@ -14,12 +14,13 @@ from datetime import date
 
 from fastapi import APIRouter
 
-from monitorage import compteurs, seuils, signaux
+from monitorage import compteurs, exercice, seuils, signaux
 
 routeur = APIRouter(tags=["service"])
 
 
-def construire(mesures: compteurs.Compteurs, lignes: list[dict] | None, maintenant: float, aujourdhui: date) -> dict:
+def construire(mesures: compteurs.Compteurs, lignes: list[dict] | None, maintenant: float, aujourdhui: date,
+               exercice_en_cours: dict | None = None) -> dict:
     """L'état complet que rend `/sante` : signaux, coût estimé, verdicts. Sans réseau ni horloge : testable."""
     etat = signaux.etat_sante(mesures, lignes, maintenant, aujourdhui)
     # Étape 5 : l'heure du calcul, distincte de l'heure d'affichage (une réponse ancienne ne doit pas sembler fraîche).
@@ -29,6 +30,8 @@ def construire(mesures: compteurs.Compteurs, lignes: list[dict] | None, maintena
                         "depuis": etat["jetons_24h"]["depuis"], "prix_du": prix["en_vigueur_depuis"],
                         "estimation": "majorant : jetons en cache comptés au prix plein (monitorage/prix.json)"}
     etat["verdicts"] = seuils.evaluer(etat, seuils.charger())
+    # Étape 6 : une panne simulée se dit, avec qui l'a posée et pourquoi ; elle ne passe jamais pour une vraie.
+    etat["exercice"] = exercice_en_cours
     return etat
 
 
@@ -36,4 +39,4 @@ def construire(mesures: compteurs.Compteurs, lignes: list[dict] | None, maintena
 def sante() -> dict:
     lignes = signaux.lire_fraicheur_par_valeur()
     aujourdhui = (lignes[0].get("aujourdhui") if lignes else None) or date.today()
-    return construire(compteurs.COMPTEURS, lignes, time.time(), aujourdhui)
+    return construire(compteurs.COMPTEURS, lignes, time.time(), aujourdhui, exercice.EXERCICE.etat())

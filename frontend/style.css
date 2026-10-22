@@ -276,3 +276,4 @@ tbody tr.perimee:hover { background: #f8edd0; }
 .etat-inconnu { color: var(--texte-doux); }
 .detail { color: var(--texte-doux); font-size: .92rem; }
 .que-faire { font-weight: 600; }
+.bandeau-exercice { border: 2px dashed var(--frais-attention); padding: .6rem .9rem; font-weight: 600; color: var(--frais-attention); }

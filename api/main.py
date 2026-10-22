@@ -28,6 +28,7 @@ from fastapi.staticfiles import StaticFiles
 
 from agents.analyst import CONSIGNES_REDACTION, ROLE_REDACTEUR
 from api.donnees import routeur as routeur_donnees
+from api.exercice import routeur as routeur_exercice, verifier_cle_exercice
 from api.limiteur import limiter_debit
 from api.question import routeur as routeur_question
 from api.sante import routeur as routeur_sante
@@ -255,6 +256,10 @@ app.include_router(routeur_question, dependencies=[Depends(verify_api_key), Depe
 # --- Sprint 5 (étape 2) : les signaux de la vigie --------------------------------------------------------------------
 # La clé sur le routeur entier, comme pour /donnees ; pas de limite de débit : /sante n'appelle jamais le modèle.
 app.include_router(routeur_sante, dependencies=[Depends(verify_api_key)])
+
+# --- Sprint 5 (étape 6) : la panne simulée ----------------------------------------------------------------------------
+# Une clé à part (X-Cle-Exercice), jamais la clé des questions ; sans RITA_CLE_EXERCICE, les routes sont désactivées.
+app.include_router(routeur_exercice, dependencies=[Depends(verifier_cle_exercice)])
 
 
 # --- C9 : le briefing rédigé ------------------------------------------------

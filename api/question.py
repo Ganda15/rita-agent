@@ -20,7 +20,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 from agents import question as parcours
-from monitorage import compteurs
+from monitorage import compteurs, exercice
 from rag import indexation
 from src import traces
 
@@ -48,9 +48,15 @@ def poser_question(demande: DemandeQuestion):
     longueur = len(demande.question)
     # Sprint 5 (étape 1) : les jetons de toutes les tentatives de cet appel s'additionnent ici (monitorage/compteurs.py).
     compteurs.debuter_consommation()
+    # Sprint 5 (étape 6) : pendant une panne simulée, la réponse est celle d'un fournisseur tombé, sans appeler ni le
+    # parcours ni le modèle. L'erreur est comptée comme une vraie : c'est elle qui fait franchir le seuil.
+    panne_simulee = exercice.EXERCICE.etat()
     with traces.question(request_id) as racine:
         try:
-            resultat = parcours.repondre(demande.question)
+            if panne_simulee:
+                resultat = parcours.ReponseQuestion("erreur", parcours.FOURNISSEUR_INDISPONIBLE, parcours.TEXTE_ERREUR)
+            else:
+                resultat = parcours.repondre(demande.question)
         except Exception as erreur:  # noqa: BLE001, aucune erreur ne sort avec son message (décision D2)
             logger.error("question en erreur interne : request_id=%s type=%s longueur=%d",
                          request_id, type(erreur).__name__, longueur)
@@ -69,8 +75,11 @@ def poser_question(demande: DemandeQuestion):
                               resultat.motif, duree_ms, compteurs.consommation())
 
     if resultat.statut == "erreur":
-        return JSONResponse(status_code=503,
-                            content={"statut": resultat.statut, "motif": resultat.motif, "texte": resultat.texte})
+        contenu = {"statut": resultat.statut, "motif": resultat.motif, "texte": resultat.texte}
+        if panne_simulee:
+            contenu["exercice"] = (f"panne simulée depuis {panne_simulee['depuis'][11:16]}, "
+                                  f"fin au plus tard à {panne_simulee['fin_au_plus_tard'][11:16]}")
+        return JSONResponse(status_code=503, content=contenu)
     return {
         "statut": resultat.statut,
         "motif": resultat.motif,

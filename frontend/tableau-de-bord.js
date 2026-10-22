@@ -39,6 +39,7 @@ const elCartes = document.getElementById("cartes");
 const elHorodatages = document.getElementById("horodatages");
 const elAPropos = document.getElementById("a-propos");
 const elBouton = document.getElementById("actualiser");
+const elBandeau = document.getElementById("bandeau-exercice");
 
 let enCours = false;
 let cleEnEssai = null;
@@ -167,6 +168,14 @@ function rendre(serviceOk, etat, erreurLecture) {
   } else {
     elResume.textContent = "Tout va bien.";
   }
+
+  // Étape 6 : une panne simulée se dit en tête, avec qui l'a posée et pourquoi.
+  const exercice = !erreurLecture && estObjet(etat) && estObjet(etat.exercice) ? etat.exercice : null;
+  elBandeau.hidden = !exercice;
+  elBandeau.textContent = exercice
+    ? `Exercice de panne en cours depuis ${heure(exercice.depuis, false)} (${exercice.nom} : ${exercice.motif}), `
+      + `fin au plus tard à ${heure(exercice.fin_au_plus_tard, false)}. Les erreurs affichées sont simulées.`
+    : "";
 
   const morceaux = [`Tableau actualisé à ${new Date().toLocaleTimeString("fr-FR")}`];
   if (!erreurLecture && estObjet(etat) && etat.calcule_a) morceaux.push(`Mesures calculées à ${heure(etat.calcule_a, true)}`);

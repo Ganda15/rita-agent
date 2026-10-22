@@ -144,3 +144,19 @@ def test_pendant_le_chargement_le_bouton_est_bloque_et_un_seul_appel_part(page, 
     finally:
         page.unroute("**/sante")
         page.unroute("**/health")
+
+
+def test_pendant_un_exercice_le_bandeau_le_dit(page, serveur):  # noqa: F811
+    sante = _sante(*SAIN).json()
+    sante["exercice"] = {"nom": "Era", "motif": "répétition atelier 5", "depuis": "2026-10-22T16:05:00+02:00",
+                         "fin_au_plus_tard": "2026-10-22T16:25:00+02:00"}
+    _tableau(page, serveur, sante)
+    bandeau = page.locator("#bandeau-exercice")
+    assert bandeau.is_visible()
+    texte = bandeau.inner_text()
+    assert "Exercice de panne en cours depuis 16:05" in texte and "Era" in texte and "16:25" in texte
+
+
+def test_sans_exercice_le_bandeau_est_cache(page, serveur):  # noqa: F811
+    _tableau(page, serveur, _sante(*SAIN).json())
+    assert not page.locator("#bandeau-exercice").is_visible()

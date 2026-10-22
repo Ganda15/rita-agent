@@ -37,6 +37,8 @@
     <!-- ÉTAT 2 : les cartes. Une carte de disponibilité (/health), puis une carte par signal de supervision (/sante). -->
     <section id="tableau" hidden aria-labelledby="titre-tableau">
       <h2 id="titre-tableau">Les signaux</h2>
+      <!-- Étape 6 : pendant une panne simulée, le tableau le dit, pour qu'on ne la prenne pas pour une vraie. -->
+      <p id="bandeau-exercice" class="bandeau-exercice" hidden></p>
       <div class="barre-outils">
         <p id="horodatages" class="horodatages"></p>
         <button id="actualiser" type="button">Actualiser</button>

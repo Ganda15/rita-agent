@@ -286,3 +286,15 @@ def test_l_appel_http_passe_les_entetes_et_un_delai(monkeypatch):
     vigie._http_get(f"{ADRESSE}/health", None)
     assert appels == [(f"{ADRESSE}/sante", {"headers": {"X-API-Key": "k"}, "timeout": 10.0}),
                       (f"{ADRESSE}/health", {"headers": {}, "timeout": 10.0})]
+
+
+def test_une_alerte_pendant_un_exercice_le_dit_dans_l_issue():
+    # Étape 6 : une issue ouverte pendant une panne simulée ne doit pas passer pour un vrai incident.
+    sante = _sante(*[(60, 503, "erreur", "FOURNISSEUR_INDISPONIBLE")] * 5)
+    sante._corps["exercice"] = {"nom": "Era", "motif": "répétition atelier 5", "depuis": "2026-10-22T16:05:00+02:00",
+                                "fin_au_plus_tard": "2026-10-22T16:25:00+02:00"}
+    github = _GitHub()
+    _passage(_Http(sante), github)
+    [(titre, corps)] = github.ouvertures
+    assert titre == vigie.titre("erreurs_techniques")
+    assert "Exercice de panne simulée en cours" in corps and "Era" in corps and "répétition atelier 5" in corps
