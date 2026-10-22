@@ -96,7 +96,7 @@ branche `sprint-5-vigie-demo`.
 | 4 | Test de la doc : diagnostiquer la panne simulée | section « Diagnostiquer une panne », six étapes jusqu'à la cause | panne diagnostiquée avec la doc le 22/10 (§ 5.4) | idem |
 | 5 | Test de la doc : rollback seul | section « Revenir à la version précédente » | retour arrière en 6 s, commit et image vérifiés ; second retour refusé (§ 5.3) | idem |
 | 6 | Démo prête : 10 minutes, du réel (parcours principal, une livraison, une alerte) | le scénario `docs/sprint-5/DEMO.md` | questions vérifiées sur la copie ; chaque résultat attendu relu contre le code (§ 5.8) | **répétitions à faire** |
-| 7 | Série complète : cinq grilles versionnées, journal des retours tenu | `eval/ateliers/` et le § 6 | grilles des ateliers 1 à 3 versées | **incomplet** : grille de l'atelier 4 pas encore versée ; celle de l'atelier 5 sera remplie par l'évaluateur (§ 6) |
+| 7 | Série complète : cinq grilles versionnées, journal des retours tenu | `eval/ateliers/` et le § 6 | grilles des ateliers 1 à 4 versées, avec les retours et leur suite | prêt ; la grille de l'atelier 5 sera remplie par l'évaluateur pendant la démonstration (§ 6) |
 
 ## 4. Les signaux, les seuils et les actions
 
@@ -229,15 +229,16 @@ plafond de 0,10 € fixé avant les preuves. La dérive n'a consommé aucun jeto
 
 ## 6. Journal des retours
 
-**Conseil reçu à l'atelier n°4.** Pas encore consigné dans le dépôt : il sera relevé avec la grille de l'atelier n°4
-(`eval/ateliers/sprint-4-grille.md`), puis son sort (traité, reporté ou écarté) écrit ici.
+**Conseil reçu à l'atelier n°4 : traité.** Le formateur a redonné les conseils de présentation de l'atelier n°3 : aller
+droit au but, couche par couche ; le projet en deux ou trois phrases ; la partie technique en cinq minutes ; l'ordre des
+modalités du brief ; le code seulement si on le demande
+([grille de l'atelier n°4](../../../eval/ateliers/sprint-4-grille.md)). Le scénario de démo les applique : une phrase
+d'introduction, le parcours principal avant la technique, 9 min 30 en tout, le code seulement sur question
+([`docs/sprint-5/DEMO.md`](../DEMO.md)).
 
-**Conseil de l'atelier n°3, appliqué depuis.** « Aller droit au but, couche par couche : d'abord le projet en deux ou
-trois phrases. » Le scénario de démo s'ouvre sur une phrase, montre le parcours avant la technique, et la vigie se
-présente couche par couche (§ 1.4).
-
-**Les grilles de la série.** Ateliers 1, 2 et 3 : versées dans [`eval/ateliers/`](../../../eval/ateliers/). Atelier 4 :
-à verser. Atelier 5 : remplie par l'évaluateur pendant la démonstration, puis versée sous
+**Les grilles de la série.** Ateliers 1 à 4 : versées dans [`eval/ateliers/`](../../../eval/ateliers/) ; les grilles
+officielles des ateliers 3 et 4 n'ont pas été remplies, les retours ont été donnés à l'oral et sont relevés dans chaque
+fichier. Atelier 5 : remplie par l'évaluateur pendant la démonstration, puis versée sous
 `eval/ateliers/sprint-5-grille.md`.
 
 ## 7. Ce qui n'est pas fait
@@ -249,7 +250,6 @@ présente couche par couche (§ 1.4).
 - **La documentation n'a pas encore été suivie par un tiers.** Elle a été jouée par son auteur sur la copie ; le test
   autonome se fera à l'atelier, avec l'évaluateur.
 - **Les deux répétitions chronométrées de la démo restent à faire.**
-- **Critère 7 incomplet** : la grille de l'atelier 4 n'est pas encore versée, et son conseil pas encore relevé (§ 6).
 - **Les seuils sont provisoires** tant qu'ils n'ont pas été relus sur un trafic réel.
 - **Les mesures vivent en mémoire** : elles repartent à zéro à chaque redémarrage de l'API (déploiement, retour
   arrière). Le tableau de bord affiche « mesures depuis HH:MM ».

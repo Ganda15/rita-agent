@@ -39,7 +39,7 @@ copie de RITA lancée sur le poste avec Docker, construite depuis la branche du 
 | 4 | Doc : diagnostiquer | panne simulée diagnostiquée avec la doc le 22/10 ; **pas encore par un tiers** |
 | 5 | Doc : rollback | retour arrière en 6 s, commit et image vérifiés ; **pas encore par un tiers** |
 | 6 | Démo prête | scénario écrit et vérifié contre le code ; **répétitions à faire** |
-| 7 | Série complète | **incomplet** : grilles 1 à 3 versées ; grille 4 à verser ; grille 5 remplie à l'atelier |
+| 7 | Série complète | **prêt** : grilles 1 à 4 versées, avec les retours et leur suite ; grille 5 remplie à l'atelier |
 
 ## 3. Ce qui est mesuré
 
@@ -57,7 +57,6 @@ copie de RITA lancée sur le poste avec Docker, construite depuis la branche du 
 - La production n'a pas de vigie ; la livraison de la copie se lance par une commande (la livraison automatique est
   celle de la production, citée, pas rejouée).
 - La documentation n'a pas encore été suivie par un tiers ; les répétitions de la démo restent à faire.
-- La grille de l'atelier n°4 et son conseil ne sont pas encore versés.
 - Les seuils sont provisoires ; les mesures repartent à zéro au redémarrage ; la vigie et la collecte des cours se
   lancent à la main.
 - L'écart de fraîcheur des cours en production reste ouvert.

@@ -23,4 +23,3 @@ aucune ne porte sur la production. Aucune clé n'est recopiée ici, ni aucun tex
 - Le test de `docs/exploitation.md` par une personne qui ne l'a pas écrite (critères 3 à 5 de la grille) : il se fait à
   l'atelier n°5, avec l'évaluateur.
 - Les deux répétitions chronométrées de la démo (critère 6).
-- La grille de l'atelier n°4 et son conseil (critère 7).
