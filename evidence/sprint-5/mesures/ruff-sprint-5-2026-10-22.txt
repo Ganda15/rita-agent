@@ -1,0 +1,5 @@
+Analyse statique (ruff) des fichiers créés ou modifiés au sprint 5
+date : 2026-10-22 16:47 ; commit : d4a41beb3a31a7407485758e0ac121e4d908d314
+commande : C:\Python314\python.exe -m ruff check monitorage/compteurs.py monitorage/signaux.py monitorage/seuils.py monitorage/vigie.py api/sante.py api/main.py api/question.py src/llm.py tests/test_compteurs.py tests/test_signaux.py tests/test_fraicheur_par_valeur_base.py tests/test_seuils.py tests/test_vigie.py tests/test_tableau_de_bord.py tests/test_smoke_tableau_de_bord.py
+
+All checks passed!

@@ -1,0 +1,27 @@
+Tests du sprint 5 et couverture des modules du sprint 5
+date : 2026-10-22 16:47 ; commit : d4a41beb3a31a7407485758e0ac121e4d908d314
+commande : C:\Python314\python.exe -m pytest tests/test_compteurs.py tests/test_signaux.py tests/test_fraicheur_par_valeur_base.py tests/test_seuils.py tests/test_vigie.py tests/test_tableau_de_bord.py tests/test_smoke_tableau_de_bord.py --cov=monitorage.compteurs --cov=monitorage.signaux --cov=monitorage.seuils --cov=monitorage.vigie --cov=api.sante --cov-report=term-missing -q
+
+........................................................................ [ 41%]
+........................................................................ [ 82%]
+..............................                                           [100%]
+============================== warnings summary ===============================
+C:\Users\kanda\AppData\Roaming\Python\Python314\site-packages\chromadb\telemetry\opentelemetry\__init__.py:128
+  C:\Users\kanda\AppData\Roaming\Python\Python314\site-packages\chromadb\telemetry\opentelemetry\__init__.py:128: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(f):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.14.6-final-0 _______________
+
+Name                      Stmts   Miss  Cover   Missing
+-------------------------------------------------------
+api\sante.py                 18      0   100%
+monitorage\compteurs.py      95      0   100%
+monitorage\seuils.py         85      0   100%
+monitorage\signaux.py        55      0   100%
+monitorage\vigie.py         168      0   100%
+-------------------------------------------------------
+TOTAL                       421      0   100%
+Required test coverage of 90.0% reached. Total coverage: 100.00%
+174 passed, 1 warning in 34.41s
