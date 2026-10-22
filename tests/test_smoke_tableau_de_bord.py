@@ -113,3 +113,34 @@ def test_sur_un_ecran_de_telephone_rien_ne_deborde(page, serveur):  # noqa: F811
         assert page.evaluate("document.documentElement.scrollWidth") <= 375
     finally:
         page.set_viewport_size({"width": 1280, "height": 720})
+
+
+def test_pendant_le_chargement_le_bouton_est_bloque_et_un_seul_appel_part(page, serveur):  # noqa: F811
+    # Revue du 22/10 : codé mais pas testé. La réponse de /sante est retenue le temps de vérifier que le bouton est
+    # désactivé et qu'un second déclenchement (appel direct de la fonction, le bouton étant désactivé) ne part pas.
+    corps = json.dumps(_sante(*SAIN).json())
+    retenues, requetes = [], []
+
+    def retenir(route):
+        requetes.append(route.request.url)
+        retenues.append(route)
+
+    _tableau(page, serveur, _sante(*SAIN).json())          # premier affichage, normal
+    page.route("**/health", lambda route: route.fulfill(status=200, content_type="application/json",
+                                                        body='{"status": "ok"}'))
+    page.route("**/sante", retenir)
+    try:
+        bouton = page.locator("#actualiser")
+        bouton.click()
+        page.wait_for_function("document.body.dataset.etat === 'chargement'")
+        assert bouton.is_disabled() and bouton.inner_text() == "Actualisation…"
+        page.evaluate("actualiser()")
+        assert len(requetes) == 1
+        for route in retenues:
+            route.fulfill(status=200, content_type="application/json", body=corps)
+        page.wait_for_function("document.body.dataset.etat === 'pret'")
+        assert bouton.is_enabled() and bouton.inner_text() == "Actualiser"
+        assert len(requetes) == 1
+    finally:
+        page.unroute("**/sante")
+        page.unroute("**/health")
