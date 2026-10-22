@@ -27,12 +27,17 @@ donc un seul jeu de compteurs. Mais les routes sont des fonctions synchrones : F
 d'exécution en même temps. Oublier les anciennes observations, puis ajouter la nouvelle, sont deux opérations : sans
 verrou, deux appels simultanés pourraient se marcher dessus.
 
-## Deux bornes
+## Deux bornes, et deux files
 
 On oublie ce qui a plus de 24 h, et on garde au plus 20 000 observations : les rejets 403 et 422 ne passent pas par le
 quota de débit, donc la durée seule ne borne pas la mémoire. `debut()` dit depuis quand la période est complète : le
 démarrage tant que rien n'est oublié, puis l'heure de la dernière observation oubliée (« mesures depuis HH:MM »).
 Limite écrite : tout repart à zéro au redémarrage.
+
+Les rejets ont leur **propre file**, avec son propre plafond (revue de sécurité du commit d8232b4, 22/10/2026) : un 403
+ne demande aucune clé et ne passe pas par le quota. Dans une file commune, 20 000 appels sans clé effaceraient les refus
+de sécurité et les erreurs déjà comptés, donc cacheraient une attaque à la vigie. Un flot de rejets reste visible (il
+remplit sa file), il n'efface plus rien d'autre. `debut()` vaut pour les résultats, `debut_rejets()` pour les rejets.
 
 ## Les jetons de toutes les tentatives
 
@@ -44,12 +49,14 @@ briefing) reçoit une copie du contexte, mais le même objet, donc ses jetons co
 from __future__ import annotations
 
 import contextvars
+import heapq
 import logging
 import threading
 import time
 from collections import deque
 from collections.abc import Callable
 from dataclasses import dataclass
+from operator import attrgetter
 
 logger = logging.getLogger(__name__)
 
@@ -98,22 +105,39 @@ def categorie(code_http: int, statut: str | None, motif: str | None) -> str:
     return "erreur_technique"
 
 
+class _File:
+    """Une file d'observations bornée, et l'heure de la dernière observation qu'elle a oubliée."""
+
+    def __init__(self, plafond: int):
+        self.observations: deque[Observation] = deque(maxlen=plafond)
+        self.dernier_oubli: float | None = None
+
+    def oublier(self, limite: float) -> None:
+        while self.observations and self.observations[0].horodatage <= limite:
+            self.dernier_oubli = self.observations.popleft().horodatage
+
+    def ajouter(self, observation: Observation) -> None:
+        if len(self.observations) == self.observations.maxlen:
+            # Le plafond va faire partir la plus ancienne : la période complète commence après elle.
+            self.dernier_oubli = self.observations[0].horodatage
+        self.observations.append(observation)
+
+
 class Compteurs:
-    """Les observations des dernières 24 h, 20 000 au plus, sous un verrou."""
+    """Les observations des dernières 24 h, sous un verrou : les résultats et les rejets, 20 000 au plus chacun."""
 
     def __init__(self, horloge: Callable[[], float] = time.time, duree_de_vie_s: float = DUREE_DE_VIE_S,
                  plafond: int = PLAFOND):
         self._horloge, self.duree_de_vie_s = horloge, duree_de_vie_s
-        self._observations: deque[Observation] = deque(maxlen=plafond)
+        self._resultats, self._rejets = _File(plafond), _File(plafond)
         self._verrou = threading.Lock()
         self._demarrage = horloge()
-        self._dernier_oubli: float | None = None
 
     def _oublier(self, maintenant: float) -> None:
-        """Retire ce qui a plus de 24 h. À appeler sous le verrou."""
+        """Retire ce qui a plus de 24 h, dans les deux files. À appeler sous le verrou."""
         limite = maintenant - self.duree_de_vie_s
-        while self._observations and self._observations[0].horodatage <= limite:
-            self._dernier_oubli = self._observations.popleft().horodatage
+        self._resultats.oublier(limite)
+        self._rejets.oublier(limite)
 
     def noter(self, route: str, code_http: int, statut: str | None, motif: str | None, duree_ms: int,
               jetons: tuple[int, int] = (0, 0)) -> None:
@@ -121,22 +145,26 @@ class Compteurs:
         with self._verrou:
             maintenant = self._horloge()
             self._oublier(maintenant)
-            if len(self._observations) == self._observations.maxlen:
-                # Le plafond va faire partir la plus ancienne : la période complète commence après elle.
-                self._dernier_oubli = self._observations[0].horodatage
-            self._observations.append(Observation(maintenant, route, observation_categorie, motif or "",
-                                                  int(duree_ms), int(jetons[0]), int(jetons[1])))
+            file = self._rejets if observation_categorie == "rejet_acces_saisie" else self._resultats
+            file.ajouter(Observation(maintenant, route, observation_categorie, motif or "", int(duree_ms),
+                                     int(jetons[0]), int(jetons[1])))
 
     def observations(self) -> list[Observation]:
-        """Une copie des observations encore gardées, de la plus ancienne à la plus récente."""
+        """Une copie des observations encore gardées, des deux files, de la plus ancienne à la plus récente."""
         with self._verrou:
             self._oublier(self._horloge())
-            return list(self._observations)
+            return list(heapq.merge(self._resultats.observations, self._rejets.observations,
+                                    key=attrgetter("horodatage")))
 
     def debut(self) -> float:
-        """Le début de la période complète : le démarrage, ou l'heure de la dernière observation oubliée."""
+        """Le début de la période complète des résultats : le démarrage, ou la dernière observation oubliée."""
         with self._verrou:
-            return self._demarrage if self._dernier_oubli is None else self._dernier_oubli
+            return self._demarrage if self._resultats.dernier_oubli is None else self._resultats.dernier_oubli
+
+    def debut_rejets(self) -> float:
+        """La même chose pour les rejets, qu'un flot d'appels sans clé peut faire avancer seul."""
+        with self._verrou:
+            return self._demarrage if self._rejets.dernier_oubli is None else self._rejets.dernier_oubli
 
 
 # --- La consommation d'un appel ---------------------------------------------------------------------------------------

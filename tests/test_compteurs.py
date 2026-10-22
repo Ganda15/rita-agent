@@ -149,6 +149,28 @@ def test_la_20_001e_observation_fait_partir_la_plus_ancienne():
     assert observations[0].duree_ms == 1
 
 
+def test_un_flot_de_rejets_n_evince_aucun_resultat():
+    # Revue de sécurité du commit d8232b4 : un 403 ne demande aucune clé et ne passe pas par le quota. S'il partageait
+    # le plafond des résultats, 20 000 appels sans clé effaceraient les refus de sécurité : une attaque cachée à la vigie.
+    mesures = Compteurs()
+    mesures.noter("/question", 200, "refus", "TENTATIVE_DETOURNEMENT", 5)
+    for _ in range(20_001):
+        mesures.noter("/question", 403, None, "HTTP_403", 1)
+    categories = [o.categorie for o in mesures.observations()]
+    assert categories.count("refus_securite") == 1
+    assert categories.count("rejet_acces_saisie") == 20_000
+
+
+def test_un_flot_de_rejets_ne_deplace_que_le_debut_des_rejets():
+    horloge = _Horloge(1000.0)
+    mesures = Compteurs(horloge=horloge, plafond=3)
+    for instant in (1001.0, 1002.0, 1003.0, 1004.0):
+        horloge.t = instant
+        mesures.noter("/question", 403, None, "HTTP_403", 1)
+    assert mesures.debut() == 1000.0
+    assert mesures.debut_rejets() == 1001.0
+
+
 # --- les jetons : toutes les tentatives -------------------------------------------------------------------------------
 
 def test_les_jetons_de_deux_tentatives_s_additionnent():
