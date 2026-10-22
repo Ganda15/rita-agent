@@ -298,3 +298,17 @@ def test_une_alerte_pendant_un_exercice_le_dit_dans_l_issue():
     [(titre, corps)] = github.ouvertures
     assert titre == vigie.titre("erreurs_techniques")
     assert "Exercice de panne simulée en cours" in corps and "Era" in corps and "répétition atelier 5" in corps
+
+
+def test_l_heure_de_l_exercice_dans_l_issue_est_celle_du_poste():
+    # Relevé à l'étape 11 (issue #127) : « depuis 16:58 » (UTC du conteneur) sous un titre « 18:58 (heure du poste) ».
+    from datetime import datetime
+    depuis_utc = "2026-10-22T16:58:16+00:00"
+    attendu = datetime.fromisoformat(depuis_utc).astimezone().strftime("%H:%M")
+    sante = _sante(*[(60, 503, "erreur", "FOURNISSEUR_INDISPONIBLE")] * 5)
+    sante._corps["exercice"] = {"nom": "Era", "motif": "répétition", "depuis": depuis_utc,
+                                "fin_au_plus_tard": "2026-10-22T17:18:16+00:00"}
+    github = _GitHub()
+    _passage(_Http(sante), github)
+    [(_, corps)] = github.ouvertures
+    assert f"en cours depuis {attendu} (Era" in corps

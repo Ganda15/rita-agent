@@ -25,6 +25,7 @@ import argparse
 import os
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 
 import httpx
@@ -53,6 +54,15 @@ def _get(url: str, entetes: dict):
     return httpx.get(url, headers=entetes, timeout=10.0)
 
 
+def _heure_locale(horodatage_iso: str) -> str:
+    """Une heure du serveur (ISO avec décalage) dite dans le fuseau du poste : le conteneur de la copie tourne en UTC
+    (relevé à l'étape 11 : « 17:18 » affiché pour une fin à 19:18 heure de Paris)."""
+    try:
+        return datetime.fromisoformat(horodatage_iso).astimezone().strftime("%H:%M")
+    except (TypeError, ValueError):
+        return "heure inconnue"
+
+
 def _detail(reponse) -> str:
     try:
         corps = reponse.json()
@@ -74,7 +84,7 @@ def panne(adresse: str, cle_exercice: str, nom: str, motif: str, duree_min: int,
         print(f"exercer : panne refusée, HTTP {reponse.status_code} {_detail(reponse)}")
         return 1
     fin = reponse.json().get("fin_au_plus_tard", "")
-    print(f"exercer : panne simulée posée par {nom}, fin au plus tard à {fin[11:16]} (ou commande « fin »)")
+    print(f"exercer : panne simulée posée par {nom}, fin au plus tard à {_heure_locale(fin)} (ou commande « fin »)")
     return 0
 
 

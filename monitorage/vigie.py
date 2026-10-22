@@ -124,7 +124,9 @@ def _lien(action: str) -> str:
 def _corps(libelle: str, nom: str, verdict_mot: str, valeur: str, seuil: str, pourquoi: str, action: str,
            resolution: str, adresse: str, maintenant: float, exercice: dict | None = None) -> str:
     # Étape 6 : une alerte ouverte pendant une panne simulée le dit, pour ne pas passer pour un vrai incident.
-    ligne_exercice = ([f"| Exercice | Exercice de panne simulée en cours depuis {exercice['depuis'][11:16]} "
+    # L'heure du serveur (conteneur en UTC) est dite dans le fuseau du poste, comme le titre de l'issue (étape 11, #127).
+    ligne_exercice = ([f"| Exercice | Exercice de panne simulée en cours depuis "
+                       f"{_hh_mm(datetime.fromisoformat(exercice['depuis']).timestamp())} "
                        f"({exercice['nom']} : {exercice['motif']}) |"] if exercice else [])
     return "\n".join([
         f"## Alerte de la vigie, le {_heure(maintenant)} (heure du poste de la vigie)",

@@ -173,3 +173,20 @@ def test_sans_sante_lisible_la_derive_ne_peut_pas_conclure(capsys):
     assert exercer.derive(ADRESSE, CLE_DE_TEST, lambda u, e, c: refus, get_en_panne, lambda s: None) == 1
     sortie = capsys.readouterr().out
     assert "jetons ajoutés : inconnu" in sortie and "non vérifié" in sortie
+
+
+def test_l_heure_de_fin_est_dite_dans_le_fuseau_du_poste(capsys):
+    # Relevé à l'étape 11 (22/10, 18:58) : le conteneur est en UTC ; la commande affichait « fin au plus tard à 17:18 »
+    # pour une fin à 19:18 heure de Paris. L'heure est maintenant convertie dans le fuseau du poste.
+    from datetime import datetime
+    fin_utc = "2026-10-22T17:18:16+00:00"
+    attendu = datetime.fromisoformat(fin_utc).astimezone().strftime("%H:%M")
+    reseau = _Reseau(lambda url, corps: _Reponse(200, {"nom": "Era", "fin_au_plus_tard": fin_utc}))
+    exercer.panne(ADRESSE, CLE_EXERCICE, "Era", "répétition", 20, reseau.post)
+    assert f"fin au plus tard à {attendu}" in capsys.readouterr().out
+
+
+def test_une_heure_de_fin_illisible_est_dite_inconnue(capsys):
+    reseau = _Reseau(lambda url, corps: _Reponse(200, {"nom": "Era"}))
+    exercer.panne(ADRESSE, CLE_EXERCICE, "Era", "répétition", 20, reseau.post)
+    assert "fin au plus tard à heure inconnue" in capsys.readouterr().out

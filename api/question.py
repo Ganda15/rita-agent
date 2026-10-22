@@ -77,8 +77,10 @@ def poser_question(demande: DemandeQuestion):
     if resultat.statut == "erreur":
         contenu = {"statut": resultat.statut, "motif": resultat.motif, "texte": resultat.texte}
         if panne_simulee:
-            contenu["exercice"] = (f"panne simulée depuis {panne_simulee['depuis'][11:16]}, "
-                                  f"fin au plus tard à {panne_simulee['fin_au_plus_tard'][11:16]}")
+            # L'horodatage complet, avec son décalage : le serveur (conteneur en UTC) ne connaît pas le fuseau du
+            # lecteur, et une heure « HH:MM » seule se lisait à tort comme l'heure locale (étape 11, 22/10).
+            contenu["exercice"] = (f"panne simulée depuis {panne_simulee['depuis']}, "
+                                  f"fin au plus tard à {panne_simulee['fin_au_plus_tard']}")
         return JSONResponse(status_code=503, content=contenu)
     return {
         "statut": resultat.statut,

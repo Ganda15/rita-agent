@@ -172,3 +172,14 @@ def test_sante_dit_qu_un_exercice_est_en_cours(horloge, monkeypatch):
     etat = client.get("/sante", headers=CLE_QUESTIONS).json()["exercice"]
     assert (etat["nom"], etat["motif"]) == ("Era", "répétition atelier 5")
     assert etat["depuis"] and etat["fin_au_plus_tard"]
+
+
+def test_le_message_503_donne_les_heures_avec_leur_fuseau(horloge, mesures, monkeypatch):
+    # Le serveur ne connaît pas le fuseau du lecteur : le message donne l'horodatage complet, avec son décalage, au lieu
+    # d'une heure « HH:MM » sans fuseau (relevé à l'étape 11 : 16:58 lu pour 18:58 à Paris).
+    monkeypatch.setattr(question, "repondre", lambda *a, **k: None)
+    client = TestClient(app)
+    pose = client.post("/exercice/panne", json=DEMANDE, headers=ENTETE).json()
+    corps = client.post("/question", json={"question": "Comment Airbus répartit-il ses chaînes ?"},
+                        headers=CLE_QUESTIONS).json()
+    assert pose["depuis"] in corps["exercice"] and pose["fin_au_plus_tard"] in corps["exercice"]
