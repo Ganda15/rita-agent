@@ -77,8 +77,7 @@ production, à partir de ce jour.
   (même preuve), non décidé.
 - **Les essais de clé sont journalisés mais pas freinés** : le limiteur passe après la vérification de la clé ; il
   protège le coût du modèle, pas contre une clé devinée par essais répétés.
-- **Le tiers du critère 5 du contrat** (D8) : question au formateur, sans réponse au 20/10.
-- **L'avenant n°1** attend la validation du formateur.
+- **Tranchés le 22/10 par le formateur** : l'avenant n°1 est validé ; le critère 5 du contrat est tenu sans tiers (D8).
 - **Traçage Langfuse en production** : actif depuis le 21/10 seulement (livraison N12), donc sans historique avant ;
   la valeur demandée d'un briefing part avec les métadonnées ; le contrat de Langfuse permet un traitement hors de la
   région choisie (registre, T3).

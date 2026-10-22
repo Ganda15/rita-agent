@@ -9,6 +9,14 @@
 
 ---
 
+## 2026-10-22 : décisions du formateur ; atelier croisé n°4 le jour même
+
+**Décisions du formateur** (réponses du 22/10) : l'avenant n°1 est **validé** ; pour le critère 5 du contrat, le retour
+arrière lancé par Era suffit, **aucun tiers n'est demandé** (D8 tranchée). Le contrat passe à **4 critères tenus sur 5**
+(le critère 1 reste en cours : cours d'OR.PA en production). Mis à jour : `docs/sprint-4/CONTRAT.md`,
+`docs/sprint-4/AVENANT-1.md`, `docs/sprint-4/README.md`. Le livrable remis (tag `livrable-sprint-4-v3`) garde l'état
+d'avant ces réponses ; la version suivante, après l'atelier, reprendra ces décisions et les retours de l'atelier 4.
+
 ## 2026-10-21 (nuit) : livraison N15 ; tag `livrable-sprint-4-v3` posé, remise du sprint 4
 
 **Livré** : N15 à 22 h 44 (commit `3c35398`, PR #126 ; passage `39671479884`, réussi du premier coup), sans changement

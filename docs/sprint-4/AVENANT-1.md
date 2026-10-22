@@ -1,8 +1,8 @@
 # Avenant n°1 au dossier du sprint 1 : le parcours des questions entre dans la composante agentique
 
-> Décidé par Era le 18/10/2026 (option A de la réception du brief du sprint 4), écrit le 19/10/2026. **À présenter au
-> formateur** pour validation : la grille de l'atelier 4 demande qu'un écart au dossier du sprint 1 soit « un avenant
-> validé, pas une dérive silencieuse ». Qui valide l'avenant n'est pas précisé par le brief : À CLARIFIER.
+> Décidé par Era le 18/10/2026 (option A de la réception du brief du sprint 4), écrit le 19/10/2026. **Validé par le
+> formateur le 22/10/2026**, comme le demande la grille de l'atelier 4 : un écart au dossier du sprint 1 doit être « un
+> avenant validé, pas une dérive silencieuse ».
 
 ## 1. Ce que disait le dossier du sprint 1
 
