@@ -136,11 +136,16 @@ def construire_prompt(ticker: str, price: float, change_pct: float,
     # La fraîcheur est DITE au modèle, pas seulement calculée. Le défaut du 19/08 :
     # `fraicheur_jours` existait et n'était jamais exploité — trois valeurs radiées
     # sortaient des chiffres de 2018 présentés comme ceux du jour.
+    #
+    # Sprint 5, étape 8 (critère 1 du contrat, docs/sprint-4/CONTRAT.md § 3) : le prompt ordonnait d'écrire que la valeur
+    # était « probablement radiée ». Une cotation ancienne ne prouve pas une radiation : en production, OR.PA n'avait plus
+    # de cours parce que la collecte des cours ne tournait pas. Le modèle dit l'âge de la donnée et n'en tire rien.
     if cotation_perimee:
         avertissement = (
-            f"\n⚠️ ATTENTION : cette cotation date de {fraicheur_jours} jours. "
-            "Tu DOIS commencer le briefing en signalant que la donnée est ancienne "
-            "et que la valeur est probablement radiée."
+            f"\n⚠️ ATTENTION : la dernière cotation disponible date de {fraicheur_jours} jours. "
+            "Tu DOIS commencer le briefing en signalant que les cours ne sont pas à jour. "
+            "N'en déduis rien sur la cotation de la valeur (ni radiation, ni suspension) : "
+            "la cause peut être la collecte des données."
         )
     else:
         avertissement = f"\n- Fraîcheur de la donnée : {fraicheur_jours} jour(s)"
@@ -177,7 +182,7 @@ def generate_briefing(ticker: str, price: float, change_pct: float,
             de la valeur). `None` si l'historique est trop court.
         currency: devise de la valeur, lue dans `valeur.devise`.
         fraicheur_jours: âge de la cotation, en jours.
-        cotation_perimee: vrai au-delà de 40 jours — la valeur est probablement radiée.
+        cotation_perimee: vrai au-delà de 40 jours : les cours ne sont pas à jour (ce qui ne prouve pas une radiation).
         passages: articles retrouvés par le RAG. Liste vide ou `None` = aucun article,
             et le prompt interdit alors explicitement d'en inventer.
         indicateurs: le dictionnaire du scout (13 indicateurs) ; `None` = prompt d'avant le 03/10/2026.
