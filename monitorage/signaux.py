@@ -96,7 +96,18 @@ def etat_sante(compteurs: Compteurs, lignes_fraicheur: list[dict] | None, mainte
     rejets_recents = [o for o in observations
                       if o.categorie == "rejet_acces_saisie" and o.horodatage > maintenant - FENETRE_S]
     debut = _heure(compteurs.debut())
+
+    def dernier(categorie: str) -> str | None:
+        horodatages = [o.horodatage for o in recents if o.categorie == categorie]
+        return _heure(max(horodatages)) if horodatages else None
+
+    # Étape 4 : la vigie en a besoin pour dire « service rétabli à HH:MM, alerte ouverte jusqu'à HH:MM environ ».
+    derniers = {"erreur_technique": dernier("erreur_technique"), "refus_securite": dernier("refus_securite")}
+    dernier_resultat = ({"categorie": resultats[-1].categorie, "a": _heure(resultats[-1].horodatage)}
+                        if resultats else None)
     return {
+        "derniers": derniers,
+        "dernier_resultat": dernier_resultat,
         "mesures_depuis": debut,
         "rejets_depuis": _heure(compteurs.debut_rejets()),
         "fenetre_min": FENETRE_S // 60,

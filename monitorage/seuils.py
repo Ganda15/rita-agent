@@ -80,6 +80,23 @@ def _niveau(valeur: float | None, signal: dict) -> str:
     return "attention" if valeur >= signal["orange"] else "sain"
 
 
+def est_resolu(nom: str, verdict: dict) -> bool:
+    """La « résolution » écrite dans `monitorage/seuils.json`, appliquée à un verdict (pour la vigie, étape 4).
+
+    Un taux est résolu quand plus aucun événement ne reste dans la fenêtre, ou quand il repasse sous le rouge avec
+    assez de requêtes. Des événements encore présents sous le minimum de requêtes ne résolvent rien : on attend.
+    """
+    if nom in SIGNAUX_EN_TAUX:
+        assez = verdict["effectif"] >= verdict["minimum_requetes"]
+        return verdict["numerateur"] == 0 or (assez and verdict["valeur"] < verdict["rouge"])
+    if nom == "latence_p95_ms":
+        assez = verdict["effectif"] >= verdict["minimum_requetes"]
+        return verdict["effectif"] == 0 or (assez and verdict["valeur"] < verdict["rouge"])
+    if nom == "fraicheur":
+        return verdict["etat"] in ("sain", "attention")
+    return verdict["valeur"] is not None and verdict["valeur"] < verdict["rouge"]
+
+
 def evaluer(etat: dict, config: dict) -> dict:
     """Un verdict par signal mesuré par l'API (tous sauf `service`), avec sa valeur, ses seuils et son action."""
     signaux = config["signaux"]

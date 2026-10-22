@@ -19,14 +19,19 @@ from monitorage import compteurs, seuils, signaux
 routeur = APIRouter(tags=["service"])
 
 
-@routeur.get("/sante", summary="Les signaux de la vigie et leurs verdicts : erreurs, refus, latence, coût, fraîcheur")
-def sante() -> dict:
-    lignes = signaux.lire_fraicheur_par_valeur()
-    aujourdhui = (lignes[0].get("aujourdhui") if lignes else None) or date.today()
-    etat = signaux.etat_sante(compteurs.COMPTEURS, lignes, time.time(), aujourdhui)
+def construire(mesures: compteurs.Compteurs, lignes: list[dict] | None, maintenant: float, aujourdhui: date) -> dict:
+    """L'état complet que rend `/sante` : signaux, coût estimé, verdicts. Sans réseau ni horloge : testable."""
+    etat = signaux.etat_sante(mesures, lignes, maintenant, aujourdhui)
     prix = seuils.charger_prix()
     etat["cout_24h"] = {"valeur": seuils.cout_24h(etat["jetons_24h"], prix), "devise": prix["devise"],
                         "depuis": etat["jetons_24h"]["depuis"], "prix_du": prix["en_vigueur_depuis"],
                         "estimation": "majorant : jetons en cache comptés au prix plein (monitorage/prix.json)"}
     etat["verdicts"] = seuils.evaluer(etat, seuils.charger())
     return etat
+
+
+@routeur.get("/sante", summary="Les signaux de la vigie et leurs verdicts : erreurs, refus, latence, coût, fraîcheur")
+def sante() -> dict:
+    lignes = signaux.lire_fraicheur_par_valeur()
+    aujourdhui = (lignes[0].get("aujourdhui") if lignes else None) or date.today()
+    return construire(compteurs.COMPTEURS, lignes, time.time(), aujourdhui)

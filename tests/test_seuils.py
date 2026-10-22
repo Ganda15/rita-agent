@@ -194,3 +194,22 @@ def test_sante_rend_le_cout_date_et_les_verdicts(monkeypatch):
     assert corps["verdicts"]["fraicheur"]["etat"] == "inconnu"
     assert corps["verdicts"]["refus_securite"]["etat"] == "inconnu"       # 1 requête, sous le minimum
     assert set(corps["verdicts"]) == SIGNAUX - {"service"}
+
+
+# --- étape 4 : la résolution d'une alerte, pour la vigie -----------------------------------------------------------------
+
+@pytest.mark.parametrize("signal, surcharge, attendu", [
+    ("refus_securite", {"refus_securite": _taux(0, 3)}, True),          # plus aucun refus dans la fenêtre
+    ("refus_securite", {"refus_securite": _taux(2, 20)}, True),         # 10 % avec au moins 10 requêtes
+    ("refus_securite", {"refus_securite": _taux(3, 5)}, False),         # des refus, sous le minimum : on attend
+    ("erreurs_techniques", {"erreurs_techniques": _taux(5, 6)}, False),  # 83 % : les erreurs sont encore là
+    ("latence_p95_ms", {"latence_p95_ms": {"valeur": None, "effectif": 0}}, True),
+    ("latence_p95_ms", {"latence_p95_ms": {"valeur": 25_000, "effectif": 20}}, False),
+    ("cout_24h_usd", {"cout_24h": {"valeur": 2.0, "devise": "USD"}}, True),
+    ("cout_24h_usd", {"cout_24h": {"valeur": None, "devise": "USD"}}, False),
+    ("rejets_15_min", {"rejets_15_min": 40}, True),
+    ("fraicheur", {"fraicheur": {"pire": "orange", "nb_valeurs": 3, "en_retard": [], "message": ""}}, True),
+    ("fraicheur", {"fraicheur": {"pire": "rouge", "nb_valeurs": 3, "en_retard": [], "message": ""}}, False),
+])
+def test_la_resolution_suit_la_regle_ecrite_du_seuil(signal, surcharge, attendu):
+    assert seuils.est_resolu(signal, _verdict(_etat(**surcharge), signal)) is attendu

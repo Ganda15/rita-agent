@@ -43,7 +43,7 @@
       "rouge": 20000,
       "pourquoi": "Au-delà de 10 secondes, l'écran semble figé ; au-delà de 20, le fournisseur ralentit ou la recherche peine. Valeurs à relire : aucune durée n'a encore été mesurée sur un trafic réel.",
       "action": "docs/exploitation.md#alerte-latence",
-      "resolution": "Un p95 sous 20 secondes avec au moins 5 requêtes."
+      "resolution": "Un p95 sous 20 secondes avec au moins 5 requêtes, ou aucune requête dans les 15 dernières minutes."
     },
     "cout_24h_usd": {
       "libelle": "Coût estimé",

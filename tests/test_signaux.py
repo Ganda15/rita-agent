@@ -186,3 +186,18 @@ def test_sante_repond_meme_quand_la_base_ne_repond_pas(monkeypatch):
 def test_sante_ne_consomme_pas_le_quota(sante_sans_base, monkeypatch):
     monkeypatch.setattr(limiteur, "LIMITEUR", limiteur.Limiteur(1))
     assert [TestClient(app).get("/sante", headers=CLE).status_code for _ in range(3)] == [200, 200, 200]
+
+
+# --- étape 4 : ce dont la vigie a besoin pour dire « service rétabli » ---------------------------------------------------
+
+def test_l_etat_donne_l_heure_de_la_derniere_erreur_et_le_dernier_resultat():
+    erreur_ancienne = (120, 503, "erreur", "FOURNISSEUR_INDISPONIBLE", 1000)
+    reponse_recente = (10, 200, "reponse", "OK", 900)
+    etat = signaux.etat_sante(_mesures(erreur_ancienne, reponse_recente, REJET), [], MAINTENANT, AUJOURDHUI)
+    assert etat["derniers"]["erreur_technique"] == signaux._heure(MAINTENANT - 120)
+    assert etat["derniers"]["refus_securite"] is None
+    assert etat["dernier_resultat"] == {"categorie": "reponse", "a": signaux._heure(MAINTENANT - 10)}
+
+
+def test_sans_resultat_le_dernier_resultat_est_absent():
+    assert signaux.etat_sante(_mesures(REJET), [], MAINTENANT, AUJOURDHUI)["dernier_resultat"] is None
