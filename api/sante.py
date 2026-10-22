@@ -22,6 +22,8 @@ routeur = APIRouter(tags=["service"])
 def construire(mesures: compteurs.Compteurs, lignes: list[dict] | None, maintenant: float, aujourdhui: date) -> dict:
     """L'état complet que rend `/sante` : signaux, coût estimé, verdicts. Sans réseau ni horloge : testable."""
     etat = signaux.etat_sante(mesures, lignes, maintenant, aujourdhui)
+    # Étape 5 : l'heure du calcul, distincte de l'heure d'affichage (une réponse ancienne ne doit pas sembler fraîche).
+    etat["calcule_a"] = signaux._heure(maintenant)
     prix = seuils.charger_prix()
     etat["cout_24h"] = {"valeur": seuils.cout_24h(etat["jetons_24h"], prix), "devise": prix["devise"],
                         "depuis": etat["jetons_24h"]["depuis"], "prix_du": prix["en_vigueur_depuis"],

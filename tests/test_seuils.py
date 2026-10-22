@@ -5,6 +5,7 @@ au chargement. Le coût est estimé à partir des jetons et d'un prix public dat
 attention, problème, inconnu) se calculent dans `/sante` : le tableau de bord et la vigie lisent le même.
 """
 import json
+from datetime import date
 
 import pytest
 from fastapi.testclient import TestClient
@@ -44,7 +45,7 @@ def test_le_fichier_des_seuils_se_charge_et_couvre_chaque_signal():
     assert set(seuils.charger()["signaux"]) == SIGNAUX
 
 
-@pytest.mark.parametrize("champ", ["pourquoi", "action", "resolution"])
+@pytest.mark.parametrize("champ", ["pourquoi", "action", "resolution", "que_faire"])
 def test_un_seuil_sans_pourquoi_action_ou_resolution_est_refuse(tmp_path, champ):
     donnees = json.loads(seuils.CHEMIN_SEUILS.read_text(encoding="utf-8"))
     del donnees["signaux"]["refus_securite"][champ]
@@ -213,3 +214,23 @@ def test_sante_rend_le_cout_date_et_les_verdicts(monkeypatch):
 ])
 def test_la_resolution_suit_la_regle_ecrite_du_seuil(signal, surcharge, attendu):
     assert seuils.est_resolu(signal, _verdict(_etat(**surcharge), signal)) is attendu
+
+
+# --- étape 5 : ce dont le tableau de bord a besoin ----------------------------------------------------------------------
+
+def test_un_que_faire_vide_est_refuse(tmp_path):
+    donnees = json.loads(seuils.CHEMIN_SEUILS.read_text(encoding="utf-8"))
+    donnees["signaux"]["fraicheur"]["que_faire"] = "   "
+    with pytest.raises(ValueError, match="fraicheur.*que_faire"):
+        seuils.charger(_ecrire(tmp_path, donnees))
+
+
+def test_chaque_verdict_porte_sa_phrase_que_faire():
+    verdicts = seuils.evaluer(_etat(), seuils.charger())
+    assert all(v["que_faire"].strip() for v in verdicts.values())
+
+
+def test_sante_dit_quand_les_mesures_ont_ete_calculees():
+    from api.sante import construire
+    etat = construire(Compteurs(horloge=lambda: 1_000_000.0), None, 1_000_500.0, date(2026, 10, 22))
+    assert etat["calcule_a"] == signaux._heure(1_000_500.0)

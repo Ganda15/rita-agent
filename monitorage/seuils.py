@@ -27,7 +27,7 @@ _ETAT_FRAICHEUR = {"vert": "sain", "orange": "attention", "rouge": "probleme", "
 
 
 def _verifier_signal(nom: str, signal: dict) -> None:
-    for champ in ("libelle", "pourquoi", "action", "resolution"):
+    for champ in ("libelle", "pourquoi", "action", "que_faire", "resolution"):
         if not isinstance(signal.get(champ), str) or not signal[champ].strip():
             raise ValueError(f"seuil « {nom} » : le champ « {champ} » manque ou est vide")
     if not signal["action"].startswith(PREFIXE_ACTION):
@@ -107,7 +107,7 @@ def evaluer(etat: dict, config: dict) -> dict:
         signal = signaux[nom]
         verdict = {"libelle": signal["libelle"], "unite": signal["unite"], "orange": signal["orange"],
                    "rouge": signal["rouge"], "pourquoi": signal["pourquoi"], "action": signal["action"],
-                   "resolution": signal["resolution"]}
+                   "que_faire": signal["que_faire"], "resolution": signal["resolution"]}
         if nom in SIGNAUX_EN_TAUX or nom == "latence_p95_ms":
             mesure = etat[nom]
             assez = mesure["effectif"] >= signal["minimum_requetes"]
