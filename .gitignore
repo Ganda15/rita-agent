@@ -52,3 +52,6 @@ data/chroma/
 # Ni l'un ni l'autre n'est une preuve : les preuves vivent dans evidence/.
 logs/
 graphify-out/
+
+# Sprint 5 (étape 9) : l état local de la copie du sprint 5 (versions courante et précédente).
+.copie-sprint5.json
