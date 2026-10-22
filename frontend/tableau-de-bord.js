@@ -27,7 +27,7 @@ const CARTES = [
   { id: "erreurs_techniques", titre: "Réponses en erreur" },
   { id: "refus_securite", titre: "Refus de sécurité" },
   { id: "latence_p95_ms", titre: "Temps de réponse" },
-  { id: "cout_24h_usd", titre: "Coût estimé" },
+  { id: "cout_24h", titre: "Coût estimé" },
   { id: "fraicheur", titre: "Fraîcheur des cours" },
   { id: "rejets_15_min", titre: "Appels rejetés" },
 ];
@@ -78,10 +78,10 @@ function decrire(id, verdict, etat) {
     return { valeur: `95 % des réponses en moins de ${nombre(v / 1000, 1)} s`,
              detail: `sur ${verdict.effectif} réponses, ${verdict.fenetre_min} dernières minutes` };
   }
-  if (id === "cout_24h_usd") {
+  if (id === "cout_24h") {
     const cout = estObjet(etat.cout_24h) ? etat.cout_24h : {};
     if (v === null || v === undefined) return { valeur: "Coût inconnu : le prix n'est pas relevé.", detail: "" };
-    return { valeur: `${nombre(v, 2)} ${cout.devise || "USD"}`,
+    return { valeur: Number(v).toLocaleString("fr-FR", { style: "currency", currency: cout.devise || "EUR" }),
              detail: `Coût cumulé depuis ${heure(cout.depuis, false)}, estimé au prix public du ${dateFr(cout.prix_du)}` };
   }
   if (id === "fraicheur") {
@@ -98,7 +98,7 @@ function decrire(id, verdict, etat) {
 // Pourquoi « inconnu » : l'absence de données a sa propre phrase, jamais une consigne d'action.
 function pourquoiInconnu(id, verdict) {
   if (id === "fraicheur") return "La base des cours n'a pas pu être lue.";
-  if (id === "cout_24h_usd") return "Le coût ne peut pas être estimé.";
+  if (id === "cout_24h") return "Le coût ne peut pas être estimé.";
   if (Number.isInteger(verdict.effectif) && Number.isInteger(verdict.minimum_requetes)) {
     return `Pas assez de questions pour juger (${verdict.effectif} sur ${verdict.minimum_requetes} nécessaires).`;
   }

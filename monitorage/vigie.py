@@ -91,8 +91,8 @@ def _valeur_lisible(nom: str, verdict: dict) -> str:
         if valeur is None:
             return f"aucune requête sur les {verdict['fenetre_min']} dernières minutes"
         return f"{_fr(valeur / 1000)} s (p95 de {verdict['effectif']} résultats, {verdict['fenetre_min']} dernières minutes)"
-    if nom == "cout_24h_usd":
-        return "inconnu" if valeur is None else f"{_fr(valeur, 2)} USD sur les 24 dernières heures disponibles"
+    if nom == "cout_24h":
+        return "inconnu" if valeur is None else f"{_fr(valeur, 2)} € sur les 24 dernières heures disponibles"
     if nom == "fraicheur":
         retards = [f"{e['ticker']} ({'aucune cotation' if e['retard_jours_ouvres'] is None else str(e['retard_jours_ouvres']) + ' jours ouvrés'})"
                    for e in verdict.get("en_retard", [])]
@@ -106,8 +106,8 @@ def _seuil_lisible(nom: str, verdict: dict) -> str:
         texte = f"problème à partir de {_fr(rouge * 100)} %, attention à partir de {_fr(orange * 100)} %"
     elif nom == "latence_p95_ms":
         texte = f"problème à partir de {_fr(rouge / 1000, 0)} s, attention à partir de {_fr(orange / 1000, 0)} s"
-    elif nom == "cout_24h_usd":
-        texte = f"problème à partir de {_fr(rouge, 2)} USD, attention à partir de {_fr(orange, 2)} USD"
+    elif nom == "cout_24h":
+        texte = f"problème à partir de {_fr(rouge, 2)} €, attention à partir de {_fr(orange, 2)} €"
     elif nom == "fraicheur":
         texte = f"problème à partir de {rouge} jours ouvrés de retard, attention à partir de {orange}"
     else:

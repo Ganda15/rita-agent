@@ -16,7 +16,7 @@ from monitorage.compteurs import Compteurs
 from tests.conftest import CLE_DE_TEST
 
 CLE = {"X-API-Key": CLE_DE_TEST}
-SIGNAUX = {"service", "erreurs_techniques", "refus_securite", "latence_p95_ms", "cout_24h_usd", "fraicheur",
+SIGNAUX = {"service", "erreurs_techniques", "refus_securite", "latence_p95_ms", "cout_24h", "fraicheur",
            "rejets_15_min"}
 
 
@@ -29,7 +29,7 @@ def _etat(**surcharges):
     """Un état de `/sante` où tout va bien ; chaque test change ce qu'il vérifie."""
     etat = {"erreurs_techniques": _taux(0, 20), "refus_securite": _taux(0, 20),
             "latence_p95_ms": {"valeur": 3000, "effectif": 20}, "rejets_15_min": 0,
-            "cout_24h": {"valeur": 0.2, "devise": "USD"},
+            "cout_24h": {"valeur": 0.2, "devise": "EUR"},
             "fraicheur": {"pire": "vert", "nb_valeurs": 3, "en_retard": [], "message": ""}}
     etat.update(surcharges)
     return etat
@@ -81,7 +81,7 @@ def _ecrire(tmp_path, donnees, nom="seuils.json"):
 
 def test_un_signal_manquant_est_refuse(tmp_path):
     donnees = json.loads(seuils.CHEMIN_SEUILS.read_text(encoding="utf-8"))
-    del donnees["signaux"]["cout_24h_usd"]
+    del donnees["signaux"]["cout_24h"]
     with pytest.raises(ValueError, match="couvrir exactement"):
         seuils.charger(_ecrire(tmp_path, donnees))
 
@@ -120,14 +120,14 @@ def test_les_seuils_de_fraicheur_suivent_les_regles_de_monitorage_fraicheur():
 
 def test_le_prix_est_date_source_et_au_bon_montant():
     prix = seuils.charger_prix()
-    assert (prix["entree_par_million"], prix["sortie_par_million"], prix["devise"]) == (2.75, 16.5, "USD")
+    assert (prix["entree_par_million"], prix["sortie_par_million"], prix["devise"]) == (2.4199, 14.5195, "EUR")
     assert prix["en_vigueur_depuis"] == "2026-03-01"
-    assert prix["source"].startswith("https://prices.azure.com/")
+    assert prix["source"].startswith("https://prices.azure.com/") and "currencyCode='EUR'" in prix["source"]
 
 
-def test_un_million_de_jetons_d_entree_et_cent_mille_de_sortie_coutent_4_40_usd():
+def test_un_million_de_jetons_d_entree_et_cent_mille_de_sortie_coutent_3_87_eur():
     jetons = {"entree": 1_000_000, "sortie": 100_000}
-    assert seuils.cout_24h(jetons, seuils.charger_prix()) == pytest.approx(4.40)
+    assert seuils.cout_24h(jetons, seuils.charger_prix()) == pytest.approx(2.4199 + 1.45195)
 
 
 # --- les verdicts ---------------------------------------------------------------------------------------------------------
@@ -162,7 +162,7 @@ def test_le_verdict_de_la_latence(valeur, attendu):
 
 @pytest.mark.parametrize("valeur, attendu", [(0.2, "sain"), (1.5, "attention"), (6.0, "probleme"), (None, "inconnu")])
 def test_le_verdict_du_cout(valeur, attendu):
-    assert _verdict(_etat(cout_24h={"valeur": valeur, "devise": "USD"}), "cout_24h_usd")["etat"] == attendu
+    assert _verdict(_etat(cout_24h={"valeur": valeur, "devise": "EUR"}), "cout_24h")["etat"] == attendu
 
 
 @pytest.mark.parametrize("pire, attendu", [("vert", "sain"), ("orange", "attention"), ("rouge", "probleme"),
@@ -190,8 +190,9 @@ def test_sante_rend_le_cout_date_et_les_verdicts(monkeypatch):
     monkeypatch.setattr(compteurs, "COMPTEURS", mesures)
     monkeypatch.setattr(signaux, "lire_fraicheur_par_valeur", lambda dsn=None: None)
     corps = TestClient(app).get("/sante", headers=CLE).json()
-    assert corps["cout_24h"]["valeur"] == pytest.approx(2000 * 2.75e-6 + 300 * 16.5e-6)
-    assert (corps["cout_24h"]["devise"], corps["cout_24h"]["prix_du"]) == ("USD", "2026-03-01")
+    # Le coût est arrondi au micro-euro (6 décimales, monitorage/seuils.py) : on le vérifie à 1 micro-euro près.
+    assert corps["cout_24h"]["valeur"] == pytest.approx(2000 * 2.4199e-6 + 300 * 14.5195e-6, abs=1e-6)
+    assert (corps["cout_24h"]["devise"], corps["cout_24h"]["prix_du"]) == ("EUR", "2026-03-01")
     assert corps["verdicts"]["fraicheur"]["etat"] == "inconnu"
     assert corps["verdicts"]["refus_securite"]["etat"] == "inconnu"       # 1 requête, sous le minimum
     assert set(corps["verdicts"]) == SIGNAUX - {"service"}
@@ -206,8 +207,8 @@ def test_sante_rend_le_cout_date_et_les_verdicts(monkeypatch):
     ("erreurs_techniques", {"erreurs_techniques": _taux(5, 6)}, False),  # 83 % : les erreurs sont encore là
     ("latence_p95_ms", {"latence_p95_ms": {"valeur": None, "effectif": 0}}, True),
     ("latence_p95_ms", {"latence_p95_ms": {"valeur": 25_000, "effectif": 20}}, False),
-    ("cout_24h_usd", {"cout_24h": {"valeur": 2.0, "devise": "USD"}}, True),
-    ("cout_24h_usd", {"cout_24h": {"valeur": None, "devise": "USD"}}, False),
+    ("cout_24h", {"cout_24h": {"valeur": 2.0, "devise": "EUR"}}, True),
+    ("cout_24h", {"cout_24h": {"valeur": None, "devise": "EUR"}}, False),
     ("rejets_15_min", {"rejets_15_min": 40}, True),
     ("fraicheur", {"fraicheur": {"pire": "orange", "nb_valeurs": 3, "en_retard": [], "message": ""}}, True),
     ("fraicheur", {"fraicheur": {"pire": "rouge", "nb_valeurs": 3, "en_retard": [], "message": ""}}, False),

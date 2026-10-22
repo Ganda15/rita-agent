@@ -254,9 +254,9 @@ def _verdict(signal, **surcharges):
     ("latence_p95_ms", {"latence_p95_ms": {"valeur": None, "effectif": 0}}, "aucune requête", "au moins 5 requêtes"),
     ("refus_securite", {"refus_securite": {"valeur": None, "numerateur": 0, "effectif": 0}}, "aucune requête",
      "au moins 10 requêtes"),
-    ("cout_24h_usd", {"cout_24h": {"valeur": 6.0, "devise": "USD"}}, "6,00 USD sur les 24 dernières heures",
-     "problème à partir de 5,00 USD"),
-    ("cout_24h_usd", {"cout_24h": {"valeur": None, "devise": "USD"}}, "inconnu", "attention à partir de 1,00 USD"),
+    ("cout_24h", {"cout_24h": {"valeur": 6.0, "devise": "EUR"}}, "6,00 € sur les 24 dernières heures",
+     "problème à partir de 5,00 €"),
+    ("cout_24h", {"cout_24h": {"valeur": None, "devise": "EUR"}}, "inconnu", "attention à partir de 1,00 €"),
     ("rejets_15_min", {"rejets_15_min": 150}, "150 sur les 15 dernières minutes", "problème à partir de 100"),
     ("fraicheur", {"fraicheur": {"pire": "rouge", "nb_valeurs": 3, "message": "", "en_retard": [
         {"ticker": "AIR.PA", "derniere_seance": None, "retard_jours_ouvres": None, "statut": "rouge"},

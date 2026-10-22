@@ -19,7 +19,7 @@ from pathlib import Path
 ICI = Path(__file__).parent
 CHEMIN_SEUILS = ICI / "seuils.json"
 CHEMIN_PRIX = ICI / "prix.json"
-SIGNAUX = ("service", "erreurs_techniques", "refus_securite", "latence_p95_ms", "cout_24h_usd", "fraicheur",
+SIGNAUX = ("service", "erreurs_techniques", "refus_securite", "latence_p95_ms", "cout_24h", "fraicheur",
            "rejets_15_min")
 SIGNAUX_EN_TAUX = ("erreurs_techniques", "refus_securite")
 PREFIXE_ACTION = "docs/exploitation.md#"
@@ -68,7 +68,7 @@ def charger_prix(chemin: Path = CHEMIN_PRIX) -> dict:
 def cout_24h(jetons: dict, prix: dict) -> float:
     """Le coût estimé, dans la devise du prix : jetons d'entrée et de sortie × prix par million."""
     cout = (jetons["entree"] * prix["entree_par_million"] + jetons["sortie"] * prix["sortie_par_million"]) / 1_000_000
-    # Six décimales : une question coûte environ 0,01 USD ; arrondir à quatre fausserait chaque question d'environ 0,5 %.
+    # Six décimales : une question coûte environ 0,01 € ; arrondir à quatre fausserait chaque question d'environ 0,5 %.
     return round(cout, 6)
 
 
@@ -116,7 +116,7 @@ def evaluer(etat: dict, config: dict) -> dict:
                            etat=_niveau(mesure["valeur"], signal) if assez else "inconnu")
             if "numerateur" in mesure:
                 verdict["numerateur"] = mesure["numerateur"]
-        elif nom == "cout_24h_usd":
+        elif nom == "cout_24h":
             valeur = etat["cout_24h"]["valeur"]
             verdict.update(valeur=valeur, etat=_niveau(valeur, signal))
         elif nom == "rejets_15_min":

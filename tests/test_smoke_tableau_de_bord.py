@@ -13,7 +13,7 @@ from tests.test_smoke_ui import page, serveur  # noqa: F401, ce sont des fixture
 from tests.test_vigie import ATTAQUE, SAIN, _sante
 
 CLE = "cle-de-test-smoke-ui-32-caracteres-x"
-CARTES = ["service", "erreurs_techniques", "refus_securite", "latence_p95_ms", "cout_24h_usd", "fraicheur",
+CARTES = ["service", "erreurs_techniques", "refus_securite", "latence_p95_ms", "cout_24h", "fraicheur",
           "rejets_15_min"]
 
 
@@ -74,7 +74,8 @@ def test_sans_trafic_les_cartes_disent_inconnu_et_pourquoi_sans_consigne(page, s
 def test_les_trois_heures_sont_affichees(page, serveur):  # noqa: F811
     ecran = _tableau(page, serveur, _sante(*SAIN).json())
     assert "Tableau actualisé à" in ecran["horodatages"] and "Mesures calculées à" in ecran["horodatages"]
-    assert "Coût cumulé depuis" in ecran["cartes"]["cout_24h_usd"]["texte"]
+    assert "Coût cumulé depuis" in ecran["cartes"]["cout_24h"]["texte"]
+    assert "€" in ecran["cartes"]["cout_24h"]["texte"] and "USD" not in ecran["cartes"]["cout_24h"]["texte"]
 
 
 def test_sante_en_panne_et_health_sain(page, serveur):  # noqa: F811
