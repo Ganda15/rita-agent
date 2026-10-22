@@ -35,3 +35,12 @@ elles sont consignées, avec leur date, dans le message du commit de chaque éta
 Le tableau de bord, la vigie et les seuils sont testés avec des données fabriquées par le vrai code. Leur comportement
 sur la copie du sprint 5 en marche (trafic réel, vraie issue GitHub, vraie panne simulée) reste à prouver à l'étape 11.
 L'étape 5 est terminée, testée et commitée localement : elle n'est pas encore poussée, revue ni intégrée.
+
+## Les mesures de fin de sprint (22/10/2026, soir)
+
+| Fichier | Ce qu'il prouve | Résultat |
+|---|---|---|
+| `suite-complete-fin-2026-10-22.txt` | aucune régression dans tout le dépôt, étapes 6 à 13 comprises | 1674 passed, 24 skipped, 2 xfailed, 0 failed |
+| `tests-et-couverture-sprint-5-fin-2026-10-22.txt` | les tests du sprint 5 et la couverture de ses neuf modules (les cinq ci-dessus, plus `monitorage/exercice.py`, `monitorage/exercer.py`, `api/exercice.py`, `scripts/copie_sprint5.py`) | 286 passed ; couverture 100 % (764 instructions) |
+
+Le comportement sur la copie en marche est prouvé à l'étape 11 : `../preuves-copie-2026-10-22.md`.
