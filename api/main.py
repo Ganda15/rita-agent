@@ -30,6 +30,7 @@ from agents.analyst import CONSIGNES_REDACTION, ROLE_REDACTEUR
 from api.donnees import routeur as routeur_donnees
 from api.limiteur import limiter_debit
 from api.question import routeur as routeur_question
+from api.sante import routeur as routeur_sante
 from db import audit_mcp
 from graph.workflow import generer_briefing_complet
 from guardrails.sortie import verifier_fuite, verifier_sortie
@@ -250,6 +251,10 @@ app.include_router(routeur_donnees, dependencies=[Depends(verify_api_key)])
 # Sprint 4 (C3) : la limite de débit vient APRÈS la clé, dans cet ordre : un appel sans clé valide ne consomme pas le
 # quota. Le même compteur sert `/briefing` (api/limiteur.py).
 app.include_router(routeur_question, dependencies=[Depends(verify_api_key), Depends(limiter_debit)])
+
+# --- Sprint 5 (étape 2) : les signaux de la vigie --------------------------------------------------------------------
+# La clé sur le routeur entier, comme pour /donnees ; pas de limite de débit : /sante n'appelle jamais le modèle.
+app.include_router(routeur_sante, dependencies=[Depends(verify_api_key)])
 
 
 # --- C9 : le briefing rédigé ------------------------------------------------
