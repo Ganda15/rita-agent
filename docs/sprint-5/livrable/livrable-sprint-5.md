@@ -51,8 +51,12 @@ d'achat ou de vente et les tentatives de détournement qu'elle reconnaît.
 
 ### 1.4 La vigie, couche par couche
 
+Les traces disent ce qui s'est passé, appel par appel ; les mesures disent si c'est grave ; les alertes disent quoi
+faire.
+
 | Couche | Ce qui est en place | Fichier |
 |---|---|---|
+| Traces | chaque appel laisse une trace dans Langfuse : son parcours (garde-fous, appel au modèle), sa durée, son statut et son motif, jamais le texte de la question ni de la réponse ; le `request_id` relie la trace à la ligne du journal ; sur la copie, un projet Langfuse propre (§ 5.12) | [`src/traces.py`](../../../src/traces.py) |
 | Mesures | chaque appel à `/question` et `/briefing` est rangé dans une de six catégories (réponse, refus de sécurité, refus de corpus, refus de qualité, erreur technique, rejet d'accès ou de saisie), avec sa durée et ses jetons ; en mémoire, sous un verrou, 24 h au plus | [`monitorage/compteurs.py`](../../../monitorage/compteurs.py) |
 | Signaux | taux sur les 15 dernières minutes, temps de réponse p95, coût estimé sur 24 h, fraîcheur des cours par valeur, rejets ; servis en JSON par `GET /sante`, protégée par la clé | [`monitorage/signaux.py`](../../../monitorage/signaux.py), [`api/sante.py`](../../../api/sante.py) |
 | Seuils | un seuil ATTENTION et un seuil PROBLÈME par signal, chacun avec son pourquoi, son action et sa règle de résolution ; prix public du modèle, daté et sourcé | [`monitorage/seuils.json`](../../../monitorage/seuils.json), [`monitorage/prix.json`](../../../monitorage/prix.json) |

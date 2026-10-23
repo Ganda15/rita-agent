@@ -20,6 +20,7 @@ copie de RITA lancée sur le poste avec Docker, construite depuis la branche du 
 
 | Livré | Où |
 |---|---|
+| Les traces de chaque appel dans Langfuse, sans texte, reliées au journal par le `request_id` ; un projet propre à la copie | `src/traces.py`, projet Langfuse `rita-copie-sprint5` |
 | Des compteurs en six catégories, des signaux sur 15 minutes et sur 24 h, servis par `GET /sante` | `monitorage/compteurs.py`, `monitorage/signaux.py`, `api/sante.py` |
 | Sept seuils provisoires, chacun avec son pourquoi, son action et sa règle de résolution ; un coût en euros au prix public daté | `monitorage/seuils.json`, `monitorage/prix.json` |
 | Un tableau de bord de sept cartes : un mot, une valeur en clair, « Que faire » | `frontend/tableau-de-bord.html` |
