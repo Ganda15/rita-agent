@@ -22,7 +22,7 @@
       "rouge": 0.2,
       "pourquoi": "Une erreur technique (fournisseur, format, erreur imprévue) est un service rendu à personne. Le trafic de RITA est faible : 1 erreur sur 5 vaut déjà 20 %, d'où un minimum de 5 requêtes avant de juger.",
       "action": "docs/exploitation.md#diagnostiquer-une-panne",
-      "que_faire": "Suivre « Diagnostiquer une panne » : chercher le motif des erreurs dans le journal, puis vérifier le fournisseur du modèle.",
+      "que_faire": "Suivre « Diagnostiquer une panne » : chercher le motif des erreurs dans le journal, vérifier qu'aucun exercice de panne n'est en cours (bandeau du tableau de bord), puis vérifier le fournisseur du modèle.",
       "resolution": "Aucune erreur technique dans les 15 dernières minutes, ou un taux sous 20 % avec au moins 5 requêtes."
     },
     "refus_securite": {
