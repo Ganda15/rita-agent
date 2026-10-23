@@ -35,28 +35,31 @@ copie de RITA lancée sur le poste avec Docker, construite depuis la branche du 
 |---|---|---|
 | 1 | Du signal à l'action | **prêt** : dérive jouée le 22/10, issue #128 ouverte par la vigie, action suivie, issue fermée |
 | 2 | Tableau de bord lisible | **prêt** : testé dans chaque état, vu sur la copie en panne, rétablie, en dérive |
-| 3 | Doc : déployer | jouée par son auteur sur la copie ; **pas encore suivie par un tiers** |
-| 4 | Doc : diagnostiquer | panne simulée diagnostiquée avec la doc le 22/10 ; **pas encore par un tiers** |
-| 5 | Doc : rollback | retour arrière en 6 s, commit et image vérifiés ; **pas encore par un tiers** |
-| 6 | Démo prête | scénario écrit et vérifié contre le code ; **répétitions à faire** |
+| 3 | Doc : déployer | suivie à la lettre par son auteur le 23/10, deux trous corrigés ; **le test par un tiers se fait à l'atelier** |
+| 4 | Doc : diagnostiquer | panne inconnue trouvée en 11 minutes avec la doc le 23/10, cinq trous corrigés ; **tiers à l'atelier** |
+| 5 | Doc : rollback | retour arrière en 5 s, commit et image vérifiés, sans trou ; **tiers à l'atelier** |
+| 6 | Démo prête | **prêt** : deux répétitions le 23/10, environ 9 minutes et 9 minutes 30 |
 | 7 | Série complète | **prêt** : grilles 1 à 4 versées, avec les retours et leur suite ; grille 5 remplie à l'atelier |
 
 ## 3. Ce qui est mesuré
 
 | Mesure | Résultat |
 |---|---|
-| Suite complète | 1674 passés, 24 ignorés, 2 échecs attendus, 0 échec |
+| Suite complète | 1680 passés, 24 ignorés, 2 échecs attendus, 0 échec |
 | Couverture des neuf modules du sprint 5 | 100 % (764 instructions, 286 tests) |
 | Panne simulée | 5 erreurs sur 5, issue #127 ouverte ; service rétabli à 19 h 00 ; alerte résolue et issue fermée à 19 h 14 |
 | Dérive simulée | 12 refus sur 12, 0 jeton consommé ; issue #128 ouverte à 19 h 16, fermée à 19 h 32 |
 | Retour arrière | 6 s, sans reconstruction ; un second retour est refusé |
-| Coût des exercices | 0,009486 € estimés, sous le plafond de 0,10 € fixé avant |
+| Coût des exercices du 22/10 | 0,009486 € estimés, sous le plafond de 0,10 € fixé avant |
+| Test de la doc à la lettre (23/10) | dix trous trouvés et corrigés, chacun couvert par un test |
+| Répétitions de la démo (23/10) | environ 9 minutes, puis environ 9 minutes 30 ; dérive et alerte jouées les deux fois |
 
 ## 4. Ce qui n'est pas fait
 
 - La production n'a pas de vigie ; la livraison de la copie se lance par une commande (la livraison automatique est
   celle de la production, citée, pas rejouée).
-- La documentation n'a pas encore été suivie par un tiers ; les répétitions de la démo restent à faire.
+- La documentation n'a pas encore été suivie par un tiers : elle l'a été à la lettre par son auteur, le test autonome
+  se fait à l'atelier.
 - Les seuils sont provisoires ; les mesures repartent à zéro au redémarrage ; la vigie et la collecte des cours se
   lancent à la main.
 - L'écart de fraîcheur des cours en production reste ouvert.

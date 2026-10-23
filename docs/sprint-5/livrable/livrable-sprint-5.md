@@ -39,6 +39,9 @@ Ce choix permet de provoquer des pannes et des alertes sans risque pour le servi
 quel : la production n'a pas de vigie, et la livraison de la copie se lance par une commande. La livraison
 automatique existe en production depuis le sprint 2 ; elle est citée (§ 5.3), pas rejouée.
 
+Décision du 22/10 : le sprint 5 reste un prototype local jusqu'à la remise, faute de temps pour brancher la vigie sur
+la production sans risque pour le service en ligne.
+
 ### 1.3 RITA en trois phrases
 
 RITA aide un investisseur particulier à lire l'actualité des sociétés cotées, sans lire trente articles et en sachant
@@ -59,15 +62,16 @@ d'achat ou de vente et les tentatives de détournement qu'elle reconnaît.
 | Copie du poste | déployer une version, revenir à la précédente sans reconstruire, vérifier le commit et l'image | [`scripts/copie_sprint5.py`](../../../scripts/copie_sprint5.py), [`docker-compose.sprint5.yml`](../../../docker-compose.sprint5.yml) |
 | Documentation | déployer, diagnostiquer une panne, revenir en arrière, et la table des alertes | [`docs/exploitation.md`](../../exploitation.md) |
 
-### 1.5 L'état de la copie, le 22/10/2026
+### 1.5 L'état de la copie, le 23/10/2026
 
 | Mesure | Valeur | Preuve |
 |---|---|---|
-| Version servie par la copie | `d43a01e`, version précédente gardée `699e479` | § 5.3 |
+| Version servie par la copie | `648293f`, version précédente gardée `d43a01e` | § 5.10 |
 | Corpus de la copie | le jeu de démonstration : 6 articles, 3 valeurs (AIR.PA, MC.PA, OR.PA), cours collectés jusqu'au 22/10 | § 5.2 |
-| Exercices joués | une panne diagnostiquée avec la doc, une dérive détectée, deux issues ouvertes puis fermées par la vigie (#127, #128) | § 5.4, § 5.5 |
-| Coût de ces exercices | 0,009486 € estimés, sous le plafond de 0,10 € fixé avant | § 5.9 |
-| Tests | 1674 passés, 24 ignorés, 2 échecs attendus ; les neuf modules du sprint 5 couverts à 100 % | § 5.1 |
+| Exercices joués | le 22/10 : une panne diagnostiquée avec la doc, une dérive détectée (#127, #128) ; le 23/10 : la doc suivie à la lettre avec une panne simulée (#129), deux répétitions de la démo (#131) ; chaque issue ouverte puis fermée par la vigie | § 5.4, § 5.5, § 5.10, § 5.11 |
+| Coût des exercices du 22/10 | 0,009486 € estimés, sous le plafond de 0,10 € fixé avant | § 5.9 |
+| Traçage | Langfuse, dans un projet propre à la copie (`rita-copie-sprint5`), distinct de celui de la production | § 5.12 |
+| Tests | 1680 passés, 24 ignorés, 2 échecs attendus ; les neuf modules du sprint 5 couverts à 100 % | § 5.1 |
 | Production | inchangée : N15 (`3c35398`), livrée le 21/10 | § 5.3 |
 
 Heures de Paris, sauf mention UTC.
@@ -83,8 +87,8 @@ branche `sprint-5-vigie-demo`.
 | Livrable demandé | Où le trouver | État |
 |---|---|---|
 | « Le système complet en production avec sa vigie » | la copie du poste (`http://localhost:8011`), son tableau de bord (`/tableau-de-bord.html`) et la vigie (`monitorage/vigie.py`) | **prototype local**, pas la production : l'écart est au § 1.2 et au § 7 |
-| « `docs/exploitation.md` » | [`docs/exploitation.md`](../../exploitation.md) : avant de commencer, déployer, diagnostiquer une panne, revenir en arrière, les alertes, la vigie et les exercices ; l'ancien guide suit en annexes | écrit, relu contre le code, joué sur la copie le 22/10 (§ 5.3, § 5.4) |
-| « Le scénario de démo écrit et répété » | [`docs/sprint-5/DEMO.md`](../DEMO.md) : 9 min 30 en six segments, la liste de contrôle, le plan B | écrit et vérifié contre le code ; **les deux répétitions chronométrées restent à faire** |
+| « `docs/exploitation.md` » | [`docs/exploitation.md`](../../exploitation.md) : avant de commencer, déployer, diagnostiquer une panne, revenir en arrière, les alertes, la vigie et les exercices ; l'ancien guide suit en annexes | écrit, relu contre le code, joué sur la copie le 22/10 ; suivi à la lettre le 23/10, dix trous trouvés et corrigés (§ 5.3, § 5.4, § 5.10) |
+| « Le scénario de démo écrit et répété » | [`docs/sprint-5/DEMO.md`](../DEMO.md) : 9 min 30 en six segments, la liste de contrôle, le plan B | écrit, vérifié contre le code, **répété deux fois le 23/10** : environ 9 minutes, puis environ 9 minutes 30 (§ 5.11) |
 
 ## 3. Les critères de la grille : ce qui sera montré, et la preuve
 
@@ -92,10 +96,10 @@ branche `sprint-5-vigie-demo`.
 |---|---|---|---|---|
 | 1 | Du signal à l'action : une dérive simulée déclenche l'alerte prévue, et l'action est documentée | la dérive (12 refus, 0 jeton), l'issue ouverte par la vigie, la carte PROBLÈME, l'action de la doc jouée | joué le 22/10 : issue #128 ouverte à 19 h 16, action suivie, issue fermée à 19 h 32 (§ 5.5) | prêt |
 | 2 | Tableau de bord lisible sans explication orale | sept cartes, un mot et une phrase par signal, « Que faire » sous chaque problème | tests de chaque état, captures sur la copie en panne, rétablie, puis en dérive (§ 5.6) | prêt ; la lisibilité, seul l'évaluateur la juge |
-| 3 | Test de la doc : déployer seul | `docs/exploitation.md`, section « Déployer » | procédure jouée sur la copie (§ 5.3) | jouée par son auteur ; pas encore suivie par un tiers |
-| 4 | Test de la doc : diagnostiquer la panne simulée | section « Diagnostiquer une panne », six étapes jusqu'à la cause | panne diagnostiquée avec la doc le 22/10 (§ 5.4) | idem |
-| 5 | Test de la doc : rollback seul | section « Revenir à la version précédente » | retour arrière en 6 s, commit et image vérifiés ; second retour refusé (§ 5.3) | idem |
-| 6 | Démo prête : 10 minutes, du réel (parcours principal, une livraison, une alerte) | le scénario `docs/sprint-5/DEMO.md` | questions vérifiées sur la copie ; chaque résultat attendu relu contre le code (§ 5.8) | **répétitions à faire** |
+| 3 | Test de la doc : déployer seul | `docs/exploitation.md`, section « Déployer » | procédure jouée sur la copie (§ 5.3) ; suivie à la lettre le 23/10, deux trous corrigés (§ 5.10) | suivie à la lettre par son auteur ; le test par un tiers se fait à l'atelier |
+| 4 | Test de la doc : diagnostiquer la panne simulée | section « Diagnostiquer une panne », six étapes jusqu'à la cause | panne diagnostiquée avec la doc le 22/10 (§ 5.4) ; le 23/10, panne inconnue trouvée en 11 minutes en suivant la doc, cinq trous corrigés (§ 5.10) | idem |
+| 5 | Test de la doc : rollback seul | section « Revenir à la version précédente » | retour arrière en 6 s, commit et image vérifiés ; second retour refusé (§ 5.3) ; rejoué à la lettre le 23/10 sans trou (§ 5.10) | idem |
+| 6 | Démo prête : 10 minutes, du réel (parcours principal, une livraison, une alerte) | le scénario `docs/sprint-5/DEMO.md` | questions vérifiées sur la copie ; deux répétitions le 23/10, environ 9 minutes et 9 minutes 30 (§ 5.11) | prêt |
 | 7 | Série complète : cinq grilles versionnées, journal des retours tenu | `eval/ateliers/` et le § 6 | grilles des ateliers 1 à 4 versées, avec les retours et leur suite | prêt ; la grille de l'atelier 5 sera remplie par l'évaluateur pendant la démonstration (§ 6) |
 
 ## 4. Les signaux, les seuils et les actions
@@ -132,7 +136,7 @@ Chaque étape a commencé par des tests rouges, avant le code ; les rouges sont 
 
 | Mesure | Résultat | Fichier |
 |---|---|---|
-| Suite complète, 22/10, commit `d636a69` | 1674 passés, 24 ignorés, 2 échecs attendus, 0 échec | [`suite-complete-fin-2026-10-22.txt`](../../../evidence/sprint-5/mesures/suite-complete-fin-2026-10-22.txt) |
+| Suite complète, 23/10 | 1680 passés, 24 ignorés, 2 échecs attendus, 0 échec | [`suite-complete-2026-10-23.txt`](../../../evidence/sprint-5/mesures/suite-complete-2026-10-23.txt) |
 | Tests du sprint 5 et couverture des neuf modules du sprint 5 | 286 passés ; 100 % des 764 instructions | [`tests-et-couverture-sprint-5-fin-2026-10-22.txt`](../../../evidence/sprint-5/mesures/tests-et-couverture-sprint-5-fin-2026-10-22.txt) |
 | Analyse statique (ruff) | aucune remarque | [`ruff-sprint-5-2026-10-22.txt`](../../../evidence/sprint-5/mesures/ruff-sprint-5-2026-10-22.txt) |
 
@@ -227,6 +231,48 @@ vérifie que la somme des segments tient en 10 minutes, que chaque commande cit�
 Les exercices du 22/10 ont consommé 2 420 jetons d'entrée et 250 de sortie, soit **0,009486 €** estimés, sous le
 plafond de 0,10 € fixé avant les preuves. La dérive n'a consommé aucun jeton : les refus arrivent avant le modèle.
 
+### 5.10 Le test de la doc à la lettre (23/10)
+
+L'auteur de la doc l'a suivie seul, dans l'ordre, depuis sa copie de lecture, sur une panne simulée posée sans en
+dire la nature (seul le symptôme était donné). C'est une répétition, pas le test par un tiers, qui se fait à l'atelier.
+
+| Section | Résultat | Trous trouvés et corrigés |
+|---|---|---|
+| Avant de commencer | clés présentes, tableau de bord ouvert | une commande pour vérifier les clés sans les afficher ; Langfuse facultatif |
+| Déployer | `d752b33` en service, « Le service répond » SAIN | les zéros d'`initialiser` sur une copie déjà initialisée ; les avertissements `Read-only file system` sans effet |
+| Diagnostiquer une panne | cause trouvée en 11 minutes (le bandeau de l'exercice) ; service rétabli ; issue #129 fermée par la vigie 17 minutes après son ouverture | l'étape 2 renvoyait à l'étape 4 et faisait sauter l'étape 3, celle qui trouve l'exercice ; une panne simulée a les mêmes symptômes qu'une vraie ; rien de prévu quand les étapes 4 et 5 ne donnent rien ; la consigne de la carte « Réponses en erreur » ne parlait pas de l'exercice |
+| Revenir à la version précédente | revenu à `d43a01e` en 5 s, image vérifiée, sans reconstruction | aucun |
+| Déployer de nouveau | `18f34de` en 4 s, la nouvelle consigne servie par le tableau de bord | aucun |
+
+Les neuf trous sont corrigés (commit `18f34de`), chacun couvert par un test rouge puis vert
+(`tests/test_exploitation_doc.py`) ; un dixième l'est ensuite (§ 5.12). Détail :
+[`test-doc-et-repetitions-2026-10-23.md`](../../../evidence/sprint-5/test-doc-et-repetitions-2026-10-23.md).
+
+### 5.11 Les deux répétitions de la démo (23/10)
+
+| | Répétition 1 | Répétition 2 |
+|---|---|---|
+| Vigie | à blanc | réelle (`--github`) |
+| Parcours principal | réponse citée à 10:49, refus `OUT_OF_CORPUS` | réponse citée à 11:22, refus `OUT_OF_CORPUS` |
+| Dérive | 12 refus sur 12 en 83 s, 0 jeton | 12 refus sur 12 en 84 s, 0 jeton |
+| Alerte | « Refus de sécurité » PROBLÈME, 12 sur 12 | issue #131 ouverte à 11:28, fermée par la vigie à 11:45 |
+| Durée totale | environ 9 minutes | environ 9 minutes 30 |
+| Corrigé ensuite dans le scénario | la phrase sur la livraison automatique de production, oubliée : raccourcie et dite juste après `etat` | deux `deployer` puis un `revenir` ont laissé la copie sur l'ancienne version : un seul `deployer` dans le segment |
+
+Les horodatages viennent des traces de Langfuse et du journal de la copie ; les durées totales ont été chronométrées
+par le présenté.
+
+### 5.12 Langfuse sur la copie, et une fausse alerte corrigée
+
+Le 23/10 à 09:50, le traçage Langfuse a été activé sur la copie : chaque question y laisse une trace `question` sans
+texte (entrée et sortie vides), avec le même `request_id` que le journal de la copie, ce qui relie la trace à la
+procédure de diagnostic. Les clés venaient du `.env` de développement, qui pointe sur le projet Langfuse de la
+production. À 10:30, la panne simulée de 10:04 a déclenché l'alerte « fournisseur en erreur » de la production (issue
+#130). L'API de Langfuse l'a confirmé : les 10 observations en erreur des dernières 24 h venaient toutes de la copie,
+et la production n'en avait aucune. L'issue a été fermée avec son explication, et la copie est passée sur son propre
+projet, `rita-copie-sprint5`, sans alerte ; une question de test y arrive, et plus dans celui de la production. La
+documentation le dit désormais (trou 10).
+
 ## 6. Journal des retours
 
 **Conseil reçu à l'atelier n°4 : traité.** Le formateur a redonné les conseils de présentation de l'atelier n°3 : aller
@@ -247,9 +293,8 @@ fichier. Atelier 5 : remplie par l'évaluateur pendant la démonstration, puis v
   exercices tournent sur la copie du poste. Les ajouter à l'original sera une décision à part.
 - **La livraison de la copie se lance par une commande.** La livraison automatique est celle de la production (N15),
   citée et non rejouée.
-- **La documentation n'a pas encore été suivie par un tiers.** Elle a été jouée par son auteur sur la copie ; le test
-  autonome se fera à l'atelier, avec l'évaluateur.
-- **Les deux répétitions chronométrées de la démo restent à faire.**
+- **La documentation n'a pas encore été suivie par un tiers.** Elle a été suivie à la lettre par son auteur, et dix
+  trous ont été corrigés ; le test autonome se fera à l'atelier, avec l'évaluateur.
 - **Les seuils sont provisoires** tant qu'ils n'ont pas été relus sur un trafic réel.
 - **Les mesures vivent en mémoire** : elles repartent à zéro à chaque redémarrage de l'API (déploiement, retour
   arrière). Le tableau de bord affiche « mesures depuis HH:MM ».
@@ -260,7 +305,9 @@ fichier. Atelier 5 : remplie par l'évaluateur pendant la démonstration, puis v
   les statuts (la preuve repose sur la lecture de chaque ligne) ; pour des refus instantanés, le tableau de bord
   affiche « moins de 0,0 s » ; juste après l'ouverture d'une issue, GitHub peut mettre quelques secondes à la lister :
   il faut laisser au moins 30 s entre deux passages de la vigie ; le corps de l'issue #127, publié avant le correctif,
-  garde une heure UTC.
+  garde une heure UTC ; à blanc, la vigie affiche à tort `vigie : ouverte : …` après `[à blanc] ouvrirait l'issue`,
+  alors qu'aucune issue n'est créée ; les traces de la copie du 23/10 entre 09:50 et 11:58 sont restées dans le projet
+  Langfuse de la production.
 - **Restes de documentation** : `docs/EXPLOITATION.pdf` date d'avant le sprint 5 ; `deploy/deployer.py` et le
   workflow `retour-arriere.yml` citent encore l'ancien nom `EXPLOITATION.md` ; le lien « Question » manque dans le menu de deux pages.
 

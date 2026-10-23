@@ -9,6 +9,17 @@
 
 ---
 
+## 2026-10-23 (matin) : sprint 5, la doc suivie à la lettre, deux répétitions, une fausse alerte de production corrigée
+
+**Fait** : `docs/exploitation.md` suivie à la lettre par son auteur sur la copie (déployer, panne simulée inconnue
+trouvée en 11 minutes, retour arrière, redéploiement) : dix trous trouvés et corrigés, chacun couvert par un test
+(commits `18f34de` et suivant). Deux répétitions de la démo, environ 9 minutes et 9 minutes 30 ; deux corrections du
+scénario (`57ebf56`, `648293f`). **Manque découvert** : la copie envoyait ses traces au projet Langfuse de la
+production ; sa panne simulée a déclenché l'alerte de production (issue #130, fausse alerte, fermée avec son
+explication après vérification par l'API de Langfuse). La copie a désormais son propre projet Langfuse, sans alerte.
+**Décision rappelée** (22/10) : le sprint 5 reste un prototype local jusqu'à la remise. Livrable v1 mis à jour ; tag
+`livrable-sprint-5-v1` toujours à poser, après l'atelier n°5.
+
 ## 2026-10-22 (nuit) : sprint 5, la vigie et la démo, prototype local ; livrable en version 1 (tag `livrable-sprint-5-v1` à poser)
 
 **Décision** : le sprint 5 ne touche pas l'original (ni `main`, ni la production, ni le serveur, ni sa base). Il vit sur
