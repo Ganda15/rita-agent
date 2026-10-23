@@ -5,6 +5,7 @@ Trois garanties, testées sans lancer gitleaks :
   dépôt, chacune écrite en entier (aucun motif large qui laisserait passer une vraie clé) ;
 - `.gitleaksignore` ne contient que les deux secrets historiques RÉVOQUÉS de l'incident INC-008, jamais un faux
   positif ;
+- un faux positif de l'historique ne passe que par une exception visant UN commit ET UN fichier, tous deux exacts ;
 - le travail `secrets` lit tout l'historique, à une version fixée, valeurs masquées, et l'image est contrôlée.
 """
 import os
@@ -34,7 +35,7 @@ FAUSSES_CLES = {
 def _exceptions() -> list[str]:
     config = tomllib.loads((RACINE / ".gitleaks.toml").read_text(encoding="utf-8"))
     assert config["extend"]["useDefault"] is True, "les règles par défaut de gitleaks doivent être gardées"
-    return [motif for liste in config["allowlists"] for motif in liste["regexes"]]
+    return [motif for liste in config["allowlists"] for motif in liste.get("regexes", [])]
 
 
 def test_les_exceptions_ne_visent_que_les_cinq_fausses_cles():
@@ -101,3 +102,15 @@ def test_le_controle_env_simule_avec_un_faux_docker(tmp_path, code_docker, doit_
     env = dict(os.environ, FAUX_CODE=str(code_docker), PATH=f"{tmp_path}{os.pathsep}{os.environ['PATH']}")
     resultat = subprocess.run(["bash", "-e", "-c", _etape_controle_env()], env=env, capture_output=True, text=True)
     assert (resultat.returncode == 0) is doit_reussir, resultat.stdout + resultat.stderr
+
+
+def test_un_faux_positif_de_l_historique_ne_vise_qu_un_commit_et_un_fichier_exacts():
+    # Sprint 5 (23/10) : une étiquette d'image Docker (rita-api:s5-<commit>) dans un journal de preuves est prise pour
+    # une clé. L'exception vise ce seul commit ET ce seul fichier : rien d'autre ne passe.
+    config = tomllib.loads((RACINE / ".gitleaks.toml").read_text(encoding="utf-8"))
+    ciblees = [liste for liste in config["allowlists"] if "commits" in liste or "paths" in liste]
+    assert ciblees, "le faux positif du journal du sprint 5 doit être déclaré"
+    for liste in ciblees:
+        assert liste.get("condition") == "AND" and not liste.get("regexes")
+        assert liste["commits"] and all(re.fullmatch(r"[0-9a-f]{40}", c) for c in liste["commits"])
+        assert liste["paths"] and all(m.startswith("^") and m.endswith("$") and ".*" not in m for m in liste["paths"])

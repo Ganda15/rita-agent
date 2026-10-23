@@ -51,7 +51,12 @@ def test_une_cotation_perimee_est_dite_au_modele():
 
     prompt = prompt_produit(mock_llm)
     assert "2000 jours" in prompt
-    assert "probablement radiée" in prompt
+    assert "pas à jour" in prompt
+    # Sprint 5, étape 8 (critère 1 du contrat, docs/sprint-4/CONTRAT.md § 3) : une cotation ancienne ne prouve pas une
+    # radiation ; en production, OR.PA n'avait plus de cours parce que la collecte ne tournait pas. Le prompt ne pousse
+    # plus le modèle vers cette conclusion : il lui interdit d'en tirer une.
+    assert "radiée" not in prompt
+    assert "N'en déduis rien" in prompt
 
 
 # --- étape 4d : les articles entrent dans le prompt ----------------------------

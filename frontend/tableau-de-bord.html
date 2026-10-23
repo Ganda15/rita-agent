@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RITA : tableau de bord</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>RITA : tableau de bord</h1>
+    <p class="sous-titre">L'état du service, en mots simples : une carte par signal.</p>
+    <nav aria-label="Navigation principale">
+      <a href="index.html">Mon portefeuille</a>
+      <a href="indicateurs.html">Indicateurs</a>
+      <a href="briefing.html">Briefing</a>
+      <a href="question.html">Question</a>
+      <span aria-current="page">Tableau de bord</span>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Le seul message annoncé aux lecteurs d'écran : le résumé. Les cartes ne le sont pas, sinon chaque actualisation
+         (toutes les 30 secondes) relirait sept cartes. -->
+    <p id="resume" class="resume" role="status" aria-live="polite"></p>
+
+    <!-- ÉTAT 1 : pas de clé d'API, on la demande. Même clé et même sessionStorage que les autres écrans. -->
+    <section id="connexion" hidden>
+      <h2>Connexion</h2>
+      <form id="form-cle">
+        <label for="cle">Clé d'API</label>
+        <input type="password" id="cle" name="cle" required autocomplete="off">
+        <button type="submit">Se connecter</button>
+      </form>
+    </section>
+
+    <!-- ÉTAT 2 : les cartes. Une carte de disponibilité (/health), puis une carte par signal de supervision (/sante). -->
+    <section id="tableau" hidden aria-labelledby="titre-tableau">
+      <h2 id="titre-tableau">Les signaux</h2>
+      <!-- Étape 6 : pendant une panne simulée, le tableau le dit, pour qu'on ne la prenne pas pour une vraie. -->
+      <p id="bandeau-exercice" class="bandeau-exercice" hidden></p>
+      <div class="barre-outils">
+        <p id="horodatages" class="horodatages"></p>
+        <button id="actualiser" type="button">Actualiser</button>
+      </div>
+      <div id="cartes" class="cartes"></div>
+      <details>
+        <summary>À propos des mesures</summary>
+        <p id="a-propos"></p>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <p>Prototype local du sprint 5. Un état « inconnu » n'est jamais présenté comme sain.</p>
+  </footer>
+  <script src="tableau-de-bord.js"></script>
+</body>
+</html>

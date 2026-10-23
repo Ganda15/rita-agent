@@ -20,6 +20,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 from agents import question as parcours
+from monitorage import compteurs, exercice
 from rag import indexation
 from src import traces
 
@@ -45,24 +46,42 @@ def poser_question(demande: DemandeQuestion):
     request_id = request_id_courant()
     debut = time.perf_counter()
     longueur = len(demande.question)
+    # Sprint 5 (étape 1) : les jetons de toutes les tentatives de cet appel s'additionnent ici (monitorage/compteurs.py).
+    compteurs.debuter_consommation()
+    # Sprint 5 (étape 6) : pendant une panne simulée, la réponse est celle d'un fournisseur tombé, sans appeler ni le
+    # parcours ni le modèle. L'erreur est comptée comme une vraie : c'est elle qui fait franchir le seuil.
+    panne_simulee = exercice.EXERCICE.etat()
     with traces.question(request_id) as racine:
         try:
-            resultat = parcours.repondre(demande.question)
+            if panne_simulee:
+                resultat = parcours.ReponseQuestion("erreur", parcours.FOURNISSEUR_INDISPONIBLE, parcours.TEXTE_ERREUR)
+            else:
+                resultat = parcours.repondre(demande.question)
         except Exception as erreur:  # noqa: BLE001, aucune erreur ne sort avec son message (décision D2)
             logger.error("question en erreur interne : request_id=%s type=%s longueur=%d",
                          request_id, type(erreur).__name__, longueur)
             traces.noter_issue_question(racine, "erreur", "ERREUR_INTERNE", longueur, [])
+            compteurs.COMPTEURS.noter("/question", 500, "erreur", "ERREUR_INTERNE",
+                                      int((time.perf_counter() - debut) * 1000), compteurs.consommation())
             return JSONResponse(status_code=500, content={"statut": "erreur", "motif": "ERREUR_INTERNE"})
         ids = [reference.id for reference in resultat.references]
         traces.noter_issue_question(racine, resultat.statut, resultat.motif, longueur, ids)
 
+    duree_ms = int((time.perf_counter() - debut) * 1000)
     logger.info("question servie : request_id=%s statut=%s motif=%s longueur=%d ids=%s duree_ms=%d",
-                request_id, resultat.statut, resultat.motif, longueur, ids,
-                int((time.perf_counter() - debut) * 1000))
+                request_id, resultat.statut, resultat.motif, longueur, ids, duree_ms)
+    # Le résultat métier, pas le code HTTP : un refus répond 200 et compte comme un refus.
+    compteurs.COMPTEURS.noter("/question", 503 if resultat.statut == "erreur" else 200, resultat.statut,
+                              resultat.motif, duree_ms, compteurs.consommation())
 
     if resultat.statut == "erreur":
-        return JSONResponse(status_code=503,
-                            content={"statut": resultat.statut, "motif": resultat.motif, "texte": resultat.texte})
+        contenu = {"statut": resultat.statut, "motif": resultat.motif, "texte": resultat.texte}
+        if panne_simulee:
+            # L'horodatage complet, avec son décalage : le serveur (conteneur en UTC) ne connaît pas le fuseau du
+            # lecteur, et une heure « HH:MM » seule se lisait à tort comme l'heure locale (étape 11, 22/10).
+            contenu["exercice"] = (f"panne simulée depuis {panne_simulee['depuis']}, "
+                                  f"fin au plus tard à {panne_simulee['fin_au_plus_tard']}")
+        return JSONResponse(status_code=503, content=contenu)
     return {
         "statut": resultat.statut,
         "motif": resultat.motif,
