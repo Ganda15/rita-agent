@@ -15,7 +15,7 @@ ci-dessous ont été vérifiées sur la copie le 22/10/2026 ; le résultat atten
 | La copie tourne sur la version précédente (pour montrer une vraie livraison pendant la démo) | `C:\Python314\python.exe scripts\copie_sprint5.py revenir` | `revenue à <version précédente>` |
 | Aucune issue de la vigie n'est ouverte | `gh issue list -R Ganda15/rita-agent --state open --label incident` | aucune ligne « Incident : vigie (prototype local) » |
 | Aucun exercice de panne | le tableau de bord, sans bandeau | |
-| Les onglets du navigateur, dans l'ordre | 1. tableau de bord (connecté avec la clé) ; 2. écran des questions `http://localhost:8011/question.html` (connecté) ; 3. les issues du dépôt ; 4. `docs/exploitation.md` (copie de lecture) ; 5. l'exécution N15 de la livraison de production (connecté à GitHub) | |
+| Les onglets du navigateur, dans l'ordre | 1. tableau de bord (connecté avec la clé) ; 2. écran des questions `http://localhost:8011/question.html` (connecté) ; 3. les issues du dépôt ; 4. `docs/exploitation.md` (copie de lecture) ; 5. l'exécution N16 de la livraison de production (connecté à GitHub) | |
 | PowerShell | dans `D:\KandaWork\RITA_PROJECT\rita-agent-sprint-5`, police agrandie | l'invite se termine par `rita-agent-sprint-5>` |
 
 La copie redémarre à l'étape `revenir` : les mesures du tableau de bord repartent de zéro (« mesures depuis HH:MM »).
@@ -81,11 +81,11 @@ Question de secours, si la première tarde : « Comment Airbus répartit-il ses 
 arrière. »
 
 **À dire, juste après `etat`, en montrant l'onglet 5** : « En production, la livraison est automatique : chaque fusion
-dans main déploie toute seule, comme la livraison N15 du 21/10. Je ne la rejoue pas ici, pour ne pas toucher la
-production. »
+dans main déploie toute seule : c'est la livraison N16 qui a mis ce sprint en production, le 23/10. Je ne la rejoue
+pas ici, pour ne pas toucher la production. »
 
-L'exécution N15 (commit `3c35398`, conclusion `success`, avec son job `deployer`), citée et pas rejouée, se montre dans
-l'onglet 5 : `github.com/Ganda15/rita-agent/actions/runs/39671479884`. Le dépôt est privé : la page ne s'ouvre qu'une
+L'exécution N16 (commit `845e3b3`, conclusion `success`, avec son job `deployer`), citée et pas rejouée, se montre dans
+l'onglet 5 : `github.com/Ganda15/rita-agent/actions/runs/39983152061`. Le dépôt est privé : la page ne s'ouvre qu'une
 fois connecté avec un compte qui a accès au dépôt.
 
 Le segment s'arrête là : un seul `deployer`. Le retour arrière se montre dans la documentation (segment 7:20), pas ici :
@@ -130,8 +130,8 @@ minutes plus tard. Les preuves sont dans le dépôt. »
 ### 8:40 · Conclusion (60 s)
 
 **À dire** : « Ce qui est prouvé : les mesures, le tableau de bord, des seuils argumentés, la vigie et ses issues,
-une panne diagnostiquée avec la doc, une livraison et un retour arrière vérifiés. Les limites, dites franchement : c'est
-un prototype local, la production n'a pas de vigie ; les seuils sont provisoires, écrits avant toute mesure de trafic
+une panne diagnostiquée avec la doc, une livraison et un retour arrière vérifiés. Les limites, dites franchement : la
+vigie de production se lance à la main, pas encore toutes les 15 minutes ; les seuils sont provisoires, écrits avant toute mesure de trafic
 réel ; la livraison de la copie est lancée par une commande. »
 
 ## Plan B

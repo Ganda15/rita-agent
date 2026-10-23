@@ -53,7 +53,7 @@ def test_chaque_commande_citee_existe(demo):
 
 
 def test_la_livraison_de_production_est_citee_et_dite_non_rejouee(demo):
-    assert "actions/runs/39671479884" in demo
+    assert "actions/runs/39983152061" in demo     # N16 : la livraison qui a mis le sprint 5 en production
     assert "pas rejouée" in demo
 
 
