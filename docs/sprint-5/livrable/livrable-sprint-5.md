@@ -130,6 +130,31 @@ ATTENTION au-dessus du seuil PROBLÈME, est refusé au chargement (`tests/test_s
 2,4199 € par million de jetons d'entrée, 0,242 € en cache, 14,5195 € en sortie). C'est une borne haute : les jetons
 mis en cache sont comptés au prix plein.
 
+### 4.1 L'OWASP : ce que la vigie couvre, et la suite pour le fil rouge
+
+Le cours « OWASP : la carte des portes d'entrée » (formation Dev IA Agentique, Simplon) range trois listes (Web 2025,
+LLM 2026, Agentic 2026) sous six questions. La vigie répond surtout à la sixième, « Et en production, ça tient ? »,
+et touche trois autres. Le tableau ne garde que ce que le sprint 5 met réellement en œuvre. Les risques LLM portent
+leurs deux numéros : la page officielle de l'OWASP affiche encore l'édition 2025, le cours suit l'édition 2026.
+
+| Question du cours | Risque OWASP | Ce que le sprint 5 en fait | Preuve | État |
+|---|---|---|---|---|
+| 6. En production, ça tient ? | A09:2025 Security Logging & Alerting Failures | journal sans texte avec son `request_id`, traces Langfuse, sept signaux à seuils argumentés, une vigie qui ouvre et ferme une issue par alerte, éprouvée par une dérive et une panne | § 5.4, § 5.5, § 5.10 ; issues #127 à #131 | couvert sur la copie ; la production n'a pas de vigie |
+| 6. En production, ça tient ? | A10:2025 Mishandling of Exceptional Conditions | une panne du fournisseur rend un 503 motivé, sans plantage ; sans donnée, le verdict est INCONNU, jamais SAIN ; une `/sante` illisible donne le code 2 à la vigie | § 5.4 ; tests du sprint 5 | couvert |
+| 6. En production, ça tient ? | A02:2025 Security Misconfiguration | une copie isolée : image et volumes propres, seul le port 8011 publié, clés jamais affichées ; un défaut réel trouvé et corrigé : la copie partageait le projet Langfuse de la production (fausse alerte #130) | § 5.2, § 5.12 | couvert, après un incident |
+| 6. En production, ça tient ? | Unbounded Consumption (LLM06:2026, LLM10:2025) | coût estimé sur 24 h, alerte à 1 € puis à 5 € ; limite de 10 appels par minute ; rejets 429 surveillés | § 4, § 5.9 | partiel : une alerte, pas de coupure au-delà d'un budget |
+| 1. Qui donne les ordres ? | Prompt Injection (LLM01:2026, LLM01:2025) | le signal « Refus de sécurité » compte les détournements refusés (`TENTATIVE_DETOURNEMENT`) ; la dérive simulée le déclenche | § 5.5, § 5.11 | surveillé ; le garde-fou vient du sprint 4 |
+| 2. Qui a le droit de faire quoi ? | A01:2025 Broken Access Control, A07:2025 Authentication Failures | la panne simulée exige une clé d'exercice distincte de celle des questions (403 sinon) ; les rejets 403 sont un signal | `tests/test_exercice.py` ; § 4 | couvert |
+| 4. Qu'est-ce qui sort, et vers où ? | Sensitive Information Disclosure (LLM02:2026, LLM02:2025), Hidden Context Exposure (LLM08:2026 ; System Prompt Leakage, LLM07:2025) | ni le texte des questions ni les clés dans les compteurs, le journal, les traces ou les issues ; les fuites refusées (`FUITE_BLOQUEE`) entrent dans le signal « Refus de sécurité » | § 5.1, § 5.12 | couvert |
+| 5. Peut-on le croire ? | Misinformation (LLM07:2026, LLM09:2025) | l'alerte de fraîcheur des cours ; la consigne de l'analyste ne déduit plus une radiation d'une cotation ancienne | § 5.7 | couvert sur la copie ; l'écart de production reste ouvert |
+
+**Pour le fil rouge, après le sprint 5 :**
+
+- passer en revue les trois listes, une par une (30 risques), dans le RITA original, avant la prochaine mise en
+  production : pour chaque risque, ce que RITA fait, la preuve et l'état, ou « sans objet » avec sa raison ;
+- rattacher chaque garde-fou du sprint 4 au risque qu'il traite ;
+- porter la vigie en production (A09), et ajouter une coupure au-delà d'un budget de coût (Unbounded Consumption).
+
 ## 5. Les preuves
 
 L'index complet des preuves est dans [`evidence/sprint-5/README.md`](../../../evidence/sprint-5/README.md).
@@ -312,6 +337,8 @@ fichier. Atelier 5 : remplie par l'évaluateur pendant la démonstration, puis v
   garde une heure UTC ; à blanc, la vigie affiche à tort `vigie : ouverte : …` après `[à blanc] ouvrirait l'issue`,
   alors qu'aucune issue n'est créée ; les traces de la copie du 23/10 entre 09:50 et 11:58 sont restées dans le projet
   Langfuse de la production.
+- **La revue OWASP complète** (trois listes, 30 risques) reste à faire dans le RITA original ; le sprint 5 ne traite
+  que ce qui touche la vigie (§ 4.1).
 - **Restes de documentation** : `docs/EXPLOITATION.pdf` date d'avant le sprint 5 ; `deploy/deployer.py` et le
   workflow `retour-arriere.yml` citent encore l'ancien nom `EXPLOITATION.md` ; le lien « Question » manque dans le menu de deux pages.
 
@@ -335,6 +362,8 @@ fichier. Atelier 5 : remplie par l'évaluateur pendant la démonstration, puis v
 - **403, 422, 429, 503** : codes HTTP : clé refusée, saisie invalide, trop de demandes, service indisponible.
 - **Definition of Done** : la liste de vérifications calculées qui doit être verte avant de poser le tag.
 - **Tag** : une étiquette Git posée sur un commit précis ; son lien ne bouge plus.
+- **OWASP** : fondation ouverte qui publie les listes des dix risques de sécurité les plus courants, pour les
+  applications web, les applications de LLM et les agents.
 
 ## 9. Sources et liens
 
@@ -346,3 +375,7 @@ fichier. Atelier 5 : remplie par l'évaluateur pendant la démonstration, puis v
 - Le scénario de démo : [`docs/sprint-5/DEMO.md`](../DEMO.md)
 - Les preuves : [`evidence/sprint-5/README.md`](../../../evidence/sprint-5/README.md)
 - Le livrable du sprint 4 : [`docs/sprint-4/livrable/livrable-sprint-4.md`](../../sprint-4/livrable/livrable-sprint-4.md)
+- OWASP Top 10:2025, applications web : <https://owasp.org/Top10/2025/>
+- OWASP Top 10 for LLM Applications (page officielle, édition 2025 affichée le 23/10/2026) :
+  <https://genai.owasp.org/llm-top-10/>
+- Le cours « OWASP : la carte des portes d'entrée », formation Dev IA Agentique (Simplon)

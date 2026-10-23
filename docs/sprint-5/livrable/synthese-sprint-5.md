@@ -29,6 +29,7 @@ copie de RITA lancée sur le poste avec Docker, construite depuis la branche du 
 | Déployer et revenir en arrière sur la copie, commit et image vérifiés | `scripts/copie_sprint5.py` |
 | La documentation d'exploitation | `docs/exploitation.md` |
 | Le scénario de la démo, 9 min 30 | `docs/sprint-5/DEMO.md` |
+| La vigie rattachée à l'OWASP, question « Et en production, ça tient ? » : A09, A10 et A02 couverts, Unbounded Consumption partiel | livrable, § 4.1 |
 
 ## 2. Les critères de la grille, et où en est chacun
 
@@ -64,3 +65,4 @@ copie de RITA lancée sur le poste avec Docker, construite depuis la branche du 
 - Les seuils sont provisoires ; les mesures repartent à zéro au redémarrage ; la vigie et la collecte des cours se
   lancent à la main.
 - L'écart de fraîcheur des cours en production reste ouvert.
+- La revue OWASP complète des trois listes (30 risques) reste pour le fil rouge, dans le RITA original.
