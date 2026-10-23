@@ -49,3 +49,28 @@ de `/sante` avec la clé, et la vigie pointée sur le serveur, se font par Era, 
 
 Aucune migration de base ; aucun secret ajouté au serveur ; les exercices de panne restent coupés (sans clé
 d'exercice, leurs routes répondent 503). Les compteurs vivent en mémoire : ils repartent de zéro à chaque livraison.
+
+## 6. L'incident de la soirée : GitHub Actions bloqué par le budget (18:49 à 19:10)
+
+| Constat | Mesure |
+|---|---|
+| Contrôles de la PR #136 « en échec » en 2 secondes, 0 étape exécutée | annotation de chaque contrôle : « The job was not started because recent account payments have failed or your spending limit needs to be increased » |
+| Cause | dépôt privé (`gh repo view` : `PRIVATE`) ; quota gratuit d'octobre épuisé entre 18:23 (dernier passage réussi) et 18:49 ; budget Actions du compte à 0 $ |
+| Correction (Era, sur le site GitHub) | budget Actions porté à 5 $, avec arrêt au plafond ; prix officiel : 0,006 $ la minute en Linux 2 cœurs |
+| Reprise | 19:10, les travaux s'exécutent de nouveau |
+| Piège | les passages refusés du `push` sur `develop` (même commit) gardaient leurs échecs : la fusion restait bloquée malgré les six contrôles verts de la PR ; relancés, ils passent ; la PR devient fusionnable à 19:30 |
+
+Avant la reprise, la Definition of Done a été lancée sur le poste (`scripts\verifier_livrable.py livrable-sprint-5-v1`,
+commit `8fdcb3c`, même contenu que `develop`) : 1685 passés, 24 ignorés, 2 échecs attendus ; portes d'évaluation
+16 passées ; aucun lien cassé ; tag cité ; arbre propre ; verdict « livrable ».
+
+## 7. La livraison N17 et le tag
+
+| Étape | Résultat |
+|---|---|
+| PR #136 (`develop` vers `main`) | fusionnée par Era à 19:33:14, commit `d215617f7cffa7a9817da28f2b2684dc7c63f7cd` |
+| Livraison N17, passage 39995996403 | lint, secrets, construire-et-publier, attendre-creneau, deployer : succès (19:33:10 à 19:42:55) |
+| Production à 19:43:21 | `/health` : `status ok`, commit `d215617f7cff...`, construit à 17:36:58 UTC ; `/tableau-de-bord.html` 200 ; `/sante` sans clé 403 |
+| Tag `livrable-sprint-5-v1` | posé par Era sur le SHA complet, reçu par GitHub à 19:45:28 |
+| Passage du tag 39997640785 | lint, secrets, construire-et-publier : succès ; Definition of Done en CI : « VERDICT : ✅ livrable » ; image `ghcr.io/ganda15/rita-api:livrable-sprint-5-v1` (révision `d215617`) |
+| Liens des quatre PDF du tag | 46 liens : les 37 qui visent le tag pointent sur un fichier présent dans le tag ; 5 liens publics à 200 ; issues #127, #128 et PR #133, #134 existantes |
