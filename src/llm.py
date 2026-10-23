@@ -16,6 +16,7 @@ import sys
 import httpx
 from anthropic import Anthropic
 
+from monitorage import compteurs
 from src import traces
 from src.traces import Reponse
 
@@ -166,6 +167,8 @@ def generer_json(prompt: str, schema: dict, nom_schema: str, max_tokens: int = 8
             tronquee = choix.get("finish_reason") == "length"
             contenu = choix["message"]["content"]
             usage = corps.get("usage") or {}
+            # Sprint 5 (étape 1) : une réponse tronquée ou mal formée est facturée aussi ; ses jetons comptent.
+            compteurs.ajouter_jetons(usage.get("prompt_tokens"), usage.get("completion_tokens"))
             traces.terminer_etape(etape_llm, metadata={
                 "modele": corps.get("model") or modele,
                 "region": (getattr(reponse, "headers", None) or {}).get("x-ms-region"),
@@ -214,6 +217,9 @@ def generer_texte(prompt: str, max_tokens: int = 500) -> str:
                     # Un fournisseur (ou un test) peut rendre une simple chaîne : accepté.
                     reponse = resultat if isinstance(resultat, Reponse) else Reponse(texte=resultat)
                     traces.terminer(gen, reponse)
+                    # Sprint 5 (étape 1) : les jetons de la tentative qui en rend (monitorage/compteurs.py).
+                    if reponse.usage:
+                        compteurs.ajouter_jetons(reponse.usage.get("input"), reponse.usage.get("output"))
                     logger.info("Réponse obtenue via %s", nom)
                 except Exception as erreur:  # noqa: BLE001, on passe au fournisseur suivant
                     traces.echouer(gen, erreur)

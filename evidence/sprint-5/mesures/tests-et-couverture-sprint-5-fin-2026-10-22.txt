@@ -1,0 +1,32 @@
+Tests du sprint 5 et couverture des neuf modules du sprint 5 (fin du sprint)
+date : 2026-10-22 20:11 ; commit : d636a6941948e39eab05cf210abfe21b798c3202
+commande : C:\Python314\python.exe -m pytest tests/test_compteurs.py tests/test_signaux.py tests/test_fraicheur_par_valeur_base.py tests/test_seuils.py tests/test_vigie.py tests/test_tableau_de_bord.py tests/test_smoke_tableau_de_bord.py tests/test_exercice.py tests/test_exercer.py tests/test_copie_sprint5.py tests/test_exploitation_doc.py tests/test_demo_doc.py tests/test_analyst.py --cov=monitorage.compteurs --cov=monitorage.signaux --cov=monitorage.seuils --cov=monitorage.vigie --cov=monitorage.exercice --cov=monitorage.exercer --cov=api.sante --cov=api.exercice --cov=scripts.copie_sprint5 --cov-report=term-missing -q -p no:cacheprovider
+
+........................................................................ [ 25%]
+........................................................................ [ 50%]
+........................................................................ [ 75%]
+......................................................................   [100%]
+============================== warnings summary ===============================
+C:\Users\kanda\AppData\Roaming\Python\Python314\site-packages\chromadb\telemetry\opentelemetry\__init__.py:128
+  C:\Users\kanda\AppData\Roaming\Python\Python314\site-packages\chromadb\telemetry\opentelemetry\__init__.py:128: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(f):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.14.6-final-0 _______________
+
+Name                       Stmts   Miss  Cover   Missing
+--------------------------------------------------------
+api\exercice.py               48      0   100%
+api\sante.py                  19      0   100%
+monitorage\compteurs.py       95      0   100%
+monitorage\exercer.py        116      0   100%
+monitorage\exercice.py        40      0   100%
+monitorage\seuils.py          85      0   100%
+monitorage\signaux.py         55      0   100%
+monitorage\vigie.py          169      0   100%
+scripts\copie_sprint5.py     137      0   100%
+--------------------------------------------------------
+TOTAL                        764      0   100%
+Required test coverage of 90.0% reached. Total coverage: 100.00%
+286 passed, 1 warning in 42.14s

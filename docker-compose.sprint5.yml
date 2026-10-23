@@ -1,0 +1,55 @@
+# Surcharge du PROTOTYPE LOCAL du sprint 5 (étape 9) : la copie de RITA sur le poste, à côté de la pile locale.
+#
+# Projet Compose à part (`-p rita-s5`) : ses propres volumes (base, index, cache), donc ni la base de la pile locale ni
+# celle d'une démonstration du sprint 2. Sa propre image, `rita-api:s5-<commit>`, pour l'API, l'indexation,
+# l'initialisation et la collecte : `rita-api:local` (docker-compose.yml) n'est pas isolée par le nom du projet, et un
+# retour arrière doit relancer une image précédente gardée, pas la reconstruire.
+#
+# Ne pas lancer à la main : passer par `scripts/copie_sprint5.py` (déployer, revenir, initialiser, collecter, état),
+# qui pose RITA_S5_VERSION, RITA_S5_GIT_SHA et RITA_S5_CONSTRUIT_LE, et vérifie la version servie par /health.
+# Procédure complète : docs/exploitation.md.
+
+services:
+  postgres:
+    container_name: rita-postgres-s5
+
+  api:
+    image: rita-api:s5-${RITA_S5_VERSION:?RITA_S5_VERSION absente}
+    container_name: rita-api-s5
+    build:
+      # Sans ces deux arguments, /health annoncerait « inconnu » (Dockerfile, ARG GIT_SHA) : ni la version servie ni un
+      # retour arrière ne seraient prouvés.
+      args:
+        GIT_SHA: ${RITA_S5_GIT_SHA:-inconnu}
+        CONSTRUIT_LE: ${RITA_S5_CONSTRUIT_LE:-inconnu}
+    environment:
+      # Une variable n'arrive dans le conteneur que si elle est listée ici : l'ajouter au .env ne suffit pas.
+      # Vide par défaut : sans elle, les routes de panne simulée sont désactivées (api/exercice.py).
+      RITA_CLE_EXERCICE: ${RITA_CLE_EXERCICE:-}
+    # `!override` remplace la liste des ports au lieu de s'y ajouter : la copie ne prend jamais le port 8001.
+    ports: !override
+      - "8011:8000"
+
+  indexation:
+    image: rita-api:s5-${RITA_S5_VERSION:?RITA_S5_VERSION absente}
+
+  initialisation:
+    image: rita-api:s5-${RITA_S5_VERSION:?RITA_S5_VERSION absente}
+
+  # La collecte des cours, dans un conteneur ponctuel : la base de la copie ne publie aucun port, une collecte lancée
+  # depuis le poste ne l'atteindrait pas. Seule l'étape `cotations` (yfinance), sans clé. Même durcissement que
+  # l'indexation. `--strict` : une étape en échec rend le code 1.
+  collecte:
+    image: rita-api:s5-${RITA_S5_VERSION:?RITA_S5_VERSION absente}
+    profiles: ["outils"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:-rita_preprod_local}@postgres:5432/rita
+    command: ["python", "-m", "pipelines.ingest", "--etapes", "cotations", "--strict"]
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true

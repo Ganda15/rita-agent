@@ -1,0 +1,40 @@
+Suite complète du dépôt (23/10, après le test de la doc et les répétitions)
+date : 2026-10-23 12:07 ; arbre de travail = commit 648293f + corrections du livrable et du trou 10 (doc, test), commitées ensuite
+commande : timeout 900 C:\Python314\python.exe -m pytest -q -p no:cacheprovider
+
+........ss.............................................................. [  4%]
+........................................................................ [  8%]
+........................................................................ [ 12%]
+........................................................................ [ 16%]
+........................................................................ [ 21%]
+.........................................ss............................. [ 25%]
+........................................s............................... [ 29%]
+.................................................x...x.................. [ 33%]
+........................................................................ [ 37%]
+........................................................................ [ 42%]
+........................................................................ [ 46%]
+.................................sssss.................................. [ 50%]
+........................................................................ [ 54%]
+........................................................................ [ 59%]
+........................................................................ [ 63%]
+........................................................................ [ 67%]
+........................................................................ [ 71%]
+........................................................................ [ 75%]
+........................................................................ [ 80%]
+........................................................................ [ 84%]
+........................................................................ [ 88%]
+......................s.........ssss.................................... [ 92%]
+........................................................................ [ 97%]
+.........................................sssssssss                       [100%]
+============================== warnings summary ===============================
+C:\Users\kanda\AppData\Roaming\Python\Python314\site-packages\chromadb\telemetry\opentelemetry\__init__.py:128
+  C:\Users\kanda\AppData\Roaming\Python\Python314\site-packages\chromadb\telemetry\opentelemetry\__init__.py:128: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(f):
+
+tests/test_scan_giskard.py::test_le_juge_openrouter_est_declare_comme_fournisseur_compatible_openai
+tests/test_scan_giskard.py::test_le_juge_openrouter_est_declare_comme_fournisseur_compatible_openai
+  C:\Users\kanda\AppData\Roaming\Python\Python314\site-packages\giskard\core\telemetry\telemetry.py:199: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1680 passed, 24 skipped, 2 xfailed, 3 warnings in 187.33s (0:03:07)

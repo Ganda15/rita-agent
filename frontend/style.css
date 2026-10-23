@@ -170,7 +170,10 @@ footer {
 nav {
   margin-top: .9rem;
   display: flex;
-  gap: 1rem;
+  /* Sprint 5 : cinq entrées ne tiennent plus sur une ligne d'un écran de téléphone (395 px pour 375, mesuré par
+     tests/test_smoke_tableau_de_bord.py) ; elles passent à la ligne au lieu de faire défiler la page. */
+  flex-wrap: wrap;
+  gap: .4rem 1rem;
   font-size: .95rem;
 }
 nav a { color: var(--accent); }
@@ -252,3 +255,25 @@ tbody tr.perimee:hover { background: #f8edd0; }
 .fraicheur-vert   { color: var(--frais-ok); }
 .fraicheur-orange { color: var(--frais-attention); }
 .fraicheur-rouge  { color: var(--alerte); font-weight: 600; }
+
+/* --- Sprint 5 (étape 5) : le tableau de bord ---------------------------------------------------------------------------
+   L'état est écrit en toutes lettres dans chaque carte (RGAA 3.1 : jamais la couleur seule) ; la couleur de la bordure
+   ne fait que le doubler. Les cartes passent en une colonne sur un écran étroit, sans déborder. */
+.resume { font-size: 1.15rem; font-weight: 600; }
+.horodatages { margin: 0; color: var(--texte-doux); }
+.cartes { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 1rem; margin-top: 1rem; }
+.carte { border: 1px solid var(--bord); border-left-width: .5rem; border-radius: .4rem; padding: .8rem 1rem; overflow-wrap: anywhere; }
+.carte h3 { margin: 0 0 .3rem; font-size: 1.05rem; }
+.carte p { margin: .25rem 0; }
+.etat { font-weight: 700; letter-spacing: .04em; }
+.carte-sain { border-left-color: var(--frais-ok); }
+.carte-attention { border-left-color: var(--frais-attention); }
+.carte-probleme { border-left-color: var(--alerte); }
+.carte-inconnu { border-left-color: var(--texte-doux); border-left-style: dashed; }
+.etat-sain { color: var(--frais-ok); }
+.etat-attention { color: var(--frais-attention); }
+.etat-probleme { color: var(--alerte); }
+.etat-inconnu { color: var(--texte-doux); }
+.detail { color: var(--texte-doux); font-size: .92rem; }
+.que-faire { font-weight: 600; }
+.bandeau-exercice { border: 2px dashed var(--frais-attention); padding: .6rem .9rem; font-weight: 600; color: var(--frais-attention); }

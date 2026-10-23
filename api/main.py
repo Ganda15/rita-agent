@@ -28,12 +28,15 @@ from fastapi.staticfiles import StaticFiles
 
 from agents.analyst import CONSIGNES_REDACTION, ROLE_REDACTEUR
 from api.donnees import routeur as routeur_donnees
+from api.exercice import routeur as routeur_exercice, verifier_cle_exercice
 from api.limiteur import limiter_debit
 from api.question import routeur as routeur_question
+from api.sante import routeur as routeur_sante
 from db import audit_mcp
 from graph.workflow import generer_briefing_complet
 from guardrails.sortie import verifier_fuite, verifier_sortie
 from indicateurs.socle import valeur_existe
+from monitorage import compteurs
 from rag import indexation
 from src import traces
 
@@ -96,9 +99,11 @@ async def attribuer_un_identifiant_de_requete(request: Request, call_next):
     propose = request.headers.get("X-Request-ID", "")
     identifiant = propose if IDENTIFIANT_CLIENT_SAIN.match(propose) else uuid.uuid4().hex
     jeton = _request_id_courant.set(identifiant)
+    echappee = False
     try:
         reponse = await call_next(request)
     except Exception as erreur:  # noqa: BLE001
+        echappee = True
         # Revue automatisée de la PR #58 (03/10/2026) : une exception imprévue traversait ce bloc et
         # Starlette fabriquait un 500 SANS identifiant, précisément la panne qu'on doit retrouver.
         # On la journalise avec l'identifiant (type et message, jamais vers le client) et on
@@ -112,6 +117,16 @@ async def attribuer_un_identifiant_de_requete(request: Request, call_next):
     finally:
         _request_id_courant.reset(jeton)
     reponse.headers["X-Request-ID"] = identifiant
+    # Sprint 5 (étape 1) : les appels qui n'entrent jamais dans la route (403 de la clé, 422 de la saisie, 429 du
+    # débit) et les erreurs qui s'en échappent sont comptés ICI ; tout le reste l'est par la route elle-même, qui connaît
+    # le résultat métier (monitorage/compteurs.py). Un 422 levé dans `/briefing` (valeur inconnue) n'y est pas compté.
+    if request.url.path in compteurs.ROUTES_MESUREES:
+        duree_ms = int((time.perf_counter() - debut) * 1000)
+        if echappee:
+            compteurs.COMPTEURS.noter(request.url.path, 500, "erreur", "ERREUR_INTERNE", duree_ms)
+        elif reponse.status_code in compteurs.CODES_DE_REJET:
+            compteurs.COMPTEURS.noter(request.url.path, reponse.status_code, None, f"HTTP_{reponse.status_code}",
+                                      duree_ms)
     # Plan 62 (03/10/2026, décision D1) : un appel qui se déclare client automatique (`X-Client-Id`,
     # la passerelle MCP) laisse une ligne dans `mcp_calls`, écrite APRÈS l'envoi de la réponse : le
     # client ne paie pas l'écriture. Le navigateur d'Era ne se déclare pas : rien n'est écrit.
@@ -238,6 +253,14 @@ app.include_router(routeur_donnees, dependencies=[Depends(verify_api_key)])
 # quota. Le même compteur sert `/briefing` (api/limiteur.py).
 app.include_router(routeur_question, dependencies=[Depends(verify_api_key), Depends(limiter_debit)])
 
+# --- Sprint 5 (étape 2) : les signaux de la vigie --------------------------------------------------------------------
+# La clé sur le routeur entier, comme pour /donnees ; pas de limite de débit : /sante n'appelle jamais le modèle.
+app.include_router(routeur_sante, dependencies=[Depends(verify_api_key)])
+
+# --- Sprint 5 (étape 6) : la panne simulée ----------------------------------------------------------------------------
+# Une clé à part (X-Cle-Exercice), jamais la clé des questions ; sans RITA_CLE_EXERCICE, les routes sont désactivées.
+app.include_router(routeur_exercice, dependencies=[Depends(verifier_cle_exercice)])
+
 
 # --- C9 : le briefing rédigé ------------------------------------------------
 @app.post("/briefing", tags=["briefing IA"],
@@ -261,11 +284,15 @@ def briefing(ticker: str = Query(min_length=1, max_length=20), api_key: str = Se
     # se range dessous, et le verdict du garde-fou y est posé. Sans clés Langfuse, `racine`
     # vaut None et rien ne change (src/traces.py). L'identifiant de requête devient celui
     # de la trace : journal et trace se retrouvent par le même identifiant.
+    # Sprint 5 (étape 1) : les jetons de toutes les tentatives de ce briefing s'additionnent ici.
+    compteurs.debuter_consommation()
     with traces.briefing(ticker, request_id=request_id) as racine:
         resultat = generer_briefing_complet(ticker)
         if resultat["error"]:
             logger.warning("briefing en erreur 502 : request_id=%s ticker=%r",
                            request_id, ticker)
+            compteurs.COMPTEURS.noter("/briefing", 502, "erreur", "BRIEFING_INDISPONIBLE",
+                                      int((time.perf_counter() - debut) * 1000), compteurs.consommation())
             raise HTTPException(status_code=502, detail=resultat["error"])
 
         # Garde-fou de SORTIE (C17) — l'interdit AMF s'applique au texte produit, pas
@@ -299,9 +326,17 @@ def briefing(ticker: str = Query(min_length=1, max_length=20), api_key: str = Se
 
     # Une ligne INFO par briefing servi : identifiant, valeur, verdict, durée. Jamais le texte.
     # C'est la matière première du monitorage (C20) : combien, pour qui, en combien de temps.
+    duree_ms = int((time.perf_counter() - debut) * 1000)
     logger.info("briefing servi : request_id=%s ticker=%r conforme_amf=%s duree_ms=%d",
-                request_id, resultat["ticker"], verdict["conforme"],
-                int((time.perf_counter() - debut) * 1000))
+                request_id, resultat["ticker"], verdict["conforme"], duree_ms)
+    # Le même ordre que le texte diffusé : une fuite l'emporte sur la non-conformité AMF.
+    if not fuite["conforme"]:
+        statut, motif = "refus", "FUITE_BLOQUEE"
+    elif not verdict["conforme"]:
+        statut, motif = "refus", "SORTIE_NON_CONFORME"
+    else:
+        statut, motif = "reponse", "OK"
+    compteurs.COMPTEURS.noter("/briefing", 200, statut, motif, duree_ms, compteurs.consommation())
 
     return {
         "ticker": resultat["ticker"],

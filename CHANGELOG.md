@@ -9,6 +9,31 @@
 
 ---
 
+## 2026-10-23 (matin) : sprint 5, la doc suivie à la lettre, deux répétitions, une fausse alerte de production corrigée
+
+**Fait** : `docs/exploitation.md` suivie à la lettre par son auteur sur la copie (déployer, panne simulée inconnue
+trouvée en 11 minutes, retour arrière, redéploiement) : dix trous trouvés et corrigés, chacun couvert par un test
+(commits `18f34de` et suivant). Deux répétitions de la démo, environ 9 minutes et 9 minutes 30 ; deux corrections du
+scénario (`57ebf56`, `648293f`). **Manque découvert** : la copie envoyait ses traces au projet Langfuse de la
+production ; sa panne simulée a déclenché l'alerte de production (issue #130, fausse alerte, fermée avec son
+explication après vérification par l'API de Langfuse). La copie a désormais son propre projet Langfuse, sans alerte.
+**Décision rappelée** (22/10) : le sprint 5 reste un prototype local jusqu'à la remise. Livrable v1 mis à jour ; tag
+`livrable-sprint-5-v1` toujours à poser, après l'atelier n°5.
+
+## 2026-10-22 (nuit) : sprint 5, la vigie et la démo, prototype local ; livrable en version 1 (tag `livrable-sprint-5-v1` à poser)
+
+**Décision** : le sprint 5 ne touche pas l'original (ni `main`, ni la production, ni le serveur, ni sa base). Il vit sur
+la branche `sprint-5-vigie-demo` et se démontre sur une copie de RITA lancée sur le poste avec Docker
+(`http://localhost:8011`). **Livré sur la branche** : compteurs en six catégories, signaux et `GET /sante`, sept seuils
+provisoires argumentés et liés à une action, coût en euros au prix public daté, tableau de bord de sept cartes, vigie
+hors de l'API (issues GitHub), panne et dérive simulées, déploiement et retour arrière de la copie,
+`docs/exploitation.md`, scénario de la démo, livrable et synthèse (`docs/sprint-5/livrable/`). **Prouvé sur la copie le
+22/10** : déploiement, retour arrière en 6 s, panne diagnostiquée avec la doc (issue #127), dérive détectée (issue
+#128), les deux issues fermées par la vigie ; coût 0,009486 €. Suite : 1674 passés ; neuf modules du sprint couverts à
+100 %. **Pas encore fait** : le test de la doc par un tiers, les deux répétitions de la démo, la grille de l'atelier 4 ;
+la production n'a pas de vigie. Le tag `livrable-sprint-5-v1` se pose sur la branche après ces vérifications, sur le
+commit désigné par son SHA complet ; rien n'est fusionné dans `main`.
+
 ## 2026-10-21 (nuit, fin) : livrable du sprint 4, version 3 (tag `livrable-sprint-4-v3`)
 
 **Relecture finale de la version 2** (tag `livrable-sprint-4-v2`) : le lien « `guardrails/nombres.py`, ligne 67 »

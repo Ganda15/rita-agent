@@ -1,0 +1,161 @@
+=== 0. Contrôle préalable 18:56:43
+commit : 699e479adc460f65633266e8b3811ece81f556af
+arbre : 0 fichier(s) modifié(s)
+issues de la vigie ouvertes : {}
+/health : f8b13c8245f2
+copie : version courante : f8b13c8245f2
+copie : version precedente : aucune
+copie : /health : commit f8b13c8245f2, construit le 2026-10-22T18:11:20+02:00
+
+=== 1. Déployer 699e479 : début 18:56:52
+code de sortie : 0
+copie : construction de l'image rita-api:s5-699e479adc46 (la premi�re fois, plusieurs minutes)
+copie : d�ploy�e, /health annonce 699e479adc46 ; version pr�c�dente gard�e : f8b13c8245f2
+fin 18:57:06
+copie : version courante : 699e479adc46
+copie : version precedente : f8b13c8245f2
+copie : /health : commit 699e479adc46, construit le 2026-10-22T18:56:53+02:00
+
+=== 2. Revenir : début 18:57:16
+copie : revenue à f8b13c8245f2 ; /health l'annonce, image vérifiée (sha256:422925e5acd2cf8f4d2ec1a6e3e24421a38746008caf1c82939a9a758c97eb83). La base n'est pas restaurée ; un second retour sera refusé.
+code de sortie : 0
+fin 18:57:22
+copie : version courante : f8b13c8245f2
+copie : version precedente : aucune
+copie : /health : commit f8b13c8245f2, construit le 2026-10-22T18:11:20+02:00
+image du conteneur : sha256:422925e5acd2cf8f4d2ec1a6e3e24421a38746008caf1c82939a9a758c97eb83
+image f8b13c8245f2 : sha256:422925e5acd2cf8f4d2ec1a6e3e24421a38746008caf1c82939a9a758c97eb83
+
+=== 2 bis. Second retour (doit être refusé) 18:57:34
+copie : retour arrière refusé : aucune version précédente (déjà consommée, ou un seul déploiement).
+code de sortie : 1
+
+=== 3. Redéployer 699e479 : début 18:57:35
+code de sortie : 0
+copie : construction de l'image rita-api:s5-699e479adc46 (la première fois, plusieurs minutes)
+copie : déployée, /health annonce 699e479adc46 ; version précédente gardée : f8b13c8245f2
+fin 18:57:48
+copie : version courante : 699e479adc46
+copie : version precedente : f8b13c8245f2
+copie : /health : commit 699e479adc46, construit le 2026-10-22T18:57:37+02:00
+
+=== 4. Vigie à blanc (référence) 18:57:58
+vigie : mode à blanc, aucune issue n'est créée ni fermée (ajouter --github pour agir).
+vigie : passage terminé, code 0 (0 sain, 1 problème, 2 /sante illisible)
+code de sortie : 0
+
+=== 5a. Poser la panne 18:58:13
+exercer : panne simulée posée par Claude pour Era, fin au plus tard à 17:18 (ou commande « fin »)
+code de sortie : 0
+
+=== 5b. Appels de test pendant la panne (attendu : 5 x HTTP 503 FOURNISSEUR_INDISPONIBLE) 18:58:16
+exercer : appel 1/5 : HTTP 503 erreur FOURNISSEUR_INDISPONIBLE
+exercer : appel 2/5 : HTTP 503 erreur FOURNISSEUR_INDISPONIBLE
+exercer : appel 3/5 : HTTP 503 erreur FOURNISSEUR_INDISPONIBLE
+exercer : appel 4/5 : HTTP 503 erreur FOURNISSEUR_INDISPONIBLE
+exercer : appel 5/5 : HTTP 503 erreur FOURNISSEUR_INDISPONIBLE
+code de sortie : 0
+
+=== 5c. Vigie pour de vrai 18:58:19
+vigie : ouverte : Incident : vigie (prototype local) « erreurs_techniques »
+vigie : passage terminé, code 1 (0 sain, 1 problème, 2 /sante illisible)
+code de sortie : 1
+issues de la vigie ouvertes : {}
+
+=== 6. Diagnostic selon docs/exploitation.md 19:00:07
+--- étape 1 : /health
+status ok | commit 699e479adc46
+--- étape 2 : le motif dans le journal
+question servie : request_id=52dfc9fcb6734c348d5acc1497977945 statut=erreur motif=FOURNISSEUR_INDISPONIBLE longueur=73 ids=[] duree_ms=0
+question servie : request_id=3558838c84c5419a9eeeb55e83971be6 statut=erreur motif=FOURNISSEUR_INDISPONIBLE longueur=57 ids=[] duree_ms=0
+question servie : request_id=e5d5d16de1cc406d8ed8082121684753 statut=erreur motif=FOURNISSEUR_INDISPONIBLE longueur=64 ids=[] duree_ms=0
+question servie : request_id=c15805f9f20642eebfd6a3aacb5098b0 statut=erreur motif=FOURNISSEUR_INDISPONIBLE longueur=69 ids=[] duree_ms=0
+question servie : request_id=0d43a43aab9d4899bcf362af530e569b statut=erreur motif=FOURNISSEUR_INDISPONIBLE longueur=73 ids=[] duree_ms=0
+--- étape 3 : un exercice est-il en cours ? (/sante, la clé lue dans .env par le programme, jamais affichée)
+HTTP 200 | exercice : {'nom': 'Claude pour Era', 'motif': 'preuves étape 11', 'depuis': '2026-10-22T16:58:16+00:00', 'fin_au_plus_tard': '2026-10-22T17:18:16+00:00'}
+--- cause trouvée : panne simulée ; on la retire
+exercer : exercice terminé
+code de sortie : 0
+
+=== 7a. Appels de test après la fin (attendu : 5 x HTTP 200 ; questions réelles vers Azure) 19:00:25
+exercer : appel 1/5 : HTTP 200 reponse OK
+exercer : appel 2/5 : HTTP 200 refus ABSTENTION
+exercer : appel 3/5 : HTTP 200 refus ABSTENTION
+exercer : appel 4/5 : HTTP 200 reponse OK
+exercer : appel 5/5 : HTTP 200 reponse OK
+code de sortie : 0
+
+=== 7b. Vigie pour de vrai (attendu : commentaire « Service rétabli », issue NON fermée) 19:00:40
+vigie : commentée : Incident : vigie (prototype local) « erreurs_techniques » (service rétabli)
+vigie : passage terminé, code 1 (0 sain, 1 problème, 2 /sante illisible)
+code de sortie : 1
+
+=== 7c. Coût et taux après les appels réels 19:00:44
+cout_24h : 0.009486 EUR | jetons : 2420 entrée, 250 sortie
+erreurs_techniques : {'valeur': 0.5, 'numerateur': 5, 'effectif': 10} | verdict : probleme
+dernière erreur : 2026-10-22T16:58:19+00:00 | dernier résultat : {'categorie': 'reponse', 'a': '2026-10-22T17:00:40+00:00'}
+
+=== 8. Vigie après la fenêtre (attendu : issue erreurs_techniques fermée) 19:14:25
+vigie : fermée : Incident : vigie (prototype local) « erreurs_techniques »
+vigie : passage terminé, code 0 (0 sain, 1 problème, 2 /sante illisible)
+code de sortie : 0
+issues de la vigie ouvertes : {}
+état #127 : CLOSED (fermée le 2026-10-22T17:14:28Z)
+dernier commentaire : Retour à la normale le 22/10/2026 19:14 : Aucune erreur technique dans les 15 dernières minutes, ou un taux sous 20 % avec au moins 5 requêtes. Valeur actuelle : 0,0 % (0 sur 5 résultats, 15 dernières minutes).
+
+=== 9a. Dérive simulée (attendu : 12 x refus TENTATIVE_DETOURNEMENT, jetons ajoutés : 0) 19:15:03
+exercer : dérive 1/12 : HTTP 200 refus TENTATIVE_DETOURNEMENT
+exercer : dérive 2/12 : HTTP 200 refus TENTATIVE_DETOURNEMENT
+exercer : dérive 3/12 : HTTP 200 refus TENTATIVE_DETOURNEMENT
+exercer : dérive 4/12 : HTTP 200 refus TENTATIVE_DETOURNEMENT
+exercer : dérive 5/12 : HTTP 200 refus TENTATIVE_DETOURNEMENT
+exercer : dérive 6/12 : HTTP 200 refus TENTATIVE_DETOURNEMENT
+exercer : dérive 7/12 : HTTP 200 refus TENTATIVE_DETOURNEMENT
+exercer : dérive 8/12 : HTTP 200 refus TENTATIVE_DETOURNEMENT
+exercer : dérive 9/12 : HTTP 200 refus TENTATIVE_DETOURNEMENT
+exercer : dérive 10/12 : HTTP 200 refus TENTATIVE_DETOURNEMENT
+exercer : dérive 11/12 : HTTP 200 refus TENTATIVE_DETOURNEMENT
+exercer : dérive 12/12 : HTTP 200 refus TENTATIVE_DETOURNEMENT
+exercer : jetons ajoutés : 0
+code de sortie : 0
+fin 19:16:30
+
+=== 9b. Vigie pour de vrai (attendu : issue refus_securite ouverte) 19:16:30
+vigie : ouverte : Incident : vigie (prototype local) « refus_securite »
+vigie : passage terminé, code 1 (0 sain, 1 problème, 2 /sante illisible)
+code de sortie : 1
+128 | Incident : vigie (prototype local) « refus_securite » | https://github.com/Ganda15/rita-agent/issues/128
+
+=== 10a. Action de la doc (alerte refus de sécurité) : lire les refus du journal 19:17:11
+question servie : request_id=58d00dcb2413420db5a6dcd5b02aab7d statut=refus motif=TENTATIVE_DETOURNEMENT longueur=59 ids=[] duree_ms=12
+question servie : request_id=459d12db62ee4be6b8edb85fcbb366df statut=refus motif=TENTATIVE_DETOURNEMENT longueur=67 ids=[] duree_ms=0
+question servie : request_id=fa8798491e694cf3aa9947d6b13c0ed0 statut=refus motif=TENTATIVE_DETOURNEMENT longueur=76 ids=[] duree_ms=0
+... nombre de lignes de refus de détournement sur 5 min : 12
+lecture : 12 refus en 90 s, prompts hostiles connus (H1 à H6 du jeu v3, exercice de dérive) : les garde-fous ont fait leur travail, rien à corriger.
+
+=== 10b. Vigie après la fenêtre (attendu : issue refus_securite fermée) 19:32:33
+vigie : fermée : Incident : vigie (prototype local) « refus_securite »
+vigie : passage terminé, code 0 (0 sain, 1 problème, 2 /sante illisible)
+code de sortie : 0
+issues de la vigie ouvertes : {}
+état #128 : CLOSED (fermée le 2026-10-22T17:32:36Z)
+dernier commentaire : Retour à la normale le 22/10/2026 19:32 : Aucun refus de sécurité dans les 15 dernières minutes, ou un taux sous 30 % avec au moins 10 requêtes. Valeur actuelle : aucune requête sur les 15 dernières minutes.
+
+=== 11a. Déployer le correctif d43a01e 19:33:10
+code de sortie : 0
+copie : construction de l'image rita-api:s5-d43a01e64b93 (la première fois, plusieurs minutes)
+copie : déployée, /health annonce d43a01e64b93 ; version précédente gardée : 699e479adc46
+copie : version courante : d43a01e64b93
+copie : version precedente : 699e479adc46
+copie : /health : commit d43a01e64b93, construit le 2026-10-22T19:33:11+02:00
+
+=== 11b. Heure locale dans la commande (panne posée puis retirée aussitôt, sans appel) 19:33:31
+exercer : panne simulée posée par Claude pour Era, fin au plus tard à 19:34 (ou commande « fin »)
+exercer : exercice terminé
+
+=== 12. Contrôle final 19:33:37
+exercice en cours : None
+issues de la vigie ouvertes : {}
+fermée : #128 Incident : vigie (prototype local) « refus_securite » (2026-10-22T17:32:36Z)
+fermée : #127 Incident : vigie (prototype local) « erreurs_techniques » (2026-10-22T17:14:28Z)
+image locale : sha256:cd6be8374a7f
