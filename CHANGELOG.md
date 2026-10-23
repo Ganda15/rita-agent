@@ -9,6 +9,16 @@
 
 ---
 
+## 2026-10-23 (soir) : sprint 5 en production, livraison N16
+
+**Décision révisée par Era** : le sprint 5 passe en production. PR #133 (`sprint-5-vigie-demo` vers `develop`) et
+PR #134 (`develop` vers `main`), contrôles verts, fusionnées par Era ; livraison automatique N16 (passage
+39983152061, 18:00 à 18:12), commit `845e3b3`. En production : `/health` annonce `845e3b3`, `/tableau-de-bord.html`
+répond 200, `/sante` exige la clé (403 sans elle). **Manques découverts par la chaîne Linux, corrigés** : un faux
+positif de gitleaks (étiquette d'image Docker, exception ciblée commit et fichier) ; deux tests écrits en heure de
+Paris alors que la chaîne est en UTC. Livrable, synthèse, scénario (N16) et preuves mis à jour ; tag
+`livrable-sprint-5-v1` à poser sur la livraison suivante, désignée par son SHA complet.
+
 ## 2026-10-23 (matin) : sprint 5, la doc suivie à la lettre, deux répétitions, une fausse alerte de production corrigée
 
 **Fait** : `docs/exploitation.md` suivie à la lettre par son auteur sur la copie (déployer, panne simulée inconnue

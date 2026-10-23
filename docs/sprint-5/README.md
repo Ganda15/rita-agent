@@ -3,8 +3,9 @@
 Document d'entrée du sprint 5 du fil rouge RITA. Le sprint rend le système pilotable et reprenable : des mesures, un
 tableau de bord, des alertes à seuils argumentés liées chacune à une action, une documentation d'exploitation.
 
-- **Prototype local** : tout vit sur la branche `sprint-5-vigie-demo` et se démontre sur une copie de RITA lancée sur
-  le poste avec Docker (`http://localhost:8011`). La production, le serveur et la branche `main` ne sont pas touchés.
+- **En production depuis le 23/10** (livraison N16) : le tableau de bord du serveur,
+  <https://178-104-184-125.sslip.io/tableau-de-bord.html> (clé de l'API de production). Les exercices de panne se
+  jouent sur une copie de RITA lancée sur le poste avec Docker (`http://localhost:8011`), jamais en production.
 - **Synthèse du sprint, à lire en premier** : [`livrable/synthese-sprint-5.md`](livrable/synthese-sprint-5.md) et sa version PDF ([`synthese-sprint-5.pdf`](livrable/synthese-sprint-5.pdf)).
 - **Livrable du sprint** : [`livrable/livrable-sprint-5.md`](livrable/livrable-sprint-5.md) et sa version PDF ([`livrable-sprint-5.pdf`](livrable/livrable-sprint-5.pdf)).
 - **Documentation d'exploitation** : [`docs/exploitation.md`](../exploitation.md) (déployer, diagnostiquer une panne,
