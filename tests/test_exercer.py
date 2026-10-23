@@ -5,6 +5,8 @@ appels de test envoient cinq questions du corpus de démonstration ; la dérive 
 8 par minute, et vérifie qu'aucun jeton n'a été consommé (aucun appel au modèle attendu). Aucun test ne parle au
 réseau ; aucune clé n'est jamais affichée.
 """
+from datetime import datetime
+
 import pytest
 
 from monitorage import exercer
@@ -48,7 +50,10 @@ def test_panne_envoie_la_cle_d_exercice_le_nom_et_le_motif(capsys):
     assert url == f"{ADRESSE}/exercice/panne" and entetes == {"X-Cle-Exercice": CLE_EXERCICE}
     assert corps == {"nom": "Era", "motif": "répétition atelier 5", "duree_min": 20}
     sortie = capsys.readouterr().out
-    assert "16:25" in sortie and CLE_EXERCICE not in sortie
+    # L'heure est dite dans le fuseau du poste (étape 11 bis) : on la calcule de même, pour que le test passe aussi
+    # sur une machine en UTC (la chaîne Linux) et pas seulement à Paris.
+    attendue = datetime.fromisoformat("2026-10-22T16:25:00+02:00").astimezone().strftime("%H:%M")
+    assert attendue in sortie and CLE_EXERCICE not in sortie
 
 
 def test_une_panne_refusee_le_dit_avec_son_code(capsys):

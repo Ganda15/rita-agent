@@ -6,6 +6,7 @@ Le même dispositif que `tests/test_smoke_ui.py` : l'API servie par uvicorn, Chr
 chaque test attend que la page dise elle-même qu'elle a fini (`document.body.dataset.etat === "pret"`).
 """
 import json
+from datetime import datetime
 
 import pytest
 
@@ -154,7 +155,10 @@ def test_pendant_un_exercice_le_bandeau_le_dit(page, serveur):  # noqa: F811
     bandeau = page.locator("#bandeau-exercice")
     assert bandeau.is_visible()
     texte = bandeau.inner_text()
-    assert "Exercice de panne en cours depuis 16:05" in texte and "Era" in texte and "16:25" in texte
+    # Le navigateur affiche l'heure dans le fuseau de la machine : le test calcule la même, à Paris comme en UTC.
+    depuis, fin = (datetime.fromisoformat(h).astimezone().strftime("%H:%M")
+                   for h in ("2026-10-22T16:05:00+02:00", "2026-10-22T16:25:00+02:00"))
+    assert f"Exercice de panne en cours depuis {depuis}" in texte and "Era" in texte and fin in texte
 
 
 def test_sans_exercice_le_bandeau_est_cache(page, serveur):  # noqa: F811
