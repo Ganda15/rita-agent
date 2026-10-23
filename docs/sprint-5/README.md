@@ -5,11 +5,11 @@ tableau de bord, des alertes à seuils argumentés liées chacune à une action,
 
 - **Prototype local** : tout vit sur la branche `sprint-5-vigie-demo` et se démontre sur une copie de RITA lancée sur
   le poste avec Docker (`http://localhost:8011`). La production, le serveur et la branche `main` ne sont pas touchés.
-- **Synthèse du sprint, à lire en premier** : [`livrable/synthese-sprint-5.md`](livrable/synthese-sprint-5.md).
-- **Livrable du sprint** : [`livrable/livrable-sprint-5.md`](livrable/livrable-sprint-5.md).
+- **Synthèse du sprint, à lire en premier** : [`livrable/synthese-sprint-5.md`](livrable/synthese-sprint-5.md) et sa version PDF ([`synthese-sprint-5.pdf`](livrable/synthese-sprint-5.pdf)).
+- **Livrable du sprint** : [`livrable/livrable-sprint-5.md`](livrable/livrable-sprint-5.md) et sa version PDF ([`livrable-sprint-5.pdf`](livrable/livrable-sprint-5.pdf)).
 - **Documentation d'exploitation** : [`docs/exploitation.md`](../exploitation.md) (déployer, diagnostiquer une panne,
-  revenir en arrière, les alertes).
-- **Scénario de la démo** : [`DEMO.md`](DEMO.md).
+  revenir en arrière, les alertes) ; ses procédures en PDF : [`exploitation-sprint-5.pdf`](livrable/exploitation-sprint-5.pdf).
+- **Scénario de la démo** : [`DEMO.md`](DEMO.md) et sa version PDF ([`scenario-demo-sprint-5.pdf`](livrable/scenario-demo-sprint-5.pdf)).
 - **Preuves** : index dans [`evidence/sprint-5/README.md`](../../evidence/sprint-5/README.md).
 
 ## Lancer la copie et sa vigie
