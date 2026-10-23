@@ -2,7 +2,8 @@
 
 > RITA, fil rouge de la phase 6 : une aide à la lecture de l'actualité économique, qui répond en citant ses sources ou
 > refuse. Le sprint 5 la rend pilotable et reprenable : des mesures, un tableau de bord, des alertes liées à une action,
-> une documentation d'exploitation. Version 1, prototype local, avant l'atelier croisé n°5.
+> une documentation d'exploitation. Version 1 : la vigie en production depuis le 23/10 (livraison N16), et sa copie
+> sur le poste pour les exercices de panne.
 
 ## Sommaire
 
@@ -28,19 +29,20 @@ scénario de démo écrit et répété ».
 Pendant l'atelier, l'évaluateur suit la documentation seul, sans aide orale : il déploie, diagnostique une panne
 simulée et fait un retour arrière. Tout ce qu'il ne parvient pas à faire est un trou dans la documentation.
 
-### 1.2 Le choix du prototype local, et ce qu'il ne prouve pas
+### 1.2 La production, et la copie du poste pour les exercices
 
-Le sprint 5 ne touche pas l'original : ni la branche `main`, ni la production, ni le serveur, ni sa base. Tout le
-travail vit sur la branche `sprint-5-vigie-demo`, et la démonstration se fait sur une **copie de RITA lancée sur le
-poste** avec Docker (projet `rita-s5`, adresse `http://localhost:8011`), construite depuis cette branche, avec sa
+Le sprint 5 a été construit sans toucher l'original, sur la branche `sprint-5-vigie-demo`, puis livré en production le
+23/10 au soir par le chemin habituel du dépôt (§ 5.13). Les exercices de panne se font sur une **copie de RITA lancée
+sur le poste** avec Docker (projet `rita-s5`, adresse `http://localhost:8011`), construite depuis cette branche, avec sa
 propre image et ses propres volumes.
 
-Ce choix permet de provoquer des pannes et des alertes sans risque pour le service en ligne. Il a un prix, dit tel
-quel : la production n'a pas de vigie, et la livraison de la copie se lance par une commande. La livraison
-automatique existe en production depuis le sprint 2 ; elle est citée (§ 5.3), pas rejouée.
+Ce choix permet de provoquer des pannes et des alertes sans risque pour le service en ligne. La copie reste le lieu
+des exercices : la panne et la dérive simulées y sont jouées, jamais sur le service en ligne.
 
-Décision du 22/10 : le sprint 5 reste un prototype local jusqu'à la remise, faute de temps pour brancher la vigie sur
-la production sans risque pour le service en ligne.
+Décision du 22/10 : rester en prototype local, faute de temps. **Décision révisée le 23/10 au soir : mise en
+production.** La livraison automatique N16 (passage GitHub n° 39983152061, commit `845e3b3`, en service à 18:12)
+met `/sante`, les compteurs et le tableau de bord sur le serveur ; la vigie le surveille de l'extérieur, à son
+adresse. Les exercices restent coupés en production (§ 5.13).
 
 ### 1.3 RITA en trois phrases
 
@@ -76,7 +78,7 @@ faire.
 | Coût des exercices du 22/10 | 0,009486 € estimés, sous le plafond de 0,10 € fixé avant | § 5.9 |
 | Traçage | Langfuse, dans un projet propre à la copie (`rita-copie-sprint5`), distinct de celui de la production | § 5.12 |
 | Tests | 1680 passés, 24 ignorés, 2 échecs attendus ; les neuf modules du sprint 5 couverts à 100 % | § 5.1 |
-| Production | inchangée : N15 (`3c35398`), livrée le 21/10 | § 5.3 |
+| Production | N16 (`845e3b3`), livrée le 23/10 à 18:12 : `/sante` et le tableau de bord en service | § 5.13 |
 
 Heures de Paris, sauf mention UTC.
 
@@ -90,7 +92,7 @@ branche `sprint-5-vigie-demo`.
 
 | Livrable demandé | Où le trouver | État |
 |---|---|---|
-| « Le système complet en production avec sa vigie » | la copie du poste (`http://localhost:8011`), son tableau de bord (`/tableau-de-bord.html`) et la vigie (`monitorage/vigie.py`) | **prototype local**, pas la production : l'écart est au § 1.2 et au § 7 |
+| « Le système complet en production avec sa vigie » | le tableau de bord de production : <https://178-104-184-125.sslip.io/tableau-de-bord.html> ; la vigie (`monitorage/vigie.py --adresse https://178-104-184-125.sslip.io`) ; la copie du poste pour les exercices | **en production depuis le 23/10** (N16, § 5.13) ; la vigie se lance à la main, pas encore toutes les 15 minutes (§ 7) |
 | « `docs/exploitation.md` » | [`docs/exploitation.md`](../../exploitation.md) : avant de commencer, déployer, diagnostiquer une panne, revenir en arrière, les alertes, la vigie et les exercices ; l'ancien guide suit en annexes | écrit, relu contre le code, joué sur la copie le 22/10 ; suivi à la lettre le 23/10, dix trous trouvés et corrigés (§ 5.3, § 5.4, § 5.10) |
 | « Le scénario de démo écrit et répété » | [`docs/sprint-5/DEMO.md`](../DEMO.md) : 9 min 40 en six segments, la liste de contrôle, le plan B | écrit, vérifié contre le code, **répété deux fois le 23/10** : environ 9 minutes, puis environ 9 minutes 30 (§ 5.11) |
 
@@ -139,7 +141,7 @@ leurs deux numéros : la page officielle de l'OWASP affiche encore l'édition 20
 
 | Question du cours | Risque OWASP | Ce que le sprint 5 en fait | Preuve | État |
 |---|---|---|---|---|
-| 6. En production, ça tient ? | A09:2025 Security Logging & Alerting Failures | journal sans texte avec son `request_id`, traces Langfuse, sept signaux à seuils argumentés, une vigie qui ouvre et ferme une issue par alerte, éprouvée par une dérive et une panne | § 5.4, § 5.5, § 5.10 ; issues #127 à #131 | couvert sur la copie ; la production n'a pas de vigie |
+| 6. En production, ça tient ? | A09:2025 Security Logging & Alerting Failures | journal sans texte avec son `request_id`, traces Langfuse, sept signaux à seuils argumentés, une vigie qui ouvre et ferme une issue par alerte, éprouvée par une dérive et une panne | § 5.4, § 5.5, § 5.10 ; issues #127 à #131 | couvert, en production depuis N16 ; la vigie se lance à la main |
 | 6. En production, ça tient ? | A10:2025 Mishandling of Exceptional Conditions | une panne du fournisseur rend un 503 motivé, sans plantage ; sans donnée, le verdict est INCONNU, jamais SAIN ; une `/sante` illisible donne le code 2 à la vigie | § 5.4 ; tests du sprint 5 | couvert |
 | 6. En production, ça tient ? | A02:2025 Security Misconfiguration | une copie isolée : image et volumes propres, seul le port 8011 publié, clés jamais affichées ; un défaut réel trouvé et corrigé : la copie partageait le projet Langfuse de la production (fausse alerte #130) | § 5.2, § 5.12 | couvert, après un incident |
 | 6. En production, ça tient ? | Unbounded Consumption (LLM06:2026, LLM10:2025) | coût estimé sur 24 h, alerte à 1 € puis à 5 € ; limite de 10 appels par minute ; rejets 429 surveillés | § 4, § 5.9 | partiel : une alerte, pas de coupure au-delà d'un budget |
@@ -153,7 +155,8 @@ leurs deux numéros : la page officielle de l'OWASP affiche encore l'édition 20
 - passer en revue les trois listes, une par une (30 risques), dans le RITA original, avant la prochaine mise en
   production : pour chaque risque, ce que RITA fait, la preuve et l'état, ou « sans objet » avec sa raison ;
 - rattacher chaque garde-fou du sprint 4 au risque qu'il traite ;
-- porter la vigie en production (A09), et ajouter une coupure au-delà d'un budget de coût (Unbounded Consumption).
+- lancer la vigie de production toutes les 15 minutes, sans le poste (A09), et ajouter une coupure au-delà d'un budget
+  de coût (Unbounded Consumption).
 
 ## 5. Les preuves
 
@@ -191,8 +194,9 @@ valeurs ont une cotation du 22/10. Détail : [`copie-locale-2026-10-22.md`](../.
 | 19:33:10 | `deployer` (correctif des heures, § 5.4) | courante `d43a01e`, précédente `699e479` |
 
 **La livraison automatique, en production.** Chaque fusion dans `main` construit, vérifie, publie et déploie l'image
-(`.github/workflows/livraison.yml`). Dernier exemple : la livraison N15 du 21/10 (commit `3c35398`, exécution GitHub
-n° 39671479884, conclusion `success`, avec son job `deployer`). Elle n'est pas rejouée au sprint 5.
+(`.github/workflows/livraison.yml`). C'est elle qui a mis le sprint 5 en production : la livraison N16 du 23/10
+(commit `845e3b3`, exécution GitHub n° 39983152061, conclusion `success`, § 5.13). La copie du poste, elle, se livre
+par une commande.
 
 ### 5.4 La panne simulée, diagnostiquée avec la doc
 
@@ -303,6 +307,25 @@ et la production n'en avait aucune. L'issue a été fermée avec son explication
 projet, `rita-copie-sprint5`, sans alerte ; une question de test y arrive, et plus dans celui de la production. La
 documentation le dit désormais (trou 10).
 
+### 5.13 La mise en production (23/10)
+
+Le 23/10 au soir, le sprint 5 suit le chemin habituel du dépôt : la PR [#133](https://github.com/Ganda15/rita-agent/pull/133)
+vers `develop`, puis la PR [#134](https://github.com/Ganda15/rita-agent/pull/134) vers `main`, chacune avec ses contrôles
+verts et fusionnée par le présenté. La fusion dans `main` (18:00) déclenche la livraison automatique N16 : exécution
+GitHub n° 39983152061, conclusion `success`, de 18:00:40 à 18:12:40.
+
+| Vérification, sans la clé | Avant (N15) | Après (N16) |
+|---|---|---|
+| `GET /health` | commit `3c35398` | commit `845e3b3`, `status ok` |
+| `GET /tableau-de-bord.html` | 404 | 200 |
+| `GET /sante` | 404, la route n'existait pas | 403 : la route existe et exige la clé |
+
+La chaîne Linux a demandé deux corrections avant la fusion : un faux positif de gitleaks (l'étiquette d'une image
+Docker prise pour une clé, exception ciblée sur un seul commit et un seul fichier) et deux tests qui écrivaient
+l'heure de Paris en dur alors que la machine de la chaîne est en UTC. La clé de l'API de production ne vit que sur le
+serveur : la lecture de `/sante` avec la clé et la vigie pointée sur le serveur se font par l'opérateur, qui tape la
+clé lui-même. Détail : [`production-2026-10-23.md`](../../../evidence/sprint-5/production-2026-10-23.md).
+
 ## 6. Journal des retours
 
 **Conseil reçu à l'atelier n°4 : traité.** Le formateur a redonné les conseils de présentation de l'atelier n°3 : aller
@@ -319,10 +342,10 @@ fichier. Atelier 5 : remplie par l'évaluateur pendant la démonstration, puis v
 
 ## 7. Ce qui n'est pas fait
 
-- **La production n'a pas de vigie.** Le sprint 5 est un prototype local : la vigie, le tableau de bord et les
-  exercices tournent sur la copie du poste. Les ajouter à l'original sera une décision à part.
-- **La livraison de la copie se lance par une commande.** La livraison automatique est celle de la production (N15),
-  citée et non rejouée.
+- **La vigie de production se lance à la main** (ou par une tâche planifiée du poste) : pas encore de passage
+  automatique toutes les 15 minutes depuis GitHub. Les exercices de panne restent sur la copie.
+- **La livraison de la copie se lance par une commande.** La livraison automatique est celle de la production (N16,
+  § 5.13) ; la copie sert aux exercices.
 - **La documentation n'a pas encore été suivie par un tiers.** Elle a été suivie à la lettre par son auteur, et dix
   trous ont été corrigés ; le test autonome se fera à l'atelier, avec l'évaluateur.
 - **Les seuils sont provisoires** tant qu'ils n'ont pas été relus sur un trafic réel.

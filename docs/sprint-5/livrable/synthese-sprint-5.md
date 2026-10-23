@@ -1,7 +1,7 @@
 # Sprint 5 : synthèse
 
-> RITA, fil rouge de la phase 6. Le sprint 5 rend le système pilotable et reprenable. Version 1, prototype local,
-> avant l'atelier croisé n°5. Le détail est dans le [livrable](livrable-sprint-5.md).
+> RITA, fil rouge de la phase 6. Le sprint 5 rend le système pilotable et reprenable. Version 1 : en production depuis
+> le 23/10 (livraison N16), avec une copie sur le poste pour les exercices. Le détail est dans le [livrable](livrable-sprint-5.md).
 
 ## Sommaire
 
@@ -15,8 +15,9 @@
 Le brief demande des métriques et des traces, un tableau de bord lisible par un non-développeur, des alertes à seuils
 argumentés liées chacune à une action, et une documentation d'exploitation qu'un tiers peut suivre seul.
 
-Le sprint 5 est un **prototype local** : il ne touche ni la production ni la branche `main`. Tout se démontre sur une
-copie de RITA lancée sur le poste avec Docker, construite depuis la branche du sprint.
+Le sprint 5 est **en production depuis le 23/10** (livraison automatique N16, commit `845e3b3`) : `/sante` et le
+tableau de bord sont servis par le serveur. Les exercices de panne se jouent sur une copie de RITA lancée sur le
+poste avec Docker, jamais sur le service en ligne.
 
 | Livré | Où |
 |---|---|
@@ -58,7 +59,8 @@ copie de RITA lancée sur le poste avec Docker, construite depuis la branche du 
 
 ## 4. Ce qui n'est pas fait
 
-- La production n'a pas de vigie ; la livraison de la copie se lance par une commande (la livraison automatique est
+- La vigie de production se lance à la main, pas encore toutes les 15 minutes ; la livraison de la copie se lance par
+  une commande (la livraison automatique est
   celle de la production, citée, pas rejouée).
 - La documentation n'a pas encore été suivie par un tiers : elle l'a été à la lettre par son auteur, le test autonome
   se fait à l'atelier.
