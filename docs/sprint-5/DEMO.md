@@ -62,13 +62,17 @@ Question de secours, si la première tarde : « Comment Airbus répartit-il ses 
 | `C:\Python314\python.exe scripts\copie_sprint5.py etat` | `version courante : <ce commit>` ; `version precedente : <l'ancienne>` |
 | Onglet du tableau de bord, Actualiser | « mesures depuis HH:MM » : la nouvelle version vient de démarrer |
 
-**À dire** : « La livraison construit l'image du commit, relance la copie, et vérifie que `/health` annonce bien ce
-commit ; sinon, elle échoue sans rien changer. La version d'avant est gardée pour un retour arrière. En production, la
-livraison est automatique, à chaque fusion dans main : par exemple la passe N15 du 21/10 (commit `3c35398`, conclusion
-`success`, avec son job `deployer`). Elle n'est pas rejouée ici : le sprint 5 ne touche pas l'original. »
+**À dire, pendant `deployer`** : « La livraison construit l'image du commit, relance la copie, et vérifie que
+`/health` annonce bien ce commit ; sinon, elle échoue sans rien changer. La version d'avant est gardée pour un retour
+arrière. »
 
-L'exécution N15 se montre dans l'onglet 5 : `github.com/Ganda15/rita-agent/actions/runs/39671479884`. Le dépôt est
-privé : la page ne s'ouvre qu'une fois connecté avec un compte qui a accès au dépôt.
+**À dire, juste après `etat`, en montrant l'onglet 5** : « En production, la livraison est automatique : chaque fusion
+dans main déploie toute seule, comme la livraison N15 du 21/10. Je ne la rejoue pas ici, pour ne pas toucher la
+production. »
+
+L'exécution N15 (commit `3c35398`, conclusion `success`, avec son job `deployer`), citée et pas rejouée, se montre dans
+l'onglet 5 : `github.com/Ganda15/rita-agent/actions/runs/39671479884`. Le dépôt est privé : la page ne s'ouvre qu'une
+fois connecté avec un compte qui a accès au dépôt.
 
 Si le temps le permet : `C:\Python314\python.exe scripts\copie_sprint5.py revenir` (environ 6 s), qui relance l'image
 précédente sans la reconstruire et vérifie le commit et l'image ; puis `deployer` de nouveau.
