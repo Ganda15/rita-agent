@@ -74,8 +74,8 @@ L'exécution N15 (commit `3c35398`, conclusion `success`, avec son job `deployer
 l'onglet 5 : `github.com/Ganda15/rita-agent/actions/runs/39671479884`. Le dépôt est privé : la page ne s'ouvre qu'une
 fois connecté avec un compte qui a accès au dépôt.
 
-Si le temps le permet : `C:\Python314\python.exe scripts\copie_sprint5.py revenir` (environ 6 s), qui relance l'image
-précédente sans la reconstruire et vérifie le commit et l'image ; puis `deployer` de nouveau.
+Le segment s'arrête là : un seul `deployer`. Le retour arrière se montre dans la documentation (segment 7:10), pas ici :
+un `revenir` remettrait la copie sur l'ancienne version et fausserait la suite de la démonstration.
 
 ### 3:40 · Alerte déclenchée (210 s)
 
