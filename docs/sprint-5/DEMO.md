@@ -24,22 +24,32 @@ La copie redémarre à l'étape `revenir` : les mesures du tableau de bord repar
 
 | Début | Durée | Segment | Ce qui est montré |
 |---|---|---|---|
-| 0:00 | 20 s | Introduction | la vigie du prototype local, en une phrase |
-| 0:20 | 110 s | Parcours principal | une question couverte, une question hors corpus, le tableau de bord |
-| 2:10 | 90 s | Livraison | la livraison de la version courante sur la copie, `/health` avant et après |
-| 3:40 | 210 s | Alerte déclenchée | la dérive simulée, l'issue ouverte par la vigie, le tableau de bord, l'action |
-| 7:10 | 80 s | Documentation | `docs/exploitation.md` : la table des alertes, le diagnostic, le retour arrière |
-| 8:30 | 60 s | Conclusion | ce qui est prouvé, et les limites |
+| 0:00 | 30 s | Introduction | ce qu'est RITA, pourquoi la surveiller, ce que le sprint 5 apporte |
+| 0:30 | 110 s | Parcours principal | une question couverte, une question hors corpus, le tableau de bord |
+| 2:20 | 90 s | Livraison | la livraison de la version courante sur la copie, `/health` avant et après |
+| 3:50 | 210 s | Alerte déclenchée | la dérive simulée, l'issue ouverte par la vigie, le tableau de bord, l'action |
+| 7:20 | 80 s | Documentation | `docs/exploitation.md` : la table des alertes, le diagnostic, le retour arrière |
+| 8:40 | 60 s | Conclusion | ce qui est prouvé, et les limites |
 
-Total : 570 secondes, soit 9 min 30 ; 30 secondes de marge.
+Total : 580 secondes, soit 9 min 40 ; 20 secondes de marge. Si le temps manque, la trace Langfuse du parcours (15 s) saute la première.
 
-### 0:00 · Introduction (20 s)
+### 0:00 · Introduction (30 s)
 
-**À dire** : « Sprint 5 : la vigie. RITA est surveillée de l'extérieur : sept signaux, des seuils argumentés, une alerte
-par signal liée à une action, et une documentation qu'un tiers suit seul. C'est un prototype local : la production n'est
-pas touchée. »
+D'abord le concept, puis le cas d'usage, puis ce que le sprint apporte ; la technique vient ensuite, dans la démonstration.
 
-### 0:20 · Parcours principal (110 s)
+**À dire** : « RITA aide un investisseur particulier à suivre ses valeurs cotées. Elle rassemble cinq sources : les cours
+de bourse, les taux de change, des indicateurs économiques, et les articles de trois journaux économiques. Elle répond
+toujours en citant ses sources, et refuse plutôt que d'inventer. »
+
+**À dire** : « Le cas d'usage de ce sprint : une fois RITA en service, il faut savoir si elle va bien. Si le fournisseur
+du modèle tombe, si quelqu'un l'attaque, ou si elle coûte trop cher, il faut le voir tout de suite et savoir quoi faire,
+sans être développeur. »
+
+**À dire** : « Ce que le sprint 5 apporte : un tableau de bord lisible par tous, une alerte qui dit quoi faire, et une
+documentation qu'une autre personne peut suivre seule. Je le montre sur une copie de RITA, sur mon poste, pour pouvoir
+provoquer des pannes sans toucher la production. »
+
+### 0:30 · Parcours principal (110 s)
 
 | Geste | Résultat attendu |
 |---|---|
@@ -50,10 +60,14 @@ pas touchée. »
 **À dire** : « Une réponse cite toujours sa source ; hors du corpus, RITA refuse au lieu d'inventer. Le tableau de
 bord compte chaque appel, et quand il n'a pas assez de données, il dit INCONNU, jamais SAIN. »
 
+**À dire, facultatif (15 s), en montrant la trace dans Langfuse** : « Chaque question laisse aussi une trace dans
+Langfuse, sans son texte : son parcours, sa durée, son statut. Avant ce sprint, une seule alerte regardait ces traces,
+sur les erreurs du fournisseur ; le sprint 5 ajoute les mesures, les seuils et le tableau de bord. »
+
 Question de secours, si la première tarde : « Comment Airbus répartit-il ses chaînes d'assemblage entre ses sites ? »
 (source attendue : « Airbus décrit l'organisation de ses chaînes d'assemblage », 10/09/2026).
 
-### 2:10 · Livraison (90 s)
+### 2:20 · Livraison (90 s)
 
 | Geste | Résultat attendu |
 |---|---|
@@ -74,10 +88,10 @@ L'exécution N15 (commit `3c35398`, conclusion `success`, avec son job `deployer
 l'onglet 5 : `github.com/Ganda15/rita-agent/actions/runs/39671479884`. Le dépôt est privé : la page ne s'ouvre qu'une
 fois connecté avec un compte qui a accès au dépôt.
 
-Le segment s'arrête là : un seul `deployer`. Le retour arrière se montre dans la documentation (segment 7:10), pas ici :
+Le segment s'arrête là : un seul `deployer`. Le retour arrière se montre dans la documentation (segment 7:20), pas ici :
 un `revenir` remettrait la copie sur l'ancienne version et fausserait la suite de la démonstration.
 
-### 3:40 · Alerte déclenchée (210 s)
+### 3:50 · Alerte déclenchée (210 s)
 
 | Geste | Résultat attendu |
 |---|---|
@@ -101,7 +115,7 @@ Une issue par signal, jamais de doublon ; elle se fermera seule, avec un comment
 fenêtre de 15 minutes. Ici, la lecture des refus montre des prompts hostiles connus : les garde-fous ont fait leur
 travail. »
 
-### 7:10 · Documentation (80 s)
+### 7:20 · Documentation (80 s)
 
 | Geste | Ce qui est montré |
 |---|---|
@@ -113,7 +127,7 @@ travail. »
 jouée sur la copie : une panne simulée, diagnostiquée avec la doc ; le service rétabli ; puis l'alerte résolue quinze
 minutes plus tard. Les preuves sont dans le dépôt. »
 
-### 8:30 · Conclusion (60 s)
+### 8:40 · Conclusion (60 s)
 
 **À dire** : « Ce qui est prouvé : les mesures, le tableau de bord, des seuils argumentés, la vigie et ses issues,
 une panne diagnostiquée avec la doc, une livraison et un retour arrière vérifiés. Les limites, dites franchement : c'est

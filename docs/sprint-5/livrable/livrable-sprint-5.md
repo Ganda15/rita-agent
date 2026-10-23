@@ -92,7 +92,7 @@ branche `sprint-5-vigie-demo`.
 |---|---|---|
 | « Le système complet en production avec sa vigie » | la copie du poste (`http://localhost:8011`), son tableau de bord (`/tableau-de-bord.html`) et la vigie (`monitorage/vigie.py`) | **prototype local**, pas la production : l'écart est au § 1.2 et au § 7 |
 | « `docs/exploitation.md` » | [`docs/exploitation.md`](../../exploitation.md) : avant de commencer, déployer, diagnostiquer une panne, revenir en arrière, les alertes, la vigie et les exercices ; l'ancien guide suit en annexes | écrit, relu contre le code, joué sur la copie le 22/10 ; suivi à la lettre le 23/10, dix trous trouvés et corrigés (§ 5.3, § 5.4, § 5.10) |
-| « Le scénario de démo écrit et répété » | [`docs/sprint-5/DEMO.md`](../DEMO.md) : 9 min 30 en six segments, la liste de contrôle, le plan B | écrit, vérifié contre le code, **répété deux fois le 23/10** : environ 9 minutes, puis environ 9 minutes 30 (§ 5.11) |
+| « Le scénario de démo écrit et répété » | [`docs/sprint-5/DEMO.md`](../DEMO.md) : 9 min 40 en six segments, la liste de contrôle, le plan B | écrit, vérifié contre le code, **répété deux fois le 23/10** : environ 9 minutes, puis environ 9 minutes 30 (§ 5.11) |
 
 ## 3. Les critères de la grille : ce qui sera montré, et la preuve
 
@@ -248,8 +248,9 @@ ouvert** : la correction est sur la branche du sprint 5, pas dans `main`.
 
 ### 5.8 Le scénario de démo
 
-[`docs/sprint-5/DEMO.md`](../DEMO.md) : introduction (20 s), parcours principal (110 s), livraison (90 s), alerte
-déclenchée (210 s), documentation (80 s), conclusion (60 s), soit 9 min 30. Les questions ont été vérifiées sur la copie
+[`docs/sprint-5/DEMO.md`](../DEMO.md) : introduction (30 s : le concept, le cas d'usage, ce que le sprint apporte),
+parcours principal (110 s), livraison (90 s), alerte déclenchée (210 s), documentation (80 s), conclusion (60 s), soit
+9 min 40. Les questions ont été vérifiées sur la copie
 le 22/10 : « Comment L'Oréal organise-t-elle sa division des produits professionnels ? » reçoit une réponse citée en
 environ 2 s ; « Quelle est la recette de la tarte Tatin ? » est refusée `OUT_OF_CORPUS`, sans appel au modèle. Un test
 vérifie que la somme des segments tient en 10 minutes, que chaque commande citée existe, et que le plan B est écrit
@@ -308,7 +309,7 @@ documentation le dit désormais (trou 10).
 droit au but, couche par couche ; le projet en deux ou trois phrases ; la partie technique en cinq minutes ; l'ordre des
 modalités du brief ; le code seulement si on le demande
 ([grille de l'atelier n°4](../../../eval/ateliers/sprint-4-grille.md)). Le scénario de démo les applique : une phrase
-d'introduction, le parcours principal avant la technique, 9 min 30 en tout, le code seulement sur question
+d'introduction, le parcours principal avant la technique, 9 min 40 en tout, le code seulement sur question
 ([`docs/sprint-5/DEMO.md`](../DEMO.md)).
 
 **Les grilles de la série.** Ateliers 1 à 4 : versées dans [`eval/ateliers/`](../../../eval/ateliers/) ; les grilles

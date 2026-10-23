@@ -21,8 +21,8 @@ Plan du sprint 5, § 2 « Vigie » et « Alerte ». Livrable : E5 (C20 surveille
 ## Les conventions de l'issue
 
 Les mêmes que `.github/workflows/alerte-incident.yml` (alertes Langfuse) : étiquette `incident` (et `E5`), titre stable
-qui permet de retrouver l'issue déjà ouverte. « prototype local » dans le titre la distingue d'un incident de
-production. Le corps donne le signal, la valeur, le seuil, l'heure, le pourquoi, le lien vers l'action et la
+qui permet de retrouver l'issue déjà ouverte. Le titre dit où tourne l'API surveillée : « prototype local » pour la
+copie du poste, « production » pour le serveur ; les issues de l'une ne touchent jamais celles de l'autre. Le corps donne le signal, la valeur, le seuil, l'heure, le pourquoi, le lien vers l'action et la
 résolution. Jamais la clé, jamais le texte d'une question.
 
 ## Sécurité
@@ -51,15 +51,23 @@ from monitorage import seuils as module_seuils
 
 RACINE = Path(__file__).resolve().parent.parent
 DEPOT = "Ganda15/rita-agent"
-BRANCHE_DOC = "sprint-5-vigie-demo"
+BRANCHE_DOC = "main"
 ETIQUETTES = ("incident", "E5")
 PREFIXE_TITRE = "Incident : vigie (prototype local)"
+PREFIXE_PRODUCTION = "Incident : vigie (production)"
+DEBUT_TITRE = "Incident : vigie ("
 ADRESSE_PAR_DEFAUT = "http://localhost:8011"
 
 
-def titre(signal: str) -> str:
+def prefixe(adresse: str) -> str:
+    """« prototype local » pour la copie du poste, « production » pour toute autre adresse."""
+    hote = adresse.split("://", 1)[-1].split("/", 1)[0].split(":", 1)[0]
+    return PREFIXE_TITRE if hote in ("localhost", "127.0.0.1") else PREFIXE_PRODUCTION
+
+
+def titre(signal: str, adresse: str = ADRESSE_PAR_DEFAUT) -> str:
     """Le titre stable d'une alerte : c'est lui qui retrouve l'issue déjà ouverte."""
-    return f"{PREFIXE_TITRE} « {signal} »"
+    return f"{prefixe(adresse)} « {signal} »"
 
 
 def _hh_mm(horodatage: float) -> str:
@@ -146,7 +154,7 @@ def _corps(libelle: str, nom: str, verdict_mot: str, valeur: str, seuil: str, po
         "",
         f"**Résolution** : {resolution}",
         "",
-        "Issue ouverte par `monitorage/vigie.py` (sprint 5, prototype local). Elle se ferme seule, avec un "
+        "Issue ouverte par `monitorage/vigie.py` (sprint 5). Elle se ferme seule, avec un "
         "commentaire, quand la résolution est atteinte.",
     ])
 
@@ -174,18 +182,18 @@ def passage(adresse: str, cle: str, http_get, github, dormir, horloge, config: d
     service = config["signaux"]["service"]
 
     if not sonder_service(http_get, adresse, service["essais"], service["intervalle_s"], dormir):
-        if titre("service") not in ouvertes:
+        if titre("service", adresse) not in ouvertes:
             valeur = (f"{service['essais']} sondes de /health sans réponse 200, à {service['intervalle_s']} s "
                       "d'écart")
-            github.ouvrir(titre("service"), _corps(service["libelle"], "service", "problème", valeur,
+            github.ouvrir(titre("service", adresse), _corps(service["libelle"], "service", "problème", valeur,
                                                    "deux sondes en échec", service["pourquoi"], service["action"],
                                                    service["resolution"], adresse, maintenant))
-            actions.append(f"ouverte : {titre('service')}")
+            actions.append(f"ouverte : {titre('service', adresse)}")
         return actions, 1
-    if titre("service") in ouvertes:
-        github.fermer(ouvertes[titre("service")],
+    if titre("service", adresse) in ouvertes:
+        github.fermer(ouvertes[titre("service", adresse)],
                       f"Retour à la normale le {_heure(maintenant)} : /health répond de nouveau 200.")
-        actions.append(f"fermée : {titre('service')}")
+        actions.append(f"fermée : {titre('service', adresse)}")
 
     reponse = http_get(f"{adresse}/sante", {"X-API-Key": cle})
     if reponse.status_code != 200:
@@ -195,7 +203,7 @@ def passage(adresse: str, cle: str, http_get, github, dormir, horloge, config: d
 
     code = 0
     for nom, verdict in etat["verdicts"].items():
-        cle_titre = titre(nom)
+        cle_titre = titre(nom, adresse)
         if verdict["etat"] == "probleme":
             code = 1
             if cle_titre not in ouvertes:
@@ -248,7 +256,7 @@ class GitHubCli:
     def issues_ouvertes(self) -> dict[str, int]:
         sortie = self._gh("issue", "list", "--state", "open", "--label", ETIQUETTES[0], "--json", "number,title",
                           "--limit", "100")
-        return {i["title"]: i["number"] for i in json.loads(sortie or "[]") if i["title"].startswith(PREFIXE_TITRE)}
+        return {i["title"]: i["number"] for i in json.loads(sortie or "[]") if i["title"].startswith(DEBUT_TITRE)}
 
     def ouvrir(self, titre_issue: str, corps: str) -> None:
         etiquettes = [option for etiquette in ETIQUETTES for option in ("--label", etiquette)]

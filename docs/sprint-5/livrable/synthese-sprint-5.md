@@ -28,7 +28,7 @@ copie de RITA lancée sur le poste avec Docker, construite depuis la branche du 
 | Une panne et une dérive simulées, sûres et réversibles | `monitorage/exercice.py`, `monitorage/exercer.py` |
 | Déployer et revenir en arrière sur la copie, commit et image vérifiés | `scripts/copie_sprint5.py` |
 | La documentation d'exploitation | `docs/exploitation.md` |
-| Le scénario de la démo, 9 min 30 | `docs/sprint-5/DEMO.md` |
+| Le scénario de la démo, 9 min 40 | `docs/sprint-5/DEMO.md` |
 | La vigie rattachée à l'OWASP, question « Et en production, ça tient ? » : A09, A10 et A02 couverts, Unbounded Consumption partiel | livrable, § 4.1 |
 
 ## 2. Les critères de la grille, et où en est chacun

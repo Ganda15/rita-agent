@@ -30,9 +30,9 @@ class _Reponse:
 class _Http:
     """`http_get` remplacé : une file de réponses par adresse ; une exception dans la file est levée."""
 
-    def __init__(self, sante=None, health=(200,)):
-        self.files = {f"{ADRESSE}/health": [_Reponse(c) if isinstance(c, int) else c for c in health],
-                      f"{ADRESSE}/sante": [sante] if sante is not None else []}
+    def __init__(self, sante=None, health=(200,), adresse=ADRESSE):
+        self.files = {f"{adresse}/health": [_Reponse(c) if isinstance(c, int) else c for c in health],
+                      f"{adresse}/sante": [sante] if sante is not None else []}
         self.appels = []
 
     def __call__(self, url, entetes):
@@ -312,3 +312,32 @@ def test_l_heure_de_l_exercice_dans_l_issue_est_celle_du_poste():
     _passage(_Http(sante), github)
     [(_, corps)] = github.ouvertures
     assert f"en cours depuis {attendu} (Era" in corps
+
+
+# --- la production (23/10) : la même vigie, l'adresse du serveur --------------------------------------------------------
+
+PRODUCTION = "https://178-104-184-125.sslip.io"
+
+
+def test_en_production_le_titre_le_dit_et_l_issue_de_la_copie_n_est_pas_touchee():
+    assert vigie.titre("refus_securite", PRODUCTION) == "Incident : vigie (production) « refus_securite »"
+    assert vigie.titre("refus_securite") == "Incident : vigie (prototype local) « refus_securite »"
+    github = _GitHub(ouvertes={vigie.titre("refus_securite"): 7})          # l'issue ouverte par la copie du poste
+    actions, code = vigie.passage(PRODUCTION, CLE_DE_TEST, _Http(_sante(*ATTAQUE), adresse=PRODUCTION), github, [].append,
+                                  lambda: MAINTENANT, seuils.charger())
+    [(titre, corps)] = github.ouvertures
+    assert code == 1 and titre == vigie.titre("refus_securite", PRODUCTION) and PRODUCTION in corps
+    assert github.fermetures == [] and "prototype local" not in corps
+
+
+def test_les_liens_vers_l_action_visent_la_branche_main():
+    lien = vigie._lien("docs/exploitation.md#alerte-refus-de-securite")
+    assert "/blob/main/docs/exploitation.md#alerte-refus-de-securite" in lien
+
+
+def test_les_issues_ouvertes_comprennent_celles_de_la_production():
+    sortie = json.dumps([{"number": 4, "title": vigie.titre("fraicheur")},
+                         {"number": 8, "title": vigie.titre("cout_24h", PRODUCTION)},
+                         {"number": 5, "title": "Incident : alerte Langfuse « latence »"}])
+    assert vigie.GitHubCli(executer=_Executeur(sortie)).issues_ouvertes() == {
+        vigie.titre("fraicheur"): 4, vigie.titre("cout_24h", PRODUCTION): 8}
