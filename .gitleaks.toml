@@ -19,3 +19,13 @@ regexes = [
   '''^cle-de-reconstruction-ci-32-caracteres$''',      # docs/sprint-2/PLAN-TRAVAIL.md, tâche 6 (exemple)
   '''^remplacer-par-une-cle-generee-de-32-octets$''',  # .env.example : valeur à remplacer par chacun
 ]
+
+# Un faux positif de l'historique : l'étiquette d'une image Docker de la copie du sprint 5 (« rita-api:s5- » suivi des
+# 12 premiers caractères d'un commit), dans le journal brut des preuves du 22/10, est prise pour une clé par la règle
+# generic-api-key. L'exception vise ce seul commit ET ce seul fichier (condition AND) : aucun autre commit, aucun autre
+# fichier n'en profite. tests/test_gitleaks_config.py le vérifie.
+[[allowlists]]
+description = "Faux positif : étiquette d'image Docker dans le journal des preuves du sprint 5 (22/10)"
+condition = "AND"
+commits = ["4ff61911b1faa93ca857f01040a0530905cce9a6"]
+paths = ['''^evidence/sprint-5/preuves-copie-2026-10-22-journal\.txt$''']
