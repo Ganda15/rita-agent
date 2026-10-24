@@ -6,11 +6,11 @@ sans fenêtre. Règle du dépôt : un `.drawio` pour corriger, une image pour vo
 
 | Fichier | Contenu | Section du rapport | Taille de rendu |
 |---|---|---|---|
-| `E3-architecture` | le chemin d'un briefing : clients, API, graphe, garde-fous, réserves, observabilité | 2 (C9) | 1500,994 |
-| `E3-integration-briefing` | une demande de briefing depuis l'écran 3, et ce que l'écran fait des réponses qui ne sont pas un briefing | 4 (C10) | 1400,736 |
-| `E3-monitorage` | collecte des traces, Langfuse, restitution, les deux alertes vers GitHub | 5 (C11) | 1400,616 |
-| `E3-strategie-tests` | ce qui est testé, par quoi, et où ça tourne (poste, CI, manuel) | 6 (C12) | 1400,636 |
-| `E3-chaine-livraison` | les cinq workflows, le poste, le serveur, ce qui est conçu et non construit | 7 (C13) | 1400,830 |
+| `E3-architecture` | les deux chemins vers le modèle (briefing, question) : clients, API, garde-fous avant et après, réserves, surveillance | 2 (C9) | 1400,946 |
+| `E3-integration-briefing` | une demande de briefing depuis l'écran, et ce que l'écran fait des réponses qui ne sont pas un briefing (403, 422, 429, 502, 500) | 4 (C10) | 1400,716 |
+| `E3-monitorage` | collecte des traces et des compteurs, Langfuse, les deux tableaux de bord, les deux alertes vers GitHub, ce qui manque | 5 (C11) | 1400,826 |
+| `E3-strategie-tests` | les 1 751 tests par ce qu'ils protègent, et où ils tournent (poste, CI, à la main) | 6 (C12) | 1400,716 |
+| `E3-chaine-livraison` | les sept workflows, le ruleset, le serveur, le déploiement et le retour arrière | 7 (C13) | 1400,886 |
 
 ## Régénérer
 
@@ -21,17 +21,24 @@ cd D:\KandaWork\RITA_PROJECT\rita-agent
 C:\Python314\python.exe -X utf8 docs\rapports\E3\schemas\generer_schemas.py
 ```
 
-Puis le rendu PNG, un schéma à la fois (Chrome exige un `--user-data-dir`, sinon il échoue sans message) :
+Le script refuse d'écrire si une ligne ne tient plus dans sa boîte (contrôle `debordements`, 24/10/2026) : il nomme
+la boîte et la ligne à raccourcir.
+
+Puis le rendu PNG, un schéma à la fois, en double résolution (Chrome exige un `--user-data-dir`, sinon il échoue sans
+message) :
 
 ```
-"C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --disable-gpu --hide-scrollbars --user-data-dir=%TEMP%\chrome-rendu --window-size=1500,994 --screenshot=docs\rapports\E3\schemas\E3-architecture.png file:///D:/KandaWork/RITA_PROJECT/rita-agent/docs/rapports/E3/schemas/E3-architecture.svg
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --disable-gpu --hide-scrollbars --force-device-scale-factor=2 --user-data-dir=%TEMP%\chrome-rendu --window-size=1400,946 --screenshot=docs\rapports\E3\schemas\E3-architecture.png file:///D:/KandaWork/RITA_PROJECT/rita-agent/docs/rapports/E3/schemas/E3-architecture.svg
 ```
 
 Même commande pour les quatre autres, avec la taille de rendu du tableau. Chaque PNG est regardé avant
-d'être rangé : aucune flèche ne traverse une boîte ni un titre, aucun texte n'est coupé (les cinq le 04/10/2026
-au soir, après la refonte de la charte).
+d'être rangé : aucune flèche ne traverse une boîte ni un titre, aucun texte n'est coupé (les cinq le 24/10/2026,
+après la remise à jour).
+
 **Charte (refaite le 04/10/2026, à la demande d'Era)** : texte presque noir et plus grand, traits épais ; une couleur
 par rôle de boîte (bande à gauche) et par sens de flèche ; une légende dessinée en bas de chaque schéma, qui ne montre
-que les couleurs employées et ce qu'elles veulent dire dans ce schéma. Le 04/10, le texte de chaque boîte a été
-mesuré dans Chrome (largeur réelle de chaque ligne) : aucun ne dépasse de sa boîte.
+que les couleurs employées et ce qu'elles veulent dire dans ce schéma.
 
+**Remise à jour du 24/10/2026 (E3 v1.5)** : les cinq schémas disaient l'état du 4 octobre. Le texte des boîtes,
+11,5 px dans un schéma réduit à 516 points de large, passait à environ 4 points une fois imprimé : il est passé à
+15,5 px (environ 5,7 points), les textes ont été raccourcis, et les explications sont dans le corps du rapport.

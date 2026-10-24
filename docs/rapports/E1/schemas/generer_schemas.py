@@ -35,6 +35,13 @@ _spec.loader.exec_module(_e3)
 Boite, Fleche, Schema = _e3.Boite, _e3.Fleche, _e3.Schema
 ROLES, SENS, NAVY, INK, SOFT, POLICE = _e3.ROLES, _e3.SENS, _e3.NAVY, _e3.INK, _e3.SOFT, _e3.POLICE
 
+# Le nettoyage garde la charte du 04/10, taille du texte comprise : E3 v1.5 a agrandi le texte de SES schémas le
+# 24/10 (lisibilité à l'impression), et ce schéma, déjà dans E1 v2.6, ne doit pas changer pour autant.
+for _nom, _valeur in {"T_TITRE": 30, "T_SOUS_TITRE": 15, "T_ZONE": 13.5, "T_BOITE": 14, "T_LIGNE": 11.5,
+                      "T_ETIQUETTE": 12.5, "T_LEGENDE": 12.5, "INTERLIGNE": 15.5, "Y_TITRE_BOITE": 21,
+                      "Y_PREMIERE_LIGNE": 40, "LIGNE_LEGENDE": 28, "DATE_DRAWIO": "2026-10-04T00:00:00.000Z"}.items():
+    setattr(_e3, _nom, _valeur)
+
 
 # =============================================================================
 # Le tracé propre du schéma de collecte (24/10/2026)
