@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import csv
 import logging
+import math
 import os
 import re
 import unicodedata
@@ -155,9 +156,13 @@ def _nombre_fr(texte: str | None) -> float | None:
     if not propre:
         return None
     try:
-        return float(propre)
+        nombre = float(propre)
     except ValueError:
         return None
+    # 24/10/2026 : `float()` accepte « nan », « inf », « 1e400 ». `NaN <= 0` est faux, donc la
+    # validation ci-dessous laissait passer un NaN, et PostgreSQL range NaN au-dessus de tout
+    # nombre : `CHECK (quantite > 0)` l'aurait accepté aussi. Un nombre non fini est illisible.
+    return nombre if math.isfinite(nombre) else None
 
 
 def lire(chemin: Path | str | None = None) -> Portefeuille:
@@ -213,7 +218,7 @@ def lire(chemin: Path | str | None = None) -> Portefeuille:
                 Rejet(numero, dict(ligne), f"quantite nulle ou negative ({quantite})"))
             continue
         if pru is None:
-            portefeuille.rejets.append(Rejet(numero, dict(ligne), "prix de revient absent"))
+            portefeuille.rejets.append(Rejet(numero, dict(ligne), "prix de revient absent ou illisible"))
             continue
         if pru <= 0:
             portefeuille.rejets.append(
