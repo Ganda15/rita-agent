@@ -118,6 +118,8 @@ git push origin refs/tags/livrable-E1-v1:refs/tags/livrable-E1-v1
 | 2 | 2026-08-15 | Protocole de veille C6 (complet) | C6 | `27ff359` | ⬜ | ⬜ | — |
 | 3 | 2026-08-15 | Conception des indicateurs (E4) | — *(conception)* | `81780cb` | ⬜ | ⬜ | — |
 | 4 | 2026-08-14 | **Note de veille S33** — injection de prompt | C6 | `1da976f` | ⬜ **prête, non partie** | ⬜ | — |
+| 5 | 2026-10-24 | **E1 : Données, version 2.6** (5 pages) | C1-C5 | `livrable-E1-v2` (commit `312056a`, livraison N19) | ⬜ | ⬜ | pas encore |
+| 6 | 2026-10-24 | **E3 : API du modèle, intégration, monitorage, tests, livraison, version 1.5** (19 pages) | C9-C13 | `livrable-E3-v1` (commit `312056a`, livraison N19) | ⬜ | ⬜ | pas encore |
 
 **Légende** : ⬜ = pas encore fait · ✅ = fait, avec la date.
 
@@ -197,7 +199,7 @@ envoyés le même jour reçoivent un seul retour, superficiel.
 |---|---|---|
 | S39 | **E4 — Application** | C10, C14–C19 |
 | S41 | **C7 — Benchmark de services IA** | C7 |
-| S42 | **E3 — API modèle & MLOps** | C9, C11, C12, C13 |
+| S42 | **E3 — API modèle & MLOps** : en file depuis le 24/10 (ligne 6) | C9, C11, C12, C13 |
 | S43 | **E5 — Monitorage** | C20, C21 |
 
 ---
