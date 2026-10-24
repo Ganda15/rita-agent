@@ -36,7 +36,7 @@ Trois règles ont guidé l'écriture. Un chiffre se cite mesuré, avec sa date e
 
 ![Deux chemins vers le modèle, et ce qui les surveille](schemas/E3-architecture.png)
 
-*Figure 1. Les deux chemins vers le modèle et ce qui les surveille (état du code au 24 octobre 2026, `develop`, `9683f04`). Source éditable : `schemas/E3-architecture.drawio`. Le même ensemble, brique par brique avec les tests de chacune, est le document d'architecture `docs/ARCHITECTURE.md`.*
+*Figure 1. Les deux chemins vers le modèle et ce qui les surveille (état du code au 24 octobre 2026, `develop`, `9683f04`). Source éditable : `schemas/E3-architecture.drawio` ; image : mise en forme d'Era, mêmes textes que le schéma généré, comparés par `tests/test_schemas_e3.py`. Le même ensemble, brique par brique avec les tests de chacune, est le document d'architecture `docs/ARCHITECTURE.md`.*
 
 En texte : un appel passe par l'API (identifiant de requête, clé, valeur connue, quota), puis par l'un des deux parcours. Le briefing suit un graphe à trois nœuds (le scout lit la base, le nœud `rag` cherche les articles, le rédacteur écrit) ; la question passe par ses garde-fous, la recherche, puis le modèle en JSON imposé. Les articles trouvés sont revérifiés avant le prompt, le texte produit est relu, et la réponse part avec son identifiant, une trace sans texte et une ligne de journal.
 
@@ -112,9 +112,9 @@ L'API a deux clients dans le dépôt, et tous deux passent par HTTP avec la clé
 
 ![Une demande de briefing, de l'écran au modèle et retour](schemas/E3-integration-briefing.png)
 
-*Figure 2. Une demande de briefing depuis l'écran, en cinq temps, et ce que l'écran fait de chaque réponse qui n'est pas un briefing (aucune réponse, 403, 422, 429, 502 et 500). En pointillé, les écarts connus : le message générique d'une panne totale (#75) et la clé gardée trop tôt (#73). Source éditable : `schemas/E3-integration-briefing.drawio`.*
+*Figure 2. Une demande de briefing depuis l'écran, en cinq temps, et ce que l'écran fait de chaque réponse qui n'est pas un briefing (aucune réponse, 403, 422, 429, 502 et 500). En pointillé, les écarts connus : le message générique d'une panne totale (#75) et la clé gardée trop tôt (#73). Source éditable : `schemas/E3-integration-briefing.drawio` ; image : mise en forme d'Era, mêmes textes que le schéma généré, comparés par `tests/test_schemas_e3.py`.*
 
-**La passerelle MCP** (`passerelle_mcp/serveur.py`) : MCP (*Model Context Protocol*) est le protocole qui décrit des outils à un modèle de langage. La passerelle expose trois outils en lecture seule (`rita_fraicheur`, `rita_portefeuille`, `rita_indicateurs`), avec l'annotation `read_only_hint`, et appelle l'API REST par HTTP avec `X-API-Key`. Passer par HTTP plutôt que par les modules fait de la passerelle un vrai client, soumis au refus 403, et évite deux chemins d'accès aux données qui divergeraient. Le formateur a rendu le MCP obligatoire le 28 août 2026. Preuve : `evidence/C10/preuve-passerelle-mcp.md`. `rita_portefeuille` exige le mode démonstration et compare les couples (ticker, quantité) servis à ceux du jeu d'exemple ; sinon il refuse (`NOT_AUTHORIZED`) sans exposer les données. Chaque appel d'outil déclaré laisse une ligne dans la table `mcp_calls` (statut, code d'erreur, durée, jamais le contenu) ; les refus pris dans la passerelle sont déposés par `POST /audit/mcp`. Mesuré le 10 octobre : l'import expose 7 des 10 positions valides du fichier d'exemple, et le verrou refuse donc l'environnement importé, sans fuite.
+**La passerelle MCP** (`passerelle_mcp/serveur.py`) : MCP (*Model Context Protocol*) est le protocole qui décrit des outils à un modèle de langage. La passerelle expose trois outils en lecture seule (`rita_fraicheur`, `rita_portefeuille`, `rita_indicateurs`), avec l'annotation `read_only_hint`, et appelle l'API REST par HTTP avec `X-API-Key`. Passer par HTTP plutôt que par les modules fait de la passerelle un vrai client, soumis au refus 403, et évite deux chemins d'accès aux données qui divergeraient. Le formateur a rendu le MCP obligatoire le 28 août 2026. Preuve : `evidence/C10/preuve-passerelle-mcp.md`. `rita_portefeuille` exige le mode démonstration et compare les couples (ticker, quantité) servis à ceux du jeu d'exemple ; sinon il refuse (`NOT_AUTHORIZED`) sans exposer les données. Chaque appel d'outil déclaré laisse une ligne dans la table `mcp_calls` (statut, code d'erreur, durée, jamais le contenu) ; les refus pris dans la passerelle sont déposés par `POST /audit/mcp`.
 
 ### 4.2 Les tests d'intégration
 
@@ -181,7 +181,7 @@ Preuves : `evidence/sprint-4/README.md` et deux captures dans `evidence/sprint-4
 
 ![Surveiller le modèle : collecte, alerte et restitution](schemas/E3-monitorage.png)
 
-*Figure 3. La chaîne de monitorage au 24 octobre 2026 : ce qui est collecté à chaque requête, ce que Langfuse en fait, les deux restitutions, comment une alerte devient une issue GitHub, et ce qui manque. Source éditable : `schemas/E3-monitorage.drawio`.*
+*Figure 3. La chaîne de monitorage au 24 octobre 2026 : ce qui est collecté à chaque requête, ce que Langfuse en fait, les deux restitutions, comment une alerte devient une issue GitHub, et ce qui manque. Source éditable : `schemas/E3-monitorage.drawio` ; image : mise en forme d'Era, mêmes textes que le schéma généré, comparés par `tests/test_schemas_e3.py`.*
 
 ### 5.3 Les métriques, et ce qu'elles veulent dire
 
@@ -254,7 +254,7 @@ Required test coverage of 90.0% reached. Total coverage: 96.32%
 
 ![Ce qui est testé, par quoi, et où](schemas/E3-strategie-tests.png)
 
-*Figure 4. Les 1 751 tests regroupés par ce qu'ils protègent (en bleu, le comportement du modèle ; en blanc, l'application autour), chaque fichier dans un seul groupe, puis les endroits où ils tournent. Source éditable : `schemas/E3-strategie-tests.drawio`.*
+*Figure 4. Les 1 751 tests regroupés par ce qu'ils protègent (en bleu, le comportement du modèle ; en blanc, l'application autour), chaque fichier dans un seul groupe, puis les endroits où ils tournent. Source éditable : `schemas/E3-strategie-tests.drawio` ; image : mise en forme d'Era, mêmes textes que le schéma généré, comparés par `tests/test_schemas_e3.py`.*
 
 Trois extraits réels, lus dans le dépôt le 24 octobre 2026, et ce qu'il faut y voir.
 
@@ -360,7 +360,7 @@ Le 2 octobre, le test de 6.1.1 est passé du premier coup, ce qui ne prouve rien
 
 ![La chaîne de livraison continue, du poste à la production](schemas/E3-chaine-livraison.png)
 
-*Figure 5. Les sept workflows, la règle de `main`, le serveur, et ce qui n'est pas construit. Source éditable : `schemas/E3-chaine-livraison.drawio` ; détail : `docs/CI-CD.md`.*
+*Figure 5. Les sept workflows, la règle de `main`, le serveur, et ce qui n'est pas construit. Source éditable : `schemas/E3-chaine-livraison.drawio` ; image : mise en forme d'Era, mêmes textes que le schéma généré, comparés par `tests/test_schemas_e3.py` ; détail : `docs/CI-CD.md`.*
 
 ### 7.2 Ce que fait `livraison.yml`, dans l'ordre
 
@@ -390,15 +390,7 @@ Le 2 octobre, le test de 6.1.1 est passé du premier coup, ce qui ne prouve rien
 
 ## 8. Ce que les briefs de la formation ont apporté ici
 
-| Brief | Leçon | Dans E3 |
-|---|---|---|
-| Velmo (juillet) | trois emplacements de garde-fou, deux chiffres toujours ensemble, portes de CI | les garde-fous et `test_evals.py` |
-| Sorabel (septembre) | un garde-fou non branché n'est pas un garde-fou ; journaliser chaque refus ; prouver depuis l'extérieur | mutation du 2 octobre, refus journalisés, passerelle MCP en vrai client |
-| Mardik (septembre) | identifiant de requête, manifeste, filtre de chemin, retour arrière | identifiant et retour arrière faits ; manifeste partiel ; filtre de chemin non |
-| Industrialisation (fin septembre) | objectifs de service, points de trace, alertes, contrat `/v1` | étapes de trace et alertes Langfuse ; `/v1` reporté ; objectifs de service non mesurés |
-| Kaldera (1er octobre) | tester la trace, pas le texte ; superviseur déterministe | `test_trace_chemin.py` ; graphe à arêtes fixes |
-| Factum (2 octobre) | `--cov` dans la commande, un seul seuil, preuve par une PR rouge | vérifié ; PR rouge : #93 |
-| Chapitre « Données » (validé le 3 octobre) | matrice d'accès à fermeture, outils MCP via l'API seulement, journal des appels d'outils | verrou de démonstration, `mcp_calls`, `POST /audit/mcp` |
+Velmo (juillet) a donné les trois emplacements de garde-fou et les deux chiffres toujours ensemble ; Sorabel (septembre), qu'un garde-fou non branché n'en est pas un (mutation du 2 octobre, refus journalisés) ; Mardik (septembre), l'identifiant de requête et le retour arrière, faits, le manifeste, partiel, et le filtre de chemin, non fait ; Industrialisation (fin septembre), les étapes de trace et les alertes, avec `/v1` reporté et des objectifs de service non mesurés ; Kaldera (1er octobre), tester la trace et non le texte (`test_trace_chemin.py`) ; Factum (2 octobre), `--cov` dans la commande et la preuve par une PR rouge (#93) ; le chapitre « Données » (validé le 3 octobre), la matrice d'accès à fermeture et le journal des appels d'outils (`mcp_calls`).
 
 ---
 
@@ -415,7 +407,7 @@ C:\Python314\python.exe -X utf8 -m evals.mesurer_rag
 C:\Python314\python.exe scripts\verifier_liens.py
 ```
 
-Les mesures des garde-fous ne dépendent que du code ; la suite complète et la mesure de recherche exigent PostgreSQL (port 5433) et l'index local. Installation : `docs/exploitation.md`. Ce rapport se rend en PDF par `scripts\rendre_pdf.py` ; ses schémas se régénèrent par `schemas/generer_schemas.py`, qui refuse d'écrire si un texte déborde de sa boîte.
+Les mesures des garde-fous ne dépendent que du code ; la suite complète et la mesure de recherche exigent PostgreSQL (port 5433) et l'index local. Installation : `docs/exploitation.md`. Ce rapport se rend en PDF par `scripts\rendre_pdf.py` ; ses schémas se régénèrent par `schemas/generer_schemas.py`, qui refuse d'écrire si un texte déborde de sa boîte ; les images publiées sont rendues depuis la mise en forme (`schemas/E3-*-illustre.svg`), dont un test compare chaque texte à celui du générateur.
 
 ---
 
