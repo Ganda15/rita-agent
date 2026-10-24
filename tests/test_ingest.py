@@ -108,6 +108,56 @@ def test_ecb_simulation_n_ecrit_rien():
     assert b.lues > 0 and b.ecrites == 0
 
 
+# --- cotations (yfinance) -----------------------------------------------------
+# Même règle que la BCE (carte #55), relevée le 23/10/2026 pour les trois autres étapes :
+# zéro ligne reçue ET au moins un échec = échec déclaré ; un succès partiel reste un succès.
+
+def _curseur_groupes() -> MagicMock:
+    """Deux valeurs à deux dates de dernière séance différentes : deux appels à yfinance."""
+    cur = _curseur()
+    cur.fetchall.return_value = [("MC.PA", date(2026, 10, 20), "OK"),
+                                 ("AI.PA", date(2026, 10, 17), "OK")]
+    return cur
+
+
+def _cotation_recue(ticker="MC.PA") -> dict:
+    return {"ticker": ticker, "date_seance": date(2026, 10, 21), "ouverture": 1.0, "haut": 1.0,
+            "bas": 1.0, "cloture": 1.0, "volume": 10}
+
+
+def test_cotations_toutes_les_requetes_en_echec_est_un_echec_declare():
+    """Avant : chaque exception ajoutait des rejets sans remplir `erreur`, et l'étape comptait
+    parmi les réussies du soir sans une cotation reçue."""
+    with patch("sources.cotations.fetch_cotations", side_effect=ConnectionError("Yahoo injoignable")):
+        b = ingest.etape_cotations(_curseur_groupes(), simulation=False)
+
+    assert b.ok is False
+    assert b.erreur and "cotation" in b.erreur
+    assert b.ecrites == 0 and b.rejetees == 2
+
+
+def test_cotations_un_groupe_en_echec_reste_un_succes_partiel():
+    def un_seul(tickers, depuis):
+        if "AI.PA" in tickers:
+            raise ConnectionError("Yahoo injoignable")
+        return [_cotation_recue()]
+
+    with patch("sources.cotations.fetch_cotations", side_effect=un_seul):
+        b = ingest.etape_cotations(_curseur_groupes(), simulation=False)
+
+    assert b.ok is True and b.erreur is None
+    assert b.ecrites == 1 and b.rejetees == 1
+
+
+def test_cotations_aucune_nouvelle_seance_n_est_pas_un_echec():
+    """Un appel réussi qui ne rend rien (week-end, jour férié) n'est pas une panne."""
+    with patch("sources.cotations.fetch_cotations", return_value=[]):
+        b = ingest.etape_cotations(_curseur_groupes(), simulation=False)
+
+    assert b.ok is True and b.erreur is None
+    assert b.ecrites == 0 and b.rejetees == 0
+
+
 # --- articles -----------------------------------------------------------------
 
 def test_articles_dedoublonne_sur_le_lien():
@@ -220,7 +270,54 @@ def test_le_module_rss_ne_sait_plus_interroger_google_news():
     assert all("news.google.com" not in url for url in rss.FLUX.values())
 
 
+def _resultat_rss(flux_ok, flux_echec, articles=()) -> dict:
+    return {"articles": list(articles), "articles_bloques": [], "flux_ok": list(flux_ok),
+            "flux_echec": list(flux_echec), "total": len(articles)}
+
+
+def test_articles_aucun_flux_ne_rend_rien_est_un_echec_declare():
+    """Un flux de presse vivant rend toujours ses derniers articles : trois flux muets à la
+    fois, c'est une panne (réseau, blocage, adresse morte), pas une soirée calme."""
+    with patch("sources.rss.collecter",
+               return_value=_resultat_rss([], ["bfm_eco", "latribune", "lemonde_eco"])):
+        b = ingest.etape_articles(_curseur(), simulation=False)
+
+    assert b.ok is False
+    assert b.erreur and "RSS" in b.erreur
+    assert b.ecrites == 0
+
+
+def test_articles_un_flux_en_echec_reste_un_succes_partiel():
+    with patch("sources.rss.collecter",
+               return_value=_resultat_rss(["bfm_eco", "latribune"], ["lemonde_eco"],
+                                          [_Article("https://exemple.fr/a")])):
+        b = ingest.etape_articles(_curseur(), simulation=False)
+
+    assert b.ok is True and b.erreur is None
+    assert b.ecrites == 1
+    assert "flux OK 2/3" in b.details
+
+
 # --- cours scrapés ------------------------------------------------------------
+
+def test_scraping_tous_les_symboles_en_echec_est_un_echec_declare():
+    echecs = [("1rPMC", "LVMH", "HTTP 503"), ("1rPAI", "Air Liquide", "HTTP 503")]
+    with patch("sources.scraper.collecter", return_value={"cotations": [], "echecs": echecs}):
+        b = ingest.etape_cours_scrapes(_curseur(), simulation=False)
+
+    assert b.ok is False
+    assert b.erreur and "scrap" in b.erreur
+    assert b.ecrites == 0 and b.rejetees == 2
+
+
+def test_scraping_un_symbole_en_echec_reste_un_succes_partiel():
+    with patch("sources.scraper.collecter",
+               return_value={"cotations": [_Cotation()],
+                             "echecs": [("1rPAI", "Air Liquide", "HTTP 503")]}):
+        b = ingest.etape_cours_scrapes(_curseur(retour=("MC.PA", "FR0000121014")), simulation=False)
+
+    assert b.ok is True and b.erreur is None
+    assert b.rejetees == 1
 
 def test_scraping_rejette_une_cotation_incomplete():
     """La base impose NOT NULL sur l'OHLCV : une cotation partielle ne doit pas partir."""
