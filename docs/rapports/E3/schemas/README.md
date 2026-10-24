@@ -1,8 +1,10 @@
 # Schémas du rapport E3
 
-Cinq schémas, générés depuis une seule description par `generer_schemas.py` : le `.drawio` (éditable
-dans draw.io) et le `.svg` sortent du même script, le `.png` est rendu depuis le `.svg` par Chrome
-sans fenêtre. Règle du dépôt : un `.drawio` pour corriger, une image pour voir.
+Cinq schémas. Leurs textes viennent d'une seule description, `generer_schemas.py`, qui écrit le `.drawio` (éditable
+dans draw.io) et le `.svg` : c'est là qu'on corrige un texte. L'image publiée dans le rapport est la **mise en forme
+d'Era** (`E3-<nom>-illustre.svg`, 24/10/2026), rendue en `.png` par Chrome sans fenêtre. `tests/test_schemas_e3.py`
+compare chaque texte de la mise en forme à ceux du générateur : un texte changé d'un côté seulement fait tomber le
+test. Règle du dépôt : un `.drawio` pour corriger, une image pour voir.
 
 | Fichier | Contenu | Section du rapport | Taille de rendu |
 |---|---|---|---|
@@ -24,14 +26,15 @@ C:\Python314\python.exe -X utf8 docs\rapports\E3\schemas\generer_schemas.py
 Le script refuse d'écrire si une ligne ne tient plus dans sa boîte (contrôle `debordements`, 24/10/2026) : il nomme
 la boîte et la ligne à raccourcir.
 
-Puis le rendu PNG, un schéma à la fois, en double résolution (Chrome exige un `--user-data-dir`, sinon il échoue sans
-message) :
+Le PNG publié se rend depuis la mise en forme, un schéma à la fois, en double résolution (Chrome exige un
+`--user-data-dir`, sinon il échoue sans message ; police Noto Sans, installée sur le poste) :
 
 ```
-"C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --disable-gpu --hide-scrollbars --force-device-scale-factor=2 --user-data-dir=%TEMP%\chrome-rendu --window-size=1400,946 --screenshot=docs\rapports\E3\schemas\E3-architecture.png file:///D:/KandaWork/RITA_PROJECT/rita-agent/docs/rapports/E3/schemas/E3-architecture.svg
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --disable-gpu --hide-scrollbars --force-device-scale-factor=2 --user-data-dir=%TEMP%\chrome-rendu --window-size=1440,1022 --screenshot=docs\rapports\E3\schemas\E3-architecture.png file:///D:/KandaWork/RITA_PROJECT/rita-agent/docs/rapports/E3/schemas/E3-architecture-illustre.svg
 ```
 
-Même commande pour les quatre autres, avec la taille de rendu du tableau. Chaque PNG est regardé avant
+Même commande pour les quatre autres, même taille (1440,1022 ; la colonne « Taille de rendu » du tableau
+est celle du `.svg` généré). Chaque PNG est regardé avant
 d'être rangé : aucune flèche ne traverse une boîte ni un titre, aucun texte n'est coupé (les cinq le 24/10/2026,
 après la remise à jour).
 
@@ -42,3 +45,9 @@ que les couleurs employées et ce qu'elles veulent dire dans ce schéma.
 **Remise à jour du 24/10/2026 (E3 v1.5)** : les cinq schémas disaient l'état du 4 octobre. Le texte des boîtes,
 11,5 px dans un schéma réduit à 516 points de large, passait à environ 4 points une fois imprimé : il est passé à
 15,5 px (environ 5,7 points), les textes ont été raccourcis, et les explications sont dans le corps du rapport.
+
+**Mise en forme d'Era (24/10/2026)** : une première version, faite à partir d'un rendu intermédiaire, disait
+« 6 h à 9 h » pour le créneau du matin et deux textes déjà corrigés ; la seconde, faite depuis
+`TEXTES-EXACTS`, a les textes du générateur mot pour mot (comparaison automatique : 0 absent, 0 en plus
+hors trois étiquettes de flèche vérifiées) et un texte courant de 6 à 6,9 points une fois imprimé (5 au
+plus petit). Le test l'a prouvé en retrouvant l'erreur « 6 h » réintroduite exprès.
