@@ -9,6 +9,27 @@
 
 ---
 
+## 2026-10-24 (midi) : livraison N18, quatre correctifs ; la sauvegarde n'est pas tenue
+
+**Manque découvert** (23/10, relecture d'E1 et E3 contre le code de `main`) : quatre défauts du code, aucun visible
+dans les données de production. (C) Une panne totale des cotations, des flux RSS ou du scraping comptait parmi les
+étapes réussies du soir : l'exception ajoutait des rejets sans remplir `erreur`. (E) `/donnees/cotations` n'acceptait
+qu'une date de début et 1 000 lignes, soit environ quatre ans par valeur, alors qu'E1 annonce dix ans et que C5 exige
+l'ensemble des données prévues par les spécifications. (D) Le lecteur de positions acceptait NaN et l'infini. (F)
+L'en-tête de la migration « taux » se disait rejouable sans condition ; rejouée après la migration de la clôture, elle
+ferait revenir les positions closes dans la valorisation.
+
+**Livrable envoyé** : les quatre correctifs, tests d'abord (21 tests, dont 15 rouges avant le code) ; PR #138 vers
+`develop` et PR #139 (`develop` vers `main`), fusionnées par Era ; livraison N18 (passage 40083432816, 11 h 48 à
+11 h 57), commit `b547cbf7d46bc45d2ffbb85a0740449a8b96fe2a`, annoncé par `/health` en production. CI : 1700 passed,
+30 skipped, 2 xfailed, couverture 96,32 %.
+
+**Manque découvert** : la sauvegarde. Le dernier dump date du 27/09, le dump hebdomadaire prévu n'est pas tenu, et la
+ligne « Sauvegarde restaurable : VALIDÉ » de `CONTINUITE.md` repose sur `pg_restore --list`, qui liste l'archive sans
+la restaurer. Reste à faire : un dump et une vraie restauration dans une base jetable.
+
+---
+
 ## 2026-10-23 (20 h) : sprint 5 remis, livraison N17 et tag `livrable-sprint-5-v1`
 
 **Livrable envoyé** : PR #135 (documents « en production » vers `develop`) et PR #136 (`develop` vers `main`),
