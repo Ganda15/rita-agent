@@ -1,180 +1,148 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="994" viewBox="0 0 1500 994" font-family="Segoe UI,Calibri,Arial,sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="946" viewBox="0 0 1400 946" font-family="Segoe UI,Calibri,Arial,sans-serif">
 <defs><marker id="fl-flux" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#0B2A5B"/></marker><marker id="fl-ecriture" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#1565C0"/></marker><marker id="fl-lecture" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#15803D"/></marker><marker id="fl-erreur" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#D32F2F"/></marker><marker id="fl-manuel" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#64748B"/></marker><marker id="fl-perso" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#A21CAF"/></marker></defs>
-<rect width="1500" height="994" fill="#FFFFFF"/>
-<rect x="40" y="16" width="1420" height="5" fill="#1565C0"/>
-<text x="40" y="54" font-size="30" font-weight="700" fill="#0B2A5B">RITA : le chemin d&#x27;un briefing, et tout ce qui le regarde passer</text>
-<text x="40" y="80" font-size="15" fill="#1F2937">Rapport E3, section 2 · état du code au 4 octobre 2026 · un seul utilisateur, un modèle fourni, aucune action</text>
+<rect width="1400" height="946" fill="#FFFFFF"/>
+<rect x="40" y="16" width="1320" height="5" fill="#1565C0"/>
+<text x="40" y="54" font-size="32" font-weight="700" fill="#0B2A5B">RITA : deux chemins vers le modèle, et ce qui les surveille</text>
+<text x="40" y="80" font-size="17" fill="#1F2937">Rapport E3, section 2 · état au 24 octobre 2026 (develop, 9683f04) · un utilisateur, un modèle fourni, aucune action</text>
 <g transform="translate(0,16)">
-<rect x="40" y="90" width="274" height="310" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
-<rect x="340" y="262" width="358" height="368" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
-<rect x="1030" y="90" width="420" height="570" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
-<rect x="56" y="118" width="242" height="82" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="56" y="118" width="7" height="82" fill="#1E293B"/>
-<text x="73" y="139" font-size="14" font-weight="700" fill="#0B2A5B">Interface web</text>
-<text x="73" y="158.0" font-size="11.5" fill="#111827">frontend/, HTML, CSS, JS sans build</text>
-<text x="73" y="173.5" font-size="11.5" fill="#111827">3 écrans : portefeuille, indicateurs, briefing</text>
-<text x="73" y="189.0" font-size="11.5" fill="#111827">clé saisie, sessionStorage, 403 affiché</text>
-<rect x="56" y="210" width="242" height="82" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="56" y="210" width="7" height="82" fill="#1E293B"/>
-<text x="73" y="231" font-size="14" font-weight="700" fill="#0B2A5B">Passerelle MCP</text>
-<text x="73" y="250.0" font-size="11.5" fill="#111827">passerelle_mcp/serveur.py</text>
-<text x="73" y="265.5" font-size="11.5" fill="#111827">3 outils en lecture seule</text>
-<text x="73" y="281.0" font-size="11.5" fill="#111827">appelle l&#x27;API par HTTP, avec la clé</text>
-<rect x="56" y="302" width="242" height="82" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="56" y="302" width="7" height="82" fill="#1E293B"/>
-<text x="73" y="323" font-size="14" font-weight="700" fill="#0B2A5B">curl, /docs (OpenAPI 3.1.0)</text>
-<text x="73" y="342.0" font-size="11.5" fill="#111827">POST /briefing?ticker=MC.PA</text>
-<text x="73" y="357.5" font-size="11.5" fill="#111827">le seul chemin vers le modèle</text>
-<text x="73" y="373.0" font-size="11.5" fill="#111827">aucun texte libre : un ticker</text>
-<rect x="340" y="118" width="358" height="120" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
-<rect x="340" y="118" width="7" height="120" fill="#1565C0"/>
-<text x="357" y="139" font-size="14" font-weight="700" fill="#0B2A5B">api/main.py : l&#x27;API (C9)</text>
-<text x="357" y="158.0" font-size="11.5" fill="#111827">middleware : un request_id par requête (X-Request-ID)</text>
-<text x="357" y="173.5" font-size="11.5" fill="#111827">clé X-API-Key, 16 car. min., temps constant, 403</text>
-<text x="357" y="189.0" font-size="11.5" fill="#111827">aucune clé par défaut (INC-001, OWASP API2)</text>
-<text x="357" y="204.5" font-size="11.5" fill="#111827">14 chemins ; /briefing est le seul qui parle au modèle</text>
-<text x="357" y="220.0" font-size="11.5" fill="#111827">journal : servi, refusé, 502 (request_id, jamais le texte)</text>
-<rect x="356" y="292" width="326" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="356" y="292" width="7" height="66" fill="#1E293B"/>
-<text x="373" y="313" font-size="14" font-weight="700" fill="#0B2A5B">scout</text>
-<text x="373" y="332.0" font-size="11.5" fill="#111827">lit PostgreSQL : 13 indicateurs par valeur</text>
-<text x="373" y="347.5" font-size="11.5" fill="#111827">âge du dernier cours en jours calendaires, cotation périmée</text>
-<rect x="356" y="372" width="326" height="98" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="356" y="372" width="7" height="98" fill="#1E293B"/>
-<text x="373" y="393" font-size="14" font-weight="700" fill="#0B2A5B">rag</text>
-<text x="373" y="412.0" font-size="11.5" fill="#111827">garde-fou d&#x27;ENTRÉE : intention AMF, 7 motifs,</text>
-<text x="373" y="427.5" font-size="11.5" fill="#111827">  100 % / 0 % (03/10), avant tout accès à la base</text>
-<text x="373" y="443.0" font-size="11.5" fill="#111827">ChromaDB : filtre ticker puis hybride dense + BM25</text>
-<text x="373" y="458.5" font-size="11.5" fill="#111827">refus OUT_OF_CORPUS si rien ne cite la valeur</text>
-<rect x="356" y="484" width="326" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="356" y="484" width="7" height="66" fill="#1E293B"/>
-<text x="373" y="505" font-size="14" font-weight="700" fill="#0B2A5B">redacteur</text>
-<text x="373" y="524.0" font-size="11.5" fill="#111827">agents/analyst.py : prompt (interdit AMF écrit)</text>
-<text x="373" y="539.5" font-size="11.5" fill="#111827">src/llm.py : la cascade</text>
-<rect x="356" y="564" width="326" height="52" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
-<rect x="356" y="564" width="7" height="52" fill="#1565C0"/>
-<text x="373" y="585" font-size="14" font-weight="700" fill="#0B2A5B">Foundry (gpt-5.4) → Anthropic → OpenRouter</text>
-<text x="373" y="604.0" font-size="11.5" fill="#111827">une génération tracée par essai ; repli ≈ 0,3 s</text>
-<rect x="340" y="648" width="358" height="70" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
-<rect x="340" y="648" width="7" height="70" fill="#C2410C"/>
-<text x="357" y="669" font-size="14" font-weight="700" fill="#9A3412">guardrails/sortie.py : garde-fou de SORTIE (C17)</text>
-<text x="357" y="688.0" font-size="11.5" fill="#111827">9 motifs, 70 % / 0 % (03/10) ; échec fermé</text>
-<text x="357" y="703.5" font-size="11.5" fill="#111827">texte remplacé par un refus, HTTP 200, conforme_amf=false</text>
-<rect x="340" y="736" width="358" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="340" y="736" width="7" height="66" fill="#1E293B"/>
-<text x="357" y="757" font-size="14" font-weight="700" fill="#0B2A5B">Réponse JSON</text>
-<text x="357" y="776.0" font-size="11.5" fill="#111827">ticker, prix, variation, briefing, conforme_amf,</text>
-<text x="357" y="791.5" font-size="11.5" fill="#111827">motifs_amf ; en-tête X-Request-ID</text>
-<rect x="730" y="292" width="260" height="66" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
-<rect x="730" y="292" width="7" height="66" fill="#6D28D9"/>
-<text x="747" y="313" font-size="14" font-weight="700" fill="#4C1D95">PostgreSQL 18 (E1)</text>
-<text x="747" y="332.0" font-size="11.5" fill="#111827">10 tables, 1 vue, dix ans de cotations</text>
-<text x="747" y="347.5" font-size="11.5" fill="#111827">écrit par le seul pipeline</text>
-<rect x="730" y="372" width="240" height="66" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
-<rect x="730" y="372" width="7" height="66" fill="#6D28D9"/>
-<text x="747" y="393" font-size="14" font-weight="700" fill="#4C1D95">ChromaDB (index)</text>
-<text x="747" y="412.0" font-size="11.5" fill="#111827">articles vectorisés, reconstruit chaque nuit</text>
-<text x="747" y="427.5" font-size="11.5" fill="#111827">1 359 documents (27/09)</text>
-<rect x="730" y="648" width="260" height="114" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="730" y="648" width="7" height="114" fill="#1E293B"/>
-<text x="747" y="669" font-size="14" font-weight="700" fill="#0B2A5B">Collecte nocturne, 19 h</text>
-<text x="747" y="688.0" font-size="11.5" fill="#111827">pipelines/ingest.py, tâche planifiée Windows</text>
-<text x="747" y="703.5" font-size="11.5" fill="#111827">yfinance, RSS, scraping, FRED, BCE</text>
-<text x="747" y="719.0" font-size="11.5" fill="#111827">garde-fou d&#x27;INJECTION sur les articles :</text>
-<text x="747" y="734.5" font-size="11.5" fill="#111827">  12 motifs, 70 % / 0 % (03/10)</text>
-<text x="747" y="750.0" font-size="11.5" fill="#111827">40 journaux du 24/08 au 02/10</text>
-<rect x="1046" y="118" width="388" height="176" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
-<rect x="1046" y="118" width="7" height="176" fill="#1565C0"/>
-<text x="1063" y="139" font-size="14" font-weight="700" fill="#0B2A5B">Langfuse Cloud, région UE (Irlande)</text>
-<text x="1063" y="158.0" font-size="11.5" fill="#111827">une trace par briefing, identifiant = request_id :</text>
-<text x="1063" y="173.5" font-size="11.5" fill="#111827">  briefing  (verdict AMF, note conforme_amf)</text>
-<text x="1063" y="189.0" font-size="11.5" fill="#111827">  ├─ scout</text>
-<text x="1063" y="204.5" font-size="11.5" fill="#111827">  ├─ rag ─ garde-fou-entree</text>
-<text x="1063" y="220.0" font-size="11.5" fill="#111827">  ├─ redacteur ─ briefing-llm ─ llm-&lt;fournisseur&gt;</text>
-<text x="1063" y="235.5" font-size="11.5" fill="#111827">  └─ garde-fou-sortie</text>
-<text x="1063" y="251.0" font-size="11.5" fill="#111827">jetons, erreur du repli, niveau WARNING au refus</text>
-<text x="1063" y="266.5" font-size="11.5" fill="#111827">première trace réelle : 02/10 18:39 ; palier gratuit</text>
-<rect x="1046" y="416" width="388" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="1046" y="416" width="7" height="66" fill="#1E293B"/>
-<text x="1063" y="437" font-size="14" font-weight="700" fill="#0B2A5B">GET /donnees/fraicheur + bandeau</text>
-<text x="1063" y="456.0" font-size="11.5" fill="#111827">retard en jours ouvrés, 3 états, lisible sans couleur</text>
-<text x="1063" y="471.5" font-size="11.5" fill="#111827">la panne la plus fréquente : la collecte d&#x27;hier</text>
-<rect x="1046" y="318" width="388" height="82" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="1046" y="318" width="7" height="82" fill="#1E293B"/>
-<text x="1063" y="339" font-size="14" font-weight="700" fill="#0B2A5B">Alertes (2, palier gratuit) → GitHub Actions</text>
-<text x="1063" y="358.0" font-size="11.5" fill="#111827">erreurs de fournisseur ; p95 de l&#x27;appel au modèle</text>
-<text x="1063" y="373.5" font-size="11.5" fill="#111827">alerte-incident.yml ouvre une issue « incident »</text>
-<text x="1063" y="389.0" font-size="11.5" fill="#111827">réglées le 04/10, ont sonné : issue #77</text>
-<rect x="1046" y="498" width="388" height="66" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
-<rect x="1046" y="498" width="7" height="66" fill="#1565C0"/>
-<text x="1063" y="519" font-size="14" font-weight="700" fill="#0B2A5B">Tableau de bord « RITA C11 » (03/10, par l&#x27;API)</text>
-<text x="1063" y="538.0" font-size="11.5" fill="#111827">tentatives par fournisseur, échecs compris · p95 de briefing-llm</text>
-<text x="1063" y="553.5" font-size="11.5" fill="#111827">observations en ERROR ou WARNING</text>
-<rect x="1046" y="580" width="388" height="66" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
-<rect x="1046" y="580" width="7" height="66" fill="#D32F2F"/>
-<text x="1063" y="601" font-size="14" font-weight="700" fill="#C62828">Coût par briefing</text>
-<text x="1063" y="620.0" font-size="11.5" fill="#111827">à zéro pour OpenRouter : nom de modèle absent</text>
-<text x="1063" y="635.5" font-size="11.5" fill="#111827">de la grille de prix Langfuse ; à corriger</text>
-<rect x="1030" y="680" width="420" height="82" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
-<rect x="1030" y="680" width="7" height="82" fill="#475569"/>
-<text x="1047" y="701" font-size="14" font-weight="700" fill="#0B2A5B">Bac à sable</text>
-<text x="1047" y="720.0" font-size="11.5" fill="#111827">la suite de tests ne trace jamais</text>
-<text x="1047" y="735.5" font-size="11.5" fill="#111827">(conftest.py, INC-006) ; doubles de client</text>
-<text x="1047" y="751.0" font-size="11.5" fill="#111827">805 tests, 94,70 % (04/10)</text>
-<rect x="1030" y="776" width="420" height="82" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
-<rect x="1030" y="776" width="7" height="82" fill="#475569"/>
-<text x="1047" y="797" font-size="14" font-weight="700" fill="#0B2A5B">Tests en CI à chaque poussée</text>
-<text x="1047" y="816.0" font-size="11.5" fill="#111827">test.yml : données, puis suite + couverture ≥ 90 %,</text>
-<text x="1047" y="831.5" font-size="11.5" fill="#111827">puis garde-fous mesurés, portes xfail strict</text>
-<line x1="298" y1="159.0" x2="340" y2="178.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="298" y1="251.0" x2="340" y2="178.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="298" y1="343.0" x2="340" y2="178.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="519.0" y1="238" x2="519.0" y2="292" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="519.0" y1="358" x2="519.0" y2="372" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="519.0" y1="470" x2="519.0" y2="484" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="519.0" y1="550" x2="519.0" y2="564" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="519.0" y1="616" x2="519.0" y2="648" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="519.0" y1="718" x2="519.0" y2="736" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="730" y1="325.0" x2="682" y2="325.0" stroke="#15803D" stroke-width="3" marker-end="url(#fl-lecture)"/>
-<line x1="730" y1="405.0" x2="682" y2="421.0" stroke="#15803D" stroke-width="3" marker-end="url(#fl-lecture)"/>
-<line x1="977.0" y1="648" x2="977.0" y2="358" stroke="#1565C0" stroke-width="3" marker-end="url(#fl-ecriture)"/>
-<text x="977.0" y="507.0" font-size="12.5" font-weight="700" fill="#1565C0" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">écrit</text>
-<line x1="847.0" y1="648" x2="850.0" y2="438" stroke="#1565C0" stroke-width="3" marker-end="url(#fl-ecriture)"/>
-<text x="848.5" y="547.0" font-size="12.5" font-weight="700" fill="#1565C0" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">indexe</text>
-<line x1="698" y1="178.0" x2="1046" y2="206.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<text x="872.0" y="196.0" font-size="12.5" font-weight="700" fill="#0B2A5B" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">trace (racine et générations)</text>
-<line x1="1240.0" y1="294" x2="1240.0" y2="318" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<text x="1240.0" y="310.0" font-size="12.5" font-weight="700" fill="#0B2A5B" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">déclenche</text>
-<text x="54" y="112" font-size="13.5" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">CLIENTS (C10)</text>
-<text x="354" y="284" font-size="13.5" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">LangGraph (graph/workflow.py), arêtes fixes</text>
-<text x="1044" y="112" font-size="13.5" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">OBSERVABILITÉ (C11, C20)</text>
-<rect x="40" y="876" width="1420" height="1.5" fill="#94A3B8"/>
-<text x="40" y="907" font-size="13.5" font-weight="700" fill="#0B2A5B">Légende</text>
-<rect x="124.0" y="893" width="28" height="18" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="124.0" y="893" width="6" height="18" fill="#1E293B"/>
-<text x="160.0" y="907" font-size="12.5" fill="#111827">composant présent et testé</text>
-<rect x="352.5" y="893" width="28" height="18" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
-<rect x="352.5" y="893" width="6" height="18" fill="#1565C0"/>
-<text x="388.5" y="907" font-size="12.5" fill="#111827">cœur du traitement</text>
-<rect x="531.0" y="893" width="28" height="18" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
-<rect x="531.0" y="893" width="6" height="18" fill="#C2410C"/>
-<text x="567.0" y="907" font-size="12.5" fill="#111827">garde-fou</text>
-<rect x="653.25" y="893" width="28" height="18" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
-<rect x="653.25" y="893" width="6" height="18" fill="#6D28D9"/>
-<text x="689.25" y="907" font-size="12.5" fill="#111827">réserve de données</text>
-<rect x="831.75" y="893" width="28" height="18" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="5,3"/>
-<rect x="831.75" y="893" width="6" height="18" fill="#D32F2F"/>
-<text x="867.75" y="907" font-size="12.5" fill="#111827">à corriger ou non construit</text>
-<rect x="1066.5" y="893" width="28" height="18" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
-<rect x="1066.5" y="893" width="6" height="18" fill="#475569"/>
-<text x="1102.5" y="907" font-size="12.5" fill="#111827">tests</text>
-<line x1="1163.75" y1="902" x2="1203.75" y2="902" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<text x="1213.75" y="907" font-size="12.5" fill="#111827">appel, passage</text>
-<line x1="1331.25" y1="902" x2="1371.25" y2="902" stroke="#1565C0" stroke-width="3" marker-end="url(#fl-ecriture)"/>
-<text x="1381.25" y="907" font-size="12.5" fill="#111827">écriture</text>
-<line x1="124.0" y1="930" x2="164.0" y2="930" stroke="#15803D" stroke-width="3" marker-end="url(#fl-lecture)"/>
-<text x="174.0" y="935" font-size="12.5" fill="#111827">lecture seule</text>
-<text x="40" y="964" font-size="12.5" fill="#1F2937">État du code au 04/10/2026. Mesures datées dans le rapport E3, section 6.</text>
+<rect x="40" y="100" width="270" height="330" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="1050" y="100" width="310" height="540" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="56" y="132" width="238" height="80" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="56" y="132" width="7" height="80" fill="#1E293B"/>
+<text x="73" y="156" font-size="17.5" font-weight="700" fill="#0B2A5B">Interface web</text>
+<text x="73" y="178" font-size="15.5" fill="#111827">5 écrans, HTML et JS</text>
+<text x="73" y="198" font-size="15.5" fill="#111827">clé saisie à l&#x27;écran</text>
+<rect x="56" y="226" width="238" height="80" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="56" y="226" width="7" height="80" fill="#1E293B"/>
+<text x="73" y="250" font-size="17.5" font-weight="700" fill="#0B2A5B">Passerelle MCP</text>
+<text x="73" y="272" font-size="15.5" fill="#111827">3 outils en lecture seule,</text>
+<text x="73" y="292" font-size="15.5" fill="#111827">par l&#x27;API, avec la clé</text>
+<rect x="56" y="320" width="238" height="80" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="56" y="320" width="7" height="80" fill="#1E293B"/>
+<text x="73" y="344" font-size="17.5" font-weight="700" fill="#0B2A5B">curl, /docs</text>
+<text x="73" y="366" font-size="15.5" fill="#111827">contrat OpenAPI 3.1.0,</text>
+<text x="73" y="386" font-size="15.5" fill="#111827">19 chemins</text>
+<rect x="340" y="132" width="380" height="120" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="340" y="132" width="7" height="120" fill="#1565C0"/>
+<text x="357" y="156" font-size="17.5" font-weight="700" fill="#0B2A5B">api/main.py : l&#x27;API (C9)</text>
+<text x="357" y="178" font-size="15.5" fill="#111827">X-Request-ID sur toute réponse</text>
+<text x="357" y="198" font-size="15.5" fill="#111827">X-API-Key exigée : 403 sinon</text>
+<text x="357" y="218" font-size="15.5" fill="#111827">valeur inconnue : 422, sans modèle</text>
+<text x="357" y="238" font-size="15.5" fill="#111827">quota partagé : 429 au-delà</text>
+<rect x="340" y="282" width="380" height="80" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="340" y="282" width="7" height="80" fill="#1565C0"/>
+<text x="357" y="306" font-size="17.5" font-weight="700" fill="#0B2A5B">Deux parcours, arêtes fixes</text>
+<text x="357" y="328" font-size="15.5" fill="#111827">/briefing : scout, rag, redacteur</text>
+<text x="357" y="348" font-size="15.5" fill="#111827">/question : recherche, puis JSON strict</text>
+<rect x="340" y="392" width="380" height="80" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="340" y="392" width="7" height="80" fill="#C2410C"/>
+<text x="357" y="416" font-size="17.5" font-weight="700" fill="#9A3412">Garde-fous avant le modèle</text>
+<text x="357" y="438" font-size="15.5" fill="#111827">question : intention AMF, détournement</text>
+<text x="357" y="458" font-size="15.5" fill="#111827">articles : injection, revérifiée ici</text>
+<rect x="340" y="502" width="380" height="80" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="340" y="502" width="7" height="80" fill="#1565C0"/>
+<text x="357" y="526" font-size="17.5" font-weight="700" fill="#0B2A5B">src/llm.py : le modèle fourni</text>
+<text x="357" y="548" font-size="15.5" fill="#111827">briefing : cascade, Azure d&#x27;abord</text>
+<text x="357" y="568" font-size="15.5" fill="#111827">question : Azure seul (gpt-5.4)</text>
+<rect x="340" y="612" width="380" height="80" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="340" y="612" width="7" height="80" fill="#C2410C"/>
+<text x="357" y="636" font-size="17.5" font-weight="700" fill="#9A3412">Garde-fous après le modèle</text>
+<text x="357" y="658" font-size="15.5" fill="#111827">sortie : recommandation, fuite</text>
+<text x="357" y="678" font-size="15.5" fill="#111827">question : citations et nombres</text>
+<rect x="340" y="722" width="380" height="80" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="340" y="722" width="7" height="80" fill="#1E293B"/>
+<text x="357" y="746" font-size="17.5" font-weight="700" fill="#0B2A5B">Réponse JSON</text>
+<text x="357" y="768" font-size="15.5" fill="#111827">texte ou refus, verdict AMF, sources</text>
+<text x="357" y="788" font-size="15.5" fill="#111827">en-tête X-Request-ID</text>
+<rect x="750" y="282" width="270" height="80" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="750" y="282" width="7" height="80" fill="#6D28D9"/>
+<text x="767" y="306" font-size="17.5" font-weight="700" fill="#4C1D95">PostgreSQL 18 (E1)</text>
+<text x="767" y="328" font-size="15.5" fill="#111827">10 tables, 1 vue</text>
+<text x="767" y="348" font-size="15.5" fill="#111827">lue par le scout et l&#x27;API</text>
+<rect x="750" y="392" width="270" height="80" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="750" y="392" width="7" height="80" fill="#6D28D9"/>
+<text x="767" y="416" font-size="17.5" font-weight="700" fill="#4C1D95">ChromaDB, l&#x27;index</text>
+<text x="767" y="438" font-size="15.5" fill="#111827">les articles, vectorisés</text>
+<text x="767" y="458" font-size="15.5" fill="#111827">identité annoncée par /health</text>
+<rect x="750" y="522" width="270" height="120" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="750" y="522" width="7" height="120" fill="#1E293B"/>
+<text x="767" y="546" font-size="17.5" font-weight="700" fill="#0B2A5B">Collecte des articles</text>
+<text x="767" y="568" font-size="15.5" fill="#111827">poste : chaque soir à 19 h</text>
+<text x="767" y="588" font-size="15.5" fill="#111827">prod. : ingestion au bouton</text>
+<text x="767" y="608" font-size="15.5" fill="#111827">écrit la base, puis l&#x27;index</text>
+<text x="767" y="628" font-size="15.5" fill="#111827">injection filtrée à l&#x27;entrée</text>
+<rect x="1066" y="132" width="278" height="120" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="1066" y="132" width="7" height="120" fill="#1565C0"/>
+<text x="1083" y="156" font-size="17.5" font-weight="700" fill="#0B2A5B">Langfuse Cloud (UE)</text>
+<text x="1083" y="178" font-size="15.5" fill="#111827">une trace par requête,</text>
+<text x="1083" y="198" font-size="15.5" fill="#111827">sans prompt ni réponse,</text>
+<text x="1083" y="218" font-size="15.5" fill="#111827">jetons, durée, verdict AMF</text>
+<text x="1083" y="238" font-size="15.5" fill="#111827">production tracée dès le 21/10</text>
+<rect x="1066" y="282" width="278" height="100" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="1066" y="282" width="7" height="100" fill="#1E293B"/>
+<text x="1083" y="306" font-size="17.5" font-weight="700" fill="#0B2A5B">Alertes Langfuse (2)</text>
+<text x="1083" y="328" font-size="15.5" fill="#111827">erreur fournisseur ; p95 lent</text>
+<text x="1083" y="348" font-size="15.5" fill="#111827">issue « incident » GitHub</text>
+<text x="1083" y="368" font-size="15.5" fill="#111827">#77 réelle ; #130 fausse</text>
+<rect x="1066" y="412" width="278" height="100" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="1066" y="412" width="7" height="100" fill="#1E293B"/>
+<text x="1083" y="436" font-size="17.5" font-weight="700" fill="#0B2A5B">/sante, tableau de bord</text>
+<text x="1083" y="458" font-size="15.5" fill="#111827">compteurs tenus par l&#x27;API,</text>
+<text x="1083" y="478" font-size="15.5" fill="#111827">verdicts contre seuils écrits,</text>
+<text x="1083" y="498" font-size="15.5" fill="#111827">remis à zéro au redémarrage</text>
+<rect x="1066" y="542" width="278" height="80" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="1066" y="542" width="7" height="80" fill="#1E293B"/>
+<text x="1083" y="566" font-size="17.5" font-weight="700" fill="#0B2A5B">GET /donnees/fraicheur</text>
+<text x="1083" y="588" font-size="15.5" fill="#111827">retard en jours ouvrés,</text>
+<text x="1083" y="608" font-size="15.5" fill="#111827">bandeau de l&#x27;écran 1</text>
+<rect x="1050" y="660" width="310" height="80" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="1050" y="660" width="7" height="80" fill="#475569"/>
+<text x="1067" y="684" font-size="17.5" font-weight="700" fill="#0B2A5B">Bac à sable</text>
+<text x="1067" y="706" font-size="15.5" fill="#111827">les tests ne tracent jamais ;</text>
+<text x="1067" y="726" font-size="15.5" fill="#111827">la copie : son propre projet</text>
+<line x1="294" y1="172.0" x2="340" y2="162.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="294" y1="266.0" x2="340" y2="198.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="294" y1="360.0" x2="340" y2="234.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="530.0" y1="252" x2="530.0" y2="282" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="530.0" y1="362" x2="530.0" y2="392" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="530.0" y1="472" x2="530.0" y2="502" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="530.0" y1="582" x2="530.0" y2="612" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="530.0" y1="692" x2="530.0" y2="722" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="750" y1="322.0" x2="720" y2="322.0" stroke="#15803D" stroke-width="3" marker-end="url(#fl-lecture)"/>
+<line x1="750" y1="416.0" x2="720" y2="346.0" stroke="#15803D" stroke-width="3" marker-end="url(#fl-lecture)"/>
+<text x="735.0" y="385.0" font-size="15" font-weight="700" fill="#15803D" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">cherche</text>
+<line x1="885.0" y1="522" x2="885.0" y2="472" stroke="#1565C0" stroke-width="3" marker-end="url(#fl-ecriture)"/>
+<text x="885.0" y="501.0" font-size="15" font-weight="700" fill="#1565C0" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">indexe</text>
+<line x1="720" y1="192.0" x2="1066" y2="192.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="893.0" y="196.0" font-size="15" font-weight="700" fill="#0B2A5B" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">trace</text>
+<line x1="1205.0" y1="252" x2="1205.0" y2="282" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="1205.0" y="271.0" font-size="15" font-weight="700" fill="#0B2A5B" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">déclenche</text>
+<text x="54" y="122" font-size="16" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">CLIENTS (C10)</text>
+<text x="1064" y="122" font-size="16" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">SURVEILLANCE (C11)</text>
+<rect x="40" y="826" width="1320" height="1.5" fill="#94A3B8"/>
+<text x="40" y="857" font-size="16" font-weight="700" fill="#0B2A5B">Légende</text>
+<rect x="124.0" y="843" width="28" height="18" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="124.0" y="843" width="6" height="18" fill="#1E293B"/>
+<text x="160.0" y="857" font-size="15" fill="#111827">présent et testé</text>
+<rect x="310.0" y="843" width="28" height="18" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="310.0" y="843" width="6" height="18" fill="#1565C0"/>
+<text x="346.0" y="857" font-size="15" fill="#111827">cœur du traitement</text>
+<rect x="511.0" y="843" width="28" height="18" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="511.0" y="843" width="6" height="18" fill="#C2410C"/>
+<text x="547.0" y="857" font-size="15" fill="#111827">garde-fou</text>
+<rect x="644.5" y="843" width="28" height="18" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="644.5" y="843" width="6" height="18" fill="#6D28D9"/>
+<text x="680.5" y="857" font-size="15" fill="#111827">réserve de données</text>
+<rect x="845.5" y="843" width="28" height="18" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="845.5" y="843" width="6" height="18" fill="#475569"/>
+<text x="881.5" y="857" font-size="15" fill="#111827">bac à sable</text>
+<line x1="994.0" y1="852" x2="1034.0" y2="852" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="1044.0" y="857" font-size="15" fill="#111827">appel, passage</text>
+<line x1="1179.0" y1="852" x2="1219.0" y2="852" stroke="#1565C0" stroke-width="3" marker-end="url(#fl-ecriture)"/>
+<text x="1229.0" y="857" font-size="15" fill="#111827">écriture</text>
+<line x1="124.0" y1="882" x2="164.0" y2="882" stroke="#15803D" stroke-width="3" marker-end="url(#fl-lecture)"/>
+<text x="174.0" y="887" font-size="15" fill="#111827">lecture seule</text>
+<text x="40" y="916" font-size="15" fill="#1F2937">État du code au 24/10/2026, develop 9683f04 ; la production sert b547cbf. Mesures : rapport E3, sections 3 à 7.</text>
 </g>
 </svg>
