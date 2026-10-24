@@ -84,7 +84,9 @@ def valeurs(
 @routeur.get("/cotations", summary="Historique des cotations d'une valeur")
 def cotations(
     ticker: str = Query(..., min_length=1, max_length=16, description="Ex. : MC.PA"),
-    depuis: date | None = Query(None, description="Date de début, format AAAA-MM-JJ"),
+    depuis: date | None = Query(None, description="Date de début incluse, format AAAA-MM-JJ"),
+    jusqu_a: date | None = Query(None, description="Date de fin incluse, format AAAA-MM-JJ. Page suivante : "
+                                                   "la date la plus ancienne reçue, moins un jour"),
     limite: int = Query(250, ge=1, le=LIMITE_MAX),
 ) -> dict:
     """Les séances d'une valeur, de la plus récente à la plus ancienne.
@@ -92,17 +94,26 @@ def cotations(
     `ticker` est **obligatoire** : sans lui, la requête balaierait les 273 611 lignes.
     C'est une contrainte de conception, pas un oubli — l'index `(ticker, date_seance)`
     n'est utilisable que si le ticker est fourni.
+
+    **Lire tout l'historique** (24/10/2026) : `limite` plafonne une page à 1 000 séances, soit
+    environ quatre ans. On lit la page suivante avec `jusqu_a` = la date la plus ancienne reçue,
+    moins un jour ; la dernière page est celle qui rend moins de `limite` séances. La clé
+    `(ticker, date_seance)` garantit qu'aucune séance n'apparaît deux fois ni ne manque.
     """
+    if depuis and jusqu_a and depuis > jusqu_a:
+        raise HTTPException(status_code=422,
+                            detail=f"Intervalle inversé : depuis={depuis} est après jusqu_a={jusqu_a}")
     sql = """
         SELECT ticker, date_seance, ouverture, haut, bas, cloture, volume
         FROM   cotation
         WHERE  ticker = %(ticker)s
           AND  (%(depuis)s IS NULL OR date_seance >= %(depuis)s)
+          AND  (%(jusqu_a)s IS NULL OR date_seance <= %(jusqu_a)s)
         ORDER  BY date_seance DESC
         LIMIT  %(limite)s
     """
     e = database._executer(sql, "cotations", None,
-                           ticker=ticker, depuis=depuis, limite=limite)
+                           ticker=ticker, depuis=depuis, jusqu_a=jusqu_a, limite=limite)
     if e.nb == 0:
         raise HTTPException(status_code=404,
                             detail=f"Aucune cotation pour le ticker '{ticker}'")

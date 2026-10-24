@@ -103,6 +103,72 @@ def test_cotations_ticker_inconnu_renvoie_404(client):
     assert r.status_code == 404
 
 
+# --- 24/10/2026 : une date de fin, pour que tout l'historique soit joignable (C5) -----------------
+# C5 : l'API « permet la récupération de l'ensemble des données nécessaires au projet, comme prévu selon
+# les spécifications ». E1 annonce dix ans de cours ; avec une date de début seule et 1 000 lignes au plus,
+# les séances les plus anciennes d'une valeur n'étaient pas joignables.
+
+def test_cotations_transmet_la_date_de_fin_a_la_requete(client):
+    captures = {}
+
+    def faux(sql, nom, dsn=None, **params):
+        captures.update(sql=sql, **params)
+        return Extraction(nom=nom, lignes=[{"ticker": "MC.PA"}], nb=1)
+
+    with patch("sources.database._executer", side_effect=faux):
+        r = client.get("/donnees/cotations?ticker=MC.PA&jusqu_a=2020-12-31", headers=CLE)
+    assert r.status_code == 200
+    assert captures.get("jusqu_a") == date(2020, 12, 31)
+    assert "date_seance <= %(jusqu_a)s" in captures["sql"]
+
+
+def test_cotations_intervalle_inverse_renvoie_422_sans_lire_la_base(client):
+    une_ligne = Extraction(nom="cotations", lignes=[{"ticker": "MC.PA"}], nb=1)
+    with patch("sources.database._executer", return_value=une_ligne) as lecture:
+        r = client.get("/donnees/cotations?ticker=MC.PA&depuis=2021-01-01&jusqu_a=2020-12-31", headers=CLE)
+    assert r.status_code == 422
+    lecture.assert_not_called()
+
+
+def test_cotations_dix_ans_se_lisent_par_pages_sans_trou_ni_doublon(client):
+    """2 600 séances fictives (environ dix ans, des trous chaque week-end), lues par pages de 1 000.
+
+    La requête de la route est exécutée **telle quelle** par SQLite en mémoire : seule la forme des paramètres
+    change (`%(nom)s` devient `:nom`). La base locale n'est jamais touchée, et le test tourne aussi en CI."""
+    import re
+    import sqlite3
+
+    con = sqlite3.connect(":memory:", check_same_thread=False)    # FastAPI exécute la route dans un autre fil
+    con.execute("CREATE TABLE cotation (ticker TEXT, date_seance TEXT, ouverture REAL, haut REAL, bas REAL, "
+                "cloture REAL, volume INTEGER, PRIMARY KEY (ticker, date_seance))")
+    jour, attendues = date(2016, 1, 4), []
+    while len(attendues) < 2600:
+        if jour.weekday() < 5:
+            attendues.append(jour.isoformat())
+        jour += timedelta(days=1)
+    con.executemany("INSERT INTO cotation VALUES ('MC.PA', ?, 1, 1, 1, 1, 10)", [(j,) for j in attendues])
+
+    def requete_reelle(sql, nom, dsn=None, **params):
+        valeurs = {k: (v.isoformat() if isinstance(v, date) else v) for k, v in params.items()}
+        curseur = con.execute(re.sub(r"%\((\w+)\)s", r":\1", sql), valeurs)
+        noms = [c[0] for c in curseur.description]
+        lignes = [dict(zip(noms, ligne)) for ligne in curseur.fetchall()]
+        return Extraction(nom=nom, lignes=lignes, nb=len(lignes))
+
+    recues, jusqu_a = [], None
+    with patch("sources.database._executer", side_effect=requete_reelle):
+        for _ in range(10):                     # borne : sans date de fin, la même page reviendrait sans fin
+            url = "/donnees/cotations?ticker=MC.PA&limite=1000" + (f"&jusqu_a={jusqu_a}" if jusqu_a else "")
+            page = client.get(url, headers=CLE).json()["cotations"]
+            recues += [c["date_seance"] for c in page]
+            if len(page) < 1000:
+                break
+            jusqu_a = date.fromisoformat(page[-1]["date_seance"]) - timedelta(days=1)
+
+    assert len(recues) == len(set(recues)), "aucun doublon entre deux pages"
+    assert recues == sorted(attendues, reverse=True), "toutes les séances, sans trou, de la plus récente à la plus ancienne"
+
+
 def test_portefeuille_expose_le_total_en_euros(client):
     lignes = [{"valorisation_eur": 1000}, {"valorisation_eur": 500}]
     with patch("sources.database.portefeuille",
