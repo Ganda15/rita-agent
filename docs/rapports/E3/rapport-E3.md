@@ -114,7 +114,7 @@ L'API a deux clients dans le dépôt, et tous deux passent par HTTP avec la clé
 
 *Figure 2. Une demande de briefing depuis l'écran, en cinq temps, et ce que l'écran fait de chaque réponse qui n'est pas un briefing (aucune réponse, 403, 422, 429, 502 et 500). En pointillé, les écarts connus : le message générique d'une panne totale (#75) et la clé gardée trop tôt (#73). Source éditable : `schemas/E3-integration-briefing.drawio` ; image : mise en forme d'Era, mêmes textes que le schéma généré, comparés par `tests/test_schemas_e3.py`.*
 
-**La passerelle MCP** (`passerelle_mcp/serveur.py`) : MCP (*Model Context Protocol*) est le protocole qui décrit des outils à un modèle de langage. La passerelle expose trois outils en lecture seule (`rita_fraicheur`, `rita_portefeuille`, `rita_indicateurs`), avec l'annotation `read_only_hint`, et appelle l'API REST par HTTP avec `X-API-Key`. Passer par HTTP plutôt que par les modules fait de la passerelle un vrai client, soumis au refus 403, et évite deux chemins d'accès aux données qui divergeraient. Le formateur a rendu le MCP obligatoire le 28 août 2026. Preuve : `evidence/C10/preuve-passerelle-mcp.md`. `rita_portefeuille` exige le mode démonstration et compare les couples (ticker, quantité) servis à ceux du jeu d'exemple ; sinon il refuse (`NOT_AUTHORIZED`) sans exposer les données. Chaque appel d'outil déclaré laisse une ligne dans la table `mcp_calls` (statut, code d'erreur, durée, jamais le contenu) ; les refus pris dans la passerelle sont déposés par `POST /audit/mcp`.
+**La passerelle MCP** (`passerelle_mcp/serveur.py`) : MCP (*Model Context Protocol*) est le protocole qui décrit des outils à un modèle de langage. La passerelle expose trois outils en lecture seule (`rita_fraicheur`, `rita_portefeuille`, `rita_indicateurs`), avec l'annotation `read_only_hint`, et appelle l'API REST par HTTP avec `X-API-Key`. Passer par HTTP plutôt que par les modules fait de la passerelle un vrai client, soumis au refus 403, et évite deux chemins d'accès aux données qui divergeraient. Le formateur a rendu le MCP obligatoire le 28 août 2026. Preuve : `evidence/C10/preuve-passerelle-mcp.md`. `rita_portefeuille` exige le mode démonstration et compare les couples (ticker, quantité) servis à ceux du jeu d'exemple ; sinon il refuse (`NOT_AUTHORIZED`) sans exposer les données. Chaque appel d'outil déclaré est journalisé dans la table `mcp_calls` (statut, code d'erreur, durée, jamais le contenu) ; si la base ne répond pas, l'appel n'est pas bloqué et l'échec d'écriture est compté (`db/audit_mcp.py`). Les refus pris dans la passerelle sont déposés par `POST /audit/mcp`.
 
 ### 4.2 Les tests d'intégration
 
@@ -126,7 +126,7 @@ L'API a deux clients dans le dépôt, et tous deux passent par HTTP avec la clé
 | `tests/test_passerelle_mcp.py` | 19 | les trois outils, leurs erreurs typées, l'appel HTTP avec clé, le verrou de démonstration, le dépôt des refus |
 | `tests/test_audit_mcp.py`, `tests/test_audit_mcp_base.py` | 22 + 4 | le journal des appels ; sur la base réelle en transaction annulée, le rôle lecture seule lit sans pouvoir écrire |
 
-Deux hooks de l'assistant de développement (`.claude/hooks/`) gardent le développement lui-même : l'un refuse toute commande qui nomme le fichier de secrets, l'autre refuse de conclure sans une sortie de tests ; neuf tests les couvrent sur le poste.
+Deux hooks de l'assistant de développement (`.claude/hooks/`) gardent le développement lui-même : l'un refuse toute commande qui nomme le fichier de secrets, l'autre refuse de conclure sans une sortie de tests ; neuf tests les couvrent, sautés hors Windows (donc en CI).
 
 ### 4.3 Ce qui manque, C10
 
@@ -141,7 +141,7 @@ Deux hooks de l'assistant de développement (`.claude/hooks/`) gardent le dével
 
 ### 5.1 L'outil, et pourquoi lui
 
-Le monitorage d'un modèle fourni par API consiste à voir chaque appel : combien de temps, combien de jetons, quel fournisseur a répondu, et si un garde-fou a dû intervenir. L'outil retenu est **Langfuse Cloud, région Union européenne**, palier gratuit : 50 000 unités par mois, 30 jours de conservation, deux alertes. Décision du 28 septembre 2026, prise sur une règle donnée par le formateur, « la condition, c'est la sensibilité des données », et sur une mesure dans le code : le prompt envoyé au modèle ne contient aucune donnée personnelle (ticker, cours, variation, volume, passages de presse ; aucune position, aucun prix de revient). Trois options comparées dans le registre RGPD (§T3) :
+Le monitorage d'un modèle fourni par API consiste à voir chaque appel : combien de temps, combien de jetons, quel fournisseur a répondu, et si un garde-fou a dû intervenir. L'outil retenu est **Langfuse Cloud, région Union européenne**, palier gratuit : 50 000 unités par mois, 30 jours de conservation, deux alertes. Décision du 28 septembre 2026, prise sur une règle donnée par le formateur, « la condition, c'est la sensibilité des données », et sur une mesure dans le code : le prompt du briefing ne contient ni position, ni quantité, ni prix de revient (ticker, cours, variation, volume, passages de presse). Le ticker demandé peut toutefois révéler un intérêt de l'utilisateur, et une question libre peut contenir une donnée personnelle (registre RGPD, T8). Depuis le 20 octobre, ni prompt ni réponse ne sont gardés dans les traces. Trois options comparées dans le registre RGPD (§T3) :
 
 | Option | Sous-traitant | Transfert hors UE | Retenue ? |
 |---|---|---|---|
@@ -250,7 +250,7 @@ Required test coverage of 90.0% reached. Total coverage: 96.32%
 ===== 1719 passed, 30 skipped, 2 xfailed, 17 warnings in 83.63s (0:01:23) ======
 ```
 
-1 751 tests collectés dans 100 fichiers (`pytest --collect-only -q`, même commit). Le même jour, `main` (`b547cbf`, celui de la production) donnait 1 700 réussis, 30 sautés, 2 `xfailed`, 96,32 % (passage `40083432858`) ; les 19 tests de plus de `develop` sont ceux du vérificateur de liens, du contrat OpenAPI et d'un schéma d'E1. Les 30 sautés, relus dans le journal : 16 exigent la base réelle, 9 les hooks Windows de l'assistant, 5 un JDK ; ils tournent sur le poste. Historique : 440 tests le 7 septembre (92,23 %), 742 le 3 octobre, 1 719 réussis en CI le 24 octobre. Sortie rangée le jour même : `evidence/C12/preuve-ci-develop-2026-10-24.md`.
+1 751 tests collectés dans 100 fichiers (`pytest --collect-only -q`, même commit). Le même jour, `main` (`b547cbf`, celui de la production) donnait 1 700 réussis, 30 sautés, 2 `xfailed`, 96,32 % (passage `40083432858`) ; les 19 tests de plus de `develop` sont ceux du vérificateur de liens, du contrat OpenAPI et d'un schéma d'E1. Les 30 sautés, relus dans le journal : 16 exigent la base réelle, 9 les hooks Windows de l'assistant, 5 un JDK, conditions absentes de la CI. Le passage local du même jour (1 709 réussis, 40 sautés) ne prouve pas qu'ils y ont tous tourné : ses 40 sautés ne sont pas détaillés. Historique : 440 tests le 7 septembre (92,23 %), 742 le 3 octobre, 1 719 réussis en CI le 24 octobre. Sortie rangée le jour même : `evidence/C12/preuve-ci-develop-2026-10-24.md`.
 
 ![Ce qui est testé, par quoi, et où](schemas/E3-strategie-tests.png)
 
@@ -322,15 +322,15 @@ Chaque garde-fou se mesure par deux chiffres, toujours ensemble : un garde-fou q
 | Injection (articles) | `python -m evals.mesurer_gardefou` | 70 % (10) | 0 % (8) | 3 injections non détectées : deux fausses consignes de la rédaction, un changement de rôle |
 | Recommandation (sortie) | `python -m evals.mesurer_sortie` | 70 % (10) | 0 % (6) | 3 formules allusives (« le point d'entrée paraît attractif ») |
 | Fuite (sortie) | `python -m evals.mesurer_sortie` | 71,4 % (7) | 0 % (11) | 2 contournements non détectés |
-| Nombres (réponse) | relecture du 21 octobre, niveau 2 | 9 réponses, chaque nombre dans un article cité | sans objet | contrôle de présence, pas du sens, de l'unité ni de l'attribution |
+| Nombres (réponse) | relecture du 21 octobre, niveau 2 | 8 réponses, chaque nombre dans un article cité | sans objet | contrôle de présence, pas du sens, de l'unité ni de l'attribution |
 
 La limite est structurelle : des motifs lexicaux ne reconnaissent pas une intention. `tests/test_evals.py` transforme ces mesures en conditions de fusion : blocage attendu à 85 %, faux positifs au plus 15 %, latence sous 250 ms. Le blocage à 85 % n'est pas atteint sur deux garde-fous : **ces tests sont marqués `xfail` strict plutôt que de baisser le seuil** (6.1.3). Faux positifs et latence bloquent la fusion dès aujourd'hui, et chaque attaque du jeu de questions doit être arrêtée par un garde-fou.
 
 ### 6.4 La recherche documentaire et le parcours des questions
 
-`python -m evals.mesurer_rag` joue 53 questions annotées sur quatre configurations. Mesure du 20 septembre 2026 sur 1 072 documents : taux de bonne réponse en première position (Hit@1) de 0,415 en dense seul et 0,434 en hybride. L'hybride reste devant. Statut du jeu annoté, à citer sans le maquiller : annoté par un modèle à partir du corpus, non revalidé humainement (`evals/RELECTURE-2026-09-06.md`).
+`python -m evals.mesurer_rag` joue 53 questions annotées sur quatre configurations. Mesure du 20 septembre 2026 sur 1 072 documents : Hit@1 (part des questions dont le premier document retrouvé est un document attendu) de 0,415 en dense seul et 0,434 en hybride. L'hybride reste devant, d'environ une question sur 53 : un avantage observé sur ce jeu, pas une supériorité démontrée. Statut du jeu annoté, à citer sans le maquiller : annoté par un modèle à partir du corpus, non revalidé humainement (`evals/RELECTURE-2026-09-06.md`).
 
-Le parcours des questions a son propre jeu : 26 questions (`rag/questions_demo.json`), plus 8 reformulations réservées, soit 34 cas. Le 21 octobre, au niveau 2 (vrai modèle, Azure) : 19 refus avant le modèle, 15 cas passés par lui (9 réponses, 6 abstentions), aucune erreur technique (`evidence/sprint-4/README.md`). La sortie du modèle y est validée : un schéma JSON imposé au fournisseur en mode strict, puis revérifié par l'application (`agents/question.py`, `tests/test_question_contrat.py`, 17 tests) ; les références montrées viennent des données stockées, jamais du texte du modèle. Attention en reproduisant : `evals/mesurer_question.py` n'est pas une simple lecture, son niveau 2 appelle Azure et il écrit un rapport.
+Le parcours des questions a son propre jeu : 26 questions (`rag/questions_demo.json`), plus 8 reformulations réservées, soit 34 cas. Le 21 octobre, au niveau 2 (vrai modèle, Azure) : 19 refus avant le modèle, puis 8 réponses et 7 abstentions parmi les 15 cas transmis au modèle, aucune erreur technique (`evidence/sprint-4/mesure-question-niveau2-2026-10-21-0818.json` ; la veille, 9 réponses et 6 abstentions : la question R1 est passée d'une réponse à une abstention, le modèle variant d'un essai à l'autre). La sortie du modèle y est validée : un schéma JSON imposé au fournisseur en mode strict, puis revérifié par l'application (`agents/question.py`, `tests/test_question_contrat.py`, 17 tests) ; les références montrées viennent des données stockées, jamais du texte du modèle. Attention en reproduisant : `evals/mesurer_question.py` n'est pas une simple lecture, son niveau 2 appelle Azure et il écrit un rapport.
 
 ### 6.5 Un test se prouve par sa capacité à échouer
 
@@ -341,7 +341,7 @@ Le 2 octobre, le test de 6.1.1 est passé du premier coup, ce qui ne prouve rien
 - **Le briefing reste du texte libre**, sans schéma de sortie, et **aucun jeu de référence de briefings** (prix attendu, faits obligatoires, formules interdites) n'en mesure l'exactitude. La validation structurée existe pour `/question`, pas pour `/briefing`.
 - Le seuil de blocage de 85 % n'est pas atteint sur deux garde-fous ; le détournement ne reconnaît aucune des 8 reformulations ; le contrôle des nombres vérifie leur présence, pas leur sens.
 - Les tests unitaires des garde-fous et les cas d'évaluation d'`evals/cas.py` portent les mêmes phrases en double, copiées et non importées.
-- Seize tests sur la base réelle ne tournent que sur le poste ; trois dossiers échappent au périmètre de la couverture (6.2).
+- Seize tests exigent la base réelle, absente de la CI : ils ne peuvent tourner que sur le poste ; trois dossiers échappent au périmètre de la couverture (6.2).
 
 ---
 
@@ -355,7 +355,7 @@ Le 2 octobre, le test de 6.1.1 est passé du premier coup, ce qui ne prouve rien
 | `livraison.yml` | poussée, pull request, tag `livrable-*` | lint, recherche de secrets, construction et vérification de l'image ; publication après une fusion dans `main` ou sur un tag ; après une fusion seulement, livraison au serveur |
 | `revue-pr.yml` | chaque pull request vers `main` | relecture adversariale automatisée, avec `AGENTS.md` et `CLAUDE.md` comme grille |
 | `retour-arriere.yml`, `ingestion.yml` | bouton manuel, avec son nom et le motif | remettre la version précédente ; rafraîchir les articles et l'index de la production |
-| `scan-giskard.yml` | bouton manuel | scan d'attaques, deux frontières, plafond de coût saisi |
+| `scan-giskard.yml` | bouton manuel | scan d'attaques, deux frontières, plafond de scénarios par frontière saisi (il limite le coût du juge sans le plafonner en euros) |
 | `alerte-incident.yml` | envoi de Langfuse, ou bouton manuel | ouvre ou commente une issue `incident` |
 
 ![La chaîne de livraison continue, du poste à la production](schemas/E3-chaine-livraison.png)
@@ -366,7 +366,7 @@ Le 2 octobre, le test de 6.1.1 est passé du premier coup, ce qui ne prouve rien
 
 1. **Lint** (`ruff`, version fixée) et **recherche de secrets** dans tout l'historique (`gitleaks` v8.30.1, toutes les branches et tous les tags) : rien ne se construit si l'un est rouge.
 2. **Tests, porte de livraison** : `scripts/verifier_livrable.py --ci` (suite et couverture, portes d'évaluation, liens internes ; sur un tag, le tag cité dans `ETAT.md` et `CHANGELOG.md`).
-3. **Construction de l'image**, jamais publiée à cette étape, puis **vérifications de l'image construite** : elle démarre et répond sur `/health`, annonce le bon commit, refuse sans clé (403), ne contient aucun fichier `.env`, embarque ses fichiers de déploiement.
+3. **Construction de l'image**, jamais publiée à cette étape, puis **vérifications de l'image construite** : elle démarre et répond sur `/health`, annonce le bon commit, refuse sans clé (403), n'a pas de fichier `/app/.env` (le seul chemin contrôlé), embarque ses fichiers de déploiement.
 4. **Publication** de l'image vérifiée sur le registre de GitHub (`ghcr.io/ganda15/rita-api`), après une fusion dans `main` ou sur un tag `livrable-*`. C'est l'image testée à l'étape 3 qui part, pas une reconstruction (corrigé le 26 septembre, issue #22). Sur un tag : neuf passages depuis le 15 octobre, sept verts.
 5. **Après une fusion dans `main` seulement**, livraison au serveur. Le travail attend la fin du créneau du matin (de 8 h à 9 h, heure de Paris, rien ne bascule), puis envoie l'ordre `livrer` par une clé SSH dédiée, limitée par une commande forcée à un seul script (`deploy/deployer.py`). Le serveur essaie l'image à part (pré-test : un vrai briefing, qui doit être conforme), rejoue les questions de démonstration, la met en service, la contrôle, et remet l'ancienne si un contrôle échoue. Un tag publie son image sans jamais la livrer.
 
@@ -396,7 +396,7 @@ Velmo (juillet) a donné les trois emplacements de garde-fou et les deux chiffre
 
 ## 9. Reproduire
 
-Depuis `D:\KandaWork\RITA_PROJECT\rita-agent`, avec `C:\Python314\python.exe` :
+Les mesures de ce rapport portent sur le commit `9683f04` (branche `develop`) ; les reproduire demande une copie positionnée sur ce commit, ou sur le tag `livrable-E3-v1` une fois posé, et les prérequis de `docs/exploitation.md`. Depuis cette copie, avec `C:\Python314\python.exe` :
 
 ```
 C:\Python314\python.exe -m pytest --cov -q

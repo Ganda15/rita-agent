@@ -91,7 +91,7 @@ Travail `construire-et-publier`, seulement après un `lint` et un `secrets` vert
    Docker Hub tenu par Google, depuis le 21/10, après Docker Hub puis la galerie publique d'Amazon, carte #85), chargée
    dans Docker, pas publiée. Étiquettes : `:sha-<commit court>` et, sur un tag, `:<nom du tag>`.
 3. **Vérifier l'image construite**, lancée dans un conteneur : `/health` répond et annonce le commit construit ; sans
-   clé, `/donnees/valeurs` répond 403 ; l'image ne contient aucun fichier `.env` ; elle embarque ses fichiers de
+   clé, `/donnees/valeurs` répond 403 ; l'image n'a pas de fichier `/app/.env` (le seul chemin contrôlé) ; elle embarque ses fichiers de
    déploiement (`deploy/docker-compose.yml`, `deploy/compose.prod.yml`) ; elle sait nettoyer un résumé RSS, sans réseau.
 4. **Publier l'image vérifiée** sur le registre de GitHub (`ghcr.io/ganda15/rita-api`), seulement après une fusion dans
    `main` ou sur un tag `livrable-*`. C'est l'image testée à l'étape 3 qui part, pas une reconstruction (corrigé le
