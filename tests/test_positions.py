@@ -85,6 +85,13 @@ def test_synonymes_d_entetes(tmp_path, entete_qte):
     ("", None),
     ("n/a", None),
     (None, None),
+    # 24/10/2026 : `float()` accepte ces textes. `NaN <= 0` est faux, donc la validation laissait
+    # passer un NaN, et PostgreSQL range NaN au-dessus de tout nombre : `CHECK (quantite > 0)` aussi.
+    ("nan", None),
+    ("NaN", None),
+    ("inf", None),
+    ("-Infinity", None),
+    ("1e400", None),               # dépasse le plus grand flottant : devient l'infini
 ])
 def test_nombres_au_format_francais(brut, attendu):
     assert positions._nombre_fr(brut) == attendu
@@ -99,6 +106,9 @@ def test_nombres_au_format_francais(brut, attendu):
     ("MC.PA;abc;632,40", "quantite illisible"),
     ("MC.PA;12;", "prix de revient absent"),
     ("MC.PA;12;0", "prix de revient invalide"),
+    ("MC.PA;nan;632,40", "quantite illisible"),
+    ("MC.PA;inf;632,40", "quantite illisible"),
+    ("MC.PA;12;NaN", "prix de revient absent ou illisible"),
 ])
 def test_lignes_corrompues_rejetees_avec_leur_cause(tmp_path, ligne, cause_attendue):
     csv = f"Ticker;Quantité;Prix de revient\n{ligne}\n"
