@@ -4,7 +4,7 @@
 # Onglet Actions > « Retour arrière » > Run workflow, avec son nom et le motif. Le serveur remet la version précédente
 # validée, la contrôle avec sa propre clé, et l'écrit dans son journal ; si elle échoue, la version de départ revient.
 # Comme `rollback.yml` de Mardik v2 : le nom et le motif restent dans GitHub, le serveur ne reçoit que le numéro du
-# passage. Secours si GitHub est indisponible : la même commande lancée sur le serveur (docs/EXPLOITATION.md).
+# passage. Secours si GitHub est indisponible : la même commande lancée sur le serveur (docs/exploitation.md#rollback-production).
 # =============================================================================
 
 name: Retour arrière

@@ -68,14 +68,27 @@ DESCRIPTION = """
 API de **RITA** — *Retrieval Intelligence pour le Tracking et l'Analyse*.
 
 ### Authentification
-Tous les points de terminaison sauf `/health` exigent l'en-tête **`X-API-Key`**.
-Une clé absente ou invalide renvoie **403**.
+Deux clés, chacune dans son en-tête, jamais l'une pour l'autre.
 
-### Deux familles
-| Préfixe | Contenu | Compétence |
+| Routes | En-tête exigé | Sans clé valide |
 |---|---|---|
-| `/donnees/*` | le jeu de données brut, filtrable | C5 |
-| `/briefing` | un texte rédigé par un modèle | C9 |
+| `/health` | aucun : il ne rend aucune donnée | sans objet |
+| `/donnees/*`, `/briefing`, `/question`, `/sante`, `/audit/mcp` | **`X-API-Key`** (`RITA_API_KEY`) | 403 |
+| `/exercice/*` | **`X-Cle-Exercice`** (`RITA_CLE_EXERCICE`, la clé de l'opérateur) | 403 ; 503 si le serveur n'a pas de clé d'exercice |
+
+`/briefing` et `/question` appellent le modèle : au-delà du quota (`RITA_QUOTA_PAR_MINUTE`, 10 appels par minute
+par défaut), la réponse est **429** avec `Retry-After`. Chaque réponse, erreur comprise, porte un `X-Request-ID`.
+
+### Les familles de routes
+| Préfixe | Contenu |
+|---|---|
+| `/donnees/*` | le jeu de données brut, filtrable (C5) |
+| `/briefing` | un texte rédigé par un modèle sur une valeur (C9) |
+| `/question` | une réponse tirée des articles collectés, avec ses sources, ou un refus |
+| `/sante` | les signaux de la vigie et leurs verdicts |
+| `/exercice/*` | poser ou retirer une panne simulée du fournisseur du modèle, 20 minutes au plus |
+| `/audit/mcp` | journaliser un refus survenu dans la passerelle MCP |
+| `/health` | le service répond, et il annonce la version et l'index qu'il sert |
 
 ### ⚠️ Données personnelles
 `/donnees/portefeuille` expose des données financières personnelles (RGPD, traitement T1).

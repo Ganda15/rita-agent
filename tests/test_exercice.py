@@ -183,3 +183,16 @@ def test_le_message_503_donne_les_heures_avec_leur_fuseau(horloge, mesures, monk
     corps = client.post("/question", json={"question": "Comment Airbus répartit-il ses chaînes ?"},
                         headers=CLE_QUESTIONS).json()
     assert pose["depuis"] in corps["exercice"] and pose["fin_au_plus_tard"] in corps["exercice"]
+
+
+# --- Le contrat publié (revue des documents de référence, 24/10) ----------------------------------------------------
+
+def test_le_contrat_openapi_annonce_la_cle_d_exercice_sur_les_routes_d_exercice():
+    """Les deux clés portaient le nom de schéma par défaut (`APIKeyHeader`) : le contrat n'en gardait qu'un, et `/docs`
+    annonçait `X-API-Key` sur `/exercice/*`, alors que le code y lit `X-Cle-Exercice`."""
+    contrat = TestClient(app).get("/openapi.json").json()
+    schemas = contrat["components"]["securitySchemes"]
+    for chemin in ("/exercice/panne", "/exercice/fin"):
+        exigences = contrat["paths"][chemin]["post"]["security"]
+        entetes = {schemas[nom]["name"] for exigence in exigences for nom in exigence}
+        assert entetes == {"X-Cle-Exercice"}, chemin
