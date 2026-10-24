@@ -62,6 +62,36 @@ def verifier_interne(source: Path, cible: str) -> str | None:
     return None
 
 
+# Chaque forme d'URL du dépôt, et la question qui la vérifie dans l'API de GitHub (24/10/2026). Avant, seule
+# `/tree/<ref>` était connue : 116 liens (fichiers, PR, issues, passages de CI) restaient « non vérifiables ».
+FORMES_GITHUB = (
+    (re.compile(r"/blob/([^/]+)/(.+)"), lambda m: f"contents/{m[2]}?ref={m[1]}"),
+    (re.compile(r"/tree/([^/]+)/(.+)"), lambda m: f"contents/{m[2]}?ref={m[1]}"),
+    (re.compile(r"/tree/([^/]+)/?"), lambda m: f"contents/?ref={m[1]}"),
+    (re.compile(r"/pull/(\d+)(?:/.*)?"), lambda m: f"pulls/{m[1]}"),
+    (re.compile(r"/issues/(\d+)(?:/.*)?"), lambda m: f"issues/{m[1]}"),
+    (re.compile(r"/actions/runs/(\d+)(?:/.*)?"), lambda m: f"actions/runs/{m[1]}"),
+    (re.compile(r"/actions/workflows/([^/]+\.ya?ml)"), lambda m: f"actions/workflows/{m[1]}"),   # l'API accepte le nom du fichier
+    (re.compile(r"/commit/([0-9a-f]{7,40})"), lambda m: f"commits/{m[1]}"),
+)
+
+
+def point_api_github(url: str) -> str | None:
+    """La question à poser à l'API de GitHub pour vérifier ce lien, ou None si sa forme est inconnue.
+
+    L'ancre (`#L12`) et la requête (`?plain=1`) sont retirées : elles ne changent pas l'existence de la cible.
+    """
+    m = re.match(r"https://github\.com/([^/]+)/([^/?#]+)(/[^?#]*)?", url)
+    if not m:
+        return None
+    proprietaire, depot, chemin = m[1], m[2], m[3] or ""
+    for motif, question in FORMES_GITHUB:
+        trouve = motif.fullmatch(chemin)
+        if trouve:
+            return f"repos/{proprietaire}/{depot}/{question(trouve)}"
+    return None
+
+
 def verifier_github_prive(url: str) -> str | None:
     """Vérifie un lien vers le dépôt privé du projet, via `gh` (authentifié).
 
@@ -73,25 +103,20 @@ def verifier_github_prive(url: str) -> str | None:
     *Un vérificateur qui crie au loup sur des liens corrects finit par être ignoré, et
     c'est alors le vrai lien cassé qui passe.*
     """
-    import re
     import subprocess
 
-    m = re.match(r"https://github\.com/([^/]+)/([^/]+)/tree/([^/?#]+)", url)
-    if not m:
+    point = point_api_github(url)
+    if point is None:
         return "HTTP 404 (dépôt privé, forme d'URL non vérifiable par gh)"
-    proprietaire, depot, reference = m.groups()
 
     try:
-        r = subprocess.run(
-            ["gh", "api", f"repos/{proprietaire}/{depot}/contents/?ref={reference}"],
-            capture_output=True, timeout=DELAI_S,
-        )
+        r = subprocess.run(["gh", "api", point], capture_output=True, timeout=DELAI_S)
     except Exception as erreur:
         return f"HTTP 404 et gh injoignable ({type(erreur).__name__})"
 
     if r.returncode != 0:
-        return f"introuvable meme via gh : la reference '{reference}' n'existe pas"
-    return None      # la référence existe : le lien est bon pour qui a l'accès
+        return f"introuvable meme via gh : {point}"
+    return None      # la cible existe : le lien est bon pour qui a l'accès
 
 
 def verifier_externe(url: str) -> str | None:

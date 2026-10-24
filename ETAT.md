@@ -15,13 +15,188 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-23, 18 h 30 (sprint 5 en production : PR #133 et #134, livraison N16, `845e3b3` ; livrable « en production » ; restent la grille de l'atelier 5 et le tag) ; avant : 2026-10-23, midi, sur la branche `sprint-5-vigie-demo` (sprint 5 : doc suivie à la lettre, dix trous corrigés ; deux répétitions de la démo ; fausse alerte de production #130 corrigée ; livrable mis à jour ; restent l'atelier 5, sa grille et le tag) ; avant : 2026-10-22, 20 h 15, sur la branche `sprint-5-vigie-demo` (sprint 5, prototype local : vigie, tableau de bord, exercices et doc prouvés sur la copie du poste ; scénario de la démo écrit ; livrable v1 ; grille de l'atelier 4 versée ; restent le test de la doc, les répétitions et le tag `livrable-sprint-5-v1`) ; avant : 2026-10-21, 22 h 20 (sprint 4 : livrable en version 3, lien de ligne corrigé et état de la production à N14 ; tag v3 à poser après la livraison suivante) ; avant : 2026-10-21, 21 h 40 (sprint 4 remis : N14 en production, tag `livrable-sprint-4-v2` posé et livré ; reste l'atelier 4) ; avant : 2026-10-21, 21 h 15 (sprint 4 : N13 en production ; tag v1 posé sur N12 par erreur, figé ; remise sous le tag v2, à poser après la livraison suivante) ; avant : 2026-10-21, 20 h 15 (sprint 4 : livrable v1 et synthèse validés, schéma complet, journal des retours complété, tag cité au CHANGELOG ; restent N13, la Definition of Done et le tag) ; avant : 2026-10-21, 13 h 20 (sprint 4 : livraison N12 en production, traçage Langfuse actif en production, CA3.6 prouvé sur une vraie trace ; livrable v1 ; reste D3) ; avant : 2026-10-21, 11 h 20 (sprint 4 : livraison N11 en production, contrôle des nombres ; rejeu en production 5 sur 5, deux fois ; PR #118 en attente ; reste D3) ; avant : 2026-10-20, nuit (sprint 4 : livraison N10 en production ; rejeu en production, Q4 abîmée une fois ; contrôle des nombres commité en local) ; avant : 2026-10-19, soir (atelier 3 fait avec le formateur ; livrable du sprint 3, version 2 ; tag `livrable-sprint-3-v2` à poser) ; avant : 2026-10-17, nuit (N7 en production ; livrable du sprint 3, version 1 ; atelier 3 lundi 19/10
+**Dernière mise à jour : 2026-10-24, 18 h 30 (entrée du `CHANGELOG` qui cite les tags `livrable-E1-v2` et `livrable-E3-v1` ; prochaine action : `develop` vers `main`, livraison N19, puis les tags) ; avant : 2026-10-24, 18 h 15 (E3 v1.5 fusionnée dans `develop`, PR #146 : 19 pages, figures mises en forme par Era et testées, deux relectures vérifiées ; prochaine action : `develop` vers `main`, puis les tags E1 et E3) ; avant : 2026-10-24, 16 h 30 (vérificateur de liens, PR #143 : 0 lien cassé sur tout le dépôt ; documents de référence, contrat OpenAPI et retour arrière de production, PR #144 ; prochaine action : E3 v1.5) ; avant : 2026-10-24, 14 h 30 (E1 v2.6 prête et fusionnée dans `develop`, PR #141 ; MCD au formalisme Merise ; schéma C1 illustré et testé ; prochaine action : le vérificateur de liens, puis E3 v1.5) ; avant : 2026-10-24, midi (livraison N18 : quatre correctifs C, E, D, F en production, `b547cbf` ; manque de sauvegarde consigné ; prochaine action E1 v2.6) ; avant : 2026-10-23, 20 h (sprint 5 remis : livraison N17, `d215617`, tag `livrable-sprint-5-v1` posé par Era et vérifié ; reste la grille de l'atelier 5) ; avant : 2026-10-23, 18 h 30 (sprint 5 en production : PR #133 et #134, livraison N16, `845e3b3` ; livrable « en production » ; restent la grille de l'atelier 5 et le tag) ; avant : 2026-10-23, midi, sur la branche `sprint-5-vigie-demo` (sprint 5 : doc suivie à la lettre, dix trous corrigés ; deux répétitions de la démo ; fausse alerte de production #130 corrigée ; livrable mis à jour ; restent l'atelier 5, sa grille et le tag) ; avant : 2026-10-22, 20 h 15, sur la branche `sprint-5-vigie-demo` (sprint 5, prototype local : vigie, tableau de bord, exercices et doc prouvés sur la copie du poste ; scénario de la démo écrit ; livrable v1 ; grille de l'atelier 4 versée ; restent le test de la doc, les répétitions et le tag `livrable-sprint-5-v1`) ; avant : 2026-10-21, 22 h 20 (sprint 4 : livrable en version 3, lien de ligne corrigé et état de la production à N14 ; tag v3 à poser après la livraison suivante) ; avant : 2026-10-21, 21 h 40 (sprint 4 remis : N14 en production, tag `livrable-sprint-4-v2` posé et livré ; reste l'atelier 4) ; avant : 2026-10-21, 21 h 15 (sprint 4 : N13 en production ; tag v1 posé sur N12 par erreur, figé ; remise sous le tag v2, à poser après la livraison suivante) ; avant : 2026-10-21, 20 h 15 (sprint 4 : livrable v1 et synthèse validés, schéma complet, journal des retours complété, tag cité au CHANGELOG ; restent N13, la Definition of Done et le tag) ; avant : 2026-10-21, 13 h 20 (sprint 4 : livraison N12 en production, traçage Langfuse actif en production, CA3.6 prouvé sur une vraie trace ; livrable v1 ; reste D3) ; avant : 2026-10-21, 11 h 20 (sprint 4 : livraison N11 en production, contrôle des nombres ; rejeu en production 5 sur 5, deux fois ; PR #118 en attente ; reste D3) ; avant : 2026-10-20, nuit (sprint 4 : livraison N10 en production ; rejeu en production, Q4 abîmée une fois ; contrôle des nombres commité en local) ; avant : 2026-10-19, soir (atelier 3 fait avec le formateur ; livrable du sprint 3, version 2 ; tag `livrable-sprint-3-v2` à poser) ; avant : 2026-10-17, nuit (N7 en production ; livrable du sprint 3, version 1 ; atelier 3 lundi 19/10
 au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en production : N5 et N6, ingestion par le bouton, évaluation en production 8 sur 8, registre RGPD, documents de fin de sprint ; restent N7, l'atelier 3 et le tag) ; avant : 2026-10-16 au soir (sprint 3 : parcours des questions, Google News arrêté dans le code, ingestion en une opération, jeu de questions en version 2, évaluation locale 8 sur 8 ; reste la livraison) ; avant : 2026-10-15 au soir (sprint 2 clos, tag livrable-sprint-2-v3, sprint 3 ouvert dans un worktree) ; avant : 2026-10-11 (E1 v2.5 : cinq surgénéralisations corrigées ; veille S41 : relevé, note d'Era et partage à la promo ; E3 v1.4 : sept corrections, 44 critères en 39 lignes, revue d'E3 close ; E1 v2.4 : seconde passe, MCD lisible, guide § 4.5 corrigé ; avant, E1 v2.3 : passe RGPD et exactitude ; politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
 
-## ▶️ SPRINT 5 : LA VIGIE ET LA DÉMO, EN PRODUCTION DEPUIS LE 23/10 (N16) ; TAG `livrable-sprint-5-v1` À POSER
+## ▶️ E3 v1.5 (24/10) : FUSIONNÉE DANS `develop`, PAS ENCORE GELÉE ; PROCHAINE ACTION : `develop` VERS `main`, PUIS LES TAGS
+
+**Fait** : PR #146 fusionnée par Era à 18 h 02 dans `develop` (commit de fusion `caf87a7`, sept commits de travail).
+E3 v1.5 : 19 pages (limite : 20), numérotées ; corrections de faits et ce que C9 à C13 exigent, rien de nouveau. Copie
+de lecture : `C:\Users\kanda\OneDrive\RITA\reports\rapport-E3-2026-10-24-v1.5.pdf`.
+
+- **Faits mis à jour** : 19 chemins et deux clés ; 422 pour une valeur inconnue, 502 encore possible si le graphe
+  échoue ; limite de débit, partielle ; cinq écrans, onze chemins appelés ; production tracée depuis le 21/10, sans
+  texte ; coût distingué par parcours ; sept workflows, six checks requis, livraison après fusion, retour arrière répété
+  le 14 et le 15/10. Chaque mesure avec sa branche, son commit et son passage de CI.
+- **Éléments des sprints repris** : la liste donnée à Era le 24/10 (parcours des questions, limite de débit, 422, trois
+  garde-fous, traçage de production, livraison automatique et retour arrière, `/sante` et le tableau de bord en une
+  ligne chacun, la fausse alerte #130), écrite dans la description de la PR #146.
+- **Schémas** : à l'état du 24/10 ; les images publiées sont la mise en forme d'Era (`E3-<nom>-illustre.svg`), texte
+  imprimé de 6 à 6,9 points (4,2 dans la v1.4). `tests/test_schemas_e3.py` (41 tests, 20 rouges avant les sources)
+  compare chaque texte au générateur ; il a retrouvé l'erreur « 6 h à 9 h » d'une première mise en forme, réintroduite
+  exprès.
+- **Deux relectures externes, vérifiées point par point** : celle du plan (quatre erreurs de mon plan, corrigées) et
+  celle du PDF (huit corrections de faits, chacune confirmée dans sa source avant d'être appliquée ; le 21/10, par
+  exemple, 8 réponses et 7 abstentions, et non 9 et 6).
+- **Preuve rangée le jour même** : `evidence/C12/preuve-ci-develop-2026-10-24.md` (passage 40101793487).
+
+**Vérifié** : CI de la PR #146 : 1760 passed, 30 skipped, 2 xfailed, couverture 96,32 %, porte de livraison
+« livrable ». Grille d'E3 : 36 ✅ · 3 🟠 · 0 🔴 sur 39 lignes, une auto-évaluation.
+
+**Trouvé, à décider par Era** :
+1. `.coveragerc` ne mesure pas `rag/`, `monitorage/` ni `passerelle_mcp/` : 98 % mesurés à part le 24/10, sans toucher
+   au fichier (zone sous garde). Les ajouter à la liste `source`, ou le laisser écrit comme limite.
+2. `evidence/sprint-4/README.md` dit « les neuf réponses » au 21/10 ; le JSON du même jour en compte huit. Un erratum
+   daté sous la ligne (ligne d'origine gardée), ou rien.
+3. Carte #75, point S10 : le certificat de production a été renouvelé seul le 19/10, valable jusqu'au 17/01/2027 (lu
+   le 24/10) ; le point peut être fermé.
+
+**Points ouverts** :
+1. Les tags `livrable-E1-v2` et `livrable-E3-v1` : après la PR `develop` vers `main` (sept PR d'avance, #140 à #146),
+   chacun cité dans `ETAT.md` et `CHANGELOG.md` avant d'être posé (la porte de livraison le vérifie).
+2. La copie anglaise d'E3 (`-EN.md`, `-EN.pdf`) dans `OneDrive\RITA\reports`, sur le texte fusionné.
+3. `oral-E1-v3` (Obsidian `03-Oraux`) cite encore les chiffres d'avant ; l'oral d'E3 reste à préparer.
+4. Notes d'apprentissage écrites (Obsidian `09-EN-personnel`) : SUMMARY et STUDY d'E3 v1.5.
+
+**▶️ Prochaine action** :
+1. PR `develop` vers `main`, relue par `revue` ; sa fusion lance la livraison N19 (documents, tests, et la description
+   OpenAPI corrigée dans `api/`).
+2. Fait le 24/10 à 18 h 30 : l'entrée du `CHANGELOG` qui cite les deux tags (`ETAT.md` les cite déjà). Restent les
+   tags sur `main`, posés par Era après la Definition of Done verte, puis le lien du tag envoyé et la ligne de
+   `docs/FILE-DE-VALIDATION.md`.
+3. E4, E5 et la fin d'E2 avant le 05/11.
+
+---
+
+## ▶️ DOCUMENTS DE RÉFÉRENCE (24/10) : LIENS, CI-CD, ARCHITECTURE, CONTRAT OPENAPI, RETOUR ARRIÈRE DE PRODUCTION
+
+**Fait**, deux PR fusionnées par Era dans `develop` :
+
+- **PR #143** (fusionnée à 15 h 55, commit `7965ff7`) : `scripts/verifier_liens.py` vérifie par `gh api` chaque forme de
+  lien du dépôt privé (fichier à une référence, PR, issue, passage de CI, workflow, commit). Une forme inconnue reste
+  « non vérifiable », jamais « bonne ». 14 tests, dont 12 rouges avant le code. Les 116 faux « cassés » ne bloquent plus
+  les tags E1 et E3.
+- **PR #144** (fusionnée à 16 h 00, commits `4878eb2` et `9ce8b57`) : `docs/CI-CD.md` (sept workflows, six checks
+  requis, déploiement après fusion, secrets `DEPLOY_*` de l'environnement `production`), `docs/ARCHITECTURE.md`
+  (19 chemins, deux clés, question, vigie, déploiement), description OpenAPI de `api/main.py`, et dans
+  `docs/exploitation.md` (annexes, § 8) le retour arrière de la production et la mise à jour du script du serveur.
+
+**Deux défauts trouvés en relisant** :
+1. Le contrat publié se trompait : les deux clés portaient le nom de schéma par défaut, et `/docs` annonçait
+   `X-API-Key` sur `/exercice/*`, alors que le code y lit `X-Cle-Exercice`. Corrigé (`scheme_name="CleExercice"`), test
+   écrit d'abord et vu rouge.
+2. Documenté mais absent : le retour arrière de la production (répété le 14/10 et le 15/10) et la mise à jour du script
+   du serveur étaient annoncés par `retour-arriere.yml`, l'action `ordre-serveur`, `docs/CHAINE-V1.md` et
+   `docs/CADRAGE-V1.md` (critère 2 du sprint 2), sans avoir jamais été écrits, même avant le sprint 5. Écrits à partir
+   des deux répétitions ; deux tests de la page, rouges sur l'ancienne version.
+
+**Vérifié le 24/10** : sur le poste, 1695 passed, 40 skipped, 2 xfailed, `ruff` sans remarque. CI de la PR #144 : 1705
+passed, 30 skipped, 2 xfailed, couverture 96,32 %, porte de livraison « livrable ». Sur `develop` après les deux fusions
+(`9eead32`) : `scripts/verifier_liens.py` sur tout le dépôt, 249 liens internes et 275 externes, **0 cassé** ; Tests
+verts. 1751 tests collectés à 16 h 30 (E1 v2.6 en cite 1 732, mesurés avant ces deux PR).
+
+**Points ouverts** :
+1. Le secours du retour arrière sans GitHub n'a jamais été exécuté (la page le dit) : à essayer une fois, avec Era.
+2. `deploy/deployer.py` renvoie encore à `docs/EXPLOITATION.md` dans deux messages ; le modifier changerait son empreinte
+   et bloquerait les livraisons jusqu'à sa réinstallation. À corriger la prochaine fois que ce script change.
+3. `docs/EXPLOITATION.pdf` date du 11/10 : il ne correspond plus à la page.
+4. Fait le 24/10 (PR #146) : schémas et chiffres d'E3 remis à jour, section ci-dessus.
+5. Notes d'apprentissage écrites (Obsidian `09-EN-personnel`) : SUMMARY et STUDY du vérificateur de liens et des
+   documents de référence.
+
+**Suite** : E3 v1.5 est faite (section ci-dessus) ; la prochaine action y est écrite.
+
+---
+
+## ▶️ E1 v2.6 (24/10) : PRÊTE SUR `develop`, PAS ENCORE GELÉE
+
+**Fait** : E1 v2.6, corrections de faits seulement, toujours 5 pages (limite officielle d'E1 : 2 à 5). PR #141 fusionnée
+par Era à 14 h 17 dans `develop` (commit de fusion `9d52db9`, commit du travail `d9adfe9`). CI de la PR : 1701 passed,
+30 skipped, 2 xfailed, couverture 96,32 %. Copies de lecture : `C:\Users\kanda\OneDrive\RITA\reports\rapport-E1-2026-10-24.pdf`,
+`-EN.md` et `-EN.pdf`.
+
+- **Faits mis à jour** : 1 732 tests ; 19 chemins OpenAPI et l'historique complet par pages (C5) ; registre T1 à T8 et
+  corpus ; Google News arrêté le 16/10 ; 108 valeurs actives ; 21 soirs sur 21 du 03 au 23/10 ; `docs/exploitation.md`.
+- **Limites écrites** : PRU dans une autre devise que la cotation, fichier de positions partiel, corpus sans durée de
+  conservation, rôle `rita_ingestion` hors de `db/roles.sql`.
+- **Relecture externe** vérifiée point par point : six remarques confirmées, une corrigée (l'analyse ouverte est l'AITD,
+  pas l'AIPD, que le registre dit non requise), une sans objet. Une erreur venait de mon raccourcissement (« porteurs
+  d'injection ») : corrigée en « bloqués par le garde-fou ».
+- **MCD** : identifiants soulignés, `id` de POSITION, identification relative `(1,1)`, attributs de liaison retirés.
+  Erratum daté dans `evidence/C4/preuve-mcd-merise.md` (ligne d'origine gardée).
+- **Schéma C1** : PNG rendu depuis la mise en forme illustrée fournie par Era (`E1-collecte-illustre.html`) ; le test
+  `test_le_schema_illustre_dit_exactement_ce_que_dit_le_schema_genere` garde ses textes égaux au schéma généré (rouge
+  sur deux textes de la maquette avant correction).
+
+**Points ouverts** :
+1. Le tag `livrable-E1-v2` exige que `develop` arrive sur `main` (cinq PR d'avance le 24/10 à 16 h 30, #140 à #144).
+   Fait le 24/10 : `scripts/verifier_liens.py` ne bloque plus (PR #143, section ci-dessus).
+2. Le texte d'oral `oral-E1-v3` (Obsidian `03-Oraux`, 11/10) cite encore les chiffres d'avant : à reprendre avant
+   l'oral blanc 1.
+3. Pas d'entrée au `CHANGELOG` pour E1 v2.6 : manques découverts (formalisme du MCD, règle fausse dans `evidence/C4`),
+   à consigner si Era le décide.
+
+**Suite** : le vérificateur de liens et les documents de référence sont faits (section ci-dessus) ; la prochaine action
+est écrite dans cette section.
+
+---
+
+## ▶️ LIVRAISON N18 (24/10) : QUATRE CORRECTIFS EN PRODUCTION
+
+**Ce qui s'est passé** : le 23/10 au soir, E1 et E3 ont été relus ligne par ligne contre le code de `main`. Quatre
+défauts de code en sont sortis, aucun visible dans les données de production. Era a décidé de les corriger avant de
+reprendre les rapports ; chacun a son test écrit d'abord et vu rouge (21 tests, dont 15 rouges avant le code).
+
+| Correctif | Ce qui change | Critère |
+|---|---|---|
+| C, `8d27985` | Une panne totale des cotations, des flux RSS ou du scraping est un échec déclaré (même règle que la BCE, carte #55) ; un succès partiel et un week-end sans séance restent des succès | C1, C20 |
+| E, `67fba96` | `/donnees/cotations` accepte `jusqu_a` : les dix ans de cours se lisent par pages de 1 000, sans trou ni doublon ; intervalle inversé = 422 | C5 |
+| D, `ff73f3c` | Le lecteur de positions rejette NaN et l'infini (« quantite illisible », « prix de revient absent ou illisible ») | C3 |
+| F, `2c89cfe` | La migration « taux » et le guide disent qu'elle se joue avant la migration de la clôture | C4 |
+
+**Livré** : PR #138 (vers `develop`, fusionnée à 11 h 18) et PR #139 (`develop` vers `main`, fusionnée à 11 h 48), par
+Era. Livraison N18 : passage 40083432816, de 11 h 48 à 11 h 57 (heure de Paris), commit
+`b547cbf7d46bc45d2ffbb85a0740449a8b96fe2a`. CI sur la PR et sur `main` : 1700 passed, 30 skipped, 2 xfailed, couverture
+96,32 % ; revue automatisée sans remarque. En production (lu à 12 h 09) : `/health` annonce `b547cbf`, index reconstruit
+(2140 articles), 403 sans clé sur `/donnees/valeurs`, `/sante` et `/donnees/cotations`, l'OpenAPI servi a 19 chemins et
+`jusqu_a`. **Non vérifié** : un appel réel avec `jusqu_a` (il faut la clé de production).
+
+**Manque découvert, la sauvegarde** : le dernier dump date du 27/09 (`D:\KandaWork\RITA_PROJECT\sauvegardes\`), le dump
+hebdomadaire prévu n'est pas tenu, et la ligne « Sauvegarde restaurable : VALIDÉ » de `CONTINUITE.md` s'appuie sur
+`pg_restore --list`, qui liste l'archive sans la restaurer. Un dump a été rechargé une fois, le 20/08, pour migrer le
+serveur. À faire : un dump, puis une vraie restauration dans une base jetable (preuve E5, C21), et corriger la ligne de
+`CONTINUITE.md`.
+
+**Points ouverts** :
+1. Fait le 24/10 : Era a mis à jour le dossier d'origine `D:\KandaWork\RITA_PROJECT\rita-agent` à `b547cbf` (vérifié à
+   13 h) ; la collecte du soir tourne avec le correctif C à partir du 24/10. Son manifeste reste à relire.
+2. Fait le 24/10 dans E1 v2.6 : les limites (devise du PRU, fichier de positions partiel) sont écrites.
+3. Décisions d'Era encore ouvertes sur E1 et E3 : le rôle `rita_ingestion` absent de `db/roles.sql`, le défaut #73 (clé
+   mémorisée trop tôt, écrans du briefing et des questions), les en-têtes de sécurité (OWASP API8).
+4. La grille de l'atelier 5 (voir le sprint 5 ci-dessous). La PR #88 (`mistral-ue`) reste ouverte, en conflit.
+5. Fait le 24/10 (PR #143) : le script vérifie ces liens par `gh api`, 0 cassé sur tout le dépôt. Constat d'origine :
+   `scripts/verifier_liens.py` (24/10, sur `develop`) : 116 liens « cassés », tous du même type, « HTTP 404 (dépôt privé,
+   forme d'URL non vérifiable par gh) », dans les livrables des sprints 2 à 5, `evidence/sprint-5/` et
+   `docs/veille/_candidats-2026-S41.md` ; aucun dans `ETAT.md` ni le `CHANGELOG`. La règle « zéro lien cassé » bloquera
+   les tags E1 et E3 : apprendre au script ces formes d'URL, ou les remplacer, avant le gel.
+
+**Suite** : E1 v2.6 est faite (section ci-dessus) ; la prochaine action est écrite dans cette section.
+
+---
+
+## ▶️ SPRINT 5 : LA VIGIE ET LA DÉMO, EN PRODUCTION (N16, N17) ; TAG `livrable-sprint-5-v1` POSÉ LE 23/10 ; RESTE L'ATELIER 5
+
+**Mise à jour du 23/10, 20 h** : **sprint 5 remis.** PR #135 (documents vers `develop`) et PR #136 (`develop` vers
+`main`) fusionnées par Era ; livraison N17 réussie (passage 39995996403, 19:33 à 19:43), commit
+`d215617f7cffa7a9817da28f2b2684dc7c63f7cd` : `/health` l'annonce, le tableau de bord répond 200, `/sante` exige la clé.
+Tag `livrable-sprint-5-v1` posé par Era sur ce SHA complet (19:45:28) ; passage du tag 39997640785 réussi, Definition of
+Done verte en CI, image `ghcr.io/ganda15/rita-api:livrable-sprint-5-v1` publiée. Les 46 liens des quatre PDF du tag
+vérifiés (37 cibles dans le tag, 5 liens publics à 200, 4 issues et PR existantes). Incident de la soirée : GitHub
+Actions bloqué de 18:49 à 19:10 par le budget Actions à 0 $ (dépôt privé, quota gratuit d'octobre épuisé) ; Era a
+porté le budget à 5 $. Preuve : `evidence/sprint-5/production-2026-10-23.md` § 6 et 7.
 
 **Mise à jour du 23/10, soir** : **le sprint 5 est en production.** PR #133 (`sprint-5-vigie-demo` vers `develop`) et
 PR #134 (`develop` vers `main`) fusionnées par Era ; livraison N16 réussie (passage 39983152061, 18:00 à 18:12). En
@@ -46,11 +221,10 @@ l'atelier 2 est arrêtée (port 8011).
 9 min 30), fausse alerte de production #130 expliquée et fermée, livrable mis à jour
 (`evidence/sprint-5/test-doc-et-repetitions-2026-10-23.md`).
 
-**▶️ Prochaine action** (vendredi 23/10, objectif minuit) :
-1. Les documents « en production » (livrable, synthèse, scénario N16, preuves, PDF) partent par une PR vers `develop`,
-   puis `develop` vers `main` (fusions par Era) : livraison N17, sans changement de code.
-2. Era pose `livrable-sprint-5-v1` sur le commit de N17, désigné par son SHA complet (un tag `livrable-*` publie une
-   image sur le registre GitHub, sans déployer).
+**▶️ Prochaine action** :
+1. Fait le 23/10 au soir : livraison N17 et tag `livrable-sprint-5-v1` (voir la mise à jour de 20 h ci-dessus).
+2. Fait le 24/10 : ce commit de mise à jour (ETAT, CHANGELOG, preuves) part vers `develop` avec la PR qui consigne N18 ;
+   il ne change pas le tag.
 3. La grille de l'atelier 5 remplie par le binôme (`D:\KandaWork\RITA_PROJECT\transferts\sprint-5\grille-atelier-5-a-remplir.md`),
    puis versée dans `eval/ateliers/sprint-5-grille.md` (version suivante du livrable).
 

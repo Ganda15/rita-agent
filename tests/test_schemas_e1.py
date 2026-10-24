@@ -84,3 +84,26 @@ def test_le_schema_de_nettoyage_relie_chaque_regle_a_son_fichier(gen):
     for fichier in ("db/importer.py", "db/schema.sql", "sources/marches.py", "sources/positions.py"):
         assert fichier in texte, f"{fichier} n'est cité nulle part dans le schéma de nettoyage"
         assert (RACINE / fichier).exists(), f"{fichier} cité mais absent du dépôt"
+
+
+# --- 24/10/2026 : la mise en forme illustrée du schéma de collecte (modèle fourni par Era) ---------------------------
+# Le PNG remis au jury est rendu depuis E1-collecte-illustre.html, mis en forme hors du générateur (icônes, formes).
+# Sans ce test, ses textes vieilliraient en silence, exactement le défaut que ce fichier existe pour empêcher.
+
+def _textes(morceaux: list[str]) -> list[str]:
+    import html
+    return [" ".join(html.unescape(m).split()) for m in morceaux if m.strip()]
+
+
+def test_le_schema_illustre_dit_exactement_ce_que_dit_le_schema_genere(gen):
+    source = (DOSSIER / "E1-collecte-illustre.html").read_text(encoding="utf-8")
+    corps = re.sub(r"<(style|title)[^>]*>.*?</\1>", "", source, flags=re.S)
+    illustre = _textes(re.split(r"<[^>]+>", corps))
+    genere = _textes([re.sub(r"<[^>]+>", "", t) for t in re.findall(r"<text[^>]*>(.*?)</text>",
+                                                                     gen.svg(gen.SCHEMAS["E1-collecte"]()), re.S)])
+    tout_illustre, tout_genere = " ".join(illustre), " ".join(genere)
+    pied = [t for t in illustre if t.startswith("Mise en forme illustrée")]
+    assert len(pied) == 1, "le pied de l'illustration doit dire qu'elle est une mise en forme, pas une génération"
+    assert [t for t in illustre if t not in tout_genere and t not in pied] == [], "texte de l'illustration absent du schéma généré"
+    assert [t for t in genere if t not in tout_illustre and not t.startswith("Génération :")] == [], \
+        "texte du schéma généré absent de l'illustration"

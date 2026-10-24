@@ -68,7 +68,7 @@ runs:
         if [ "$serveur" = "$depot" ]; then
           echo "script du serveur identique au depot ($depot)"
         elif [ "$BLOQUANTE" = "true" ]; then
-          echo "::error::script du serveur a mettre a jour (serveur $serveur, depot $depot) : voir docs/EXPLOITATION.md"
+          echo "::error::script du serveur a mettre a jour (serveur $serveur, depot $depot) : voir docs/exploitation.md#script-du-serveur"
           exit 1
         else
           echo "::warning::script du serveur different du depot (serveur $serveur, depot $depot) : le retour utilise le script installe"

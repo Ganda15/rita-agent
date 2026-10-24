@@ -40,11 +40,18 @@ C:\Python314\python.exe -X utf8 docs\rapports\E1\schemas\generer_schemas.py
 Puis le rendu PNG, un schéma à la fois (Chrome exige un `--user-data-dir`, sinon il échoue sans message) :
 
 ```
-"C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --disable-gpu --hide-scrollbars --user-data-dir=%TEMP%\chrome-rendu --window-size=1500,964 --screenshot=docs\rapports\E1\schemas\E1-collecte.png file:///D:/KandaWork/RITA_PROJECT/rita-agent/docs/rapports/E1/schemas/E1-collecte.svg
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --disable-gpu --hide-scrollbars --user-data-dir=%TEMP%\chrome-rendu --window-size=1920,1358 --screenshot=docs\rapports\E1\schemas\E1-collecte.png file:///D:/KandaWork/RITA_PROJECT/rita-agent/docs/rapports/E1/schemas/E1-collecte-illustre.html
 ```
 
 Même commande pour `E1-nettoyage` avec `--window-size=1500,876`. Les deux PNG ont été regardés le
 04/10/2026 au soir, après la refonte de la charte : aucune flèche ne traverse une boîte ni un titre, aucun texte n'est coupé.
+**Collecte, depuis le 24/10/2026 (à la demande d'Era)** : le PNG remis au jury est rendu depuis
+`E1-collecte-illustre.html`, une mise en forme illustrée fournie par Era (icônes, formes de base de données). Les
+sources `E1-collecte.svg` et `.drawio` restent générées et modifiables (bandeaux de colonne pleins, flèches à angle
+droit, étiquettes en pastille). Le test `test_le_schema_illustre_dit_exactement_ce_que_dit_le_schema_genere` vérifie que
+l'illustration porte les mêmes textes que le schéma généré : il a d'abord échoué sur deux textes de la maquette
+(« cours du jour » sur un bus qui porte aussi BCE, FRED et RSS ; un pied qui la disait générée), corrigés. Quand un
+chiffre change, régénérer le `.svg`, reporter le texte dans le `.html`, relancer le test, puis le rendu PNG.
 **Charte (refaite le 04/10/2026, à la demande d'Era)** : texte presque noir et plus grand, traits épais ; une couleur
 par rôle de boîte (bande à gauche) et par sens de flèche ; une légende dessinée en bas de chaque schéma, qui ne montre
 que les couleurs employées et ce qu'elles veulent dire dans ce schéma. Le 04/10, le texte de chaque boîte a été

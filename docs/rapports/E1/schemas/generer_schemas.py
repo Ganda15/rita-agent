@@ -7,14 +7,17 @@ avec le code sont lus dans le code au moment de la génération (`faits()`), et
 `tests/test_schemas_e1.py` vérifie que les fichiers rangés sont exactement ceux qu'on obtiendrait
 aujourd'hui. Les chiffres datés (analyse de juillet, comptages du 02/10) restent écrits avec leur date.
 
-Le dessin (boîtes, flèches, .svg et .drawio) est celui des schémas E3 : même module, même charte
+Le dessin du nettoyage (boîtes, flèches, .svg et .drawio) est celui des schémas E3 : même module, même charte
 (refaite le 04/10 : texte presque noir, une couleur par rôle de boîte et par sens de flèche, légende dessinée).
+Celui de la collecte a son propre tracé depuis le 24/10/2026, à la demande d'Era, sur un modèle qu'il a fourni :
+bandeaux de colonne pleins, flèches à angle droit, étiquettes en pastille, légende sur une ligne. Mêmes couleurs.
 
 Lancer :  C:\\Python314\\python.exe -X utf8 docs\\rapports\\E1\\schemas\\generer_schemas.py
 Puis le rendu PNG (commande dans le README du dossier).
 """
 from __future__ import annotations
 
+import html
 import importlib.util
 import re
 import sys
@@ -29,7 +32,207 @@ _spec = importlib.util.spec_from_file_location("schemas_e3", RACINE / "docs/rapp
 _e3 = importlib.util.module_from_spec(_spec)
 sys.modules["schemas_e3"] = _e3   # dataclass relit son module dans sys.modules : l'y inscrire avant
 _spec.loader.exec_module(_e3)
-Boite, Fleche, Schema, svg, drawio = _e3.Boite, _e3.Fleche, _e3.Schema, _e3.svg, _e3.drawio
+Boite, Fleche, Schema = _e3.Boite, _e3.Fleche, _e3.Schema
+ROLES, SENS, NAVY, INK, SOFT, POLICE = _e3.ROLES, _e3.SENS, _e3.NAVY, _e3.INK, _e3.SOFT, _e3.POLICE
+
+# Le nettoyage garde la charte du 04/10, taille du texte comprise : E3 v1.5 a agrandi le texte de SES schémas le
+# 24/10 (lisibilité à l'impression), et ce schéma, déjà dans E1 v2.6, ne doit pas changer pour autant.
+for _nom, _valeur in {"T_TITRE": 30, "T_SOUS_TITRE": 15, "T_ZONE": 13.5, "T_BOITE": 14, "T_LIGNE": 11.5,
+                      "T_ETIQUETTE": 12.5, "T_LEGENDE": 12.5, "INTERLIGNE": 15.5, "Y_TITRE_BOITE": 21,
+                      "Y_PREMIERE_LIGNE": 40, "LIGNE_LEGENDE": 28, "DATE_DRAWIO": "2026-10-04T00:00:00.000Z"}.items():
+    setattr(_e3, _nom, _valeur)
+
+
+# =============================================================================
+# Le tracé propre du schéma de collecte (24/10/2026)
+# =============================================================================
+# Les flèches ne relient plus deux points en diagonale : chacune suit une suite de points à angle droit,
+# écrite à la main, pour ne jamais traverser une boîte. Les cinq sources web se rejoignent sur un bus.
+
+T_BANDEAU, T_TITRE_B, T_LIGNE_B, INTERLIGNE_B, T_PASTILLE, T_LEG = 14, 14.5, 12, 17, 12, 12
+EPAISSEUR_TRAIT = 2.6
+
+
+# Classes simples, pas @dataclass : le test charge ce fichier sans l'inscrire dans sys.modules, et
+# dataclass y relit le module (même piège que pour le module E3, plus haut).
+class Trace:
+    """Une flèche à angle droit : une suite de points ; pas de pointe pour un tronçon de bus.
+    `ou` est le centre de la pastille qui porte l'étiquette."""
+
+    def __init__(self, points: list[tuple[float, float]], sens: str = "flux", etiquette: str = "",
+                 ou: tuple[float, float] | None = None, pointe: bool = True) -> None:
+        self.points, self.sens, self.etiquette, self.ou, self.pointe = points, sens, etiquette, ou, pointe
+
+
+class SchemaPropre(Schema):
+    """Un Schema, plus ses tracés à angle droit et la couleur du bandeau de chaque colonne."""
+
+    def __init__(self, *, traces: list[Trace], bandeaux: dict[str, str], **champs) -> None:
+        super().__init__(**champs)
+        self.traces, self.bandeaux = traces, bandeaux
+
+
+def _capacite(largeur: float, taille: float, gras: bool = False) -> int:
+    """Combien de caractères tiennent sur une ligne (estimation : la vraie mesure se fait au rendu)."""
+    return int(largeur / (taille * (0.53 if gras else 0.45)))   # mesuré sur le rendu Chrome du 24/10 (Segoe UI)
+
+
+def _couper(texte: str, cap: int) -> list[str]:
+    """Une ligne trop longue se coupe au dernier espace avant la limite ; la suite est décalée."""
+    lignes, reste = [], texte
+    while len(reste) > cap and reste.rfind(" ", 0, cap) > 2:
+        i = reste.rfind(" ", 0, cap)
+        lignes.append(reste[:i])
+        reste = "  " + reste[i + 1:]
+    return lignes + [reste]
+
+
+def _textes(b: Boite) -> tuple[list[str], list[str]]:
+    interieur = b.w - 34
+    titres = [t for p in b.titre.split("\n") for t in _couper(p, _capacite(interieur, T_TITRE_B, gras=True))]
+    lignes = [x for ligne in b.lignes for x in _couper(ligne, _capacite(interieur, T_LIGNE_B))]
+    return titres, lignes
+
+
+def _largeur_pastille(texte: str) -> float:
+    return len(texte) * T_PASTILLE * 0.6 + 22
+
+
+def _legende_places(s: SchemaPropre) -> list[tuple[str, str, str, float, float]]:
+    """(type, clé, libellé, x, y) de chaque entrée de la légende ; passe à la ligne avant le bord droit."""
+    x, y, places = 112.0, s.hauteur - 50.0, []
+    for genre, cle, libelle in ([("boite", k, v) for k, v in s.cles_boites.items()]
+                                + [("fleche", k, v) for k, v in s.cles_fleches.items()]):
+        largeur = (34 if genre == "boite" else 46) + len(libelle) * T_LEG * 0.47
+        if x + largeur > s.largeur - 36:
+            x, y = 112.0, y + 24
+        places.append((genre, cle, libelle, x, y))
+        x += largeur + 18
+    return places
+
+
+def _svg_propre(s: SchemaPropre) -> str:
+    e = html.escape
+    W, H = s.largeur, s.hauteur
+    marqueurs = "".join(
+        f'<marker id="p-{nom}" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="{couleur}"/></marker>'
+        for nom, (couleur, _) in SENS.items())
+    out = ['<?xml version="1.0" encoding="UTF-8"?>',
+           f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" font-family="{POLICE}">',
+           f'<defs><linearGradient id="bandeau" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="{NAVY}"/>'
+           f'<stop offset="0.5" stop-color="#1565C0"/><stop offset="1" stop-color="#7C3AED"/></linearGradient>{marqueurs}</defs>',
+           f'<rect width="{W}" height="{H}" fill="#FFFFFF"/>',
+           f'<rect width="{W}" height="6" fill="url(#bandeau)"/>',
+           f'<text x="36" y="56" font-size="30" font-weight="700" fill="{NAVY}">{e(s.titre)}</text>',
+           f'<text x="36" y="84" font-size="15" fill="{SOFT}">{e(s.sous_titre)}</text>']
+    for b in s.boites:
+        if b.genre == "zone":
+            out.append(f'<rect x="{b.x}" y="{b.y}" width="{b.w}" height="{b.h}" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.2"/>')
+            out.append(f'<rect x="{b.x + 8}" y="{b.y + 8}" width="{b.w - 16}" height="34" rx="7" fill="{s.bandeaux[b.id]}"/>')
+            out.append(f'<text x="{b.x + 22}" y="{b.y + 30}" font-size="{T_BANDEAU}" font-weight="700" fill="#FFFFFF" letter-spacing="0.6">{e(b.titre)}</text>')
+    for b in s.boites:
+        if b.genre == "zone":
+            continue
+        trait, fond, couleur_titre = ROLES[b.genre]
+        out.append(f'<rect x="{b.x + 2}" y="{b.y + 3}" width="{b.w}" height="{b.h}" rx="7" fill="#0F172A" opacity="0.06"/>')
+        out.append(f'<rect x="{b.x}" y="{b.y}" width="{b.w}" height="{b.h}" rx="7" fill="{fond}" stroke="{trait}" stroke-width="1.6"/>')
+        out.append(f'<rect x="{b.x}" y="{b.y}" width="8" height="{b.h}" rx="3" fill="{trait}"/>')
+        titres, lignes = _textes(b)
+        y = b.y + 26
+        for t in titres:
+            out.append(f'<text x="{b.x + 22}" y="{y}" font-size="{T_TITRE_B}" font-weight="700" fill="{couleur_titre}">{e(t)}</text>')
+            y += 19
+        y += 3
+        for ligne in lignes:
+            out.append(f'<text x="{b.x + 22}" y="{y}" font-size="{T_LIGNE_B}" fill="{INK}" xml:space="preserve">{e(ligne)}</text>')
+            y += INTERLIGNE_B
+    for t in s.traces:
+        couleur, dash = SENS[t.sens]
+        pts = " ".join(f"{x:g},{y:g}" for x, y in t.points)
+        fin = f' marker-end="url(#p-{t.sens})"' if t.pointe else ""
+        tirets = f' stroke-dasharray="{dash}"' if dash else ""
+        out.append(f'<polyline points="{pts}" fill="none" stroke="{couleur}" stroke-width="{EPAISSEUR_TRAIT}" stroke-linejoin="round"{tirets}{fin}/>')
+    for t in s.traces:
+        if t.etiquette:
+            couleur, _ = SENS[t.sens]
+            cx, cy = t.ou
+            w = _largeur_pastille(t.etiquette)
+            out.append(f'<rect x="{cx - w / 2:g}" y="{cy - 12:g}" width="{w:g}" height="24" rx="12" fill="#FFFFFF" stroke="{couleur}" stroke-width="1.8"/>')
+            out.append(f'<text x="{cx:g}" y="{cy + 4.5:g}" font-size="{T_PASTILLE}" font-weight="700" fill="{couleur}" text-anchor="middle">{e(t.etiquette)}</text>')
+    out.append(f'<text x="36" y="{H - 45}" font-size="13" font-weight="700" fill="{NAVY}">Légende</text>')
+    for genre, cle, libelle, x, y in _legende_places(s):
+        if genre == "boite":
+            trait, fond, _ = ROLES[cle]
+            out.append(f'<rect x="{x:g}" y="{y - 8:g}" width="26" height="16" rx="4" fill="{fond}" stroke="{trait}" stroke-width="1.6"/>')
+            out.append(f'<rect x="{x:g}" y="{y - 8:g}" width="5" height="16" rx="2" fill="{trait}"/>')
+            out.append(f'<text x="{x + 34:g}" y="{y + 4.5:g}" font-size="{T_LEG}" fill="{INK}">{e(libelle)}</text>')
+        else:
+            couleur, dash = SENS[cle]
+            tirets = f' stroke-dasharray="{dash}"' if dash else ""
+            out.append(f'<line x1="{x:g}" y1="{y:g}" x2="{x + 36:g}" y2="{y:g}" stroke="{couleur}" stroke-width="{EPAISSEUR_TRAIT}"{tirets} marker-end="url(#p-{cle})"/>')
+            out.append(f'<text x="{x + 46:g}" y="{y + 4.5:g}" font-size="{T_LEG}" fill="{INK}">{e(libelle)}</text>')
+    out.append(f'<text x="36" y="{H - 14}" font-size="{T_LEG}" fill="{SOFT}">{e(s.legende)}</text>')
+    out.append("</svg>")
+    return "\n".join(out)
+
+
+def _drawio_propre(s: SchemaPropre) -> str:
+    e = html.escape
+    cells = ['<mxCell id="0" />', '<mxCell id="1" parent="0" />',
+             f'<mxCell id="bandeau" value="" style="rounded=0;html=1;fillColor={NAVY};gradientColor=#7C3AED;gradientDirection=east;strokeColor=none;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="{s.largeur}" height="6" as="geometry" /></mxCell>',
+             f'<mxCell id="ttl" value="{e(s.titre)}" style="text;html=1;align=left;fontSize=30;fontStyle=1;fontColor={NAVY};" vertex="1" parent="1"><mxGeometry x="36" y="24" width="{s.largeur - 72}" height="40" as="geometry" /></mxCell>',
+             f'<mxCell id="sub" value="{e(s.sous_titre)}" style="text;html=1;align=left;fontSize=15;fontColor={SOFT};" vertex="1" parent="1"><mxGeometry x="36" y="66" width="{s.largeur - 72}" height="24" as="geometry" /></mxCell>']
+    for b in sorted(s.boites, key=lambda b: b.genre != "zone"):
+        if b.genre == "zone":
+            cells.append(f'<mxCell id="{b.id}" value="" style="rounded=1;arcSize=2;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;" vertex="1" parent="1"><mxGeometry x="{b.x}" y="{b.y}" width="{b.w}" height="{b.h}" as="geometry" /></mxCell>')
+            cells.append(f'<mxCell id="{b.id}-bandeau" value="{e(b.titre)}" style="rounded=1;arcSize=18;html=1;fillColor={s.bandeaux[b.id]};strokeColor=none;fontColor=#FFFFFF;fontStyle=1;fontSize={T_BANDEAU};align=left;spacingLeft=14;" vertex="1" parent="1"><mxGeometry x="{b.x + 8}" y="{b.y + 8}" width="{b.w - 16}" height="34" as="geometry" /></mxCell>')
+            continue
+        trait, fond, couleur_titre = ROLES[b.genre]
+        titres, lignes = _textes(b)
+        tete = "<br>".join(f'<b><font style="font-size:{T_TITRE_B}px;color:{couleur_titre}">{e(t)}</font></b>' for t in titres)
+        corps = "<br>".join(f'<font style="font-size:{T_LIGNE_B}px;color:{INK}">{e(x)}</font>' for x in lignes)
+        valeur = e(tete + ("<br>" + corps if corps else ""))
+        style = (f"rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor={fond};strokeColor={trait};strokeWidth=1.6;"
+                 f"align=left;verticalAlign=top;spacingLeft=18;spacingTop=4;fontSize={T_LIGNE_B};fontColor={INK};")
+        cells.append(f'<mxCell id="{b.id}" value="{valeur}" style="{style}" vertex="1" parent="1"><mxGeometry x="{b.x}" y="{b.y}" width="{b.w}" height="{b.h}" as="geometry" /></mxCell>')
+        cells.append(f'<mxCell id="{b.id}-bande" value="" style="rounded=1;arcSize=30;html=1;fillColor={trait};strokeColor=none;" vertex="1" parent="1"><mxGeometry x="{b.x}" y="{b.y}" width="8" height="{b.h}" as="geometry" /></mxCell>')
+    for i, t in enumerate(s.traces):
+        couleur, dash = SENS[t.sens]
+        style = (f"edgeStyle=none;rounded=0;html=1;strokeColor={couleur};strokeWidth={EPAISSEUR_TRAIT};"
+                 + ("endArrow=block;endFill=1;" if t.pointe else "endArrow=none;")
+                 + f"fontColor={couleur};fontStyle=1;fontSize={T_PASTILLE};labelBackgroundColor=#FFFFFF;labelBorderColor={couleur};"
+                 + ("dashed=1;" if dash else ""))
+        (x1, y1), *milieu, (x2, y2) = t.points
+        relais = "".join(f'<mxPoint x="{x:g}" y="{y:g}" />' for x, y in milieu)
+        cells.append(f'<mxCell id="t{i}" value="{e(t.etiquette)}" style="{style}" edge="1" parent="1"><mxGeometry relative="1" as="geometry">'
+                     f'<mxPoint x="{x1:g}" y="{y1:g}" as="sourcePoint" /><mxPoint x="{x2:g}" y="{y2:g}" as="targetPoint" />'
+                     + (f'<Array as="points">{relais}</Array>' if relais else "") + '</mxGeometry></mxCell>')
+    cells.append(f'<mxCell id="leg-t" value="Légende" style="text;html=1;align=left;fontSize=13;fontStyle=1;fontColor={NAVY};" vertex="1" parent="1"><mxGeometry x="36" y="{s.hauteur - 62}" width="80" height="24" as="geometry" /></mxCell>')
+    for genre, cle, libelle, x, y in _legende_places(s):
+        largeur = len(libelle) * T_LEG * 0.47 + 16
+        if genre == "boite":
+            trait, fond, _ = ROLES[cle]
+            cells.append(f'<mxCell id="leg-b-{cle}" value="" style="rounded=1;arcSize=20;html=1;fillColor={fond};strokeColor={trait};strokeWidth=1.6;" vertex="1" parent="1"><mxGeometry x="{x:g}" y="{y - 8:g}" width="26" height="16" as="geometry" /></mxCell>')
+            cells.append(f'<mxCell id="leg-bt-{cle}" value="{e(libelle)}" style="text;html=1;align=left;fontSize={T_LEG};fontColor={INK};" vertex="1" parent="1"><mxGeometry x="{x + 30:g}" y="{y - 12:g}" width="{largeur:.0f}" height="24" as="geometry" /></mxCell>')
+        else:
+            couleur, dash = SENS[cle]
+            style = f"endArrow=block;endFill=1;html=1;strokeColor={couleur};strokeWidth={EPAISSEUR_TRAIT};" + ("dashed=1;" if dash else "")
+            cells.append(f'<mxCell id="leg-f-{cle}" value="" style="{style}" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="{x:g}" y="{y:g}" as="sourcePoint" /><mxPoint x="{x + 36:g}" y="{y:g}" as="targetPoint" /></mxGeometry></mxCell>')
+            cells.append(f'<mxCell id="leg-ft-{cle}" value="{e(libelle)}" style="text;html=1;align=left;fontSize={T_LEG};fontColor={INK};" vertex="1" parent="1"><mxGeometry x="{x + 42:g}" y="{y - 12:g}" width="{largeur:.0f}" height="24" as="geometry" /></mxCell>')
+    cells.append(f'<mxCell id="leg" value="{e(s.legende)}" style="text;html=1;align=left;fontSize={T_LEG};fontColor={SOFT};" vertex="1" parent="1"><mxGeometry x="36" y="{s.hauteur - 30}" width="{s.largeur - 72}" height="24" as="geometry" /></mxCell>')
+    return ('<mxfile host="app.diagrams.net" modified="2026-10-24T00:00:00.000Z" agent="RITA" version="24.0.0" type="device">\n'
+            f'  <diagram id="{s.nom}" name="{e(s.titre)}">\n'
+            f'    <mxGraphModel dx="1400" dy="900" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="{s.largeur}" pageHeight="{s.hauteur}" math="0" shadow="0">\n'
+            '      <root>\n        ' + "\n        ".join(cells) + '\n      </root>\n    </mxGraphModel>\n  </diagram>\n</mxfile>\n')
+
+
+def svg(s: Schema) -> str:
+    """Le tracé propre pour la collecte, le tracé commun (schémas E3) pour les autres."""
+    return _svg_propre(s) if isinstance(s, SchemaPropre) else _e3.svg(s)
+
+
+def drawio(s: Schema) -> str:
+    return _drawio_propre(s) if isinstance(s, SchemaPropre) else _e3.drawio(s)
 
 
 def _lire(chemin: str) -> str:
@@ -38,7 +241,7 @@ def _lire(chemin: str) -> str:
 
 def faits() -> dict:
     """Ce qui se lit dans le code au moment de la génération. Aucun accès réseau ni base."""
-    from evals.mesurer_gardefou import mesurer
+    from evals.mesurer_gardefou import INJECTIONS, LEGITIMES, mesurer
     from guardrails.injection import MOTIFS
     from sources.rss import FLUX
 
@@ -54,6 +257,11 @@ def faits() -> dict:
         "motifs_injection": len(MOTIFS),
         "blocage_injection": round(mesure["taux_blocage"]),
         "faux_positifs_injection": round(mesure["taux_faux_positifs"]),
+        # Les effectifs à côté des taux (24/10/2026) : « 70 % » sur 10 cas n'est pas une garantie générale.
+        "injections": len(INJECTIONS),
+        "injections_bloquees": len(INJECTIONS) - len(mesure["injections_ratees"]),
+        "legitimes": len(LEGITIMES),
+        "faux_positifs_n": len(mesure["faux_positifs"]),
         "flux_generaux": len(FLUX),
         "etapes": re.findall(r'^\s*"(\w+)":', bloc_etapes, re.M),
         "devises": re.search(r"DEVISES_SUIVIES = \(([^)]*)\)", ingest).group(1).replace('"', "").replace(" ", ""),
@@ -65,54 +273,58 @@ def faits() -> dict:
 # =============================================================================
 # Schéma 1 : C1, la collecte multi-source (cinq types exigés, et ce que RITA en fait)
 # =============================================================================
-def collecte() -> Schema:
+def collecte() -> SchemaPropre:
     f = faits()
     t_premier, t_dernier = f["traitements_rgpd"][0], f["traitements_rgpd"][-1]
     p_premier, p_dernier = f["procedures_rgpd"][0], f["procedures_rgpd"][-1]
-    return Schema(
-        nom="E1-collecte", largeur=1500, hauteur=880,
+    # Trois colonnes. x des boîtes : sources 32 à 454, traitements 578 à 938, destination 1072 à 1468.
+    # Les cinq sources web se rejoignent sur un bus vertical (x = 496) qui entre dans la collecte du soir.
+    milieux = [198, 286, 374, 462, 550]   # milieu vertical de chacune des cinq boîtes du haut
+    bus = [Trace([(454, y), (496, y)], pointe=False) for y in milieux]
+    return SchemaPropre(
+        nom="E1-collecte", largeur=1500, hauteur=1070,
         titre="RITA : la collecte multi-source, cinq types de sources sur cinq",
-        sous_titre="Rapport E1, section 3 (C1) · chiffres du code lus à la génération, comptages datés · état au 4 octobre 2026",
+        sous_titre="Rapport E1, section 3 (C1) · chiffres du code lus à la génération, comptages datés · état au 24 octobre 2026",
         boites=[
-            Boite("zs", 40, 90, 470, 660, "1. SOURCES, PAR TYPE EXIGÉ PAR C1", genre="zone"),
-            Boite("bce", 56, 118, 438, 66, "SERVICE WEB · Banque centrale européenne", ["sources/ecb.py · taux de change contre l'euro :", f"{f['devises'].replace(',', ', ')} ; zéro taux reçu = étape en échec"], "normal"),
-            Boite("fred", 56, 194, 438, 66, "SERVICE WEB · FRED (Réserve fédérale)", ["sources/fred.py · 3 séries macro américaines", "seule source à clé, jamais écrite dans un journal"], "normal"),
-            Boite("yahoo", 56, 270, 438, 66, "SERVICE WEB · Yahoo Finance", ["sources/cotations.py · 111 valeurs, incrémental", "rejouable (ON CONFLICT DO UPDATE)"], "normal"),
-            Boite("scrap", 56, 346, 438, 66, "PAGE WEB (scraping) · Boursorama", ["sources/scraper.py · robots.txt lu et mis en cache", "structure changée : exception StructurePageModifiee"], "normal"),
-            Boite("rss", 56, 422, 438, 66, "COMPLÉMENT · flux RSS d'actualité", [f"sources/rss.py · {f['flux_generaux']} flux généraux + 1 flux Google News", "par valeur détenue (10 flux le 03/10)"], "note"),
-            Boite("csv", 56, 508, 438, 66, "FICHIER · export courtier (CSV des positions)", ["sources/positions.py · « ; », cp1252, nombres à la française", "seule donnée personnelle du projet"], "normal"),
-            Boite("parq", 56, 584, 438, 66, "SYSTÈME BIG DATA · Parquet + Spark", ["bigdata/ · dix ans de cotations, 11 partitions par année", "276 168 lignes ; requêtes Spark SQL (C2)"], "normal"),
-            Boite("pgl", 56, 670, 438, 66, "BASE DE DONNÉES · PostgreSQL relu", ["sources/database.py · requêtes paramétrées", "lue par le nœud scout ; rôle rita_lecture (SELECT seul)"], "normal"),
+            Boite("zs", 20, 104, 446, 800, "1. SOURCES, PAR TYPE EXIGÉ PAR C1", genre="zone"),
+            Boite("bce", 32, 160, 422, 76, "SERVICE WEB · Banque centrale européenne", ["sources/ecb.py · taux de change contre l'euro :", f"{f['devises'].replace(',', ', ')} ; zéro taux reçu = étape en échec"], "normal"),
+            Boite("fred", 32, 248, 422, 76, "SERVICE WEB · FRED (Réserve fédérale)", ["sources/fred.py · 3 séries macro américaines", "seule source à clé, jamais écrite dans un journal"], "normal"),
+            Boite("yahoo", 32, 336, 422, 76, "SERVICE WEB · Yahoo Finance", ["sources/cotations.py · 108 valeurs actives (3 radiées),", "incrémental, rejouable (ON CONFLICT DO UPDATE)"], "normal"),
+            Boite("scrap", 32, 424, 422, 76, "PAGE WEB (scraping) · Boursorama", ["sources/scraper.py · robots.txt lu et mis en cache", "structure changée : exception StructurePageModifiee"], "normal"),
+            Boite("rss", 32, 512, 422, 76, "COMPLÉMENT · flux RSS d'actualité", [f"sources/rss.py · {f['flux_generaux']} flux de presse générale ; Google News", "par valeur détenue arrêté le 16/10 (décision D3)"], "note"),
+            Boite("csv", 32, 616, 422, 76, "FICHIER · export courtier (CSV des positions)", ["sources/positions.py · « ; », cp1252, nombres à la française", "démonstration : positions inventées, CSV versionné"], "normal"),
+            Boite("parq", 32, 704, 422, 76, "SYSTÈME BIG DATA · Parquet + Spark", ["bigdata/ · dix ans de cotations, 11 partitions par année", "276 168 lignes ; requêtes Spark SQL (C2)"], "normal"),
+            Boite("pgl", 32, 812, 422, 76, "BASE DE DONNÉES · PostgreSQL relu", ["sources/database.py, indicateurs/ · requêtes paramétrées", "scout : DATABASE_URL ; rita_lecture : outils, pré-test"], "normal"),
 
-            Boite("zo", 560, 90, 420, 660, "2. TRAITEMENTS", genre="zone"),
-            Boite("ing", 576, 118, 388, 150, "pipelines/ingest.py : la collecte du soir", ["tâche planifiée Windows, chaque soir à 19 h", f"{len(f['etapes'])} étapes : {', '.join(f['etapes'])}", "une étape en échec n'arrête pas les suivantes", "un COMMIT par étape ; zéro ligne reçue = échec", "manifeste JSON par exécution (versions, comptages)", "40 journaux du 24/08 au 02/10, 33 à code 0"], "lavis"),
-            Boite("gf", 576, 290, 388, 100, "Garde-fou d'injection (guardrails/injection.py)", [f"{f['motifs_injection']} motifs : articles RSS, et textes de la page", "scrapée (nom, ISIN, place : sources/scraper.py)", f"mesure du jour : {f['blocage_injection']} % de blocage, {f['faux_positifs_injection']} % de faux positifs", "article bloqué : marqué, conservé pour l'audit"], "garde"),
-            Boite("imp", 576, 508, 388, 142, "db/importer.py : l'import", ["archive Parquet : dédoublonnage (ticker, date),", "  alias de portefeuille résolus (voir C3)", "positions : réconciliation ; une ligne retirée", "  du fichier est close à la date du jour,", "  jamais supprimée"], "lavis"),
-            Boite("lect", 576, 670, 388, 66, "Lecture, sans écriture", ["le scout lit la base pour chaque briefing ;", "Spark lit le Parquet sans passer par la base"], "normal"),
+            Boite("zo", 566, 104, 384, 800, "2. TRAITEMENTS", genre="zone"),
+            Boite("ing", 578, 160, 360, 232, "pipelines/ingest.py : la collecte du soir", ["tâche planifiée Windows, chaque soir à 19 h", f"{len(f['etapes'])} étapes : {', '.join(f['etapes'])}", "une étape en échec n'arrête pas les suivantes", "un COMMIT par étape ; rien reçu sur panne = échec", "manifeste JSON par exécution (versions, comptages)", "du 03 au 23/10 : 21 soirs sur 21, 19 à six étapes sur six"], "lavis"),
+            Boite("gf", 578, 416, 360, 172, "Garde-fou d'injection\n(guardrails/injection.py)", [f"{f['motifs_injection']} motifs : articles RSS, et textes de la page", "scrapée (nom, ISIN, place : sources/scraper.py)", f"mesure : {f['blocage_injection']} % de blocage ({f['injections_bloquees']}/{f['injections']}),", f"{f['faux_positifs_injection']} % de faux positifs ({f['faux_positifs_n']}/{f['legitimes']})", "article bloqué : marqué, conservé pour l'audit"], "garde"),
+            Boite("imp", 578, 616, 360, 164, "db/importer.py : l'import", ["archive Parquet : dédoublonnage (ticker, date),", "  alias de portefeuille résolus (voir C3)", "positions : réconciliation ; une ligne retirée", "  du fichier est close à la date du jour,", "  jamais supprimée"], "lavis"),
+            Boite("lect", 578, 812, 360, 76, "Lecture, sans écriture", ["le scout lit la base pour chaque briefing ;", "Spark lit le Parquet sans passer par la base"], "normal"),
 
-            Boite("zd", 1030, 90, 430, 660, "3. DESTINATION ET CONFORMITÉ", genre="zone"),
-            Boite("pg", 1046, 118, 398, 120, "PostgreSQL 18 (Merise, C4)", [f"{f['tables']} tables, {f['vues']} vue, {f['check']} contraintes CHECK", "écrit par la collecte et l'import, seulement", "278 473 cotations (29/07/2016 au 02/10/2026)", "1 563 articles ; séries FRED stockées", "servi par l'API /donnees/* (C5)"], "stock"),
-            Boite("chroma", 1046, 254, 398, 66, "Index ChromaDB (étape indexation)", ["articles vectorisés pour la recherche documentaire", "reconstruit après chaque collecte"], "stock"),
-            Boite("rgpd", 1046, 508, 398, 142, "RGPD (registre art. 30, db/rgpd_purge.py)", [f"traitements {t_premier} à {t_dernier}, procédures de tri {p_premier} à {p_dernier}", "une seule table personnelle : position", "fichier source hors de Git, jamais envoyé au modèle", "purge en simulation par défaut ;", "lancement manuel, écrit comme tel"], "normal"),
+            Boite("zd", 1060, 104, 420, 800, "3. DESTINATION ET CONFORMITÉ", genre="zone"),
+            Boite("chroma", 1072, 160, 396, 96, "Index ChromaDB (étape indexation)", ["articles non bloqués, vectorisés pour la recherche", "reconstruit après chaque collecte"], "stock"),
+            Boite("pg", 1072, 280, 396, 200, "PostgreSQL 18 (Merise, C4)", [f"{f['tables']} tables, {f['vues']} vue, {f['check']} contraintes CHECK", "écrit par la collecte et l'import, seulement", "278 473 cotations (29/07/2016 au 02/10/2026)", "2 314 articles indexés (23/10) ; séries FRED", "servi par l'API /donnees/* (C5)"], "stock"),
+            Boite("rgpd", 1072, 616, 396, 164, "RGPD (registre art. 30, db/rgpd_purge.py)", [f"traitements {t_premier} à {t_dernier}, procédures de tri {p_premier} à {p_dernier}", "personnel : positions réelles, journal MCP, noms du corpus", "fichier réel hors de Git, jamais envoyé au modèle", "purge en simulation par défaut ;", "lancement manuel, écrit comme tel"], "normal"),
 
-            Boite("cov", 40, 770, 1420, 66, "Couverture de C1 : service web ✓ · page web ✓ · fichier ✓ · base de données ✓ · système big data ✓",
-                  ["Cinq types sur cinq, plus le RSS en complément. Une preuve par source dans evidence/C1/ ; la figure du 11/08 qui s'y trouve est une preuve datée : ses chiffres de tables et de garde-fou ne sont plus à jour."], "note"),
+            Boite("cov", 20, 924, 1460, 66, "Couverture de C1 : service web ✓ · page web ✓ · fichier ✓ · base de données ✓ · système big data ✓",
+                  ["Cinq types sur cinq, plus le RSS en complément. Une preuve par source dans evidence/C1/ ; la figure du 11/08 qui s'y trouve est une preuve datée : ses chiffres de tables et de garde-fou ne sont plus à jour."], "neuf"),
         ],
-        fleches=[
-            Fleche("bce", "ing", sortie="d", entree="g:0.15"),
-            Fleche("fred", "ing", sortie="d", entree="g:0.4"),
-            Fleche("yahoo", "ing", sortie="d", entree="g:0.65"),
-            Fleche("scrap", "ing", "cours du jour", sortie="d", entree="g:0.88", pos=0.3),
-            Fleche("rss", "gf", sortie="d", entree="g:0.75"),
-            Fleche("csv", "imp", sortie="d", entree="g:0.3"),
-            Fleche("parq", "imp", sortie="d", entree="g:0.75"),
-            Fleche("ing", "pg", "écrit", sortie="d:0.3", entree="g:0.3", sens="ecriture"),
-            Fleche("gf", "pg", "articles admis", sortie="d:0.5", entree="g:0.8", sens="ecriture", pos=0.25),
-            Fleche("imp", "pg", "insère", sortie="d:0.2", entree="g:0.95", sens="ecriture"),
-            Fleche("ing", "chroma", sortie="d:0.85", entree="g:0.5", sens="ecriture"),
-            Fleche("imp", "rgpd", "positions", sortie="d:0.6", entree="g:0.6", sens="perso"),
-            Fleche("pgl", "lect", sortie="d", entree="g", sens="lecture"),
+        fleches=[],
+        traces=bus + [
+            Trace([(496, milieux[0]), (496, milieux[-1])], pointe=False),
+            Trace([(496, 276), (578, 276)]),                                    # le bus entre dans la collecte du soir
+            Trace([(758, 392), (758, 416)]),                                    # articles et page scrapée : au garde-fou
+            Trace([(454, 654), (578, 654)]),                                    # CSV → import
+            Trace([(454, 742), (578, 742)]),                                    # Parquet → import
+            Trace([(454, 850), (578, 850)], "lecture"),                         # base relue → lecture
+            Trace([(938, 208), (1072, 208)], "ecriture"),                       # indexation → ChromaDB
+            Trace([(938, 330), (1072, 330)], "ecriture", "écrit", (1005, 330)),
+            Trace([(938, 502), (1003, 502), (1003, 400), (1072, 400)], "ecriture", "articles admis", (1003, 452)),
+            Trace([(938, 680), (1035, 680), (1035, 470), (1072, 470)], "ecriture", "insère", (1035, 575)),
+            Trace([(938, 740), (1072, 740)], "perso", "positions", (1005, 740)),
         ],
+        bandeaux={"zs": NAVY, "zo": "#1565C0", "zd": "#6D28D9"},
         legende="Génération : docs/rapports/E1/schemas/generer_schemas.py, vérifiée par tests/test_schemas_e1.py.",
         cles_boites={"normal": "source ou lecture", "note": "complément", "lavis": "code qui traite et écrit",
                      "garde": "garde-fou", "stock": "réserve de données"},
