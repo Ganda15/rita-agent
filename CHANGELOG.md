@@ -9,6 +9,28 @@
 
 ---
 
+## 2026-10-24 (16 h) : trois manques découverts avant E3 v1.5, corrigés le même jour
+
+**Manque découvert** : le contrat OpenAPI publié se trompait de clé. Les deux clés de l'API portaient le nom de schéma
+par défaut (`APIKeyHeader`) ; le contrat n'en gardait qu'une, et `/docs` annonçait `X-API-Key` sur `/exercice/*`, alors
+que le code y lit `X-Cle-Exercice`. Sa description disait aussi que tout sauf `/health` exige `X-API-Key`. Corrigé par
+la PR #144 (`scheme_name="CleExercice"`, description réécrite), tests écrits d'abord et vus rouges.
+
+**Manque découvert** : documenté mais absent. Le retour arrière de la production (répété le 14/10 et le 15/10) et la
+mise à jour du script du serveur étaient annoncés dans `docs/EXPLOITATION.md` par `retour-arriere.yml`, l'action
+`ordre-serveur`, `docs/CHAINE-V1.md` et `docs/CADRAGE-V1.md` (critère 2 du sprint 2). Aucune version de la page ne les
+a jamais contenus (relu sur celles du 14/10 et du 16/10), et le fichier s'appelle `exploitation.md`. Écrits dans
+`docs/exploitation.md` (annexes, § 8) à partir des deux répétitions, PR #144 ; le secours sans GitHub y est dit jamais
+exécuté. `deploy/deployer.py` garde l'ancien nom dans deux messages : le modifier bloquerait les livraisons jusqu'à sa
+réinstallation sur le serveur.
+
+**Manque découvert** : le vérificateur de liens criait au loup. Il ne savait vérifier par `gh` qu'une forme d'URL du
+dépôt privé (`/tree/<tag>`) ; 116 liens corrects étaient déclarés cassés, ce qui bloquait les tags E1 et E3 sous la
+règle « zéro lien cassé ». Corrigé par la PR #143 : 0 lien cassé sur tout le dépôt le 24/10 (249 internes, 275
+externes).
+
+---
+
 ## 2026-10-24 (midi) : livraison N18, quatre correctifs ; la sauvegarde n'est pas tenue
 
 **Manque découvert** (23/10, relecture d'E1 et E3 contre le code de `main`) : quatre défauts du code, aucun visible

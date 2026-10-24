@@ -15,13 +15,58 @@ Chronologie datée · les 5 livrables · **table filtrable des 21 compétences**
 > `claude.ai/code/artifacts`.
 > ⚠️ **En cas de divergence, CE FICHIER a raison** — le tableau de bord en est une photographie.
 
-**Dernière mise à jour : 2026-10-24, 14 h 30 (E1 v2.6 prête et fusionnée dans `develop`, PR #141 ; MCD au formalisme Merise ; schéma C1 illustré et testé ; prochaine action : le vérificateur de liens, puis E3 v1.5) ; avant : 2026-10-24, midi (livraison N18 : quatre correctifs C, E, D, F en production, `b547cbf` ; manque de sauvegarde consigné ; prochaine action E1 v2.6) ; avant : 2026-10-23, 20 h (sprint 5 remis : livraison N17, `d215617`, tag `livrable-sprint-5-v1` posé par Era et vérifié ; reste la grille de l'atelier 5) ; avant : 2026-10-23, 18 h 30 (sprint 5 en production : PR #133 et #134, livraison N16, `845e3b3` ; livrable « en production » ; restent la grille de l'atelier 5 et le tag) ; avant : 2026-10-23, midi, sur la branche `sprint-5-vigie-demo` (sprint 5 : doc suivie à la lettre, dix trous corrigés ; deux répétitions de la démo ; fausse alerte de production #130 corrigée ; livrable mis à jour ; restent l'atelier 5, sa grille et le tag) ; avant : 2026-10-22, 20 h 15, sur la branche `sprint-5-vigie-demo` (sprint 5, prototype local : vigie, tableau de bord, exercices et doc prouvés sur la copie du poste ; scénario de la démo écrit ; livrable v1 ; grille de l'atelier 4 versée ; restent le test de la doc, les répétitions et le tag `livrable-sprint-5-v1`) ; avant : 2026-10-21, 22 h 20 (sprint 4 : livrable en version 3, lien de ligne corrigé et état de la production à N14 ; tag v3 à poser après la livraison suivante) ; avant : 2026-10-21, 21 h 40 (sprint 4 remis : N14 en production, tag `livrable-sprint-4-v2` posé et livré ; reste l'atelier 4) ; avant : 2026-10-21, 21 h 15 (sprint 4 : N13 en production ; tag v1 posé sur N12 par erreur, figé ; remise sous le tag v2, à poser après la livraison suivante) ; avant : 2026-10-21, 20 h 15 (sprint 4 : livrable v1 et synthèse validés, schéma complet, journal des retours complété, tag cité au CHANGELOG ; restent N13, la Definition of Done et le tag) ; avant : 2026-10-21, 13 h 20 (sprint 4 : livraison N12 en production, traçage Langfuse actif en production, CA3.6 prouvé sur une vraie trace ; livrable v1 ; reste D3) ; avant : 2026-10-21, 11 h 20 (sprint 4 : livraison N11 en production, contrôle des nombres ; rejeu en production 5 sur 5, deux fois ; PR #118 en attente ; reste D3) ; avant : 2026-10-20, nuit (sprint 4 : livraison N10 en production ; rejeu en production, Q4 abîmée une fois ; contrôle des nombres commité en local) ; avant : 2026-10-19, soir (atelier 3 fait avec le formateur ; livrable du sprint 3, version 2 ; tag `livrable-sprint-3-v2` à poser) ; avant : 2026-10-17, nuit (N7 en production ; livrable du sprint 3, version 1 ; atelier 3 lundi 19/10
+**Dernière mise à jour : 2026-10-24, 16 h 30 (vérificateur de liens, PR #143 : 0 lien cassé sur tout le dépôt ; documents de référence, contrat OpenAPI et retour arrière de production, PR #144 ; prochaine action : E3 v1.5) ; avant : 2026-10-24, 14 h 30 (E1 v2.6 prête et fusionnée dans `develop`, PR #141 ; MCD au formalisme Merise ; schéma C1 illustré et testé ; prochaine action : le vérificateur de liens, puis E3 v1.5) ; avant : 2026-10-24, midi (livraison N18 : quatre correctifs C, E, D, F en production, `b547cbf` ; manque de sauvegarde consigné ; prochaine action E1 v2.6) ; avant : 2026-10-23, 20 h (sprint 5 remis : livraison N17, `d215617`, tag `livrable-sprint-5-v1` posé par Era et vérifié ; reste la grille de l'atelier 5) ; avant : 2026-10-23, 18 h 30 (sprint 5 en production : PR #133 et #134, livraison N16, `845e3b3` ; livrable « en production » ; restent la grille de l'atelier 5 et le tag) ; avant : 2026-10-23, midi, sur la branche `sprint-5-vigie-demo` (sprint 5 : doc suivie à la lettre, dix trous corrigés ; deux répétitions de la démo ; fausse alerte de production #130 corrigée ; livrable mis à jour ; restent l'atelier 5, sa grille et le tag) ; avant : 2026-10-22, 20 h 15, sur la branche `sprint-5-vigie-demo` (sprint 5, prototype local : vigie, tableau de bord, exercices et doc prouvés sur la copie du poste ; scénario de la démo écrit ; livrable v1 ; grille de l'atelier 4 versée ; restent le test de la doc, les répétitions et le tag `livrable-sprint-5-v1`) ; avant : 2026-10-21, 22 h 20 (sprint 4 : livrable en version 3, lien de ligne corrigé et état de la production à N14 ; tag v3 à poser après la livraison suivante) ; avant : 2026-10-21, 21 h 40 (sprint 4 remis : N14 en production, tag `livrable-sprint-4-v2` posé et livré ; reste l'atelier 4) ; avant : 2026-10-21, 21 h 15 (sprint 4 : N13 en production ; tag v1 posé sur N12 par erreur, figé ; remise sous le tag v2, à poser après la livraison suivante) ; avant : 2026-10-21, 20 h 15 (sprint 4 : livrable v1 et synthèse validés, schéma complet, journal des retours complété, tag cité au CHANGELOG ; restent N13, la Definition of Done et le tag) ; avant : 2026-10-21, 13 h 20 (sprint 4 : livraison N12 en production, traçage Langfuse actif en production, CA3.6 prouvé sur une vraie trace ; livrable v1 ; reste D3) ; avant : 2026-10-21, 11 h 20 (sprint 4 : livraison N11 en production, contrôle des nombres ; rejeu en production 5 sur 5, deux fois ; PR #118 en attente ; reste D3) ; avant : 2026-10-20, nuit (sprint 4 : livraison N10 en production ; rejeu en production, Q4 abîmée une fois ; contrôle des nombres commité en local) ; avant : 2026-10-19, soir (atelier 3 fait avec le formateur ; livrable du sprint 3, version 2 ; tag `livrable-sprint-3-v2` à poser) ; avant : 2026-10-17, nuit (N7 en production ; livrable du sprint 3, version 1 ; atelier 3 lundi 19/10
 au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en production : N5 et N6, ingestion par le bouton, évaluation en production 8 sur 8, registre RGPD, documents de fin de sprint ; restent N7, l'atelier 3 et le tag) ; avant : 2026-10-16 au soir (sprint 3 : parcours des questions, Google News arrêté dans le code, ingestion en une opération, jeu de questions en version 2, évaluation locale 8 sur 8 ; reste la livraison) ; avant : 2026-10-15 au soir (sprint 2 clos, tag livrable-sprint-2-v3, sprint 3 ouvert dans un worktree) ; avant : 2026-10-11 (E1 v2.5 : cinq surgénéralisations corrigées ; veille S41 : relevé, note d'Era et partage à la promo ; E3 v1.4 : sept corrections, 44 critères en 39 lignes, revue d'E3 close ; E1 v2.4 : seconde passe, MCD lisible, guide § 4.5 corrigé ; avant, E1 v2.3 : passe RGPD et exactitude ; politique des fournisseurs et calendrier final ; plan E2 ; avant, le 10/10 au soir : incident de clé Mistral corrigé ; Mistral Large 4 sans réflexion sur la branche `mistral-ue` ; règle UE seule gardée stricte ; jeu de démonstration clarifié ; avant, à 10 h 30 : E3 v1.2 : date et contrat de Langfuse remis d'accord avec E1 ; E1 v2.2 : quatre points corrigés avant le gel, `memory_audit` tranché après le gel, carte #86 ; plus tôt le matin : classeur v4, deux critères officiels de C19 absents du modèle Simplon ajoutés, C13 vérifié ; la nuit du 9 au 10 : cartes #84 et #85 faites, Azure en zone UE, gel fixé au 15/10, Mistral UE choisi pour après le gel, classeur v3, note d'étude de la colonne « Rédaction ») ; avant : 2026-10-06 (calendrier jusqu'au 05/11 décidé par Era ; la veille : retour du formateur, contrats des destinataires relus, guide d'exploitation remis d'accord, classeur des compétences corrigé et synthèse courte, E2 v0.2, carte #84)** · deadline livrables **05/11/2026** · **oral blanc 1 : 29-30/10 (E1 + E3)** ·
 **oral blanc 2 : 12-13/11 (90 min)** · jury **30/11–01/12**
 
 ---
 
-## ▶️ E1 v2.6 (24/10) : PRÊTE SUR `develop`, PAS ENCORE GELÉE ; PROCHAINE ACTION : LE VÉRIFICATEUR DE LIENS, PUIS E3 v1.5
+## ▶️ DOCUMENTS DE RÉFÉRENCE (24/10) : LIENS, CI-CD, ARCHITECTURE, CONTRAT OPENAPI, RETOUR ARRIÈRE DE PRODUCTION ; PROCHAINE ACTION : E3 v1.5
+
+**Fait**, deux PR fusionnées par Era dans `develop` :
+
+- **PR #143** (fusionnée à 15 h 55, commit `7965ff7`) : `scripts/verifier_liens.py` vérifie par `gh api` chaque forme de
+  lien du dépôt privé (fichier à une référence, PR, issue, passage de CI, workflow, commit). Une forme inconnue reste
+  « non vérifiable », jamais « bonne ». 14 tests, dont 12 rouges avant le code. Les 116 faux « cassés » ne bloquent plus
+  les tags E1 et E3.
+- **PR #144** (fusionnée à 16 h 00, commits `4878eb2` et `9ce8b57`) : `docs/CI-CD.md` (sept workflows, six checks
+  requis, déploiement après fusion, secrets `DEPLOY_*` de l'environnement `production`), `docs/ARCHITECTURE.md`
+  (19 chemins, deux clés, question, vigie, déploiement), description OpenAPI de `api/main.py`, et dans
+  `docs/exploitation.md` (annexes, § 8) le retour arrière de la production et la mise à jour du script du serveur.
+
+**Deux défauts trouvés en relisant** :
+1. Le contrat publié se trompait : les deux clés portaient le nom de schéma par défaut, et `/docs` annonçait
+   `X-API-Key` sur `/exercice/*`, alors que le code y lit `X-Cle-Exercice`. Corrigé (`scheme_name="CleExercice"`), test
+   écrit d'abord et vu rouge.
+2. Documenté mais absent : le retour arrière de la production (répété le 14/10 et le 15/10) et la mise à jour du script
+   du serveur étaient annoncés par `retour-arriere.yml`, l'action `ordre-serveur`, `docs/CHAINE-V1.md` et
+   `docs/CADRAGE-V1.md` (critère 2 du sprint 2), sans avoir jamais été écrits, même avant le sprint 5. Écrits à partir
+   des deux répétitions ; deux tests de la page, rouges sur l'ancienne version.
+
+**Vérifié le 24/10** : sur le poste, 1695 passed, 40 skipped, 2 xfailed, `ruff` sans remarque. CI de la PR #144 : 1705
+passed, 30 skipped, 2 xfailed, couverture 96,32 %, porte de livraison « livrable ». Sur `develop` après les deux fusions
+(`9eead32`) : `scripts/verifier_liens.py` sur tout le dépôt, 249 liens internes et 275 externes, **0 cassé** ; Tests
+verts. 1751 tests collectés à 16 h 30 (E1 v2.6 en cite 1 732, mesurés avant ces deux PR).
+
+**Points ouverts** :
+1. Le secours du retour arrière sans GitHub n'a jamais été exécuté (la page le dit) : à essayer une fois, avec Era.
+2. `deploy/deployer.py` renvoie encore à `docs/EXPLOITATION.md` dans deux messages ; le modifier changerait son empreinte
+   et bloquerait les livraisons jusqu'à sa réinstallation. À corriger la prochaine fois que ce script change.
+3. `docs/EXPLOITATION.pdf` date du 11/10 : il ne correspond plus à la page.
+4. Pour E3 v1.5 : les schémas d'E3 datent du 04/10 (ni le chemin des questions, ni la vigie) et le rapport cite
+   14 chemins.
+5. Notes d'apprentissage écrites (Obsidian `09-EN-personnel`) : SUMMARY et STUDY du vérificateur de liens et des
+   documents de référence.
+
+**▶️ Prochaine action** :
+1. E3 v1.5 (20 pages au plus), à partir de l'analyse d'E3 (annexe A du rapport) et des documents ci-dessus.
+2. PR `develop` vers `main` (aujourd'hui cinq PR d'avance, #140 à #144), puis tags `livrable-E1-v2` et
+   `livrable-E3-v1` avant l'oral blanc 1 (29-30/10, E1 + E3).
+3. E4, E5 et la fin d'E2 avant le 05/11.
+
+---
+
+## ▶️ E1 v2.6 (24/10) : PRÊTE SUR `develop`, PAS ENCORE GELÉE
 
 **Fait** : E1 v2.6, corrections de faits seulement, toujours 5 pages (limite officielle d'E1 : 2 à 5). PR #141 fusionnée
 par Era à 14 h 17 dans `develop` (commit de fusion `9d52db9`, commit du travail `d9adfe9`). CI de la PR : 1701 passed,
@@ -42,20 +87,15 @@ par Era à 14 h 17 dans `develop` (commit de fusion `9d52db9`, commit du travail
   sur deux textes de la maquette avant correction).
 
 **Points ouverts** :
-1. Le tag `livrable-E1-v2` exige que `develop` arrive sur `main` (aujourd'hui `develop` a deux PR de documents d'avance :
-   #140 et #141) et que `scripts/verifier_liens.py` ne bloque plus (116 liens du dépôt privé, voir N18 ci-dessous).
+1. Le tag `livrable-E1-v2` exige que `develop` arrive sur `main` (cinq PR d'avance le 24/10 à 16 h 30, #140 à #144).
+   Fait le 24/10 : `scripts/verifier_liens.py` ne bloque plus (PR #143, section ci-dessus).
 2. Le texte d'oral `oral-E1-v3` (Obsidian `03-Oraux`, 11/10) cite encore les chiffres d'avant : à reprendre avant
    l'oral blanc 1.
 3. Pas d'entrée au `CHANGELOG` pour E1 v2.6 : manques découverts (formalisme du MCD, règle fausse dans `evidence/C4`),
    à consigner si Era le décide.
 
-**▶️ Prochaine action** :
-1. Le vérificateur de liens : vérifier par `gh` les liens du dépôt privé (issues, PR, passages), sinon les tags E1 et
-   E3 restent bloqués.
-2. `docs/CI-CD.md`, `docs/ARCHITECTURE.md`, la description OpenAPI et la procédure de retour arrière de production,
-   puis E3 v1.5 (20 pages au plus).
-3. PR `develop` vers `main`, puis tags `livrable-E1-v2` et `livrable-E3-v1` avant l'oral blanc 1 (29-30/10, E1 + E3).
-4. E4, E5 et la fin d'E2 avant le 05/11.
+**Suite** : le vérificateur de liens et les documents de référence sont faits (section ci-dessus) ; la prochaine action
+est écrite dans cette section.
 
 ---
 
@@ -92,7 +132,8 @@ serveur. À faire : un dump, puis une vraie restauration dans une base jetable (
 3. Décisions d'Era encore ouvertes sur E1 et E3 : le rôle `rita_ingestion` absent de `db/roles.sql`, le défaut #73 (clé
    mémorisée trop tôt, écrans du briefing et des questions), les en-têtes de sécurité (OWASP API8).
 4. La grille de l'atelier 5 (voir le sprint 5 ci-dessous). La PR #88 (`mistral-ue`) reste ouverte, en conflit.
-5. `scripts/verifier_liens.py` (24/10, sur `develop`) : 116 liens « cassés », tous du même type, « HTTP 404 (dépôt privé,
+5. Fait le 24/10 (PR #143) : le script vérifie ces liens par `gh api`, 0 cassé sur tout le dépôt. Constat d'origine :
+   `scripts/verifier_liens.py` (24/10, sur `develop`) : 116 liens « cassés », tous du même type, « HTTP 404 (dépôt privé,
    forme d'URL non vérifiable par gh) », dans les livrables des sprints 2 à 5, `evidence/sprint-5/` et
    `docs/veille/_candidats-2026-S41.md` ; aucun dans `ETAT.md` ni le `CHANGELOG`. La règle « zéro lien cassé » bloquera
    les tags E1 et E3 : apprendre au script ces formes d'URL, ou les remplacer, avant le gel.
