@@ -77,3 +77,32 @@ def test_la_migration_de_la_cloture_est_rejouable_et_refuse_d_agir_sur_des_doubl
     assert "ADD COLUMN IF NOT EXISTS date_cloture" in m
     assert "CREATE UNIQUE INDEX IF NOT EXISTS uq_position_ligne" in m
     assert "RAISE EXCEPTION" in m and "HAVING count(*) > 1" in m, "compter les doublons avant de poser l index"
+
+
+# --- 24/10/2026 : l'ordre des deux migrations de la vue (relevé le 23/10) ----------------------------------------
+# La migration « taux » du 03/10 décrit la vue AVANT le plan 66 : sans le filtre des positions closes. Jouée avant la
+# migration de la clôture, tout va bien ; rejouée après, elle ferait revenir les positions closes dans la valorisation.
+
+MIGRATION_TAUX = (RACINE / "db" / "migration-2026-10-03-vue-valorisation-taux.sql").read_text(encoding="utf-8")
+
+
+def test_la_vue_finale_ne_valorise_jamais_une_position_close():
+    """L'état final, par une installation neuve comme par la dernière migration, garde le filtre."""
+    cloture = (RACINE / "db" / "migration-2026-10-03-cloture-positions.sql").read_text(encoding="utf-8")
+    assert "p.date_cloture IS NULL" in SCHEMA
+    assert "p.date_cloture IS NULL" in cloture
+
+
+def test_le_guide_joue_la_migration_taux_avant_celle_de_la_cloture():
+    guide = (RACINE / "docs" / "exploitation.md").read_text(encoding="utf-8")
+    assert (guide.index("-f db\\migration-2026-10-03-vue-valorisation-taux.sql")
+            < guide.index("-f db\\migration-2026-10-03-cloture-positions.sql"))
+
+
+def test_l_entete_de_la_migration_taux_dit_qu_elle_se_joue_avant_la_cloture():
+    """Avant : l'en-tête se disait « meme texte » que le schéma, et rejouable sans condition. C'était faux depuis le
+    plan 66 : le schéma a gagné le filtre des positions closes, pas cette migration."""
+    entete = MIGRATION_TAUX[:MIGRATION_TAUX.index("BEGIN;")]
+    assert "meme texte" not in entete
+    assert "migration-2026-10-03-cloture-positions.sql" in entete
+    assert "AVANT" in entete

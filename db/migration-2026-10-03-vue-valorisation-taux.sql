@@ -3,8 +3,14 @@
 -- (plan 65, cas D06 du chapitre Donnees, decision d'Era D1/D2/D3 = A)
 -- =============================================================================
 -- `db/schema.sql` ne se rejoue pas sur une base existante. Ce fichier remplace la vue par sa
--- definition du schema (meme texte, genere depuis db/schema.sql). REJOUABLE : CREATE OR REPLACE
--- VIEW ajoute les deux colonnes (taux_pour_eur, taux_manquant) en fin de liste, sans DROP.
+-- definition du schema TELLE QU'ELLE ETAIT LE 03/10 au matin. CREATE OR REPLACE VIEW ajoute les
+-- deux colonnes (taux_pour_eur, taux_manquant) en fin de liste, sans DROP.
+--
+-- ORDRE OBLIGATOIRE (corrige le 24/10/2026) : jouer cette migration AVANT
+-- db/migration-2026-10-03-cloture-positions.sql. La vue ci-dessous n'a pas le filtre des positions
+-- closes (`p.date_cloture IS NULL`), ajoute le meme soir par le plan 66 dans le schema et dans la
+-- migration de la cloture. Rejouee APRES celle-ci, elle ferait revenir les positions closes dans
+-- la valorisation. Rejouable sans risque seulement dans cet ordre, celui de docs/exploitation.md.
 --
 -- Application :
 --   psql -U rita -d rita -p 5433 -v ON_ERROR_STOP=1 -f db/migration-2026-10-03-vue-valorisation-taux.sql
