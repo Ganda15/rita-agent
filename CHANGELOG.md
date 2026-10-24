@@ -9,6 +9,29 @@
 
 ---
 
+## 2026-10-24 (18 h 30) : E1 v2.6 et E3 v1.5 prêts au gel, tags `livrable-E1-v2` et `livrable-E3-v1` à poser
+
+**Livrable gelé, pas encore envoyé** : E1 v2.6 (5 pages, PR #141) et E3 v1.5 (19 pages, PR #146), avec les documents
+de référence qu'E3 cite (PR #144) et le vérificateur de liens qui ne bloque plus les tags (PR #143), tous fusionnés par
+Era dans `develop`. Les tags `livrable-E1-v2` et `livrable-E3-v1` seront posés par Era sur le commit de `main` qui
+fusionnera `develop` (livraison N19), après la Definition of Done verte ; on enverra le lien du tag, jamais celui du
+dépôt.
+
+**Manque découvert** : `.coveragerc` ne mesure ni `rag/`, ni `monitorage/`, ni `passerelle_mcp/` ; les 96,32 % de la
+CI ne les comptent pas. Mesurés à part le 24/10, sans toucher au fichier : 98 %. E3 le dit ; la décision d'élargir le
+périmètre revient à Era.
+
+**Manque découvert** : `evidence/sprint-4/README.md` annonce « les neuf réponses » pour la mesure du 21/10, alors que
+le JSON du même jour compte huit réponses et sept abstentions. E3 cite le JSON ; un erratum daté reste à décider par
+Era.
+
+**Décision structurante** : les images des schémas d'E3 sont la mise en forme d'Era, et leurs textes restent ceux du
+générateur. Une première mise en forme, faite à partir d'un rendu intermédiaire, disait « 6 h à 9 h » pour le créneau
+du matin (8 h à 9 h dans le code) : depuis, `tests/test_schemas_e3.py` compare chaque texte de la mise en forme à ceux
+du générateur.
+
+---
+
 ## 2026-10-24 (16 h) : trois manques découverts avant E3 v1.5, corrigés le même jour
 
 **Manque découvert** : le contrat OpenAPI publié se trompait de clé. Les deux clés de l'API portaient le nom de schéma
