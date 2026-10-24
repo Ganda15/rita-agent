@@ -1,154 +1,178 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="964" viewBox="0 0 1500 964" font-family="Segoe UI,Calibri,Arial,sans-serif">
-<defs><marker id="fl-flux" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#0B2A5B"/></marker><marker id="fl-ecriture" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#1565C0"/></marker><marker id="fl-lecture" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#15803D"/></marker><marker id="fl-erreur" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#D32F2F"/></marker><marker id="fl-manuel" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#64748B"/></marker><marker id="fl-perso" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#A21CAF"/></marker></defs>
-<rect width="1500" height="964" fill="#FFFFFF"/>
-<rect x="40" y="16" width="1420" height="5" fill="#1565C0"/>
-<text x="40" y="54" font-size="30" font-weight="700" fill="#0B2A5B">RITA : la collecte multi-source, cinq types de sources sur cinq</text>
-<text x="40" y="80" font-size="15" fill="#1F2937">Rapport E1, section 3 (C1) · chiffres du code lus à la génération, comptages datés · état au 4 octobre 2026</text>
-<g transform="translate(0,16)">
-<rect x="40" y="90" width="470" height="660" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
-<rect x="560" y="90" width="420" height="660" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
-<rect x="1030" y="90" width="430" height="660" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
-<rect x="56" y="118" width="438" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="56" y="118" width="7" height="66" fill="#1E293B"/>
-<text x="73" y="139" font-size="14" font-weight="700" fill="#0B2A5B">SERVICE WEB · Banque centrale européenne</text>
-<text x="73" y="158.0" font-size="11.5" fill="#111827">sources/ecb.py · taux de change contre l&#x27;euro :</text>
-<text x="73" y="173.5" font-size="11.5" fill="#111827">USD, GBP, CHF, JPY ; zéro taux reçu = étape en échec</text>
-<rect x="56" y="194" width="438" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="56" y="194" width="7" height="66" fill="#1E293B"/>
-<text x="73" y="215" font-size="14" font-weight="700" fill="#0B2A5B">SERVICE WEB · FRED (Réserve fédérale)</text>
-<text x="73" y="234.0" font-size="11.5" fill="#111827">sources/fred.py · 3 séries macro américaines</text>
-<text x="73" y="249.5" font-size="11.5" fill="#111827">seule source à clé, jamais écrite dans un journal</text>
-<rect x="56" y="270" width="438" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="56" y="270" width="7" height="66" fill="#1E293B"/>
-<text x="73" y="291" font-size="14" font-weight="700" fill="#0B2A5B">SERVICE WEB · Yahoo Finance</text>
-<text x="73" y="310.0" font-size="11.5" fill="#111827">sources/cotations.py · 111 valeurs, incrémental</text>
-<text x="73" y="325.5" font-size="11.5" fill="#111827">rejouable (ON CONFLICT DO UPDATE)</text>
-<rect x="56" y="346" width="438" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="56" y="346" width="7" height="66" fill="#1E293B"/>
-<text x="73" y="367" font-size="14" font-weight="700" fill="#0B2A5B">PAGE WEB (scraping) · Boursorama</text>
-<text x="73" y="386.0" font-size="11.5" fill="#111827">sources/scraper.py · robots.txt lu et mis en cache</text>
-<text x="73" y="401.5" font-size="11.5" fill="#111827">structure changée : exception StructurePageModifiee</text>
-<rect x="56" y="422" width="438" height="66" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
-<rect x="56" y="422" width="7" height="66" fill="#475569"/>
-<text x="73" y="443" font-size="14" font-weight="700" fill="#0B2A5B">COMPLÉMENT · flux RSS d&#x27;actualité</text>
-<text x="73" y="462.0" font-size="11.5" fill="#111827">sources/rss.py · 3 flux généraux + 1 flux Google News</text>
-<text x="73" y="477.5" font-size="11.5" fill="#111827">par valeur détenue (10 flux le 03/10)</text>
-<rect x="56" y="508" width="438" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="56" y="508" width="7" height="66" fill="#1E293B"/>
-<text x="73" y="529" font-size="14" font-weight="700" fill="#0B2A5B">FICHIER · export courtier (CSV des positions)</text>
-<text x="73" y="548.0" font-size="11.5" fill="#111827">sources/positions.py · « ; », cp1252, nombres à la française</text>
-<text x="73" y="563.5" font-size="11.5" fill="#111827">seule donnée personnelle du projet</text>
-<rect x="56" y="584" width="438" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="56" y="584" width="7" height="66" fill="#1E293B"/>
-<text x="73" y="605" font-size="14" font-weight="700" fill="#0B2A5B">SYSTÈME BIG DATA · Parquet + Spark</text>
-<text x="73" y="624.0" font-size="11.5" fill="#111827">bigdata/ · dix ans de cotations, 11 partitions par année</text>
-<text x="73" y="639.5" font-size="11.5" fill="#111827">276 168 lignes ; requêtes Spark SQL (C2)</text>
-<rect x="56" y="670" width="438" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="56" y="670" width="7" height="66" fill="#1E293B"/>
-<text x="73" y="691" font-size="14" font-weight="700" fill="#0B2A5B">BASE DE DONNÉES · PostgreSQL relu</text>
-<text x="73" y="710.0" font-size="11.5" fill="#111827">sources/database.py · requêtes paramétrées</text>
-<text x="73" y="725.5" font-size="11.5" fill="#111827">lue par le nœud scout ; rôle rita_lecture (SELECT seul)</text>
-<rect x="576" y="118" width="388" height="150" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
-<rect x="576" y="118" width="7" height="150" fill="#1565C0"/>
-<text x="593" y="139" font-size="14" font-weight="700" fill="#0B2A5B">pipelines/ingest.py : la collecte du soir</text>
-<text x="593" y="158.0" font-size="11.5" fill="#111827">tâche planifiée Windows, chaque soir à 19 h</text>
-<text x="593" y="173.5" font-size="11.5" fill="#111827">6 étapes : ecb, fred, cotations, rss, scraping, indexation</text>
-<text x="593" y="189.0" font-size="11.5" fill="#111827">une étape en échec n&#x27;arrête pas les suivantes</text>
-<text x="593" y="204.5" font-size="11.5" fill="#111827">un COMMIT par étape ; zéro ligne reçue = échec</text>
-<text x="593" y="220.0" font-size="11.5" fill="#111827">manifeste JSON par exécution (versions, comptages)</text>
-<text x="593" y="235.5" font-size="11.5" fill="#111827">40 journaux du 24/08 au 02/10, 33 à code 0</text>
-<rect x="576" y="290" width="388" height="100" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
-<rect x="576" y="290" width="7" height="100" fill="#C2410C"/>
-<text x="593" y="311" font-size="14" font-weight="700" fill="#9A3412">Garde-fou d&#x27;injection (guardrails/injection.py)</text>
-<text x="593" y="330.0" font-size="11.5" fill="#111827">12 motifs : articles RSS, et textes de la page</text>
-<text x="593" y="345.5" font-size="11.5" fill="#111827">scrapée (nom, ISIN, place : sources/scraper.py)</text>
-<text x="593" y="361.0" font-size="11.5" fill="#111827">mesure du jour : 70 % de blocage, 0 % de faux positifs</text>
-<text x="593" y="376.5" font-size="11.5" fill="#111827">article bloqué : marqué, conservé pour l&#x27;audit</text>
-<rect x="576" y="508" width="388" height="142" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
-<rect x="576" y="508" width="7" height="142" fill="#1565C0"/>
-<text x="593" y="529" font-size="14" font-weight="700" fill="#0B2A5B">db/importer.py : l&#x27;import</text>
-<text x="593" y="548.0" font-size="11.5" fill="#111827">archive Parquet : dédoublonnage (ticker, date),</text>
-<text x="593" y="563.5" font-size="11.5" fill="#111827">  alias de portefeuille résolus (voir C3)</text>
-<text x="593" y="579.0" font-size="11.5" fill="#111827">positions : réconciliation ; une ligne retirée</text>
-<text x="593" y="594.5" font-size="11.5" fill="#111827">  du fichier est close à la date du jour,</text>
-<text x="593" y="610.0" font-size="11.5" fill="#111827">  jamais supprimée</text>
-<rect x="576" y="670" width="388" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="576" y="670" width="7" height="66" fill="#1E293B"/>
-<text x="593" y="691" font-size="14" font-weight="700" fill="#0B2A5B">Lecture, sans écriture</text>
-<text x="593" y="710.0" font-size="11.5" fill="#111827">le scout lit la base pour chaque briefing ;</text>
-<text x="593" y="725.5" font-size="11.5" fill="#111827">Spark lit le Parquet sans passer par la base</text>
-<rect x="1046" y="118" width="398" height="120" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
-<rect x="1046" y="118" width="7" height="120" fill="#6D28D9"/>
-<text x="1063" y="139" font-size="14" font-weight="700" fill="#4C1D95">PostgreSQL 18 (Merise, C4)</text>
-<text x="1063" y="158.0" font-size="11.5" fill="#111827">10 tables, 1 vue, 12 contraintes CHECK</text>
-<text x="1063" y="173.5" font-size="11.5" fill="#111827">écrit par la collecte et l&#x27;import, seulement</text>
-<text x="1063" y="189.0" font-size="11.5" fill="#111827">278 473 cotations (29/07/2016 au 02/10/2026)</text>
-<text x="1063" y="204.5" font-size="11.5" fill="#111827">1 563 articles ; séries FRED stockées</text>
-<text x="1063" y="220.0" font-size="11.5" fill="#111827">servi par l&#x27;API /donnees/* (C5)</text>
-<rect x="1046" y="254" width="398" height="66" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
-<rect x="1046" y="254" width="7" height="66" fill="#6D28D9"/>
-<text x="1063" y="275" font-size="14" font-weight="700" fill="#4C1D95">Index ChromaDB (étape indexation)</text>
-<text x="1063" y="294.0" font-size="11.5" fill="#111827">articles vectorisés pour la recherche documentaire</text>
-<text x="1063" y="309.5" font-size="11.5" fill="#111827">reconstruit après chaque collecte</text>
-<rect x="1046" y="508" width="398" height="142" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="1046" y="508" width="7" height="142" fill="#1E293B"/>
-<text x="1063" y="529" font-size="14" font-weight="700" fill="#0B2A5B">RGPD (registre art. 30, db/rgpd_purge.py)</text>
-<text x="1063" y="548.0" font-size="11.5" fill="#111827">traitements T1 à T8, procédures de tri P1 à P6</text>
-<text x="1063" y="563.5" font-size="11.5" fill="#111827">une seule table personnelle : position</text>
-<text x="1063" y="579.0" font-size="11.5" fill="#111827">fichier source hors de Git, jamais envoyé au modèle</text>
-<text x="1063" y="594.5" font-size="11.5" fill="#111827">purge en simulation par défaut ;</text>
-<text x="1063" y="610.0" font-size="11.5" fill="#111827">lancement manuel, écrit comme tel</text>
-<rect x="40" y="770" width="1420" height="66" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
-<rect x="40" y="770" width="7" height="66" fill="#475569"/>
-<text x="57" y="791" font-size="14" font-weight="700" fill="#0B2A5B">Couverture de C1 : service web ✓ · page web ✓ · fichier ✓ · base de données ✓ · système big data ✓</text>
-<text x="57" y="810.0" font-size="11.5" fill="#111827">Cinq types sur cinq, plus le RSS en complément. Une preuve par source dans evidence/C1/ ; la figure du 11/08 qui s&#x27;y trouve est une preuve datée : ses chiffres de tables et de garde-fou ne sont plus à jour.</text>
-<line x1="494" y1="151.0" x2="576" y2="140.5" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="494" y1="227.0" x2="576" y2="178.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="494" y1="303.0" x2="576" y2="215.5" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="494" y1="379.0" x2="576" y2="250.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<text x="518.6" y="344.3" font-size="12.5" font-weight="700" fill="#0B2A5B" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">cours du jour</text>
-<line x1="494" y1="455.0" x2="576" y2="365.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="494" y1="541.0" x2="576" y2="550.6" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="494" y1="617.0" x2="576" y2="614.5" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="964" y1="163.0" x2="1046" y2="154.0" stroke="#1565C0" stroke-width="3" marker-end="url(#fl-ecriture)"/>
-<text x="1005.0" y="162.5" font-size="12.5" font-weight="700" fill="#1565C0" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">écrit</text>
-<line x1="964" y1="340.0" x2="1046" y2="214.0" stroke="#1565C0" stroke-width="3" marker-end="url(#fl-ecriture)"/>
-<text x="984.5" y="312.5" font-size="12.5" font-weight="700" fill="#1565C0" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">articles admis</text>
-<line x1="964" y1="536.4" x2="1046" y2="232.0" stroke="#1565C0" stroke-width="3" marker-end="url(#fl-ecriture)"/>
-<text x="1005.0" y="388.2" font-size="12.5" font-weight="700" fill="#1565C0" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">insère</text>
-<line x1="964" y1="245.5" x2="1046" y2="287.0" stroke="#1565C0" stroke-width="3" marker-end="url(#fl-ecriture)"/>
-<line x1="964" y1="593.2" x2="1046" y2="593.2" stroke="#A21CAF" stroke-width="3" marker-end="url(#fl-perso)" stroke-dasharray="9,6"/>
-<text x="1005.0" y="597.2" font-size="12.5" font-weight="700" fill="#A21CAF" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">positions</text>
-<line x1="494" y1="703.0" x2="576" y2="703.0" stroke="#15803D" stroke-width="3" marker-end="url(#fl-lecture)"/>
-<text x="54" y="112" font-size="13.5" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">1. SOURCES, PAR TYPE EXIGÉ PAR C1</text>
-<text x="574" y="112" font-size="13.5" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">2. TRAITEMENTS</text>
-<text x="1044" y="112" font-size="13.5" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">3. DESTINATION ET CONFORMITÉ</text>
-<rect x="40" y="846" width="1420" height="1.5" fill="#94A3B8"/>
-<text x="40" y="877" font-size="13.5" font-weight="700" fill="#0B2A5B">Légende</text>
-<rect x="124.0" y="863" width="28" height="18" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="124.0" y="863" width="6" height="18" fill="#1E293B"/>
-<text x="160.0" y="877" font-size="12.5" fill="#111827">source ou lecture</text>
-<rect x="296.25" y="863" width="28" height="18" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
-<rect x="296.25" y="863" width="6" height="18" fill="#475569"/>
-<text x="332.25" y="877" font-size="12.5" fill="#111827">complément</text>
-<rect x="424.75" y="863" width="28" height="18" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
-<rect x="424.75" y="863" width="6" height="18" fill="#1565C0"/>
-<text x="460.75" y="877" font-size="12.5" fill="#111827">code qui traite et écrit</text>
-<rect x="640.75" y="863" width="28" height="18" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
-<rect x="640.75" y="863" width="6" height="18" fill="#C2410C"/>
-<text x="676.75" y="877" font-size="12.5" fill="#111827">garde-fou</text>
-<rect x="763.0" y="863" width="28" height="18" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
-<rect x="763.0" y="863" width="6" height="18" fill="#6D28D9"/>
-<text x="799.0" y="877" font-size="12.5" fill="#111827">réserve de données</text>
-<line x1="941.5" y1="872" x2="981.5" y2="872" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<text x="991.5" y="877" font-size="12.5" fill="#111827">données collectées</text>
-<line x1="1134.0" y1="872" x2="1174.0" y2="872" stroke="#1565C0" stroke-width="3" marker-end="url(#fl-ecriture)"/>
-<text x="1184.0" y="877" font-size="12.5" fill="#111827">écriture</text>
-<line x1="1264.0" y1="872" x2="1304.0" y2="872" stroke="#15803D" stroke-width="3" marker-end="url(#fl-lecture)"/>
-<text x="1314.0" y="877" font-size="12.5" fill="#111827">lecture seule</text>
-<line x1="124.0" y1="900" x2="164.0" y2="900" stroke="#A21CAF" stroke-width="3" stroke-dasharray="9,6" marker-end="url(#fl-perso)"/>
-<text x="174.0" y="905" font-size="12.5" fill="#111827">données personnelles (RGPD)</text>
-<text x="40" y="934" font-size="12.5" fill="#1F2937">Génération : docs/rapports/E1/schemas/generer_schemas.py, vérifiée par tests/test_schemas_e1.py.</text>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1070" viewBox="0 0 1500 1070" font-family="Segoe UI,Calibri,Arial,sans-serif">
+<defs><linearGradient id="bandeau" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#0B2A5B"/><stop offset="0.5" stop-color="#1565C0"/><stop offset="1" stop-color="#7C3AED"/></linearGradient><marker id="p-flux" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#0B2A5B"/></marker><marker id="p-ecriture" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#1565C0"/></marker><marker id="p-lecture" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#15803D"/></marker><marker id="p-erreur" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#D32F2F"/></marker><marker id="p-manuel" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#64748B"/></marker><marker id="p-perso" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#A21CAF"/></marker></defs>
+<rect width="1500" height="1070" fill="#FFFFFF"/>
+<rect width="1500" height="6" fill="url(#bandeau)"/>
+<text x="36" y="56" font-size="30" font-weight="700" fill="#0B2A5B">RITA : la collecte multi-source, cinq types de sources sur cinq</text>
+<text x="36" y="84" font-size="15" fill="#1F2937">Rapport E1, section 3 (C1) · chiffres du code lus à la génération, comptages datés · état au 24 octobre 2026</text>
+<rect x="20" y="104" width="446" height="800" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.2"/>
+<rect x="28" y="112" width="430" height="34" rx="7" fill="#0B2A5B"/>
+<text x="42" y="134" font-size="14" font-weight="700" fill="#FFFFFF" letter-spacing="0.6">1. SOURCES, PAR TYPE EXIGÉ PAR C1</text>
+<rect x="566" y="104" width="384" height="800" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.2"/>
+<rect x="574" y="112" width="368" height="34" rx="7" fill="#1565C0"/>
+<text x="588" y="134" font-size="14" font-weight="700" fill="#FFFFFF" letter-spacing="0.6">2. TRAITEMENTS</text>
+<rect x="1060" y="104" width="420" height="800" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.2"/>
+<rect x="1068" y="112" width="404" height="34" rx="7" fill="#6D28D9"/>
+<text x="1082" y="134" font-size="14" font-weight="700" fill="#FFFFFF" letter-spacing="0.6">3. DESTINATION ET CONFORMITÉ</text>
+<rect x="34" y="163" width="422" height="76" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="32" y="160" width="422" height="76" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="32" y="160" width="8" height="76" rx="3" fill="#1E293B"/>
+<text x="54" y="186" font-size="14.5" font-weight="700" fill="#0B2A5B">SERVICE WEB · Banque centrale européenne</text>
+<text x="54" y="208" font-size="12" fill="#111827" xml:space="preserve">sources/ecb.py · taux de change contre l&#x27;euro :</text>
+<text x="54" y="225" font-size="12" fill="#111827" xml:space="preserve">USD, GBP, CHF, JPY ; zéro taux reçu = étape en échec</text>
+<rect x="34" y="251" width="422" height="76" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="32" y="248" width="422" height="76" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="32" y="248" width="8" height="76" rx="3" fill="#1E293B"/>
+<text x="54" y="274" font-size="14.5" font-weight="700" fill="#0B2A5B">SERVICE WEB · FRED (Réserve fédérale)</text>
+<text x="54" y="296" font-size="12" fill="#111827" xml:space="preserve">sources/fred.py · 3 séries macro américaines</text>
+<text x="54" y="313" font-size="12" fill="#111827" xml:space="preserve">seule source à clé, jamais écrite dans un journal</text>
+<rect x="34" y="339" width="422" height="76" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="32" y="336" width="422" height="76" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="32" y="336" width="8" height="76" rx="3" fill="#1E293B"/>
+<text x="54" y="362" font-size="14.5" font-weight="700" fill="#0B2A5B">SERVICE WEB · Yahoo Finance</text>
+<text x="54" y="384" font-size="12" fill="#111827" xml:space="preserve">sources/cotations.py · 108 valeurs actives (3 radiées),</text>
+<text x="54" y="401" font-size="12" fill="#111827" xml:space="preserve">incrémental, rejouable (ON CONFLICT DO UPDATE)</text>
+<rect x="34" y="427" width="422" height="76" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="32" y="424" width="422" height="76" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="32" y="424" width="8" height="76" rx="3" fill="#1E293B"/>
+<text x="54" y="450" font-size="14.5" font-weight="700" fill="#0B2A5B">PAGE WEB (scraping) · Boursorama</text>
+<text x="54" y="472" font-size="12" fill="#111827" xml:space="preserve">sources/scraper.py · robots.txt lu et mis en cache</text>
+<text x="54" y="489" font-size="12" fill="#111827" xml:space="preserve">structure changée : exception StructurePageModifiee</text>
+<rect x="34" y="515" width="422" height="76" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="32" y="512" width="422" height="76" rx="7" fill="#F1F5F9" stroke="#475569" stroke-width="1.6"/>
+<rect x="32" y="512" width="8" height="76" rx="3" fill="#475569"/>
+<text x="54" y="538" font-size="14.5" font-weight="700" fill="#0B2A5B">COMPLÉMENT · flux RSS d&#x27;actualité</text>
+<text x="54" y="560" font-size="12" fill="#111827" xml:space="preserve">sources/rss.py · 3 flux de presse générale ; Google News</text>
+<text x="54" y="577" font-size="12" fill="#111827" xml:space="preserve">par valeur détenue arrêté le 16/10 (décision D3)</text>
+<rect x="34" y="619" width="422" height="76" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="32" y="616" width="422" height="76" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="32" y="616" width="8" height="76" rx="3" fill="#1E293B"/>
+<text x="54" y="642" font-size="14.5" font-weight="700" fill="#0B2A5B">FICHIER · export courtier (CSV des positions)</text>
+<text x="54" y="664" font-size="12" fill="#111827" xml:space="preserve">sources/positions.py · « ; », cp1252, nombres à la française</text>
+<text x="54" y="681" font-size="12" fill="#111827" xml:space="preserve">démonstration : positions inventées, CSV versionné</text>
+<rect x="34" y="707" width="422" height="76" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="32" y="704" width="422" height="76" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="32" y="704" width="8" height="76" rx="3" fill="#1E293B"/>
+<text x="54" y="730" font-size="14.5" font-weight="700" fill="#0B2A5B">SYSTÈME BIG DATA · Parquet + Spark</text>
+<text x="54" y="752" font-size="12" fill="#111827" xml:space="preserve">bigdata/ · dix ans de cotations, 11 partitions par année</text>
+<text x="54" y="769" font-size="12" fill="#111827" xml:space="preserve">276 168 lignes ; requêtes Spark SQL (C2)</text>
+<rect x="34" y="815" width="422" height="76" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="32" y="812" width="422" height="76" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="32" y="812" width="8" height="76" rx="3" fill="#1E293B"/>
+<text x="54" y="838" font-size="14.5" font-weight="700" fill="#0B2A5B">BASE DE DONNÉES · PostgreSQL relu</text>
+<text x="54" y="860" font-size="12" fill="#111827" xml:space="preserve">sources/database.py, indicateurs/ · requêtes paramétrées</text>
+<text x="54" y="877" font-size="12" fill="#111827" xml:space="preserve">scout : DATABASE_URL ; rita_lecture : outils, pré-test</text>
+<rect x="580" y="163" width="360" height="232" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="578" y="160" width="360" height="232" rx="7" fill="#E3F0FD" stroke="#1565C0" stroke-width="1.6"/>
+<rect x="578" y="160" width="8" height="232" rx="3" fill="#1565C0"/>
+<text x="600" y="186" font-size="14.5" font-weight="700" fill="#0B2A5B">pipelines/ingest.py : la collecte du soir</text>
+<text x="600" y="208" font-size="12" fill="#111827" xml:space="preserve">tâche planifiée Windows, chaque soir à 19 h</text>
+<text x="600" y="225" font-size="12" fill="#111827" xml:space="preserve">6 étapes : ecb, fred, cotations, rss, scraping, indexation</text>
+<text x="600" y="242" font-size="12" fill="#111827" xml:space="preserve">une étape en échec n&#x27;arrête pas les suivantes</text>
+<text x="600" y="259" font-size="12" fill="#111827" xml:space="preserve">un COMMIT par étape ; rien reçu sur panne = échec</text>
+<text x="600" y="276" font-size="12" fill="#111827" xml:space="preserve">manifeste JSON par exécution (versions, comptages)</text>
+<text x="600" y="293" font-size="12" fill="#111827" xml:space="preserve">du 03 au 23/10 : 21 soirs sur 21, 19 à six étapes sur six</text>
+<rect x="580" y="419" width="360" height="172" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="578" y="416" width="360" height="172" rx="7" fill="#FFF1E6" stroke="#C2410C" stroke-width="1.6"/>
+<rect x="578" y="416" width="8" height="172" rx="3" fill="#C2410C"/>
+<text x="600" y="442" font-size="14.5" font-weight="700" fill="#9A3412">Garde-fou d&#x27;injection</text>
+<text x="600" y="461" font-size="14.5" font-weight="700" fill="#9A3412">(guardrails/injection.py)</text>
+<text x="600" y="483" font-size="12" fill="#111827" xml:space="preserve">12 motifs : articles RSS, et textes de la page</text>
+<text x="600" y="500" font-size="12" fill="#111827" xml:space="preserve">scrapée (nom, ISIN, place : sources/scraper.py)</text>
+<text x="600" y="517" font-size="12" fill="#111827" xml:space="preserve">mesure : 70 % de blocage (7/10),</text>
+<text x="600" y="534" font-size="12" fill="#111827" xml:space="preserve">0 % de faux positifs (0/8)</text>
+<text x="600" y="551" font-size="12" fill="#111827" xml:space="preserve">article bloqué : marqué, conservé pour l&#x27;audit</text>
+<rect x="580" y="619" width="360" height="164" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="578" y="616" width="360" height="164" rx="7" fill="#E3F0FD" stroke="#1565C0" stroke-width="1.6"/>
+<rect x="578" y="616" width="8" height="164" rx="3" fill="#1565C0"/>
+<text x="600" y="642" font-size="14.5" font-weight="700" fill="#0B2A5B">db/importer.py : l&#x27;import</text>
+<text x="600" y="664" font-size="12" fill="#111827" xml:space="preserve">archive Parquet : dédoublonnage (ticker, date),</text>
+<text x="600" y="681" font-size="12" fill="#111827" xml:space="preserve">  alias de portefeuille résolus (voir C3)</text>
+<text x="600" y="698" font-size="12" fill="#111827" xml:space="preserve">positions : réconciliation ; une ligne retirée</text>
+<text x="600" y="715" font-size="12" fill="#111827" xml:space="preserve">  du fichier est close à la date du jour,</text>
+<text x="600" y="732" font-size="12" fill="#111827" xml:space="preserve">  jamais supprimée</text>
+<rect x="580" y="815" width="360" height="76" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="578" y="812" width="360" height="76" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="578" y="812" width="8" height="76" rx="3" fill="#1E293B"/>
+<text x="600" y="838" font-size="14.5" font-weight="700" fill="#0B2A5B">Lecture, sans écriture</text>
+<text x="600" y="860" font-size="12" fill="#111827" xml:space="preserve">le scout lit la base pour chaque briefing ;</text>
+<text x="600" y="877" font-size="12" fill="#111827" xml:space="preserve">Spark lit le Parquet sans passer par la base</text>
+<rect x="1074" y="163" width="396" height="96" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="1072" y="160" width="396" height="96" rx="7" fill="#F1EAFE" stroke="#6D28D9" stroke-width="1.6"/>
+<rect x="1072" y="160" width="8" height="96" rx="3" fill="#6D28D9"/>
+<text x="1094" y="186" font-size="14.5" font-weight="700" fill="#4C1D95">Index ChromaDB (étape indexation)</text>
+<text x="1094" y="208" font-size="12" fill="#111827" xml:space="preserve">articles non bloqués, vectorisés pour la recherche</text>
+<text x="1094" y="225" font-size="12" fill="#111827" xml:space="preserve">reconstruit après chaque collecte</text>
+<rect x="1074" y="283" width="396" height="200" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="1072" y="280" width="396" height="200" rx="7" fill="#F1EAFE" stroke="#6D28D9" stroke-width="1.6"/>
+<rect x="1072" y="280" width="8" height="200" rx="3" fill="#6D28D9"/>
+<text x="1094" y="306" font-size="14.5" font-weight="700" fill="#4C1D95">PostgreSQL 18 (Merise, C4)</text>
+<text x="1094" y="328" font-size="12" fill="#111827" xml:space="preserve">10 tables, 1 vue, 12 contraintes CHECK</text>
+<text x="1094" y="345" font-size="12" fill="#111827" xml:space="preserve">écrit par la collecte et l&#x27;import, seulement</text>
+<text x="1094" y="362" font-size="12" fill="#111827" xml:space="preserve">278 473 cotations (29/07/2016 au 02/10/2026)</text>
+<text x="1094" y="379" font-size="12" fill="#111827" xml:space="preserve">2 314 articles indexés (23/10) ; séries FRED</text>
+<text x="1094" y="396" font-size="12" fill="#111827" xml:space="preserve">servi par l&#x27;API /donnees/* (C5)</text>
+<rect x="1074" y="619" width="396" height="164" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="1072" y="616" width="396" height="164" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="1072" y="616" width="8" height="164" rx="3" fill="#1E293B"/>
+<text x="1094" y="642" font-size="14.5" font-weight="700" fill="#0B2A5B">RGPD (registre art. 30, db/rgpd_purge.py)</text>
+<text x="1094" y="664" font-size="12" fill="#111827" xml:space="preserve">traitements T1 à T8, procédures de tri P1 à P6</text>
+<text x="1094" y="681" font-size="12" fill="#111827" xml:space="preserve">personnel : positions réelles, journal MCP, noms du corpus</text>
+<text x="1094" y="698" font-size="12" fill="#111827" xml:space="preserve">fichier réel hors de Git, jamais envoyé au modèle</text>
+<text x="1094" y="715" font-size="12" fill="#111827" xml:space="preserve">purge en simulation par défaut ;</text>
+<text x="1094" y="732" font-size="12" fill="#111827" xml:space="preserve">lancement manuel, écrit comme tel</text>
+<rect x="22" y="927" width="1460" height="66" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="20" y="924" width="1460" height="66" rx="7" fill="#E8F5E9" stroke="#15803D" stroke-width="1.6"/>
+<rect x="20" y="924" width="8" height="66" rx="3" fill="#15803D"/>
+<text x="42" y="950" font-size="14.5" font-weight="700" fill="#14532D">Couverture de C1 : service web ✓ · page web ✓ · fichier ✓ · base de données ✓ · système big data ✓</text>
+<text x="42" y="972" font-size="12" fill="#111827" xml:space="preserve">Cinq types sur cinq, plus le RSS en complément. Une preuve par source dans evidence/C1/ ; la figure du 11/08 qui s&#x27;y trouve est une preuve datée : ses chiffres de tables et de garde-fou ne sont plus à jour.</text>
+<polyline points="454,198 496,198" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round"/>
+<polyline points="454,286 496,286" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round"/>
+<polyline points="454,374 496,374" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round"/>
+<polyline points="454,462 496,462" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round"/>
+<polyline points="454,550 496,550" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round"/>
+<polyline points="496,198 496,550" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round"/>
+<polyline points="496,276 578,276" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="758,392 758,416" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="454,654 578,654" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="454,742 578,742" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="454,850 578,850" fill="none" stroke="#15803D" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-lecture)"/>
+<polyline points="938,208 1072,208" fill="none" stroke="#1565C0" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-ecriture)"/>
+<polyline points="938,330 1072,330" fill="none" stroke="#1565C0" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-ecriture)"/>
+<polyline points="938,502 1003,502 1003,400 1072,400" fill="none" stroke="#1565C0" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-ecriture)"/>
+<polyline points="938,680 1035,680 1035,470 1072,470" fill="none" stroke="#1565C0" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-ecriture)"/>
+<polyline points="938,740 1072,740" fill="none" stroke="#A21CAF" stroke-width="2.6" stroke-linejoin="round" stroke-dasharray="9,6" marker-end="url(#p-perso)"/>
+<rect x="976" y="318" width="58" height="24" rx="12" fill="#FFFFFF" stroke="#1565C0" stroke-width="1.8"/>
+<text x="1005" y="334.5" font-size="12" font-weight="700" fill="#1565C0" text-anchor="middle">écrit</text>
+<rect x="941.6" y="440" width="122.8" height="24" rx="12" fill="#FFFFFF" stroke="#1565C0" stroke-width="1.8"/>
+<text x="1003" y="456.5" font-size="12" font-weight="700" fill="#1565C0" text-anchor="middle">articles admis</text>
+<rect x="1002.4" y="563" width="65.2" height="24" rx="12" fill="#FFFFFF" stroke="#1565C0" stroke-width="1.8"/>
+<text x="1035" y="579.5" font-size="12" font-weight="700" fill="#1565C0" text-anchor="middle">insère</text>
+<rect x="961.6" y="728" width="86.8" height="24" rx="12" fill="#FFFFFF" stroke="#A21CAF" stroke-width="1.8"/>
+<text x="1005" y="744.5" font-size="12" font-weight="700" fill="#A21CAF" text-anchor="middle">positions</text>
+<text x="36" y="1025" font-size="13" font-weight="700" fill="#0B2A5B">Légende</text>
+<rect x="112" y="1012" width="26" height="16" rx="4" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="112" y="1012" width="5" height="16" rx="2" fill="#1E293B"/>
+<text x="146" y="1024.5" font-size="12" fill="#111827">source ou lecture</text>
+<rect x="259.88" y="1012" width="26" height="16" rx="4" fill="#F1F5F9" stroke="#475569" stroke-width="1.6"/>
+<rect x="259.88" y="1012" width="5" height="16" rx="2" fill="#475569"/>
+<text x="293.88" y="1024.5" font-size="12" fill="#111827">complément</text>
+<rect x="368.28" y="1012" width="26" height="16" rx="4" fill="#E3F0FD" stroke="#1565C0" stroke-width="1.6"/>
+<rect x="368.28" y="1012" width="5" height="16" rx="2" fill="#1565C0"/>
+<text x="402.28" y="1024.5" font-size="12" fill="#111827">code qui traite et écrit</text>
+<rect x="555.64" y="1012" width="26" height="16" rx="4" fill="#FFF1E6" stroke="#C2410C" stroke-width="1.6"/>
+<rect x="555.64" y="1012" width="5" height="16" rx="2" fill="#C2410C"/>
+<text x="589.64" y="1024.5" font-size="12" fill="#111827">garde-fou</text>
+<rect x="658.4" y="1012" width="26" height="16" rx="4" fill="#F1EAFE" stroke="#6D28D9" stroke-width="1.6"/>
+<rect x="658.4" y="1012" width="5" height="16" rx="2" fill="#6D28D9"/>
+<text x="692.4" y="1024.5" font-size="12" fill="#111827">réserve de données</text>
+<line x1="811.92" y1="1020" x2="847.92" y2="1020" stroke="#0B2A5B" stroke-width="2.6" marker-end="url(#p-flux)"/>
+<text x="857.92" y="1024.5" font-size="12" fill="#111827">données collectées</text>
+<line x1="977.44" y1="1020" x2="1013.44" y2="1020" stroke="#1565C0" stroke-width="2.6" marker-end="url(#p-ecriture)"/>
+<text x="1023.44" y="1024.5" font-size="12" fill="#111827">écriture</text>
+<line x1="1086.56" y1="1020" x2="1122.56" y2="1020" stroke="#15803D" stroke-width="2.6" marker-end="url(#p-lecture)"/>
+<text x="1132.56" y="1024.5" font-size="12" fill="#111827">lecture seule</text>
+<line x1="1223.88" y1="1020" x2="1259.88" y2="1020" stroke="#A21CAF" stroke-width="2.6" stroke-dasharray="9,6" marker-end="url(#p-perso)"/>
+<text x="1269.88" y="1024.5" font-size="12" fill="#111827">données personnelles (RGPD)</text>
+<text x="36" y="1056" font-size="12" fill="#1F2937">Génération : docs/rapports/E1/schemas/generer_schemas.py, vérifiée par tests/test_schemas_e1.py.</text>
 </svg>

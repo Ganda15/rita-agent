@@ -145,6 +145,12 @@ Merise a des **règles mécaniques** de traduction. C'est ce qui explique que
 | Association **0,n ↔ 1,1** → idem, mais la colonne peut être vide | `position.ticker` |
 | Association **n,n des deux côtés** → **table intermédiaire** | *aucune dans RITA* — c'est un signe de modèle simple |
 
+> **Erratum du 24/10/2026** (la ligne d'origine est gardée telle quelle : une preuve datée ne se réécrit pas). La règle
+> « 0,n ↔ 1,1 → idem, mais la colonne peut être vide » est fausse. Le `1,1` du côté de POSITION impose que chaque
+> position appartienne à une valeur : la clé étrangère `position.ticker` est **obligatoire**, et `db/schema.sql` la
+> déclare bien `NOT NULL`. Le `0` de `0,n` dit seulement qu'une valeur peut n'avoir aucune position. Une clé étrangère
+> ne peut être vide que pour une cardinalité `0,1`.
+
 > Le fait qu'**aucune association ne soit `n,n` des deux côtés** est un bon signal : le
 > modèle est simple, sans table de liaison à justifier.
 
