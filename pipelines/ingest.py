@@ -217,7 +217,7 @@ def etape_cotations(cur, simulation: bool) -> Bilan:
         b.erreur = "aucune valeur en base — lancer db.importer d'abord"
         return b
 
-    lignes = []
+    lignes, appels_en_echec = [], 0
     for derniere, tickers in par_date.items():
         if derniere is None:                    # jamais alimentée : on ne devine pas
             b.rejetees += len(tickers)
@@ -228,8 +228,17 @@ def etape_cotations(cur, simulation: bool) -> Bilan:
             lignes.extend(recu)
             b.lues += len(recu)
         except Exception as erreur:                       # noqa: BLE001
+            appels_en_echec += 1
             b.rejetees += len(tickers)
             b.details.append(f"depuis {derniere} : {type(erreur).__name__}")
+
+    # Même règle que la BCE (carte #55), relevée le 23/10/2026 : chaque exception était
+    # attrapée sans remplir `erreur`, et une panne de Yahoo comptait parmi les étapes réussies.
+    # Zéro ligne reçue ET au moins un appel en échec = échec déclaré. Un appel réussi qui ne
+    # rend rien (week-end) n'est pas une panne ; un succès partiel reste un succès.
+    if not lignes and appels_en_echec:
+        b.erreur = "aucune cotation recue (" + "; ".join(b.details) + ")"
+        return b
 
     if lignes and not simulation:
         execute_values(cur, """
@@ -283,6 +292,12 @@ def etape_articles(cur, simulation: bool, periode: tuple[str, str] | None = None
     b.lues = r["total"]
     total_flux = len(r["flux_ok"]) + len(r["flux_echec"])
     b.details.append(f"flux OK {len(r['flux_ok'])}/{total_flux}")
+    # 23/10/2026 : un flux de presse vivant rend toujours ses derniers articles. Si aucun flux
+    # n'a rien rendu, c'est une panne (réseau, blocage, adresse morte) : échec déclaré, comme
+    # pour la BCE (carte #55). Un seul flux en échec reste un succès partiel.
+    if not r["flux_ok"] and r["flux_echec"]:
+        b.erreur = "aucun flux RSS n'a rendu d'article (" + ", ".join(r["flux_echec"]) + ")"
+        return b
 
     lignes = [(a.source, a.titre, a.lien, a.publie_le or None, a.resume,
                a.bloque, a.motifs_injection or None)
@@ -368,6 +383,11 @@ def etape_cours_scrapes(cur, simulation: bool) -> Bilan:
     for _, nom, cause in r["echecs"]:
         b.rejetees += 1
         b.details.append(f"{nom} : {cause[:40]}")
+    # 23/10/2026, même règle que la BCE (carte #55) : aucune page lue et des échecs = panne
+    # déclarée. Un samedi, la page montre encore la clôture du vendredi : vide n'est pas normal.
+    if not r["cotations"] and r["echecs"]:
+        b.erreur = "aucun cours scrape (" + "; ".join(b.details) + ")"
+        return b
 
     lignes = []
     for c in r["cotations"]:
