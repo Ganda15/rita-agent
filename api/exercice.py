@@ -24,7 +24,10 @@ from monitorage import exercice as module_exercice
 
 logger = logging.getLogger(__name__)
 
-ENTETE_CLE = APIKeyHeader(name="X-Cle-Exercice", auto_error=False)
+# `scheme_name` : sans lui, cette clé et celle des questions portent le même nom par défaut (`APIKeyHeader`), le
+# contrat OpenAPI n'en garde qu'une, et `/docs` annonçait `X-API-Key` sur ces routes (relecture du 24/10).
+ENTETE_CLE = APIKeyHeader(name="X-Cle-Exercice", scheme_name="CleExercice", auto_error=False,
+                          description="Clé de l'opérateur (`RITA_CLE_EXERCICE`), distincte de la clé des questions.")
 LONGUEUR_MINIMALE_CLE = 16
 NOM = r"^[\w .'-]+$"
 MOTIF = r"^[\w .,'’:;()!?/-]+$"

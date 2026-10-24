@@ -232,6 +232,17 @@ def test_le_schema_de_securite_est_declare(client):
     assert any(s.get("name") == "X-API-Key" for s in schemas.values())
 
 
+def test_la_description_du_contrat_nomme_chaque_famille_de_routes_et_sa_cle(client):
+    """Revue du 24/10 : la description disait « tous les points de terminaison sauf /health exigent X-API-Key » et ne
+    citait que /donnees et /briefing, alors que /exercice lit une autre clé et que /question et /sante existaient."""
+    o = client.get("/openapi.json").json()
+    description = o["info"]["description"]
+    familles = {"/" + chemin.strip("/").split("/")[0] for chemin in o["paths"]}
+    absentes = sorted(f for f in familles if f"`{f}" not in description)
+    assert absentes == []
+    assert "`X-API-Key`" in description and "`X-Cle-Exercice`" in description
+
+
 # --- /donnees/indicateurs (lot 1) ---------------------------------------------
 
 def _ligne_indicateur(**surcharges):
