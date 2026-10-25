@@ -9,6 +9,17 @@
 
 ---
 
+## 2026-10-25 (soir) : sprint 5, livrable en version 2 (page 11 du PDF corrigée) ; tag `livrable-sprint-5-v2` à poser
+
+**Manque découvert** : à la page 11 du PDF remis sous `livrable-sprint-5-v1`, une phrase du § 5.12 s'affichait comme
+un titre de 21 points. La ligne 305 de `livrable-sprint-5.md` commençait par `#130)`, lu par Markdown comme un titre.
+Seule occurrence dans les documents du sprint 5. **Livrable corrigé** : la ligne est recomposée, un test empêche le
+retour du piège (`tests/test_livrable_sprint5_doc.py`, rouge puis vert), le PDF est refait (0 texte surdimensionné
+hors couverture, contre 3 en version 1). Le tag v1 reste figé ; la remise corrigée sera `livrable-sprint-5-v2`, posé
+par Era après la livraison suivante.
+
+---
+
 ## 2026-10-24 (18 h 30) : E1 v2.6 et E3 v1.5 prêts au gel, tags `livrable-E1-v2` et `livrable-E3-v1` à poser
 
 **Livrable gelé, pas encore envoyé** : E1 v2.6 (5 pages, PR #141) et E3 v1.5 (19 pages, PR #146), avec les documents
