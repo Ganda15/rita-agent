@@ -2,8 +2,9 @@
 
 > RITA, fil rouge de la phase 6 : une aide à la lecture de l'actualité économique, qui répond en citant ses sources ou
 > refuse. Le sprint 5 la rend pilotable et reprenable : des mesures, un tableau de bord, des alertes liées à une action,
-> une documentation d'exploitation. Version 1 : la vigie en production depuis le 23/10 (livraison N16), et sa copie
-> sur le poste pour les exercices de panne.
+> une documentation d'exploitation. Version 2 (25/10) : correction de mise en page de la page 11 du PDF, où une phrase
+> du § 5.12 s'affichait comme un titre ; le contenu ne change pas. Version 1 : la vigie en production depuis le 23/10
+> (livraison N16), et sa copie sur le poste pour les exercices de panne.
 
 ## Sommaire
 
@@ -301,8 +302,8 @@ par le présenté.
 Le 23/10 à 09:50, le traçage Langfuse a été activé sur la copie : chaque question y laisse une trace `question` sans
 texte (entrée et sortie vides), avec le même `request_id` que le journal de la copie, ce qui relie la trace à la
 procédure de diagnostic. Les clés venaient du `.env` de développement, qui pointe sur le projet Langfuse de la
-production. À 10:30, la panne simulée de 10:04 a déclenché l'alerte « fournisseur en erreur » de la production (issue
-#130). L'API de Langfuse l'a confirmé : les 10 observations en erreur des dernières 24 h venaient toutes de la copie,
+production. À 10:30, la panne simulée de 10:04 a déclenché l'alerte « fournisseur en erreur » de la production
+(issue #130). L'API de Langfuse l'a confirmé : les 10 observations en erreur des dernières 24 h venaient toutes de la copie,
 et la production n'en avait aucune. L'issue a été fermée avec son explication, et la copie est passée sur son propre
 projet, `rita-copie-sprint5`, sans alerte ; une question de test y arrive, et plus dans celui de la production. La
 documentation le dit désormais (trou 10).
