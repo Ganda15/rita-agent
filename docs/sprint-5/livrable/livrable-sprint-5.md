@@ -2,7 +2,9 @@
 
 > RITA, fil rouge de la phase 6 : une aide à la lecture de l'actualité économique, qui répond en citant ses sources ou
 > refuse. Le sprint 5 la rend pilotable et reprenable : des mesures, un tableau de bord, des alertes liées à une action,
-> une documentation d'exploitation. Version 2 (25/10) : correction de mise en page de la page 11 du PDF, où une phrase
+> une documentation d'exploitation. Version 3 (26/10) : la chronologie du sprint rendue explicite, d'abord la copie
+> locale, puis la production (§ 1.2), et la discussion avec le formateur consignée (§ 6) ; le contenu technique ne
+> change pas. Version 2 (25/10) : correction de mise en page de la page 11 du PDF, où une phrase
 > du § 5.12 s'affichait comme un titre ; le contenu ne change pas. Version 1 : la vigie en production depuis le 23/10
 > (livraison N16), et sa copie sur le poste pour les exercices de panne.
 
@@ -44,6 +46,15 @@ Décision du 22/10 : rester en prototype local, faute de temps. **Décision rév
 production.** La livraison automatique N16 (passage GitHub n° 39983152061, commit `845e3b3`, en service à 18:12)
 met `/sante`, les compteurs et le tableau de bord sur le serveur ; la vigie le surveille de l'extérieur, à son
 adresse. Les exercices restent coupés en production (§ 5.13).
+
+**La chronologie : d'abord la copie locale, puis la production.**
+
+| Quand | Où | Ce qui s'est passé | Preuve |
+|---|---|---|---|
+| 22/10 | copie locale (Docker, port 8011) | la vigie construite et éprouvée : déploiement et retour arrière (18:56 à 18:57), panne simulée diagnostiquée avec la doc (issue #127), dérive simulée jusqu'à l'action (issue #128) | § 5.3 à 5.5 |
+| 23/10, matin | copie locale | la doc suivie à la lettre (dix trous corrigés), deux répétitions de la démo, la fausse alerte #130 expliquée et la copie passée sur son propre projet Langfuse | § 5.10 à 5.12 |
+| 23/10, soir | production | PR #133 et #134, livraison N16 (18:00 à 18:12, commit `845e3b3`) : la vigie, `/sante` et le tableau de bord en service ; livraison N17 (documents) et tag `livrable-sprint-5-v1` | § 5.13 |
+| 25/10 | production | version 2 du livrable (page 11 du PDF corrigée), livrée puis taguée `livrable-sprint-5-v2` | en tête du document |
 
 ### 1.3 RITA en trois phrases
 
@@ -328,6 +339,10 @@ serveur : la lecture de `/sante` avec la clé et la vigie pointée sur le serveu
 clé lui-même. Détail : [`production-2026-10-23.md`](../../../evidence/sprint-5/production-2026-10-23.md).
 
 ## 6. Journal des retours
+
+**Discussion avec le formateur : le déroulé du sprint expliqué.** Le sprint a d'abord été construit et éprouvé sur la
+copie locale (22 et 23/10), puis mis en production le 23/10 au soir (livraison N16), comme le retrace la chronologie du
+§ 1.2. Ce déroulé a été présenté au formateur pendant la discussion.
 
 **Conseil reçu à l'atelier n°4 : traité.** Le formateur a redonné les conseils de présentation de l'atelier n°3 : aller
 droit au but, couche par couche ; le projet en deux ou trois phrases ; la partie technique en cinq minutes ; l'ordre des

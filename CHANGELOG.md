@@ -9,6 +9,16 @@
 
 ---
 
+## 2026-10-26 : sprint 5, livrable en version 3 (chronologie et discussion avec le formateur) ; tag `livrable-sprint-5-v3` à poser
+
+**Livrable complété** : le § 1.2 donne la chronologie du sprint en un tableau, d'abord la copie locale (22 et 23/10),
+puis la production (23/10 au soir, N16 et N17 ; 25/10, version 2), chaque ligne avec sa preuve ; le § 6 consigne la
+discussion où Era a présenté ce déroulé au formateur. Tests rouges puis verts (`tests/test_livrable_sprint5_doc.py`),
+PDF refait. Le contenu technique ne change pas ; les tags v1 et v2 restent figés, la remise devient
+`livrable-sprint-5-v3`, posé après la livraison suivante.
+
+---
+
 ## 2026-10-25 (soir) : sprint 5, livrable en version 2 (page 11 du PDF corrigée) ; tag `livrable-sprint-5-v2` à poser
 
 **Manque découvert** : à la page 11 du PDF remis sous `livrable-sprint-5-v1`, une phrase du § 5.12 s'affichait comme
