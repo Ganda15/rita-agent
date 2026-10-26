@@ -2,8 +2,9 @@
 
 > RITA, fil rouge de la phase 6 : une aide à la lecture de l'actualité économique, qui répond en citant ses sources ou
 > refuse. Le sprint 5 la rend pilotable et reprenable : des mesures, un tableau de bord, des alertes liées à une action,
-> une documentation d'exploitation. Version 4 (26/10) : le schéma de la vigie ajouté (§ 1.4) et la synthèse refaite
-> pour une lecture en quelques minutes ; le contenu technique ne change pas. Version 3 (26/10) : la chronologie du
+> une documentation d'exploitation. Version 5 (26/10) : les quatre captures du tableau de bord affichées dans le
+> document (§ 5.6), pour le voir sans la clé d'API ; le contenu technique ne change pas. Version 4 (26/10) : le schéma
+> de la vigie ajouté (§ 1.4) et la synthèse refaite pour une lecture en quelques minutes. Version 3 (26/10) : la chronologie du
 > sprint rendue explicite, d'abord la copie locale, puis la production (§ 1.2), et la discussion avec le formateur
 > consignée (§ 6) ; le contenu technique ne change pas. Version 2 (25/10) : correction de mise en page de la page 11 du PDF, où une phrase
 > du § 5.12 s'affichait comme un titre ; le contenu ne change pas. Version 1 : la vigie en production depuis le 23/10
@@ -56,7 +57,7 @@ adresse. Les exercices restent coupés en production (§ 5.13).
 | 23/10, matin | copie locale | la doc suivie à la lettre (dix trous corrigés), deux répétitions de la démo, la fausse alerte #130 expliquée et la copie passée sur son propre projet Langfuse | § 5.10 à 5.12 |
 | 23/10, soir | production | PR #133 et #134, livraison N16 (18:00 à 18:12, commit `845e3b3`) : la vigie, `/sante` et le tableau de bord en service ; livraison N17 (documents) et tag `livrable-sprint-5-v1` | § 5.13 |
 | 25/10 | production | version 2 du livrable (page 11 du PDF corrigée), livrée puis taguée `livrable-sprint-5-v2` | en tête du document |
-| 26/10 | production | version 3 du livrable (cette chronologie, la discussion avec le formateur), taguée `livrable-sprint-5-v3` ; puis version 4 (le schéma de la vigie, la synthèse refaite) | en tête du document |
+| 26/10 | production | version 3 du livrable (cette chronologie, la discussion avec le formateur), taguée `livrable-sprint-5-v3` ; puis version 4 (le schéma de la vigie, la synthèse refaite), taguée `livrable-sprint-5-v4` ; puis version 5 (les captures du tableau de bord affichées au § 5.6) | en tête du document |
 
 ### 1.3 RITA en trois phrases
 
@@ -255,12 +256,26 @@ Sept cartes : le service, puis les six signaux mesurés. Chacune dit son état e
 du tableau, le calcul des mesures, le début des mesures. Un exercice en cours s'annonce par un bandeau. La page tient sur un écran de
 téléphone (375 px), et une lecture qui échoue le dit au lieu d'afficher un état périmé.
 
-| Capture (prise sur la copie, 22/10) | Ce qu'elle montre |
-|---|---|
-| [`copie-1-panne-en-cours.webp`](../../../evidence/sprint-5/captures/copie-1-panne-en-cours.webp) | le bandeau de l'exercice ; « Réponses en erreur » PROBLÈME, 5 sur 5 |
-| [`copie-2-service-retabli-alerte-ouverte.webp`](../../../evidence/sprint-5/captures/copie-2-service-retabli-alerte-ouverte.webp) | plus de bandeau ; l'alerte encore ouverte, 5 sur 10 |
-| [`copie-3-derive-refus-securite.webp`](../../../evidence/sprint-5/captures/copie-3-derive-refus-securite.webp) | « Refus de sécurité » PROBLÈME, 12 sur 12, avec sa consigne |
-| [`copie-0-redemarrage-pendant-le-retour-arriere.webp`](../../../evidence/sprint-5/captures/copie-0-redemarrage-pendant-le-retour-arriere.webp) | la copie qui redémarre : « Le service ne répond pas », les autres cartes INCONNU |
+Le tableau de bord demande la clé d'API. Les quatre captures ci-dessous, prises sur la copie le 22/10, le montrent
+dans les états joués pendant les exercices.
+
+**Capture 1. La panne en cours** : le bandeau de l'exercice ; « Réponses en erreur » en PROBLÈME, 5 sur 5.
+
+![Tableau de bord de la copie pendant la panne simulée, 22/10/2026](../../../evidence/sprint-5/captures/copie-1-panne-en-cours.webp)
+
+**Capture 2. Le service rétabli, l'alerte encore ouverte** : plus de bandeau ; la carte reste en PROBLÈME, 5 sur 10,
+jusqu'à ce que les erreurs sortent de la fenêtre de 15 minutes.
+
+![Tableau de bord de la copie après le retour du service, 22/10/2026](../../../evidence/sprint-5/captures/copie-2-service-retabli-alerte-ouverte.webp)
+
+**Capture 3. L'attaque simulée** : « Refus de sécurité » en PROBLÈME, 12 sur 12, avec sa consigne « Que faire ».
+
+![Tableau de bord de la copie pendant la dérive simulée, 22/10/2026](../../../evidence/sprint-5/captures/copie-3-derive-refus-securite.webp)
+
+**Capture 4. Le redémarrage pendant le retour arrière** : « Le service ne répond pas », les autres cartes INCONNU,
+jamais SAIN sans donnée.
+
+![Tableau de bord de la copie pendant son redémarrage, 22/10/2026](../../../evidence/sprint-5/captures/copie-0-redemarrage-pendant-le-retour-arriere.webp)
 
 ### 5.7 Le critère 1 du contrat du sprint 1
 

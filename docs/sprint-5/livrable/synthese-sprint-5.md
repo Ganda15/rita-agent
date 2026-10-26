@@ -1,7 +1,7 @@
 # Sprint 5 : synthèse
 
 > La vigie et la démo, en production depuis le 23/10/2026. Synthèse du livrable remis sous le tag
-> `livrable-sprint-5-v4` (26/10/2026) ; le détail et toutes les preuves sont dans le [livrable complet](livrable-sprint-5.md).
+> `livrable-sprint-5-v5` (26/10/2026) ; le détail et toutes les preuves sont dans le [livrable complet](livrable-sprint-5.md).
 
 ## Sommaire
 
@@ -50,7 +50,7 @@ seulement.
 
 | Livrable du brief | Où le trouver | État |
 |---|---|---|
-| Le système complet en production avec sa vigie | le tableau de bord : <https://178-104-184-125.sslip.io/tableau-de-bord.html> (la page demande la clé d'API) ; la vigie : [`monitorage/vigie.py`](../../../monitorage/vigie.py) | en production depuis le 23/10 (N16) ; la vigie se lance à la main |
+| Le système complet en production avec sa vigie | le tableau de bord : <https://178-104-184-125.sslip.io/tableau-de-bord.html> (la page demande la clé d'API ; sans elle, il se voit sur les captures du § 5 ci-après et du § 5.6 du livrable) ; la vigie : [`monitorage/vigie.py`](../../../monitorage/vigie.py) | en production depuis le 23/10 (N16) ; la vigie se lance à la main |
 | La documentation d'exploitation | [`docs/exploitation.md`](../../exploitation.md) | suivie à la lettre par son auteur le 23/10, dix trous trouvés et corrigés |
 | Le scénario de démo écrit et répété | [`docs/sprint-5/DEMO.md`](../DEMO.md) : 9 min 40 en six segments, avec un plan B | répété deux fois le 23/10, en 9 minutes et en 9 minutes 30 environ |
 
@@ -86,6 +86,11 @@ production.
 | 19:17 | l'opérateur suit l'action écrite dans la documentation | 12 lignes de refus, traitées en 0 à 12 ms, toutes des attaques connues : rien à corriger |
 | 19:32 | 15 minutes sans nouveau refus, plus une marge | la vigie ferme le ticket d'elle-même |
 
+Ce que voyait l'opérateur à 19:19 : la carte « Refus de sécurité » en PROBLÈME, 12 sur 12, avec sa consigne « Que
+faire » ; les six autres cartes restent SAIN.
+
+![Tableau de bord de la copie pendant l'attaque simulée, 22/10/2026 à 19:19](../../../evidence/sprint-5/captures/copie-3-derive-refus-securite.webp)
+
 La panne simulée suit le même chemin (ticket [#127](https://github.com/Ganda15/rita-agent/issues/127)) : cinq erreurs
 503 à 18:58, diagnostic en suivant la documentation, service rétabli à 19:00, puis alerte résolue et ticket fermé à
 19:14, une fois les erreurs sorties de la fenêtre de 15 minutes.
@@ -106,7 +111,7 @@ La panne simulée suit le même chemin (ticket [#127](https://github.com/Ganda15
 
 | Mesure | Résultat |
 |---|---|
-| Suite de tests complète, lancée sur le poste (26/10, version 4) | 1 779 passés, 0 échec ; 24 ignorés, 2 échecs attendus |
+| Suite de tests complète, lancée sur le poste (26/10, version 5) | 1 780 passés, 0 échec ; 24 ignorés, 2 échecs attendus |
 | Couverture des neuf modules du sprint 5 (22/10) | 100 % des 764 instructions, 286 tests |
 | Livraison automatique et passage du tag de la version 3 (26/10) | verts, image publiée |
 | Production, vérifiée le 26/10 au matin | `/health` répond `status ok`, avec le commit du tag v3 (`bea3e64`) |
