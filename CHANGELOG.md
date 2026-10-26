@@ -9,6 +9,18 @@
 
 ---
 
+## 2026-10-26 (fin de matinée) : sprint 5, livrable en version 4 (schéma de la vigie, synthèse refaite) ; tag `livrable-sprint-5-v4` à poser
+
+**Livrable complété** : le schéma de la vigie entre au § 1.4 du livrable complet (`docs/sprint-5/schemas/RITA-sprint5-vigie.png`,
+même contenu que celui de la vidéo, mis en forme par Era) ; la synthèse est réécrite pour être comprise en quelques
+minutes : l'essentiel en une minute, avant et après le sprint, six choix de conception avec leur raison, l'attaque
+simulée minute par minute (#128), les critères, les mesures et ce qui n'est pas fait. Elle corrige aussi une
+incohérence de l'ancienne synthèse (retour arrière donné en 5 s puis en 6 s : 6 s le 22/10, 5 s le 23/10). Tests rouges puis
+verts (`tests/test_livrable_sprint5_doc.py`), PDF refaits. Le contenu technique ne change pas ; les tags v1 à v3
+restent figés, la remise devient `livrable-sprint-5-v4`, posé après la livraison suivante.
+
+---
+
 ## 2026-10-26 : sprint 5, livrable en version 3 (chronologie et discussion avec le formateur) ; tag `livrable-sprint-5-v3` à poser
 
 **Livrable complété** : le § 1.2 donne la chronologie du sprint en un tableau, d'abord la copie locale (22 et 23/10),
