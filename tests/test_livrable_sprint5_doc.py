@@ -77,7 +77,23 @@ def test_le_livrable_v4_montre_le_schema_de_la_vigie_au_paragraphe_1_4():
     assert f"]({SCHEMA_VIGIE})" in _section(texte, "### 1.4", "### 1.5")
 
 
-def test_la_synthese_renvoie_a_la_remise_v4_et_montre_le_meme_schema():
+def test_la_synthese_renvoie_a_la_remise_courante_et_montre_le_meme_schema():
     synthese = (RACINE / "docs" / "sprint-5" / "livrable" / "synthese-sprint-5.md").read_text(encoding="utf-8")
-    assert "livrable-sprint-5-v4" in synthese[:600]
+    assert "livrable-sprint-5-v5" in synthese[:600]
     assert f"]({SCHEMA_VIGIE})" in synthese
+
+
+CAPTURES = ["copie-1-panne-en-cours", "copie-2-service-retabli-alerte-ouverte", "copie-3-derive-refus-securite",
+            "copie-0-redemarrage-pendant-le-retour-arriere"]
+
+
+def test_le_livrable_v5_affiche_les_quatre_captures_du_tableau_de_bord_au_paragraphe_5_6():
+    """Version 5 (26/10) : le tableau de bord demande la clé d'API ; sans elle, le lecteur le voit sur ces captures.
+
+    Jusqu'à la version 4, le § 5.6 ne donnait que leurs liens : il fallait cliquer, et avoir accès au dépôt privé.
+    """
+    texte = LIVRABLE.read_text(encoding="utf-8")
+    assert "Version 5" in texte[:1500]
+    s56 = _section(texte, "### 5.6", "### 5.7")
+    images = re.findall(r"!\[[^\]]*\]\(\.\./\.\./\.\./evidence/sprint-5/captures/([^)]+)\.webp\)", s56)
+    assert images == CAPTURES
