@@ -9,6 +9,16 @@
 
 ---
 
+## 2026-10-26 (midi et demi) : sprint 5, livrable en version 5 (captures du tableau de bord affichées) ; tag `livrable-sprint-5-v5` à poser
+
+**Livrable complété** : le tableau de bord de production demande la clé d'API ; pour qu'un lecteur sans clé le voie,
+les quatre captures de la copie (22/10 : panne en cours, service rétabli, attaque simulée, redémarrage) sont affichées
+au § 5.6, chacune avec sa légende, au lieu de simples liens ; la synthèse montre celle de l'attaque simulée. Tests
+rouges puis verts (`tests/test_livrable_sprint5_doc.py`), PDF refaits. Le contenu technique ne change pas ; les tags
+v1 à v4 restent figés, la remise devient `livrable-sprint-5-v5`, posé après la livraison suivante.
+
+---
+
 ## 2026-10-26 (fin de matinée) : sprint 5, livrable en version 4 (schéma de la vigie, synthèse refaite) ; tag `livrable-sprint-5-v4` à poser
 
 **Livrable complété** : le schéma de la vigie entre au § 1.4 du livrable complet (`docs/sprint-5/schemas/RITA-sprint5-vigie.png`,
