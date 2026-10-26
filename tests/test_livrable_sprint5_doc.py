@@ -87,6 +87,18 @@ CAPTURES = ["copie-1-panne-en-cours", "copie-2-service-retabli-alerte-ouverte", 
             "copie-0-redemarrage-pendant-le-retour-arriere"]
 
 
+def test_le_readme_racine_renvoie_au_sprint_5_et_a_sa_remise():
+    """Le lien d'un tag ouvre la racine du dépôt : son encadré parlait encore du sprint 2 (constat du 26/10)."""
+    readme = (RACINE / "README.md").read_text(encoding="utf-8")
+    encadre = readme[:readme.index("## ")]
+    assert "Sprint 5" in encadre and "sprint-2" not in encadre
+    assert "livrable-sprint-5-v5" in encadre
+    liens = re.findall(r"\]\(([^)\s#]+)\)", encadre)
+    internes = [l for l in liens if not l.startswith("http")]
+    assert "docs/sprint-5/README.md" in internes
+    assert all((RACINE / l).exists() for l in internes), internes
+
+
 def test_le_livrable_v5_affiche_les_quatre_captures_du_tableau_de_bord_au_paragraphe_5_6():
     """Version 5 (26/10) : le tableau de bord demande la clé d'API ; sans elle, le lecteur le voit sur ces captures.
 

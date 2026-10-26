@@ -5,9 +5,11 @@
 **Certification RNCP37827 — Développeur en Intelligence Artificielle**
 Simplon & Wild Code School · Eramalingam GANDAKUMAR · ganda70@gmail.com · 2026
 
-> **Sprint 2 de la phase 6 (le socle et la chaîne), livré le 15/10/2026** : commencer par
-> [`docs/sprint-2/README.md`](docs/sprint-2/README.md), puis le livrable
-> [`docs/sprint-2/livrable/livrable-sprint-2.pdf`](docs/sprint-2/livrable/livrable-sprint-2.pdf).
+> **Sprint 5 de la phase 6 (la vigie et la démo), en production depuis le 23/10/2026** : commencer par
+> [`docs/sprint-5/README.md`](docs/sprint-5/README.md), puis la synthèse
+> [`docs/sprint-5/livrable/synthese-sprint-5.pdf`](docs/sprint-5/livrable/synthese-sprint-5.pdf) et le livrable
+> [`docs/sprint-5/livrable/livrable-sprint-5.pdf`](docs/sprint-5/livrable/livrable-sprint-5.pdf).
+> Remise figée : le tag [`livrable-sprint-5-v5`](https://github.com/Ganda15/rita-agent/tree/livrable-sprint-5-v5/docs/sprint-5).
 
 ---
 
