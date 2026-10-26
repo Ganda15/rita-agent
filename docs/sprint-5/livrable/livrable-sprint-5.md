@@ -2,9 +2,10 @@
 
 > RITA, fil rouge de la phase 6 : une aide à la lecture de l'actualité économique, qui répond en citant ses sources ou
 > refuse. Le sprint 5 la rend pilotable et reprenable : des mesures, un tableau de bord, des alertes liées à une action,
-> une documentation d'exploitation. Version 3 (26/10) : la chronologie du sprint rendue explicite, d'abord la copie
-> locale, puis la production (§ 1.2), et la discussion avec le formateur consignée (§ 6) ; le contenu technique ne
-> change pas. Version 2 (25/10) : correction de mise en page de la page 11 du PDF, où une phrase
+> une documentation d'exploitation. Version 4 (26/10) : le schéma de la vigie ajouté (§ 1.4) et la synthèse refaite
+> pour une lecture en quelques minutes ; le contenu technique ne change pas. Version 3 (26/10) : la chronologie du
+> sprint rendue explicite, d'abord la copie locale, puis la production (§ 1.2), et la discussion avec le formateur
+> consignée (§ 6) ; le contenu technique ne change pas. Version 2 (25/10) : correction de mise en page de la page 11 du PDF, où une phrase
 > du § 5.12 s'affichait comme un titre ; le contenu ne change pas. Version 1 : la vigie en production depuis le 23/10
 > (livraison N16), et sa copie sur le poste pour les exercices de panne.
 
@@ -55,6 +56,7 @@ adresse. Les exercices restent coupés en production (§ 5.13).
 | 23/10, matin | copie locale | la doc suivie à la lettre (dix trous corrigés), deux répétitions de la démo, la fausse alerte #130 expliquée et la copie passée sur son propre projet Langfuse | § 5.10 à 5.12 |
 | 23/10, soir | production | PR #133 et #134, livraison N16 (18:00 à 18:12, commit `845e3b3`) : la vigie, `/sante` et le tableau de bord en service ; livraison N17 (documents) et tag `livrable-sprint-5-v1` | § 5.13 |
 | 25/10 | production | version 2 du livrable (page 11 du PDF corrigée), livrée puis taguée `livrable-sprint-5-v2` | en tête du document |
+| 26/10 | production | version 3 du livrable (cette chronologie, la discussion avec le formateur), taguée `livrable-sprint-5-v3` ; puis version 4 (le schéma de la vigie, la synthèse refaite) | en tête du document |
 
 ### 1.3 RITA en trois phrases
 
@@ -80,6 +82,11 @@ faire.
 | Copie du poste | déployer une version, revenir à la précédente sans reconstruire, vérifier le commit et l'image | [`scripts/copie_sprint5.py`](../../../scripts/copie_sprint5.py), [`docker-compose.sprint5.yml`](../../../docker-compose.sprint5.yml) |
 | Documentation | déployer, diagnostiquer une panne, revenir en arrière, et la table des alertes | [`docs/exploitation.md`](../../exploitation.md) |
 
+Le schéma de la page suivante montre ces couches telles qu'elles ont été livrées le 23/10 : ce qui mesure, le passage
+du signal à l'alerte, ce qu'un tiers suit seul dans la documentation, et les preuves.
+
+![La vigie de RITA, du signal à l'action, telle que livrée le 23/10/2026](../schemas/RITA-sprint5-vigie.png)
+
 ### 1.5 L'état de la copie, le 23/10/2026
 
 | Mesure | Valeur | Preuve |
@@ -96,7 +103,8 @@ Heures de Paris, sauf mention UTC.
 
 ### 1.6 Comment lire ce document
 
-Les sections 1 à 3 se lisent en cinq minutes : le brief, les livrables et les critères. La section 4 donne la table
+La [synthèse](synthese-sprint-5.md) résume l'ensemble en quelques pages. Ici, les sections 1 à 3 se lisent en cinq
+minutes : le brief, les livrables et les critères. La section 4 donne la table
 des alertes ; la section 5, les preuves ; la section 7, ce qui manque. Les liens visent les fichiers du dépôt sur la
 branche `sprint-5-vigie-demo`.
 

@@ -57,3 +57,27 @@ def test_le_livrable_v3_donne_la_chronologie_d_abord_en_local_puis_en_production
 def test_la_discussion_avec_le_formateur_est_consignee_dans_le_journal_des_retours():
     s6 = _section(LIVRABLE.read_text(encoding="utf-8"), "## 6. Journal des retours", "## 7.")
     assert "formateur" in s6 and "copie locale" in s6 and "production" in s6
+
+
+SCHEMA_VIGIE = "../schemas/RITA-sprint5-vigie.png"
+
+
+@pytest.mark.parametrize("document", EN_PDF, ids=lambda p: p.name)
+def test_chaque_image_citee_existe_dans_le_depot(document):
+    """Une image absente ne casse pas le Markdown : elle disparaît du PDF sans bruit."""
+    images = re.findall(r"!\[[^\]]*\]\(([^)\s]+)\)", document.read_text(encoding="utf-8"))
+    absentes = [i for i in images if not (document.parent / i).is_file()]
+    assert not absentes, f"{document.name} : images introuvables : {absentes}"
+
+
+def test_le_livrable_v4_montre_le_schema_de_la_vigie_au_paragraphe_1_4():
+    """Version 4 (26/10) : le schéma de la vigie entre dans le livrable complet, là où les couches sont décrites."""
+    texte = LIVRABLE.read_text(encoding="utf-8")
+    assert "Version 4" in texte[:1500]
+    assert f"]({SCHEMA_VIGIE})" in _section(texte, "### 1.4", "### 1.5")
+
+
+def test_la_synthese_renvoie_a_la_remise_v4_et_montre_le_meme_schema():
+    synthese = (RACINE / "docs" / "sprint-5" / "livrable" / "synthese-sprint-5.md").read_text(encoding="utf-8")
+    assert "livrable-sprint-5-v4" in synthese[:600]
+    assert f"]({SCHEMA_VIGIE})" in synthese
