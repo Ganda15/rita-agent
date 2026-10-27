@@ -9,6 +9,26 @@
 
 ---
 
+## 2026-10-27 : livrables E1 v3 et E3 v2 préparés pour l'oral blanc ; tags `livrable-E1-v3` et `livrable-E3-v2` à poser après la fusion dans `main`
+
+**Livrables** : le livret E1 v3 (5 pages, `docs/rapports/E1/rapport-E1.html` et `.pdf`, logo et MCD recadré à côté)
+remplace la version du tag `livrable-E1-v2` ; le rapport E3 v1.9 (20 pages, `docs/rapports/E3/rapport-E3.md` et `.pdf`)
+remplace la version 1.5 du tag `livrable-E3-v1`. Le rapport E3 s'ouvre sur une première page avec sommaire cliquable,
+puis les deux usages ; chaque compétence part de son cas d'usage avant la technique ; les preuves de l'entraînement
+(sans objet, modèle fourni) et de l'accessibilité de la documentation sont écrites. Les tags `livrable-E1-v1`,
+`livrable-E1-v2` et `livrable-E3-v1` restent figés.
+
+**Décision d'Era (27/10)** : la grille E3 passe à 34 ✅ · 5 🟠 · 0 🔴. Deux lignes repassent partielles à la relecture,
+sans changement du code : C10 « tous les points de terminaison » (verrou de la passerelle MCP, #152) et C11 « outils
+adaptés aux contraintes » (règle « UE seule », registre T3).
+
+**Manques découverts** : pour tenir 20 pages, les figures d'E3 passent à 85 % de la largeur et leur plus petit texte
+de 5 à 4,3 points imprimés (`tests/test_schemas_e3.py`), à confirmer par Era. Le 26/10, GitHub n'a pas lancé la
+livraison de `5a82279` (paiement en échec ou plafond de dépense) : la chaîne a échoué fermée, sans alerte (rapport E3,
+§ 7.4).
+
+---
+
 ## 2026-10-26 (midi et demi) : sprint 5, livrable en version 5 (captures du tableau de bord affichées) ; tag `livrable-sprint-5-v5` à poser
 
 **Livrable complété** : le tableau de bord de production demande la clé d'API ; pour qu'un lecteur sans clé le voie,

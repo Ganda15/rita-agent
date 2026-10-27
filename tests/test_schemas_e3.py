@@ -105,7 +105,9 @@ def test_la_mise_en_forme_ne_charge_rien_et_n_execute_rien(nom):
 
 @pytest.mark.parametrize("nom", NOMS)
 def test_la_mise_en_forme_reste_lisible_une_fois_imprimee(nom):
-    """Dans le rapport, une figure fait 516 points de large : sur 1440 de large, 14 px donnent 5 points imprimés."""
+    """Dans le rapport v1.9, une figure fait 85 % de la largeur utile, 439 points (516 avant, à pleine largeur) : sur 1440
+    de large, 14 px donnent 4,3 points imprimés (5 à pleine largeur). La réduction tient le rapport en 20 pages ; le seuil
+    en pixels ne change pas (à confirmer par Era, 27/10/2026)."""
     svg = _illustre(nom)
     largeur, hauteur = (float(v) for v in re.search(r'viewBox="0 0 ([\d.]+) ([\d.]+)"', svg).groups())
     tailles = [s for _, s in _textes_et_tailles(svg) if s]
