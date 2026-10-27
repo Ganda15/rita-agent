@@ -66,7 +66,14 @@ chiffre change, régénérer le `.svg`, reporter le texte dans le `.html`, relan
 **Nettoyage, requêtes et API, depuis le 27/10/2026 (à la demande d'Era)** : même mise en forme, mais produite par le
 générateur (`illustre`), avec les positions du schéma généré multipliées par 1,28. Régénérer suffit donc : le `.html`
 suit, et un test refuse une illustration qui ne serait plus celle du générateur. Le nettoyage est passé au tracé de la
-collecte (trois colonnes à bandeau) ; ses textes du 4 octobre n'ont pas changé.
+collecte (trois colonnes à bandeau).
+**Relecture croisée du 28/10/2026** (un second agent, chaque remarque vérifiée contre le code avant correction) : le
+nettoyage disait que « les requêtes ne lisent que 'OK' » (R1, le portefeuille, ne filtre pas : `db/requetes.sql`) et
+dédoublonnait « sur (ticker, date_seance) » (le code : `(ticker, date)`, `db/importer.py`) ; il dit maintenant la limite
+des libellés CGG (addendum C3 du 26/10). L'API se disait « en lecture seule » alors qu'un appel de la passerelle MCP,
+`/donnees` compris, écrit une ligne dans `mcp_calls`, et promettait le « jeu complet » sans route pour les taux de
+change. Le plan Spark montre des partitions écartées, pas « des fichiers jamais ouverts ». Cinq tests tiennent ces
+corrections ; ils ont échoué avant elles.
 **Charte (refaite le 04/10/2026, à la demande d'Era)** : texte presque noir et plus grand, traits épais ; une couleur
 par rôle de boîte (bande à gauche) et par sens de flèche ; une légende dessinée en bas de chaque schéma, qui ne montre
 que les couleurs employées et ce qu'elles veulent dire dans ce schéma. Le 04/10, le texte de chaque boîte a été

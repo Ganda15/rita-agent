@@ -340,33 +340,33 @@ def nettoyage() -> SchemaPropre:
     return SchemaPropre(
         nom="E1-nettoyage", largeur=1500, hauteur=1030,
         titre="RITA : nettoyer et agréger, chaque défaut mesuré devient une règle",
-        sous_titre="Rapport E1, section 4 (C3) · analyse exploratoire de juillet 2026, incident INC-005 du 27 septembre · état au 4 octobre 2026",
+        sous_titre="Rapport E1, section 4 (C3) · analyse exploratoire de juillet 2026, INC-005 du 27/09 · comptages du 4 octobre, schéma revu le 28 octobre 2026",
         boites=[
             Boite("brut", 40, 104, 300, 124, "1. Le jeu brut", ["dix ans de cotations, 111 valeurs", "Parquet, 11 partitions par année", "276 168 lignes analysées", "0 valeur manquante"], "stock"),
             Boite("eda", 380, 104, 330, 124, "2. Analyse exploratoire (juillet)", ["compter avant de modéliser :", "doublons, bornes, volumes, extrêmes,", "libellés ; preuves dans evidence/C3/", "chaque défaut → une décision de schéma"], "lavis"),
             Boite("agr", 750, 104, 330, 124, "3. Agrégation en un seul jeu", ["dates ISO 8601 dans le fuseau de la place", "devises ISO 4217, nombres français convertis", "codes ISIN complétés", "puis chargement par db/importer.py"], "lavis"),
-            Boite("res", 1120, 104, 340, 124, "4. Le jeu propre, en base", ["276 168 lues → 2 560 doublons écartés", "→ 273 608 insérées (juillet 2026)", "→ 278 473 cotations au 02/10/2026", "après 40 collectes du soir"], "stock"),
+            Boite("res", 1120, 104, 340, 124, "4. Le jeu contrôlé, en base", ["276 168 lues → 2 560 doublons écartés", "→ 273 608 insérées (juillet 2026)", "→ 278 473 cotations au 02/10/2026", "après 40 collectes du soir"], "stock"),
 
             Boite("zd", 28, 248, 480, 566, "DÉFAUT MESURÉ", genre="zone"),
             Boite("zr", 520, 248, 540, 566, "DÉCISION", genre="zone"),
             Boite("zf", 1072, 248, 400, 566, "FICHIER QUI L'APPLIQUE", genre="zone"),
             Boite("d1", 40, 300, 456, 92, "5 120 lignes en double (2 560 paires), surtout VIRI.PA", ["sans règle : l'import échoue sur la clé primaire"], "normal"),
-            Boite("r1", 532, 300, 516, 92, "Dédoublonnage sur (ticker, date_seance) avant insertion", ["la collecte du soir est rejouable : ON CONFLICT DO UPDATE"], "lavis"),
+            Boite("r1", 532, 300, 516, 92, "Dédoublonnage sur (ticker, date), avant insertion", ["la date de l'archive, avant le calcul de date_seance ;", "la collecte du soir, elle, rejoue : ON CONFLICT DO UPDATE"], "lavis"),
             Boite("f1", 1084, 300, 376, 92, "db/importer.py", ["preuve : evidence/C3/preuve-dedoublonnage-cgg.md"], "note"),
 
             Boite("d2", 40, 402, 456, 92, "1 533 clôtures hors de [bas, haut], dont 1 142 STLAP.PA", ["sans règle : des variations aberrantes au briefing"], "normal"),
-            Boite("r2", 532, 402, 516, 92, "STLAP.PA marquée INCOHERENT : exclue des requêtes, gardée", ["aucune contrainte ne borne la clôture (db/schema.sql refuse haut < bas) :", "23 lignes hors bornes en base le 04/10, limite déclarée"], "manque"),
-            Boite("f2", 1084, 402, 376, 92, "db/importer.py (QUALITE), sources/database.py", ["les requêtes ne lisent que statut_qualite = 'OK'"], "note"),
+            Boite("r2", 532, 402, 516, 92, "STLAP.PA marquée INCOHERENT : exclue des classements, gardée", ["aucune contrainte ne borne la clôture (db/schema.sql refuse haut < bas) :", "23 lignes hors bornes en base le 04/10, limite déclarée"], "manque"),
+            Boite("f2", 1084, 402, 376, 92, "db/importer.py (QUALITE), sources/database.py", ["R2 et R3 : seulement 'OK' ; R1 affiche le statut"], "note"),
 
             Boite("d3", 40, 504, 456, 92, "Cours maximal 7 156 748 (ALJXR.PA)", ["regroupement d'actions rétro-ajusté (prix ÷ 36 millions)"], "normal"),
             Boite("r3", 532, 504, 516, 92, "Marquée INCOHERENT, conservée, mécanisme identifié", ["la table operation_sur_titre est conçue, pas construite"], "manque"),
-            Boite("f3", 1084, 504, 376, 92, "evidence/C3/preuve-artefact-reverse-split.md", ["statut_qualite : exclure sans supprimer"], "note"),
+            Boite("f3", 1084, 504, 376, 92, "evidence/C3/preuve-artefact-reverse-split.md", ["statut_qualite : écartée des classements, gardée"], "note"),
 
             Boite("d4", 40, 606, 456, 92, "Libellés du portefeuille différents des tickers", ["« CGG BS », « CGG RGPT » : aucune position rattachée"], "normal"),
-            Boite("r4", 532, 606, 516, 92, "Entité ALIAS au modèle : une valeur, plusieurs noms", ["112 alias pour 111 valeurs"], "lavis"),
+            Boite("r4", 532, 606, 516, 92, "Entité ALIAS au modèle : une valeur, plusieurs noms", ["112 alias pour 111 valeurs ; deux libellés, un ticker :", "pas la preuve d'un même instrument (addendum du 26/10) ;", "une position « CGG BS » serait valorisée au cours de l'action"], "manque"),
             Boite("f4", 1084, 606, 376, 92, "db/importer.py, table alias_valeur", ["cardinalité VALEUR 1,n / ALIAS 1,1 (Merise, C4)"], "note"),
 
-            Boite("d5", 40, 708, 456, 92, "INC-005 (27/09) : 52 426 cotations un dimanche", ["date UTC d'un « minuit à Paris » = la veille à 22 h ;", "même cause : pence de Londres, dollars, samedi, fériés"], "normal"),
+            Boite("d5", 40, 708, 456, 92, "INC-005 (27/09) : 52 426 cotations un dimanche", ["date UTC d'un « minuit à Paris » = la veille à 22 h ;", "même racine, la place de cotation non modélisée :", "pence de Londres, dollars, samedi, fériés"], "normal"),
             Boite("r5", 532, 708, 516, 92, "La place de cotation entre dans le modèle", ["fuseau, devise et unité de prix par place, fériés Euronext ;", "correctif en une transaction, 42 tests écrits d'abord"], "lavis"),
             Boite("f5", 1084, 708, 376, 92, "sources/marches.py, sources/cotations.py", ["leçon : compter aussi par jour de la semaine"], "note"),
 
@@ -378,8 +378,8 @@ def nettoyage() -> SchemaPropre:
         bandeaux={"zd": NAVY, "zr": "#1565C0", "zf": "#475569"},
         formes={"brut": ("cylindre", "parquet"), "eda": ("code", ""), "agr": ("code", ""), "res": ("cylindre", "elephant"),
                 **{f"d{i}": ("boite", "alerte") for i in range(1, 6)},
-                "r1": ("boite", "coche"), "r4": ("boite", "coche"), "r5": ("boite", "coche"),
-                "r2": ("boite", "drapeau"), "r3": ("boite", "drapeau"),
+                "r1": ("boite", "coche"), "r5": ("boite", "coche"),
+                "r2": ("boite", "drapeau"), "r3": ("boite", "drapeau"), "r4": ("boite", "drapeau"),
                 **{f"f{i}": ("fichier", "document") for i in range(1, 6)},
                 "pos": ("fichier", "tableur"), "vol": ("boite", "oeil")},
         legende="Chiffres de juillet et du 02/10 : rapport E1, section 4.",
@@ -428,7 +428,7 @@ def requetes() -> SchemaPropre:
     par_annee = [f"{a} : {_n(n)}" for a, n in p.items()]
     return SchemaPropre(
         nom="E1-requetes", largeur=1500, hauteur=860,
-        titre="RITA : interroger en SQL et en Spark SQL, chaque optimisation mesurée",
+        titre="RITA : interroger en SQL et en Spark SQL, optimisations expliquées, mesures datées",
         sous_titre="Rapport E1, section 6 (C2) · filtres lus dans le code à la génération, comptages et mesures datés · état au 27 octobre 2026",
         boites=[
             Boite("zs", 20, 104, 446, 584, "1. DEUX SYSTÈMES, DEUX LANGAGES", genre="zone"),
@@ -443,8 +443,10 @@ def requetes() -> SchemaPropre:
 
             Boite("zd", 1060, 104, 420, 584, "3. LE COÛT, MESURÉ", genre="zone"),
             Boite("expl", 1072, 160, 396, 178, "PostgreSQL : EXPLAIN ANALYZE (août 2026)", ["dernier cours des 111 valeurs :", "  DISTINCT ON 295,19 ms, LATERAL 1,19 ms", "les 7 positions : CTE DISTINCT ON 258,00 ms,", "  sous-requête corrélée 0,12 ms, LATERAL 0,24 ms", "DISTINCT ON triait les 273 608 cotations ;", "  LATERAL va chercher par l'index (cotation_pkey)", "l'optimisation prévue était la mauvaise"], "note"),
-            Boite("plan", 1072, 358, 396, 160, "Spark : ce que lit chaque requête (plan)", [f"S1 lit {nb}/{nb} partitions : {_n(total)} lignes", f"S2 lit {n2}/{nb} : {_n(l2)} lignes, {nb - n2} fichiers jamais ouverts", f"S3 lit {n3}/{nb} : {_n(l3)} lignes, {nb - n3} fichiers jamais ouverts", "preuve dans le plan, pour annee = 2024 :", "  PartitionFilters: [isnotnull(annee), (annee = 2024)]", f"  1 fichier ouvert sur {nb}, {_n(p[2024])} lignes", "coût qui reste : le shuffle (GROUP BY, PARTITION BY)"], "note"),
-            Boite("cmp", 1072, 538, 396, 100, "Optimiser ne veut pas dire la même chose", ["PostgreSQL : choisir le bon chemin d'accès, l'index", "Spark : ne pas ouvrir les partitions inutiles", "ce qui coûte : trier toute la table / le shuffle"], "normal"),
+            # 28/10 (relecture croisée) : le plan montre les partitions écartées du scan, pas « des fichiers jamais
+            # ouverts » ; et ces nombres valent pour le jeu compté le 27/10 et les filtres d'aujourd'hui.
+            Boite("plan", 1072, 358, 396, 160, "Spark : partitions lues (comptées le 27/10)", [f"S1 lit {nb}/{nb} partitions : {_n(total)} lignes", f"S2 lit {n2}/{nb} : {_n(l2)} lignes, {nb - n2} partitions écartées", f"S3 lit {n3}/{nb} : {_n(l3)} lignes, {nb - n3} partitions écartées", "preuve dans le plan, pour annee = 2024 :", "  PartitionFilters: [isnotnull(annee), (annee = 2024)]", f"  1 partition lue sur {nb}, {_n(p[2024])} lignes", "coût qui reste : le shuffle (GROUP BY, PARTITION BY)"], "note"),
+            Boite("cmp", 1072, 538, 396, 100, "Optimiser ne veut pas dire la même chose", ["PostgreSQL : choisir le bon chemin d'accès, l'index", "Spark : ne pas lire les partitions inutiles", "ce qui coûte : trier toute la table / le shuffle"], "normal"),
 
             Boite("cov", 20, 706, 1460, 66, "Couverture de C2 : requêtes fonctionnelles ✓ · choix documentés ✓ · optimisations expliquées ✓",
                   [f"SGBD et système big data, chacun dans son langage. Limite : {_n(total)} lignes et 14 Mo ne sont pas du big data ; la méthode est montrée en local (cadrage accepté par le formateur en août)."], "neuf"),
@@ -518,16 +520,18 @@ def api() -> SchemaPropre:
             Boite("za", 566, 104, 384, 590, "2. L'API REST (FastAPI)", genre="zone"),
             Boite("main", 578, 160, 360, 130, "api/main.py : la clé sur tout le routeur", ["include_router(routeur_donnees,", "  dependencies=[Depends(verify_api_key)])", "une route ajoutée est protégée d'office", "X-Request-ID sur toute réponse, refus compris"], "lavis"),
             Boite("cle", 578, 316, 360, 150, "Contrôle d'accès : verify_api_key", ["en-tête X-API-Key, comparé par compare_digest", "absente ou fausse : 403, une ligne de journal,", "  jamais la clé, ni un morceau", f"clé d'au moins {f['cle_min']} caractères, sans défaut"], "garde"),
-            Boite("routes", 578, 512, 360, 165, f"api/donnees.py : {len(f['routes'])} points de terminaison",
-                  _par_lignes(f["routes"]) + [f"pages de {_n(f['limite'])} lignes au plus ; /cotations : jusqu_a", "422 saisie invalide, 404 ticker ou article inconnu"], "lavis"),
+            Boite("routes", 578, 512, 360, 172, f"api/donnees.py : {len(f['routes'])} points de terminaison",
+                  _par_lignes(f["routes"]) + [f"limite plafonnée par route, {_n(f['limite'])} au plus ;", "  /cotations se lit par pages, avec jusqu_a", "422 saisie invalide, 404 ticker ou article inconnu"], "lavis"),
 
             Boite("zd", 1060, 104, 420, 590, "3. DONNÉES, CONTRAT ET PREUVES", genre="zone"),
-            Boite("pg", 1072, 160, 396, 110, "PostgreSQL 18, en lecture seule", ["sources/database.py : les requêtes de db/requetes.sql", "indicateurs/ : calculs déterministes, sans modèle", "aucune route de /donnees n'écrit en base"], "stock"),
+            # 28/10 (relecture croisée) : un appel de la passerelle MCP, /donnees compris, laisse une ligne dans
+            # mcp_calls (api/main.py, X-Client-Id) ; « en lecture seule » était donc faux pour l'API.
+            Boite("pg", 1072, 160, 396, 120, "PostgreSQL 18 : /donnees lit les données", ["sources/database.py : les requêtes de db/requetes.sql", "indicateurs/ : calculs déterministes, sans modèle", "appel de la passerelle MCP : une ligne d'audit", "  (mcp_calls), écrite après la réponse"], "stock"),
             Boite("contrat", 1072, 300, 396, 100, f"Contrat OpenAPI {f['openapi']}, généré par FastAPI", [f"{f['chemins']} chemins, dont {f['chemins_donnees']} sous /donnees", f"schéma de sécurité {f['securite']} déclaré", "/openapi.json et /docs, tenus à jour par le code"], "stock"),
-            Boite("tests", 1072, 560, 396, 120, "Les preuves : tests/test_api_donnees.py", [f"{f['tests_api']} fonctions de test, dont :", "chaque route de /donnees, sans clé : 403", f"2 600 séances relues par pages de {_n(f['limite'])},", "  sans trou ni doublon"], "note"),
+            Boite("tests", 1072, 560, 396, 120, "Les preuves : tests/test_api_donnees.py", [f"{f['tests_api']} fonctions de test, dont :", "chaque route de /donnees, sans clé : 403", f"2 600 séances fictives, pages de {_n(f['limite'])} (SQLite", "  en mémoire) : ni trou ni doublon"], "note"),
 
-            Boite("cov", 20, 712, 1460, 66, "Couverture de C5 : points de terminaison documentés ✓ · authentification documentée ✓ · standard OpenAPI ✓ · accès restreint ✓ · jeu complet ✓",
-                  ["Limite : une seule clé partagée, sans droits par utilisateur (décision D10) ; pas de quota sur /donnees, seulement sur /briefing et /question, qui appellent le modèle."], "neuf"),
+            Boite("cov", 20, 712, 1460, 66, "Couverture de C5 : points de terminaison documentés ✓ · authentification documentée ✓ · standard OpenAPI ✓ · accès restreint ✓ · données nécessaires récupérables ✓",
+                  ["Limites : une seule clé partagée, sans droits par utilisateur (décision D10) ; pas de quota sur /donnees (seulement /briefing et /question, qui appellent le modèle) ; taux de change sans route propre, ils servent à convertir le portefeuille."], "neuf"),
         ],
         fleches=[],
         traces=bus + [
@@ -538,6 +542,7 @@ def api() -> SchemaPropre:
             Trace([(938, 530), (1003, 530), (1003, 215), (1072, 215)], "lecture", "lit", (970, 530)),
             Trace([(938, 560), (1035, 560), (1035, 350), (1072, 350)], "flux", "décrit", (986, 560)),
             Trace([(1072, 640), (938, 640)], "flux", "vérifie", (1005, 640)),
+            Trace([(578, 668), (243, 668), (243, 588)], "flux", "réponse JSON aux clients", (400, 668)),   # 28/10
         ],
         bandeaux={"zc": NAVY, "za": "#1565C0", "zd": "#6D28D9"},
         formes={"web": ("boite", "ecran"), "mcp": ("boite", "prise"), "dep": ("boite", "coche"), "doc": ("boite", "terminal"),

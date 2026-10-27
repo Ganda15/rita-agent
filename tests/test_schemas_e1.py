@@ -186,3 +186,46 @@ def test_le_schema_de_l_api_affiche_chaque_route_et_le_contrat_du_code(gen):
     assert f"{len(contrat['paths'])} chemins" in texte
     assert f"au moins {LONGUEUR_MINIMALE_CLE} caractères" in texte
     assert "403" in texte
+
+
+# --- 28/10/2026 : relecture croisée (un second agent, vérifiée contre le code) : ce que les schémas disaient de trop ---
+
+def test_le_nettoyage_ne_dit_pas_que_toutes_les_requetes_ecartent_les_valeurs_douteuses(gen):
+    """R1 (le portefeuille) ne filtre pas statut_qualite (db/requetes.sql, « Aucun filtre ») : seules R2 et R3 le font."""
+    requetes = (RACINE / "db/requetes.sql").read_text(encoding="utf-8")
+    assert "Aucun filtre sur `statut_qualite`" in requetes
+    texte = gen.svg(gen.SCHEMAS["E1-nettoyage"]())
+    assert "exclue des requêtes" not in texte and "les requêtes ne lisent que" not in texte
+    assert "R1" in texte
+
+
+def test_le_nettoyage_affiche_la_cle_de_dedoublonnage_du_code(gen):
+    """db/importer.py dédoublonne sur (ticker, date), la date de l'archive, avant le calcul de date_seance."""
+    importer = (RACINE / "db/importer.py").read_text(encoding="utf-8")
+    cle = re.search(r'drop_duplicates\(subset=\["(\w+)", "(\w+)"\]', importer).groups()
+    texte = gen.svg(gen.SCHEMAS["E1-nettoyage"]())
+    assert f"({cle[0]}, {cle[1]})" in texte
+    assert "(ticker, date_seance) avant insertion" not in texte
+
+
+def test_le_nettoyage_dit_la_limite_des_libelles_cgg(gen):
+    """Addendum C3 du 26/10 : deux libellés sur un ticker ne prouvent pas un même instrument."""
+    assert "ne démontre pas : que les deux libellés désignent le même instrument" in \
+        (RACINE / "evidence/C3/preuve-dedoublonnage-cgg.md").read_text(encoding="utf-8")
+    assert "même instrument" in gen.svg(gen.SCHEMAS["E1-nettoyage"]())
+
+
+def test_l_api_ne_se_dit_pas_en_lecture_seule_tant_que_l_audit_mcp_ecrit(gen):
+    """Un appel qui porte X-Client-Id (la passerelle MCP) laisse une ligne dans mcp_calls, /donnees compris."""
+    main = (RACINE / "api/main.py").read_text(encoding="utf-8")
+    assert 'request.headers.get("X-Client-Id"' in main and "audit_mcp.enregistrer" in main
+    texte = gen.svg(gen.SCHEMAS["E1-api"]())
+    assert "n'écrit en base" not in texte and "en lecture seule" not in texte
+    assert "mcp_calls" in texte
+
+
+def test_l_api_ne_promet_pas_le_jeu_complet(gen):
+    """Aucune route de api/donnees.py ne sert taux_change : la bande de couverture le dit, sans « jeu complet »."""
+    assert "taux_change" not in (RACINE / "api/donnees.py").read_text(encoding="utf-8")
+    texte = gen.svg(gen.SCHEMAS["E1-api"]())
+    assert "jeu complet" not in texte and "taux de change" in texte

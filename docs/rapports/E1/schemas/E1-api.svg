@@ -55,23 +55,25 @@
 <text x="600" y="381" font-size="12" fill="#111827" xml:space="preserve">absente ou fausse : 403, une ligne de journal,</text>
 <text x="600" y="398" font-size="12" fill="#111827" xml:space="preserve">  jamais la clé, ni un morceau</text>
 <text x="600" y="415" font-size="12" fill="#111827" xml:space="preserve">clé d&#x27;au moins 16 caractères, sans défaut</text>
-<rect x="580" y="515" width="360" height="165" rx="7" fill="#0F172A" opacity="0.06"/>
-<rect x="578" y="512" width="360" height="165" rx="7" fill="#E3F0FD" stroke="#1565C0" stroke-width="1.6"/>
-<rect x="578" y="512" width="8" height="165" rx="3" fill="#1565C0"/>
+<rect x="580" y="515" width="360" height="172" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="578" y="512" width="360" height="172" rx="7" fill="#E3F0FD" stroke="#1565C0" stroke-width="1.6"/>
+<rect x="578" y="512" width="8" height="172" rx="3" fill="#1565C0"/>
 <text x="600" y="538" font-size="14.5" font-weight="700" fill="#0B2A5B">api/donnees.py : 12 points de terminaison</text>
 <text x="600" y="560" font-size="12" fill="#111827" xml:space="preserve">/valeurs · /cotations · /macro · /portefeuille</text>
 <text x="600" y="577" font-size="12" fill="#111827" xml:space="preserve">/mouvements · /volumes-anormaux · /indicateurs</text>
 <text x="600" y="594" font-size="12" fill="#111827" xml:space="preserve">/indicateurs-portefeuille · /indicateurs-risque</text>
 <text x="600" y="611" font-size="12" fill="#111827" xml:space="preserve">/articles · /articles/{article_id} · /fraicheur</text>
-<text x="600" y="628" font-size="12" fill="#111827" xml:space="preserve">pages de 1 000 lignes au plus ; /cotations : jusqu_a</text>
-<text x="600" y="645" font-size="12" fill="#111827" xml:space="preserve">422 saisie invalide, 404 ticker ou article inconnu</text>
-<rect x="1074" y="163" width="396" height="110" rx="7" fill="#0F172A" opacity="0.06"/>
-<rect x="1072" y="160" width="396" height="110" rx="7" fill="#F1EAFE" stroke="#6D28D9" stroke-width="1.6"/>
-<rect x="1072" y="160" width="8" height="110" rx="3" fill="#6D28D9"/>
-<text x="1094" y="186" font-size="14.5" font-weight="700" fill="#4C1D95">PostgreSQL 18, en lecture seule</text>
+<text x="600" y="628" font-size="12" fill="#111827" xml:space="preserve">limite plafonnée par route, 1 000 au plus ;</text>
+<text x="600" y="645" font-size="12" fill="#111827" xml:space="preserve">  /cotations se lit par pages, avec jusqu_a</text>
+<text x="600" y="662" font-size="12" fill="#111827" xml:space="preserve">422 saisie invalide, 404 ticker ou article inconnu</text>
+<rect x="1074" y="163" width="396" height="120" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="1072" y="160" width="396" height="120" rx="7" fill="#F1EAFE" stroke="#6D28D9" stroke-width="1.6"/>
+<rect x="1072" y="160" width="8" height="120" rx="3" fill="#6D28D9"/>
+<text x="1094" y="186" font-size="14.5" font-weight="700" fill="#4C1D95">PostgreSQL 18 : /donnees lit les données</text>
 <text x="1094" y="208" font-size="12" fill="#111827" xml:space="preserve">sources/database.py : les requêtes de db/requetes.sql</text>
 <text x="1094" y="225" font-size="12" fill="#111827" xml:space="preserve">indicateurs/ : calculs déterministes, sans modèle</text>
-<text x="1094" y="242" font-size="12" fill="#111827" xml:space="preserve">aucune route de /donnees n&#x27;écrit en base</text>
+<text x="1094" y="242" font-size="12" fill="#111827" xml:space="preserve">appel de la passerelle MCP : une ligne d&#x27;audit</text>
+<text x="1094" y="259" font-size="12" fill="#111827" xml:space="preserve">  (mcp_calls), écrite après la réponse</text>
 <rect x="1074" y="303" width="396" height="100" rx="7" fill="#0F172A" opacity="0.06"/>
 <rect x="1072" y="300" width="396" height="100" rx="7" fill="#F1EAFE" stroke="#6D28D9" stroke-width="1.6"/>
 <rect x="1072" y="300" width="8" height="100" rx="3" fill="#6D28D9"/>
@@ -85,13 +87,13 @@
 <text x="1094" y="586" font-size="14.5" font-weight="700" fill="#0B2A5B">Les preuves : tests/test_api_donnees.py</text>
 <text x="1094" y="608" font-size="12" fill="#111827" xml:space="preserve">39 fonctions de test, dont :</text>
 <text x="1094" y="625" font-size="12" fill="#111827" xml:space="preserve">chaque route de /donnees, sans clé : 403</text>
-<text x="1094" y="642" font-size="12" fill="#111827" xml:space="preserve">2 600 séances relues par pages de 1 000,</text>
-<text x="1094" y="659" font-size="12" fill="#111827" xml:space="preserve">  sans trou ni doublon</text>
+<text x="1094" y="642" font-size="12" fill="#111827" xml:space="preserve">2 600 séances fictives, pages de 1 000 (SQLite</text>
+<text x="1094" y="659" font-size="12" fill="#111827" xml:space="preserve">  en mémoire) : ni trou ni doublon</text>
 <rect x="22" y="715" width="1460" height="66" rx="7" fill="#0F172A" opacity="0.06"/>
 <rect x="20" y="712" width="1460" height="66" rx="7" fill="#E8F5E9" stroke="#15803D" stroke-width="1.6"/>
 <rect x="20" y="712" width="8" height="66" rx="3" fill="#15803D"/>
-<text x="42" y="738" font-size="14.5" font-weight="700" fill="#14532D">Couverture de C5 : points de terminaison documentés ✓ · authentification documentée ✓ · standard OpenAPI ✓ · accès restreint ✓ · jeu complet ✓</text>
-<text x="42" y="760" font-size="12" fill="#111827" xml:space="preserve">Limite : une seule clé partagée, sans droits par utilisateur (décision D10) ; pas de quota sur /donnees, seulement sur /briefing et /question, qui appellent le modèle.</text>
+<text x="42" y="738" font-size="14.5" font-weight="700" fill="#14532D">Couverture de C5 : points de terminaison documentés ✓ · authentification documentée ✓ · standard OpenAPI ✓ · accès restreint ✓ · données nécessaires récupérables ✓</text>
+<text x="42" y="760" font-size="12" fill="#111827" xml:space="preserve">Limites : une seule clé partagée, sans droits par utilisateur (décision D10) ; pas de quota sur /donnees (seulement /briefing et /question, qui appellent le modèle) ; taux de change sans route propre, ils servent à convertir le portefeuille.</text>
 <polyline points="454,210 496,210" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round"/>
 <polyline points="454,326 496,326" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round"/>
 <polyline points="454,437 496,437" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round"/>
@@ -103,6 +105,7 @@
 <polyline points="938,530 1003,530 1003,215 1072,215" fill="none" stroke="#15803D" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-lecture)"/>
 <polyline points="938,560 1035,560 1035,350 1072,350" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
 <polyline points="1072,640 938,640" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="578,668 243,668 243,588" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
 <rect x="711" y="477" width="94" height="24" rx="12" fill="#FFFFFF" stroke="#0B2A5B" stroke-width="1.8"/>
 <text x="758" y="493.5" font-size="12" font-weight="700" fill="#0B2A5B" text-anchor="middle">clé valide</text>
 <rect x="948.2" y="518" width="43.6" height="24" rx="12" fill="#FFFFFF" stroke="#15803D" stroke-width="1.8"/>
@@ -111,6 +114,8 @@
 <text x="986" y="564.5" font-size="12" font-weight="700" fill="#0B2A5B" text-anchor="middle">décrit</text>
 <rect x="968.8" y="628" width="72.4" height="24" rx="12" fill="#FFFFFF" stroke="#0B2A5B" stroke-width="1.8"/>
 <text x="1005" y="644.5" font-size="12" font-weight="700" fill="#0B2A5B" text-anchor="middle">vérifie</text>
+<rect x="302.6" y="656" width="194.8" height="24" rx="12" fill="#FFFFFF" stroke="#0B2A5B" stroke-width="1.8"/>
+<text x="400" y="672.5" font-size="12" font-weight="700" fill="#0B2A5B" text-anchor="middle">réponse JSON aux clients</text>
 <text x="36" y="825" font-size="13" font-weight="700" fill="#0B2A5B">Légende</text>
 <rect x="112" y="812" width="26" height="16" rx="4" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
 <rect x="112" y="812" width="5" height="16" rx="2" fill="#1E293B"/>

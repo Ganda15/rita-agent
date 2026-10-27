@@ -4,7 +4,7 @@
 <rect width="1500" height="1030" fill="#FFFFFF"/>
 <rect width="1500" height="6" fill="url(#bandeau)"/>
 <text x="36" y="56" font-size="30" font-weight="700" fill="#0B2A5B">RITA : nettoyer et agréger, chaque défaut mesuré devient une règle</text>
-<text x="36" y="84" font-size="15" fill="#1F2937">Rapport E1, section 4 (C3) · analyse exploratoire de juillet 2026, incident INC-005 du 27 septembre · état au 4 octobre 2026</text>
+<text x="36" y="84" font-size="15" fill="#1F2937">Rapport E1, section 4 (C3) · analyse exploratoire de juillet 2026, INC-005 du 27/09 · comptages du 4 octobre, schéma revu le 28 octobre 2026</text>
 <rect x="28" y="248" width="480" height="566" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.2"/>
 <rect x="36" y="256" width="464" height="34" rx="7" fill="#0B2A5B"/>
 <text x="50" y="278" font-size="14" font-weight="700" fill="#FFFFFF" letter-spacing="0.6">DÉFAUT MESURÉ</text>
@@ -41,7 +41,7 @@
 <rect x="1122" y="107" width="340" height="124" rx="7" fill="#0F172A" opacity="0.06"/>
 <rect x="1120" y="104" width="340" height="124" rx="7" fill="#F1EAFE" stroke="#6D28D9" stroke-width="1.6"/>
 <rect x="1120" y="104" width="8" height="124" rx="3" fill="#6D28D9"/>
-<text x="1142" y="130" font-size="14.5" font-weight="700" fill="#4C1D95">4. Le jeu propre, en base</text>
+<text x="1142" y="130" font-size="14.5" font-weight="700" fill="#4C1D95">4. Le jeu contrôlé, en base</text>
 <text x="1142" y="152" font-size="12" fill="#111827" xml:space="preserve">276 168 lues → 2 560 doublons écartés</text>
 <text x="1142" y="169" font-size="12" fill="#111827" xml:space="preserve">→ 273 608 insérées (juillet 2026)</text>
 <text x="1142" y="186" font-size="12" fill="#111827" xml:space="preserve">→ 278 473 cotations au 02/10/2026</text>
@@ -54,8 +54,9 @@
 <rect x="534" y="303" width="516" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
 <rect x="532" y="300" width="516" height="92" rx="7" fill="#E3F0FD" stroke="#1565C0" stroke-width="1.6"/>
 <rect x="532" y="300" width="8" height="92" rx="3" fill="#1565C0"/>
-<text x="554" y="326" font-size="14.5" font-weight="700" fill="#0B2A5B">Dédoublonnage sur (ticker, date_seance) avant insertion</text>
-<text x="554" y="348" font-size="12" fill="#111827" xml:space="preserve">la collecte du soir est rejouable : ON CONFLICT DO UPDATE</text>
+<text x="554" y="326" font-size="14.5" font-weight="700" fill="#0B2A5B">Dédoublonnage sur (ticker, date), avant insertion</text>
+<text x="554" y="348" font-size="12" fill="#111827" xml:space="preserve">la date de l&#x27;archive, avant le calcul de date_seance ;</text>
+<text x="554" y="365" font-size="12" fill="#111827" xml:space="preserve">la collecte du soir, elle, rejoue : ON CONFLICT DO UPDATE</text>
 <rect x="1086" y="303" width="376" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
 <rect x="1084" y="300" width="376" height="92" rx="7" fill="#F1F5F9" stroke="#475569" stroke-width="1.6"/>
 <rect x="1084" y="300" width="8" height="92" rx="3" fill="#475569"/>
@@ -70,7 +71,7 @@
 <rect x="534" y="405" width="516" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
 <rect x="532" y="402" width="516" height="92" rx="7" fill="#FDECEC" stroke="#D32F2F" stroke-width="1.6"/>
 <rect x="532" y="402" width="8" height="92" rx="3" fill="#D32F2F"/>
-<text x="554" y="428" font-size="14.5" font-weight="700" fill="#C62828">STLAP.PA marquée INCOHERENT : exclue des requêtes, gardée</text>
+<text x="554" y="428" font-size="14.5" font-weight="700" fill="#C62828">STLAP.PA marquée INCOHERENT : exclue des classements, gardée</text>
 <text x="554" y="450" font-size="12" fill="#111827" xml:space="preserve">aucune contrainte ne borne la clôture (db/schema.sql refuse haut &lt; bas) :</text>
 <text x="554" y="467" font-size="12" fill="#111827" xml:space="preserve">23 lignes hors bornes en base le 04/10, limite déclarée</text>
 <rect x="1086" y="405" width="376" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
@@ -78,7 +79,7 @@
 <rect x="1084" y="402" width="8" height="92" rx="3" fill="#475569"/>
 <text x="1106" y="428" font-size="14.5" font-weight="700" fill="#0B2A5B">db/importer.py (QUALITE),</text>
 <text x="1106" y="447" font-size="14.5" font-weight="700" fill="#0B2A5B">  sources/database.py</text>
-<text x="1106" y="469" font-size="12" fill="#111827" xml:space="preserve">les requêtes ne lisent que statut_qualite = &#x27;OK&#x27;</text>
+<text x="1106" y="469" font-size="12" fill="#111827" xml:space="preserve">R2 et R3 : seulement &#x27;OK&#x27; ; R1 affiche le statut</text>
 <rect x="42" y="507" width="456" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
 <rect x="40" y="504" width="456" height="92" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
 <rect x="40" y="504" width="8" height="92" rx="3" fill="#1E293B"/>
@@ -93,17 +94,19 @@
 <rect x="1084" y="504" width="376" height="92" rx="7" fill="#F1F5F9" stroke="#475569" stroke-width="1.6"/>
 <rect x="1084" y="504" width="8" height="92" rx="3" fill="#475569"/>
 <text x="1106" y="530" font-size="14.5" font-weight="700" fill="#0B2A5B">evidence/C3/preuve-artefact-reverse-split.md</text>
-<text x="1106" y="552" font-size="12" fill="#111827" xml:space="preserve">statut_qualite : exclure sans supprimer</text>
+<text x="1106" y="552" font-size="12" fill="#111827" xml:space="preserve">statut_qualite : écartée des classements, gardée</text>
 <rect x="42" y="609" width="456" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
 <rect x="40" y="606" width="456" height="92" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
 <rect x="40" y="606" width="8" height="92" rx="3" fill="#1E293B"/>
 <text x="62" y="632" font-size="14.5" font-weight="700" fill="#0B2A5B">Libellés du portefeuille différents des tickers</text>
 <text x="62" y="654" font-size="12" fill="#111827" xml:space="preserve">« CGG BS », « CGG RGPT » : aucune position rattachée</text>
 <rect x="534" y="609" width="516" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
-<rect x="532" y="606" width="516" height="92" rx="7" fill="#E3F0FD" stroke="#1565C0" stroke-width="1.6"/>
-<rect x="532" y="606" width="8" height="92" rx="3" fill="#1565C0"/>
-<text x="554" y="632" font-size="14.5" font-weight="700" fill="#0B2A5B">Entité ALIAS au modèle : une valeur, plusieurs noms</text>
-<text x="554" y="654" font-size="12" fill="#111827" xml:space="preserve">112 alias pour 111 valeurs</text>
+<rect x="532" y="606" width="516" height="92" rx="7" fill="#FDECEC" stroke="#D32F2F" stroke-width="1.6"/>
+<rect x="532" y="606" width="8" height="92" rx="3" fill="#D32F2F"/>
+<text x="554" y="632" font-size="14.5" font-weight="700" fill="#C62828">Entité ALIAS au modèle : une valeur, plusieurs noms</text>
+<text x="554" y="654" font-size="12" fill="#111827" xml:space="preserve">112 alias pour 111 valeurs ; deux libellés, un ticker :</text>
+<text x="554" y="671" font-size="12" fill="#111827" xml:space="preserve">pas la preuve d&#x27;un même instrument (addendum du 26/10) ;</text>
+<text x="554" y="688" font-size="12" fill="#111827" xml:space="preserve">une position « CGG BS » serait valorisée au cours de l&#x27;action</text>
 <rect x="1086" y="609" width="376" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
 <rect x="1084" y="606" width="376" height="92" rx="7" fill="#F1F5F9" stroke="#475569" stroke-width="1.6"/>
 <rect x="1084" y="606" width="8" height="92" rx="3" fill="#475569"/>
@@ -114,7 +117,8 @@
 <rect x="40" y="708" width="8" height="92" rx="3" fill="#1E293B"/>
 <text x="62" y="734" font-size="14.5" font-weight="700" fill="#0B2A5B">INC-005 (27/09) : 52 426 cotations un dimanche</text>
 <text x="62" y="756" font-size="12" fill="#111827" xml:space="preserve">date UTC d&#x27;un « minuit à Paris » = la veille à 22 h ;</text>
-<text x="62" y="773" font-size="12" fill="#111827" xml:space="preserve">même cause : pence de Londres, dollars, samedi, fériés</text>
+<text x="62" y="773" font-size="12" fill="#111827" xml:space="preserve">même racine, la place de cotation non modélisée :</text>
+<text x="62" y="790" font-size="12" fill="#111827" xml:space="preserve">pence de Londres, dollars, samedi, fériés</text>
 <rect x="534" y="711" width="516" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
 <rect x="532" y="708" width="516" height="92" rx="7" fill="#E3F0FD" stroke="#1565C0" stroke-width="1.6"/>
 <rect x="532" y="708" width="8" height="92" rx="3" fill="#1565C0"/>
