@@ -10,15 +10,22 @@ Usage, depuis la racine :
 
 Produit `rapport-E3.html` et `rapport-E3.pdf` à côté du `.md`, et affiche le nombre de pages.
 Dépendances : `markdown` (pip), Chrome installé (impression sans fenêtre), `pypdf` pour compter les pages.
+
+Sommaire (27/10/2026, rapport E3 v1.9). Si le `.md` contient un sommaire (`<a href="#ancre">…</a><span>p. N</span>`),
+aucun numéro n'est tapé à la main : chaque entrée est un lien vers son titre, Chrome résout ce lien en page dans le
+PDF, le script lit ces pages (PyMuPDF), les écrit dans le `.md` et rend de nouveau, jusqu'à ce qu'aucun numéro ne
+change. Un sommaire tapé à la main se périme à la première retouche ; `tests/test_rapport_e3_sommaire.py` garde la
+source et le PDF d'accord.
 """
 from __future__ import annotations
 
+import re
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 
-import markdown
+SOMMAIRE = re.compile(r'(<a href="#([\w-]+)">[^<]*</a><span>)p\. \d+(</span>)')
 
 CHROME = Path(r"C:\Program Files\Google\Chrome\Application\chrome.exe")
 
@@ -56,8 +63,42 @@ h2 + table, h3 + table{ margin-top:4pt; }
 """
 
 
+def numeroter_sommaire(texte: str, pages: dict[str, int]) -> str:
+    """Écrit dans chaque entrée du sommaire la page où commence sa section ; une ancre sans page lève KeyError."""
+    return SOMMAIRE.sub(lambda m: f"{m.group(1)}p. {pages[m.group(2)]}{m.group(3)}", texte)
+
+
+def _pages_des_ancres(chemin_pdf: Path) -> dict[str, int]:
+    """Page visée (comptée à partir de 1) par chaque lien de la première page, telle que Chrome l'a résolue."""
+    import fitz  # PyMuPDF, sur le poste seulement : la CI ne rend pas de PDF
+
+    with fitz.open(chemin_pdf) as pdf:
+        return {lien["nameddest"]: lien["page"] + 1 for lien in pdf[0].get_links() if lien.get("nameddest")}
+
+
 def rendre(chemin_md: Path) -> tuple[Path, Path, int]:
-    texte = chemin_md.read_text(encoding="utf-8")
+    for _ in range(4):
+        texte = chemin_md.read_bytes().decode("utf-8")   # en octets : les fins de ligne ne changent pas
+        chemin_html, chemin_pdf = _imprimer(chemin_md, texte)
+        if not SOMMAIRE.search(texte):
+            break
+        nouveau = numeroter_sommaire(texte, _pages_des_ancres(chemin_pdf))
+        if nouveau == texte:
+            break
+        chemin_md.write_bytes(nouveau.encode("utf-8"))   # la source garde les numéros du PDF rendu
+    else:
+        raise RuntimeError("les numéros du sommaire ne se stabilisent pas après quatre rendus")
+    try:
+        import pypdf
+        pages = len(pypdf.PdfReader(str(chemin_pdf)).pages)
+    except Exception:  # noqa: BLE001
+        pages = -1
+    return chemin_html, chemin_pdf, pages
+
+
+def _imprimer(chemin_md: Path, texte: str) -> tuple[Path, Path]:
+    import markdown  # ici et pas en tête : les tests du sommaire importent ce module sans `markdown`
+
     corps = markdown.markdown(texte, extensions=["tables", "fenced_code", "sane_lists", "attr_list"], output_format="html5")
     titre = next((l.lstrip("# ").strip() for l in texte.splitlines() if l.startswith("# ")), chemin_md.stem)
     html = ("<!DOCTYPE html>\n<html lang=\"fr\">\n<head>\n<meta charset=\"utf-8\">\n"
@@ -69,12 +110,7 @@ def rendre(chemin_md: Path) -> tuple[Path, Path, int]:
     subprocess.run([str(CHROME), "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
                     f"--user-data-dir={profil}", f"--print-to-pdf={chemin_pdf.resolve()}",
                     chemin_html.resolve().as_uri()], check=True, capture_output=True)
-    try:
-        import pypdf
-        pages = len(pypdf.PdfReader(str(chemin_pdf)).pages)
-    except Exception:  # noqa: BLE001
-        pages = -1
-    return chemin_html, chemin_pdf, pages
+    return chemin_html, chemin_pdf
 
 
 def main(argv: list[str]) -> int:

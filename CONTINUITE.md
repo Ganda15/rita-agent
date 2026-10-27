@@ -179,6 +179,7 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | 16/10 | choisi | Le caractère de contrôle du modèle corrigé en N7, plutôt que noté comme limite | critère 2 de l'atelier 3 (réponse citée) |
 | 17/10 | ajouté | Un livrable PDF pour l'atelier 3 ; tag v1 avant l'atelier (dimanche 18/10), v2 après, avec la grille | livraison du sprint 3 |
 | 17/10 | changé | La livraison commence dès samedi si le livrable est validé ; dimanche reste la marge ; le tag reste dimanche | calendrier du sprint 3 |
+| 27/10 | choisi | **Grille E3 à 34 ✅ · 5 🟠 · 0 🔴** : C10 « tous les points de terminaison » (#152) et C11 « outils adaptés aux contraintes » (règle « UE seule », registre T3) repassent partielles. **Versions remises au jury de l'oral blanc : E3 v1.9 et E1 v3**, par de nouveaux tags (`livrable-E3-v2`, `livrable-E1-v3`), avant l'oral blanc et sur relectures, jamais par une modification silencieuse des tags v1 et v2. Figures d'E3 à 85 % pour tenir 20 pages : à confirmer | E1, E3, C10, C11 |
 
 ## G. Questions ouvertes
 

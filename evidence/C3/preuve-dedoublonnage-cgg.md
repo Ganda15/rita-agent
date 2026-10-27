@@ -109,3 +109,46 @@ donnée.
 | Suppression des entrées corrompues | ✅ règle `drop_duplicates` sur clé métier explicite |
 | Homogénéisation des formats | ✅ dates converties en UTC dans `build_parquet.py` (5 places de marché) |
 | Documentation des choix | ✅ ce document — cause, effet mesuré, règle, justification du choix |
+
+---
+
+## Addendum du 26/10/2026 : ce que cette preuve démontre, et ce qu'elle ne démontre pas
+
+> Ajout daté. Le texte ci-dessus reste tel qu'il a été écrit ; trois de ses passages disent plus que ce qui a été
+> vérifié, et sont précisés ici. Vérifications faites au tag `livrable-E1-v2` et sur `main` le 26/10/2026.
+
+### 1. Le dédoublonnage, et la question de l'instrument
+
+**Correction démontrée : supprimer la répétition des cotations téléchargées.** Dans le fichier d'univers
+(`data/univers-155.csv`), les libellés « CGG BS » et « CGG RGPT » sont associés au même ticker, `VIRI.PA`. La série
+utilisée par RITA pour ces deux libellés est donc la même, et la collecte la chargeait deux fois : 5 120 lignes pour
+2 560 dates. Le dédoublonnage sur le couple (ticker, date) n'en garde qu'une par date (`db/importer.py:127`).
+
+**Ce que cette correction ne démontre pas : que les deux libellés désignent le même instrument.** La section
+« L'origine, dans l'univers source » les décrit comme deux instruments différents (bons de souscription ; action après
+regroupement). L'entité ALIAS rattache les deux libellés à `VIRI.PA` ; elle ne règle pas cette question.
+
+**Limite métier : l'identité des instruments et leur correspondance avec les séries de prix doivent être fiables avant
+toute valorisation.** Constat dans le code : une position est cherchée d'abord par son ticker (`db/importer.py:193`),
+puis, à défaut, par son libellé dans `alias_valeur` (`db/importer.py:196`). Une position libellée « CGG BS » serait donc
+rattachée à `VIRI.PA` et valorisée au cours de l'action. Aucun contrôle ne l'empêche. Le jeu de démonstration
+(`data/positions-exemple.csv`) ne contient aucune ligne CGG : le cas n'est pas exercé.
+
+**Recommandation, non appliquée à cette date** : signaler une telle position comme non prise en charge, ou l'exclure et
+la compter parmi les lignes ignorées, plutôt que la valoriser au cours de l'action ; le test s'écrit avant le code.
+
+### 2. La détention
+
+Le paragraphe « Pourquoi ne pas supprimer « CGG BS » de l'univers » (section « La règle de traitement retenue »)
+justifie ce choix par une détention. Cette justification est inexacte. Le fichier d'univers est une liste de suivi et ne
+constitue pas une preuve de détention. Les positions utilisées en démonstration sont simulées, conformément à la
+précision du 10 octobre 2026 consignée dans le registre des traitements (`db/RGPD-registre-des-traitements.md`, § 5,
+point 9).
+
+### 3. Les dates en UTC
+
+La ligne « Homogénéisation des formats » de la section « Ce que ça prouve pour C3 » coche « dates converties en UTC dans
+`build_parquet.py` ». La conversion existe (`bigdata/build_parquet.py:54`), mais elle n'homogénéisait pas les dates de
+séance. L'erreur venait de l'extraction de la date en UTC avant de retrouver le fuseau de la place de cotation : une
+séance du 01/08/2016 à Paris devenait le 31/07. La correction préserve la date locale de séance (`sources/marches.py` ;
+incident INC-005, `evidence/C21/INC-005-archive-decalee-d-un-jour.md`, § 2, point 1).
