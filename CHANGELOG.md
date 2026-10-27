@@ -9,6 +9,22 @@
 
 ---
 
+## 2026-10-27 (soir) : cours et taux de production rattrapés à la main avant l'oral blanc ; collecte planifiée du serveur toujours absente
+
+**Décision d'Era (27/10)** : la démonstration d'E3 se fait sur la production d'origine, données remises à jour avant ;
+les travaux des sprints restent dans leurs branches. Le rattrapage est fait à la main sur le serveur, hors de la chaîne
+de livraison, dans un conteneur jetable de l'image en service (`d3a4198`) : 5 508 cotations écrites (dernière séance
+passée du 18/08 au 27/10, 280 518 lignes), 255 taux écrits, `ANALYZE` passé ; articles réingérés par le workflow
+« Ingestion » (passage `40534178721`, 2 166 articles). Il ne laisse de trace que dans les manifestes du serveur ; la
+procédure suivie est écrite dans `docs/exploitation.md` (« Rattraper les cours et les taux en production, à la main »),
+avec ses tests (`tests/test_exploitation_doc.py`).
+
+**Manque, connu depuis le 24/08 et resté ouvert** : aucune collecte planifiée des cours ni des taux sur le serveur ;
+l'ingestion de production ne collecte que les articles. Le briefing de production annonçait 70 jours de retard le
+27/10. Le rattrapage est à refaire à la main le 29/10 après la clôture, puis à automatiser après l'oral blanc.
+
+---
+
 ## 2026-10-27 : livrables E1 v3 et E3 v2 préparés pour l'oral blanc ; tags `livrable-E1-v3` et `livrable-E3-v2` à poser après la fusion dans `main`
 
 **Livrables** : le livret E1 v3 (5 pages, `docs/rapports/E1/rapport-E1.html` et `.pdf`, logo et MCD recadré à côté)
