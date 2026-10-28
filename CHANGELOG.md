@@ -9,6 +9,15 @@
 
 ---
 
+## 2026-10-28 (soir) : livret E1 v3 et grilles des compétences envoyés au formateur ; E1 accepté
+
+**Livrables envoyés** (Discord, par Era) : le livret E1 v3 (tag `livrable-E1-v3`) et les grilles des compétences
+(branche `classeur-competences`, commit `c56b899`). **Retour** : E1 accepté par le formateur le 28/10 (rapporté par Era).
+Le rapport E3 v1.9 (tag `livrable-E3-v2`) reste à envoyer, avec ses deux précisions (p. 16 et AMF).
+Détail : `docs/FILE-DE-VALIDATION.md`, lignes 7 à 9.
+
+---
+
 ## 2026-10-28 : versions d'E1 et d'E3 pour l'oral blanc, budget du livret décidé ; erratum d'E1 et cinq imprécisions d'E3
 
 **Livrables préparés, non encore envoyés** (c'est Era qui envoie) : `docs/rapports/E1/rapport-E1-v3-avec-annexes.pdf`,
