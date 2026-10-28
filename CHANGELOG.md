@@ -9,6 +9,24 @@
 
 ---
 
+## 2026-10-28 : versions d'E1 et d'E3 pour l'oral blanc, budget du livret décidé ; erratum d'E1 et cinq imprécisions d'E3
+
+**Livrables préparés, non encore envoyés** (c'est Era qui envoie) : `docs/rapports/E1/rapport-E1-v3-avec-annexes.pdf`,
+le livret du tag `livrable-E1-v3` avec ses liens essentiels, l'erratum de sa page 6 et les annexes de schémas C1, C2,
+C3 et C5 ; `docs/rapports/E3/rapport-E3-v1.9-bandeau.pdf`, le rapport du tag `livrable-E3-v2` avec un bandeau en page 1.
+Les tags restent figés ; les PDF produits par `scripts/rendre_pdf.py` ne changent pas.
+
+**Décisions d'Era (28/10)** : le budget demandé par le formateur se compte sans TJM, en argent réellement dépensé, en
+trois lignes dans le livret E1 v4, après l'oral blanc et sur factures. D'ici là, le critère C1 « présentation complète »
+est partiel dans les classeurs (111 ✅ · 25 🟡 · 1 ❌). Google News reste arrêté.
+
+**Manques découverts** : le livret E1 v3 écrit « budget 0 € », faux depuis que le serveur est payé ; le tableau de sa
+page 6 porte des étiquettes fausses (erratum ci-dessus, vérifié dans `db/requetes.sql`). Le rapport E3 v1.9 contient
+cinq formulations imprécises (pages 1, 12, 13 et 16, détail dans `ETAT.md`), dont « deux garde-fous » sous 85 % quand
+le tableau en montre trois : le contrôle de fuite n'a pas de seuil de blocage (`tests/test_evals.py`).
+
+---
+
 ## 2026-10-27 (soir) : cours et taux de production rattrapés à la main avant l'oral blanc ; collecte planifiée du serveur toujours absente
 
 **Décision d'Era (27/10)** : la démonstration d'E3 se fait sur la production d'origine, données remises à jour avant ;

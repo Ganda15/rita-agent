@@ -1,17 +1,19 @@
 # Schémas du rapport E1
 
-Deux schémas, générés depuis le code par `generer_schemas.py` : le `.drawio` (éditable dans draw.io) et
-le `.svg` sortent du même script, le `.png` est rendu depuis le `.svg` par Chrome sans fenêtre. Le dessin
-est celui des schémas E3 (`../../E3/schemas/generer_schemas.py`, même module importé).
+Quatre schémas, générés depuis le code par `generer_schemas.py` : le `.drawio` (éditable dans draw.io) et
+le `.svg` sortent du même script. Le `.png` remis au jury est rendu par Chrome sans fenêtre depuis la mise en forme
+illustrée (`<nom>-illustre.html`). Les couleurs viennent du module des schémas E3 (`../../E3/schemas/generer_schemas.py`).
 
-| Fichier | Contenu | Critère | Section du rapport | Taille de rendu |
+| Fichier | Contenu | Critère | Section du rapport | Taille du PNG |
 |---|---|---|---|---|
-| `E1-collecte` | les sources par type exigé, la collecte du soir, le garde-fou d'injection, l'import, la base et le RGPD | C1 | 3 | 1500,964 |
-| `E1-nettoyage` | chaque défaut mesuré à l'analyse exploratoire, la décision prise et le fichier qui l'applique | C3 | 4 | 1500,876 |
+| `E1-collecte` | les sources par type exigé, la collecte du soir, le garde-fou d'injection, l'import, la base et le RGPD | C1 | 3 | 1920,1358 |
+| `E1-nettoyage` | chaque défaut mesuré à l'analyse exploratoire, la décision prise et le fichier qui l'applique | C3 | 4 | 1920,1318 |
+| `E1-requetes` | les deux systèmes (PostgreSQL, Parquet), les requêtes de chacun dans son langage, le coût mesuré (EXPLAIN ANALYZE, partitions lues) | C2 | 6 | 1920,1101 |
+| `E1-api` | les clients du jeu de données, la clé posée sur tout le routeur, les 12 points de terminaison, le contrat OpenAPI et les tests | C5 | 7 | 1920,1114 |
 
-Les autres critères d'E1 ont déjà leur schéma : C2 dans `../../../../bigdata/schemas/` (les trois requêtes
-Spark SQL, l'élagage des partitions), C4 dans le rapport (MCD) et dans `../../../../evidence/C4/`
-(`MCD-MERISE-RITA.drawio`), C5 dans les schémas E3 (`E3-architecture`).
+C4 a son schéma dans le rapport (le MCD, `../images/mcd-recadre.png`). Le MCD du 01/08 rangé dans
+`../../../../evidence/C4/` est une preuve datée, et les deux schémas de `../../../../bigdata/schemas/` (août) restent
+où ils sont : ils sont cités par `bigdata/`. Les chiffres de ce dossier-ci sont ceux du 27/10.
 
 ## Pourquoi un générateur
 
@@ -23,10 +25,17 @@ garde-fou, taux mesuré par `evals/mesurer_gardefou.py`, flux RSS, étapes de `p
 devises suivies, traitements et procédures du registre RGPD). Les chiffres datés (analyse de juillet 2026,
 comptages du 02/10) restent écrits avec leur date.
 
-`tests/test_schemas_e1.py` (12 tests) vérifie que chaque schéma existe en trois formats, que ses chiffres
+`tests/test_schemas_e1.py` vérifie que chaque schéma existe en trois formats, que ses chiffres
 sont ceux du code, et que les fichiers rangés sont exactement ce que le générateur produit aujourd'hui. Un
 schéma retouché à la main, ou du code qui change sans régénération, fait tomber la suite (essayé le
 04/10/2026 : « 10 tables » remplacé par « 8 tables » dans le `.svg`, 1 test rouge ; régénéré, 12 verts).
+
+**Depuis le 27/10/2026** : C2 lit dans `bigdata/query_spark.py` les années filtrées par S2 et S3, et en déduit les
+partitions et les lignes lues ; chaque durée PostgreSQL affichée doit être écrite dans `db/requetes.sql`. Le nombre
+de lignes par partition est un comptage daté (27/10, métadonnées Parquet) : l'archive n'est pas dans le dépôt, et
+le test qui le compare à l'archive ne tourne que là où elle est. C5 lit les routes dans `api/donnees.py` et le
+contrat dans l'application (`app.openapi()`). Un dernier test estime, boîte par boîte, que le texte tient dans sa
+hauteur ; la vraie mesure s'est faite dans Chrome (aucun texte ne dépasse de sa boîte, le 27/10).
 
 ## Régénérer
 
@@ -43,7 +52,9 @@ Puis le rendu PNG, un schéma à la fois (Chrome exige un `--user-data-dir`, sin
 "C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --disable-gpu --hide-scrollbars --user-data-dir=%TEMP%\chrome-rendu --window-size=1920,1358 --screenshot=docs\rapports\E1\schemas\E1-collecte.png file:///D:/KandaWork/RITA_PROJECT/rita-agent/docs/rapports/E1/schemas/E1-collecte-illustre.html
 ```
 
-Même commande pour `E1-nettoyage` avec `--window-size=1500,876`. Les deux PNG ont été regardés le
+Même commande pour les trois autres, chacun depuis son `-illustre.html` et à la taille du tableau ci-dessus
+(`E1-nettoyage` : `--window-size=1920,1318`). Les trois PNG du 27/10 ont été regardés le soir même.
+Les deux PNG du 4 octobre (collecte et nettoyage, dans leur version d'alors) ont été regardés le
 04/10/2026 au soir, après la refonte de la charte : aucune flèche ne traverse une boîte ni un titre, aucun texte n'est coupé.
 **Collecte, depuis le 24/10/2026 (à la demande d'Era)** : le PNG remis au jury est rendu depuis
 `E1-collecte-illustre.html`, une mise en forme illustrée fournie par Era (icônes, formes de base de données). Les
@@ -52,6 +63,17 @@ droit, étiquettes en pastille). Le test `test_le_schema_illustre_dit_exactement
 l'illustration porte les mêmes textes que le schéma généré : il a d'abord échoué sur deux textes de la maquette
 (« cours du jour » sur un bus qui porte aussi BCE, FRED et RSS ; un pied qui la disait générée), corrigés. Quand un
 chiffre change, régénérer le `.svg`, reporter le texte dans le `.html`, relancer le test, puis le rendu PNG.
+**Nettoyage, requêtes et API, depuis le 27/10/2026 (à la demande d'Era)** : même mise en forme, mais produite par le
+générateur (`illustre`), avec les positions du schéma généré multipliées par 1,28. Régénérer suffit donc : le `.html`
+suit, et un test refuse une illustration qui ne serait plus celle du générateur. Le nettoyage est passé au tracé de la
+collecte (trois colonnes à bandeau).
+**Relecture croisée du 28/10/2026** (un second agent, chaque remarque vérifiée contre le code avant correction) : le
+nettoyage disait que « les requêtes ne lisent que 'OK' » (R1, le portefeuille, ne filtre pas : `db/requetes.sql`) et
+dédoublonnait « sur (ticker, date_seance) » (le code : `(ticker, date)`, `db/importer.py`) ; il dit maintenant la limite
+des libellés CGG (addendum C3 du 26/10). L'API se disait « en lecture seule » alors qu'un appel de la passerelle MCP,
+`/donnees` compris, écrit une ligne dans `mcp_calls`, et promettait le « jeu complet » sans route pour les taux de
+change. Le plan Spark montre des partitions écartées, pas « des fichiers jamais ouverts ». Cinq tests tiennent ces
+corrections ; ils ont échoué avant elles.
 **Charte (refaite le 04/10/2026, à la demande d'Era)** : texte presque noir et plus grand, traits épais ; une couleur
 par rôle de boîte (bande à gauche) et par sens de flèche ; une légende dessinée en bas de chaque schéma, qui ne montre
 que les couleurs employées et ce qu'elles veulent dire dans ce schéma. Le 04/10, le texte de chaque boîte a été

@@ -1,148 +1,179 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="876" viewBox="0 0 1500 876" font-family="Segoe UI,Calibri,Arial,sans-serif">
-<defs><marker id="fl-flux" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#0B2A5B"/></marker><marker id="fl-ecriture" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#1565C0"/></marker><marker id="fl-lecture" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#15803D"/></marker><marker id="fl-erreur" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#D32F2F"/></marker><marker id="fl-manuel" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#64748B"/></marker><marker id="fl-perso" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#A21CAF"/></marker></defs>
-<rect width="1500" height="876" fill="#FFFFFF"/>
-<rect x="40" y="16" width="1420" height="5" fill="#1565C0"/>
-<text x="40" y="54" font-size="30" font-weight="700" fill="#0B2A5B">RITA : nettoyer et agréger, chaque défaut mesuré devient une règle</text>
-<text x="40" y="80" font-size="15" fill="#1F2937">Rapport E1, section 4 (C3) · analyse exploratoire de juillet 2026, incident INC-005 du 27 septembre · état au 4 octobre 2026</text>
-<g transform="translate(0,16)">
-<rect x="40" y="230" width="1420" height="410" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
-<rect x="40" y="100" width="300" height="104" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
-<rect x="40" y="100" width="7" height="104" fill="#6D28D9"/>
-<text x="57" y="121" font-size="14" font-weight="700" fill="#4C1D95">1. Le jeu brut</text>
-<text x="57" y="140.0" font-size="11.5" fill="#111827">dix ans de cotations, 111 valeurs</text>
-<text x="57" y="155.5" font-size="11.5" fill="#111827">Parquet, 11 partitions par année</text>
-<text x="57" y="171.0" font-size="11.5" fill="#111827">276 168 lignes analysées</text>
-<text x="57" y="186.5" font-size="11.5" fill="#111827">0 valeur manquante</text>
-<rect x="380" y="100" width="330" height="104" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
-<rect x="380" y="100" width="7" height="104" fill="#1565C0"/>
-<text x="397" y="121" font-size="14" font-weight="700" fill="#0B2A5B">2. Analyse exploratoire (juillet)</text>
-<text x="397" y="140.0" font-size="11.5" fill="#111827">compter avant de modéliser :</text>
-<text x="397" y="155.5" font-size="11.5" fill="#111827">doublons, bornes, volumes, extrêmes,</text>
-<text x="397" y="171.0" font-size="11.5" fill="#111827">libellés ; preuves dans evidence/C3/</text>
-<text x="397" y="186.5" font-size="11.5" fill="#111827">chaque défaut → une décision de schéma</text>
-<rect x="750" y="100" width="330" height="104" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
-<rect x="750" y="100" width="7" height="104" fill="#1565C0"/>
-<text x="767" y="121" font-size="14" font-weight="700" fill="#0B2A5B">3. Agrégation en un seul jeu</text>
-<text x="767" y="140.0" font-size="11.5" fill="#111827">dates ISO 8601 dans le fuseau de la place</text>
-<text x="767" y="155.5" font-size="11.5" fill="#111827">devises ISO 4217, nombres français convertis</text>
-<text x="767" y="171.0" font-size="11.5" fill="#111827">codes ISIN complétés</text>
-<text x="767" y="186.5" font-size="11.5" fill="#111827">puis chargement par db/importer.py</text>
-<rect x="1120" y="100" width="340" height="104" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
-<rect x="1120" y="100" width="7" height="104" fill="#6D28D9"/>
-<text x="1137" y="121" font-size="14" font-weight="700" fill="#4C1D95">4. Le jeu propre, en base</text>
-<text x="1137" y="140.0" font-size="11.5" fill="#111827">276 168 lues → 2 560 doublons écartés</text>
-<text x="1137" y="155.5" font-size="11.5" fill="#111827">→ 273 608 insérées (juillet 2026)</text>
-<text x="1137" y="171.0" font-size="11.5" fill="#111827">→ 278 473 cotations au 02/10/2026</text>
-<text x="1137" y="186.5" font-size="11.5" fill="#111827">après 40 collectes du soir</text>
-<rect x="56" y="258" width="440" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="56" y="258" width="7" height="66" fill="#1E293B"/>
-<text x="73" y="279" font-size="14" font-weight="700" fill="#0B2A5B">5 120 lignes en double (2 560 paires), surtout VIRI.PA</text>
-<text x="73" y="298.0" font-size="11.5" fill="#111827">sans règle : l&#x27;import échoue sur la clé primaire</text>
-<rect x="520" y="258" width="520" height="66" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
-<rect x="520" y="258" width="7" height="66" fill="#1565C0"/>
-<text x="537" y="279" font-size="14" font-weight="700" fill="#0B2A5B">Dédoublonnage sur (ticker, date_seance) avant insertion</text>
-<text x="537" y="298.0" font-size="11.5" fill="#111827">la collecte du soir est rejouable : ON CONFLICT DO UPDATE</text>
-<rect x="1064" y="258" width="380" height="66" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
-<rect x="1064" y="258" width="7" height="66" fill="#475569"/>
-<text x="1081" y="279" font-size="14" font-weight="700" fill="#0B2A5B">db/importer.py</text>
-<text x="1081" y="298.0" font-size="11.5" fill="#111827">preuve : evidence/C3/preuve-dedoublonnage-cgg.md</text>
-<rect x="56" y="334" width="440" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="56" y="334" width="7" height="66" fill="#1E293B"/>
-<text x="73" y="355" font-size="14" font-weight="700" fill="#0B2A5B">1 533 clôtures hors de [bas, haut], dont 1 142 STLAP.PA</text>
-<text x="73" y="374.0" font-size="11.5" fill="#111827">sans règle : des variations aberrantes au briefing</text>
-<rect x="520" y="334" width="520" height="66" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
-<rect x="520" y="334" width="7" height="66" fill="#D32F2F"/>
-<text x="537" y="355" font-size="14" font-weight="700" fill="#C62828">STLAP.PA marquée INCOHERENT : exclue des requêtes, gardée</text>
-<text x="537" y="374.0" font-size="11.5" fill="#111827">aucune contrainte ne borne la clôture (db/schema.sql refuse haut &lt; bas) :</text>
-<text x="537" y="389.5" font-size="11.5" fill="#111827">23 lignes hors bornes en base le 04/10, limite déclarée</text>
-<rect x="1064" y="334" width="380" height="66" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
-<rect x="1064" y="334" width="7" height="66" fill="#475569"/>
-<text x="1081" y="355" font-size="14" font-weight="700" fill="#0B2A5B">db/importer.py (QUALITE), sources/database.py</text>
-<text x="1081" y="374.0" font-size="11.5" fill="#111827">les requêtes ne lisent que statut_qualite = &#x27;OK&#x27;</text>
-<rect x="56" y="410" width="440" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="56" y="410" width="7" height="66" fill="#1E293B"/>
-<text x="73" y="431" font-size="14" font-weight="700" fill="#0B2A5B">Cours maximal 7 156 748 (ALJXR.PA)</text>
-<text x="73" y="450.0" font-size="11.5" fill="#111827">regroupement d&#x27;actions rétro-ajusté (prix ÷ 36 millions)</text>
-<rect x="520" y="410" width="520" height="66" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
-<rect x="520" y="410" width="7" height="66" fill="#D32F2F"/>
-<text x="537" y="431" font-size="14" font-weight="700" fill="#C62828">Marquée INCOHERENT, conservée, mécanisme identifié</text>
-<text x="537" y="450.0" font-size="11.5" fill="#111827">la table operation_sur_titre est conçue, pas construite</text>
-<rect x="1064" y="410" width="380" height="66" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
-<rect x="1064" y="410" width="7" height="66" fill="#475569"/>
-<text x="1081" y="431" font-size="14" font-weight="700" fill="#0B2A5B">evidence/C3/preuve-artefact-reverse-split.md</text>
-<text x="1081" y="450.0" font-size="11.5" fill="#111827">statut_qualite : exclure sans supprimer</text>
-<rect x="56" y="486" width="440" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="56" y="486" width="7" height="66" fill="#1E293B"/>
-<text x="73" y="507" font-size="14" font-weight="700" fill="#0B2A5B">Libellés du portefeuille différents des tickers</text>
-<text x="73" y="526.0" font-size="11.5" fill="#111827">« CGG BS », « CGG RGPT » : aucune position rattachée</text>
-<rect x="520" y="486" width="520" height="66" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
-<rect x="520" y="486" width="7" height="66" fill="#1565C0"/>
-<text x="537" y="507" font-size="14" font-weight="700" fill="#0B2A5B">Entité ALIAS au modèle : une valeur, plusieurs noms</text>
-<text x="537" y="526.0" font-size="11.5" fill="#111827">112 alias pour 111 valeurs</text>
-<rect x="1064" y="486" width="380" height="66" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
-<rect x="1064" y="486" width="7" height="66" fill="#475569"/>
-<text x="1081" y="507" font-size="14" font-weight="700" fill="#0B2A5B">db/importer.py, table alias_valeur</text>
-<text x="1081" y="526.0" font-size="11.5" fill="#111827">cardinalité VALEUR 1,n / ALIAS 1,1 (Merise, C4)</text>
-<rect x="56" y="562" width="440" height="66" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="56" y="562" width="7" height="66" fill="#1E293B"/>
-<text x="73" y="583" font-size="14" font-weight="700" fill="#0B2A5B">INC-005 (27/09) : 52 426 cotations un dimanche</text>
-<text x="73" y="602.0" font-size="11.5" fill="#111827">date UTC d&#x27;un « minuit à Paris » = la veille à 22 h ;</text>
-<text x="73" y="617.5" font-size="11.5" fill="#111827">même cause : pence de Londres, dollars, samedi, fériés</text>
-<rect x="520" y="562" width="520" height="66" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
-<rect x="520" y="562" width="7" height="66" fill="#1565C0"/>
-<text x="537" y="583" font-size="14" font-weight="700" fill="#0B2A5B">La place de cotation entre dans le modèle</text>
-<text x="537" y="602.0" font-size="11.5" fill="#111827">fuseau, devise et unité de prix par place, fériés Euronext ;</text>
-<text x="537" y="617.5" font-size="11.5" fill="#111827">correctif en une transaction, 42 tests écrits d&#x27;abord</text>
-<rect x="1064" y="562" width="380" height="66" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
-<rect x="1064" y="562" width="7" height="66" fill="#475569"/>
-<text x="1081" y="583" font-size="14" font-weight="700" fill="#0B2A5B">sources/marches.py, sources/cotations.py</text>
-<text x="1081" y="602.0" font-size="11.5" fill="#111827">leçon : compter aussi par jour de la semaine</text>
-<rect x="40" y="660" width="700" height="96" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="40" y="660" width="7" height="96" fill="#1E293B"/>
-<text x="57" y="681" font-size="14" font-weight="700" fill="#0B2A5B">Le fichier des positions (export courtier)</text>
-<text x="57" y="700.0" font-size="11.5" fill="#111827">sources/positions.py : séparateur « ; », encodage cp1252 détecté,</text>
-<text x="57" y="715.5" font-size="11.5" fill="#111827">« 632,40 » et « 1 250 » (espace insécable) convertis, en-têtes variables ;</text>
-<text x="57" y="731.0" font-size="11.5" fill="#111827">chaque ligne invalide est rejetée avec sa cause, jamais ignorée en silence</text>
-<rect x="760" y="660" width="700" height="96" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="760" y="660" width="7" height="96" fill="#1E293B"/>
-<text x="777" y="681" font-size="14" font-weight="700" fill="#0B2A5B">Ce qui reste visible plutôt que corrigé</text>
-<text x="777" y="700.0" font-size="11.5" fill="#111827">2 802 séances à volume nul conservées : la requête des volumes anormaux</text>
-<text x="777" y="715.5" font-size="11.5" fill="#111827">  (R3, db/requetes.sql) exige une moyenne sur 20 séances &gt; 0, sinon division par zéro ;</text>
-<text x="777" y="731.0" font-size="11.5" fill="#111827">les valeurs douteuses portent un statut_qualite au lieu d&#x27;être supprimées</text>
-<line x1="340" y1="152.0" x2="380" y2="152.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="710" y1="152.0" x2="750" y2="152.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="1080" y1="152.0" x2="1120" y2="152.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="496" y1="291.0" x2="520" y2="291.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="1040" y1="291.0" x2="1064" y2="291.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="496" y1="367.0" x2="520" y2="367.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="1040" y1="367.0" x2="1064" y2="367.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="496" y1="443.0" x2="520" y2="443.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="1040" y1="443.0" x2="1064" y2="443.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="496" y1="519.0" x2="520" y2="519.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="1040" y1="519.0" x2="1064" y2="519.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="496" y1="595.0" x2="520" y2="595.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<line x1="1040" y1="595.0" x2="1064" y2="595.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<text x="54" y="252" font-size="13.5" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">DÉFAUT MESURÉ  →  DÉCISION  →  FICHIER QUI L&#x27;APPLIQUE</text>
-<rect x="40" y="786" width="1420" height="1.5" fill="#94A3B8"/>
-<text x="40" y="817" font-size="13.5" font-weight="700" fill="#0B2A5B">Légende</text>
-<rect x="124.0" y="803" width="28" height="18" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
-<rect x="124.0" y="803" width="6" height="18" fill="#6D28D9"/>
-<text x="160.0" y="817" font-size="12.5" fill="#111827">jeu de données</text>
-<rect x="277.5" y="803" width="28" height="18" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
-<rect x="277.5" y="803" width="6" height="18" fill="#1E293B"/>
-<text x="313.5" y="817" font-size="12.5" fill="#111827">défaut mesuré</text>
-<rect x="424.75" y="803" width="28" height="18" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
-<rect x="424.75" y="803" width="6" height="18" fill="#1565C0"/>
-<text x="460.75" y="817" font-size="12.5" fill="#111827">décision appliquée</text>
-<rect x="603.25" y="803" width="28" height="18" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="5,3"/>
-<rect x="603.25" y="803" width="6" height="18" fill="#D32F2F"/>
-<text x="639.25" y="817" font-size="12.5" fill="#111827">limite déclarée, ou conçu non construit</text>
-<rect x="913.0" y="803" width="28" height="18" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
-<rect x="913.0" y="803" width="6" height="18" fill="#475569"/>
-<text x="949.0" y="817" font-size="12.5" fill="#111827">fichier ou preuve à ouvrir</text>
-<line x1="1141.5" y1="812" x2="1181.5" y2="812" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
-<text x="1191.5" y="817" font-size="12.5" fill="#111827">mène à</text>
-<text x="40" y="846" font-size="12.5" fill="#1F2937">Chiffres de juillet et du 02/10 : rapport E1, section 4.</text>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1030" viewBox="0 0 1500 1030" font-family="Segoe UI,Calibri,Arial,sans-serif">
+<defs><linearGradient id="bandeau" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#0B2A5B"/><stop offset="0.5" stop-color="#1565C0"/><stop offset="1" stop-color="#7C3AED"/></linearGradient><marker id="p-flux" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#0B2A5B"/></marker><marker id="p-ecriture" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#1565C0"/></marker><marker id="p-lecture" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#15803D"/></marker><marker id="p-erreur" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#D32F2F"/></marker><marker id="p-manuel" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#64748B"/></marker><marker id="p-perso" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#A21CAF"/></marker></defs>
+<rect width="1500" height="1030" fill="#FFFFFF"/>
+<rect width="1500" height="6" fill="url(#bandeau)"/>
+<text x="36" y="56" font-size="30" font-weight="700" fill="#0B2A5B">RITA : nettoyer et agréger, chaque défaut mesuré devient une règle</text>
+<text x="36" y="84" font-size="15" fill="#1F2937">Rapport E1, section 4 (C3) · analyse exploratoire de juillet 2026, INC-005 du 27/09 · comptages du 4 octobre, schéma revu le 28 octobre 2026</text>
+<rect x="28" y="248" width="480" height="566" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.2"/>
+<rect x="36" y="256" width="464" height="34" rx="7" fill="#0B2A5B"/>
+<text x="50" y="278" font-size="14" font-weight="700" fill="#FFFFFF" letter-spacing="0.6">DÉFAUT MESURÉ</text>
+<rect x="520" y="248" width="540" height="566" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.2"/>
+<rect x="528" y="256" width="524" height="34" rx="7" fill="#1565C0"/>
+<text x="542" y="278" font-size="14" font-weight="700" fill="#FFFFFF" letter-spacing="0.6">DÉCISION</text>
+<rect x="1072" y="248" width="400" height="566" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.2"/>
+<rect x="1080" y="256" width="384" height="34" rx="7" fill="#475569"/>
+<text x="1094" y="278" font-size="14" font-weight="700" fill="#FFFFFF" letter-spacing="0.6">FICHIER QUI L&#x27;APPLIQUE</text>
+<rect x="42" y="107" width="300" height="124" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="40" y="104" width="300" height="124" rx="7" fill="#F1EAFE" stroke="#6D28D9" stroke-width="1.6"/>
+<rect x="40" y="104" width="8" height="124" rx="3" fill="#6D28D9"/>
+<text x="62" y="130" font-size="14.5" font-weight="700" fill="#4C1D95">1. Le jeu brut</text>
+<text x="62" y="152" font-size="12" fill="#111827" xml:space="preserve">dix ans de cotations, 111 valeurs</text>
+<text x="62" y="169" font-size="12" fill="#111827" xml:space="preserve">Parquet, 11 partitions par année</text>
+<text x="62" y="186" font-size="12" fill="#111827" xml:space="preserve">276 168 lignes analysées</text>
+<text x="62" y="203" font-size="12" fill="#111827" xml:space="preserve">0 valeur manquante</text>
+<rect x="382" y="107" width="330" height="124" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="380" y="104" width="330" height="124" rx="7" fill="#E3F0FD" stroke="#1565C0" stroke-width="1.6"/>
+<rect x="380" y="104" width="8" height="124" rx="3" fill="#1565C0"/>
+<text x="402" y="130" font-size="14.5" font-weight="700" fill="#0B2A5B">2. Analyse exploratoire (juillet)</text>
+<text x="402" y="152" font-size="12" fill="#111827" xml:space="preserve">compter avant de modéliser :</text>
+<text x="402" y="169" font-size="12" fill="#111827" xml:space="preserve">doublons, bornes, volumes, extrêmes,</text>
+<text x="402" y="186" font-size="12" fill="#111827" xml:space="preserve">libellés ; preuves dans evidence/C3/</text>
+<text x="402" y="203" font-size="12" fill="#111827" xml:space="preserve">chaque défaut → une décision de schéma</text>
+<rect x="752" y="107" width="330" height="124" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="750" y="104" width="330" height="124" rx="7" fill="#E3F0FD" stroke="#1565C0" stroke-width="1.6"/>
+<rect x="750" y="104" width="8" height="124" rx="3" fill="#1565C0"/>
+<text x="772" y="130" font-size="14.5" font-weight="700" fill="#0B2A5B">3. Agrégation en un seul jeu</text>
+<text x="772" y="152" font-size="12" fill="#111827" xml:space="preserve">dates ISO 8601 dans le fuseau de la place</text>
+<text x="772" y="169" font-size="12" fill="#111827" xml:space="preserve">devises ISO 4217, nombres français convertis</text>
+<text x="772" y="186" font-size="12" fill="#111827" xml:space="preserve">codes ISIN complétés</text>
+<text x="772" y="203" font-size="12" fill="#111827" xml:space="preserve">puis chargement par db/importer.py</text>
+<rect x="1122" y="107" width="340" height="124" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="1120" y="104" width="340" height="124" rx="7" fill="#F1EAFE" stroke="#6D28D9" stroke-width="1.6"/>
+<rect x="1120" y="104" width="8" height="124" rx="3" fill="#6D28D9"/>
+<text x="1142" y="130" font-size="14.5" font-weight="700" fill="#4C1D95">4. Le jeu contrôlé, en base</text>
+<text x="1142" y="152" font-size="12" fill="#111827" xml:space="preserve">276 168 lues → 2 560 doublons écartés</text>
+<text x="1142" y="169" font-size="12" fill="#111827" xml:space="preserve">→ 273 608 insérées (juillet 2026)</text>
+<text x="1142" y="186" font-size="12" fill="#111827" xml:space="preserve">→ 278 473 cotations au 02/10/2026</text>
+<text x="1142" y="203" font-size="12" fill="#111827" xml:space="preserve">après 40 collectes du soir</text>
+<rect x="42" y="303" width="456" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="40" y="300" width="456" height="92" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="40" y="300" width="8" height="92" rx="3" fill="#1E293B"/>
+<text x="62" y="326" font-size="14.5" font-weight="700" fill="#0B2A5B">5 120 lignes en double (2 560 paires), surtout VIRI.PA</text>
+<text x="62" y="348" font-size="12" fill="#111827" xml:space="preserve">sans règle : l&#x27;import échoue sur la clé primaire</text>
+<rect x="534" y="303" width="516" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="532" y="300" width="516" height="92" rx="7" fill="#E3F0FD" stroke="#1565C0" stroke-width="1.6"/>
+<rect x="532" y="300" width="8" height="92" rx="3" fill="#1565C0"/>
+<text x="554" y="326" font-size="14.5" font-weight="700" fill="#0B2A5B">Dédoublonnage sur (ticker, date), avant insertion</text>
+<text x="554" y="348" font-size="12" fill="#111827" xml:space="preserve">la date de l&#x27;archive, avant le calcul de date_seance ;</text>
+<text x="554" y="365" font-size="12" fill="#111827" xml:space="preserve">la collecte du soir, elle, rejoue : ON CONFLICT DO UPDATE</text>
+<rect x="1086" y="303" width="376" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="1084" y="300" width="376" height="92" rx="7" fill="#F1F5F9" stroke="#475569" stroke-width="1.6"/>
+<rect x="1084" y="300" width="8" height="92" rx="3" fill="#475569"/>
+<text x="1106" y="326" font-size="14.5" font-weight="700" fill="#0B2A5B">db/importer.py</text>
+<text x="1106" y="348" font-size="12" fill="#111827" xml:space="preserve">preuve : evidence/C3/preuve-dedoublonnage-cgg.md</text>
+<rect x="42" y="405" width="456" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="40" y="402" width="456" height="92" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="40" y="402" width="8" height="92" rx="3" fill="#1E293B"/>
+<text x="62" y="428" font-size="14.5" font-weight="700" fill="#0B2A5B">1 533 clôtures hors de [bas, haut], dont 1 142</text>
+<text x="62" y="447" font-size="14.5" font-weight="700" fill="#0B2A5B">  STLAP.PA</text>
+<text x="62" y="469" font-size="12" fill="#111827" xml:space="preserve">sans règle : des variations aberrantes au briefing</text>
+<rect x="534" y="405" width="516" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="532" y="402" width="516" height="92" rx="7" fill="#FDECEC" stroke="#D32F2F" stroke-width="1.6"/>
+<rect x="532" y="402" width="8" height="92" rx="3" fill="#D32F2F"/>
+<text x="554" y="428" font-size="14.5" font-weight="700" fill="#C62828">STLAP.PA marquée INCOHERENT : exclue des classements, gardée</text>
+<text x="554" y="450" font-size="12" fill="#111827" xml:space="preserve">aucune contrainte ne borne la clôture (db/schema.sql refuse haut &lt; bas) :</text>
+<text x="554" y="467" font-size="12" fill="#111827" xml:space="preserve">23 lignes hors bornes en base le 04/10, limite déclarée</text>
+<rect x="1086" y="405" width="376" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="1084" y="402" width="376" height="92" rx="7" fill="#F1F5F9" stroke="#475569" stroke-width="1.6"/>
+<rect x="1084" y="402" width="8" height="92" rx="3" fill="#475569"/>
+<text x="1106" y="428" font-size="14.5" font-weight="700" fill="#0B2A5B">db/importer.py (QUALITE),</text>
+<text x="1106" y="447" font-size="14.5" font-weight="700" fill="#0B2A5B">  sources/database.py</text>
+<text x="1106" y="469" font-size="12" fill="#111827" xml:space="preserve">R2 et R3 : seulement &#x27;OK&#x27; ; R1 affiche le statut</text>
+<rect x="42" y="507" width="456" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="40" y="504" width="456" height="92" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="40" y="504" width="8" height="92" rx="3" fill="#1E293B"/>
+<text x="62" y="530" font-size="14.5" font-weight="700" fill="#0B2A5B">Cours maximal 7 156 748 (ALJXR.PA)</text>
+<text x="62" y="552" font-size="12" fill="#111827" xml:space="preserve">regroupement d&#x27;actions rétro-ajusté (prix ÷ 36 millions)</text>
+<rect x="534" y="507" width="516" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="532" y="504" width="516" height="92" rx="7" fill="#FDECEC" stroke="#D32F2F" stroke-width="1.6"/>
+<rect x="532" y="504" width="8" height="92" rx="3" fill="#D32F2F"/>
+<text x="554" y="530" font-size="14.5" font-weight="700" fill="#C62828">Marquée INCOHERENT, conservée, mécanisme identifié</text>
+<text x="554" y="552" font-size="12" fill="#111827" xml:space="preserve">la table operation_sur_titre est conçue, pas construite</text>
+<rect x="1086" y="507" width="376" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="1084" y="504" width="376" height="92" rx="7" fill="#F1F5F9" stroke="#475569" stroke-width="1.6"/>
+<rect x="1084" y="504" width="8" height="92" rx="3" fill="#475569"/>
+<text x="1106" y="530" font-size="14.5" font-weight="700" fill="#0B2A5B">evidence/C3/preuve-artefact-reverse-split.md</text>
+<text x="1106" y="552" font-size="12" fill="#111827" xml:space="preserve">statut_qualite : écartée des classements, gardée</text>
+<rect x="42" y="609" width="456" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="40" y="606" width="456" height="92" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="40" y="606" width="8" height="92" rx="3" fill="#1E293B"/>
+<text x="62" y="632" font-size="14.5" font-weight="700" fill="#0B2A5B">Libellés du portefeuille différents des tickers</text>
+<text x="62" y="654" font-size="12" fill="#111827" xml:space="preserve">« CGG BS », « CGG RGPT » : aucune position rattachée</text>
+<rect x="534" y="609" width="516" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="532" y="606" width="516" height="92" rx="7" fill="#FDECEC" stroke="#D32F2F" stroke-width="1.6"/>
+<rect x="532" y="606" width="8" height="92" rx="3" fill="#D32F2F"/>
+<text x="554" y="632" font-size="14.5" font-weight="700" fill="#C62828">Entité ALIAS au modèle : une valeur, plusieurs noms</text>
+<text x="554" y="654" font-size="12" fill="#111827" xml:space="preserve">112 alias pour 111 valeurs ; deux libellés, un ticker :</text>
+<text x="554" y="671" font-size="12" fill="#111827" xml:space="preserve">pas la preuve d&#x27;un même instrument (addendum du 26/10) ;</text>
+<text x="554" y="688" font-size="12" fill="#111827" xml:space="preserve">une position « CGG BS » serait valorisée au cours de l&#x27;action</text>
+<rect x="1086" y="609" width="376" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="1084" y="606" width="376" height="92" rx="7" fill="#F1F5F9" stroke="#475569" stroke-width="1.6"/>
+<rect x="1084" y="606" width="8" height="92" rx="3" fill="#475569"/>
+<text x="1106" y="632" font-size="14.5" font-weight="700" fill="#0B2A5B">db/importer.py, table alias_valeur</text>
+<text x="1106" y="654" font-size="12" fill="#111827" xml:space="preserve">cardinalité VALEUR 1,n / ALIAS 1,1 (Merise, C4)</text>
+<rect x="42" y="711" width="456" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="40" y="708" width="456" height="92" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="40" y="708" width="8" height="92" rx="3" fill="#1E293B"/>
+<text x="62" y="734" font-size="14.5" font-weight="700" fill="#0B2A5B">INC-005 (27/09) : 52 426 cotations un dimanche</text>
+<text x="62" y="756" font-size="12" fill="#111827" xml:space="preserve">date UTC d&#x27;un « minuit à Paris » = la veille à 22 h ;</text>
+<text x="62" y="773" font-size="12" fill="#111827" xml:space="preserve">même racine, la place de cotation non modélisée :</text>
+<text x="62" y="790" font-size="12" fill="#111827" xml:space="preserve">pence de Londres, dollars, samedi, fériés</text>
+<rect x="534" y="711" width="516" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="532" y="708" width="516" height="92" rx="7" fill="#E3F0FD" stroke="#1565C0" stroke-width="1.6"/>
+<rect x="532" y="708" width="8" height="92" rx="3" fill="#1565C0"/>
+<text x="554" y="734" font-size="14.5" font-weight="700" fill="#0B2A5B">La place de cotation entre dans le modèle</text>
+<text x="554" y="756" font-size="12" fill="#111827" xml:space="preserve">fuseau, devise et unité de prix par place, fériés Euronext ;</text>
+<text x="554" y="773" font-size="12" fill="#111827" xml:space="preserve">correctif en une transaction, 42 tests écrits d&#x27;abord</text>
+<rect x="1086" y="711" width="376" height="92" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="1084" y="708" width="376" height="92" rx="7" fill="#F1F5F9" stroke="#475569" stroke-width="1.6"/>
+<rect x="1084" y="708" width="8" height="92" rx="3" fill="#475569"/>
+<text x="1106" y="734" font-size="14.5" font-weight="700" fill="#0B2A5B">sources/marches.py, sources/cotations.py</text>
+<text x="1106" y="756" font-size="12" fill="#111827" xml:space="preserve">leçon : compter aussi par jour de la semaine</text>
+<rect x="42" y="837" width="700" height="110" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="40" y="834" width="700" height="110" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="40" y="834" width="8" height="110" rx="3" fill="#1E293B"/>
+<text x="62" y="860" font-size="14.5" font-weight="700" fill="#0B2A5B">Le fichier des positions (export courtier)</text>
+<text x="62" y="882" font-size="12" fill="#111827" xml:space="preserve">sources/positions.py : séparateur « ; », encodage cp1252 détecté,</text>
+<text x="62" y="899" font-size="12" fill="#111827" xml:space="preserve">« 632,40 » et « 1 250 » (espace insécable) convertis, en-têtes variables ;</text>
+<text x="62" y="916" font-size="12" fill="#111827" xml:space="preserve">chaque ligne invalide est rejetée avec sa cause, jamais ignorée en silence</text>
+<rect x="762" y="837" width="700" height="110" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="760" y="834" width="700" height="110" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="760" y="834" width="8" height="110" rx="3" fill="#1E293B"/>
+<text x="782" y="860" font-size="14.5" font-weight="700" fill="#0B2A5B">Ce qui reste visible plutôt que corrigé</text>
+<text x="782" y="882" font-size="12" fill="#111827" xml:space="preserve">2 802 séances à volume nul conservées : la requête des volumes anormaux</text>
+<text x="782" y="899" font-size="12" fill="#111827" xml:space="preserve">  (R3, db/requetes.sql) exige une moyenne sur 20 séances &gt; 0, sinon division par zéro ;</text>
+<text x="782" y="916" font-size="12" fill="#111827" xml:space="preserve">les valeurs douteuses portent un statut_qualite au lieu d&#x27;être supprimées</text>
+<polyline points="340,166 380,166" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="710,166 750,166" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="1080,166 1120,166" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="496,346 532,346" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="496,448 532,448" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="496,550 532,550" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="496,652 532,652" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="496,754 532,754" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="1048,346 1084,346" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="1048,448 1084,448" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="1048,550 1084,550" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="1048,652 1084,652" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="1048,754 1084,754" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<text x="36" y="985" font-size="13" font-weight="700" fill="#0B2A5B">Légende</text>
+<rect x="112" y="972" width="26" height="16" rx="4" fill="#F1EAFE" stroke="#6D28D9" stroke-width="1.6"/>
+<rect x="112" y="972" width="5" height="16" rx="2" fill="#6D28D9"/>
+<text x="146" y="984.5" font-size="12" fill="#111827">jeu de données</text>
+<rect x="242.96" y="972" width="26" height="16" rx="4" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="242.96" y="972" width="5" height="16" rx="2" fill="#1E293B"/>
+<text x="276.96" y="984.5" font-size="12" fill="#111827">défaut mesuré</text>
+<rect x="368.28" y="972" width="26" height="16" rx="4" fill="#E3F0FD" stroke="#1565C0" stroke-width="1.6"/>
+<rect x="368.28" y="972" width="5" height="16" rx="2" fill="#1565C0"/>
+<text x="402.28" y="984.5" font-size="12" fill="#111827">décision appliquée</text>
+<rect x="521.8" y="972" width="26" height="16" rx="4" fill="#FDECEC" stroke="#D32F2F" stroke-width="1.6"/>
+<rect x="521.8" y="972" width="5" height="16" rx="2" fill="#D32F2F"/>
+<text x="555.8" y="984.5" font-size="12" fill="#111827">limite déclarée, ou conçu non construit</text>
+<rect x="793.76" y="972" width="26" height="16" rx="4" fill="#F1F5F9" stroke="#475569" stroke-width="1.6"/>
+<rect x="793.76" y="972" width="5" height="16" rx="2" fill="#475569"/>
+<text x="827.76" y="984.5" font-size="12" fill="#111827">fichier ou preuve à ouvrir</text>
+<line x1="992.4" y1="980" x2="1028.4" y2="980" stroke="#0B2A5B" stroke-width="2.6" marker-end="url(#p-flux)"/>
+<text x="1038.4" y="984.5" font-size="12" fill="#111827">mène à</text>
+<text x="36" y="1016" font-size="12" fill="#1F2937">Chiffres de juillet et du 02/10 : rapport E1, section 4.</text>
 </svg>
