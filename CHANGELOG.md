@@ -9,6 +9,20 @@
 
 ---
 
+## 2026-10-29 (matin) : rapport E3 v1.9 envoyé au formateur ; trois imprécisions de plus relevées
+
+**Livrable envoyé** (Discord, par Era) : le rapport E3 v1.9 (tag `livrable-E3-v2`,
+`docs/rapports/E3/rapport-E3-v1.9-bandeau.pdf`, empreinte `579890bfba43e18a`), avec trois précisions dans le message :
+le tag du présent livrable (p. 16) ; l'AMF distingue conseil et recommandation, ne rien recommander est le périmètre
+choisi pour RITA (p. 1 et glossaire) ; trois formulations trop larges (p. 7, 9 et 13). Contrôlé avant l'envoi :
+44 critères en 39 lignes (34 ✅ · 5 🟠), 100 liens sur 100 présents dans le tag, PDF balisé en français.
+**Manques découverts** : p. 7, une trace n'est ouverte que pour un appel admis, traçage actif ; p. 9, `request_id`
+n'est que dans 13 appels de journal sur 23 ; p. 1, « formateur et jury invités » : au 29/10, seul le formateur est
+collaborateur. À corriger dans la version suivante, avec les cinq déjà notées dans `ETAT.md`.
+Détail : `docs/FILE-DE-VALIDATION.md`, ligne 8.
+
+---
+
 ## 2026-10-28 (soir) : livret E1 v3 et grilles des compétences envoyés au formateur ; E1 accepté
 
 **Livrables envoyés** (Discord, par Era) : le livret E1 v3 (tag `livrable-E1-v3`) et les grilles des compétences
