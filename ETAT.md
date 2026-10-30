@@ -94,7 +94,7 @@ E1 14 min 09 sur 15, E3 19 min 11 sur 20. Retours, analyse de la transcription e
 - **Manque trouvé** : le classeur détaillé envoyé le 28/10 n'a aucune rédaction pour C10 et C11 et cite le rapport E3
   v1.5 pour C9, C12 et C13. Les statuts, eux, étaient justes.
 - **État mesuré des autres livrables** : E2 en version 0.3 (`docs/rapports/E2/rapport-E2.md`, dernier changement le
-  09/10) ; E4 sans rapport (`docs/PLAN-E4-rapport.md` et le recomptage du 03/10) ; E5 sans rapport. Tous dus le 05/11.
+  09/10) ; E4 sans rapport (`docs/PLAN-E4-rapport.md` ; recomptage refait le 30/10, `docs/rapports/E4/recomptage-criteres-2026-10-30.md` : 30 ✅, 6 ⚠️, 0 ❌, questions du §6 à trancher par Era) ; E5 sans rapport. Tous dus le 05/11.
 
 **Fait le 28/10** :
 
