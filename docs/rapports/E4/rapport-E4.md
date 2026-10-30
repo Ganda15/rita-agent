@@ -1,6 +1,6 @@
 # Rapport E4 : réaliser une application intégrant un service d'IA (C14 à C19)
 
-> **Version 0.1 du 30/10/2026, en cours de rédaction.** Seule la section 1 est écrite ; les sections 2 à 8 suivent le
+> **Version 0.2 du 30/10/2026, en cours de rédaction.** Les sections 1 et 2 sont écrites ; les sections 3 à 8 suivent le
 > plan de `docs/PLAN-E4-rapport.md`, § 4. Compte des critères : `docs/rapports/E4/recomptage-criteres-2026-10-30.md`.
 >
 > **Périmètre, décidé par Era le 30/10/2026** : E4 décrit la version de RITA présentée au jury, avec ses cinq écrans
@@ -151,7 +151,119 @@ n'est pas entièrement démontré pour le périmètre des cinq écrans.
 
 ## 2. Le cadre technique (C15)
 
-*[À rédiger]*
+### 2.1 L'architecture en une vue
+
+RITA est une application pour un seul utilisateur. Elle **collecte** des données de marché et d'actualité, les
+**range** dans PostgreSQL, les **expose** par une API REST, et fait **rédiger** par un modèle de langage fourni (aucun
+entraînement) un briefing sur une valeur ou une réponse à une question, avec ses sources (`docs/ARCHITECTURE.md`, § 1,
+état du 24/10). Une **API REST** est un service web qui répond à des adresses précises avec des données, ici en JSON.
+
+Cinq chemins traversent l'application :
+
+| Chemin | De → vers |
+|---|---|
+| Collecte | sources externes → `pipelines/ingest.py` → PostgreSQL et index des articles |
+| Lecture de données | écran → `GET /donnees/*` → PostgreSQL |
+| Briefing | écran → `POST /briefing` → graphe (lecture de la base, recherche d'articles, rédaction) → modèle → garde-fou → réponse |
+| Question | écran → `POST /question` → garde-fous de la question → recherche dans les articles → modèle → contrôles → réponse avec ses sources, ou refus |
+| Surveillance | vigie → `/health` puis `/sante` → une issue GitHub par signal en problème |
+
+Le schéma de référence est `docs/rapports/E3/schemas/E3-architecture.png`. Il date du 04/10 : il montre le chemin du
+briefing, pas encore celui des questions ni la vigie.
+
+### 2.2 Les briques et les dépendances
+
+| Brique | Rôle | Technologie |
+|---|---|---|
+| Collecte (`pipelines/`, `sources/`) | six étapes indépendantes ; une étape en échec n'arrête pas les autres | Python, `httpx`, `feedparser`, `yfinance` |
+| Base (`db/`) | schéma Merise : 10 tables, 1 vue ; rôles, dont `rita_lecture` en lecture seule | PostgreSQL 18 |
+| Indicateurs (`indicateurs/`) | 13 indicateurs par valeur, calculés en SQL | SQL, fonctions fenêtre |
+| Recherche (`rag/`) | index des articles, recherche hybride (sens et mots-clés) | ChromaDB |
+| Graphe (`graph/`) | trois étapes fixes : lire la base, chercher les articles, rédiger | LangGraph |
+| Appel au modèle (`src/llm.py`) | un ordre de fournisseurs ; le suivant n'est essayé que si le premier échoue | Azure AI Foundry en premier |
+| Garde-fous (`guardrails/`) | relisent la question, les articles collectés et le texte produit | Python |
+| API (`api/`) | 19 chemins le 24/10, contrat OpenAPI 3.1.0 publié sur `/docs`, clé d'API | FastAPI |
+| Interface (`frontend/`) | cinq écrans, aucune clé dans le code | HTML, CSS, JavaScript sans outil de construction |
+| Traçage (`src/traces.py`) | une trace par briefing ou question | Langfuse, région UE |
+| Vigie (`monitorage/`) | compteurs, seuils écrits, tableau de bord | Python |
+| Déploiement (`deploy/`) | livrer, revenir à la version précédente, ingérer | Python, Docker Compose |
+
+**Les dépendances.** L'image qui tourne en production s'installe depuis `requirements-api.txt` : ses 13 dépendances ont
+une version fixée. Le fichier de développement `requirements.txt` ne l'est pas : sur 19 lignes, 12 n'ont pas de version
+et une n'a qu'une borne basse (limite reprise en C17).
+
+### 2.3 Les environnements
+
+| Environnement | Ce qui tourne | Comment |
+|---|---|---|
+| Poste de développement | API (port 8000), PostgreSQL (port 5433), collecte planifiée chaque soir | `uvicorn`, tâche planifiée Windows |
+| Pré-production locale | API et PostgreSQL en conteneurs | `docker compose up -d --build` (port 8001) |
+| Intégration continue | lint, secrets, tests, garde-fous, construction et vérification de l'image | GitHub Actions, sept workflows (`docs/CI-CD.md`) |
+| Production | API en conteneur derrière Caddy (HTTPS), serveur Hetzner | livrée automatiquement après chaque fusion dans `main`, depuis le 14/10 |
+
+Un **conteneur** est un paquet qui contient l'application et tout ce qu'il lui faut pour démarrer, isolé du reste de
+la machine ; une **image** est le modèle à partir duquel on lance un conteneur.
+
+### 2.4 Le flux de données
+
+Le diagramme de flux est `evidence/C15/FLUX-DONNEES-C15-application-RITA.png`. Il se lit dans le sens de la donnée,
+pas dans celui de la requête : la flèche qui va de l'API au navigateur descend, alors que c'est le navigateur qui
+déclenche l'appel.
+
+| Flux | De → vers | Nature |
+|---|---|---|
+| Collecte | sources → ingestion | brut, non fiable |
+| Écriture | ingestion → PostgreSQL | dédoublonné, homogénéisé, rejets tracés |
+| Lecture | PostgreSQL → API | lecture seule, jamais d'écriture depuis l'API |
+| Réponse | API → navigateur | JSON, protégé par la clé d'API |
+| Briefing | API → graphe → modèle | encadré par les garde-fous |
+
+Trois flux portent des données personnelles : le fichier des positions, la table `position` et l'écran du
+portefeuille (traitement T1 du registre RGPD). Rien du portefeuille n'est envoyé au modèle : l'étape qui lit la base
+pour le briefing ne lit que des données de marché publiques (`docs/ARCHITECTURE.md`, § 5).
+
+### 2.5 Des choix éco-responsables, par effet
+
+| Choix | Effet |
+|---|---|
+| Interface sans cadre ni outil de construction | aucun paquet JavaScript à télécharger, aucune étape de compilation |
+| Pagination plafonnée à 1 000 lignes (`api/donnees.py`, `LIMITE_MAX`) | une requête ne peut pas transférer toute la table des cotations |
+| Archive Parquet compressée et partitionnée | dix ans d'historique en 14 Mo (mesure du 18/08) |
+| `pyspark` hors de l'image | 492 Mo de moins dans l'image (mesure du 18/08) |
+| Un appel au modèle par briefing | un autre fournisseur n'est essayé que si le premier échoue |
+
+Ces choix sont éco-responsables **par effet** : aucun n'a été fait d'abord pour l'environnement. L'hébergeur, Hetzner
+(serveur CX23, 7,19 € par mois), a été choisi le 19/08 pour une raison de continuité : un serveur payé ne s'éteint pas
+avant le jury, contrairement aux offres gratuites qui expiraient avant le 05/11 (`CONTINUITE.md`, décisions). Son
+impact environnemental n'a pas été un critère du choix.
+
+### 2.6 La preuve de concept et la pré-production
+
+**La preuve de concept du 18/08** (`evidence/C15/preuve-preproduction-docker.md`) : l'image se construit (595 Mo),
+démarre seule et répond en moins de 20 secondes, refuse une demande sans clé (403) et sert les données avec la clé
+(200). Elle tourne durcie : utilisateur sans privilèges, système de fichiers en lecture seule, base non exposée hors du
+réseau des conteneurs. **Avis écrit ce jour-là : « Poursuivre. »** Ses limites étaient dites : pré-production
+locale, base vide, aucun déploiement automatisé.
+
+**Ce qui a changé depuis, daté.** Depuis le 14/10, chaque version est livrée en production automatiquement après une
+fusion dans `main`, et elle passe d'abord une pré-production sur le serveur : un conteneur d'essai sur le port 8003,
+avec le compte de base `rita_lecture` en lecture seule, contrôlé avant la bascule, puis toujours arrêté
+(`deploy/deployer.py`, `_essai_en_preproduction`). La première livraison, le 14/10, a pris 221 secondes de l'ordre à la
+fin des contrôles (`evidence/sprint-2/N0-premiere-livraison-2026-10-14.md`). Les limites « pré-production
+locale » et « aucun déploiement automatisé » du 18/08 sont donc levées ; la pré-production locale du poste existe
+toujours à côté. La conclusion « Poursuivre » reste valable, mais elle date d'avant la mise en production.
+
+### 2.7 Les limites, dites franchement
+
+- **Les schémas sont en retard sur l'application** : le diagramme de flux date du 18/08 et le schéma d'architecture du
+  04/10 ; aucun ne montre le chemin des questions ni la vigie.
+- **L'hébergeur n'a pas été choisi sur un critère environnemental**, et l'impact du serveur n'est pas mesuré.
+- **`requirements.txt` n'est pas épinglé** (12 lignes sans version, une borne basse) ; seule l'image l'est.
+- **La taille de l'image (595 Mo) date du 18/08** et n'a pas été remesurée.
+- **La production n'a pas été revérifiée en direct pour ce rapport** : la version de référence est celle annoncée par
+  `/health` le 27/10, d'après `ETAT.md`.
+- **Le dossier `evidence/C15/` n'a pas été mis à jour depuis le 04/10** : la pré-production réelle est prouvée ailleurs
+  (`deploy/`, `evidence/sprint-2/`).
 
 ## 3. Coordonner en agile (C16)
 
@@ -193,3 +305,14 @@ n'est pas entièrement démontré pour le périmètre des cinq écrans.
 - **RGAA** : Référentiel général d'amélioration de l'accessibilité, le standard français.
 - **Lecteur d'écran** : logiciel qui lit une page à voix haute.
 - **Lighthouse** : outil de Google qui note une page web, notamment sur l'accessibilité.
+- **API REST** : service web qui répond à des adresses précises avec des données, ici en JSON.
+- **Conteneur, image** : paquet isolé qui contient l'application et ce qu'il lui faut ; l'image est son modèle.
+- **Pré-production** : environnement proche de la production où l'on vérifie qu'une version démarre et répond avant
+  de la mettre en service.
+- **Intégration continue** : chaîne qui lance automatiquement les contrôles et les tests à chaque envoi de code.
+- **Workflow** : fichier de GitHub Actions qui décrit une suite d'étapes automatiques.
+- **LangGraph** : bibliothèque qui enchaîne des étapes d'un agent sous forme de graphe.
+- **ChromaDB** : base qui range les articles découpés pour les retrouver par le sens.
+- **Parquet** : format de fichier compressé, rangé par colonnes, adapté aux gros historiques.
+- **Caddy, HTTPS** : serveur placé devant l'API ; il chiffre les échanges avec le navigateur.
+- **Éco-responsable par effet** : choix qui réduit la consommation sans avoir été fait d'abord pour cette raison.
