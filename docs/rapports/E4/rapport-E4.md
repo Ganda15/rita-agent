@@ -1,6 +1,6 @@
 # Rapport E4 : réaliser une application intégrant un service d'IA (C14 à C19)
 
-> **Version 0.4 du 30/10/2026, en cours de rédaction.** Les sections 1 à 4 sont écrites ; les sections 5 à 8 suivent le
+> **Version 0.5 du 30/10/2026, en cours de rédaction.** Les sections 1 à 6 sont écrites ; les sections 7 et 8 suivent le
 > plan de `docs/PLAN-E4-rapport.md`, § 4. Compte des critères : `docs/rapports/E4/recomptage-criteres-2026-10-30.md`.
 >
 > **Périmètre, décidé par Era le 30/10/2026** : E4 décrit la version de RITA présentée au jury, avec ses cinq écrans
@@ -526,11 +526,113 @@ peut démarrer sans clé configurée ; la configuration est contrôlée lors de 
 
 ## 5. Automatiser les tests (C18)
 
-*[À rédiger]*
+### 5.1 La chaîne d'intégration continue
 
-## 6. Livraison continue (C19)
+L'**intégration continue** lance automatiquement les contrôles et les tests à chaque envoi de code. Pour RITA, c'est
+**GitHub Actions**, l'outil du dépôt : il n'y a rien à installer à côté, et les règles de la branche principale
+peuvent exiger ses résultats.
 
-*[À rédiger]*
+| Workflow | Déclencheur | Ce qu'il fait |
+|---|---|---|
+| `test.yml`, Tests | chaque envoi et chaque pull request sur `main` et `develop` | deux travaux : `pytest` (la suite et la couverture) et `evals` (les portes des garde-fous) |
+| `livraison.yml`, Livraison | chaque envoi et chaque pull request sur `main` et `develop`, chaque tag `livrable-*` | `lint` (`ruff`), `secrets` (`gitleaks` sur tout l'historique), puis la construction et la vérification de l'image (section 6) |
+| `revue-pr.yml`, Revue PR | chaque pull request vers `main` | une revue automatisée commentée sur la pull request |
+
+Il y a sept workflows en tout (`.github/workflows/`) ; les quatre autres servent la surveillance, l'évaluation des
+garde-fous, le retour arrière et l'ingestion (`docs/CI-CD.md`, § 3).
+
+### 5.2 Les étapes, dans l'ordre
+
+Le travail `pytest` de `test.yml` tourne sur une machine fixée (`ubuntu-24.04`), avec Python 3.13 :
+
+1. installer les dépendances (`requirements.txt`) ;
+2. installer le navigateur du test d'écran (Playwright) et les outils de l'évaluation des garde-fous ;
+3. **tester d'abord les données** (collecte, nettoyage, import, RGPD) : le 30/10, 296 réussis et 3 ignorés, en
+   7 secondes ; une erreur sur les données se voit avant le reste ;
+4. lancer toute la suite et mesurer la couverture, avec un seuil de 90 % (`.coveragerc`).
+
+### 5.3 Les tests tournent à chaque déclenchement
+
+Le 30/10, sur le commit `6c3014a` (exécution 41129801486) : **1 808 tests réussis, 32 ignorés, 2 en échec attendu**,
+couverture **96,32 %** sur le périmètre Python configuré. Les 32 tests ignorés et les 2 échecs attendus sont expliqués
+en section 4.8.
+
+La branche principale ne change que par une pull request, et GitHub exige six contrôles verts avant la fusion : `lint`,
+`pytest`, `evals`, `revue`, `secrets`, `construire-et-publier` (règle `main protegee`, lue le 30/10, sans contournement
+possible). Une pull request dont un contrôle est rouge ne peut donc pas entrer dans `main`.
+
+### 5.4 Les configurations sont versionnées
+
+Les sept workflows sont dans le dépôt (`.github/workflows/`), comme les règles de lint (`ruff.toml`), de couverture
+(`.coveragerc`) et de recherche de secrets (`.gitleaks.toml`). La version de `ruff` est la même dans la CI et dans
+`requirements.txt`, et un test le vérifie (`tests/test_lint_config.py`).
+
+### 5.5 La documentation de la chaîne
+
+`docs/CI-CD.md` rassemble tout en un endroit : les déclencheurs (§ 2), les étapes workflow par workflow (§ 3), les
+secrets et les permissions (§ 4), comment installer la chaîne sur un dépôt neuf (§ 5), comment la tester avant de
+compter dessus (§ 6), et quoi faire quand elle est rouge (§ 7). Le document est en Markdown, lisible sur GitHub ; son
+accessibilité n'a pas été contrôlée avec un outil.
+
+### 5.6 Les limites
+
+- Trois paquets installés par la CI n'ont pas de version fixée (`playwright`, `giskard-llm`, `giskard-checks`), et
+  `requirements.txt` non plus (section 4.2).
+- 32 tests sont ignorés en CI, dont les 16 qui exigent une base PostgreSQL : la CI n'a pas de base de test.
+- La couverture ne mesure pas l'interface, la recherche documentaire ni la surveillance.
+
+## 6. La livraison continue (C19)
+
+### 6.1 Les étapes de la livraison
+
+La **livraison continue** construit, vérifie et met en service une nouvelle version sans geste manuel. Pour RITA, elle
+suit `livraison.yml` (`docs/CI-CD.md`, § 3) :
+
+| Étape | Quand | Ce qu'elle fait |
+|---|---|---|
+| `lint`, `secrets` | à chaque envoi | lint du code ; recherche de secrets sur tout l'historique ; contrôle du `Dockerfile` |
+| Porte de livraison | après `lint` et `secrets` verts | relance la suite, la couverture, les portes des garde-fous et les liens internes ; rien n'est construit si une ligne est rouge |
+| Construire, puis vérifier l'image | après la porte | l'image démarre ; `/health` annonce le commit construit ; une demande sans clé reçoit 403 ; aucun fichier `.env` dans l'image ; les fichiers de déploiement sont présents |
+| Publier l'image vérifiée | après une fusion dans `main` ou sur un tag `livrable-*` | publie l'image testée sur le registre de GitHub (`ghcr.io/ganda15/rita-api`) |
+| Déployer | après une fusion dans `main` seulement | le serveur essaie l'image à part (pré-test), la met en service, la contrôle, et remet l'ancienne si un contrôle échoue |
+
+Un **tag de livrable** (`livrable-E<n>-v<k>`) publie aussi son image, sans la déployer. Un **retour arrière** se fait
+par un workflow dédié (`retour-arriere.yml`), procédure écrite dans `docs/exploitation.md`.
+
+### 6.2 Le packaging et la livraison, prouvés par des exécutions réelles
+
+| Exécution | Ce qu'elle montre |
+|---|---|
+| 40490651836, fusion dans `main`, 27/10 | la version de référence `d3a4198` construite, vérifiée, publiée et mise en service ; tous les travaux verts |
+| 40490864523, tag `livrable-E1-v3`, 27/10 | construction et vérifications vertes, image publiée sous le nom du tag, sans déploiement |
+| 39653430203, un tag de livrable, 21/10 | **la porte a refusé** : tests rouges, construction et publication sautées, rien n'est parti |
+| 40325990967, `main`, 26/10 | GitHub n'a lancé aucun travail (incident de facturation du compte) : rien n'a été livré, la chaîne a échoué fermée |
+
+Sur l'ensemble : 49 exécutions sur `main`, dont 48 vertes (la rouge est celle du 26/10) ; 17 exécutions sur des tags
+`livrable-*`, dont 15 vertes. Le 24/10, une correction est allée de la fusion à la production en 9 min 02 s, sans
+intervention (`docs/CI-CD.md`, § 3).
+
+**L'ordre est garanti par le fichier lui-même** : le déploiement ne démarre qu'après `lint`, `secrets` et
+`construire-et-publier` verts (`livraison.yml`, `needs:`), et seulement pour un envoi sur `main` (condition `if:`).
+
+### 6.3 Les sources de la chaîne sont versionnées
+
+Les workflows (`livraison.yml`, `retour-arriere.yml`, `ingestion.yml`), le script du serveur (`deploy/deployer.py`) et
+les fichiers Compose (`docker-compose.yml`, `deploy/compose.prod.yml`) sont dans le dépôt. Deux règles GitHub protègent
+la chaîne : `main protegee` (pull request et six contrôles exigés, ni suppression ni réécriture) et `tags livrable-*
+figes` (un tag de livrable ne se déplace ni ne se supprime).
+
+### 6.4 Les limites
+
+- **Un tag reconstruit l'image** : sur le même commit `d3a4198`, l'image publiée par le tag n'a pas la même empreinte
+  que celle livrée en production, et elle a réécrit l'étiquette `sha-d3a4198` (le rapport E3 le dit déjà). La
+  production n'est pas touchée : le serveur désigne son image par son empreinte.
+- **Le retour arrière restaure l'application, pas la base de données** ; et la sauvegarde de la base n'est pas tenue
+  (dernier dump le 27/09 ; manque écrit le 24/10 dans `CHANGELOG.md`).
+- **La collecte des cours n'est pas planifiée sur le serveur** : avant une démonstration, les cours de production sont
+  rattrapés à la main (`docs/exploitation.md`).
+- **Le déploiement attend un créneau** : une fusion faite entre 7 h 30 et 9 h n'est livrée qu'après 9 h ; c'est voulu,
+  mais une correction urgente du matin attend.
 
 ## 7. Démonstration et limites
 
@@ -590,3 +692,10 @@ peut démarrer sans clé configurée ; la configuration est contrôlée lors de 
 - **Proxy** : serveur placé devant l'API, qui reçoit les demandes et peut ajouter des en-têtes.
 - **EcoIndex** : note de A à G de l'impact environnemental d'une page web.
 - **Couverture** : part du code exécutée par les tests, sur un périmètre choisi.
+- **Livraison continue** : chaîne qui construit, vérifie et met en service une version sans geste manuel.
+- **Lint** : lecture automatique du code qui signale les erreurs sans l'exécuter.
+- **Porte de livraison** : contrôle qui bloque la suite de la chaîne si une condition n'est pas remplie.
+- **Registre d'images** : endroit où sont rangées les images publiées, ici celui de GitHub.
+- **Empreinte d'une image** : identifiant calculé à partir de son contenu ; deux images différentes ont deux empreintes.
+- **Retour arrière** : remise en service de la version précédente.
+- **Échouer fermé** : en cas de panne, ne rien laisser passer plutôt que de laisser passer n'importe quoi.
