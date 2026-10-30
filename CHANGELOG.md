@@ -9,6 +9,17 @@
 
 ---
 
+## 2026-10-29 (soir) : classeurs des compétences remis à l'état du 29/10 ; manque trouvé dans la version envoyée le 28/10
+
+**Manque découvert** : le classeur détaillé envoyé au formateur le 28/10 (branche `classeur-competences`, `c56b899`)
+n'a aucune rédaction pour C10 et C11, et cite le rapport E3 v1.5 pour C9, C12 et C13, alors que le rapport envoyé le
+29/10 est la v1.9. Les statuts étaient justes : 111 ✅ · 25 🟡 · 1 ❌, les mêmes que le § 10 du rapport E3 v1.9.
+**Corrigé hors du dépôt**, dans les copies OneDrive d'Era (identiques à `c56b899` avant modification) : les cinq
+classeurs passent à l'état du 29/10, sans changer un seul statut. La branche `classeur-competences` reste au 28/10 ;
+la mettre à jour, et prévenir ou non le formateur, sont des décisions d'Era. Détail : `ETAT.md`, « Fait le 29/10 ».
+
+---
+
 ## 2026-10-29 (matin) : rapport E3 v1.9 envoyé au formateur ; trois imprécisions de plus relevées
 
 **Livrable envoyé** (Discord, par Era) : le rapport E3 v1.9 (tag `livrable-E3-v2`,
