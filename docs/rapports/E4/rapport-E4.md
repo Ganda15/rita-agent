@@ -1,6 +1,6 @@
 # Rapport E4 : réaliser une application intégrant un service d'IA (C14 à C19)
 
-> **Version 0.3 du 30/10/2026, en cours de rédaction.** Les sections 1 à 3 sont écrites ; les sections 4 à 8 suivent le
+> **Version 0.4 du 30/10/2026, en cours de rédaction.** Les sections 1 à 4 sont écrites ; les sections 5 à 8 suivent le
 > plan de `docs/PLAN-E4-rapport.md`, § 4. Compte des critères : `docs/rapports/E4/recomptage-criteres-2026-10-30.md`.
 >
 > **Périmètre, décidé par Era le 30/10/2026** : E4 décrit la version de RITA présentée au jury, avec ses cinq écrans
@@ -177,7 +177,7 @@ briefing, pas encore celui des questions ni la vigie.
 |---|---|---|
 | Collecte (`pipelines/`, `sources/`) | six étapes indépendantes ; une étape en échec n'arrête pas les autres | Python, `httpx`, `feedparser`, `yfinance` |
 | Base (`db/`) | schéma Merise : 10 tables, 1 vue ; rôles, dont `rita_lecture` en lecture seule | PostgreSQL 18 |
-| Indicateurs (`indicateurs/`) | 13 indicateurs par valeur, calculés en SQL | SQL, fonctions fenêtre |
+| Indicateurs (`indicateurs/`) | 13 indicateurs par valeur ; calculs SQL et traitements Python, dont le RSI de Wilder | SQL (fonctions fenêtre), Python |
 | Recherche (`rag/`) | index des articles, recherche hybride (sens et mots-clés) | ChromaDB |
 | Graphe (`graph/`) | trois étapes fixes : lire la base, chercher les articles, rédiger | LangGraph |
 | Appel au modèle (`src/llm.py`) | un ordre de fournisseurs ; le suivant n'est essayé que si le premier échoue | Azure AI Foundry en premier |
@@ -214,7 +214,7 @@ déclenche l'appel.
 |---|---|---|
 | Collecte | sources → ingestion | brut, non fiable |
 | Écriture | ingestion → PostgreSQL | dédoublonné, homogénéisé, rejets tracés |
-| Lecture | PostgreSQL → API | lecture seule, jamais d'écriture depuis l'API |
+| Lecture | PostgreSQL → API | lecture des données métier ; certains appels produisent aussi une écriture dans le journal d'audit |
 | Réponse | API → navigateur | JSON, protégé par la clé d'API |
 | Briefing | API → graphe → modèle | encadré par les garde-fous |
 
@@ -230,7 +230,7 @@ pour le briefing ne lit que des données de marché publiques (`docs/ARCHITECTUR
 | Pagination plafonnée à 1 000 lignes (`api/donnees.py`, `LIMITE_MAX`) | une requête ne peut pas transférer toute la table des cotations |
 | Archive Parquet compressée et partitionnée | dix ans d'historique en 14 Mo (mesure du 18/08) |
 | `pyspark` hors de l'image | 492 Mo de moins dans l'image (mesure du 18/08) |
-| Un appel au modèle par briefing | un autre fournisseur n'est essayé que si le premier échoue |
+| En fonctionnement nominal, un appel au modèle suffit pour rédiger le briefing | en cas d'échec, d'autres tentatives sont possibles selon la configuration des fournisseurs |
 
 Ces choix sont éco-responsables **par effet** : aucun n'a été fait d'abord pour l'environnement. L'hébergeur, Hetzner
 (serveur CX23, 7,19 € par mois), a été choisi le 19/08 pour une raison de continuité : un serveur payé ne s'éteint pas
@@ -356,7 +356,173 @@ Le même travail a fait découvrir un autre manque, écrit le jour même : la sa
 
 ## 4. Développer (C17)
 
-*[À rédiger]*
+### 4.1 Vue d'ensemble
+
+Je distingue « j'ai une preuve » et « tout le critère est satisfait ».
+
+| Critère C17 | État | Où |
+|---|---|---|
+| 1. Environnement de développement conforme | partiel | § 4.2 |
+| 2. Interfaces conformes aux maquettes | partiel | § 4.3 |
+| 3. Comportements et navigation conformes | partiel : scénarios testés, un défaut ouvert | § 4.3 |
+| 4. Composants métier conformes | implémentés et testés ; conformité partielle, défauts ouverts | § 4.4 |
+| 5. Droits d'accès | partiel | § 4.5 |
+| 6. Flux de données intégrés | prouvé pour le briefing ; vérifié par des tests à composants simulés pour Question | § 4.4 |
+| 7. Éco-conception | pratiques documentées et mesures historiques sur trois écrans | § 4.7 |
+| 8. Préconisations OWASP | partiel | § 4.6 |
+| 9. Tests des composants et des accès | résultats prouvés, avec leurs exclusions | § 4.8 |
+| 10. Sources versionnées sur un dépôt distant | prouvé | § 4.9 |
+| 11. Documentation technique | prouvé, avec des réserves | § 4.9 |
+
+### 4.2 L'environnement de développement (critère 1, partiel)
+
+Les treize dépendances directes de l'API sont épinglées (`requirements-api.txt`). L'intégration continue tourne sur une
+machine fixée (`ubuntu-24.04`) avec Python 3.13 ; sur mon poste, j'utilise Python 3.14. La reproductibilité complète
+de l'environnement reste à améliorer : l'image Python, les paquets système et les dépendances indirectes ne sont pas
+entièrement verrouillés ; le fichier de développement `requirements.txt` a 12 lignes sans version et une borne basse
+(`mcp>=2.1.1`) ; la CI installe trois paquets sans version (`playwright`, `giskard-llm`, `giskard-checks`). La carte #23
+suit l'épinglage.
+
+### 4.3 Les interfaces et la navigation (critères 2 et 3)
+
+L'interface est en **HTML, CSS et JavaScript sans outil de construction** : cinq pages (`frontend/`), aucune clé
+écrite dans le code, la clé saisie par l'utilisateur et gardée le temps de l'onglet.
+
+**Conformité aux maquettes (critère 2, partiel).** Les trois premiers écrans ont un wireframe, dessiné après l'écran :
+il ne prouve ni qu'une maquette a guidé le développement, ni que l'écran actuel lui est conforme. Les écrans Question
+et Tableau de bord n'ont pas de maquette. Une refonte des trois premiers écrans a été conçue et validée le 04/10
+(`docs/conception/frontend/refonte-2026-10.md`), mais elle n'est pas implémentée.
+
+**Comportements et navigation (critère 3, partiel).** Des scénarios de fonctionnement sont vérifiés, notamment dans un
+navigateur :
+
+| Fichier de test | Fonctions de test | Ce qu'il vérifie |
+|---|---|---|
+| `tests/test_frontend.py` | 69 | surtout le contenu des pages, lu comme du texte, et leur desserte par l'API |
+| `tests/test_smoke_ui.py` | 11 | de vrais gestes dans un navigateur ; plusieurs réponses de l'API y sont simulées |
+| `tests/test_smoke_tableau_de_bord.py`, `tests/test_tableau_de_bord.py` | 13 et 11 | le tableau de bord, dont son balisage d'accessibilité |
+
+La conformité complète aux spécifications reste partielle : l'écran du briefing garde la clé dans l'onglet avant
+d'avoir vérifié qu'elle fonctionne (carte #73, `frontend/briefing.js`, ligne 213), ce qui contredit un critère
+d'acceptation de sa user story. Le commentaire juste au-dessus du code dit le contraire, à corriger avec le défaut.
+
+### 4.4 Les composants métier et les flux de données (critères 4 et 6)
+
+| Composant | Rôle | Tests |
+|---|---|---|
+| Indicateurs (`indicateurs/`) | 13 indicateurs par valeur et 2 pour le portefeuille ; calculs SQL et traitements Python, dont le RSI de Wilder | `test_indicateurs_socle` (13), `_portefeuille` (14), `_risque` (19) |
+| Graphe du briefing (`graph/`) | trois étapes LangGraph : lire la base, chercher les articles, rédiger | `test_workflow` (11) |
+| Rédacteur (`agents/analyst.py`) | construit le prompt du briefing : cours, variation, capitaux, dix indicateurs, extraits d'articles, consigne de ne rien recommander | `test_analyst` (14) |
+| Question (`agents/question.py`, `api/question.py`) | une chaîne à part : recherche dans les articles, génération en format imposé, contrôles de la réponse ; les références affichées viennent des données stockées | `test_api_question` (15) |
+
+**Deux parcours, deux chaînes.** Le briefing utilise le graphe LangGraph (`graph/workflow.py`). Le parcours Question
+suit une chaîne distincte de recherche documentaire, de génération et de validation (`agents/question.py`). Dans les
+deux cas, des contrôles interviennent avant et après la génération. Preuves des écrans indicateurs et briefing :
+`evidence/C10/`. Le parcours Question est vérifié par des tests d'intégration où la recherche documentaire et le
+modèle sont simulés (`tests/test_api_question.py`) ; une démonstration réelle est une preuve complémentaire, distincte.
+
+**Deux défauts d'indicateurs restent ouverts**, trouvés le 04/10 : le RSI vaut 100 sur une série plate (carte #78), et
+la pire baisse sur un an peut être positive quand le cours ne fait que monter (carte #79).
+
+### 4.5 Les droits d'accès (critère 5, partiel)
+
+| Règle | Dans le code |
+|---|---|
+| La clé est posée sur des routeurs entiers : une route ajoutée à un routeur protégé hérite de la protection | `api/main.py`, lignes 260, 267 et 271 |
+| La clé est comparée à temps constant | `secrets.compare_digest`, ligne 201 |
+| Les refus d'accès 403 liés à la clé RITA sont journalisés (identifiant de requête, route, motif), jamais la clé | ligne 206 |
+| Les deux routes qui appellent le modèle partagent une limite : 10 appels par minute à elles deux, par défaut ; 429 au-delà | ligne 267, `api/limiteur.py` |
+| Les exercices de panne ont leur propre clé : clé du client absente ou incorrecte, 403 ; clé d'exercice non configurée sur le serveur, 503 | ligne 275, `api/exercice.py` |
+| La clé n'a aucune valeur par défaut et doit compter au moins 16 caractères. L'application peut démarrer sans clé configurée, mais elle ne peut pas autoriser les accès protégés : la configuration est contrôlée lors de l'authentification. Docker Compose exige une valeur non vide avant de lancer le conteneur | `api/main.py`, lignes 161 à 201 ; `docker-compose.yml`, ligne 81 |
+
+Il n'y a qu'**une clé partagée pour les accès utilisateurs**, sans droits par utilisateur : c'est un choix pour un
+outil personnel, défendu avec son modèle de menace (`evidence/C17/preuve-droits-acces-2026-10-03.md`).
+
+**Ce qui n'est pas conforme** : la matrice des droits validée donne à l'API une lecture limitée des données et une
+écriture limitée au journal d'audit ; or l'API se connecte avec le rôle propriétaire (carte #76, ouverte). La
+documentation interactive `/docs` est publique (constat S2).
+
+### 4.6 La sécurité : la revue OWASP Top 10 (critère 8, partiel)
+
+Le 03/10, j'ai relu le code contre l'**OWASP Top 10** (édition 2025), la liste de référence des risques des
+applications web. Dix constats, S1 à S10 (`evidence/C17/revue-owasp-top10-2025-2026-10-03.md`) :
+
+| Constat | État au 30/10 |
+|---|---|
+| S4 : refus d'authentification non journalisés | corrigé (`api/main.py`, ligne 206) |
+| S5 : ticker sans longueur maximale | corrigé : 20 caractères au plus (ligne 281) |
+| S3 : aucune limite de débit | en partie : limite partagée sur `/briefing` et `/question` ; les essais de clé ne sont pas freinés |
+| S7 : chaîne d'approvisionnement | en partie : recherche de secrets sur tout l'historique (`gitleaks`), machine de CI fixée ; dépendances de développement libres |
+| S10 : certificat proche de l'expiration | renouvelé seul le 19/10, valable jusqu'au 17/01/2027 (`ETAT.md`) |
+| S1 : aucun en-tête de sécurité | constaté en production le 03/10 ; aucun ajout dans le dépôt depuis ; la configuration actuelle du proxy n'a pas été revérifiée |
+| S2 : `/docs` public | ouvert : décision qui me revient (D7), ces pages servent à la démonstration |
+| S6 : panne de tous les fournisseurs | ouvert pour `/briefing` ; `/question` renvoie déjà 503 (`api/question.py`) |
+| S8 : mots de passe par défaut | ouvert : le fichier Compose concerné est aussi utilisé en production (`deploy/deployer.py`), ce qui ne prouve pas que ces valeurs y servent |
+| S9 : garde-fous sous le seuil de 85 % | ouvert : déclaré en échec attendu dans les tests, le seuil n'est pas baissé |
+
+Les suivis sont séparés : la carte #75 pour le durcissement, #23 pour l'épinglage, une décision à prendre pour S2, et la
+porte des évaluations pour S9.
+
+### 4.7 L'éco-conception (critère 7)
+
+Les pratiques sont documentées en section 2.5 (interface sans outil de construction, pagination plafonnée ; en
+fonctionnement nominal, un appel au modèle suffit pour un briefing). Mesures historiques du 03/10, en local, sur trois écrans
+(`evidence/C17/preuve-eco-conception-et-accessibilite-2026-10-03.md`) :
+
+| Écran et état mesuré | EcoIndex |
+|---|---|
+| Portefeuille, avec ses données | A (90) |
+| Briefing, mesuré avant l'arrivée du texte, avec une réponse du modèle enregistrée | A (90) |
+| Indicateurs, avec ses 111 lignes | D (51) |
+
+Un écran vide pèse 20 à 25 Ko, en 3 ou 4 requêtes, sans ressource externe. Ces mesures caractérisent des états de
+pages précis : elles ne mesurent ni la consommation du modèle, ni celle du service complet. Les corrections relevées le
+même jour ne sont pas faites (carte #74 : compression des réponses, `favicon.ico` en 404) ; il n'y a donc pas de mesure
+« après », et les écrans Question et Tableau de bord n'ont pas été mesurés.
+
+### 4.8 Les tests (critère 9)
+
+Mesure du 30/10 sur le commit `6c3014a` (exécution 41129801486), postérieur à la version de référence `d3a4198` : entre
+les deux, seuls des tests et des documents ont changé, pas le code de l'application.
+
+**1 808 tests réussis, 32 ignorés, 2 en échec attendu.** Les 32 tests ignorés : 16 exigent une base PostgreSQL de test,
+absente de la CI ; 9 ne tournent que sous Windows ; 1 exige une bibliothèque PDF ; 6 exigent l'archive Parquet ou
+Spark. Les deux échecs attendus déclarent que les garde-fous n'atteignent pas leur seuil, sans le baisser.
+
+**Couverture : 96,32 %** pour un seuil de 90 % (`.coveragerc`). Elle porte sur le périmètre Python configuré, pas sur
+toute l'application : l'interface, `rag/` et `monitorage/` n'en font pas partie.
+
+**Les accès ont leurs tests** : `test_limiteur` (7) et `test_exercice` (15) ont tourné. Les quatre tests du rôle
+PostgreSQL en lecture seule (`test_role_lecture`) existent, mais ils font partie des tests ignorés dans cette
+exécution : elle ne prouve pas leur réussite.
+
+### 4.9 Les sources et la documentation (critères 10 et 11)
+
+**Les sources** sont versionnées sur GitHub, dans le dépôt privé `Ganda15/rita-agent`. Le formateur y a un accès en
+lecture. Chaque livrable est un tag `livrable-*` qu'on ne peut ni déplacer ni supprimer ; il y en a 18 le 30/10. Le
+jury sera invité au moment de l'évaluation.
+
+**La documentation technique** est rassemblée : `docs/ARCHITECTURE.md` (architecture, briques, points de terminaison,
+règles d'accès, état du 24/10), `README.md` (« Lancer le projet », « Lancer les tests »), `docs/CI-CD.md` et
+`docs/exploitation.md`. Une erreur y a été trouvée le 30/10 : `docs/ARCHITECTURE.md` (ligne 71), le message
+d'erreur et la docstring de `api/main.py` disent que l'API « refuse de démarrer » sans clé, alors que l'application
+peut démarrer sans clé configurée ; la configuration est contrôlée lors de l'authentification.
+
+### 4.10 Les limites, dites franchement
+
+- **L'environnement n'est pas entièrement reproductible** : `requirements.txt` libre, trois paquets de CI sans
+  version, dépendances indirectes non verrouillées.
+- **Aucun écran n'a été construit à partir d'une maquette préalable** ; Question et Tableau de bord n'en ont pas ; la
+  refonte validée le 04/10 n'est pas implémentée.
+- **Des défauts ouverts** : la clé gardée avant d'être vérifiée (#73), deux indicateurs (#78, #79), le rôle
+  propriétaire de l'API (#76).
+- **Sécurité** : en-têtes absents en production au 03/10 et non revérifiés depuis (S1), `/docs` public (S2), panne
+  des fournisseurs du briefing (S6), mots de passe par défaut (S8), garde-fous sous leur seuil (S9).
+- **Les tests** : 32 ignorés en CI, dont les tests du rôle en lecture seule ; une couverture qui exclut l'interface,
+  la recherche documentaire et la surveillance.
+- **L'éco-conception** n'a que des mesures historiques, sans mesure « après », sur trois écrans sur cinq.
+- **La documentation** contient une affirmation fausse sur le démarrage de l'API ; elle n'a pas été contrôlée avec un
+  outil d'accessibilité ; ses schémas datent du 04/10 ; `docs/EXPLOITATION.pdf` (11/10) ne correspond plus à la page.
 
 ## 5. Automatiser les tests (C18)
 
@@ -410,3 +576,17 @@ Le même travail a fait découvrir un autre manque, écrit le jour même : la sa
 - **Pull request** : demande de fusion d'une modification dans une branche, avec sa revue.
 - **Rétrospective** : réunion de fin de cycle sur ce qui a marché et ce qu'on change.
 - **Gel** : moment où une version d'un livrable est figée par un tag ; on ne la modifie plus.
+- **Épingler une dépendance** : fixer sa version exacte, pour réinstaller toujours la même.
+- **Dépendance indirecte** : bibliothèque installée parce qu'une autre en a besoin.
+- **Playwright** : outil qui pilote un vrai navigateur pour tester des pages web.
+- **RSI de Wilder** : indicateur de la force des hausses et des baisses récentes d'un cours, entre 0 et 100, avec le
+  lissage proposé par Wilder.
+- **Comparaison à temps constant** : comparaison qui prend le même temps quelle que soit la réponse, pour ne rien
+  laisser deviner de la clé.
+- **429, 503** : codes HTTP « trop de requêtes » et « service indisponible ».
+- **OWASP Top 10** : liste de référence des dix risques de sécurité les plus courants des applications web.
+- **En-tête de sécurité** : instruction envoyée au navigateur avec la page, par exemple pour interdire de l'afficher
+  dans un cadre d'un autre site.
+- **Proxy** : serveur placé devant l'API, qui reçoit les demandes et peut ajouter des en-têtes.
+- **EcoIndex** : note de A à G de l'impact environnemental d'une page web.
+- **Couverture** : part du code exécutée par les tests, sur un périmètre choisi.
