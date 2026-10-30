@@ -1,7 +1,6 @@
 # Rapport E4 : réaliser une application intégrant un service d'IA (C14 à C19)
 
-> **Version 0.5 du 30/10/2026, en cours de rédaction.** Les sections 1 à 6 sont écrites ; les sections 7 et 8 suivent le
-> plan de `docs/PLAN-E4-rapport.md`, § 4. Compte des critères : `docs/rapports/E4/recomptage-criteres-2026-10-30.md`.
+> **Version 0.6 du 30/10/2026, première version complète, avant relecture globale.** Les huit sections sont écrites. Compte des critères : `docs/rapports/E4/recomptage-criteres-2026-10-30.md`.
 >
 > **Périmètre, décidé par Era le 30/10/2026** : E4 décrit la version de RITA présentée au jury, avec ses cinq écrans
 > intégrés (portefeuille, indicateurs, briefing, question, tableau de bord). Les ateliers et copies d'exercice des
@@ -372,7 +371,7 @@ Je distingue « j'ai une preuve » et « tout le critère est satisfait ».
 | 8. Préconisations OWASP | partiel | § 4.6 |
 | 9. Tests des composants et des accès | résultats prouvés, avec leurs exclusions | § 4.8 |
 | 10. Sources versionnées sur un dépôt distant | prouvé | § 4.9 |
-| 11. Documentation technique | prouvé, avec des réserves | § 4.9 |
+| 11. Documentation technique | partiel : contenu complet ; accessibilité non contrôlée ; une affirmation fausse | § 4.9 |
 
 ### 4.2 L'environnement de développement (critère 1, partiel)
 
@@ -636,11 +635,103 @@ figes` (un tag de livrable ne se déplace ni ne se supprime).
 
 ## 7. Démonstration et limites
 
-*[À rédiger]*
+### 7.1 La démonstration prévue
+
+L'épreuve E4 dure 20 minutes, démonstration comprise, en visioconférence (convocation du 30/10) : la démonstration
+passe par le partage d'écran. Elle suit un parcours d'utilisateur, pas une visite technique : le détail de
+l'intégration du modèle relève de l'épreuve E3.
+
+**Le parcours principal.** Un investisseur veut comprendre ce qui se passe sur une valeur (le besoin) → il demande un
+briefing sur son ticker (l'action) → il lit un court texte en français et le verdict du garde-fou (le résultat
+visible) → s'il tape un code inconnu, il lit un message qui dit pourquoi (la gestion d'erreur).
+
+| Étape | Ce que je montre | Point d'attention |
+|---|---|---|
+| 1. Portefeuille | je saisis la clé à l'écran ; le portefeuille de démonstration s'affiche, valorisé en euros | la clé se tape, elle n'est dans aucun fichier |
+| 2. Indicateurs | le tableau des 111 valeurs, le filtre des cotations périmées | les données doivent être à jour (7.2) |
+| 3. Briefing | le parcours principal ci-dessus, puis un code inconnu | l'écran annonce une attente indicative de 5 à 15 secondes ; je le dis avant |
+| 4. Question | une question, puis la fiche d'une référence ; une question hors sujet pour montrer le refus | refus et erreur ont des messages différents |
+| 5. Tableau de bord | l'état du service, carte par carte | un état inconnu n'est jamais présenté comme sain |
+| 6. La chaîne | une pull request aux contrôles verts, le tag, l'image publiée | en captures datées, pas en direct |
+
+### 7.2 Ce qui se prépare avant l'oral
+
+- **Rattraper les cours de production à la main** : la collecte n'est pas planifiée sur le serveur
+  (`docs/exploitation.md`, « rattrapage des cours en production »).
+- **Vérifier `/health`** : la version servie et l'index annoncés.
+- **Préparer des captures de secours datées** pour chaque étape faite en direct : elles n'existent pas encore pour
+  E4. Si le direct échoue, je le dis et je passe à la capture.
+- **Répéter la démonstration chronométrée**, partage d'écran compris.
+
+### 7.3 Ce qui n'est pas fait, en un seul endroit
+
+| Domaine | Ce qui manque | Où c'est dit |
+|---|---|---|
+| Besoin (C14) | parcours de Question et du Tableau de bord ; spécification du Tableau de bord ; critères d'accessibilité de Question ; aucun test avec un lecteur d'écran ni un utilisateur extérieur | § 1.7, § 1.8 |
+| Cadre technique (C15) | schémas en retard sur l'application ; hébergeur non choisi sur un critère environnemental | § 2.7 |
+| Organisation (C16) | tableau non mis à jour après le 14/10 ; revues du lundi sans compte rendu ; pas de rétrospective | § 3.6 |
+| Développement (C17) | environnement non entièrement reproductible ; aucun écran construit d'après une maquette préalable ; défauts ouverts #73, #76, #78, #79 ; constats OWASP S1, S2, S6, S8, S9 ; pas de mesure d'éco-conception « après » ; une affirmation fausse sur le démarrage de l'API | § 4.10 |
+| Tests (C18) | 32 tests ignorés en CI ; couverture sans l'interface, la recherche ni la surveillance ; trois paquets de CI sans version | § 5.6 |
+| Livraison (C19) | un tag reconstruit l'image ; retour arrière sans la base ; sauvegarde non tenue ; collecte non planifiée sur le serveur | § 6.4 |
 
 ## 8. Matrice de preuves
 
-*[À rédiger]*
+**Règle d'état.** ✅ : le critère est satisfait dans son ensemble, avec sa preuve. ⚠️ : une preuve existe, mais une
+partie du critère manque. ❌ : aucune preuve.
+
+| Critère | État | Preuve | Limite restante | Section |
+|---|---|---|---|---|
+| **C14.1** La modélisation des données respecte un formalisme (Merise…) | ✅ | MCD Merise, `evidence/C4/MCD-MERISE-RITA.png` | | 1.4 |
+| **C14.2** La modélisation des parcours respecte un formalisme (wireframes…) | ⚠️ | trois wireframes d'état, `evidence/C14/` | rien pour Question et Tableau de bord | 1.4 |
+| **C14.3** Chaque spécification couvre contexte, scénarios, critères de validation | ⚠️ | US-1 à US-3 ; US1 et US2 de Question | aucune spécification pour le Tableau de bord | 1.3, 1.5 |
+| **C14.4** Accessibilité intégrée aux critères d'acceptation | ⚠️ | critères RGAA des écrans 1 à 3 | aucun critère pour Question | 1.6 |
+| **C14.5** Accessibilité formulée selon un standard (RGAA…) | ✅ | règles RGAA numérotées dans les critères | aucun test avec un lecteur d'écran | 1.6 |
+| **C15.1** Spécifications techniques : architecture, dépendances, environnement | ✅ | `docs/ARCHITECTURE.md`, `requirements-api.txt` | schémas datés du 04/10 | 2.1 à 2.3 |
+| **C15.2** Services éco-responsables favorisés | ⚠️ | choix d'architecture, éco-responsables par effet | hébergeur choisi pour la continuité, impact non mesuré | 2.5 |
+| **C15.3** Diagramme de flux de données | ✅ | `evidence/C15/FLUX-DONNEES-C15-application-RITA.png` | daté du 18/08 : sans Question ni vigie | 2.4 |
+| **C15.4** Preuve de concept accessible et fonctionnelle en pré-production | ✅ | preuve du 18/08 ; pré-test sur le serveur depuis le 14/10 | | 2.6 |
+| **C15.5** Conclusion de la preuve de concept donnant un avis précis | ✅ | « Poursuivre », `evidence/C15/preuve-preproduction-docker.md` | avis antérieur à la mise en production | 2.6 |
+| **C16.1** Cycles, étapes, rôles, rituels et outils de la méthode respectés tout au long du projet | ⚠️ | méthode écrite ; cycles réels datés | suivi interrompu après le 14/10 ; revues sans compte rendu ; agile seulement depuis le 26/09 | 3.2, 3.6 |
+| **C16.2** Outils de pilotage disponibles (kanban, burndown, backlog) | ✅ | tableau Kanban, backlog d'issues, plans de travail ; burndown écarté et expliqué | tableau non tenu après le 14/10 | 3.3 |
+| **C16.3** Objectifs et modalités des rituels partagés aux parties prenantes | ⚠️ | méthode dans le dépôt, file de validation | partage surtout documentaire | 3.4 |
+| **C16.4** Éléments de pilotage accessibles à toutes les parties tout au long du projet | ⚠️ | dépôt en lecture pour le formateur (vérifié le 30/10) | accès au tableau non revérifié ; jury pas encore invité | 3.4 |
+| **C17.1** Environnement de développement conforme aux spécifications | ⚠️ | dépendances directes de l'API épinglées | `requirements.txt` et trois paquets de CI libres | 4.2 |
+| **C17.2** Interfaces intégrées et conformes aux maquettes | ⚠️ | cinq écrans intégrés | wireframes dessinés après ; deux écrans sans maquette | 4.3 |
+| **C17.3** Comportements des composants et navigation conformes | ⚠️ | scénarios testés, dont dans un navigateur | défaut #73 | 4.3 |
+| **C17.4** Composants métier conformes aux spécifications | ⚠️ | composants implémentés et testés | défauts #78 et #79 | 4.4 |
+| **C17.5** Gestion des droits d'accès développée et conforme | ⚠️ | clé sur les routeurs, journal des refus, quota partagé | rôle propriétaire (#76) ; `/docs` public | 4.5 |
+| **C17.6** Flux de données intégrés | ✅ | briefing (`evidence/C10/`) ; Question par des tests à composants simulés | Question : démonstration réelle à faire | 4.4 |
+| **C17.7** Éco-conception | ⚠️ | pratiques documentées ; mesures historiques sur trois écrans | pas de mesure « après » ; deux écrans non mesurés | 4.7 |
+| **C17.8** Préconisations OWASP Top 10 implémentées | ⚠️ | revue S1 à S10 ; S4 et S5 corrigés, S3 et S7 en partie | S1, S2, S6, S8, S9 ouverts | 4.6 |
+| **C17.9** Tests couvrant composants métier et gestion des accès | ✅ | 1 808 tests réussis, couverture 96,32 % ; tests des accès | 32 tests ignorés, dont le rôle en lecture seule | 4.8 |
+| **C17.10** Sources versionnées et accessibles sur un dépôt distant | ✅ | dépôt GitHub privé, 18 tags `livrable-*` protégés | jury pas encore invité | 4.9 |
+| **C17.11** Documentation technique : installation, architecture, dépendances, tests, accessible | ⚠️ | `docs/ARCHITECTURE.md`, `README.md`, `docs/CI-CD.md`, `docs/exploitation.md` | accessibilité non contrôlée ; une affirmation fausse | 4.9 |
+| **C18.1** Documentation de la chaîne : outils, étapes, tâches, déclencheurs | ✅ | `docs/CI-CD.md`, § 2 et § 3 | | 5.5 |
+| **C18.2** Outil d'intégration continue cohérent avec l'environnement | ✅ | GitHub Actions, machine et Python fixés | | 5.1, 5.2 |
+| **C18.3** Étapes préalables aux tests intégrées (build, configuration) | ✅ | installation, navigateur, tests des données d'abord | | 5.2 |
+| **C18.4** La chaîne exécute les tests au déclenchement | ✅ | `test.yml` ; six contrôles exigés avant toute fusion | | 5.3 |
+| **C18.5** Configurations versionnées sur le dépôt distant | ✅ | sept workflows, `ruff.toml`, `.coveragerc` | | 5.4 |
+| **C18.6** Documentation d'installation, configuration et test de la chaîne, format accessible | ⚠️ | `docs/CI-CD.md`, § 4 à § 7 | accessibilité non contrôlée | 5.5 |
+| **C19.1** Documentation : étapes, tâches, déclencheurs | ✅ | `docs/CI-CD.md`, § 3 | | 6.1 |
+| **C19.2** Fichiers de configuration reconnus et exécutés | ✅ | `livraison.yml` ; exécutions vertes sur `main`, `develop` et les tags | | 6.2 |
+| **C19.3** Packaging intégré et sans erreur | ✅ | image construite et vérifiée à chaque exécution | | 6.1, 6.2 |
+| **C19.4** Livraison exécutée une fois le packaging validé | ✅ | `needs:` et `if:` de `livraison.yml` ; refus de la porte le 21/10 | un tag reconstruit l'image | 6.2, 6.4 |
+| **C19.5** Sources de la chaîne versionnées sur le dépôt distant | ✅ | workflows, `deploy/`, règles GitHub | | 6.3 |
+
+**Total : 20 ✅, 16 ⚠️, 0 ❌.**
+
+| Compétence | ✅ | ⚠️ |
+|---|---|---|
+| C14 | 2 | 3 |
+| C15 | 4 | 1 |
+| C16 | 1 | 3 |
+| C17 | 3 | 8 |
+| C18 | 5 | 1 |
+| C19 | 5 | 0 |
+
+**Pourquoi ce total diffère du recomptage du 30/10 (30 ✅, 6 ⚠️).** Le recomptage comptait un ✅ dès qu'une preuve
+existait, et il s'appuyait aussi sur les ateliers des sprints, exclus du périmètre d'E4. Ici, un ✅ exige que tout le
+critère soit satisfait, sur les cinq écrans de la version présentée.
 
 ## 📖 Glossaire
 
