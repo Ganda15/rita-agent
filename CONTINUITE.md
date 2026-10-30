@@ -379,10 +379,10 @@ rapport E3 (#37, 0 page, gel le 15/10), rapport E4 (#28, 0 page, gel le 25/10).
 
 ## K. Reste à faire
 
-- 🆕 (30/10, nuit) **Relecture globale ciblée d'E4 v0.6** (contradictions, preuves, versions, périmètre) ; pour chaque
-  ⚠️ : preuve à mieux référencer, formulation à corriger, ou travail manquant. Puis **E2**, puis **E5**.
-- 🆕 (30/10) **Trois phrases fausses sur le démarrage de l'API sans clé** (`docs/ARCHITECTURE.md:71`, message et docstring
-  de `api/main.py`) : correction prête, en attente du « do it » d'Era, commit séparé.
+- ✅ (30/10, fait) **Relecture globale d'E4** : v0.7, 17 ✅ · 19 ⚠️ · 0 ❌, statuts décidés par Era critère par critère.
+  Ensuite **E2**, puis **E5**.
+- ✅ (30/10, fait, `a2c0d51`) **Phrases fausses sur le démarrage de l'API sans clé** corrigées ; erreur déjà corrigée dans
+  E3 le 11/10, restée dans `docs/ARCHITECTURE.md` et `api/main.py`.
 - 🆕 (30/10) **Compléments C14** pour les cinq écrans : parcours de Question et du Tableau de bord, spécification du
   Tableau de bord, critères d'accessibilité de Question ; datés et présentés comme rétrospectifs.
 

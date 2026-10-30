@@ -9,6 +9,20 @@
 
 ---
 
+## 2026-10-30 (fin de nuit) : relecture globale d'E4, v0.7 ; une précision sur l'entrée précédente
+
+**Fait** : une relecture indépendante a confronté chaque fait d'E4 v0.6 au dépôt et à GitHub (34 constats, dont 5
+hauts) ; chaque constat haut vérifié puis corrigé : le schéma d'architecture date du 24/10 et montre le chemin des
+questions ; le flux des questions (traitement T8) manquait aux données personnelles ; la preuve en production du
+parcours Question (16/10) n'était pas citée ; la mention « revue NON TENUE » de la trame du 05/10 a été écrite avant la
+date. Statuts décidés par Era critère par critère : **17 ✅ · 19 ⚠️ · 0 ❌** (C14.1, C14.5 et C15.3 passent en partiel).
+
+**Précision sur l'entrée précédente** : l'affirmation « l'API refuse de démarrer sans clé » n'était pas un manque
+découvert le 30/10. Elle avait été corrigée dans le rapport E3 le 11/10, mais pas dans `docs/ARCHITECTURE.md` ni dans
+`api/main.py`. Corrigée dans ces fichiers le 30/10 (`a2c0d51`), sans changer le fonctionnement.
+
+---
+
 ## 2026-10-30 (nuit) : rapport E4, première version complète à relire ; périmètre d'E4 décidé ; manques découverts
 
 **Décision structurante** (Era) : le rapport E4 décrit la version présentée au jury, ses cinq écrans (`d3a4198`,
