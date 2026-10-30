@@ -70,7 +70,7 @@ Détail complet au §4.
 
 | # | Critère | 03/10 | 30/10 | Preuve | Origine | Ce qui manque encore |
 |---|---|---|---|---|---|---|
-| 1 | Cycles, étapes, rôles, rituels et outils de la méthode respectés tout au long du projet | ⚠️ | ⚠️ | cinq sprints documentés du 12 au 26/10 (dossier, plan, livrable, tag, atelier, journal des retours) : `docs/CADRAGE-V1.md`, `docs/CHAINE-V1.md`, `docs/sprint-2/` à `docs/sprint-5/`, `eval/ateliers/` ; méthode Kanban écrite : `docs/PILOTAGE-AGILE.md` | avant (Kanban, 26/09), sprints 1 à 5 | **la méthode écrite n'a pas été suivie** : aucune revue du lundi tenue (`evidence/C16/revues/2026-10-05-revue-S41.md:3` : « revue NON TENUE » ; rien pour le 12, le 19 ni le 26/10) ; le tableau n'a pas bougé pendant les sprints ; rien d'agile avant le 26/09 ; sprint 5 sans plan versionné ni atelier documenté |
+| 1 | Cycles, étapes, rôles, rituels et outils de la méthode respectés tout au long du projet | ⚠️ | ⚠️ | cinq sprints documentés du 12 au 26/10 (dossier, plan, livrable, tag, atelier, journal des retours) : `docs/CADRAGE-V1.md`, `docs/CHAINE-V1.md`, `docs/sprint-2/` à `docs/sprint-5/`, `eval/ateliers/` ; méthode Kanban écrite : `docs/PILOTAGE-AGILE.md` | avant (Kanban, 26/09), sprints 1 à 5 | **la méthode écrite n'a pas été suivie** : aucune revue du lundi tenue (`evidence/C16/revues/2026-10-05-revue-S41.md:3` : « revue NON TENUE » ; rien pour le 12, le 19 ni le 26/10) ; le tableau n'a pas bougé pendant les sprints ; rien d'agile avant le 26/09 ; sprint 5 : plan resté hors du dépôt, atelier documenté seulement après coup (note du 30/10, `eval/ateliers/sprint-5-grille.md`) |
 | 2 | Outils de pilotage disponibles (kanban, burndown, backlog) | ✅ | ✅ | `gh project item-list 4` (30/10) : 34 cartes (Fait 16, Backlog 15, Cette semaine 2, En cours 1) ; `gh issue list --state all` : 71 issues, 34 fermées ; 96 pull requests fusionnées, dont 72 depuis le 04/10 ; plans de sprint à cases à cocher (`docs/sprint-2/PLAN-TRAVAIL.md:3-4`) | avant, sprints | le tableau est figé : seules les issues #21 à #57 y sont, #21 est « En cours » et #28 (rapport E4) « Cette semaine » depuis S39 ; pas de burndown (choix Kanban, `docs/PILOTAGE-AGILE.md:60-61`) |
 | 3 | Objectifs et modalités des rituels partagés aux parties prenantes | ⚠️ | **✅** | chaque atelier croisé a sa grille, avec l'objectif, le format (2 h, présentation, questions, conseils) et les critères : `eval/ateliers/sprint-1-grille.md:5-13` (David LEGRAND, 13/10), `eval/ateliers/sprint-2-grille.md:5-12` ; l'original rempli à la main par l'évaluateur Alpha DIALLO le 15/10 : `eval/ateliers/sprint-2-grille-originale.pdf` (ouvert le 30/10) ; journal des retours à chaque atelier (`eval/ateliers/sprint-3-grille.md:15`) | sprints 1 à 4 | ce format vient de la formation, pas d'Era (à dire) ; le rituel propre à Era (revue du lundi, `docs/PILOTAGE-AGILE.md:56`) n'a jamais été tenu ; grilles 3 et 4 non remplies par le formateur |
 | 4 | Éléments de pilotage accessibles à toutes les parties tout au long du projet | ⚠️ | ⚠️ | `gh api .../collaborators` (30/10) : `bybysker` (read), `Ganda15` (admin) ; tout le pilotage des sprints est dans le dépôt ; accès du formateur au tableau accordé le 26/09 (`evidence/C16/preuve-mise-en-place-kanban.md:22`) | avant, sprints | **accès du formateur au tableau non revérifié** (lecture des droits d'un projet par GraphQL, hors des commandes autorisées) ; jury pas encore invité ; accès des pairs évaluateurs non prouvé ; une partie des échanges vit hors du dépôt (Discord, Simplonline, Obsidian) ; rien avant le 26/09 |
@@ -174,7 +174,7 @@ du fil rouge, organisés par la formation, chacun clos par un atelier croisé.
 | Sprint 2, le socle et la chaîne | 13 au 15/10 | `docs/CHAINE-V1.md:3` (« validée section par section les 13 et 14/10 »), `docs/sprint-2/PLAN-TRAVAIL.md` | livraisons N0 à N2 ; tags `livrable-sprint-2-v1` à `v3` (15/10) | **atelier n°2, 15/10, évaluateur Alpha DIALLO** ; 5 critères ✓ | `eval/ateliers/sprint-2-grille.md`, original `eval/ateliers/sprint-2-grille-originale.pdf` |
 | Sprint 3, les données et l'ancrage | 15 au 19/10 | `docs/sprint-3/SPEC.md:3` (« Validée par Era le 15/10 »), `docs/sprint-3/PLAN-TRAVAIL.md` | N5 à N8 ; compte rendu `docs/sprint-3/COMPTE-RENDU-N5-2026-10-16.md` ; tags v1 (18/10), v2 (19/10) | **atelier n°3, 19/10, avec le formateur**, grille non remplie, retours oraux ; ingestion lancée en direct (passage `39265862974`) | `eval/ateliers/sprint-3-grille.md:8-44`, suite `:52-63` |
 | Sprint 4, la composante agentique et les garde-fous | 18 au 22/10 | `docs/sprint-4/AVENANT-1.md` (décidé le 18/10), `docs/sprint-4/SPEC.md:3` (décisions du 20/10), `docs/sprint-4/PLAN-TRAVAIL.md`, `docs/sprint-4/CONTRAT.md` | N10 à N15 ; tags v1 (refusé par la chaîne), v2, v3 (21/10) | **atelier n°4, 22/10, avec le formateur**, grille non remplie | `eval/ateliers/sprint-4-grille.md:3-12` |
-| Sprint 5, la vigie et la démo | 22 au 26/10 | **plan absent du dépôt** (cité par le code) ; `docs/sprint-5/DEMO.md` | N16, N17 (23/10) ; livrable v1 à v5 ; tags `livrable-sprint-5-v1` à `v5` | **atelier n°5 : aucune trace** (ni date, ni grille, ni retours) ; une « discussion avec le formateur », sans date | `docs/sprint-5/livrable/livrable-sprint-5.md:364-380` |
+| Sprint 5, la vigie et la démo | 22 au 26/10 | **plan absent du dépôt** (cité par le code) ; `docs/sprint-5/DEMO.md` | N16, N17 (23/10) ; livrable v1 à v5 ; tags `livrable-sprint-5-v1` à `v5` | **atelier n°5, 23/10, avec le formateur** (déclaré par Era le 30/10) ; grille non remplie ; livrable vérifié et accepté ; une « discussion avec le formateur », sans date | `docs/sprint-5/livrable/livrable-sprint-5.md:364-380` ; note après coup `eval/ateliers/sprint-5-grille.md` (30/10) |
 
 Chaque sprint suit les mêmes étapes, visibles dans le dépôt : un dossier ou une spec, un plan de travail découpé en tâches,
 des pull requests relues par la revue automatisée, une livraison en production, un livrable PDF, un tag, puis un atelier et
@@ -227,11 +227,15 @@ Les grilles disent « puis on inverse les rôles » (`eval/ateliers/sprint-1-gri
   par l'assistant et marquée « revue NON TENUE » (`evidence/C16/revues/2026-10-05-revue-S41.md:3`). Ce n'est pas une revue.
 - **Le tableau pendant les sprints** : aucune carte de sprint, aucun mouvement visible ; #21 « En cours » et #28 « Cette
   semaine » depuis S39.
-- **L'atelier n°5** : ni date, ni évaluateur, ni grille (`eval/ateliers/sprint-5-grille.md` n'existe pas, alors que le
-  livrable annonce qu'elle y sera versée, `docs/sprint-5/livrable/livrable-sprint-5.md:379-380`).
+- **La grille de l'atelier n°5** : jamais remplie (le modèle du 23/10, hors du dépôt, est resté vierge). *Mis à jour le
+  30/10 au soir* : Era déclare que l'atelier a eu lieu le 23/10 avec le formateur, que le formateur a vérifié le livrable
+  et l'a accepté, et que les cinq sprints sont clos. Note écrite après coup et datée : `eval/ateliers/sprint-5-grille.md`.
+  Les retours oraux n'ont pas été relevés le jour même.
 - **Les originaux** : la grille Excel de l'atelier n°1 et la transcription de l'atelier n°3 ne sont pas dans le dépôt
   (seule la grille de l'atelier n°2 l'est, en PDF).
 - **Le plan du sprint 5**, cité dans 15 fichiers Python (code et tests, `grep -rli "plan du sprint 5"`), n'est pas versionné.
+  *Mis à jour le 30/10 au soir* : il existe hors du dépôt (dossier `transferts/sprint-5/` du poste d'Era, `PLAN-SPRINT5.md`
+  du 22/10) ; le verser ou non reste une décision d'Era.
 - **Era évaluateur d'un pair**, **l'accès du formateur au tableau** aujourd'hui, **la capture de l'acceptation d'E1 v3**.
 - **Aucune rétrospective** au sens agile ; le journal des retours de chaque atelier en tient lieu, sans être une
   rétrospective d'équipe.
@@ -240,7 +244,8 @@ Les grilles disent « puis on inverse les rôles » (`eval/ateliers/sprint-1-gri
 
 RITA a été piloté par un plan de semaines (août), un tableau Kanban (fin septembre, abandonné début octobre), puis par cinq
 sprints courts du 12 au 26/10, imposés par la formation, chacun avec un dossier, un plan, une livraison en production, un
-tag et une revue par un tiers (deux pairs, puis le formateur). Les rituels de ces sprints sont prouvés pour les ateliers 1 à 4.
+tag et une revue par un tiers (deux pairs, puis le formateur). Les rituels de ces sprints sont prouvés pour les ateliers 1 à 4 ;
+l'atelier n°5 (23/10, avec le formateur) n'a qu'une note écrite après coup, le 30/10.
 La revue hebdomadaire écrite dans `docs/PILOTAGE-AGILE.md` n'a jamais été tenue : le dire, sans la reconstituer.
 
 ## 5. Matière disponible pour chaque section du rapport (plan §4)
@@ -259,7 +264,8 @@ La revue hebdomadaire écrite dans `docs/PILOTAGE-AGILE.md` n'a jamais été ten
 ## 6. Questions pour l'étudiant
 
 1. **Atelier n°5** : a-t-il eu lieu ? Si oui, à quelle date, avec qui, et la grille a-t-elle été remplie ? Rien n'est dans
-   le dépôt.
+   le dépôt. **Répondu le 30/10 au soir** : oui, le 23/10 avec le formateur ; livrable vérifié et tout accepté ; grille non
+   remplie ; tous les sprints clos (note `eval/ateliers/sprint-5-grille.md`).
 2. **Revues du lundi** (28/09, 05/10, 12/10, 19/10, 26/10) : tenues sans trace, ou pas tenues ? La réponse s'écrit telle
    quelle ; on ne reconstitue rien.
 3. **Le tableau Kanban** : abandonné au profit des sprints ? On le dit dans le rapport ? Et les cartes #21, #23, #28 et #37,
@@ -269,7 +275,8 @@ La revue hebdomadaire écrite dans `docs/PILOTAGE-AGILE.md` n'a jamais été ten
 6. **Évaluateur d'un pair** : as-tu évalué David LEGRAND et Alpha DIALLO ? Une trace existe-t-elle (grille de leur dépôt) ?
 7. **Originaux** : la grille Excel de l'atelier n°1, la transcription de l'atelier n°3, la capture Discord de l'acceptation
    d'E1 v3 : les verser dans le dépôt, ou les citer comme hors dépôt ?
-8. **Plan du sprint 5** : où est-il ? Le verser (`docs/sprint-5/`) ou dire qu'il est resté hors du dépôt ?
+8. **Plan du sprint 5** : où est-il ? Le verser (`docs/sprint-5/`) ou dire qu'il est resté hors du dépôt ? (Trouvé le 30/10 :
+   `transferts/sprint-5/PLAN-SPRINT5.md`, hors du dépôt.)
 9. **Les briefs des sprints** (durée, ateliers, grilles) viennent-ils bien de la formation ? Le rapport doit distinguer ce
    qui était imposé de ce que tu as choisi.
 10. **`requirements.txt`** (#23) : épingler avant le 05/11 (un changement de dépendances relance toute la chaîne) ou
