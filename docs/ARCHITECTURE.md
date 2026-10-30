@@ -6,7 +6,8 @@
 > l'architecture, tous les points de terminaison et les règles d'authentification ») et C17 (documentation technique).
 > État du code : 24 octobre 2026, branche `develop` ; la production sert la version N18 (commit `b547cbf`). Les schémas
 > sont dans `docs/rapports/E3/schemas/` (un `.drawio` pour corriger, un `.png` pour lire, générés par un seul script).
-> Ils datent du 04/10 : ils montrent le chemin du briefing, pas encore celui des questions ni la vigie.
+> Ils ont été refaits le 24/10 : le schéma d'architecture montre les deux chemins vers le modèle (briefing et questions)
+> et `/sante` ; la vigie, qui tourne hors de l'API, n'y figure pas.
 
 ## 1. RITA en une phrase
 
@@ -24,7 +25,7 @@ d'achat ou de vente (contrainte AMF). Aide à la lecture, jamais un conseil.
 | **Ingestion de la production** | à la demande, workflow « Ingestion » | flux RSS → base de production → nouvel index vérifié, puis mis en service | pas encore de schéma ; `exploitation.md` § 8 |
 | **Lecture de données** | à la demande | écran ou passerelle MCP → `GET /donnees/*` → PostgreSQL | `E3-architecture` |
 | **Briefing** | à la demande | écran ou passerelle MCP → `POST /briefing` → graphe → modèle → garde-fou → réponse | `E3-architecture`, `E3-integration-briefing` |
-| **Question** | à la demande | écran `question.html` → `POST /question` → garde-fous de la question → recherche dans les articles → modèle → contrôles de la réponse → réponse avec ses sources, ou refus | pas encore de schéma |
+| **Question** | à la demande | écran `question.html` → `POST /question` → garde-fous de la question → recherche dans les articles → modèle → contrôles de la réponse → réponse avec ses sources, ou refus | `E3-architecture` (depuis le 24/10) |
 | **Surveillance** | à la main ou par tâche planifiée | vigie (`monitorage/vigie.py`) → `/health` puis `/sante` → une issue par signal en problème | `E3-monitorage` (avant la vigie) |
 
 ![Le chemin d'un briefing](rapports/E3/schemas/E3-architecture.png)
