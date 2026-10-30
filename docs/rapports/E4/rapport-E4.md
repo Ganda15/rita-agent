@@ -1,6 +1,6 @@
 # Rapport E4 : réaliser une application intégrant un service d'IA (C14 à C19)
 
-> **Version 0.2 du 30/10/2026, en cours de rédaction.** Les sections 1 et 2 sont écrites ; les sections 3 à 8 suivent le
+> **Version 0.3 du 30/10/2026, en cours de rédaction.** Les sections 1 à 3 sont écrites ; les sections 4 à 8 suivent le
 > plan de `docs/PLAN-E4-rapport.md`, § 4. Compte des critères : `docs/rapports/E4/recomptage-criteres-2026-10-30.md`.
 >
 > **Périmètre, décidé par Era le 30/10/2026** : E4 décrit la version de RITA présentée au jury, avec ses cinq écrans
@@ -267,7 +267,92 @@ toujours à côté. La conclusion « Poursuivre » reste valable, mais elle date
 
 ## 3. Coordonner en agile (C16)
 
-*[À rédiger]*
+### 3.1 La méthode et pourquoi
+
+RITA a un seul développeur. J'ai choisi **Kanban** plutôt que Scrum, le 26/09 (`docs/PILOTAGE-AGILE.md`). Scrum suppose
+une équipe, des rôles distincts et des cérémonies de groupe ; Kanban garde ce qui sert à une personne seule : un flux de
+travail visible, une limite au travail en cours (deux cartes « En cours » au plus) et une revue régulière. Un
+**burndown**, le graphique du travail restant dans un sprint, n'est pas suivi : il suppose un engagement de sprint,
+que Kanban n'a pas.
+
+| Rôle | Qui | Responsabilité |
+|---|---|---|
+| Porteur du produit et développeur | moi | ordonne le travail, décide, développe, rédige les livrables |
+| Partie prenante, relecteur | le formateur | lit le dépôt, reçoit les livrables envoyés et y répond |
+| Revue automatisée | le workflow `revue-pr.yml`, sur les pull requests vers `main` | commente avant la fusion |
+| Assistant de développement | un assistant d'IA | propose et écrit à ma demande ; ne décide pas |
+
+### 3.2 Les cycles, tels qu'ils ont eu lieu
+
+| Période | Organisation | Trace |
+|---|---|---|
+| depuis le 16/08 | un plan en semaines, de S34 à S45, chacune avec un objectif | `docs/PLAN-12-SEMAINES.md` |
+| 26/09 au 14/10 | Kanban : un cycle par semaine du plan | tableau GitHub « RITA - Pilotage Kanban » |
+| 12 au 26/10 | cycles courts de quelques jours, chacun avec un plan de travail découpé en tâches, une livraison en production et un tag | `docs/sprint-2/PLAN-TRAVAIL.md` à `docs/sprint-4/PLAN-TRAVAIL.md` ; 66 pull requests fusionnées (41 vers `develop`, 25 vers `main` ; une même modification passe souvent par les deux) |
+| depuis le 27/10 | les rapports, un livrable à la fois | `docs/FILE-DE-VALIDATION.md` |
+
+### 3.3 Les outils de pilotage
+
+- **Le tableau Kanban** (GitHub Projects) : 34 cartes, dont 16 « Fait », 15 « Backlog », 2 « Cette semaine », 1 « En
+  cours ». Le dernier mouvement de carte constaté date du 14/10 à 19:56 (UTC). Le tableau ne reflétait pas
+  systématiquement tout le travail réalisé.
+- **Le backlog** : les issues du dépôt, avec des étiquettes par livrable (`E2` à `E5`, `veille-C6`, `decision-era`).
+- **Les plans de travail** des cycles courts : 73, 86 et 62 tâches en listes à cocher.
+- **`ETAT.md`** pour la prochaine action et l'état du jour, et **`CHANGELOG.md`** pour les décisions et les livrables :
+  du 12 au 26/10, 40 commits ont modifié `ETAT.md` et 29 ont modifié `CHANGELOG.md` (des commits, pas des réunions) ;
+  mes notes de journal, pour reprendre le travail.
+- **Les sessions avec l'assistant** : j'y choisissais et validais la tâche suivante.
+
+### 3.4 Les rituels et le partage avec les parties prenantes
+
+| Rituel | Ce qui a eu lieu | Trace |
+|---|---|---|
+| Revue du lundi (avancement, blocages, priorités) | tenue, sans compte rendu, selon ma déclaration du 30/10 | aucune ; une trame préparée pour le 05/10 est restée vide |
+| Revue de pull request | les pull requests vers `main` déclenchent une revue automatisée et doivent passer six contrôles ; GitHub n'exige pas d'approbation humaine. Selon ma méthode, je lis la revue avant de fusionner moi-même | les pull requests sur GitHub ; `docs/PILOTAGE-AGILE.md`, § 5 |
+| Point formateur | à chaque livrable envoyé : le lien du tag, puis le retour du formateur | `docs/FILE-DE-VALIDATION.md` |
+
+**Les envois au formateur, statut par statut.** La file de validation compte neuf lignes, mais pas neuf échanges :
+
+| Statut | Lignes |
+|---|---|
+| envoyé, avec réponse | E1 v1 (début août, relu avant le gel, trois réponses écrites) ; E1 v3 (envoyé le 28/10, accepté selon la réponse sur Discord que j'ai rapportée, capture encore à joindre) |
+| envoyé, réponse attendue | grilles des compétences (28/10) ; E3 v1.9 (29/10) |
+| non envoyé | protocole de veille, conception des indicateurs, note de veille S33 ; E1 v2.6 et E3 v1.5, remplacés par les versions suivantes |
+
+**L'accès des parties prenantes.** Au dépôt : le formateur y a un accès en lecture (compte `bybysker`), vérifié le
+30/10. Au tableau : un accès en lecture lui a été donné le 26/09 (`docs/PILOTAGE-AGILE.md`), non revérifié le 30/10.
+La méthode est écrite dans le dépôt ; un fichier présent dans le dépôt ne prouve pas, à lui seul, que ses règles ont été
+partagées et comprises. Le jury recevra un accès en lecture au moment de l'évaluation.
+
+### 3.5 Un exemple de coordination, de bout en bout
+
+| Étape | Ce qui s'est passé | Trace |
+|---|---|---|
+| Le constat | le 23/10, en relisant les rapports E1 et E3 contre le code de `main`, je trouve quatre défauts : une panne totale de collecte comptée comme réussie ; l'API des cotations limitée à environ quatre ans alors qu'E1 annonce dix ans ; des nombres non finis acceptés dans les positions ; un en-tête de migration trompeur | `CHANGELOG.md`, entrée du 24/10 à midi |
+| La priorité | les corriger avant le gel d'E1 et d'E3, sans rien ajouter d'autre : le rapport E1 annonçait dix ans de cours joignables par l'API (C5), et ce n'était pas vrai | description de la pull request #138 |
+| La tâche | quatre correctifs bornés, tests d'abord : 21 tests, dont 15 rouges avant le code | pull request #138 vers `develop` |
+| La livraison | pull request #139 vers `main`, fusionnée par moi ; livraison N18 en production le 24/10, de 11 h 48 à 11 h 57 | exécution GitHub Actions 40083432816, commit `b547cbf` |
+| La vérification | `/health` de production annonce `b547cbf` ; la CI montre 1 700 tests réussis | `CHANGELOG.md`, même entrée |
+
+Le même travail a fait découvrir un autre manque, écrit le jour même : la sauvegarde n'est pas tenue (dernier dump le
+27/09).
+
+### 3.6 Les limites, dites franchement
+
+- **Le tableau n'a plus bougé après le 14/10**, et il ne reflétait pas tout le travail avant. Pendant les cycles
+  courts, les tâches ont été suivies dans les plans de travail, dans `ETAT.md` et mes notes, et avec l'assistant. Sur
+  les huit issues ouvertes du 12 au 26/10, sept viennent de la surveillance automatique ; la #152 est une carte de correction.
+- **Les cases des plans de travail ne sont pas cochées dans le dépôt** (0 sur 221). Cela montre que les listes n'ont
+  pas été entretenues, pas que le travail n'a pas été fait : l'avancement se lit dans les pull requests et dans
+  `ETAT.md`.
+- **Sur les 66 pull requests fusionnées du 12 au 26/10, sept mentionnent une issue** (#111, #138, #139, #146, #147,
+  #153, #157), et aucune ne la ferme automatiquement, alors que la méthode le prévoit (`Closes #N`).
+- **Les revues du lundi n'ont aucun compte rendu** ; la méthode prévoyait de l'écrire en tête d'`ETAT.md`. Je ne le
+  reconstitue pas après coup.
+- **Pas de rétrospective écrite** à la fin des cycles.
+- **L'organisation agile ne couvre que la fin du projet** : avant le 26/09, il n'y avait que le plan en semaines.
+- **C16 n'est donc pas entièrement démontré** : le suivi dans la durée a des interruptions, et le partage des rituels
+  avec les parties prenantes repose surtout sur des documents.
 
 ## 4. Développer (C17)
 
@@ -316,3 +401,12 @@ toujours à côté. La conclusion « Poursuivre » reste valable, mais elle date
 - **Parquet** : format de fichier compressé, rangé par colonnes, adapté aux gros historiques.
 - **Caddy, HTTPS** : serveur placé devant l'API ; il chiffre les échanges avec le navigateur.
 - **Éco-responsable par effet** : choix qui réduit la consommation sans avoir été fait d'abord pour cette raison.
+- **Kanban** : méthode agile à flux continu ; un tableau de colonnes (à faire, en cours, fait) et une limite au travail
+  en cours.
+- **Scrum** : méthode agile en sprints, avec une équipe et des rôles fixés.
+- **Burndown** : graphique du travail restant dans un sprint.
+- **Backlog** : la liste du travail identifié, à faire.
+- **Issue** : fiche de suivi d'une tâche ou d'un problème sur GitHub.
+- **Pull request** : demande de fusion d'une modification dans une branche, avec sa revue.
+- **Rétrospective** : réunion de fin de cycle sur ce qui a marché et ce qu'on change.
+- **Gel** : moment où une version d'un livrable est figée par un tag ; on ne la modifie plus.
