@@ -9,6 +9,22 @@
 
 ---
 
+## 2026-10-30 (nuit) : rapport E4, première version complète à relire ; périmètre d'E4 décidé ; manques découverts
+
+**Décision structurante** (Era) : le rapport E4 décrit la version présentée au jury, ses cinq écrans (`d3a4198`,
+livrée le 27/10) ; les ateliers des sprints et les copies d'exercice en sont exclus. Ordre des rapports : E4, puis E2,
+puis E5. Règle de la matrice : ✅ seulement si le critère entier est satisfait.
+
+**Fait** : `docs/rapports/E4/rapport-E4.md` de 0 page à une **première version complète (v0.6, `475f74f`)**, huit
+sections, auto-évaluation 20 ✅ · 16 ⚠️ · 0 ❌ sur 36 critères. **Pas un livrable validé** : ni relu en entier, ni mis
+en PDF, ni envoyé. Recomptage préparatoire : `docs/rapports/E4/recomptage-criteres-2026-10-30.md`.
+
+**Manques découverts** : `docs/ARCHITECTURE.md` (ligne 71) et `api/main.py` affirment que l'API « refuse de démarrer »
+sans clé, ce qui est faux (correction en attente d'Era) ; le tableau Kanban n'a plus bougé après le 14/10 ; aucune case
+des plans de travail des sprints n'est cochée dans le dépôt (0 sur 221).
+
+---
+
 ## 2026-10-29 (soir) : classeurs des compétences remis à l'état du 29/10 ; manque trouvé dans la version envoyée le 28/10
 
 **Manque découvert** : le classeur détaillé envoyé au formateur le 28/10 (branche `classeur-competences`, `c56b899`)
