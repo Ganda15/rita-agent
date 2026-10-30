@@ -1,7 +1,7 @@
 """Configuration commune à toute la suite de tests.
 
 Créé le 18/08/2026, en même temps que la correction OWASP API2 : l'API ne retombe
-plus sur une clé par défaut `dev-key` et **refuse de démarrer** sans `RITA_API_KEY`.
+plus sur une clé par défaut `dev-key` et **refuse tout accès protégé** sans `RITA_API_KEY`.
 
 Les tests doivent donc fournir cette variable eux-mêmes. Ils le font ici, une fois
 pour toutes, plutôt que dans chaque fichier : sinon le prochain fichier de tests
