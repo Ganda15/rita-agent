@@ -7,7 +7,7 @@
 | **Candidat** | Eramalingam Gandakumar |
 | **Formation** | Simplon × Wild Code School, promotion Développeur IA et IA agentique |
 | **Dépôt** | `Ganda15/rita-agent` (privé ; accès du jury par invitation de collaborateur) |
-| **Version** | 0.5 du 31 octobre 2026 : C6, C7 et C8 réécrits depuis les faits du dépôt, après un recomptage des 20 critères le même jour, puis corrigés après une relecture indépendante ; format attendu 15 à 20 pages, oral 15 minutes, sans démonstration ; dû le 5 novembre 2026 |
+| **Version** | 0.6 du 31 octobre 2026 : C6, C7 et C8 réécrits depuis les faits du dépôt, après un recomptage des 20 critères le même jour, puis corrigés après deux relectures indépendantes ; format attendu 15 à 20 pages, oral 15 minutes, sans démonstration ; dû le 5 novembre 2026 |
 | **État** | rédigé en entier, à relire ; auto-évaluation des critères en section 5 |
 
 > **Périmètre, décidé par Era le 31/10/2026, comme pour E4** : la version de RITA présentée au jury, ses cinq écrans
@@ -194,7 +194,7 @@ Source : `evidence/C7/preuve-benchmark-2026-10-03.md`, § 9, et les résultats b
 Wilson sont identiques pour les deux services, de 0,89 à 1,00 sur chaque proportion. Ces mesures datent du 03/10, sur
 le déploiement Azure **Global Standard** de l'époque ; le déploiement en zone de données UE (`gpt-5.4-dzs-eu`) a été
 vérifié séparément le 09/10, sur trois appels (4.1), et le banc n'a pas été rejoué sur lui. Aucun frais n'est facturé
-au candidat pour la ressource Azure, sur la période du banc comme depuis ; le prix public est donné à part, pour rester
+au candidat pour la ressource Azure, sur la période du banc comme depuis (constat du 31/10) ; le prix public est donné à part, pour rester
 vrai si cette prise en charge s'arrête.
 
 **Ce que ces chiffres disent, et ce qu'ils ne disent pas.** Sur les contrôles automatiques, les deux services sont
@@ -242,8 +242,8 @@ traiter un appel dans n'importe quelle région.
 
 ### 3.6 La recommandation
 
-**Le choix, fondé sur le banc du 03/10 : Azure AI Foundry, `gpt-5.4`**, comme service du briefing et des questions.
-Pourquoi : ses textes passent le garde-fou de sortie et le contrôle minimal de fidélité aussi souvent que ceux de
+**Le choix, fondé sur le banc du 03/10 : Azure AI Foundry, `gpt-5.4`, pour le briefing.** Le même service est utilisé
+pour les questions, mais cet usage n'a pas été évalué dans cette comparaison. Pourquoi pour le briefing : ses textes passent le garde-fou de sortie et le contrôle minimal de fidélité aussi souvent que ceux de
 Claude, et son français est noté au même niveau ; aucun frais n'est facturé au candidat pour cette ressource ; sa
 médiane est plus courte ; et un déploiement en zone de données UE, vérifié le 09/10, garde son traitement dans l'Union
 européenne, ce que la règle du projet exige pour les données.
@@ -416,7 +416,7 @@ Auto-évaluation du 31 octobre 2026. ✅ critère entier satisfait, avec preuve 
 | C6.3 outils d'agrégation cohérents avec sources et budget | ⚠️ | relevé manuel de flux, budget 0 € ; aucun outil d'agrégation à montrer (2.2) |
 | C6.4 synthèses communiquées, format accessible | ⚠️ | notes en Markdown, synthèse PDF, partage du 11/10 prouvé par capture ; aucun envoi au formateur, contrôle d'accessibilité non consigné (2.5, 2.6) |
 | C6.5 informations conformes à la thématique | ✅ | les cinq notes portent sur la thématique (2.3) |
-| C6.6 fiabilité des sources : auteur, compétences, intérêts | ⚠️ | qualification par source dans chaque note, mais incomplète : pour S41, la notoriété de l'auteur n'est pas établie et aucune source de premier rang ne confirme le constat (2.2) |
+| C6.6 fiabilité des sources : auteur, compétences, intérêts | ⚠️ | qualification de l'auteur et de ses intérêts dans chaque note, mais incomplète : pour S41, la notoriété de l'auteur n'est pas établie (2.2) |
 | C6.7 fiabilité des sources : contenu récent, sourcé, structuré | ✅ | les sources retenues sont datées et structurées : S41 s'appuie sur un préprint daté (v1 du 02/10/2026), avec son auteur, son statut et les sections citées ; les notes S33 à S36 datent et citent leurs sources (2.2) |
 | C6.8 fiabilité des sources : accessibilité, recoupement | ⚠️ | S41 recoupée par un autre préprint seulement ; préférence pour les sources accessibles non démontrée (2.2) |
 | C7.1 besoin reformulé, objectifs et contraintes | ⚠️ | contraintes mesurables, règle UE et usage Question (3.1) ; le budget n'y figure pas |
@@ -425,28 +425,37 @@ Auto-évaluation du 31 octobre 2026. ✅ critère entier satisfait, avec preuve 
 | C7.4 adéquation au besoin, par service | ⚠️ | 30 appels par service, français noté ; fidélité minimale, usage Question et Mistral non mesurés (3.3, 3.7) |
 | C7.5 démarche éco-responsable | ⚠️ | relevé daté du 03/10 ; rien par modèle chez les éditeurs ; rien sur Mistral (3.5) |
 | C7.6 contraintes techniques et prérequis | ⚠️ | clés, point d'accès, paramètre de longueur, limites de débit, zone UE (3.5) ; Mistral absent du code livré |
-| C7.7 conclusions : services adaptés et non adaptés | ⚠️ | choix, configuration actuelle et secours envisagé séparés, avec un tableau des services retenus et écartés (3.6) ; banc et contrat de Mistral manquent |
+| C7.7 conclusions : services adaptés et non adaptés | ⚠️ | choix, configuration actuelle et secours envisagé séparés, avec un tableau des services retenus et écartés (3.6) ; le banc étaye le choix pour le briefing, pas pour l'usage Question ; banc et contrat de Mistral manquent |
 | C8.1 service accessible, avec authentification | ✅ | appels réels du 09/10, briefing en production du 21/10, clés hors du code (4.1) |
 | C8.2 configuré selon les besoins et les contraintes | ⚠️ | configuration des replis corrigée le 31/10, après la version de référence ; vérifications contractuelles encore ouvertes (Microsoft, Mistral) ; aucun secours ; prompt corrigé non appliqué (4.2) |
 | C8.3 monitorage disponible opérationnel | ✅ | Langfuse et alertes en production, chaîne d'alerte prouvée le 23/10, vigie ; limites écrites (4.4) |
 | C8.4 documentation : accès, installation, tests, dépendances, données | ✅ | les quatre sujets couverts et testés contre le code ; PDF du 11/10 périmé (4.5) |
 | C8.5 documentation communiquée, format accessible | ❌ | aucun envoi daté, accessibilité non contrôlée (4.6) |
 
-**Décompte** : 7 ✅ · 12 ⚠️ · 1 ❌ sur 20 (version 0.3 du 03/10 : 6 · 13 · 1 ; trois lignes ont changé : C6.6 baisse, C6.7 et C8.3 montent).
+**Décompte** : 7 ✅ · 12 ⚠️ · 1 ❌ sur 20. Historique : version 0.3 du 03/10, 6 · 13 · 1 ; version 0.4 du 31/10, 6 · 13 · 1 (C6.6 et C7.2 baissent, C6.7 et C8.3 montent) ; depuis la version 0.5 du 31/10, C7.2 repasse à ✅, une fois l'inventaire des services écrit (3.2).
 
 ---
 
 ## 6. Ce qui n'est pas fait, et dans quel ordre le faire
 
+**Avant la remise du 05/11.**
+
 1. **Remettre le guide d'exploitation** (C8.5) : PDF à jour, accessibilité contrôlée, envoi daté au formateur, preuve
    rangée dans `evidence/C8/` (#43).
-2. **Reprendre la veille** (C6) : relevés et notes des semaines suivantes, un échange collectif documenté, l'envoi au
+2. **Le rapport** : relecture, PDF, tag `livrable-E2-v1`.
+
+**Ensuite.**
+
+3. **Reprendre la veille** (C6) : relevés et notes des semaines suivantes, un échange collectif documenté, l'envoi au
    formateur.
-3. **Mistral** (C7, C8) : lire son contrat, mesurer Azure contre Mistral Large 4 sur la branche, puis reprendre la
-   PR #88 sur `develop` ; alors seulement, `LLM_ORDRE=foundry,mistral`.
 4. **La configuration** (C8.2) : appliquer le prompt corrigé (option B), la réponse 503 « aucun fournisseur » (#75),
    relire le contrat de Microsoft, décider pour Langfuse.
-5. **Le rapport** : relecture, PDF, tag `livrable-E2-v1`.
+
+**Évolution envisagée.**
+
+5. **Mistral** (C7, C8) : lire son contrat et mesurer Azure contre Mistral Large 4 sur la branche, puis décider selon
+   ce qu'ils montrent : les lire ne suffit pas, il faut que leurs conclusions soient acceptables. Alors seulement,
+   reprendre la PR #88 sur `develop`, la tester et passer à `LLM_ORDRE=foundry,mistral`.
 
 ## 📖 Glossaire
 
