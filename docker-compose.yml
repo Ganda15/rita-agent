@@ -76,7 +76,8 @@ services:
       # sur son réseau interne. Le port est 5432 — celui du conteneur, pas le 5433
       # de l'installation native.
       DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:-rita_preprod_local}@postgres:5432/rita
-      # ⚠️ OBLIGATOIRE. L'API refuse de démarrer sans elle (OWASP API2). Elle est
+      # ⚠️ OBLIGATOIRE. Compose refuse de lancer le conteneur sans elle, et l'API ne peut
+      # autoriser aucun accès protégé sans elle (OWASP API2). Elle est
       # lue depuis le `.env` de la machine, JAMAIS écrite ici.
       RITA_API_KEY: ${RITA_API_KEY:?RITA_API_KEY absente - la definir dans .env}
       # Relevé du 11/10/2026 : Azure (premier de la cascade) n'était pas transmis, et l'ordre par
@@ -87,7 +88,8 @@ services:
       AZURE_FOUNDRY_DEPLOYMENT: ${AZURE_FOUNDRY_DEPLOYMENT:-gpt-5.4-dzs-eu}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
-      LLM_ORDRE: ${LLM_ORDRE:-foundry,anthropic,openrouter}
+      # Azure seul par défaut, comme `src/llm.py` (règle UE seule, décision du 11/10 ; production lue le 31/10).
+      LLM_ORDRE: ${LLM_ORDRE:-foundry}
       # --- Traçage Langfuse (C11), facultatif ---------------------------------------
       # Audit du 02/10/2026 : rien n'était transmis ici, donc l'API en conteneur (pré-production
       # et serveur) servait des briefings que Langfuse ne voyait jamais. Les clés se lisent

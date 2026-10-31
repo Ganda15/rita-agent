@@ -6,7 +6,8 @@
 > l'architecture, tous les points de terminaison et les règles d'authentification ») et C17 (documentation technique).
 > État du code : 24 octobre 2026, branche `develop` ; la production sert la version N18 (commit `b547cbf`). Les schémas
 > sont dans `docs/rapports/E3/schemas/` (un `.drawio` pour corriger, un `.png` pour lire, générés par un seul script).
-> Ils datent du 04/10 : ils montrent le chemin du briefing, pas encore celui des questions ni la vigie.
+> Ils ont été refaits le 24/10 : le schéma d'architecture montre les deux chemins vers le modèle (briefing et questions)
+> et `/sante` ; la vigie, qui tourne hors de l'API, n'y figure pas.
 
 ## 1. RITA en une phrase
 
@@ -24,7 +25,7 @@ d'achat ou de vente (contrainte AMF). Aide à la lecture, jamais un conseil.
 | **Ingestion de la production** | à la demande, workflow « Ingestion » | flux RSS → base de production → nouvel index vérifié, puis mis en service | pas encore de schéma ; `exploitation.md` § 8 |
 | **Lecture de données** | à la demande | écran ou passerelle MCP → `GET /donnees/*` → PostgreSQL | `E3-architecture` |
 | **Briefing** | à la demande | écran ou passerelle MCP → `POST /briefing` → graphe → modèle → garde-fou → réponse | `E3-architecture`, `E3-integration-briefing` |
-| **Question** | à la demande | écran `question.html` → `POST /question` → garde-fous de la question → recherche dans les articles → modèle → contrôles de la réponse → réponse avec ses sources, ou refus | pas encore de schéma |
+| **Question** | à la demande | écran `question.html` → `POST /question` → garde-fous de la question → recherche dans les articles → modèle → contrôles de la réponse → réponse avec ses sources, ou refus | `E3-architecture` (depuis le 24/10) |
 | **Surveillance** | à la main ou par tâche planifiée | vigie (`monitorage/vigie.py`) → `/health` puis `/sante` → une issue par signal en problème | `E3-monitorage` (avant la vigie) |
 
 ![Le chemin d'un briefing](rapports/E3/schemas/E3-architecture.png)
@@ -68,8 +69,9 @@ la résume en section 3.1.
 | Interface | `/`, `/index.html`, `/indicateurs.html`, `/briefing.html`, `/question.html`, `/tableau-de-bord.html` et leurs fichiers | non : aucune donnée, la clé est demandée à l'écran |
 
 **Règles d'accès.** Deux clés, chacune dans son en-tête. La clé de l'API (`X-API-Key`) est lue dans l'environnement,
-fait au moins 16 caractères et se compare à temps constant ; l'API refuse de démarrer sans elle (aucune valeur par
-défaut depuis l'incident INC-001). Elle est posée sur les routeurs entiers des données, des questions et de la santé :
+fait au moins 16 caractères et se compare à temps constant ; sans elle, l'application démarre mais ne peut autoriser
+aucun accès protégé : la configuration est contrôlée à l'authentification, et Docker Compose exige une valeur non
+vide avant de lancer le conteneur (aucune valeur par défaut depuis l'incident INC-001). Elle est posée sur les routeurs entiers des données, des questions et de la santé :
 une nouvelle route ne peut pas oublier la protection. La clé d'exercice (`X-Cle-Exercice`) ne sert qu'aux exercices :
 avec la clé des questions, on ne pose pas de panne. Un refus laisse une ligne de journal (identifiant de requête,
 route, motif), jamais la clé. La limite de débit est une fenêtre glissante commune à tous les appelants (`RITA_QUOTA_PAR_MINUTE`),

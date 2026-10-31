@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="860" viewBox="0 0 1500 860" font-family="Segoe UI,Calibri,Arial,sans-serif">
+<defs><linearGradient id="bandeau" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#0B2A5B"/><stop offset="0.5" stop-color="#1565C0"/><stop offset="1" stop-color="#7C3AED"/></linearGradient><marker id="p-flux" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#0B2A5B"/></marker><marker id="p-ecriture" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#1565C0"/></marker><marker id="p-lecture" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#15803D"/></marker><marker id="p-erreur" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#D32F2F"/></marker><marker id="p-manuel" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#64748B"/></marker><marker id="p-perso" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,6 3,0 6" fill="#A21CAF"/></marker></defs>
+<rect width="1500" height="860" fill="#FFFFFF"/>
+<rect width="1500" height="6" fill="url(#bandeau)"/>
+<text x="36" y="56" font-size="30" font-weight="700" fill="#0B2A5B">RITA : interroger en SQL et en Spark SQL, optimisations expliquées, mesures datées</text>
+<text x="36" y="84" font-size="15" fill="#1F2937">Rapport E1, section 6 (C2) · filtres lus dans le code à la génération, comptages et mesures datés · état au 27 octobre 2026</text>
+<rect x="20" y="104" width="446" height="584" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.2"/>
+<rect x="28" y="112" width="430" height="34" rx="7" fill="#0B2A5B"/>
+<text x="42" y="134" font-size="14" font-weight="700" fill="#FFFFFF" letter-spacing="0.6">1. DEUX SYSTÈMES, DEUX LANGAGES</text>
+<rect x="566" y="104" width="384" height="584" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.2"/>
+<rect x="574" y="112" width="368" height="34" rx="7" fill="#1565C0"/>
+<text x="588" y="134" font-size="14" font-weight="700" fill="#FFFFFF" letter-spacing="0.6">2. LES REQUÊTES, DANS LE CODE</text>
+<rect x="1060" y="104" width="420" height="584" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.2"/>
+<rect x="1068" y="112" width="404" height="34" rx="7" fill="#475569"/>
+<text x="1082" y="134" font-size="14" font-weight="700" fill="#FFFFFF" letter-spacing="0.6">3. LE COÛT, MESURÉ</text>
+<rect x="34" y="163" width="422" height="130" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="32" y="160" width="422" height="130" rx="7" fill="#F1EAFE" stroke="#6D28D9" stroke-width="1.6"/>
+<rect x="32" y="160" width="8" height="130" rx="3" fill="#6D28D9"/>
+<text x="54" y="186" font-size="14.5" font-weight="700" fill="#4C1D95">SGBD · PostgreSQL 18 (Merise, C4)</text>
+<text x="54" y="208" font-size="12" fill="#111827" xml:space="preserve">10 tables, 278 473 cotations au 02/10/2026</text>
+<text x="54" y="225" font-size="12" fill="#111827" xml:space="preserve">clé primaire (ticker, date_seance), index sur la date</text>
+<text x="54" y="242" font-size="12" fill="#111827" xml:space="preserve">sources/database.py : les requêtes de db/requetes.sql,</text>
+<text x="54" y="259" font-size="12" fill="#111827" xml:space="preserve">  valeurs passées par %(nom)s, jamais concaténées</text>
+<rect x="34" y="361" width="422" height="130" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="32" y="358" width="422" height="130" rx="7" fill="#F1EAFE" stroke="#6D28D9" stroke-width="1.6"/>
+<rect x="32" y="358" width="8" height="130" rx="3" fill="#6D28D9"/>
+<text x="54" y="384" font-size="14.5" font-weight="700" fill="#4C1D95">SYSTÈME BIG DATA · Parquet + Spark</text>
+<text x="54" y="406" font-size="12" fill="#111827" xml:space="preserve">data/bigdata/ohlcv/annee=AAAA/ : 11 partitions</text>
+<text x="54" y="423" font-size="12" fill="#111827" xml:space="preserve">276 168 lignes, 111 valeurs, 14 Mo (comptés le 27/10)</text>
+<text x="54" y="440" font-size="12" fill="#111827" xml:space="preserve">du 29/07/2016 au 29/07/2026, écrit par build_parquet.py</text>
+<text x="54" y="457" font-size="12" fill="#111827" xml:space="preserve">Spark en local[*], 8 partitions de shuffle (et non 200)</text>
+<rect x="34" y="541" width="422" height="130" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="32" y="538" width="422" height="130" rx="7" fill="#F1F5F9" stroke="#475569" stroke-width="1.6"/>
+<rect x="32" y="538" width="8" height="130" rx="3" fill="#475569"/>
+<text x="54" y="564" font-size="14.5" font-weight="700" fill="#0B2A5B">Lignes par partition (comptées le 27/10)</text>
+<text x="54" y="586" font-size="12" fill="#111827" xml:space="preserve">2016 : 11 980 · 2017 : 27 770 · 2018 : 27 610</text>
+<text x="54" y="603" font-size="12" fill="#111827" xml:space="preserve">2019 : 27 463 · 2020 : 27 488 · 2021 : 27 589</text>
+<text x="54" y="620" font-size="12" fill="#111827" xml:space="preserve">2022 : 27 480 · 2023 : 27 454 · 2024 : 27 648</text>
+<text x="54" y="637" font-size="12" fill="#111827" xml:space="preserve">2025 : 27 783 · 2026 : 15 903</text>
+<text x="54" y="654" font-size="12" fill="#111827" xml:space="preserve">2016 et 2026 incomplètes : dix ans depuis le 29/07/2016</text>
+<rect x="580" y="163" width="360" height="178" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="578" y="160" width="360" height="178" rx="7" fill="#E3F0FD" stroke="#1565C0" stroke-width="1.6"/>
+<rect x="578" y="160" width="8" height="178" rx="3" fill="#1565C0"/>
+<text x="600" y="186" font-size="14.5" font-weight="700" fill="#0B2A5B">db/requetes.sql : le SQL de PostgreSQL</text>
+<text x="600" y="208" font-size="12" fill="#111827" xml:space="preserve">R1 portefeuille en euros : LEFT JOIN LATERAL,</text>
+<text x="600" y="225" font-size="12" fill="#111827" xml:space="preserve">  dernier cours de chaque valeur, dernier taux</text>
+<text x="600" y="242" font-size="12" fill="#111827" xml:space="preserve">R1 bis positions closes, pour le propriétaire seul</text>
+<text x="600" y="259" font-size="12" fill="#111827" xml:space="preserve">R2 plus fortes variations : LAG() par valeur,</text>
+<text x="600" y="276" font-size="12" fill="#111827" xml:space="preserve">  filtre de date avant la fenêtre, statut OK</text>
+<text x="600" y="293" font-size="12" fill="#111827" xml:space="preserve">R3 volumes anormaux : moyenne des 20 séances</text>
+<text x="600" y="310" font-size="12" fill="#111827" xml:space="preserve">  précédentes, sur les 60 derniers jours</text>
+<rect x="580" y="361" width="360" height="160" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="578" y="358" width="360" height="160" rx="7" fill="#E3F0FD" stroke="#1565C0" stroke-width="1.6"/>
+<rect x="578" y="358" width="8" height="160" rx="3" fill="#1565C0"/>
+<text x="600" y="384" font-size="14.5" font-weight="700" fill="#0B2A5B">bigdata/query_spark.py : Spark SQL</text>
+<text x="600" y="406" font-size="12" fill="#111827" xml:space="preserve">S1 volumétrie : GROUP BY annee, sans filtre</text>
+<text x="600" y="423" font-size="12" fill="#111827" xml:space="preserve">S2 amplitude moyenne : WHERE annee &gt;= 2024,</text>
+<text x="600" y="440" font-size="12" fill="#111827" xml:space="preserve">  HAVING COUNT(*) &gt;= 200 séances</text>
+<text x="600" y="457" font-size="12" fill="#111827" xml:space="preserve">S3 meilleure séance : WHERE annee &gt;= 2025,</text>
+<text x="600" y="474" font-size="12" fill="#111827" xml:space="preserve">  LAG() puis RANK() OVER (PARTITION BY ticker)</text>
+<text x="600" y="491" font-size="12" fill="#111827" xml:space="preserve">le même vocabulaire que PostgreSQL, un autre moteur</text>
+<rect x="580" y="541" width="360" height="100" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="578" y="538" width="360" height="100" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="578" y="538" width="8" height="100" rx="3" fill="#1E293B"/>
+<text x="600" y="564" font-size="14.5" font-weight="700" fill="#0B2A5B">Les choix, écrits devant chaque requête</text>
+<text x="600" y="586" font-size="12" fill="#111827" xml:space="preserve">OBJECTIF, CHOIX (sélection, jointure, filtre),</text>
+<text x="600" y="603" font-size="12" fill="#111827" xml:space="preserve">OPTIMISATION, dans les deux fichiers</text>
+<text x="600" y="620" font-size="12" fill="#111827" xml:space="preserve">sorties réelles : evidence/C2/preuve-requetes-sql.md</text>
+<rect x="1074" y="163" width="396" height="178" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="1072" y="160" width="396" height="178" rx="7" fill="#F1F5F9" stroke="#475569" stroke-width="1.6"/>
+<rect x="1072" y="160" width="8" height="178" rx="3" fill="#475569"/>
+<text x="1094" y="186" font-size="14.5" font-weight="700" fill="#0B2A5B">PostgreSQL : EXPLAIN ANALYZE (août 2026)</text>
+<text x="1094" y="208" font-size="12" fill="#111827" xml:space="preserve">dernier cours des 111 valeurs :</text>
+<text x="1094" y="225" font-size="12" fill="#111827" xml:space="preserve">  DISTINCT ON 295,19 ms, LATERAL 1,19 ms</text>
+<text x="1094" y="242" font-size="12" fill="#111827" xml:space="preserve">les 7 positions : CTE DISTINCT ON 258,00 ms,</text>
+<text x="1094" y="259" font-size="12" fill="#111827" xml:space="preserve">  sous-requête corrélée 0,12 ms, LATERAL 0,24 ms</text>
+<text x="1094" y="276" font-size="12" fill="#111827" xml:space="preserve">DISTINCT ON triait les 273 608 cotations ;</text>
+<text x="1094" y="293" font-size="12" fill="#111827" xml:space="preserve">  LATERAL va chercher par l&#x27;index (cotation_pkey)</text>
+<text x="1094" y="310" font-size="12" fill="#111827" xml:space="preserve">l&#x27;optimisation prévue était la mauvaise</text>
+<rect x="1074" y="361" width="396" height="160" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="1072" y="358" width="396" height="160" rx="7" fill="#F1F5F9" stroke="#475569" stroke-width="1.6"/>
+<rect x="1072" y="358" width="8" height="160" rx="3" fill="#475569"/>
+<text x="1094" y="384" font-size="14.5" font-weight="700" fill="#0B2A5B">Spark : partitions lues (comptées le 27/10)</text>
+<text x="1094" y="406" font-size="12" fill="#111827" xml:space="preserve">S1 lit 11/11 partitions : 276 168 lignes</text>
+<text x="1094" y="423" font-size="12" fill="#111827" xml:space="preserve">S2 lit 3/11 : 71 334 lignes, 8 partitions écartées</text>
+<text x="1094" y="440" font-size="12" fill="#111827" xml:space="preserve">S3 lit 2/11 : 43 686 lignes, 9 partitions écartées</text>
+<text x="1094" y="457" font-size="12" fill="#111827" xml:space="preserve">preuve dans le plan, pour annee = 2024 :</text>
+<text x="1094" y="474" font-size="12" fill="#111827" xml:space="preserve">  PartitionFilters: [isnotnull(annee), (annee = 2024)]</text>
+<text x="1094" y="491" font-size="12" fill="#111827" xml:space="preserve">  1 partition lue sur 11, 27 648 lignes</text>
+<text x="1094" y="508" font-size="12" fill="#111827" xml:space="preserve">coût qui reste : le shuffle (GROUP BY, PARTITION BY)</text>
+<rect x="1074" y="541" width="396" height="100" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="1072" y="538" width="396" height="100" rx="7" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="1072" y="538" width="8" height="100" rx="3" fill="#1E293B"/>
+<text x="1094" y="564" font-size="14.5" font-weight="700" fill="#0B2A5B">Optimiser ne veut pas dire la même chose</text>
+<text x="1094" y="586" font-size="12" fill="#111827" xml:space="preserve">PostgreSQL : choisir le bon chemin d&#x27;accès, l&#x27;index</text>
+<text x="1094" y="603" font-size="12" fill="#111827" xml:space="preserve">Spark : ne pas lire les partitions inutiles</text>
+<text x="1094" y="620" font-size="12" fill="#111827" xml:space="preserve">ce qui coûte : trier toute la table / le shuffle</text>
+<rect x="22" y="709" width="1460" height="66" rx="7" fill="#0F172A" opacity="0.06"/>
+<rect x="20" y="706" width="1460" height="66" rx="7" fill="#E8F5E9" stroke="#15803D" stroke-width="1.6"/>
+<rect x="20" y="706" width="8" height="66" rx="3" fill="#15803D"/>
+<text x="42" y="732" font-size="14.5" font-weight="700" fill="#14532D">Couverture de C2 : requêtes fonctionnelles ✓ · choix documentés ✓ · optimisations expliquées ✓</text>
+<text x="42" y="754" font-size="12" fill="#111827" xml:space="preserve">SGBD et système big data, chacun dans son langage. Limite : 276 168 lignes et 14 Mo ne sont pas du big data ; la méthode est montrée en local (cadrage accepté par le formateur en août).</text>
+<polyline points="454,225 578,225" fill="none" stroke="#15803D" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-lecture)"/>
+<polyline points="454,423 578,423" fill="none" stroke="#15803D" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-lecture)"/>
+<polyline points="938,249 1072,249" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<polyline points="938,438 1072,438" fill="none" stroke="#0B2A5B" stroke-width="2.6" stroke-linejoin="round" marker-end="url(#p-flux)"/>
+<rect x="494.2" y="213" width="43.6" height="24" rx="12" fill="#FFFFFF" stroke="#15803D" stroke-width="1.8"/>
+<text x="516" y="229.5" font-size="12" font-weight="700" fill="#15803D" text-anchor="middle">lit</text>
+<rect x="494.2" y="411" width="43.6" height="24" rx="12" fill="#FFFFFF" stroke="#15803D" stroke-width="1.8"/>
+<text x="516" y="427.5" font-size="12" font-weight="700" fill="#15803D" text-anchor="middle">lit</text>
+<rect x="972.4" y="237" width="65.2" height="24" rx="12" fill="#FFFFFF" stroke="#0B2A5B" stroke-width="1.8"/>
+<text x="1005" y="253.5" font-size="12" font-weight="700" fill="#0B2A5B" text-anchor="middle">mesuré</text>
+<rect x="979.6" y="426" width="50.8" height="24" rx="12" fill="#FFFFFF" stroke="#0B2A5B" stroke-width="1.8"/>
+<text x="1005" y="442.5" font-size="12" font-weight="700" fill="#0B2A5B" text-anchor="middle">plan</text>
+<text x="36" y="815" font-size="13" font-weight="700" fill="#0B2A5B">Légende</text>
+<rect x="112" y="802" width="26" height="16" rx="4" fill="#F1EAFE" stroke="#6D28D9" stroke-width="1.6"/>
+<rect x="112" y="802" width="5" height="16" rx="2" fill="#6D28D9"/>
+<text x="146" y="814.5" font-size="12" fill="#111827">système de données</text>
+<rect x="265.52" y="802" width="26" height="16" rx="4" fill="#E3F0FD" stroke="#1565C0" stroke-width="1.6"/>
+<rect x="265.52" y="802" width="5" height="16" rx="2" fill="#1565C0"/>
+<text x="299.52" y="814.5" font-size="12" fill="#111827">requêtes, dans le code</text>
+<rect x="441.6" y="802" width="26" height="16" rx="4" fill="#F1F5F9" stroke="#475569" stroke-width="1.6"/>
+<rect x="441.6" y="802" width="5" height="16" rx="2" fill="#475569"/>
+<text x="475.6" y="814.5" font-size="12" fill="#111827">comptage ou mesure daté</text>
+<rect x="623.32" y="802" width="26" height="16" rx="4" fill="#FFFFFF" stroke="#1E293B" stroke-width="1.6"/>
+<rect x="623.32" y="802" width="5" height="16" rx="2" fill="#1E293B"/>
+<text x="657.32" y="814.5" font-size="12" fill="#111827">choix et comparaison</text>
+<line x1="788.12" y1="810" x2="824.12" y2="810" stroke="#15803D" stroke-width="2.6" marker-end="url(#p-lecture)"/>
+<text x="834.12" y="814.5" font-size="12" fill="#111827">lecture seule</text>
+<line x1="925.44" y1="810" x2="961.44" y2="810" stroke="#0B2A5B" stroke-width="2.6" marker-end="url(#p-flux)"/>
+<text x="971.44" y="814.5" font-size="12" fill="#111827">mesure ou plan d&#x27;exécution</text>
+<text x="36" y="846" font-size="12" fill="#1F2937">Génération : docs/rapports/E1/schemas/generer_schemas.py, vérifiée par tests/test_schemas_e1.py.</text>
+</svg>

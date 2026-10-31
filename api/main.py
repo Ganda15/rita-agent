@@ -167,14 +167,14 @@ def cle_attendue() -> str:
     ce fichier** — donc dans un dépôt que le formateur et le jury vont lire.
     *Une clé par défaut n'est pas une clé : c'est une porte ouverte documentée.*
 
-    Le remplacement volontaire d'un défaut par une **panne au démarrage** : mieux vaut
+    Le remplacement volontaire d'un défaut par un **refus à l'authentification** : mieux vaut
     une API qui refuse de servir qu'une API qui sert n'importe qui. Le message dit
     exactement quoi faire — un garde-fou qui bloque sans expliquer se contourne.
     """
     cle = os.getenv("RITA_API_KEY")
     if not cle:
         raise RuntimeError(
-            "RITA_API_KEY absente. L'API refuse de demarrer sans cle : une valeur par "
+            "RITA_API_KEY absente. L'API ne peut autoriser aucun acces protege sans cle : une valeur par "
             "defaut serait devinable par quiconque lit le code (OWASP API2).\n"
             "  Generer une cle :  python -c \"import secrets; print(secrets.token_urlsafe(32))\"\n"
             "  Puis l'ajouter au fichier .env :  RITA_API_KEY=<la cle generee>"

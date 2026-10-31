@@ -1,7 +1,13 @@
 # CONTINUITE — RITA (fil rouge RNCP 37827)
 
-> Dernière mise à jour : 2026-10-17 · par : Claude (skill `continuity`), sur « fais-le » d'Era ;
-> sprint 3 « Les données et l'ancrage » (15 au 17/10) ajouté en D, E, F, G, I, J, K et L
+> Dernière mise à jour : 2026-10-30, nuit · par : Claude, à la demande d'Era ; décisions du 30/10 (périmètre d'E4,
+> ordre E4 puis E2 puis E5, règle de la matrice, convocation du jury) ajoutées en B, D, F et K.
+> Mise à jour précédente : 2026-10-28 ; décisions du 28/10 (budget du livret, versions envoyées d'E1 et d'E3,
+> tags laissés figés) ajoutées en D et F.
+> ⚠️ Les décisions du 18 au 27/10 ne sont pas reportées en D (seule la ligne du 27/10 en F existe) : les rattraper
+> depuis `ETAT.md` et `CHANGELOG.md`, avec leur date réelle.
+> Mise à jour précédente : 2026-10-17, sprint 3 « Les données et l'ancrage » (15 au 17/10) ajouté en D, E, F, G, I, J,
+> K et L
 > ⚠️ Ce ledger avait 9 jours de retard (18 → 27/09) : les décisions du 19 au 27/09 sont ajoutées ce soir depuis
 > `ETAT.md`, `CHANGELOG.md` et `git log`, avec leur date réelle. Un ledger en retard laisse une décision
 > se réinverser en silence ; le mettre à jour fait partie de la fin de session (question posée en G).
@@ -28,6 +34,9 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 - `D:\KandaWork\RITA_PROJECT\rita-agent\docs\PLAN-12-SEMAINES.md` — le plan jusqu'au rendu.
 - `D:\KandaWork\RITA_PROJECT\rita-agent\docs\FILE-DE-VALIDATION.md` — comment un livrable part.
 - Dates : livrables **05/11/2026** · jury **30/11–01/12/2026** (mail Helena, 17/07/2026).
+  **Ajout du 30/10/2026** : convocation d'Helena VICENTE datée du 30/10 : **passage d'Era le mardi 01/12 à 11 h 15,
+  en visioconférence**, dans l'ordre E1, E3, E4, E2, E5 (80 min), puis 10 min d'échanges ; rapports remis le 05/11
+  (fenêtre du 5 au 9/11 selon Era, date fixée par lui).
   **Ajout du 29/09/2026** (message du formateur après échange avec Elbby et Nadège) : **oral blanc 1 les
   29-30/10** (E1 15 min + E3 20 min + 10 min de retours, environ 45 min) · **oral blanc 2 les 12-13/11**
   (situation réelle d'examen, 90 min). Les dates « oraux blancs 09-10/11 » du mail de juillet sont
@@ -129,6 +138,13 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | **Les deux évaluations en 403 (21:40 et 21:42) restent dans les preuves** | traces brutes écrites au moment de l'essai ; elles montrent aussi que la production refuse une clé qui n'est pas la sienne | 16/10 | `evidence/sprint-3/` | `evaluation-2026-10-16-2140.json`, `evaluation-2026-10-16-2142.json`, expliqués dans la relecture | non |
 | **Livrable du sprint 3 en PDF, comme au sprint 2 ; tag `livrable-sprint-3-v1` posé par Era le dimanche 18/10** (« version préparée pour l'atelier du 19 octobre ; retours à venir ») ; `v2` après l'atelier, avec la grille et les retours | l'atelier a besoin d'un lien figé ; une version écrite avant ne peut pas contenir les retours | 17/10 | `docs/sprint-3/livrable/` | `ETAT.md` (bloc du 17/10), `CHANGELOG.md` (entrée du 17/10) | non |
 | **Ordre du samedi 17/10** : ce registre, puis les 3 captures, puis le livrable régénéré et relu, puis l'oral et une répétition chronométrée ; PR et livraison le jour même si le livrable est validé, dimanche gardé en marge | une construction arrêtée par un 429 se relance après une attente d'environ 15 min : la marge doit exister avant le tag, qui construit et publie l'image | 17/10 | pilotage | relecture collée par Era le 17/10 | oui |
+| **Budget du livret E1 sans TJM : seulement l'argent réellement dépensé**, en trois lignes (« Budget financier », « Fonctionnement », « Contraintes ») dans le livret v4, après l'oral blanc, chiffré sur factures | demande du formateur (atelier du 28/10) ; le livret tient en 5 pages ; le travail personnel n'est pas valorisé financièrement, et un total non vérifié ne s'écrit pas | 28/10 | livret E1, § 1 | `ETAT.md` (bloc du 28/10) ; `CHANGELOG.md` (entrée du 28/10) | oui, à la v4 |
+| **Critère C1 « présentation complète » partiel** tant que le livret écrit « budget 0 € » | « budget 0 € » n'est vrai que pour les sources de données ; le serveur est payé | 28/10 | classeurs | branche `classeur-competences`, commit `c56b899` (111 ✅ · 25 🟡 · 1 ❌) | oui, quand la v4 porte le budget |
+| **Versions envoyées à côté des originaux, jamais à leur place** : `rapport-E1-v3-avec-annexes.pdf` et `rapport-E3-v1.9-bandeau.pdf` | `scripts/rendre_pdf.py` doit toujours reproduire `rapport-E1.pdf` et `rapport-E3.pdf`, et le rapport E3 l'écrit (§ 9) | 28/10 | `docs/rapports/E1/`, `docs/rapports/E3/` | `8b118b4` (empreintes identiques aux fichiers envoyés) | non |
+| **Tags `livrable-E1-v3` et `livrable-E3-v2` laissés figés** : l'erratum d'E1 va dans l'annexe B de la version envoyée ; les cinq imprécisions d'E3 restent, connues pour l'oral | un tag ne se modifie pas ; la page 20 d'E3 est pleine et la limite est de 20 pages | 28/10 | E1, E3 | `ETAT.md` (« À connaître pour l'oral ») | oui, par une version suivante |
+| **Périmètre du rapport E4 : les cinq écrans de la version présentée** (`d3a4198`, livrée le 27/10) ; ateliers des sprints et copies d'exercice exclus | E4 décrit l'application montrée au jury ; une fonctionnalité faite pendant un sprint entre si elle est intégrée ; la règle « sprints séparés » du 28/10 reste vraie pour le reste | 30/10 | E4 | réponse d'Era « Yes, five screens » ; `docs/rapports/E4/rapport-E4.md`, en-tête | oui, par Era |
+| **Matrice d'E4 : ✅ seulement si le critère entier est satisfait** ; ⚠️ si une preuve existe mais qu'une partie manque | une preuve partielle n'est pas un critère satisfait ; le recomptage du 30/10 (30 ✅) comptait un ✅ dès qu'une preuve existait | 30/10 | E4 | rapport E4, § 8 (20 ✅ · 16 ⚠️ · 0 ❌, compté par script) | oui, par Era |
+| **Ordre des rapports : E4, puis E2, puis E5** ; rapports le 05/11 ; tout prêt avant l'oral blanc du 12/11 | E4 n'avait aucun rapport ; E2 a une base (v0.3) ; E5 est court | 30/10 | E2, E4, E5 | `ETAT.md`, section du 30/10 au soir | oui |
 
 ## E. Alternatives rejetées
 
@@ -180,6 +196,9 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | 17/10 | ajouté | Un livrable PDF pour l'atelier 3 ; tag v1 avant l'atelier (dimanche 18/10), v2 après, avec la grille | livraison du sprint 3 |
 | 17/10 | changé | La livraison commence dès samedi si le livrable est validé ; dimanche reste la marge ; le tag reste dimanche | calendrier du sprint 3 |
 | 27/10 | choisi | **Grille E3 à 34 ✅ · 5 🟠 · 0 🔴** : C10 « tous les points de terminaison » (#152) et C11 « outils adaptés aux contraintes » (règle « UE seule », registre T3) repassent partielles. **Versions remises au jury de l'oral blanc : E3 v1.9 et E1 v3**, par de nouveaux tags (`livrable-E3-v2`, `livrable-E1-v3`), avant l'oral blanc et sur relectures, jamais par une modification silencieuse des tags v1 et v2. Figures d'E3 à 85 % pour tenir 20 pages : à confirmer | E1, E3, C10, C11 |
+| 28/10 | choisi | **Budget sans TJM, en argent dépensé, pour le livret v4** ; C1 « présentation complète » partiel d'ici là. **Google News reste arrêté** (D3 confirmée). **Pas de branche dédiée** pour les versions envoyées : commit direct sur la branche de travail (« not branch, go directly »). **Le dépôt `D:` est la seule source de travail** ; OneDrive est l'espace personnel d'Era | E1 (C1), classeurs, `docs/rapports/` |
+| 30/10 | choisi puis retiré | **Note de l'atelier n°5** écrite après coup et ajoutée au dépôt (`d8680b6`), puis **retirée à la demande d'Era** (`8b700b6`) : sprints et `rita-agent` restent séparés ; seul le périmètre d'E4 décidé ensuite fait entrer les écrans intégrés | E4 (C16) |
+| 30/10 | choisi | **Périmètre d'E4 : cinq écrans, ateliers exclus** ; ordre E4 puis E2 puis E5 ; présentation finale construite sur la convocation (01/12, 11 h 15, visio) | E2, E4, E5, oral |
 
 ## G. Questions ouvertes
 
@@ -359,6 +378,13 @@ deux fois du risque. Décision assumée et tracée.
 rapport E3 (#37, 0 page, gel le 15/10), rapport E4 (#28, 0 page, gel le 25/10).
 
 ## K. Reste à faire
+
+- ✅ (30/10, fait) **Relecture globale d'E4** : v0.7, 17 ✅ · 19 ⚠️ · 0 ❌, statuts décidés par Era critère par critère.
+  Ensuite **E2**, puis **E5**.
+- ✅ (30/10, fait, `a2c0d51`) **Phrases fausses sur le démarrage de l'API sans clé** corrigées ; erreur déjà corrigée dans
+  E3 le 11/10, restée dans `docs/ARCHITECTURE.md` et `api/main.py`.
+- 🆕 (30/10) **Compléments C14** pour les cinq écrans : parcours de Question et du Tableau de bord, spécification du
+  Tableau de bord, critères d'accessibilité de Question ; datés et présentés comme rétrospectifs.
 
 - ✅ (17/10, fait : 16 h 25 et 16 h 31, `fc4722a`) **Trois captures** prises par Era sur l'écran de question de production, clé absente des images : la
   réponse à « Combien de postes Netflix va-t-il supprimer ? » avec sa référence, la fiche de cette source, le refus de

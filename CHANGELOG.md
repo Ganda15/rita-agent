@@ -9,6 +9,104 @@
 
 ---
 
+## 2026-10-30 (fin de nuit) : relecture globale d'E4, v0.7 ; une précision sur l'entrée précédente
+
+**Fait** : une relecture indépendante a confronté chaque fait d'E4 v0.6 au dépôt et à GitHub (34 constats, dont 5
+hauts) ; chaque constat haut vérifié puis corrigé : le schéma d'architecture date du 24/10 et montre le chemin des
+questions ; le flux des questions (traitement T8) manquait aux données personnelles ; la preuve en production du
+parcours Question (16/10) n'était pas citée ; la mention « revue NON TENUE » de la trame du 05/10 a été écrite avant la
+date. Statuts décidés par Era critère par critère : **17 ✅ · 19 ⚠️ · 0 ❌** (C14.1, C14.5 et C15.3 passent en partiel).
+
+**Précision sur l'entrée précédente** : l'affirmation « l'API refuse de démarrer sans clé » n'était pas un manque
+découvert le 30/10. Elle avait été corrigée dans le rapport E3 le 11/10, mais pas dans `docs/ARCHITECTURE.md` ni dans
+`api/main.py`. Corrigée dans ces fichiers le 30/10 (`a2c0d51`), sans changer le fonctionnement.
+
+---
+
+## 2026-10-30 (nuit) : rapport E4, première version complète à relire ; périmètre d'E4 décidé ; manques découverts
+
+**Décision structurante** (Era) : le rapport E4 décrit la version présentée au jury, ses cinq écrans (`d3a4198`,
+livrée le 27/10) ; les ateliers des sprints et les copies d'exercice en sont exclus. Ordre des rapports : E4, puis E2,
+puis E5. Règle de la matrice : ✅ seulement si le critère entier est satisfait.
+
+**Fait** : `docs/rapports/E4/rapport-E4.md` de 0 page à une **première version complète (v0.6, `475f74f`)**, huit
+sections, auto-évaluation 20 ✅ · 16 ⚠️ · 0 ❌ sur 36 critères. **Pas un livrable validé** : ni relu en entier, ni mis
+en PDF, ni envoyé. Recomptage préparatoire : `docs/rapports/E4/recomptage-criteres-2026-10-30.md`.
+
+**Manques découverts** : `docs/ARCHITECTURE.md` (ligne 71) et `api/main.py` affirment que l'API « refuse de démarrer »
+sans clé, ce qui est faux (correction en attente d'Era) ; le tableau Kanban n'a plus bougé après le 14/10 ; aucune case
+des plans de travail des sprints n'est cochée dans le dépôt (0 sur 221).
+
+---
+
+## 2026-10-29 (soir) : classeurs des compétences remis à l'état du 29/10 ; manque trouvé dans la version envoyée le 28/10
+
+**Manque découvert** : le classeur détaillé envoyé au formateur le 28/10 (branche `classeur-competences`, `c56b899`)
+n'a aucune rédaction pour C10 et C11, et cite le rapport E3 v1.5 pour C9, C12 et C13, alors que le rapport envoyé le
+29/10 est la v1.9. Les statuts étaient justes : 111 ✅ · 25 🟡 · 1 ❌, les mêmes que le § 10 du rapport E3 v1.9.
+**Corrigé hors du dépôt**, dans les copies OneDrive d'Era (identiques à `c56b899` avant modification) : les cinq
+classeurs passent à l'état du 29/10, sans changer un seul statut. La branche `classeur-competences` reste au 28/10 ;
+la mettre à jour, et prévenir ou non le formateur, sont des décisions d'Era. Détail : `ETAT.md`, « Fait le 29/10 ».
+
+---
+
+## 2026-10-29 (matin) : rapport E3 v1.9 envoyé au formateur ; trois imprécisions de plus relevées
+
+**Livrable envoyé** (Discord, par Era) : le rapport E3 v1.9 (tag `livrable-E3-v2`,
+`docs/rapports/E3/rapport-E3-v1.9-bandeau.pdf`, empreinte `579890bfba43e18a`), avec trois précisions dans le message :
+le tag du présent livrable (p. 16) ; l'AMF distingue conseil et recommandation, ne rien recommander est le périmètre
+choisi pour RITA (p. 1 et glossaire) ; trois formulations trop larges (p. 7, 9 et 13). Contrôlé avant l'envoi :
+44 critères en 39 lignes (34 ✅ · 5 🟠), 100 liens sur 100 présents dans le tag, PDF balisé en français.
+**Manques découverts** : p. 7, une trace n'est ouverte que pour un appel admis, traçage actif ; p. 9, `request_id`
+n'est que dans 13 appels de journal sur 23 ; p. 1, « formateur et jury invités » : au 29/10, seul le formateur est
+collaborateur. À corriger dans la version suivante, avec les cinq déjà notées dans `ETAT.md`.
+Détail : `docs/FILE-DE-VALIDATION.md`, ligne 8.
+
+---
+
+## 2026-10-28 (soir) : livret E1 v3 et grilles des compétences envoyés au formateur ; E1 accepté
+
+**Livrables envoyés** (Discord, par Era) : le livret E1 v3 (tag `livrable-E1-v3`) et les grilles des compétences
+(branche `classeur-competences`, commit `c56b899`). **Retour** : E1 accepté par le formateur le 28/10 (rapporté par Era).
+Le rapport E3 v1.9 (tag `livrable-E3-v2`) reste à envoyer, avec ses deux précisions (p. 16 et AMF).
+Détail : `docs/FILE-DE-VALIDATION.md`, lignes 7 à 9.
+
+---
+
+## 2026-10-28 : versions d'E1 et d'E3 pour l'oral blanc, budget du livret décidé ; erratum d'E1 et cinq imprécisions d'E3
+
+**Livrables préparés, non encore envoyés** (c'est Era qui envoie) : `docs/rapports/E1/rapport-E1-v3-avec-annexes.pdf`,
+le livret du tag `livrable-E1-v3` avec ses liens essentiels, l'erratum de sa page 6 et les annexes de schémas C1, C2,
+C3 et C5 ; `docs/rapports/E3/rapport-E3-v1.9-bandeau.pdf`, le rapport du tag `livrable-E3-v2` avec un bandeau en page 1.
+Les tags restent figés ; les PDF produits par `scripts/rendre_pdf.py` ne changent pas.
+
+**Décisions d'Era (28/10)** : le budget demandé par le formateur se compte sans TJM, en argent réellement dépensé, en
+trois lignes dans le livret E1 v4, après l'oral blanc et sur factures. D'ici là, le critère C1 « présentation complète »
+est partiel dans les classeurs (111 ✅ · 25 🟡 · 1 ❌). Google News reste arrêté.
+
+**Manques découverts** : le livret E1 v3 écrit « budget 0 € », faux depuis que le serveur est payé ; le tableau de sa
+page 6 porte des étiquettes fausses (erratum ci-dessus, vérifié dans `db/requetes.sql`). Le rapport E3 v1.9 contient
+cinq formulations imprécises (pages 1, 12, 13 et 16, détail dans `ETAT.md`), dont « deux garde-fous » sous 85 % quand
+le tableau en montre trois : le contrôle de fuite n'a pas de seuil de blocage (`tests/test_evals.py`).
+
+---
+
+## 2026-10-27 (soir) : cours et taux de production rattrapés à la main avant l'oral blanc ; collecte planifiée du serveur toujours absente
+
+**Décision d'Era (27/10)** : la démonstration d'E3 se fait sur la production d'origine, données remises à jour avant ;
+les travaux des sprints restent dans leurs branches. Le rattrapage est fait à la main sur le serveur, hors de la chaîne
+de livraison, dans un conteneur jetable de l'image en service (`d3a4198`) : 5 508 cotations écrites (dernière séance
+passée du 18/08 au 27/10, 280 518 lignes), 255 taux écrits, `ANALYZE` passé ; articles réingérés par le workflow
+« Ingestion » (passage `40534178721`, 2 166 articles). Il ne laisse de trace que dans les manifestes du serveur ; la
+procédure suivie est écrite dans `docs/exploitation.md` (« Rattraper les cours et les taux en production, à la main »),
+avec ses tests (`tests/test_exploitation_doc.py`).
+
+**Manque, connu depuis le 24/08 et resté ouvert** : aucune collecte planifiée des cours ni des taux sur le serveur ;
+l'ingestion de production ne collecte que les articles. Le briefing de production annonçait 70 jours de retard le
+27/10. Le rattrapage est à refaire à la main le 29/10 après la clôture, puis à automatiser après l'oral blanc.
+
+---
+
 ## 2026-10-27 : livrables E1 v3 et E3 v2 préparés pour l'oral blanc ; tags `livrable-E1-v3` et `livrable-E3-v2` à poser après la fusion dans `main`
 
 **Livrables** : le livret E1 v3 (5 pages, `docs/rapports/E1/rapport-E1.html` et `.pdf`, logo et MCD recadré à côté)
