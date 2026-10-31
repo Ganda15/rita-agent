@@ -38,6 +38,12 @@ le 31/10, ceux de C6 et C7 repris du recomptage du 31/10, à confirmer. Ensuite 
   `--lisible` de `scripts/rendre_pdf.py` (test d'abord) : 12 pt, liens soulignés, 66 signets, balisé, en français,
   aucun lien vers un fichier du poste ; contrôle et limites dans `evidence/C8/controle-accessibilite-guide-2026-10-31.md`.
   **Non envoyé**, décision d'Era du 31/10 : pas d'envoi séparé au formateur ; le guide part avec les livrables du 05/11.
+- Budget (C1) : `docs/BUDGET.md` créé le 31/10 depuis les justificatifs reçus par courriel (Hetzner 75,35 € facturés,
+  Mistral 17,99 €, GitHub Pro et Copilot 10,45 $) et les montants déclarés par Era (Claude 20 €/mois de mai à octobre,
+  OpenAI 23 €/mois en septembre et octobre) ; abonnements partagés comptés en entier (convention d'Era) ; avril exclu.
+  Total recensé, provisoire : 259,34 € et 10,45 $ (facturé, payé et déclaré mêlés) ; **reste à lire** : la consommation OpenRouter de la clé de RITA et le crédit
+  restant, et le paiement de la facture Hetzner d'août. Livret **E1 v4 préparé** (`rapport-E1.html` et `.pdf`, 5 pages) :
+  ligne budget chiffrée, liens vers `livrable-E1-v4` (tag à poser après la fusion), v3 et son tag intacts.
 
 **Évolution prévue, décidée par Era le 31/10 : après le 05/11.** « Vue marché » en haut de la page Indicateurs : une
 carte par valeur suivie, verte en hausse, rouge en baisse, avec le signe et la flèche (jamais la couleur seule). Déjà

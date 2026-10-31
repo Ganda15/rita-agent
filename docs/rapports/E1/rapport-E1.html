@@ -38,7 +38,7 @@ td.k { font-weight: 600; color: #12395E; white-space: nowrap; }
 .inc b.t { color: #9a3412; }
 .lim { font-size: 9pt; color: #1f2d3b; border-top: 1px solid #e3e8ef; padding-top: 1.2mm; margin-bottom: 1mm; }
 .lim b { color: #9a3412; }
-.chiffres { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2mm; margin: .6mm 0 2mm; }
+.chiffres { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2mm; margin: .6mm 0 2mm; break-inside: avoid; }
 .chiffres div { background: #f2f7fb; border-radius: 1.6mm; padding: 1.1mm 2.2mm; font-size: 7.8pt; color: #4b5a6a; }
 .chiffres b { display: block; font-size: 11.5pt; color: #12395E; }
 figure { margin: 1mm 0 1.6mm; break-inside: avoid; }
@@ -61,7 +61,7 @@ a { color: #12395E; text-decoration: underline; text-decoration-thickness: .4pt;
     <div class="sur">Livret E1 · bloc de compétences 1 · C1 à C5</div>
     <h1>Les données de RITA, de la collecte à l'API</h1>
     <div class="id"><b>Eramalingam Gandakumar</b> · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School ·
-      version&nbsp;3, 26&nbsp;octobre&nbsp;2026 · code : <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E1-v3"><b>github.com/Ganda15/rita-agent</b></a>, <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/docs/jury/README.md">tag du livrable</a> (dépôt privé, formateur et jury invités)</div>
+      version&nbsp;4, 31&nbsp;octobre&nbsp;2026 · code : <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E1-v4"><b>github.com/Ganda15/rita-agent</b></a>, <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/docs/jury/README.md">tag du livrable</a> (dépôt privé, formateur et jury invités)</div>
   </div>
 </div>
 
@@ -77,8 +77,9 @@ a { color: #12395E; text-decoration: underline; text-decoration-thickness: .4pt;
   <tr><td class="k">Acteurs</td><td>moi, développeur et responsable de traitement ; l'utilisateur, un investisseur particulier qui suit son portefeuille ; les composants qui lisent les données : les nœuds de l'agent, l'écran web et une passerelle MCP</td></tr>
   <tr><td class="k">Objectifs</td><td>fonctionnels : dix ans de cours pour 111 valeurs, un portefeuille valorisé en euros, des anomalies de marché repérées, le contexte macro et l'actualité · techniques : extraire depuis les cinq types de sources, stocker dans une base modélisée avec Merise, servir le jeu par une API REST authentifiée</td></tr>
   <tr><td class="k">Environnement</td><td>Windows 11 · Python 3.14 sur le poste, 3.13 en intégration continue · PostgreSQL 18 · Spark 4.2.0 sur JDK 21 · Docker Compose · Git et GitHub Actions</td></tr>
-  <tr><td class="k">Contraintes, budget</td><td>budget 0 € : sources gratuites, sans carte bancaire · poste sous Smart App Control : ni <code>pip.exe</code> ni environnement virtuel, tout passe par <code>python -m</code> · RGPD sur les positions</td></tr>
-  <tr><td class="k">Organisation</td><td>branche <code>develop</code>, fusion vers <code>main</code> par pull request relue · un livrable = un tag que GitHub interdit de déplacer · une preuve par compétence dans <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E1-v3/evidence"><code>evidence/</code></a>, écrite au fil de l'eau</td></tr>
+  <tr><td class="k">Budget financier</td><td>données gratuites ; montants recensés au 31/10 : <b>259,34 € et 10,45 $</b>, selon les justificatifs et mes déclarations ; total provisoire, hors OpenRouter et frais à confirmer ; abonnements comptés en entier · hébergement 7,19 € TTC par mois · travail personnel non valorisé · <code>docs/BUDGET.md</code></td></tr>
+  <tr><td class="k">Contraintes</td><td>Smart App Control : ni <code>pip.exe</code> ni environnement virtuel, tout par <code>python -m</code> · RGPD sur les positions</td></tr>
+  <tr><td class="k">Organisation</td><td>branche <code>develop</code>, fusion vers <code>main</code> par pull request relue · un livrable = un tag que GitHub interdit de déplacer · une preuve par compétence dans <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E1-v4/evidence"><code>evidence/</code></a>, écrite au fil de l'eau</td></tr>
   <tr><td class="k">Planification</td><td>collecte et qualité en juillet → base et requêtes en août → collecte chaque soir depuis le 24 août → INC-005 le 27 septembre → chapitre « Données » validé par le formateur le 3 octobre → remise le 5 novembre</td></tr>
 </table>
 
@@ -107,8 +108,8 @@ a { color: #12395E; text-decoration: underline; text-decoration-thickness: .4pt;
 </table>
 <p>En complément, trois flux RSS de presse : 2 314 articles, chacun contrôlé contre l'injection de prompt avant d'entrer en base. Le schéma complet de la collecte, des sources à la base, est en annexe, en pleine page.</p>
 <div class="fil"><b>Viridien</b> entre par deux portes : ses cours par Yahoo Finance (<code>VIRI.PA</code>), et une ligne de
-  positions dans le fichier de démonstration (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/data/positions-exemple.csv"><code>data/positions-exemple.csv</code></a>, ligne 11).</div>
-<p>La collecte du soir, <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/pipelines/ingest.py"><code>pipelines/ingest.py</code></a>, versionnée dans le dépôt comme tout le code, tourne à 19 h par le planificateur de Windows. J'y ai fait deux choix. Chaque
+  positions dans le fichier de démonstration (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/data/positions-exemple.csv"><code>data/positions-exemple.csv</code></a>, ligne 11).</div>
+<p>La collecte du soir, <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/pipelines/ingest.py"><code>pipelines/ingest.py</code></a>, versionnée dans le dépôt comme tout le code, tourne à 19 h par le planificateur de Windows. J'y ai fait deux choix. Chaque
   étape (taux, macro, cotations, articles, page web, indexation) <b>valide son propre commit</b> : si la page web tombe, les taux sont
   déjà enregistrés. Et une étape qui ne reçoit rien alors qu'un appel a échoué <b>se déclare en échec</b> : quatre devises en échec
   laissaient l'étape des taux « réussie » sans une ligne écrite ; j'ai corrigé, puis étendu la règle aux cotations, au RSS et à la
@@ -116,41 +117,41 @@ a { color: #12395E; text-decoration: underline; text-decoration-thickness: .4pt;
   une fonction par source, erreurs tracées sans arrêter les suivantes, bilan par étape, sauvegarde par étape.</p>
 <p><b>Résultat mesuré</b> : du 24 août au 2 octobre, 40 journaux, dont 7 coupés par l'arrêt du poste et deux soirs d'articles
   perdus. Depuis le 3 octobre, chaque soir écrit un manifeste JSON (versions, comptages, erreurs) : du 3 au 23 octobre,
-  <b>21 soirs sur 21</b>, dont 19 complets et 2 partiels (<a href="https://github.com/Ganda15/rita-agent/tree/livrable-E1-v3/evidence/C1"><code>evidence/C1/</code></a>).</p>
+  <b>21 soirs sur 21</b>, dont 19 complets et 2 partiels (<a href="https://github.com/Ganda15/rita-agent/tree/livrable-E1-v4/evidence/C1"><code>evidence/C1/</code></a>).</p>
 <p class="lim"><b>La limite.</b> Un soir où le poste est éteint, il n'y a pas de collecte ; les cours se rattrapent, les articles de ce
   soir-là sont perdus.</p>
 
 <h2>4. Nettoyer : chaque défaut mesuré devient une règle <span class="c">C3</span></h2>
 <p class="q"><b>La question du lecteur :</b> peut-on se servir de ces données sans cacher leurs défauts ?</p>
-<p>Avant de dessiner la base, j'ai mesuré le jeu de dix ans (juillet 2026, <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/bigdata/explorer.py"><code>bigdata/explorer.py</code></a>) : aucune valeur
+<p>Avant de dessiner la base, j'ai mesuré le jeu de dix ans (juillet 2026, <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/bigdata/explorer.py"><code>bigdata/explorer.py</code></a>) : aucune valeur
   manquante, mais plusieurs défauts. Un briefing construit dessus en aurait hérité ; je ne voulais ni les ignorer, ni les effacer
   sans trace.</p>
 <div class="chiffres">
   <div><b>276 168</b>lignes analysées</div><div><b>5 120</b>lignes en double</div>
-  <div><b>1 533</b>clôtures hors de l'intervalle haut/bas</div><div><b>2 802</b>séances à volume nul</div>
+  <div><b>1 533</b>clôtures hors bornes</div><div><b>2 802</b>séances à volume nul</div>
 </div>
 <div class="fil"><b>Viridien, le cas qui m'a le plus appris.</b> Les 5 120 lignes en double venaient toutes de cette société, CGG
   renommée Viridien en 2024. Dans l'univers suivi, deux libellés, « CGG BS » et « CGG RGPT », étaient associés au même ticker,
   <code>VIRI.PA</code> : la collecte avait donc chargé deux fois la même série de cours. Le code faisait ce qu'on lui demandait ;
   c'est l'hypothèse « une ligne de l'univers = une valeur cotée » qui était fausse. J'ai fait deux corrections distinctes. Le
-  <b>dédoublonnage</b> : une seule cotation par ticker et par date, avant l'insertion (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/db/importer.py#L127"><code>db/importer.py:127</code></a>). Le
+  <b>dédoublonnage</b> : une seule cotation par ticker et par date, avant l'insertion (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/db/importer.py#L127"><code>db/importer.py:127</code></a>). Le
   <b>rattachement des libellés</b> : les deux renvoient à la seule valeur <code>VIRI.PA</code>, par une entité ALIAS (partie 5). Résultat : 2 560 lignes écartées, 273 608 insérées, 112 alias pour 111 valeurs
-  (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/evidence/C3/preuve-dedoublonnage-cgg.md"><code>evidence/C3/preuve-dedoublonnage-cgg.md</code></a>).</div>
+  (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/evidence/C3/preuve-dedoublonnage-cgg.md"><code>evidence/C3/preuve-dedoublonnage-cgg.md</code></a>).</div>
 <p>Pour le reste, une seule règle : <b>garder, marquer, expliquer</b>. STLAP.PA, qui porte 1 142 des 1 533 clôtures incohérentes, est
-  marquée « incohérente » : les classements l'excluent, la valorisation l'affiche avec son statut (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/db/importer.py#L54"><code>db/importer.py:54</code></a>).
+  marquée « incohérente » : les classements l'excluent, la valorisation l'affiche avec son statut (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/db/importer.py#L54"><code>db/importer.py:54</code></a>).
   Le cours de 7 156 748 € d'ALJXR.PA vient d'un regroupement d'actions rétro-ajusté par le fournisseur : gardé et documenté. Les
-  séances à volume nul restent ; la requête des volumes anormaux exige une moyenne non nulle (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/db/requetes.sql#L207"><code>db/requetes.sql:207</code></a>).
-  L'agrégation, versionnée (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/db/importer.py"><code>db/importer.py</code></a>), produit un seul jeu : dates ISO 8601 dans le fuseau de la place, devises ISO 4217, nombres convertis
-  (dépendances et commandes : <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/docs/exploitation.md"><code>docs/exploitation.md</code></a>).</p>
+  séances à volume nul restent ; la requête des volumes anormaux exige une moyenne non nulle (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/db/requetes.sql#L207"><code>db/requetes.sql:207</code></a>).
+  L'agrégation, versionnée (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/db/importer.py"><code>db/importer.py</code></a>), produit un seul jeu : dates ISO 8601 dans le fuseau de la place, devises ISO 4217, nombres convertis
+  (dépendances et commandes : <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/docs/exploitation.md"><code>docs/exploitation.md</code></a>).</p>
 <div class="inc"><b class="t">Ce que mon analyse n'avait pas vu, INC-005.</b> Fin septembre, en vérifiant chaque chiffre d'un guide
   dans la base, j'ai compté <b>52 426 cotations un dimanche</b>. J'ai cherché la cause avant de corriger : l'import gardait la date
   UTC d'un horodatage « minuit à Paris », soit la veille à 22 h ; dix ans d'historique avaient un jour d'avance. Quatre autres défauts
   avaient la même cause, la place de cotation absente du modèle (pence de Londres, dollars étiquetés en euros, un samedi, des fériés).
   J'ai mis la place dans le modèle, en une transaction, avec 42 tests écrits avant le code
-  (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/evidence/C21/INC-005-archive-decalee-d-un-jour.md"><code>evidence/C21/INC-005-archive-decalee-d-un-jour.md</code></a>). La leçon : <b>compter aussi par jour de la semaine.</b>
+  (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/evidence/C21/INC-005-archive-decalee-d-un-jour.md"><code>evidence/C21/INC-005-archive-decalee-d-un-jour.md</code></a>). La leçon : <b>compter aussi par jour de la semaine.</b>
   Au 02/10/2026, la base compte <b>278 473 cotations</b>.</div>
 <p class="lim"><b>La limite.</b> Aucune contrainte ne borne encore la clôture entre le plus bas et le plus haut : 23 lignes hors
-  bornes le 04/10. Les regroupements d'actions ne sont pas traités : Viridien affiche +4 473 %, un chiffre faux que je signale. Et le dédoublonnage ne prouve pas que les deux libellés CGG désignent le même instrument : une position « CGG BS » serait valorisée au cours de l'action (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/db/importer.py#L196"><code>db/importer.py:196</code></a>), un cas non couvert.</p>
+  bornes le 04/10. Les regroupements d'actions ne sont pas traités : Viridien affiche +4 473 %, un chiffre faux que je signale. Et le dédoublonnage ne prouve pas que les deux libellés CGG désignent le même instrument : une position « CGG BS » serait valorisée au cours de l'action (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/db/importer.py#L196"><code>db/importer.py:196</code></a>), un cas non couvert.</p>
 
 <h2>5. Modéliser : Merise, PostgreSQL et le RGPD <span class="c">C4</span></h2>
 <p class="q"><b>La question du lecteur :</b> comment organiser ces données pour qu'elles restent justes, et protéger celles qui sont personnelles ?</p>
@@ -160,17 +161,17 @@ a { color: #12395E; text-decoration: underline; text-decoration-thickness: .4pt;
 <div class="fil"><b>Viridien explique une cardinalité.</b> VALEUR 1,n « est nommée » 1,1 ALIAS : une même société porte plusieurs
   noms selon la source. Un nom unique par valeur aurait laissé ses positions sans aucun cours : c'est le défaut mesuré en partie 4.</div>
 <p>Pour passer aux tables, une entité devient une table et son identifiant la clé primaire ; dans une association
-  1,n / 1,1, l'identifiant de l'entité côté 1,n devient une clé étrangère dans la table côté 1,1. Le modèle physique (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/db/schema.sql"><code>db/schema.sql</code></a>, créé sans erreur) compte <b>10 tables</b> : les six du MCD, deux de
+  1,n / 1,1, l'identifiant de l'entité côté 1,n devient une clé étrangère dans la table côté 1,1. Le modèle physique (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/db/schema.sql"><code>db/schema.sql</code></a>, créé sans erreur) compte <b>10 tables</b> : les six du MCD, deux de
   données collectées (articles, séries FRED), deux journaux d'audit ; plus une vue, le portefeuille valorisé. La base refuse elle-même
   l'impossible : <b>12 contraintes CHECK</b> (prix positifs, plus haut au-dessus du plus bas, volume jamais négatif). Le schéma évolue par
   des migrations rejouables, dans un ordre écrit. J'ai choisi PostgreSQL pour trois raisons liées au modèle : les contraintes vivent
   dans la base et pas dans chaque script, <code>EXPLAIN ANALYZE</code> rend les optimisations mesurables, et <code>LATERAL</code>
   résout la requête centrale (partie 6).</p>
-<p><b>Import et installation.</b> <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/db/importer.py"><code>db/importer.py</code></a> charge l'archive et les positions ; une ligne retirée du fichier est
-  close à la date du jour, jamais supprimée. L'installation se rejoue en Docker Compose ou sans Docker ; sa documentation est à la racine du dépôt (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/README.md"><code>README.md</code></a>,
-  <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/docs/exploitation.md"><code>docs/exploitation.md</code></a>, dépendances dans <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/requirements.txt"><code>requirements.txt</code></a>) ; je l'ai reproduite : deux conteneurs sains (<a href="https://github.com/Ganda15/rita-agent/tree/livrable-E1-v3/evidence/C15"><code>evidence/C15/</code></a>).</p>
+<p><b>Import et installation.</b> <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/db/importer.py"><code>db/importer.py</code></a> charge l'archive et les positions ; une ligne retirée du fichier est
+  close à la date du jour, jamais supprimée. L'installation se rejoue en Docker Compose ou sans Docker ; sa documentation est à la racine du dépôt (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/README.md"><code>README.md</code></a>,
+  <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/docs/exploitation.md"><code>docs/exploitation.md</code></a>, dépendances dans <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/requirements.txt"><code>requirements.txt</code></a>) ; je l'ai reproduite : deux conteneurs sains (<a href="https://github.com/Ganda15/rita-agent/tree/livrable-E1-v4/evidence/C15"><code>evidence/C15/</code></a>).</p>
 <p><b>RGPD.</b> En démonstration, les positions sont inventées ; un vrai portefeuille serait une donnée personnelle, gardée hors de Git,
-  et le modèle de langage ne reçoit jamais ni quantité ni prix d'achat. Le registre (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/db/RGPD-registre-des-traitements.md"><code>db/RGPD-registre-des-traitements.md</code></a>) compte <b>8 traitements</b>, dont un déjà personnel, le journal des appels MCP ; chacun a sa durée et, s'il le faut, sa procédure de tri. Le script de purge, <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/db/rgpd_purge.py"><code>db/rgpd_purge.py</code></a>, tourne en simulation par défaut et ne supprime que sur demande explicite. Ma règle depuis le 5 octobre : aucune donnée personnelle hors de l'Union européenne.</p>
+  et le modèle de langage ne reçoit jamais ni quantité ni prix d'achat. Le registre (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/db/RGPD-registre-des-traitements.md"><code>db/RGPD-registre-des-traitements.md</code></a>) compte <b>8 traitements</b>, dont un déjà personnel, le journal des appels MCP ; chacun a sa durée et, s'il le faut, sa procédure de tri. Le script de purge, <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/db/rgpd_purge.py"><code>db/rgpd_purge.py</code></a>, tourne en simulation par défaut et ne supprime que sur demande explicite. Ma règle depuis le 5 octobre : aucune donnée personnelle hors de l'Union européenne.</p>
 <table class="rgpd">
   <tr><th>N°</th><th>Traitement (registre)</th><th>Conservation</th><th>Procédure de tri, et sa fréquence prévue</th></tr>
   <tr><td><b>T1</b></td><td>portefeuille ; une ligne retirée du fichier est close</td><td>3 ans après la clôture</td><td>P2 : supprimer les positions closes depuis 3 ans, mensuelle ; P3 (doublons) retirée, un index unique les refuse</td></tr>
@@ -188,19 +189,19 @@ a { color: #12395E; text-decoration: underline; text-decoration-thickness: .4pt;
 
 <h2>6. Interroger : des requêtes mesurées, en SQL et en Spark <span class="c">C2</span></h2>
 <p class="q"><b>La question du lecteur :</b> quelles réponses utiles tire-t-on de la base, et à quel coût ?</p>
-<p>Quatre requêtes documentées (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/db/requetes.sql"><code>db/requetes.sql</code></a>) : le portefeuille valorisé (jointure position × valeur × dernière
+<p>Quatre requêtes documentées (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/db/requetes.sql"><code>db/requetes.sql</code></a>) : le portefeuille valorisé (jointure position × valeur × dernière
   cotation, conversion par le dernier taux disponible dans la base, positions ouvertes seulement), les positions closes, les plus fortes variations
-  (<code>LAG()</code> par valeur, filtre sur la date avant la fenêtre), les volumes anormaux (moyenne mobile sur les 60 derniers jours,
-  environ 40 lignes par valeur au lieu de 2 560). Depuis le 3 octobre, un taux manquant donne un montant vide et un drapeau
+  (<code>LAG()</code> par valeur, filtre sur la date avant la fenêtre), les volumes anormaux (moyenne des 20 séances précédentes, dans une fenêtre de 60 jours,
+  environ 40 lignes par valeur au lieu de 2&nbsp;560). Depuis le 3 octobre, un taux manquant donne un montant vide et un drapeau
   « taux manquant », plus jamais un montant en dollars pris pour des euros.</p>
 <div class="deux">
   <div>
     <p><b>Une optimisation invalidée par la mesure.</b> Pour le dernier cours de chaque valeur, j'utilisais <code>DISTINCT ON</code> et je
       le croyais rapide. <code>EXPLAIN ANALYZE</code> a montré qu'il triait toute la table. Avec <code>LEFT JOIN LATERAL</code>, PostgreSQL va
       chercher le dernier cours par l'index (mesures d'août 2026) :</p>
-    <table><tr><th>Écriture</th><th>Portefeuille (111 lignes)</th><th>Dernière cotation</th></tr>
+    <table><tr><th>Écriture</th><th>111 valeurs</th><th>7 positions</th></tr>
       <tr><td><code>DISTINCT ON</code></td><td>295,19 ms</td><td>258,00 ms</td></tr>
-      <tr><td><code>LATERAL</code> (retenu)</td><td><b>1,19 ms</b></td><td><b>0,12 ms</b></td></tr></table>
+      <tr><td><code>LATERAL</code> (retenu)</td><td><b>1,19 ms</b></td><td><b>0,24 ms</b></td></tr></table>
   </div>
   <div>
     <p><b>Spark SQL sur Parquet.</b> Onze partitions par année. Trois requêtes répondent à trois questions : la volumétrie par
@@ -208,7 +209,7 @@ a { color: #12395E; text-decoration: underline; text-decoration-thickness: .4pt;
       puis 3, puis 2 partitions. Quand la requête filtre sur une année, le plan le montre :</p>
     <div class="code">PartitionFilters: [isnotnull(annee), (annee = 2024)]<br>11 fichiers connus → un seul ouvert</div>
     <p>Le filtre sur la partition réduit les fichiers lus ; les regroupements ajoutent un autre coût, le shuffle, la
-      redistribution des lignes entre exécuteurs Spark (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/bigdata/query_spark.py"><code>bigdata/query_spark.py</code></a>).</p>
+      redistribution des lignes entre exécuteurs Spark (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/bigdata/query_spark.py"><code>bigdata/query_spark.py</code></a>).</p>
   </div>
 </div>
 <div class="fil"><b>Viridien est valorisée par cette requête</b>, avec les six autres positions de démonstration.</div>
@@ -220,10 +221,10 @@ a { color: #12395E; text-decoration: underline; text-decoration-thickness: .4pt;
 <p>Douze points de terminaison sous <code>/donnees</code> exposent le jeu lui-même : valeurs, cotations, séries macro, portefeuille,
   mouvements, volumes anormaux, trois familles d'indicateurs, articles et fiche d'un article, fraîcheur du jeu. Le contrat est généré
   au standard <b>OpenAPI 3.1.0</b> : 19 chemins, règles d'autorisation comprises, visibles sur <code>/docs</code>. La clé est posée
-  sur le routeur entier, en une ligne (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/api/main.py#L260"><code>api/main.py:260</code></a>) :</p>
+  sur le routeur entier, en une ligne (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/api/main.py#L260"><code>api/main.py:260</code></a>) :</p>
 <div class="code">app.include_router(routeur_donnees, dependencies=[Depends(verify_api_key)])</div>
 <p>Toute nouvelle route ajoutée à ce routeur bénéficie de cette protection ; un garde-fou de conception vaut mieux qu'un garde-fou de vigilance. Un test
-  parcourt toutes les routes déclarées sous <code>/donnees</code> et exige un refus 403 sans clé (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v3/tests/test_api_donnees.py#L78"><code>tests/test_api_donnees.py:78</code></a>) ; la clé fait au moins
+  parcourt toutes les routes déclarées sous <code>/donnees</code> et exige un refus 403 sans clé (<a href="https://github.com/Ganda15/rita-agent/blob/livrable-E1-v4/tests/test_api_donnees.py#L78"><code>tests/test_api_donnees.py:78</code></a>) ; la clé fait au moins
   16 caractères, sans valeur par défaut. Le 24 octobre, j'ai corrigé un défaut : l'historique s'arrêtait à 1 000 séances ; une date de
   fin, <code>jusqu_a</code>, rend désormais tout l'historique par pages, et un test relit 2 600 séances sans trou ni doublon.</p>
 <div class="fil"><b>Viridien</b> sort par <code>/donnees/portefeuille</code>, avec les autres positions ouvertes.</div>
@@ -232,6 +233,6 @@ a { color: #12395E; text-decoration: underline; text-decoration-thickness: .4pt;
 <div class="fin"><b>Ce qui n'est pas fait, dit franchement</b> : regroupements d'actions non traités ; date de clôture d'une position
   = date de l'import ; purges lancées à la main ; corpus d'articles sans durée de conservation ; 13 dépendances sur 19 non épinglées ;
   volume big data modeste. <b>Où vérifier</b> : chaque critère officiel de C1 à C5 et sa preuve, dans le dépôt
-  (<a href="https://github.com/Ganda15/rita-agent/tree/livrable-E1-v3/evidence/C1"><code>evidence/C1/</code></a> à <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E1-v3/evidence/C5"><code>evidence/C5/</code></a>).</div>
+  (<a href="https://github.com/Ganda15/rita-agent/tree/livrable-E1-v4/evidence/C1"><code>evidence/C1/</code></a> à <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E1-v4/evidence/C5"><code>evidence/C5/</code></a>).</div>
 </body>
 </html>
