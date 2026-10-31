@@ -7,7 +7,7 @@
 | **Candidat** | Eramalingam Gandakumar |
 | **Formation** | Simplon × Wild Code School, promotion Développeur IA et IA agentique |
 | **Dépôt** | `Ganda15/rita-agent` (privé ; accès du jury par invitation de collaborateur) |
-| **Version** | 0.4 du 31 octobre 2026 : C6, C7 et C8 réécrits depuis les faits du dépôt, après un recomptage des 20 critères le même jour ; format attendu 15 à 20 pages, oral 15 minutes, sans démonstration ; dû le 5 novembre 2026 |
+| **Version** | 0.5 du 31 octobre 2026 : C6, C7 et C8 réécrits depuis les faits du dépôt, après un recomptage des 20 critères le même jour, puis corrigés après une relecture indépendante ; format attendu 15 à 20 pages, oral 15 minutes, sans démonstration ; dû le 5 novembre 2026 |
 | **État** | rédigé en entier, à relire ; auto-évaluation des critères en section 5 |
 
 > **Périmètre, décidé par Era le 31/10/2026, comme pour E4** : la version de RITA présentée au jury, ses cinq écrans
@@ -64,8 +64,8 @@ pas la note.
 
 **Un exemple de qualification de source, tiré de la note S41.** La note retient un préprint d'arXiv (2610.03448, version
 du 2 octobre 2026) qui réévalue des détecteurs d'injection. Auteur identifié (Zhuowen Liu, JAIST) ; aucun intérêt
-commercial repéré ; c'est une prépublication, non relue par des pairs ; ses conclusions sont en partie confirmées par
-un autre préprint du même relevé (arXiv 2610.08571). Réserve écrite : auteur unique, notoriété non établie, chiffres cités
+commercial repéré ; c'est une prépublication, non relue par des pairs ; ses conclusions convergent avec celles d'un
+autre préprint du même relevé (arXiv 2610.08571), sans confirmation indépendante des résultats. Réserve écrite : auteur unique, notoriété non établie, chiffres cités
 tels que l'auteur les rapporte, rien répliqué. Le même relevé écarte deux autres préprints pour intérêt commercial.
 
 ### 2.3 Ce qui a été produit, semaine par semaine
@@ -156,16 +156,23 @@ pas.
 
 ### 3.2 Les services comparés, et ceux qui ne le sont pas
 
-**Inclus** : les services déjà branchés dans `src/llm.py` le 03/10. Azure AI Foundry sert `gpt-5.4` (OpenAI) ;
-l'API d'Anthropic et OpenRouter servent Claude. **Exclus** : les services qui demandent une carte bancaire ou un nouvel
-abonnement ; un modèle local, faute de machine assez puissante, et parce que « local » ne veut dire ni gratuit ni plus
-sobre sans mesure ; les services dont les conditions de traitement des données ne sont pas lisibles. Les services cités
-dans un brouillon de juillet (Gemini, Llama, Mistral) avaient des scores d'exemple, jamais mesurés : ils ne sont pas
-repris.
+Le périmètre du banc a été fixé le 03/10, avant toute mesure (`docs/PLAN-C7-benchmark.md`, décision D1) : les services
+déjà branchés dans `src/llm.py`. Les services cités dans un brouillon de juillet (Gemini, Llama, Mistral) y avaient des
+scores d'exemple, jamais mesurés : rien n'en est repris.
 
-**Mistral, ajouté ensuite, non étudié sur le banc** : Mistral Large a été essayé le 10/10, sur la branche
-`mistral-ue`, sur un seul briefing (3.4). C'est le second fournisseur retenu, hébergé dans l'Union européenne, pas
-encore actif (3.6).
+| Service | Place dans l'étude | Raison |
+|---|---|---|
+| Azure AI Foundry, `gpt-5.4` (OpenAI) | comparé sur le banc, 30 appels | branché dans `src/llm.py` |
+| Claude par OpenRouter | comparé sur le banc, 30 appels | branché dans `src/llm.py` |
+| Claude par l'API d'Anthropic | inclus, non mesuré | aucune clé sur le poste le 03/10 |
+| Mistral Large 3 et 4 | hors banc : essai ponctuel du 10/10, un briefing par modèle (3.4) | ajouté après le banc, sur la branche `mistral-ue` |
+| Gemini | non étudié | hors du périmètre fixé par la décision D1 : il n'était pas branché dans le code |
+| Un modèle local (Llama) | exclu | aucune machine du projet n'a la mémoire pour un modèle de qualité suffisante ; « local » ne veut dire ni gratuit ni plus sobre sans mesure |
+| Services à carte bancaire ou nouvel abonnement | exclus | aucune nouvelle dépense hors modèle |
+| Services aux conditions de traitement illisibles | exclus | impossible de savoir où vont les données |
+
+Mistral a été choisi le 10/10 comme futur second fournisseur, hébergé dans l'Union européenne, sous conditions
+(contrat lu, banc) ; il n'est ni validé ni actif dans la version livrée (3.6).
 
 ### 3.3 La comparaison du 03/10 : GPT par Azure contre Claude par OpenRouter
 
@@ -173,18 +180,22 @@ Même jeu de dix cas, figé avant la mesure et construit par le code réel (les 
 démonstration, la plus forte hausse, la plus forte baisse, une valeur cotée à Londres) ; trois répétitions par cas ;
 même prompt que le rédacteur. L'API directe d'Anthropic n'a pas pu être mesurée : aucune clé sur le poste.
 
-| Mesure | Azure AI Foundry, `gpt-5.4` | OpenRouter, `claude-sonnet-4.5` |
+| Mesure | Azure AI Foundry, `gpt-5.4` (Global Standard) | OpenRouter, `claude-sonnet-4.5` |
 |---|---|---|
 | Disponibilité | 30 sur 30 | 30 sur 30 |
-| Conformité AMF (garde-fou de sortie) | 30 sur 30 | 30 sur 30 |
+| Textes acceptés par le garde-fou de sortie (contrainte AMF) | 30 sur 30 | 30 sur 30 |
 | Contrôle minimal de fidélité (cours et sens de la variation) | 30 sur 30 | 30 sur 30 |
 | Latence, médiane et 95e centile | 3,21 s et 10,69 s ; 2 appels sur 30 au-dessus de 10 s | 6,33 s et 7,20 s |
-| Coût par briefing | 0 pour le projet (ressource gratuite) ; 0,0047 USD au prix public | 0,0060 USD au prix public |
+| Coût par briefing | aucun frais facturé au candidat pour cette ressource ; 0,0047 USD au prix public | 0,0060 USD au prix public |
 | Qualité du français, de 0 à 2 | 30 textes notés 1 ; moyenne 1,00 | 30 textes notés 1 ; moyenne 1,00 |
 
 Source : `evidence/C7/preuve-benchmark-2026-10-03.md`, § 9, et les résultats bruts
 (`evidence/C7/resultats-2026-10-03.jsonl`, où les 2 appels sur 30 ont été recomptés). Les intervalles de confiance de
-Wilson sont identiques pour les deux services, de 0,89 à 1,00 sur chaque proportion.
+Wilson sont identiques pour les deux services, de 0,89 à 1,00 sur chaque proportion. Ces mesures datent du 03/10, sur
+le déploiement Azure **Global Standard** de l'époque ; le déploiement en zone de données UE (`gpt-5.4-dzs-eu`) a été
+vérifié séparément le 09/10, sur trois appels (4.1), et le banc n'a pas été rejoué sur lui. Aucun frais n'est facturé
+au candidat pour la ressource Azure, sur la période du banc comme depuis ; le prix public est donné à part, pour rester
+vrai si cette prise en charge s'arrête.
 
 **Ce que ces chiffres disent, et ce qu'ils ne disent pas.** Sur les contrôles automatiques, les deux services sont
 indiscernables. Le contrôle de fidélité est minimal : il vérifie le cours et le sens de la variation, pas toute la
@@ -231,25 +242,29 @@ traiter un appel dans n'importe quelle région.
 
 ### 3.6 La recommandation
 
-**Azure AI Foundry, `gpt-5.4`, en zone de données UE**, comme service du briefing et des questions. Pourquoi : il est
-aussi conforme et aussi fidèle que Claude sur les contrôles automatiques, et son français est noté au même niveau ; il
-est gratuit pour le projet ; sa médiane est plus courte ; et depuis le 09/10, son traitement reste dans l'Union
+**Le choix, fondé sur le banc du 03/10 : Azure AI Foundry, `gpt-5.4`**, comme service du briefing et des questions.
+Pourquoi : ses textes passent le garde-fou de sortie et le contrôle minimal de fidélité aussi souvent que ceux de
+Claude, et son français est noté au même niveau ; aucun frais n'est facturé au candidat pour cette ressource ; sa
+médiane est plus courte ; et un déploiement en zone de données UE, vérifié le 09/10, garde son traitement dans l'Union
 européenne, ce que la règle du projet exige pour les données.
 
 | Service | Verdict | Pour | Contre |
 |---|---|---|---|
-| Azure AI Foundry, `gpt-5.4`, zone UE | **retenu** | conforme et fidèle sur 30 appels ; gratuit pour le projet ; médiane 3,21 s ; traitement dans l'UE | 2 appels sur 30 au-dessus de 10 s ; ressource gratuite qui peut cesser ; contrat de Microsoft non relu en entier |
-| Claude par OpenRouter | **écarté** | conforme et fidèle sur 30 appels ; latence régulière (95e centile 7,20 s) | payant ; traitement dans l'UE non garanti, contraire à la règle du 05/10 |
+| Azure AI Foundry, `gpt-5.4` (mesuré le 03/10 en Global Standard ; en zone UE depuis le 09/10) | **retenu** | 30 textes sur 30 acceptés par le garde-fou de sortie et fidèles au contrôle minimal ; aucun frais facturé au candidat ; médiane 3,21 s ; traitement dans l'UE depuis le 09/10 | 2 appels sur 30 au-dessus de 10 s ; prise en charge des frais qui peut cesser ; banc non rejoué en zone UE ; contrat de Microsoft non relu en entier |
+| Claude par OpenRouter | **écarté** | 30 textes sur 30 acceptés par le garde-fou de sortie et fidèles au contrôle minimal ; latence régulière (95e centile 7,20 s) | payant ; traitement dans l'UE non garanti, contraire à la règle du 05/10 |
 | Claude par l'API d'Anthropic | **écarté, non mesuré** | même modèle que ci-dessus | aucune clé, jamais mesuré ; société établie aux États-Unis, traitement dans l'UE non garanti |
-| Mistral Large 4, adresse européenne | **second fournisseur retenu, pas encore actif** | hébergé dans l'UE ; sur un briefing, n'a pas inventé la date que Large 3 inventait | un seul briefing mesuré ; contrat non lu ; absent du code livré (PR #88) |
+| Mistral Large 4, adresse européenne | **choisi le 10/10 comme futur second fournisseur, sous conditions ; non validé, non actif** | hébergé dans l'UE ; sur un briefing, n'a pas inventé la date que Large 3 inventait | un seul briefing mesuré ; contrat non lu ; absent du code livré (PR #88) |
 
-OpenRouter n'a été que le comparateur du 03/10 : le 10/10, j'ai décidé de remplacer Anthropic et OpenRouter par
-Mistral en Europe, et le 11/10 de n'appeler qu'Azure tant que le contrat de Mistral n'est pas lu (`CONTINUITE.md`).
-Jusqu'au 31/10, ces décisions n'étaient appliquées que sur mon poste ; la production gardait Claude en repli. Corrigé
-le 31/10 : Azure seul par défaut, en production comme sur le poste (section 4.2).
+**La configuration actuelle.** OpenRouter n'a été que le comparateur du 03/10 : le 10/10, j'ai décidé de remplacer
+Anthropic et OpenRouter par Mistral en Europe, et le 11/10 de n'appeler qu'Azure tant que le contrat de Mistral n'est
+pas lu (`CONTINUITE.md`). Jusqu'au 31/10, ces décisions n'étaient appliquées que sur mon poste ; la production gardait
+Claude en repli. Corrigé le 31/10 : Azure seul par défaut, en production comme sur le poste (4.2).
 
-Ce qui ferait changer la décision : la queue de latence pendant une démonstration, la fin de la gratuité de la
-ressource Azure, ou un banc où Mistral ferait nettement mieux.
+**Le secours envisagé.** Mistral Large 4 deviendra le second fournisseur à deux conditions : son contrat lu, et un banc
+Azure contre Mistral. D'ici là, il n'existe pas de secours : une panne d'Azure rend le briefing indisponible (4.2).
+
+Ce qui ferait changer la décision : la queue de latence pendant une démonstration, la fin de la prise en charge des
+frais de la ressource Azure, ou un banc où Mistral ferait nettement mieux.
 
 ### 3.7 Ce qui n'est pas fait
 
@@ -319,7 +334,8 @@ installé la copie à la main, puis la livraison est passée à 13:54. Conteneur
 `/health` annonce le commit `97b329e`.
 
 **Ce qui reste ouvert.**
-- **Aucun secours.** Mistral Large 4 est retenu comme second fournisseur, mais il n'existe que sur la branche
+- **Aucun secours.** Mistral Large 4 a été choisi le 10/10 comme futur second fournisseur, sous conditions, mais il
+  n'est ni validé ni actif : il n'existe que sur la branche
   `mistral-ue` (PR #88, ouverte depuis le 10/10, en conflit avec `develop`), et son contrat n'est pas lu. Si Azure
   tombe, `/briefing` répond 500 avec un identifiant de requête ; la réponse 503 « aucun fournisseur » prévue (#75)
   n'est pas faite.
@@ -400,23 +416,23 @@ Auto-évaluation du 31 octobre 2026. ✅ critère entier satisfait, avec preuve 
 | C6.3 outils d'agrégation cohérents avec sources et budget | ⚠️ | relevé manuel de flux, budget 0 € ; aucun outil d'agrégation à montrer (2.2) |
 | C6.4 synthèses communiquées, format accessible | ⚠️ | notes en Markdown, synthèse PDF, partage du 11/10 prouvé par capture ; aucun envoi au formateur, contrôle d'accessibilité non consigné (2.5, 2.6) |
 | C6.5 informations conformes à la thématique | ✅ | les cinq notes portent sur la thématique (2.3) |
-| C6.6 fiabilité des sources : auteur, compétences, intérêts | ⚠️ | qualification par source dans chaque note ; la note S41 repose sur un préprint à auteur unique (2.2) |
-| C6.7 fiabilité des sources : contenu récent, sourcé, structuré | ✅ | notes datées, sourcées, sur un gabarit (2.2) |
+| C6.6 fiabilité des sources : auteur, compétences, intérêts | ⚠️ | qualification par source dans chaque note, mais incomplète : pour S41, la notoriété de l'auteur n'est pas établie et aucune source de premier rang ne confirme le constat (2.2) |
+| C6.7 fiabilité des sources : contenu récent, sourcé, structuré | ✅ | les sources retenues sont datées et structurées : S41 s'appuie sur un préprint daté (v1 du 02/10/2026), avec son auteur, son statut et les sections citées ; les notes S33 à S36 datent et citent leurs sources (2.2) |
 | C6.8 fiabilité des sources : accessibilité, recoupement | ⚠️ | S41 recoupée par un autre préprint seulement ; préférence pour les sources accessibles non démontrée (2.2) |
 | C7.1 besoin reformulé, objectifs et contraintes | ⚠️ | contraintes mesurables, règle UE et usage Question (3.1) ; le budget n'y figure pas |
-| C7.2 services étudiés et non étudiés | ⚠️ | trois services inclus, exclusions motivées, Mistral non étudié sur le banc et dit tel quel (3.2) |
-| C7.3 raisons d'écartement | ⚠️ | Claude écarté pour la règle UE (3.6) ; Gemini non repris sans raison propre (3.2) |
+| C7.2 services étudiés et non étudiés | ✅ | inventaire : deux services comparés, un inclus mais non mesuré, Mistral hors banc, Gemini et modèle local non étudiés, chacun avec sa raison (3.2) |
+| C7.3 raisons d'écartement | ⚠️ | Claude écarté pour la règle UE (3.6) ; modèle local et services payants exclus avec leur raison (3.2) ; Gemini écarté par le périmètre du banc, sans évaluation du service lui-même |
 | C7.4 adéquation au besoin, par service | ⚠️ | 30 appels par service, français noté ; fidélité minimale, usage Question et Mistral non mesurés (3.3, 3.7) |
 | C7.5 démarche éco-responsable | ⚠️ | relevé daté du 03/10 ; rien par modèle chez les éditeurs ; rien sur Mistral (3.5) |
 | C7.6 contraintes techniques et prérequis | ⚠️ | clés, point d'accès, paramètre de longueur, limites de débit, zone UE (3.5) ; Mistral absent du code livré |
-| C7.7 conclusions : services adaptés et non adaptés | ⚠️ | tableau retenu, écarté, second fournisseur (3.6) ; banc et contrat de Mistral manquent |
+| C7.7 conclusions : services adaptés et non adaptés | ⚠️ | choix, configuration actuelle et secours envisagé séparés, avec un tableau des services retenus et écartés (3.6) ; banc et contrat de Mistral manquent |
 | C8.1 service accessible, avec authentification | ✅ | appels réels du 09/10, briefing en production du 21/10, clés hors du code (4.1) |
-| C8.2 configuré selon les besoins et les contraintes | ⚠️ | conforme en production seulement depuis le 31/10, après la version de référence ; aucun secours ; prompt corrigé non appliqué ; contrat de Microsoft non relu (4.2) |
+| C8.2 configuré selon les besoins et les contraintes | ⚠️ | configuration des replis corrigée le 31/10, après la version de référence ; vérifications contractuelles encore ouvertes (Microsoft, Mistral) ; aucun secours ; prompt corrigé non appliqué (4.2) |
 | C8.3 monitorage disponible opérationnel | ✅ | Langfuse et alertes en production, chaîne d'alerte prouvée le 23/10, vigie ; limites écrites (4.4) |
 | C8.4 documentation : accès, installation, tests, dépendances, données | ✅ | les quatre sujets couverts et testés contre le code ; PDF du 11/10 périmé (4.5) |
 | C8.5 documentation communiquée, format accessible | ❌ | aucun envoi daté, accessibilité non contrôlée (4.6) |
 
-**Décompte** : 6 ✅ · 13 ⚠️ · 1 ❌ sur 20 (version 0.3 du 03/10 : 6 · 13 · 1, avec quatre lignes différentes).
+**Décompte** : 7 ✅ · 12 ⚠️ · 1 ❌ sur 20 (version 0.3 du 03/10 : 6 · 13 · 1 ; trois lignes ont changé : C6.6 baisse, C6.7 et C8.3 montent).
 
 ---
 
