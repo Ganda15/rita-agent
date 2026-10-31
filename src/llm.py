@@ -26,7 +26,10 @@ OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 
 def _ordre_fournisseurs() -> list[str]:
-    ordre = os.getenv("LLM_ORDRE", "foundry,anthropic,openrouter")
+    # Azure seul par défaut (règle UE seule, CONTINUITE.md, décision du 11/10) : l'ancien défaut gardait Anthropic et
+    # OpenRouter en repli, et la production l'a pris (conteneur lu le 31/10). Mistral viendra en second après la
+    # lecture de son contrat (PR #88) ; d'ici là, un autre ordre ne s'obtient qu'en posant `LLM_ORDRE`.
+    ordre = os.getenv("LLM_ORDRE", "foundry")
     return [nom.strip() for nom in ordre.split(",") if nom.strip()]
 
 

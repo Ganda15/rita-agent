@@ -11,8 +11,11 @@ def test_ordre_fournisseurs_lit_variable_environnement(monkeypatch):
 
 
 def test_ordre_fournisseurs_defaut(monkeypatch):
+    """Règle UE seule (CONTINUITE.md, décision du 11/10) : sans configuration, Azure seul, aucun repli hors UE.
+
+    Lu le 31/10 dans le conteneur de production : `foundry,anthropic,openrouter`, venu de cette valeur par défaut."""
     monkeypatch.delenv("LLM_ORDRE", raising=False)
-    assert _ordre_fournisseurs() == ["foundry", "anthropic", "openrouter"]
+    assert _ordre_fournisseurs() == ["foundry"]
 
 
 def test_generer_texte_bascule_sur_le_fournisseur_suivant_si_echec(monkeypatch):

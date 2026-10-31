@@ -88,7 +88,8 @@ services:
       AZURE_FOUNDRY_DEPLOYMENT: ${AZURE_FOUNDRY_DEPLOYMENT:-gpt-5.4-dzs-eu}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
-      LLM_ORDRE: ${LLM_ORDRE:-foundry,anthropic,openrouter}
+      # Azure seul par défaut, comme `src/llm.py` (règle UE seule, décision du 11/10 ; production lue le 31/10).
+      LLM_ORDRE: ${LLM_ORDRE:-foundry}
       # --- Traçage Langfuse (C11), facultatif ---------------------------------------
       # Audit du 02/10/2026 : rien n'était transmis ici, donc l'API en conteneur (pré-production
       # et serveur) servait des briefings que Langfuse ne voyait jamais. Les clés se lisent
