@@ -391,17 +391,23 @@ contre le code : chaque action d'alerte renvoie à une section qui existe, chaqu
 test le dit.
 
 **Corrigé le 31/10** : l'ordre des fournisseurs, les flux Google Actualités arrêtés le 16/10 et toujours cités, les
-traces réduites aux métadonnées depuis le 20/10. **Reste** : le PDF `docs/EXPLOITATION.pdf` date du 11/10 et ne reflète
-pas le guide actuel ; l'ancien chemin `docs/EXPLOITATION.md`, renommé le 22/10, est encore cité par
-`evidence/C8/README.md` et par un message d'erreur du script de déploiement.
+traces réduites aux métadonnées depuis le 20/10. Le PDF `docs/EXPLOITATION.pdf`, qui datait du 11/10, a été rendu de
+nouveau le 31/10 depuis le guide à jour (35 pages). **Reste** : l'ancien chemin `docs/EXPLOITATION.md`, renommé le
+22/10, est encore cité par `evidence/C8/README.md` et par un message d'erreur du script de déploiement.
 
 ### 4.6 La remise aux parties prenantes
 
 Le référentiel demande que la documentation soit « communiquée aux parties prenantes dans un format qui respecte les
 recommandations d'accessibilité ». **Ce n'est pas prouvé.** Aucun envoi daté du guide n'est consigné : ni dans
-`docs/FILE-DE-VALIDATION.md`, ni dans `evidence/C8/` ; l'issue #43 est ouverte. L'accessibilité du format n'a pas été
-contrôlée avec un outil. Pour le prouver : produire un PDF à jour et vérifier son accessibilité, l'envoyer au
-formateur, puis ranger l'envoi daté et la réponse dans `evidence/C8/`.
+`docs/FILE-DE-VALIDATION.md`, ni dans `evidence/C8/` ; l'issue #43 est ouverte.
+
+**Le format, lui, est prêt depuis le 31/10** (`evidence/C8/controle-accessibilite-guide-2026-10-31.md`). Le PDF est
+rendu avec une option de lecture facilitée, écrite test d'abord : texte et tableaux à 12 pt, code à 11 pt, titres sans
+empattement, liens soulignés plutôt que seulement colorés. Lu avec des outils de lecture de PDF : il est balisé, en
+français, porte son titre, et compte 66 signets tirés des titres ; aucun lien ne renvoie plus vers un fichier du poste.
+Ce n'est pas un audit PDF/UA complet : aucun outil de référence ni lecteur d'écran n'a été passé, et le contraste n'est
+pas mesuré. Reste sa remise : décision du 31/10, pas d'envoi séparé au formateur, le guide part avec les livrables
+du 05/11, et la trace datée de cet envoi ira dans `evidence/C8/`.
 
 ---
 
@@ -429,8 +435,8 @@ Auto-évaluation du 31 octobre 2026. ✅ critère entier satisfait, avec preuve 
 | C8.1 service accessible, avec authentification | ✅ | appels réels du 09/10, briefing en production du 21/10, clés hors du code (4.1) |
 | C8.2 configuré selon les besoins et les contraintes | ⚠️ | configuration des replis corrigée le 31/10, après la version de référence ; vérifications contractuelles encore ouvertes (Microsoft, Mistral) ; aucun secours ; prompt corrigé non appliqué (4.2) |
 | C8.3 monitorage disponible opérationnel | ✅ | Langfuse et alertes en production, chaîne d'alerte prouvée le 23/10, vigie ; limites écrites (4.4) |
-| C8.4 documentation : accès, installation, tests, dépendances, données | ✅ | les quatre sujets couverts et testés contre le code ; PDF du 11/10 périmé (4.5) |
-| C8.5 documentation communiquée, format accessible | ❌ | aucun envoi daté, accessibilité non contrôlée (4.6) |
+| C8.4 documentation : accès, installation, tests, dépendances, données | ✅ | les quatre sujets couverts et testés contre le code ; PDF rendu de nouveau le 31/10 (4.5) |
+| C8.5 documentation communiquée, format accessible | ❌ | format préparé et contrôlé le 31/10, sans audit PDF/UA complet ; aucun envoi daté (4.6) |
 
 **Décompte** : 7 ✅ · 12 ⚠️ · 1 ❌ sur 20. Historique : version 0.3 du 03/10, 6 · 13 · 1 ; version 0.4 du 31/10, 6 · 13 · 1 (C6.6 et C7.2 baissent, C6.7 et C8.3 montent) ; depuis la version 0.5 du 31/10, C7.2 repasse à ✅, une fois l'inventaire des services écrit (3.2).
 
@@ -440,8 +446,8 @@ Auto-évaluation du 31 octobre 2026. ✅ critère entier satisfait, avec preuve 
 
 **Avant la remise du 05/11.**
 
-1. **Remettre le guide d'exploitation** (C8.5) : PDF à jour, accessibilité contrôlée, envoi daté au formateur, preuve
-   rangée dans `evidence/C8/` (#43).
+1. **Remettre le guide d'exploitation** (C8.5) : le PDF est prêt et contrôlé (31/10) ; il part avec les livrables
+   du 05/11, preuve datée de l'envoi rangée dans `evidence/C8/` (#43).
 2. **Le rapport** : relecture, PDF, tag `livrable-E2-v1`.
 
 **Ensuite.**

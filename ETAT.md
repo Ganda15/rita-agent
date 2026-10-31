@@ -34,6 +34,10 @@ le 31/10, ceux de C6 et C7 repris du recomptage du 31/10, à confirmer. Ensuite 
   d'abord (`d1cbb7b`) ; PR #170 fusionnée (`97b329e`) ; livraison refusée deux fois (« ComposeNonInstalle »), copie du
   fichier Compose installée à la main par Era, livrée à 13:54 ; conteneur relu : `foundry`. Documentation alignée.
 - E2 v0.6 : C6, C7 et C8 réécrits et intégrés au rapport, puis corrigés après deux relectures indépendantes (huit, puis six points vérifiés ; Mistral placé en évolution envisagée) ; auto-évaluation 7 ✅ · 12 ⚠️ · 1 ❌ (C7.2 monte, décision d'Era ; C8.5 : guide non remis).
+- C8.5, format : guide d'exploitation rendu de nouveau le 31/10 (`docs/EXPLOITATION.pdf`, 35 pages) avec l'option
+  `--lisible` de `scripts/rendre_pdf.py` (test d'abord) : 12 pt, liens soulignés, 66 signets, balisé, en français,
+  aucun lien vers un fichier du poste ; contrôle et limites dans `evidence/C8/controle-accessibilite-guide-2026-10-31.md`.
+  **Non envoyé**, décision d'Era du 31/10 : pas d'envoi séparé au formateur ; le guide part avec les livrables du 05/11.
 
 **Évolution prévue, décidée par Era le 31/10 : après le 05/11.** « Vue marché » en haut de la page Indicateurs : une
 carte par valeur suivie, verte en hausse, rouge en baisse, avec le signe et la flèche (jamais la couleur seule). Déjà
