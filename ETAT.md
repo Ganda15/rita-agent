@@ -21,10 +21,10 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ---
 
-## ▶️ 31/10 : E2 EN COURS (C8) ; PRODUCTION REMISE À AZURE SEUL ; NOTATION C7 TERMINÉE
+## ▶️ 31/10 : E2 v0.4 RÉDIGÉ, À RELIRE ; PRODUCTION REMISE À AZURE SEUL ; NOTATION C7 TERMINÉE
 
-**Prochaine action** : brouillon de la section C8 (hors dépôt, montré à Era), puis intégration de C6, C7 et C8 dans
-`docs/rapports/E2/rapport-E2.md` sur « do it » ; ensuite E5. Livrables le 05/11.
+**Prochaine action** : relecture d'E2 v0.4 par Era (`docs/rapports/E2/rapport-E2.md`) ; statuts de C8 décidés par Era
+le 31/10, ceux de C6 et C7 repris du recomptage du 31/10, à confirmer. Ensuite E5. Livrables le 05/11.
 
 **Fait le 31/10** :
 - E4 v0.7 (`b270355`) : relecture globale, 17 ✅ · 19 ⚠️ · 0 ❌.
@@ -33,6 +33,7 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 - `LLM_ORDRE` lu dans le conteneur de production : `foundry,anthropic,openrouter`. Défaut passé à `foundry`, test
   d'abord (`d1cbb7b`) ; PR #170 fusionnée (`97b329e`) ; livraison refusée deux fois (« ComposeNonInstalle »), copie du
   fichier Compose installée à la main par Era, livrée à 13:54 ; conteneur relu : `foundry`. Documentation alignée.
+- E2 v0.4 : C6, C7 et C8 réécrits et intégrés au rapport ; auto-évaluation 6 ✅ · 13 ⚠️ · 1 ❌ (C8.5 : guide non remis).
 
 **Évolution prévue, décidée par Era le 31/10 : après le 05/11.** « Vue marché » en haut de la page Indicateurs : une
 carte par valeur suivie, verte en hausse, rouge en baisse, avec le signe et la flèche (jamais la couleur seule). Déjà
