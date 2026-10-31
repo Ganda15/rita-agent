@@ -1,4 +1,7 @@
-"""Appel au modèle, 3 fournisseurs en cascade (Foundry → Anthropic → OpenRouter).
+"""Appel au modèle : les fournisseurs nommés par `LLM_ORDRE`, essayés dans l'ordre (Foundry seul par défaut).
+
+Trois fournisseurs sont codés (Foundry, Anthropic, OpenRouter). Depuis le 31/10/2026, l'ordre par défaut est
+`foundry` (règle UE seule, décision du 11/10) : Anthropic et OpenRouter ne sont appelés que si `LLM_ORDRE` les nomme.
 
 Depuis le 03/10/2026, Azure AI Foundry sert un point de terminaison **compatible OpenAI**
 (`.../openai/v1`, déploiement `gpt-5.4`, ressource d'Era, gratuite pour lui) : un modèle d'un

@@ -76,9 +76,10 @@ recommandation d'achat ou de vente.
 - **API** : FastAPI · documentation OpenAPI générée
 - **Base de données** : PostgreSQL (conception Merise — MCD + MPD)
 - **Big data** : PySpark + Parquet *(nécessite un JDK 21 dans `JAVA_HOME`)*
-- **Modèle d'IA** : GPT-5.4 sur Azure AI Foundry (Data Zone EU) en premier, Claude par Anthropic puis OpenRouter en
-  secours, sans garantie de traitement dans l'UE (remplacement par Mistral Large 4 prévu après le gel, carte #82) :
-  modèle **fourni**, aucun entraînement
+- **Modèle d'IA** : GPT-5.4 sur Azure AI Foundry (Data Zone EU), seul fournisseur par défaut depuis le 31/10/2026
+  (règle UE seule) ; Claude par Anthropic ou OpenRouter n'est plus appelé sauf si `LLM_ORDRE` le nomme. Mistral Large 4
+  est retenu comme second fournisseur, en Europe, après la lecture de son contrat (carte #82, PR #88) : modèle
+  **fourni**, aucun entraînement
 - **Orchestration** : LangGraph
 - **CI** : GitHub Actions — tests + **porte d'évaluation des garde-fous**
 
