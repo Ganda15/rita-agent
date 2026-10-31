@@ -144,3 +144,95 @@ def test_l_etape_construit_un_titre_par_alerte_sans_la_gravite(etapes, tmp_path,
     if charge:
         assert "| Gravité | ALERT |" in corps
         assert "p95(observations.latency)" in corps.split("<details>")[0], "le détail doit se lire sans déplier"
+
+
+# --- Le retour à la normale (INC-009, issue #137, 31/10/2026) ----------------------------
+# Le 24/10 à 08:30 UTC, Langfuse a envoyé « [OK] RITA : fournisseur en erreur » (« recovered »).
+# L'issue #130 de cette alerte avait été fermée à la main la veille, fausse alerte qualifiée. L'étape
+# n'a trouvé aucune issue ouverte sous ce titre et en a créé une nouvelle, #137, de gravité OK : une
+# notification de retour à la normale traitée comme un incident. Charge utile ci-dessous : celle de
+# l'issue #137 (champs utiles seulement). Les tests rejouent les deux vraies étapes du workflow, avec un
+# faux `gh` qui note ses appels au lieu de les faire : aucune issue n'est créée.
+CHARGE_LANGFUSE_24_10_OK = {
+    "apiVersion": "v1",
+    "id": "57467bab-5cb8-4868-8f38-8974e14bdeb5",
+    "payload": {
+        "filters": [{"column": "level", "operator": "any of", "type": "stringOptions", "value": ["ERROR"]}],
+        "message": {"body": "`count(observations.count)` recovered", "title": "[OK] RITA : fournisseur en erreur"},
+        "severity": "OK",
+        "view": "observations",
+        "window": "1d",
+    },
+    "type": "monitor-alert",
+}
+CHARGE_LANGFUSE_ALERTE = {**CHARGE_LANGFUSE_24_10_OK, "payload": {
+    **CHARGE_LANGFUSE_24_10_OK["payload"], "severity": "ALERT",
+    "message": {"body": "`count(observations.count)` is **above** `0` over the last **1d**",
+                "title": "[ALERT] RITA : fournisseur en erreur"}}}
+TITRE_FOURNISSEUR = "Incident : alerte Langfuse « RITA : fournisseur en erreur »"
+SORTIE_DE_ETAPE = re.compile(r"^\$\{\{\s*steps\.contenu\.outputs\.(\w+)\s*\}\}$")
+
+
+def _rejouer(etapes, tmp_path, charge, issues_ouvertes):
+    """Rejoue l'étape « contenu » puis l'étape « ouvrir ou commenter », telles qu'elles sont écrites dans le
+    workflow. Rend les appels faits à `gh`, un par ligne."""
+    _, steps = etapes
+    sortie = tmp_path / "sortie.txt"
+    env = {**os.environ, "EVENEMENT": "repository_dispatch", "CHARGE_UTILE": json.dumps(charge),
+           "ALERTE_MANUELLE": "", "DETAIL_MANUEL": "", "LIEN_EXECUTION": "https://exemple.invalid/run",
+           "GITHUB_OUTPUT": str(sortie)}
+    subprocess.run(["bash", "-c", _script_contenu(etapes)], cwd=tmp_path, env=env, check=True)
+    sorties = dict(ligne.split("=", 1) for ligne in sortie.read_text(encoding="utf-8").splitlines() if "=" in ligne)
+
+    journal = tmp_path / "appels-gh.txt"
+    faux_gh = tmp_path / "bin" / "gh"
+    faux_gh.parent.mkdir()
+    faux_gh.write_text("#!/usr/bin/env bash\n"
+                       f'echo "$*" >> "{journal.as_posix()}"\n'
+                       f"if [ \"$1 $2\" = \"issue list\" ]; then echo '{json.dumps(issues_ouvertes)}'; fi\n",
+                       encoding="utf-8")
+    faux_gh.chmod(0o755)
+
+    (etape,) = [e for e in steps if "gh issue create" in (e.get("run") or "")]
+    env_etape = {}
+    for nom, valeur in (etape.get("env") or {}).items():
+        lien = SORTIE_DE_ETAPE.match(str(valeur))
+        env_etape[nom] = sorties.get(lien.group(1), "") if lien else "faux"
+    env = {**os.environ, **env_etape, "PATH": f"{faux_gh.parent}{os.pathsep}{os.environ['PATH']}"}
+    subprocess.run(["bash", "-c", etape["run"]], cwd=tmp_path, env=env, check=True)
+    return journal.read_text(encoding="utf-8").splitlines() if journal.exists() else []
+
+
+bash_et_jq = pytest.mark.skipif(not (shutil.which("bash") and shutil.which("jq")),
+                                reason="bash et jq requis (présents sur le runner GitHub, pas sur ce poste)")
+
+
+@bash_et_jq
+def test_une_alerte_sans_issue_ouverte_cree_une_issue(etapes, tmp_path):
+    appels = _rejouer(etapes, tmp_path, CHARGE_LANGFUSE_ALERTE, issues_ouvertes=[])
+    assert any(a.startswith("issue create") and TITRE_FOURNISSEUR in a for a in appels), appels
+
+
+@bash_et_jq
+def test_une_alerte_repetee_commente_l_issue_ouverte(etapes, tmp_path):
+    appels = _rejouer(etapes, tmp_path, CHARGE_LANGFUSE_ALERTE,
+                      issues_ouvertes=[{"number": 130, "title": TITRE_FOURNISSEUR}])
+    assert any(a.startswith("issue comment 130") for a in appels), appels
+    assert not any(a.startswith("issue create") for a in appels), appels
+
+
+@bash_et_jq
+def test_un_retour_a_la_normale_sans_issue_ouverte_ne_cree_aucune_issue(etapes, tmp_path):
+    """Le cas de #137 : l'incident a été fermé, puis le retour à la normale arrive. Rien à ouvrir."""
+    appels = _rejouer(etapes, tmp_path, CHARGE_LANGFUSE_24_10_OK, issues_ouvertes=[])
+    assert not any(a.startswith("issue create") for a in appels), f"un retour à OK a créé une issue : {appels}"
+
+
+@bash_et_jq
+def test_un_retour_a_la_normale_commente_l_issue_ouverte_sans_la_fermer(etapes, tmp_path):
+    """Un retour à OK dit que la condition d'alerte n'est plus remplie, pas que le défaut est corrigé :
+    il s'écrit dans l'issue ouverte, et la fermeture reste une décision humaine."""
+    appels = _rejouer(etapes, tmp_path, CHARGE_LANGFUSE_24_10_OK,
+                      issues_ouvertes=[{"number": 130, "title": TITRE_FOURNISSEUR}])
+    assert any(a.startswith("issue comment 130") for a in appels), appels
+    assert not any(a.startswith(("issue create", "issue close")) for a in appels), appels

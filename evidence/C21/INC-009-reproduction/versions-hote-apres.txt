@@ -1,0 +1,5 @@
+Reproduction de #137, APRÈS correctif, 31/10/2026 22:48:16 +0100
+commit du dépôt : 4be89d0afd365db3eb9154e723e258f0c3698565 + workflow modifié en local
+sha256 du workflow : e1bd611e81711603242a195e5c0424d3598b78c9e25c677e485f351e38c0b284
+sha256 du fichier de tests : 6ee7b0d5cea5dee95b9de1f0a9c4409ea45765965a99ea7c498876ce905d5aca ; dernière modification : 31/10/2026 22:39:44
+image : rita-tests:latest sha256:5d9bd92b04c468252b941761eb2540867b479963595b0e169701c43bbe014dc7

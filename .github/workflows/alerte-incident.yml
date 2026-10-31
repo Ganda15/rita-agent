@@ -15,7 +15,8 @@
 #     sans attendre une vraie alerte. L'issue ouverte ainsi est conservée comme preuve.
 #
 # Une alerte qui se répète COMMENTE l'issue déjà ouverte au lieu d'en empiler une autre :
-# une alerte par incident, pas une par minute.
+# une alerte par incident, pas une par minute. Un retour à la normale (« [OK] ») commente l'issue
+# ouverte s'il y en a une, mais n'en ouvre jamais (INC-009, issue #137, 31/10/2026).
 #
 # Jeton : celui du dépôt (GITHUB_TOKEN), droit `issues: write` seulement. Aucun secret ici.
 # Le jeton personnel que Langfuse utilise pour appeler GitHub vit dans Langfuse, pas ici.
@@ -60,20 +61,32 @@ jobs:
             source="déclenchement manuel (bouton Run workflow)"
             detail="$DETAIL_MANUEL"
             gravite=""
+            retablie=non
           else
             # Langfuse met le nom dans .payload.message.title, précédé de la gravité
             # (« [ALERT] RITA : ... », constaté le 04/10 sur l'issue #77). On retire la gravité :
             # le titre de l'issue reste le même pour une alerte donnée, quel que soit son état.
-            nom=$(printf '%s' "$CHARGE_UTILE" | jq -r '.payload.message.title // .name // .alertName // .title // "alerte Langfuse"' | sed -E 's/^\[[A-Z]+\] //')
+            titre_langfuse=$(printf '%s' "$CHARGE_UTILE" | jq -r '.payload.message.title // .name // .alertName // .title // "alerte Langfuse"')
+            nom=$(printf '%s' "$titre_langfuse" | sed -E 's/^\[[A-Z]+\] //')
             gravite=$(printf '%s' "$CHARGE_UTILE" | jq -r '.payload.severity // empty')
             source="Langfuse (repository_dispatch, type alerte-langfuse)"
             detail=$(printf '%s' "$CHARGE_UTILE" | jq -r '.payload.message.body // empty')
+            # Un retour à la normale (gravité OK, ou titre « [OK] ... ») n'est pas un incident : il ne doit jamais
+            # ouvrir d'issue. Le 24/10, celui de « fournisseur en erreur » a créé #137, l'issue #130 ayant été
+            # fermée la veille (INC-009, 31/10/2026). On le repère AVANT de retirer la gravité du titre.
+            retablie=non
+            if [ "$gravite" = "OK" ] || [[ "$titre_langfuse" == "[OK] "* ]]; then retablie=oui; fi
           fi
           # Un titre STABLE par alerte : c'est lui qui permet de retrouver l'issue déjà ouverte.
           titre="Incident : alerte Langfuse « ${nom} »"
           echo "titre=${titre}" >> "$GITHUB_OUTPUT"
+          echo "retablie=${retablie}" >> "$GITHUB_OUTPUT"
           {
-            echo "## Alerte reçue le $(date -u +'%Y-%m-%d %H:%M UTC')"
+            if [ "$retablie" = "oui" ]; then
+              echo "## Retour à la normale reçu le $(date -u +'%Y-%m-%d %H:%M UTC')"
+            else
+              echo "## Alerte reçue le $(date -u +'%Y-%m-%d %H:%M UTC')"
+            fi
             echo
             echo "| | |"
             echo "|---|---|"
@@ -92,13 +105,19 @@ jobs:
               echo "</details>"
               echo
             fi
-            echo "## À faire (critères C21, dans cet ordre)"
-            echo
-            echo "- [ ] Reproduire : retrouver la trace dans Langfuse (projet rita, région UE), noter le request_id"
-            echo "- [ ] Cause racine : le symptôme avant la cause, puis la cause, écrits ici"
-            echo "- [ ] Correctif par PR vers develop, test écrit avant"
-            echo "- [ ] Post-mortem dans evidence/C21/INC-00x.md (modèle : _MODELE-postmortem.md), lien ici"
-            echo "- [ ] Seuil ou alerte à ajuster ? Décision écrite dans CONTINUITE.md"
+            if [ "$retablie" = "oui" ]; then
+              echo "La condition d'alerte n'est plus remplie au moment du calcul : cela ne prouve pas une correction."
+              echo "La fermeture de l'issue reste une décision humaine, justifiée (résolution vérifiée, fausse alerte"
+              echo "qualifiée ou exercice terminé)."
+            else
+              echo "## À faire (critères C21, dans cet ordre)"
+              echo
+              echo "- [ ] Reproduire : retrouver la trace dans Langfuse (projet rita, région UE), noter le request_id"
+              echo "- [ ] Cause racine : le symptôme avant la cause, puis la cause, écrits ici"
+              echo "- [ ] Correctif par PR vers develop, test écrit avant"
+              echo "- [ ] Post-mortem dans evidence/C21/INC-00x.md (modèle : _MODELE-postmortem.md), lien ici"
+              echo "- [ ] Seuil ou alerte à ajuster ? Décision écrite dans CONTINUITE.md"
+            fi
           } > corps.md
 
       - name: Créer le label incident s'il manque
@@ -112,6 +131,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
           TITRE: ${{ steps.contenu.outputs.titre }}
+          RETABLIE: ${{ steps.contenu.outputs.retablie }}
         run: |
           set -euo pipefail
           # `gh --jq` n'accepte pas `--arg` : on filtre avec jq lui-même, et sur le titre EXACT,
@@ -120,6 +140,9 @@ jobs:
           if [ -n "$existante" ]; then
             echo "Issue #$existante déjà ouverte pour cette alerte : on commente."
             gh issue comment "$existante" --body-file corps.md
+          elif [ "$RETABLIE" = "oui" ]; then
+            # INC-009 : un retour à la normale sans issue ouverte n'ouvre rien ; on le note dans le journal de l'exécution.
+            echo "Retour à la normale sans issue ouverte pour cette alerte : aucune issue créée."
           else
             gh issue create --title "$TITRE" --label incident --body-file corps.md
           fi
