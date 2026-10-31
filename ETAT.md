@@ -44,6 +44,22 @@ le 31/10, ceux de C6 et C7 repris du recomptage du 31/10, à confirmer. Ensuite 
   Total recensé, provisoire : 259,34 € et 10,45 $ (facturé, payé et déclaré mêlés) ; **reste à lire** : la consommation OpenRouter de la clé de RITA et le crédit
   restant, et le paiement de la facture Hetzner d'août. Livret **E1 v4 préparé** (`rapport-E1.html` et `.pdf`, 5 pages) :
   ligne budget chiffrée, liens vers `livrable-E1-v4` (tag à poser après la fusion), v3 et son tag intacts.
+- E4 v0.8 : passages sur la documentation mis à jour au 31/10 (guide d'exploitation rendu lisible, contrôle limité,
+  sans audit PDF/UA) ; trois formulations corrigées après une relecture (JavaScript, livraison continue et l'exception du
+  fichier Compose, clé absente du code versionné) ; **PDF produit, 20 pages** (limite 15 à 20), `docs/rapports/E4/rapport-E4.pdf`,
+  et une version avec l'annexe des schémas existants (`annexe-schemas-E4.md`, 9 pages en paysage : MCD, trois wireframes agrandis, architecture,
+  flux en deux vues, chaîne de livraison, chacun daté avec sa limite), `rapport-E4-avec-annexe.pdf`, 29 pages ; copies datées
+  dans OneDrive. Relecture du 31/10 au soir intégrée : erratum du flux A4 (le schéma place le garde-fou de sortie avant
+  l'appel au modèle ; le code fait l'inverse, `api/main.py`, lignes 303 et 320), limite C14.3 complétée (scénarios de
+  Question non formalisés). Le schéma d'origine, `evidence/C15/`, garde l'erreur : une preuve ne se réécrit pas.
+  Première page refaite sur le modèle d'E3 v1.9, après la remarque d'Era (« il faut un sommaire en première page ») :
+  logo, ligne d'identité, « En une minute », sommaire dont les numéros sont lus dans le PDF
+  (`tests/test_rapport_e4_sommaire.py`) ; la page 1 de l'annexe porte la même ligne d'identité et les cinq schémas en
+  miniature, chacun relié à sa page. Le corps reste à 20 pages.
+  Liens cliquables vers le tag E4 : à faire au moment du tag.
+  Architecture, flux et chaîne de livraison en **mise en forme du 31/10** (icônes, flèches), texte identique mot pour mot
+  à la version du dépôt : **exception limitée accordée par Era le 31/10** à sa règle « rien de l'autre projet dans ce dépôt », pour
+  ces trois fichiers seulement (`docs/rapports/E4/schemas/`).
 
 **Évolution prévue, décidée par Era le 31/10 : après le 05/11.** « Vue marché » en haut de la page Indicateurs : une
 carte par valeur suivie, verte en hausse, rouge en baisse, avec le signe et la flèche (jamais la couleur seule). Déjà
