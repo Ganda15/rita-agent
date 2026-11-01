@@ -9,6 +9,28 @@
 
 ---
 
+## 2026-11-01, nuit : recette, quatre manques corrigés avec leurs tests ; job `base` exigé pour fusionner dans `main`
+
+**Manques découverts, puis corrigés sur `develop`, tests écrits avant** (pas encore en production) : #78, un RSI de 100
+sur une série plate ; #73, une clé gardée avant d'avoir été acceptée, sur Briefing et Question ; #79, une pire baisse
+positive quand le cours ne fait que monter ; #152, un verrou de démonstration de la passerelle MCP qui refusait le jeu
+réellement importé, acceptait d'autres prix de revient et absorbait les doublons, puis, à la seconde revue, transmettait
+des champs mal formés. Preuves avant et après : `evidence/C17/correctifs-2026-11-01/`.
+
+**Manque découvert dans la CI** : les tests qui demandent PostgreSQL se sautaient en intégration continue, faute de
+base, et la chaîne restait verte sans les avoir exécutés.
+
+**Décisions structurantes** : un job `base` (PostgreSQL 18 jetable, schéma et rôles du dépôt, échec au moindre test
+sauté), vérifié sur GitHub (43 puis 46 réussis, 0 sauté), puis ajouté le 01/11 à 23 h 11, sur décision d'Era, aux
+contrôles exigés de `main protegee` (sept checks). Pour #152 : un jeu de démonstration versionné de sept positions,
+relié au vrai import par un test, sans nouvelle route d'API pour les alias. Détail dans `CONTINUITE.md`, D.
+
+**Rapports sur `develop`** : E2 v0.7 (16 pages, annexe de 4), E4 v1.0 (20 pages, 29 avec l'annexe ; 21 ✅ · 17 ⚠️ ·
+0 ❌), E5 v0.5 (5 pages). La recette ne change aucun statut d'elle-même : réévaluation critère par critère après
+vérification (`docs/recette/registre-des-partiels.md`).
+
+---
+
 ## 2026-11-01 : manque découvert dans la chaîne d'alerte (INC-009), corrigé et en production ; E4 v0.9, E5 v0.4 ; décisions avant la remise
 
 **Manque découvert** : un message de retour à la normale de Langfuse (« [OK] … recovered ») a ouvert le 24/10 un
