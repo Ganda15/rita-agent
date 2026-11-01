@@ -68,7 +68,9 @@ Travail `evals` : récupérer le dépôt · Python 3.13 · dépendances · `pyth
 taux de blocage à 85 % est déclaré non atteint par un `xfail` strict, qui rendrait la suite rouge s'il passait).
 
 Travail `base` (depuis le 01/11/2026) : un service `postgres:18-alpine` (même version que la production, compte `rita`,
-mode `trust`, donc aucun mot de passe ni secret) · Python 3.13 · dépendances · `db/schema.sql` puis `db/roles.sql`
+mode `trust`, donc aucun mot de passe ni secret) · Python 3.13 · dépendances, plus le paquet Playwright (tous les
+fichiers de tests se chargent avant la sélection, et deux l'importent au chargement) · `db/schema.sql` puis
+`db/roles.sql`
 chargés par `psql` avec `ON_ERROR_STOP=1` · les tests marqués `postgresql` (`pytest -m postgresql tests`, depuis le
 02/11/2026 ; un test qui demande la base sans ce marqueur échoue, `tests/garde_base.py`) · **échec si un seul test
 est sauté**. Avant lui, ces tests se sautaient en CI faute de base, et la chaîne restait verte sans les avoir

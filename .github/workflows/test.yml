@@ -89,7 +89,12 @@ jobs:
         with:
           python-version: "3.13"
       - name: Installer les dépendances
-        run: pip install -r requirements.txt
+        # Playwright, le paquet seul, sans navigateur (02/11/2026) : `-m postgresql tests` charge tous les fichiers avant
+        # de choisir, et deux fichiers l'importent au chargement ; sans lui, ils sautent et le job échoue alors qu'aucun
+        # test PostgreSQL n'est en cause (premier passage du marqueur, `997aae6`).
+        run: |
+          pip install -r requirements.txt
+          pip install playwright
       - name: Charger le schéma puis les rôles du dépôt
         run: |
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -q -f db/schema.sql

@@ -5,6 +5,7 @@ les avoir exécutés, et le défaut #79 (pire baisse positive) pouvait revenir s
 donne une base PostgreSQL jetable, de la même version que la production, avec le schéma et les rôles du dépôt, et
 échoue si l'un d'eux est sauté : une base indisponible ne donne plus une validation verte.
 """
+import re
 from pathlib import Path
 
 import pytest
@@ -59,3 +60,21 @@ def test_un_test_saute_fait_echouer_le_job(job):
     commandes = _commandes(job)
     assert "set -o pipefail" in commandes
     assert "skipped" in commandes and "exit 1" in commandes
+
+
+def test_le_job_installe_ce_que_les_tests_importent_au_chargement(job):
+    """02/11/2026, premier passage du marqueur sur GitHub : `-m postgresql tests` charge tous les fichiers avant de
+    choisir. Un fichier qui saute au chargement, faute d'une dépendance (`pytest.importorskip` au niveau du module),
+    compte comme un test sauté et fait échouer le job, sans aucun test PostgreSQL en cause (`test_smoke_ui.py` sans
+    Playwright, 3 sautés). Le job installe donc tout ce que les tests importent au chargement."""
+    exigences = (RACINE / "requirements.txt").read_text(encoding="utf-8").lower()
+    commandes = _commandes(job).lower()
+    manquants = []
+    for fichier in sorted((RACINE / "tests").glob("test_*.py")):
+        for ligne in fichier.read_text(encoding="utf-8").splitlines():
+            trouve = re.match(r"""^\S.*pytest\.importorskip\(\s*["']([\w.]+)""", ligne)
+            if trouve:
+                paquet = trouve.group(1).split(".")[0].lower()
+                if paquet not in exigences and f"pip install {paquet}" not in commandes:
+                    manquants.append(f"{fichier.name} : {paquet}")
+    assert manquants == []
