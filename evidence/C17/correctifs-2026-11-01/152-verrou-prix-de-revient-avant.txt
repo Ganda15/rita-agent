@@ -1,0 +1,7 @@
+# #152, test qui vaut quel que soit le correctif : 01/11/2026 16:33, base ac35e5c, passerelle_mcp/serveur.py inchangé
+# commande : C:\Python314\python.exe -m pytest -q -p no:cacheprovider tests/test_152_verrou_demo.py
+>       assert r["success"] is False and r["error"]["code"] == "NOT_AUTHORIZED"
+E       assert (True is False)
+tests\test_152_verrou_demo.py:20: AssertionError
+FAILED tests/test_152_verrou_demo.py::test_des_prix_de_revient_differents_ne_sont_pas_le_jeu_d_exemple
+1 failed, 1 warning in 4.57s
