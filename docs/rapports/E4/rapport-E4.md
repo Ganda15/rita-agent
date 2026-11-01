@@ -7,13 +7,14 @@
 .sommaire li{ display:flex; justify-content:space-between; gap:8pt; margin:0 0 2pt; break-inside:avoid; font-size:9.4pt; }
 .sommaire li a{ color:var(--ink); }
 .sommaire li span{ color:var(--accent); font-weight:600; }
+h2#glossaire + ul{ columns:2; column-gap:18pt; }
 </style>
 
 <div><img class="logo" src="../E3/logo/rita-logo-marque.png" alt="Logo de RITA"></div>
 
 # Rapport E4 : réaliser une application intégrant un service d'IA (C14 à C19)
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 0.8, 31 octobre 2026, relue de façon indépendante contre le dépôt et GitHub · version de référence de l'application : commit `d3a4198` de `main` (tags `livrable-E1-v3` et `livrable-E3-v2`), en production le 27/10/2026 · code : `Ganda15/rita-agent` (dépôt privé, formateur et jury invités)
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 0.9, 1er novembre 2026, relue de façon indépendante contre le dépôt et GitHub · version de référence de l'application : commit `d3a4198` de `main` (tags `livrable-E1-v3` et `livrable-E3-v2`), en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
 {: .identite }
 
 > **En une minute.** RITA aide un investisseur particulier à suivre son portefeuille et à lire l'actualité d'une
@@ -471,11 +472,30 @@ la pire baisse sur un an peut être positive quand le cours ne fait que monter (
 | Règle | Dans le code |
 |---|---|
 | La clé est posée sur des routeurs entiers : une route ajoutée à un routeur protégé hérite de la protection | `api/main.py`, lignes 260, 267 et 271 |
-| La clé est comparée à temps constant | `secrets.compare_digest`, ligne 201 |
-| Les refus d'accès 403 liés à la clé RITA sont journalisés (identifiant de requête, route, motif), jamais la clé | ligne 206 |
 | Les deux routes qui appellent le modèle partagent une limite : 10 appels par minute à elles deux, par défaut ; 429 au-delà | ligne 267, `api/limiteur.py` |
 | Les exercices de panne ont leur propre clé : clé du client absente ou incorrecte, 403 ; clé d'exercice non configurée sur le serveur, 503 | ligne 275, `api/exercice.py` |
-| La clé n'a aucune valeur par défaut et doit compter au moins 16 caractères. L'application peut démarrer sans clé configurée, mais elle ne peut pas autoriser les accès protégés : la configuration est contrôlée lors de l'authentification. Docker Compose exige une valeur non vide avant de lancer le conteneur | `api/main.py`, lignes 161 à 201 ; `docker-compose.yml`, ligne 81 |
+| La clé n'a aucune valeur par défaut et compte au moins 16 caractères ; sans clé configurée, l'application démarre mais refuse tout accès protégé ; Docker Compose exige une valeur non vide | `api/main.py`, lignes 161 à 201 ; `docker-compose.yml`, ligne 81 |
+
+**La clé, comparée puis refusée** (`api/main.py`, lignes 201 et 205 à 208, `d3a4198` ; `⋮` : commentaire omis) :
+
+```python
+if not api_key or not secrets.compare_digest(api_key, cle_attendue()):
+    ⋮
+    motif = "absente" if not api_key else "invalide"
+    logger.warning("cle d'API refusee : request_id=%s route=%s motif=%s",
+                   request_id_courant(), request.url.path, motif)
+    raise HTTPException(status_code=403, detail="Cle d'API invalide ou absente")
+```
+
+Sans clé, la demande est refusée ; avec une clé, `compare_digest` la compare sans s'arrêter au premier caractère
+différent, pour limiter ce que sa durée pourrait révéler. Le refus est journalisé (requête, route, motif), jamais la
+clé. Ce test vérifie le refus sans clé (`tests/test_api_question.py`, lignes 75 et 76) ; un autre vérifie qu'une clé
+incorrecte n'apparaît pas dans le journal (`tests/test_refus_cle_journal.py`, lignes 29 à 39) :
+
+```python
+def test_question_sans_cle_403(client):
+    assert client.post("/question", json={"question": "Qui reprend TAP ?"}).status_code == 403
+```
 
 Il n'y a qu'**une clé partagée pour les accès utilisateurs**, sans droits par utilisateur : c'est un choix pour un
 outil personnel, défendu avec son modèle de menace (`evidence/C17/preuve-droits-acces-2026-10-03.md`).
@@ -658,8 +678,15 @@ Sur l'ensemble : 49 exécutions sur `main`, dont 48 vertes (la rouge est celle d
 `livrable-*`, dont 15 vertes. Le 24/10, une correction est allée de la fusion à la production en 9 min 02 s, sans
 intervention (`docs/CI-CD.md`, § 3).
 
-**L'ordre est garanti par le fichier lui-même** : le déploiement ne démarre qu'après `lint`, `secrets` et
-`construire-et-publier` verts (`livraison.yml`, `needs:`), et seulement pour un envoi sur `main` (condition `if:`).
+**L'ordre est garanti par le fichier lui-même** (`livraison.yml`, lignes 349 à 351, commit `d3a4198`) :
+
+```yaml
+deployer:
+  needs: [lint, secrets, construire-et-publier, attendre-creneau]
+  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+```
+
+Le déploiement ne démarre que si ces quatre travaux ont réussi, et seulement pour un envoi sur `main`.
 
 ### 6.3 Les sources de la chaîne sont versionnées
 
@@ -779,9 +806,7 @@ partie du critère manque. ❌ : aucune preuve.
 | C19 | 5 | 0 |
 
 **Pourquoi ce total diffère du recomptage du 30/10 (30 ✅, 6 ⚠️).** Le recomptage comptait un ✅ dès qu'une preuve
-existait, et il s'appuyait aussi sur les ateliers des sprints, exclus du périmètre d'E4. La relecture globale du
-30/10 a fait passer C14.1, C14.5 et C15.3 en partiel, chacun pour une raison écrite dans sa ligne. Ici, un ✅ exige que tout le
-critère soit satisfait, sur les cinq écrans de la version présentée.
+existait, ateliers des sprints compris ; ici, un ✅ exige tout le critère, sur les cinq écrans de la version présentée.
 
 ## 📖 Glossaire {: #glossaire }
 
@@ -824,8 +849,8 @@ critère soit satisfait, sur les cinq écrans de la version présentée.
 - **Playwright** : outil qui pilote un vrai navigateur pour tester des pages web.
 - **RSI de Wilder** : indicateur de la force des hausses et des baisses récentes d'un cours, entre 0 et 100, avec le
   lissage proposé par Wilder.
-- **Comparaison à temps constant** : comparaison qui prend le même temps quelle que soit la réponse, pour ne rien
-  laisser deviner de la clé.
+- **`compare_digest`** : comparaison qui ne s'arrête pas au premier caractère différent, pour limiter ce que sa
+  durée pourrait révéler de la clé.
 - **429, 503** : codes HTTP « trop de requêtes » et « service indisponible ».
 - **OWASP Top 10** : liste de référence des dix risques de sécurité les plus courants des applications web.
 - **En-tête de sécurité** : instruction envoyée au navigateur avec la page, par exemple pour interdire de l'afficher
