@@ -124,7 +124,7 @@ Détail : rapport E3, section 5, le schéma `E3-monitorage`, et `exploitation.md
 | Intégration continue | lint, secrets, tests, test des données, garde-fous, construction et vérification de l'image | GitHub Actions, sept workflows (`docs/CI-CD.md`) |
 | Production | API en conteneur derrière Caddy (HTTPS), serveur Hetzner | **livrée automatiquement** après chaque fusion dans `main` depuis le 14/10 ; retour arrière et ingestion d'un bouton |
 
-`main` ne change que par une pull request relue, avec six checks verts (règles GitHub). Une fusion publie l'image
+`main` ne change que par une pull request relue, avec sept checks verts (règles GitHub). Une fusion publie l'image
 vérifiée et la livre en production ; un livrable est un tag `livrable-E<n>-v<k>` posé sur `main`, qui publie aussi son
 image. Le retour arrière de la production est écrit dans `exploitation.md`
 ([Revenir à la version précédente en production](exploitation.md#rollback-production)).
