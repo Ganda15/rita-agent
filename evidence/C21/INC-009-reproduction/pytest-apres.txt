@@ -1,0 +1,48 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.15, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python
+rootdir: /app
+plugins: cov-7.1.0, anyio-4.14.2, langsmith-0.12.1
+collecting ... collected 14 items
+
+tests/test_alerte_incident.py::test_le_workflow_se_declenche_depuis_langfuse_et_a_la_main PASSED [  7%]
+tests/test_alerte_incident.py::test_le_workflow_n_a_que_le_droit_d_ecrire_des_issues PASSED [ 14%]
+tests/test_alerte_incident.py::test_une_etape_ouvre_une_issue_incident_avec_le_jeton_du_depot PASSED [ 21%]
+tests/test_alerte_incident.py::test_une_alerte_qui_se_repete_commente_l_issue_ouverte_au_lieu_d_en_creer_une_autre PASSED [ 28%]
+tests/test_alerte_incident.py::test_le_label_incident_est_cree_s_il_manque PASSED [ 35%]
+tests/test_alerte_incident.py::test_aucun_secret_n_est_ecrit_dans_le_workflow PASSED [ 42%]
+tests/test_alerte_incident.py::test_le_document_d_exploitation_decrit_la_chaine_d_alerte PASSED [ 50%]
+tests/test_alerte_incident.py::test_le_nom_de_l_alerte_est_lu_dans_le_message_envoye_par_langfuse PASSED [ 57%]
+tests/test_alerte_incident.py::test_l_etape_construit_un_titre_par_alerte_sans_la_gravite[charge0-RITA : appel au mod\xe8le trop lent] PASSED [ 64%]
+tests/test_alerte_incident.py::test_l_etape_construit_un_titre_par_alerte_sans_la_gravite[charge1-alerte Langfuse] PASSED [ 71%]
+tests/test_alerte_incident.py::test_une_alerte_sans_issue_ouverte_cree_une_issue PASSED [ 78%]
+tests/test_alerte_incident.py::test_une_alerte_repetee_commente_l_issue_ouverte PASSED [ 85%]
+tests/test_alerte_incident.py::test_un_retour_a_la_normale_sans_issue_ouverte_ne_cree_aucune_issue PASSED [ 92%]
+tests/test_alerte_incident.py::test_un_retour_a_la_normale_commente_l_issue_ouverte_sans_la_fermer PASSED [100%]
+
+==================================== PASSES ====================================
+_______________ test_une_alerte_repetee_commente_l_issue_ouverte _______________
+----------------------------- Captured stdout call -----------------------------
+Issue #130 déjà ouverte pour cette alerte : on commente.
+_____ test_un_retour_a_la_normale_sans_issue_ouverte_ne_cree_aucune_issue ______
+----------------------------- Captured stdout call -----------------------------
+Retour à la normale sans issue ouverte pour cette alerte : aucune issue créée.
+_____ test_un_retour_a_la_normale_commente_l_issue_ouverte_sans_la_fermer ______
+----------------------------- Captured stdout call -----------------------------
+Issue #130 déjà ouverte pour cette alerte : on commente.
+=========================== short test summary info ============================
+PASSED tests/test_alerte_incident.py::test_le_workflow_se_declenche_depuis_langfuse_et_a_la_main
+PASSED tests/test_alerte_incident.py::test_le_workflow_n_a_que_le_droit_d_ecrire_des_issues
+PASSED tests/test_alerte_incident.py::test_une_etape_ouvre_une_issue_incident_avec_le_jeton_du_depot
+PASSED tests/test_alerte_incident.py::test_une_alerte_qui_se_repete_commente_l_issue_ouverte_au_lieu_d_en_creer_une_autre
+PASSED tests/test_alerte_incident.py::test_le_label_incident_est_cree_s_il_manque
+PASSED tests/test_alerte_incident.py::test_aucun_secret_n_est_ecrit_dans_le_workflow
+PASSED tests/test_alerte_incident.py::test_le_document_d_exploitation_decrit_la_chaine_d_alerte
+PASSED tests/test_alerte_incident.py::test_le_nom_de_l_alerte_est_lu_dans_le_message_envoye_par_langfuse
+PASSED tests/test_alerte_incident.py::test_l_etape_construit_un_titre_par_alerte_sans_la_gravite[charge0-RITA : appel au mod\xe8le trop lent]
+PASSED tests/test_alerte_incident.py::test_l_etape_construit_un_titre_par_alerte_sans_la_gravite[charge1-alerte Langfuse]
+PASSED tests/test_alerte_incident.py::test_une_alerte_sans_issue_ouverte_cree_une_issue
+PASSED tests/test_alerte_incident.py::test_une_alerte_repetee_commente_l_issue_ouverte
+PASSED tests/test_alerte_incident.py::test_un_retour_a_la_normale_sans_issue_ouverte_ne_cree_aucune_issue
+PASSED tests/test_alerte_incident.py::test_un_retour_a_la_normale_commente_l_issue_ouverte_sans_la_fermer
+============================== 14 passed in 0.21s ==============================
+code de sortie pytest : 0

@@ -1,0 +1,7 @@
+jq : jq-1.7
+paquet : jq	1.7.1-6+deb13u4 libjq1:amd64	1.7.1-6+deb13u4 libonig5:amd64	6.9.9-1+b1 
+GNU bash, version 5.2.37(1)-release (x86_64-pc-linux-gnu)
+Python 3.13.15
+pytest 9.1.1
+gh réel présent : non
+variables GH_/GITHUB_ du conteneur : 0
