@@ -42,9 +42,17 @@ def test_la_base_de_test_declaree_est_celle_du_service(job):
     assert job["env"]["DATABASE_URL"].endswith("/" + job["services"]["postgres"]["env"]["POSTGRES_DB"])
 
 
-def test_le_job_lance_tous_les_tests_qui_demandent_une_base(job):
-    """La liste se calcule dans le job : un nouveau fichier qui appelle `dsn_de_test` y entre sans qu'on l'oublie."""
-    assert "grep -l dsn_de_test tests/*.py" in _commandes(job)
+def test_le_job_choisit_les_tests_par_le_marqueur_postgresql(job):
+    """Depuis le 02/11/2026 : le marqueur, plus la recherche du mot `dsn_de_test` dans les fichiers (fragile : ce
+    fichier-ci y entrait parce qu'il cite le mot). Un test qui demande la base sans le marqueur échoue
+    (`tests/garde_base.py`), il ne peut donc pas sortir de la sélection sans que la CI le dise."""
+    commandes = _commandes(job)
+    assert "-m postgresql" in commandes
+    assert "grep -l dsn_de_test" not in commandes
+
+
+def test_le_marqueur_postgresql_est_declare(pytestconfig):
+    assert any(ligne.startswith("postgresql:") for ligne in pytestconfig.getini("markers"))
 
 
 def test_un_test_saute_fait_echouer_le_job(job):

@@ -16,6 +16,10 @@ from psycopg2.extras import RealDictCursor  # noqa: E402
 from indicateurs.risque import _charger_requete  # noqa: E402
 
 
+# 02/11/2026 : chaque test de ce fichier demande PostgreSQL ; le job `base` de la CI les choisit par ce marqueur.
+pytestmark = pytest.mark.postgresql
+
+
 @pytest.fixture
 def curseur():
     from tests.garde_base import dsn_de_test

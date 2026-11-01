@@ -125,15 +125,13 @@ un administrateur Docker du poste. Les conteneurs ont été détruits à la fin.
 Le second passage (#152, le soir) a utilisé le mode `trust` de PostgreSQL, comme le job de CI : aucun mot de passe,
 donc aucun secret à écrire ni à lire ; conteneur détruit ensuite.
 
-**CI : préparée, pas encore confirmée sur GitHub.** Le correctif #79 est validé localement sur PostgreSQL. Le nouveau
-job `base` (`.github/workflows/test.yml`) est préparé et a été rejoué localement ; son exécution sur GitHub reste à
-confirmer. Il sélectionne les fichiers de test qui appellent `dsn_de_test` : **46 tests, dont 24 demandent PostgreSQL**
-(21 avant #152, plus les 3 du vrai import) ; les 22 autres n'en demandent pas, dont les 5 contrôles du fichier de
-workflow. Rejoué le 01/11 au soir : 46 réussis et code 0 avec la base ; 24 sautés et code 1 sans base. Après la poussée
-de la branche (qui n'est ni une fusion ni un déploiement) : vérifier que `base` réussit sur le bon commit sans test
-sauté, garder le résultat GitHub, puis le rendre obligatoire dans la règle de `main` (réglage GitHub, décision d'Era).
-La sélection par recherche du mot `dsn_de_test` fonctionne, mais reste fragile : `tests/test_ci_base.py` y entre parce
-que le mot figure dans son texte. Un marquage explicite des tests PostgreSQL sera plus fiable (à proposer à part).
+**CI : confirmée sur GitHub le 01/11, sélection par marqueur le 02/11.** Le correctif #79 est validé sur PostgreSQL,
+en local puis dans le job `base` de GitHub : 43 réussis, 0 sauté sur `516fbf5` ; 46 réussis, 0 sauté sur `afa741d`, dont
+24 qui demandent PostgreSQL (`evidence/C18/job-base-*`). `base` est exigé pour fusionner dans `main` depuis le 01/11 à
+23 h 11 (sept checks). Le 02/11, la recherche du mot `dsn_de_test`, fragile (`tests/test_ci_base.py` y entrait parce
+que le mot figure dans son texte), est remplacée par le marqueur `postgresql` : il choisit les mêmes 24 tests, nom par
+nom, et un test qui demande la base sans le marqueur échoue (`evidence/C18/marqueur-postgresql-2026-11-02.md`). Son
+exécution sur GitHub reste à confirmer sur le commit qui le porte.
 
 ## Preuves des sprints à réutiliser
 

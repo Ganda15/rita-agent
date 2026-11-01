@@ -69,8 +69,9 @@ taux de blocage à 85 % est déclaré non atteint par un `xfail` strict, qui ren
 
 Travail `base` (depuis le 01/11/2026) : un service `postgres:18-alpine` (même version que la production, compte `rita`,
 mode `trust`, donc aucun mot de passe ni secret) · Python 3.13 · dépendances · `db/schema.sql` puis `db/roles.sql`
-chargés par `psql` avec `ON_ERROR_STOP=1` · les fichiers de tests qui appellent `dsn_de_test` · **échec si un seul
-test est sauté**. Avant lui, ces tests se sautaient en CI faute de base, et la chaîne restait verte sans les avoir
+chargés par `psql` avec `ON_ERROR_STOP=1` · les tests marqués `postgresql` (`pytest -m postgresql tests`, depuis le
+02/11/2026 ; un test qui demande la base sans ce marqueur échoue, `tests/garde_base.py`) · **échec si un seul test
+est sauté**. Avant lui, ces tests se sautaient en CI faute de base, et la chaîne restait verte sans les avoir
 exécutés. Premier passage : 43 réussis, 0 sauté, sur `516fbf5` (passage 41353566356,
 `evidence/C18/job-base-premier-passage-github-2026-11-01.md`) ; la sélection est figée par `tests/test_ci_base.py`.
 
@@ -238,7 +239,8 @@ Trois choses qu'on ne fait jamais pour « que ça passe » : désactiver un test
 - **Tests ignorés en CI** : 30 le 24/10. 16 exigent une vraie base PostgreSQL, absente en CI, 9 testent les hooks de
   l'assistant de développement, muets hors Windows, et 5 exigent Spark (pas de JDK). Depuis le 01/11/2026, les tests
   qui demandent PostgreSQL tournent dans le job `base`, qui échoue si l'un d'eux est sauté ; ils restent ignorés dans
-  le job `pytest`. Leur sélection repose sur la recherche du mot `dsn_de_test` : un marquage explicite sera plus fiable.
+  le job `pytest`. Depuis le 02/11/2026, ils sont choisis par le marqueur `postgresql`, et un test qui demande la
+  base sans ce marqueur échoue (`evidence/C18/marqueur-postgresql-2026-11-02.md`).
 - Pas de cache `pip`, pas de filtre de chemin, une seule version de Python testée (3.13 ; le poste est en 3.14). Pas de
   rapport de couverture conservé comme artefact.
 - `requirements.txt` n'est épinglé que pour six dépendances (`langfuse`, `feedparser`, `chromadb`, `rank-bm25`, `ruff`,

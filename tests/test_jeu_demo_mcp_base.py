@@ -22,6 +22,10 @@ from passerelle_mcp import serveur as passerelle  # noqa: E402
 from sources.positions import EXEMPLE  # noqa: E402
 
 
+# 02/11/2026 : chaque test de ce fichier demande PostgreSQL ; le job `base` de la CI les choisit par ce marqueur.
+pytestmark = pytest.mark.postgresql
+
+
 @pytest.fixture
 def curseur(monkeypatch):
     # Le fichier fictif du dépôt, imposé : jamais le portefeuille réel qu'un POSITIONS_CSV du poste désignerait. Poser la

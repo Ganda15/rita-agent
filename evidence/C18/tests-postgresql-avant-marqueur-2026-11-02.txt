@@ -1,0 +1,32 @@
+# Les 24 tests qui demandent PostgreSQL, selection actuelle du job base (recherche du mot dsn_de_test) : 02/11/2026, 00 h 15
+# Reference AVANT le marquage explicite : apres le changement, la nouvelle selection doit donner exactement ces tests.
+# Commande : fichiers=$(grep -l dsn_de_test tests/*.py | grep -v garde_base.py) ;
+#   PYTHON_DOTENV_DISABLED=1 C:\Python314\python.exe -m pytest -v -rs -p no:cacheprovider --no-cov $fichiers
+#   (sans base : les tests sautes sont ceux qui demandent PostgreSQL ; commit 2449382 plus ETAT.md modifie, aucun code de test change)
+# Resultat : 22 passed, 24 skipped, 1 warning in 5.35s
+# Raison de chaque saut : pas de DATABASE_URL : base locale absente (CI)
+
+tests/test_audit_mcp_base.py::test_la_purge_p6_compte_sans_supprimer_en_simulation
+tests/test_audit_mcp_base.py::test_le_role_lecture_lit_mais_n_ecrit_pas
+tests/test_audit_mcp_base.py::test_un_statut_hors_liste_est_refuse_par_la_base
+tests/test_audit_mcp_base.py::test_une_ligne_conforme_entre_et_se_relit
+tests/test_cloture_positions_base.py::test_la_base_refuse_la_meme_ligne_deux_fois
+tests/test_cloture_positions_base.py::test_la_cloture_ne_peut_pas_preceder_l_achat
+tests/test_cloture_positions_base.py::test_p2_ne_purge_qu_au_dela_de_trois_ans_apres_la_cloture
+tests/test_cloture_positions_base.py::test_une_position_close_sort_de_la_vue_et_reste_en_table
+tests/test_fraicheur_par_valeur_base.py::test_une_ligne_par_valeur_suivie_avec_sa_derniere_seance
+tests/test_indicateurs_risque_base.py::test_baisse_continue_garde_la_pire_baisse
+tests/test_indicateurs_risque_base.py::test_baisse_puis_reprise_garde_la_pire_baisse
+tests/test_indicateurs_risque_base.py::test_hausse_continue_aucune_baisse_vaut_zero
+tests/test_indicateurs_risque_base.py::test_serie_plate_vaut_zero
+tests/test_indicateurs_risque_base.py::test_une_seule_cotation_n_a_pas_de_pire_baisse
+tests/test_jeu_demo_mcp_base.py::test_le_vrai_import_du_fichier_d_exemple_donne_le_jeu_attendu_et_la_passerelle_le_sert
+tests/test_jeu_demo_mcp_base.py::test_une_position_close_dans_la_base_fait_refuser_le_mode_strict
+tests/test_jeu_demo_mcp_base.py::test_une_position_personnelle_ajoutee_apres_l_import_fait_refuser
+tests/test_role_lecture.py::test_le_role_lecture_existe_et_peut_se_connecter
+tests/test_role_lecture.py::test_le_role_lecture_lit_toutes_les_tables
+tests/test_role_lecture.py::test_le_role_lecture_ne_peut_pas_creer_de_table
+tests/test_role_lecture.py::test_le_role_lecture_ne_peut_pas_ecrire
+tests/test_vue_valorisation.py::test_en_base_avec_un_taux_present_la_conversion_est_juste
+tests/test_vue_valorisation.py::test_en_base_une_devise_sans_taux_rend_indisponible_et_la_ligne_reste_visible
+tests/test_vue_valorisation.py::test_en_base_une_position_en_euros_se_valorise_meme_sans_aucun_taux

@@ -63,6 +63,9 @@ jobs:
   # verte sans les avoir exécutés. Base jetable de la version de production, schéma et rôles du dépôt, données fictives
   # créées puis annulées par chaque test. Aucun mot de passe : mode `trust`, sur un service que seul ce job atteint.
   # Un test sauté fait échouer le job : une base indisponible ne donne plus une validation verte.
+  # Depuis le 02/11/2026, les tests sont choisis par le marqueur `postgresql`, plus par la recherche d'un mot dans les
+  # fichiers ; un test qui demande la base sans ce marqueur échoue partout (`tests/garde_base.py`). Si aucun test n'est
+  # choisi, pytest sort en code 5 et le job échoue aussi.
   base:
     runs-on: ubuntu-24.04
     services:
@@ -94,6 +97,5 @@ jobs:
       - name: Lancer tous les tests qui demandent une base, sans aucun saut
         run: |
           set -o pipefail
-          fichiers=$(grep -l dsn_de_test tests/*.py | grep -v garde_base.py)
-          pytest -q -rs --no-cov $fichiers | tee sortie-base.txt
+          pytest -q -rs --no-cov -m postgresql tests | tee sortie-base.txt
           if grep -E "[0-9]+ skipped" sortie-base.txt; then echo "Des tests de base ont été sautés : échec." && exit 1; fi

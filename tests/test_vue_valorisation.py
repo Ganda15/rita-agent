@@ -115,6 +115,7 @@ def _une_valeur(cur) -> str:
     return "ESSAI.A0"
 
 
+@pytest.mark.postgresql
 def test_en_base_une_devise_sans_taux_rend_indisponible_et_la_ligne_reste_visible(curseur):
     """Cas D06 : taux absent, montant indisponible, pas 200 pour 10 titres à 20 USD."""
     ticker = _une_valeur(curseur)
@@ -129,6 +130,7 @@ def test_en_base_une_devise_sans_taux_rend_indisponible_et_la_ligne_reste_visibl
     assert taux_manquant is True
 
 
+@pytest.mark.postgresql
 def test_en_base_une_position_en_euros_se_valorise_meme_sans_aucun_taux(curseur):
     """L'euro se convertit par 1 par construction, plus par la ligne « EUR = 1 » de l'étape ecb."""
     ticker = _une_valeur(curseur)
@@ -140,6 +142,7 @@ def test_en_base_une_position_en_euros_se_valorise_meme_sans_aucun_taux(curseur)
     assert investi == 200 and taux_manquant is False
 
 
+@pytest.mark.postgresql
 def test_en_base_avec_un_taux_present_la_conversion_est_juste(curseur):
     """10 titres à 20 USD, taux 1,25 USD pour 1 EUR : 160 EUR, l'exemple du chapitre."""
     ticker = _une_valeur(curseur)
