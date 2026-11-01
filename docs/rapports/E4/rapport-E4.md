@@ -1,15 +1,47 @@
+<style>
+.logo{ float:right; width:15mm; margin:7pt 0 2pt 12pt; }
+.identite{ color:var(--ink-soft); font-size:9.4pt; }
+.sommaire{ margin:9pt 0 2pt; padding:6pt 10pt 5pt; border:.5pt solid var(--rule); border-radius:2pt; }
+.sommaire-titre{ font-family:Georgia,"Times New Roman",serif; font-weight:600; font-size:11pt; margin:0 0 4pt; }
+.sommaire ol{ list-style:none; padding:0; margin:0; columns:2; column-gap:22pt; }
+.sommaire li{ display:flex; justify-content:space-between; gap:8pt; margin:0 0 2pt; break-inside:avoid; font-size:9.4pt; }
+.sommaire li a{ color:var(--ink); }
+.sommaire li span{ color:var(--accent); font-weight:600; }
+h2#glossaire + ul{ columns:2; column-gap:18pt; }
+</style>
+
+<div><img class="logo" src="../E3/logo/rita-logo-marque.png" alt="Logo de RITA"></div>
+
 # Rapport E4 : réaliser une application intégrant un service d'IA (C14 à C19)
 
-> **Version 0.7 du 30/10/2026, première version complète, après une relecture globale.** Les huit sections sont écrites ;
-> une relecture indépendante a confronté chaque fait au dépôt et à GitHub, et ses constats importants sont corrigés. Compte des critères : `docs/rapports/E4/recomptage-criteres-2026-10-30.md`.
->
-> **Périmètre, décidé par Era le 30/10/2026** : E4 décrit la version de RITA présentée au jury, avec ses cinq écrans
-> intégrés (portefeuille, indicateurs, briefing, question, tableau de bord). Les ateliers et copies d'exercice des
-> sprints restent hors du rapport. **Version de référence** : commit `d3a4198` de `main` (tags `livrable-E1-v3` et
-> `livrable-E3-v2`), livré en production le 27/10/2026 (`ETAT.md` : `/health` de production annonçait `d3a4198` ce
-> jour-là). Pour chaque écran, on distingue ce qui est réalisé, la spécification conservée et ce qui n'est pas vérifié.
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 0.9, 1er novembre 2026, relue de façon indépendante contre le dépôt et GitHub · version de référence de l'application : commit `d3a4198` de `main` (tags `livrable-E1-v3` et `livrable-E3-v2`), en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
+{: .identite }
 
-## 1. Le besoin et les utilisateurs (C14)
+> **En une minute.** RITA aide un investisseur particulier à suivre son portefeuille et à lire l'actualité d'une
+> action, sans recommandation d'achat ou de vente. Ce rapport montre comment j'ai conçu et réalisé l'application autour
+> d'un modèle de langage fourni : le besoin et les spécifications (C14), le cadre technique (C15), la coordination agile
+> (C16), le développement (C17), les tests automatisés (C18) et la livraison continue (C19). Il décrit la version
+> présentée au jury et ses cinq écrans (portefeuille, indicateurs, briefing, question, tableau de bord) ; les ateliers
+> des sprints restent hors du rapport (périmètre décidé le 30/10/2026). Pour chaque écran, je distingue ce qui est
+> réalisé, la spécification conservée et ce qui n'est pas vérifié.
+
+<div class="sommaire" role="navigation" aria-label="Sommaire">
+<p class="sommaire-titre">Sommaire</p>
+<ol>
+<li><a href="#c14">1. Le besoin et les utilisateurs (C14)</a><span>p. 1</span></li>
+<li><a href="#c15">2. Le cadre technique (C15)</a><span>p. 4</span></li>
+<li><a href="#c16">3. Coordonner en agile (C16)</a><span>p. 7</span></li>
+<li><a href="#c17">4. Développer (C17)</a><span>p. 9</span></li>
+<li><a href="#c18">5. Automatiser les tests (C18)</a><span>p. 13</span></li>
+<li><a href="#c19">6. La livraison continue (C19)</a><span>p. 14</span></li>
+<li><a href="#demo">7. Démonstration et limites</a><span>p. 15</span></li>
+<li><a href="#matrice">8. Matrice de preuves</a><span>p. 16</span></li>
+<li><a href="#glossaire">Glossaire</a><span>p. 19</span></li>
+<li>Annexe A1 à A5 : les schémas (PDF avec annexe)<span>p. 21</span></li>
+</ol>
+</div>
+
+## 1. Le besoin et les utilisateurs (C14) {: #c14 }
 
 ### 1.1 Le problème de départ
 
@@ -62,7 +94,7 @@ panne technique et un texte retenu par le garde-fou sont trois situations diffé
 ### 1.4 Modéliser les données et les parcours
 
 **Les données** sont modélisées avec un **MCD** (modèle conceptuel de données) au formalisme **Merise** : 6 entités et
-6 associations. C'est le même modèle que dans le rapport E1 (`evidence/C4/MCD-MERISE-RITA.png`). Il laisse de côté la
+6 associations. C'est le même modèle que dans le rapport E1 (`evidence/C4/MCD-MERISE-RITA.png`, annexe A1). Il laisse de côté la
 table `article`, qui porte pourtant les données de l'écran Question (choix du 11/08, `evidence/C4/preuve-mcd-merise.md`,
 § 4) : pour les cinq écrans, le modèle de données est donc incomplet. Je ne l'ai pas refait
 pour E4 : un second modèle des mêmes données serait un doublon à tenir à jour, donc une future contradiction.
@@ -78,7 +110,7 @@ trouver :
 
 Montrer les erreurs compte : un wireframe qui ne montre que le cas qui marche décrit une démonstration, pas une
 application. Les trois wireframes sont dans `evidence/C14/` (`WIREFRAMES-C14-ecran-portefeuille.png`,
-`-ecran-indicateurs.png`, `-ecran-briefing.png`). **Les écrans 4 et 5 n'ont pas de wireframe.**
+`-ecran-indicateurs.png`, `-ecran-briefing.png` ; annexe A2). **Les écrans 4 et 5 n'ont pas de wireframe.**
 
 ### 1.5 Des spécifications vérifiables
 
@@ -153,7 +185,7 @@ l'accessibilité soit dans les critères d'acceptation. Pour les cinq écrans, i
 Ces compléments seront datés du jour de leur écriture et présentés comme rétrospectifs. Tant qu'ils manquent, C14
 n'est pas entièrement démontré pour le périmètre des cinq écrans.
 
-## 2. Le cadre technique (C15)
+## 2. Le cadre technique (C15) {: #c15 }
 
 ### 2.1 L'architecture en une vue
 
@@ -172,7 +204,7 @@ Cinq chemins traversent l'application :
 | Question | écran → `POST /question` → garde-fous de la question → recherche dans les articles → modèle → contrôles → réponse avec ses sources, ou refus |
 | Surveillance | vigie → `/health` puis `/sante` → une issue GitHub par signal en problème |
 
-Le schéma de référence est `docs/rapports/E3/schemas/E3-architecture.png`, refait le 24/10 : il montre les deux chemins
+Le schéma de référence est `docs/rapports/E3/schemas/E3-architecture.png` (annexe A3), refait le 24/10 : il montre les deux chemins
 vers le modèle (`/briefing` et `/question`), les cinq écrans et `/sante` avec son tableau de bord. La vigie, qui tourne
 hors de l'API, n'y figure pas.
 
@@ -204,14 +236,14 @@ et une n'a qu'une borne basse (limite reprise en C17).
 | Poste de développement | API (port 8000), PostgreSQL (port 5433), collecte planifiée chaque soir | `uvicorn`, tâche planifiée Windows |
 | Pré-production locale | API et PostgreSQL en conteneurs | `docker compose up -d --build` (port 8001) |
 | Intégration continue | lint, secrets, tests, garde-fous, construction et vérification de l'image | GitHub Actions, sept workflows (`docs/CI-CD.md`) |
-| Production | API en conteneur derrière Caddy (HTTPS), serveur Hetzner | livrée automatiquement après chaque fusion dans `main`, depuis le 14/10 |
+| Production | API en conteneur derrière Caddy (HTTPS), serveur Hetzner | livrée automatiquement après chaque fusion dans `main`, depuis le 14/10 (un fichier Compose modifié s'installe à la main) |
 
 Un **conteneur** est un paquet qui contient l'application et tout ce qu'il lui faut pour démarrer, isolé du reste de
 la machine ; une **image** est le modèle à partir duquel on lance un conteneur.
 
 ### 2.4 Le flux de données
 
-Le diagramme de flux est `evidence/C15/FLUX-DONNEES-C15-application-RITA.png`. Il se lit dans le sens de la donnée,
+Le diagramme de flux est `evidence/C15/FLUX-DONNEES-C15-application-RITA.png` (annexe A4). Il se lit dans le sens de la donnée,
 pas dans celui de la requête : la flèche qui va de l'API au navigateur descend, alors que c'est le navigateur qui
 déclenche l'appel.
 
@@ -234,7 +266,7 @@ pour le briefing ne lit que des données de marché publiques (`docs/ARCHITECTUR
 
 | Choix | Effet |
 |---|---|
-| Interface sans cadre ni outil de construction | aucun paquet JavaScript à télécharger, aucune étape de compilation |
+| Interface sans cadre ni outil de construction | HTML, CSS et JavaScript écrits à la main, sans framework ni étape de compilation |
 | Pagination plafonnée à 1 000 lignes (`api/donnees.py`, `LIMITE_MAX`) | une requête ne peut pas transférer toute la table des cotations |
 | Archive Parquet compressée et partitionnée | dix ans d'historique en 14 Mo (mesure du 18/08) |
 | `pyspark` hors de l'image | 492 Mo de moins dans l'image (mesure du 18/08) |
@@ -254,7 +286,7 @@ réseau des conteneurs. **Avis écrit ce jour-là : « Poursuivre. »** Ses limi
 locale, base vide, aucun déploiement automatisé.
 
 **Ce qui a changé depuis, daté.** Depuis le 14/10, chaque version est livrée en production automatiquement après une
-fusion dans `main`, et elle passe d'abord une pré-production sur le serveur : un conteneur d'essai sur le port 8003,
+fusion dans `main` (sauf un fichier Compose modifié, installé à la main), et elle passe d'abord une pré-production sur le serveur : un conteneur d'essai sur le port 8003,
 avec le compte de base `rita_lecture` en lecture seule, contrôlé avant la bascule, puis toujours arrêté
 (`deploy/deployer.py`, `_essai_en_preproduction`). La première livraison, le 14/10, a pris 221 secondes de l'ordre à la
 fin des contrôles (`evidence/sprint-2/N0-premiere-livraison-2026-10-14.md`). Les limites « pré-production
@@ -273,7 +305,7 @@ toujours à côté. La conclusion « Poursuivre » reste valable, mais elle date
 - **Le dossier `evidence/C15/` n'a pas été mis à jour depuis le 04/10** : la pré-production réelle est prouvée ailleurs
   (`deploy/`, `evidence/sprint-2/`).
 
-## 3. Coordonner en agile (C16)
+## 3. Coordonner en agile (C16) {: #c16 }
 
 ### 3.1 La méthode et pourquoi
 
@@ -362,7 +394,7 @@ Le même travail a fait découvrir un autre manque, écrit le jour même : la sa
 - **C16 n'est donc pas entièrement démontré** : le suivi dans la durée a des interruptions, et le partage des rituels
   avec les parties prenantes repose surtout sur des documents.
 
-## 4. Développer (C17)
+## 4. Développer (C17) {: #c17 }
 
 ### 4.1 Vue d'ensemble
 
@@ -380,7 +412,7 @@ Je distingue « j'ai une preuve » et « tout le critère est satisfait ».
 | 8. Préconisations OWASP | partiel | § 4.6 |
 | 9. Tests des composants et des accès | résultats prouvés, avec leurs exclusions | § 4.8 |
 | 10. Sources versionnées sur un dépôt distant | prouvé | § 4.9 |
-| 11. Documentation technique | partiel : contenu complet ; accessibilité non contrôlée ; une affirmation fausse à la version de référence, corrigée le 30/10 | § 4.9 |
+| 11. Documentation technique | partiel : contenu complet ; accessibilité contrôlée le 31/10 pour le seul guide d'exploitation ; une affirmation fausse à la version de référence, corrigée le 30/10 | § 4.9 |
 
 ### 4.2 L'environnement de développement (critère 1, partiel)
 
@@ -440,11 +472,30 @@ la pire baisse sur un an peut être positive quand le cours ne fait que monter (
 | Règle | Dans le code |
 |---|---|
 | La clé est posée sur des routeurs entiers : une route ajoutée à un routeur protégé hérite de la protection | `api/main.py`, lignes 260, 267 et 271 |
-| La clé est comparée à temps constant | `secrets.compare_digest`, ligne 201 |
-| Les refus d'accès 403 liés à la clé RITA sont journalisés (identifiant de requête, route, motif), jamais la clé | ligne 206 |
 | Les deux routes qui appellent le modèle partagent une limite : 10 appels par minute à elles deux, par défaut ; 429 au-delà | ligne 267, `api/limiteur.py` |
 | Les exercices de panne ont leur propre clé : clé du client absente ou incorrecte, 403 ; clé d'exercice non configurée sur le serveur, 503 | ligne 275, `api/exercice.py` |
-| La clé n'a aucune valeur par défaut et doit compter au moins 16 caractères. L'application peut démarrer sans clé configurée, mais elle ne peut pas autoriser les accès protégés : la configuration est contrôlée lors de l'authentification. Docker Compose exige une valeur non vide avant de lancer le conteneur | `api/main.py`, lignes 161 à 201 ; `docker-compose.yml`, ligne 81 |
+| La clé n'a aucune valeur par défaut et compte au moins 16 caractères ; sans clé configurée, l'application démarre mais refuse tout accès protégé ; Docker Compose exige une valeur non vide | `api/main.py`, lignes 161 à 201 ; `docker-compose.yml`, ligne 81 |
+
+**La clé, comparée puis refusée** (`api/main.py`, lignes 201 et 205 à 208, `d3a4198` ; `⋮` : commentaire omis) :
+
+```python
+if not api_key or not secrets.compare_digest(api_key, cle_attendue()):
+    ⋮
+    motif = "absente" if not api_key else "invalide"
+    logger.warning("cle d'API refusee : request_id=%s route=%s motif=%s",
+                   request_id_courant(), request.url.path, motif)
+    raise HTTPException(status_code=403, detail="Cle d'API invalide ou absente")
+```
+
+Sans clé, la demande est refusée ; avec une clé, `compare_digest` la compare sans s'arrêter au premier caractère
+différent, pour limiter ce que sa durée pourrait révéler. Le refus est journalisé (requête, route, motif), jamais la
+clé. Ce test vérifie le refus sans clé (`tests/test_api_question.py`, lignes 75 et 76) ; un autre vérifie qu'une clé
+incorrecte n'apparaît pas dans le journal (`tests/test_refus_cle_journal.py`, lignes 29 à 39) :
+
+```python
+def test_question_sans_cle_403(client):
+    assert client.post("/question", json={"question": "Qui reprend TAP ?"}).status_code == 403
+```
 
 Il n'y a qu'**une clé partagée pour les accès utilisateurs**, sans droits par utilisateur : c'est un choix pour un
 outil personnel, défendu avec son modèle de menace (`evidence/C17/preuve-droits-acces-2026-10-03.md`).
@@ -534,10 +585,12 @@ rapport E3 le 11/10, l'est dans ces fichiers le 30/10 (commit `a2c0d51`), après
   la recherche documentaire et la surveillance.
 - **L'éco-conception** n'a que des mesures historiques, sans mesure « après », sur trois écrans sur cinq.
 - **La documentation** contenait, à la version de référence, une affirmation fausse sur le démarrage de l'API
-  (corrigée le 30/10) ; elle n'a pas été contrôlée avec un outil d'accessibilité ; le diagramme de flux date du 18/08 ;
-  `docs/EXPLOITATION.pdf` (11/10) ne correspond plus à la page.
+  (corrigée le 30/10) ; le diagramme de flux date du 18/08. Après la version de référence, le 31/10, le seul guide
+  d'exploitation a été corrigé, rendu de nouveau en PDF lisible (12 pt, liens soulignés, 66 signets) et lu avec
+  des outils (balisage, langue, titre) : `evidence/C8/controle-accessibilite-guide-2026-10-31.md`. Ce n'est pas un audit
+  PDF/UA complet, et les autres documents techniques n'ont pas été contrôlés.
 
-## 5. Automatiser les tests (C18)
+## 5. Automatiser les tests (C18) {: #c18 }
 
 ### 5.1 La chaîne d'intégration continue
 
@@ -594,12 +647,12 @@ accessibilité n'a pas été contrôlée avec un outil.
 - 32 tests sont ignorés en CI, dont les 16 qui exigent une base PostgreSQL : la CI n'a pas de base de test.
 - La couverture ne mesure pas l'interface, la recherche documentaire ni la surveillance.
 
-## 6. La livraison continue (C19)
+## 6. La livraison continue (C19) {: #c19 }
 
 ### 6.1 Les étapes de la livraison
 
-La **livraison continue** construit, vérifie et met en service une nouvelle version sans geste manuel. Pour RITA, elle
-suit `livraison.yml` (`docs/CI-CD.md`, § 3) :
+La **livraison continue** prépare et vérifie une version livrable ; le déploiement suit la fusion sur `main`, sauf un
+fichier Compose modifié, à installer à la main sur le serveur (`livraison.yml`, `docs/CI-CD.md`, § 3 ; annexe A5) :
 
 | Étape | Quand | Ce qu'elle fait |
 |---|---|---|
@@ -625,8 +678,15 @@ Sur l'ensemble : 49 exécutions sur `main`, dont 48 vertes (la rouge est celle d
 `livrable-*`, dont 15 vertes. Le 24/10, une correction est allée de la fusion à la production en 9 min 02 s, sans
 intervention (`docs/CI-CD.md`, § 3).
 
-**L'ordre est garanti par le fichier lui-même** : le déploiement ne démarre qu'après `lint`, `secrets` et
-`construire-et-publier` verts (`livraison.yml`, `needs:`), et seulement pour un envoi sur `main` (condition `if:`).
+**L'ordre est garanti par le fichier lui-même** (`livraison.yml`, lignes 349 à 351, commit `d3a4198`) :
+
+```yaml
+deployer:
+  needs: [lint, secrets, construire-et-publier, attendre-creneau]
+  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+```
+
+Le déploiement ne démarre que si ces quatre travaux ont réussi, et seulement pour un envoi sur `main`.
 
 ### 6.3 Les sources de la chaîne sont versionnées
 
@@ -647,7 +707,7 @@ figes` (un tag de livrable ne se déplace ni ne se supprime).
 - **Le déploiement attend un créneau** : une fusion faite entre 7 h 30 et 9 h n'est livrée qu'après 9 h ; c'est voulu,
   mais une correction urgente du matin attend.
 
-## 7. Démonstration et limites
+## 7. Démonstration et limites {: #demo }
 
 ### 7.1 La démonstration prévue
 
@@ -661,7 +721,7 @@ visible) → s'il tape un code inconnu, il lit un message qui dit pourquoi (la g
 
 | Étape | Ce que je montre | Point d'attention |
 |---|---|---|
-| 1. Portefeuille | je saisis la clé à l'écran ; le portefeuille de démonstration s'affiche, valorisé en euros | la clé se tape, elle n'est dans aucun fichier |
+| 1. Portefeuille | je saisis la clé à l'écran ; le portefeuille de démonstration s'affiche, valorisé en euros | clé tapée sans la montrer, absente du code versionné |
 | 2. Indicateurs | le tableau des 111 valeurs, le filtre des cotations périmées | les données doivent être à jour (7.2) |
 | 3. Briefing | le parcours principal ci-dessus, puis un code inconnu | l'écran annonce une attente indicative de 5 à 15 secondes ; je le dis avant |
 | 4. Question | une question, puis la fiche d'une référence ; une question hors sujet pour montrer le refus | refus et erreur ont des messages différents |
@@ -690,7 +750,7 @@ Le détail est dans les limites de chaque section.
 | Tests (C18) | 32 tests ignorés en CI ; couverture sans l'interface, la recherche ni la surveillance ; trois paquets de CI sans version | § 5.6 |
 | Livraison (C19) | un tag reconstruit l'image ; retour arrière sans la base ; sauvegarde non tenue ; collecte non planifiée sur le serveur | § 6.4 |
 
-## 8. Matrice de preuves
+## 8. Matrice de preuves {: #matrice }
 
 **Règle d'état.** ✅ : le critère est satisfait dans son ensemble, avec sa preuve. ⚠️ : une preuve existe, mais une
 partie du critère manque. ❌ : aucune preuve.
@@ -699,8 +759,8 @@ partie du critère manque. ❌ : aucune preuve.
 |---|---|---|---|---|
 | **C14.1** La modélisation des données respecte un formalisme (Merise…) | ⚠️ | MCD Merise, `evidence/C4/MCD-MERISE-RITA.png` ; le formalisme est respecté | la table `article`, qui porte les données de Question, n'est pas dans le MCD | 1.4 |
 | **C14.2** La modélisation des parcours respecte un formalisme (wireframes…) | ⚠️ | trois wireframes d'état, `evidence/C14/` | rien pour Question et Tableau de bord | 1.4 |
-| **C14.3** Chaque spécification couvre contexte, scénarios, critères de validation | ⚠️ | US-1 à US-3 ; US1 et US2 de Question | aucune spécification pour le Tableau de bord | 1.3, 1.5 |
-| **C14.4** Accessibilité intégrée aux critères d'acceptation | ⚠️ | critères RGAA des écrans 1 à 3 | aucun critère pour Question | 1.6 |
+| **C14.3** Chaque spécification couvre contexte, scénarios, critères de validation | ⚠️ | US-1 à US-3 ; US1 et US2 de Question | scénarios de Question non formalisés ; aucune spécification fonctionnelle du Tableau de bord | 1.3, 1.5 |
+| **C14.4** Accessibilité intégrée aux critères d'acceptation | ⚠️ | critères RGAA des écrans 1 à 3 | aucun critère pour Question ; pour le Tableau de bord, le balisage seul est testé | 1.6 |
 | **C14.5** Accessibilité formulée selon un standard (RGAA…) | ⚠️ | règles RGAA numérotées dans les critères des écrans 1 à 3 | aucun objectif formalisé pour Question et Tableau de bord ; aucun test avec un lecteur d'écran | 1.6 |
 | **C15.1** Spécifications techniques : architecture, dépendances, environnement | ✅ | `docs/ARCHITECTURE.md`, `requirements-api.txt` | diagramme de flux du 18/08 ; schéma d'architecture du 24/10, sans la vigie | 2.1 à 2.3 |
 | **C15.2** Services éco-responsables favorisés | ⚠️ | choix d'architecture, éco-responsables par effet | hébergeur choisi pour la continuité, impact non mesuré | 2.5 |
@@ -721,7 +781,7 @@ partie du critère manque. ❌ : aucune preuve.
 | **C17.8** Préconisations OWASP Top 10 implémentées | ⚠️ | revue S1 à S10 ; S4 et S5 corrigés, S3 et S7 en partie | S1, S2, S6, S8, S9 ouverts | 4.6 |
 | **C17.9** Tests couvrant composants métier et gestion des accès | ✅ | les tests des composants métier et des accès API ont été exécutés avec succès (1 808 réussis, couverture 96,32 %) | la vérification des permissions du rôle PostgreSQL en lecture seule reste non démontrée par cette exécution de la CI | 4.8 |
 | **C17.10** Sources versionnées et accessibles sur un dépôt distant | ✅ | dépôt GitHub privé, 18 tags `livrable-*` protégés | jury pas encore invité | 4.9 |
-| **C17.11** Documentation technique : installation, architecture, dépendances, tests, accessible | ⚠️ | `docs/ARCHITECTURE.md`, `README.md`, `docs/CI-CD.md`, `docs/exploitation.md` | accessibilité non contrôlée ; une affirmation fausse à la version de référence, corrigée le 30/10 | 4.9 |
+| **C17.11** Documentation technique : installation, architecture, dépendances, tests, accessible | ⚠️ | `docs/ARCHITECTURE.md`, `README.md`, `docs/CI-CD.md`, `docs/exploitation.md` | accessibilité contrôlée le 31/10 pour le seul guide d'exploitation, sans audit PDF/UA complet, les autres documents non ; une affirmation fausse à la version de référence, corrigée le 30/10 | 4.9 |
 | **C18.1** Documentation de la chaîne : outils, étapes, tâches, déclencheurs | ✅ | `docs/CI-CD.md`, § 2 et § 3 | | 5.5 |
 | **C18.2** Outil d'intégration continue cohérent avec l'environnement | ✅ | GitHub Actions, machine et Python fixés | | 5.1, 5.2 |
 | **C18.3** Étapes préalables aux tests intégrées (build, configuration) | ✅ | installation, navigateur, tests des données d'abord | | 5.2 |
@@ -746,11 +806,9 @@ partie du critère manque. ❌ : aucune preuve.
 | C19 | 5 | 0 |
 
 **Pourquoi ce total diffère du recomptage du 30/10 (30 ✅, 6 ⚠️).** Le recomptage comptait un ✅ dès qu'une preuve
-existait, et il s'appuyait aussi sur les ateliers des sprints, exclus du périmètre d'E4. La relecture globale du
-30/10 a fait passer C14.1, C14.5 et C15.3 en partiel, chacun pour une raison écrite dans sa ligne. Ici, un ✅ exige que tout le
-critère soit satisfait, sur les cinq écrans de la version présentée.
+existait, ateliers des sprints compris ; ici, un ✅ exige tout le critère, sur les cinq écrans de la version présentée.
 
-## 📖 Glossaire
+## 📖 Glossaire {: #glossaire }
 
 - **Action** : part d'une société cotée en bourse.
 - **Ticker** : code de cotation d'une action, par exemple `MC.PA`.
@@ -791,8 +849,8 @@ critère soit satisfait, sur les cinq écrans de la version présentée.
 - **Playwright** : outil qui pilote un vrai navigateur pour tester des pages web.
 - **RSI de Wilder** : indicateur de la force des hausses et des baisses récentes d'un cours, entre 0 et 100, avec le
   lissage proposé par Wilder.
-- **Comparaison à temps constant** : comparaison qui prend le même temps quelle que soit la réponse, pour ne rien
-  laisser deviner de la clé.
+- **`compare_digest`** : comparaison qui ne s'arrête pas au premier caractère différent, pour limiter ce que sa
+  durée pourrait révéler de la clé.
 - **429, 503** : codes HTTP « trop de requêtes » et « service indisponible ».
 - **OWASP Top 10** : liste de référence des dix risques de sécurité les plus courants des applications web.
 - **En-tête de sécurité** : instruction envoyée au navigateur avec la page, par exemple pour interdire de l'afficher
@@ -800,7 +858,7 @@ critère soit satisfait, sur les cinq écrans de la version présentée.
 - **Proxy** : serveur placé devant l'API, qui reçoit les demandes et peut ajouter des en-têtes.
 - **EcoIndex** : note de A à G de l'impact environnemental d'une page web.
 - **Couverture** : part du code exécutée par les tests, sur un périmètre choisi.
-- **Livraison continue** : chaîne qui construit, vérifie et met en service une version sans geste manuel.
+- **Livraison continue** : chaîne qui prépare et vérifie une version livrable, mise ensuite en service par le déploiement.
 - **Lint** : lecture automatique du code qui signale les erreurs sans l'exécuter.
 - **Porte de livraison** : contrôle qui bloque la suite de la chaîne si une condition n'est pas remplie.
 - **Registre d'images** : endroit où sont rangées les images publiées, ici celui de GitHub.

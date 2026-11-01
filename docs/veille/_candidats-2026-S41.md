@@ -14,7 +14,8 @@
 > **Liens vérifiés** : chacun a répondu **HTTP 200** le 11/10/2026 (contrôle `curl`). Les liens qui ont répondu `403` ou
 > `404` ne sont **pas** donnés (liste en fin de fichier). Un 200 dit qu'une page est **accessible**, pas qu'elle est
 > fiable ni que son résumé ici est exact : relire chaque candidat dans sa source avant de l'utiliser dans la note.
-> **Corrigé le 11/10 au soir**, après relecture : six points, listés en fin de fichier.
+> **Corrigé le 11/10 au soir**, après relecture : six points, listés en fin de fichier. **Deux liens remplacés le
+> 01/11/2026**, sans changer le contenu : voir « Liens remplacés le 01/11/2026 ».
 > **Déjà vu, écarté** : la note CNIL sur l'IA agentique du 20/07 est traitée en S34 ; aucun candidat ci-dessous ne figure
 > dans les relevés précédents (vérifié dans `docs/veille/`).
 
@@ -90,7 +91,7 @@ injection réussie ne peut produire que du texte, et ce texte est relu en sortie
 |---|---|
 | **Source** | arXiv `cs.CR` (source 7). ⚠️ **Préprint, non relu par les pairs. Une piste, pas un fait.** |
 | **Titre** | *RAG-PIBench: A Leakage-Aware Benchmark for Prompt-Injection Detection in Trustworthy RAG Systems* |
-| **Auteurs** | Niveen O. Jaffal, Ahmet Yuksel, **David Mohaisen**, professeur d'informatique à l'University of Central Florida, sécurité et vie privée ([page de David Mohaisen](https://www.cs.ucf.edu/~mohaisen/)) |
+| **Auteurs** | Niveen O. Jaffal, Ahmet Yuksel, **David Mohaisen**, professeur d'informatique à l'University of Central Florida, sécurité et vie privée ([sa page de faculté à l'UCF](https://www.cecs.ucf.edu/faculty/david-mohaisen/)) |
 | **Date** | déposé (v1) le **6 octobre 2026** |
 | **Lien** | [arXiv 2610.08571](https://arxiv.org/abs/2610.08571) |
 | **Intérêt commercial** | Non repéré (auteurs universitaires) |
@@ -185,7 +186,7 @@ dans le prompt du rédacteur. Sans outil d'action, l'impact reste du texte, relu
 | Date (v1) | Titre | Lien | Pourquoi non retenu |
 |---|---|---|---|
 | 07/10 | *BRANCH: Bypassing Multi-Scanner AI Guardrails* | [arXiv 2610.10742](https://arxiv.org/abs/2610.10742) | **intérêt commercial** : un auteur, professeur à Lancaster ([sa page](https://www.lancaster.ac.uk/scc/about-us/people/peter-garraghan)), a fondé Mindgard, qui vend du red teaming IA ([page de Mindgard](https://mindgard.ai/about-us)) ; vise des garde-fous à classifieurs, pas des motifs |
-| 29/09 | *CounterSteer: Suppressing Indirect Prompt Injection with Activation Steering* | [arXiv 2609.36570](https://arxiv.org/abs/2609.36570) | **intérêt commercial** : un auteur est directeur technique de Microsoft Azure ([sa notice](https://en.wikipedia.org/wiki/Mark_Russinovich)), fournisseur de RITA ; la méthode exige l'accès aux poids, impossible par une API |
+| 29/09 | *CounterSteer: Suppressing Indirect Prompt Injection with Activation Steering* | [arXiv 2609.36570](https://arxiv.org/abs/2609.36570) | **intérêt commercial** : un auteur est directeur technique de Microsoft Azure ([sa page d'auteur sur le blog Azure](https://azure.microsoft.com/en-us/blog/author/mark-russinovich/)), fournisseur de RITA ; la méthode exige l'accès aux poids, impossible par une API |
 | 29/09 | *pikit: A Composable Toolkit for Indirect Prompt Injection Research and Evaluation* | [arXiv 2609.36817](https://arxiv.org/abs/2609.36817) | code publié par Tencent (intérêt commercial) ; rejoint le candidat 3 (précision parfaite, rappel faible pour les détecteurs heuristiques) |
 | 08/10 | *LTBD: Learnable Trust-Boundary Delimiters for Prompt Injection Defense* | lien non vérifié, non donné | un balisage `<donnees_externes>` est défini (`guardrails/injection.py:40`), mais son branchement jusqu'au prompt n'est pas établi (`sources/rss.py:159` garde le texte brut et le verdict) ; des délimiteurs *appris* demandent en général l'accès au modèle |
 | 03/10 | *COPEX: Benchmarking LLM Robustness to Adversarial Context Across Model Context Protocol Layers* | [arXiv 2610.04378](https://arxiv.org/abs/2610.04378) | porte sur le client MCP ; RITA est côté serveur, en lecture seule |
@@ -214,6 +215,15 @@ dans le prompt du rédacteur. Sans outil d'action, l'impact reste du texte, relu
 - l'artefact Zenodo du candidat 5 : 403 ;
 - une page de Matthew Green sur `isi.jhu.edu` : 403, remplacée par sa page `cs.jhu.edu` ;
 - une page « à propos » sur `genai.owasp.org` : 404, remplacée par celle d'`owasp.org`.
+
+## Liens remplacés le 01/11/2026 (vérificateur de liens)
+
+- la page personnelle de David Mohaisen (`www.cs.ucf.edu/~mohaisen/`) répond à un navigateur, mais son serveur envoie
+  une chaîne de certificats incomplète que Python refuse (`CERTIFICATE_VERIFY_FAILED`) : remplacée par sa page de
+  faculté sur `www.cecs.ucf.edu`, qui dit la même chose (professeur d'informatique à l'UCF, sécurité et vie privée) ;
+- la notice Wikipédia de Mark Russinovich répond tantôt 200, tantôt 403 aux clients automatiques : remplacée par sa
+  page d'auteur sur le blog Azure, qui donne son poste, Chief Technology Officer de Microsoft Azure (source de
+  première main).
 
 ---
 

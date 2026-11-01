@@ -55,8 +55,9 @@ inscrite en dur dans le prompt du rédacteur et vérifiée par le garde-fou de s
 
 - **Python** 3.13 (CI) / 3.14 (local) · **FastAPI** · **PostgreSQL** · **PySpark + Parquet**
 - **LangGraph** : graphe Scout → RAG → Rédacteur (`graph/workflow.py`)
-- **Modèle fourni** en cascade de 3 fournisseurs : Azure AI Foundry (`gpt-5.4`, Data Zone EU) → Anthropic → OpenRouter
-  (Claude pour les deux derniers) (`src/llm.py`)
+- **Modèle fourni** : Azure AI Foundry (`gpt-5.4`, Data Zone EU) seul par défaut (`LLM_ORDRE=foundry`, règle UE seule) ;
+  Mistral Large 4 en second après la lecture de son contrat (PR #88) ; Anthropic et OpenRouter (Claude) restent dans le
+  code mais ne sont appelés que si `LLM_ORDRE` les nomme (`src/llm.py`)
 - **Modèle FOURNI** — aucun entraînement, aucun réglage fin. Ce qui se teste n'est pas une
   métrique d'apprentissage mais le **comportement sous garde-fous**.
 

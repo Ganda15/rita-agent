@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="946" viewBox="0 0 1400 946" font-family="Segoe UI,Calibri,Arial,sans-serif">
+<defs><marker id="fl-flux" markerWidth="4.5" markerHeight="4.5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#0B2A5B"/></marker><marker id="fl-ecriture" markerWidth="4.5" markerHeight="4.5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#1565C0"/></marker><marker id="fl-lecture" markerWidth="4.5" markerHeight="4.5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#15803D"/></marker><marker id="fl-erreur" markerWidth="4.5" markerHeight="4.5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#D32F2F"/></marker><marker id="fl-manuel" markerWidth="4.5" markerHeight="4.5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#64748B"/></marker><marker id="fl-perso" markerWidth="4.5" markerHeight="4.5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#A21CAF"/></marker></defs>
+<rect width="1400" height="946" fill="#FFFFFF"/>
+<rect x="40" y="16" width="1320" height="5" fill="#1565C0"/>
+<text x="40" y="54" font-size="32" font-weight="700" fill="#0B2A5B">RITA : deux chemins vers le modèle, et ce qui les surveille</text>
+<text x="40" y="80" font-size="17" fill="#1F2937">Rapport E3, section 2 · état au 24 octobre 2026 (develop, 9683f04) · un utilisateur, un modèle fourni, aucune action</text>
+<g transform="translate(0,16)">
+<rect x="40" y="100" width="270" height="330" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="1050" y="100" width="310" height="540" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="56" y="132" width="238" height="80" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="56" y="132" width="7" height="80" fill="#1E293B"/>
+<text x="96.6" y="156" font-size="17.5" font-weight="700" fill="#0B2A5B">Interface web</text>
+<text x="73" y="178" font-size="15.5" fill="#111827">5 écrans, HTML et JS</text>
+<text x="73" y="198" font-size="15.5" fill="#111827">clé saisie à l&#x27;écran</text>
+<rect x="56" y="226" width="238" height="80" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="56" y="226" width="7" height="80" fill="#1E293B"/>
+<text x="96.6" y="250" font-size="17.5" font-weight="700" fill="#0B2A5B">Passerelle MCP</text>
+<text x="73" y="272" font-size="15.5" fill="#111827">3 outils en lecture seule,</text>
+<text x="73" y="292" font-size="15.5" fill="#111827">par l&#x27;API, avec la clé</text>
+<rect x="56" y="320" width="238" height="80" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="56" y="320" width="7" height="80" fill="#1E293B"/>
+<text x="96.6" y="344" font-size="17.5" font-weight="700" fill="#0B2A5B">curl, /docs</text>
+<text x="73" y="366" font-size="15.5" fill="#111827">contrat OpenAPI 3.1.0,</text>
+<text x="73" y="386" font-size="15.5" fill="#111827">19 chemins</text>
+<rect x="340" y="132" width="380" height="120" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="340" y="132" width="7" height="120" fill="#1565C0"/>
+<text x="380.6" y="156" font-size="17.5" font-weight="700" fill="#0B2A5B">api/main.py : l&#x27;API (C9)</text>
+<text x="357" y="178" font-size="15.5" fill="#111827">X-Request-ID sur toute réponse</text>
+<text x="357" y="198" font-size="15.5" fill="#111827">X-API-Key exigée : 403 sinon</text>
+<text x="357" y="218" font-size="15.5" fill="#111827">valeur inconnue : 422, sans modèle</text>
+<text x="357" y="238" font-size="15.5" fill="#111827">quota partagé : 429 au-delà</text>
+<rect x="340" y="282" width="380" height="80" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="340" y="282" width="7" height="80" fill="#1565C0"/>
+<text x="380.6" y="306" font-size="17.5" font-weight="700" fill="#0B2A5B">Deux parcours, arêtes fixes</text>
+<text x="357" y="328" font-size="15.5" fill="#111827">/briefing : scout, rag, redacteur</text>
+<text x="357" y="348" font-size="15.5" fill="#111827">/question : recherche, puis JSON strict</text>
+<rect x="340" y="392" width="380" height="80" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="340" y="392" width="7" height="80" fill="#C2410C"/>
+<text x="380.6" y="416" font-size="17.5" font-weight="700" fill="#9A3412">Garde-fous avant le modèle</text>
+<text x="357" y="438" font-size="15.5" fill="#111827">question : intention AMF, détournement</text>
+<text x="357" y="458" font-size="15.5" fill="#111827">articles : injection, revérifiée ici</text>
+<rect x="340" y="502" width="380" height="80" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="340" y="502" width="7" height="80" fill="#1565C0"/>
+<text x="380.6" y="526" font-size="17.5" font-weight="700" fill="#0B2A5B">src/llm.py : le modèle fourni</text>
+<text x="357" y="548" font-size="15.5" fill="#111827">briefing : cascade, Azure d&#x27;abord</text>
+<text x="357" y="568" font-size="15.5" fill="#111827">question : Azure seul (gpt-5.4)</text>
+<rect x="340" y="612" width="380" height="80" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="340" y="612" width="7" height="80" fill="#C2410C"/>
+<text x="380.6" y="636" font-size="17.5" font-weight="700" fill="#9A3412">Garde-fous après le modèle</text>
+<text x="357" y="658" font-size="15.5" fill="#111827">sortie : recommandation, fuite</text>
+<text x="357" y="678" font-size="15.5" fill="#111827">question : citations et nombres</text>
+<rect x="340" y="722" width="380" height="80" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="340" y="722" width="7" height="80" fill="#1E293B"/>
+<text x="380.6" y="746" font-size="17.5" font-weight="700" fill="#0B2A5B">Réponse JSON</text>
+<text x="357" y="768" font-size="15.5" fill="#111827">texte ou refus, verdict AMF, sources</text>
+<text x="357" y="788" font-size="15.5" fill="#111827">en-tête X-Request-ID</text>
+<rect x="750" y="282" width="270" height="80" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="750" y="282" width="7" height="80" fill="#6D28D9"/>
+<text x="790.6" y="306" font-size="17.5" font-weight="700" fill="#4C1D95">PostgreSQL 18 (E1)</text>
+<text x="767" y="328" font-size="15.5" fill="#111827">10 tables, 1 vue</text>
+<text x="767" y="348" font-size="15.5" fill="#111827">lue par le scout et l&#x27;API</text>
+<rect x="750" y="392" width="270" height="80" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="750" y="392" width="7" height="80" fill="#6D28D9"/>
+<text x="790.6" y="416" font-size="17.5" font-weight="700" fill="#4C1D95">ChromaDB, l&#x27;index</text>
+<text x="767" y="438" font-size="15.5" fill="#111827">les articles, vectorisés</text>
+<text x="767" y="458" font-size="15.5" fill="#111827">identité annoncée par /health</text>
+<rect x="750" y="522" width="270" height="120" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="750" y="522" width="7" height="120" fill="#1E293B"/>
+<text x="790.6" y="546" font-size="17.5" font-weight="700" fill="#0B2A5B">Collecte des articles</text>
+<text x="767" y="568" font-size="15.5" fill="#111827">poste : chaque soir à 19 h</text>
+<text x="767" y="588" font-size="15.5" fill="#111827">prod. : ingestion au bouton</text>
+<text x="767" y="608" font-size="15.5" fill="#111827">écrit la base, puis l&#x27;index</text>
+<text x="767" y="628" font-size="15.5" fill="#111827">injection filtrée à l&#x27;entrée</text>
+<rect x="1066" y="132" width="278" height="120" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="1066" y="132" width="7" height="120" fill="#1565C0"/>
+<text x="1106.6" y="156" font-size="17.5" font-weight="700" fill="#0B2A5B">Langfuse Cloud (UE)</text>
+<text x="1083" y="178" font-size="15.5" fill="#111827">une trace par requête,</text>
+<text x="1083" y="198" font-size="15.5" fill="#111827">sans prompt ni réponse,</text>
+<text x="1083" y="218" font-size="15.5" fill="#111827">jetons, durée, verdict AMF</text>
+<text x="1083" y="238" font-size="15.5" fill="#111827">production tracée dès le 21/10</text>
+<rect x="1066" y="282" width="278" height="100" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="1066" y="282" width="7" height="100" fill="#1E293B"/>
+<text x="1106.6" y="306" font-size="17.5" font-weight="700" fill="#0B2A5B">Alertes Langfuse (2)</text>
+<text x="1083" y="328" font-size="15.5" fill="#111827">erreur fournisseur ; p95 lent</text>
+<text x="1083" y="348" font-size="15.5" fill="#111827">issue « incident » GitHub</text>
+<text x="1083" y="368" font-size="15.5" fill="#111827">#77 réelle ; #130 fausse</text>
+<rect x="1066" y="412" width="278" height="100" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="1066" y="412" width="7" height="100" fill="#1E293B"/>
+<text x="1106.6" y="436" font-size="17.5" font-weight="700" fill="#0B2A5B">/sante, tableau de bord</text>
+<text x="1083" y="458" font-size="15.5" fill="#111827">compteurs tenus par l&#x27;API,</text>
+<text x="1083" y="478" font-size="15.5" fill="#111827">verdicts contre seuils écrits,</text>
+<text x="1083" y="498" font-size="15.5" fill="#111827">remis à zéro au redémarrage</text>
+<rect x="1066" y="542" width="278" height="80" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="1066" y="542" width="7" height="80" fill="#1E293B"/>
+<text x="1106.6" y="566" font-size="17.5" font-weight="700" fill="#0B2A5B">GET /donnees/fraicheur</text>
+<text x="1083" y="588" font-size="15.5" fill="#111827">retard en jours ouvrés,</text>
+<text x="1083" y="608" font-size="15.5" fill="#111827">bandeau de l&#x27;écran 1</text>
+<rect x="1050" y="660" width="310" height="80" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="1050" y="660" width="7" height="80" fill="#475569"/>
+<text x="1090.6" y="684" font-size="17.5" font-weight="700" fill="#0B2A5B">Bac à sable</text>
+<text x="1067" y="706" font-size="15.5" fill="#111827">les tests ne tracent jamais ;</text>
+<text x="1067" y="726" font-size="15.5" fill="#111827">la copie : son propre projet</text>
+<path d="M294,172 H318" stroke="#0B2A5B" stroke-width="4" fill="none" />
+<path d="M294,266 H318 M318,172 V360" stroke="#0B2A5B" stroke-width="4" fill="none" /><path d="M318,198 H340" stroke="#0B2A5B" stroke-width="4" fill="none" marker-end="url(#fl-flux)"/>
+<path d="M294,360 H318" stroke="#0B2A5B" stroke-width="4" fill="none" />
+<line x1="530.0" y1="252" x2="530.0" y2="282" stroke="#0B2A5B" stroke-width="4" marker-end="url(#fl-flux)"/>
+<line x1="530.0" y1="362" x2="530.0" y2="392" stroke="#0B2A5B" stroke-width="4" marker-end="url(#fl-flux)"/>
+<line x1="530.0" y1="472" x2="530.0" y2="502" stroke="#0B2A5B" stroke-width="4" marker-end="url(#fl-flux)"/>
+<line x1="530.0" y1="582" x2="530.0" y2="612" stroke="#0B2A5B" stroke-width="4" marker-end="url(#fl-flux)"/>
+<line x1="530.0" y1="692" x2="530.0" y2="722" stroke="#0B2A5B" stroke-width="4" marker-end="url(#fl-flux)"/>
+<line x1="750" y1="322.0" x2="720" y2="322.0" stroke="#15803D" stroke-width="4" marker-end="url(#fl-lecture)"/>
+<path d="M750,416 H735 V346 H720" stroke="#15803D" stroke-width="4" fill="none" stroke-linejoin="round" marker-end="url(#fl-lecture)"/>
+<text x="735.0" y="385.0" font-size="15" font-weight="700" fill="#15803D" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">cherche</text>
+<line x1="885.0" y1="522" x2="885.0" y2="472" stroke="#1565C0" stroke-width="4" marker-end="url(#fl-ecriture)"/>
+<text x="885.0" y="501.0" font-size="15" font-weight="700" fill="#1565C0" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">indexe</text>
+<line x1="720" y1="192.0" x2="1066" y2="192.0" stroke="#0B2A5B" stroke-width="4" marker-end="url(#fl-flux)"/>
+<text x="893.0" y="196.0" font-size="15" font-weight="700" fill="#0B2A5B" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">trace</text>
+<line x1="1205.0" y1="252" x2="1205.0" y2="282" stroke="#0B2A5B" stroke-width="4" marker-end="url(#fl-flux)"/>
+<text x="1205.0" y="271.0" font-size="15" font-weight="700" fill="#0B2A5B" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">déclenche</text>
+<text x="54" y="122" font-size="16" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">CLIENTS (C10)</text>
+<text x="1064" y="122" font-size="16" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">SURVEILLANCE (C11)</text>
+<rect x="40" y="826" width="1320" height="1.5" fill="#94A3B8"/>
+<text x="40" y="857" font-size="16" font-weight="700" fill="#0B2A5B">Légende</text>
+<rect x="124.0" y="843" width="28" height="18" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="124.0" y="843" width="6" height="18" fill="#1E293B"/>
+<text x="160.0" y="857" font-size="15" fill="#111827">présent et testé</text>
+<rect x="310.0" y="843" width="28" height="18" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="310.0" y="843" width="6" height="18" fill="#1565C0"/>
+<text x="346.0" y="857" font-size="15" fill="#111827">cœur du traitement</text>
+<rect x="511.0" y="843" width="28" height="18" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="511.0" y="843" width="6" height="18" fill="#C2410C"/>
+<text x="547.0" y="857" font-size="15" fill="#111827">garde-fou</text>
+<rect x="644.5" y="843" width="28" height="18" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="644.5" y="843" width="6" height="18" fill="#6D28D9"/>
+<text x="680.5" y="857" font-size="15" fill="#111827">réserve de données</text>
+<rect x="845.5" y="843" width="28" height="18" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="845.5" y="843" width="6" height="18" fill="#475569"/>
+<text x="881.5" y="857" font-size="15" fill="#111827">bac à sable</text>
+<line x1="994.0" y1="852" x2="1034.0" y2="852" stroke="#0B2A5B" stroke-width="4" marker-end="url(#fl-flux)"/>
+<text x="1044.0" y="857" font-size="15" fill="#111827">appel, passage</text>
+<line x1="1179.0" y1="852" x2="1219.0" y2="852" stroke="#1565C0" stroke-width="4" marker-end="url(#fl-ecriture)"/>
+<text x="1229.0" y="857" font-size="15" fill="#111827">écriture</text>
+<line x1="124.0" y1="882" x2="164.0" y2="882" stroke="#15803D" stroke-width="4" marker-end="url(#fl-lecture)"/>
+<text x="174.0" y="887" font-size="15" fill="#111827">lecture seule</text>
+<text x="40" y="916" font-size="15" fill="#1F2937">État du code au 24/10/2026, develop 9683f04 ; la production sert b547cbf. Mesures : rapport E3, sections 3 à 7.</text>
+</g>
+<g transform="translate(0,16)" id="icones"><g transform="translate(73.0,140.9) scale(1.312)"><path d="M1,0 H13 L12,12 L7,14 L2,12Z" fill="#e34f26"/><path d="M4,3.5 H10 L9.6,6.5 H5.3 L5.5,8.3 H9.4 L9,11 L7,11.7 L5,11" stroke="#fff" stroke-width="1" fill="none"/></g><g transform="translate(73.0,234.9) scale(1.312)"><rect width="14" height="14" rx="3" fill="#111827"/><path d="M3.5,9.5 L9,4 M5,4 H9 V8 M3,11.5 L5,9.5" stroke="#fff" stroke-width="1.5" fill="none"/></g><g transform="translate(73.0,328.9) scale(1.312)"><rect width="14" height="14" rx="2" fill="#1f2937"/><path d="M3,4.5 L6,7 L3,9.5 M7,10 H11" stroke="#4ade80" stroke-width="1.5" fill="none"/></g><g transform="translate(357.0,140.9) scale(1.312)"><rect width="14" height="14" rx="7" fill="#009688"/><path d="M8,2 L4,8 H7 L6,12 L10,6 H7Z" fill="#fff"/></g><g transform="translate(357.0,290.9) scale(1.312)"><path d="M3,3 L11,7 L3,11Z" stroke="#1c3c3c" stroke-width="1.2" fill="none"/><circle cx="3" cy="3" r="2.3" fill="#be185d"/><circle cx="11" cy="7" r="2.3" fill="#1c3c3c"/><circle cx="3" cy="11" r="2.3" fill="#be185d"/></g><g transform="translate(357.0,400.9) scale(1.312)"><path d="M7,0.5 L13,2.8 V7 C13,10.5 10.3,12.6 7,13.8 C3.7,12.6 1,10.5 1,7 V2.8Z" fill="#b91c1c"/><path d="M4.3,7 L6.3,9 L9.8,5" stroke="#fff" stroke-width="1.5" fill="none"/></g><g transform="translate(357.0,510.9) scale(1.312)"><rect x="2.5" y="2.5" width="9" height="9" rx="1.5" fill="#6d28d9"/><path d="M5,0.5 V2.5 M9,0.5 V2.5 M5,11.5 V13.5 M9,11.5 V13.5 M0.5,5 H2.5 M0.5,9 H2.5 M11.5,5 H13.5 M11.5,9 H13.5" stroke="#6d28d9" stroke-width="1.2"/><rect x="5" y="5" width="4" height="4" fill="#ede9fe"/></g><g transform="translate(357.0,621.0) scale(1.312)"><path d="M7,0.5 L13,2.8 V7 C13,10.5 10.3,12.6 7,13.8 C3.7,12.6 1,10.5 1,7 V2.8Z" fill="#b91c1c"/><path d="M4.3,7 L6.3,9 L9.8,5" stroke="#fff" stroke-width="1.5" fill="none"/></g><g transform="translate(357.0,731.0) scale(1.312)"><rect width="14" height="14" rx="3" fill="#0B2A5B"/><path d="M5.5,2.5 Q3.5,2.5 3.5,4.5 V6 L2.5,7 L3.5,8 V9.5 Q3.5,11.5 5.5,11.5 M8.5,2.5 Q10.5,2.5 10.5,4.5 V6 L11.5,7 L10.5,8 V9.5 Q10.5,11.5 8.5,11.5" stroke="#fff" stroke-width="1.2" fill="none"/></g><g transform="translate(767.0,290.9) scale(1.312)"><ellipse cx="7" cy="3" rx="6" ry="2.3" fill="#336791"/><path d="M1,3 V11 A6,2.3 0 0 0 13,11 V3 A6,2.3 0 0 1 1,3Z" fill="#336791"/><path d="M1,7 A6,2.3 0 0 0 13,7" stroke="#fff" stroke-width="0.9" fill="none"/></g><g transform="translate(767.0,400.9) scale(1.312)"><circle cx="5" cy="7" r="4.5" fill="#ffde2d"/><circle cx="9" cy="7" r="4.5" fill="#ff6446" opacity="0.85"/><circle cx="7" cy="7" r="2" fill="#327eff"/></g><g transform="translate(767.0,531.0) scale(1.312)"><rect width="14" height="14" rx="3" fill="#f26522"/><circle cx="3.6" cy="10.4" r="1.4" fill="#fff"/><path d="M2.5,6.5 A5,5 0 0 1 7.5,11.5 M2.5,3 A8.5,8.5 0 0 1 11,11.5" stroke="#fff" stroke-width="1.5" fill="none"/></g><g transform="translate(1083.0,140.9) scale(1.312)"><path d="M0.5,7 Q7,-1 13.5,7 Q7,15 0.5,7Z" fill="#0f766e"/><circle cx="7" cy="7" r="2.6" fill="#fff"/><circle cx="7" cy="7" r="1.2" fill="#0f766e"/></g><g transform="translate(1083.0,290.9) scale(1.312)"><path d="M7,1 C3.8,1 3.2,4 3.2,6.5 V9 L1.5,11 H12.5 L10.8,9 V6.5 C10.8,4 10.2,1 7,1Z" fill="#f59e0b"/><circle cx="7" cy="12.5" r="1.4" fill="#b45309"/></g><g transform="translate(1083.0,420.9) scale(1.312)"><path d="M7,13 C1,8.5 0,6 1.5,3.5 C3,1.5 6,2 7,4.3 C8,2 11,1.5 12.5,3.5 C14,6 13,8.5 7,13Z" fill="#16a34a"/><path d="M2.5,7 H5 L6,5 L7.5,9 L8.5,7 H11.5" stroke="#fff" stroke-width="1" fill="none"/></g><g transform="translate(1083.0,551.0) scale(1.312)"><circle cx="7" cy="7" r="6.3" fill="#fff" stroke="#1565c0" stroke-width="1.5"/><path d="M7,3.5 V7 L9.5,8.5" stroke="#1565c0" stroke-width="1.5" fill="none"/></g><g transform="translate(1067.0,669.0) scale(1.312)"><path d="M5,1 H9 M5.7,1 V5 L1.8,12 Q1.5,13 2.6,13 H11.4 Q12.5,13 12.2,12 L8.3,5 V1" fill="none" stroke="#475569" stroke-width="1.4"/><path d="M3.4,10 H10.6 L11.6,12.3 H2.4Z" fill="#64748b"/></g></g>
+</svg>

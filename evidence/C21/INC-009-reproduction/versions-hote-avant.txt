@@ -1,0 +1,5 @@
+Reproduction de #137, AVANT correctif, 31/10/2026 22:42:49 +0100
+commit du dépôt : 4be89d0afd365db3eb9154e723e258f0c3698565
+workflow identique au commit (aucune modification locale)
+sha256 du workflow : f3f85f728efa040651c02236f39a8a291df2f2ce7e894aaf5054818451e7d1d1
+image : rita-tests:latest sha256:5d9bd92b04c468252b941761eb2540867b479963595b0e169701c43bbe014dc7

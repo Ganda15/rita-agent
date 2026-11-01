@@ -9,6 +9,27 @@
 
 ---
 
+## 2026-10-31 : manque découvert en production (Claude encore en repli), corrigé et livré ; notation C7 terminée
+
+**Manque découvert** : la variable `LLM_ORDRE` lue dans le conteneur de production valait
+`foundry,anthropic,openrouter`, l'ancienne valeur par défaut de `src/llm.py` et de `docker-compose.yml`. Sur une
+erreur d'Azure, la production aurait appelé Claude par Anthropic puis par OpenRouter, sans garantie de traitement dans
+l'UE. Les décisions du 10/10 (Mistral remplace Anthropic et OpenRouter) et du 11/10 (Azure seul tant que le contrat de
+Mistral n'est pas lu) n'étaient appliquées que sur le poste ; le remplacement par Mistral vit sur la PR #88, ouverte et
+en conflit. INC-008 (14/10) écrit « `LLM_ORDRE=foundry` » pour la production : contredit par la lecture du 31/10 sur le
+conteneur du 27/10 ; l'état du 14/10 n'est plus vérifiable.
+
+**Corrigé et livré** : valeur par défaut `foundry` dans le code, Compose et le modèle de configuration, test d'abord
+(`d1cbb7b`) ; PR #170 fusionnée (`97b329e`) ; livraison refusée deux fois par le serveur (« ComposeNonInstalle » : le
+fichier Compose installé datait du 14/10), copie relue puis installée à la main par Era, troisième tentative livrée.
+Conteneur relu : `LLM_ORDRE=foundry`, `/health` annonce `97b329e`. Documentation alignée (architecture, exploitation,
+README, registre RGPD).
+
+**Notation C7** : 60 textes sur 60, tous à 1 sur 2, évaluation assistée par IA, relue et validée par Era ; jointure
+avec la clé : 30 textes par fournisseur, moyenne 1,00 des deux côtés. Le français ne départage pas les fournisseurs.
+
+---
+
 ## 2026-10-30 (fin de nuit) : relecture globale d'E4, v0.7 ; une précision sur l'entrée précédente
 
 **Fait** : une relecture indépendante a confronté chaque fait d'E4 v0.6 au dépôt et à GitHub (34 constats, dont 5
