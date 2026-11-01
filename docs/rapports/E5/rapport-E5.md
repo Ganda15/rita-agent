@@ -9,13 +9,14 @@
 .sommaire li span{ color:var(--accent); font-weight:600; }
 p, li{ orphans:3; widows:3; }
 h2#glossaire + ul{ columns:2; column-gap:18pt; }
+h2#criteres + p + table td:first-child{ width:44%; }
 </style>
 
 <div><img class="logo" src="../E3/logo/rita-logo-marque.png" alt="Logo de RITA"></div>
 
 # Rapport E5 : surveiller l'application et résoudre un incident (C20 et C21)
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C20 et C21 · version 0.4, 1er novembre 2026 · application de référence : commit `d3a4198` de `main`, en production le 27/10/2026 ; correctif de l'incident : PR #171 du 31/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C20 et C21 · version 0.5, 1er novembre 2026 · application de référence : commit `d3a4198` de `main`, en production le 27/10/2026 ; correctif de l'incident : PR #171 du 31/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
 {: .identite }
 
 > **En une minute.** Ce document est la documentation technique du monitorage de RITA, écrite pour la personne qui
@@ -216,8 +217,9 @@ Huit autres incidents ont leur fiche dans `evidence/C21/` ; seuls INC-005 et INC
 - **La vigie ne tourne que lancée à la main**, sans planification ; aucune issue « vigie (production) » n'existe.
 - **Deux règles de fermeture coexistent** : la vigie ferme son issue quand la résolution écrite est atteinte (#131 l'a
   été faute de requêtes), la chaîne Langfuse ne ferme jamais. L'écart est à trancher.
-- **Exercice et production** ont partagé le même projet Langfuse (INC-006, #130). Le guide demande un projet distinct
-  pour la copie locale ; la séparation effective des configurations actuelles reste à vérifier.
+- **Exercice et production** ont partagé le même projet Langfuse (INC-006, #130). Le 23/10, la copie testée a été isolée sur
+  `rita-copie-sprint5`, vérifié par l'API : une question de test y est arrivée, pas en production
+  (`evidence/sprint-5/test-doc-et-repetitions-2026-10-23.md`, l. 48). Vaut pour cette copie, pas pour tous les postes.
 - **Aucune routine ne relit les issues `incident`** : #77 est resté ouvert quatre semaines, #137 sept jours.
 - **Le correctif d'INC-009 est intégré à `main` depuis le 1er novembre 2026** (`922349d`) et les tests de
   non-régression passent ; le traitement d'un nouveau retour à la normale réel n'a pas encore été observé.
@@ -232,9 +234,9 @@ Statuts proposés, à confirmer par Era critère par critère.
 | C20.2 Arguments des choix d'outillage | ✅ | § 3 : un argument écrit pour chaque outil |
 | C20.3 Outils installés, opérationnels en local a minima | ✅ | § 5 et 6 ; exercices locaux, production |
 | C20.4 Journalisation intégrée aux sources | ✅ | § 4 ; `compteurs.py`, `api/main.py` |
-| C20.5 Alertes configurées et en état de marche | ⚠️ | § 6 ; vigie lancée à la main |
+| C20.5 Alertes configurées et en état de marche | ⚠️ | § 6 : alertes Langfuse automatiques ; vigie lancée à la main |
 | C20.6 Installation et configuration documentées | ✅ | § 5, dont GitHub CLI |
-| C20.7 Format accessible | ⚠️ | PDF balisé, signets ; non contrôlé |
+| C20.7 Format accessible | ⚠️ | guide d'exploitation, format contrôlé le 31/10 (`evidence/C8/`) ; communication non prouvée |
 | C21.1 Causes identifiées | ✅ | § 7, post-mortem INC-009 |
 | C21.2 Reproduit en environnement de développement | ✅ | § 7 ; `pytest-avant.txt` |
 | C21.3 Débogage documenté dans l'outil de suivi | ✅ | issue #137, commentaire du 31/10 |

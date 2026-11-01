@@ -9,6 +9,36 @@
 
 ---
 
+## 2026-11-01 : manque découvert dans la chaîne d'alerte (INC-009), corrigé et en production ; E4 v0.9, E5 v0.4 ; décisions avant la remise
+
+**Manque découvert** : un message de retour à la normale de Langfuse (« [OK] … recovered ») a ouvert le 24/10 un
+nouveau ticket d'incident, #137, l'issue #130 de la même alerte ayant été fermée la veille. Le workflow
+`alerte-incident.yml` lisait la gravité mais ne s'en servait pas pour décider. Trouvé le 31/10 en relisant les issues
+`incident` restées ouvertes pour E5 : #137 depuis sept jours, #77 depuis quatre semaines. Aucune routine ne relit ces
+issues.
+
+**Corrigé et en production** : reproduit sur le workflow de `4be89d0` dans un conteneur jetable (13 passed, 1 failed),
+14 passed après correctif, mêmes tests ; PR #171 vers `develop`, puis PR #172 vers `main` (`922349d`), livrée le 01/11 ;
+#137 fermée avec sa justification. Post-mortem `evidence/C21/INC-009-retour-a-la-normale-ouvre-un-incident.md`. Un
+retour à la normale réel n'a pas encore été traité par le nouveau code.
+
+**Rapports** : E4 v0.9 (première page et sommaire sur le modèle d'E3, annexe des schémas, deux extraits de code
+commentés) et E5 v0.4 (premier rapport E5, cinq pages, un extrait de code), sur `develop` ; E4 aussi sur `main`.
+
+**Décisions d'Era** (détail dans `CONTINUITE.md`, D) : remise du guide d'exploitation avec les livrables du 05/11, dans
+son dossier Drive partagé, formateur prévenu, preuve datée à conserver (quel fichier, avec qui, quand) ; périmètre
+d'E5 ; ni nouvelle fonctionnalité ni nouveau banc avant le 05/11 ; la preuve de l'isolement de la copie du 23/10 en
+entier dans E5, une phrase dans E2. **Manque assumé** : l'accès du jury au dépôt privé n'est pas confirmé (le formateur, lui, le lit).
+
+**Auto-évaluation d'E2 revue contre le règlement** (p. 22 à 24) : C6.3, C7.1, C7.3, C7.5 et C7.7 passent à ✅, sans preuve nouvelle, chacun avec sa limite ; C7.6 aussi, une fois
+les prérequis d'Azure et d'OpenRouter présentés côte à côte ; décompte 13 ✅ · 6 ⚠️ · 1 ❌ (avant : 7 · 12 · 1). **Manque découvert** : la
+grille d'E4 n'a pas de ligne pour les deux critères de documentation de C19 (installation et test de la chaîne,
+format accessible), présents dans le référentiel (p. 21) ; à décider par Era. **Feuille
+de route proposée pour la suite, à confirmer par Era** (`CONTINUITE.md`, G) : d'abord la date de séance et l'heure de
+rédaction à l'écran, ensuite un pilote d'annonces réglementées sur une entreprise.
+
+---
+
 ## 2026-10-31 : manque découvert en production (Claude encore en repli), corrigé et livré ; notation C7 terminée
 
 **Manque découvert** : la variable `LLM_ORDRE` lue dans le conteneur de production valait

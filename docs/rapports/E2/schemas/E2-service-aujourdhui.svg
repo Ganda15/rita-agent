@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="846" viewBox="0 0 1400 846" font-family="Segoe UI,Calibri,Arial,sans-serif">
+<defs><marker id="fl-flux" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#0B2A5B"/></marker><marker id="fl-ecriture" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#1565C0"/></marker><marker id="fl-lecture" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#15803D"/></marker><marker id="fl-erreur" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#D32F2F"/></marker><marker id="fl-manuel" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#64748B"/></marker><marker id="fl-perso" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#A21CAF"/></marker></defs>
+<rect width="1400" height="846" fill="#FFFFFF"/>
+<rect x="40" y="16" width="1320" height="5" fill="#1565C0"/>
+<text x="40" y="54" font-size="32" font-weight="700" fill="#0B2A5B">Le service retenu aujourd&#x27;hui (C8) : accès, réglage, surveillance</text>
+<text x="40" y="80" font-size="17" fill="#1F2937">Rapport E2, section 4 · dessiné le 01/11/2026 pour ce rapport · état de main 922349d, en production depuis le 01/11</text>
+<g transform="translate(0,16)">
+<rect x="40" y="100" width="1320" height="200" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="40" y="320" width="1320" height="200" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="40" y="540" width="1320" height="160" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="56" y="134" width="300" height="100" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="56" y="134" width="7" height="100" fill="#1E293B"/>
+<text x="73" y="158" font-size="17.5" font-weight="700" fill="#0B2A5B">Écran ou client</text>
+<text x="73" y="180" font-size="15.5" fill="#111827">/briefing, /question ;</text>
+<text x="73" y="200" font-size="15.5" fill="#111827">clé X-API-Key exigée</text>
+<rect x="386" y="134" width="300" height="100" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="386" y="134" width="7" height="100" fill="#C2410C"/>
+<text x="403" y="158" font-size="17.5" font-weight="700" fill="#9A3412">Les garde-fous</text>
+<text x="403" y="180" font-size="15.5" fill="#111827">avant et après l&#x27;appel ;</text>
+<text x="403" y="200" font-size="15.5" fill="#111827">sortie : jamais de conseil</text>
+<text x="403" y="220" font-size="15.5" fill="#111827">d&#x27;achat ou de vente (AMF)</text>
+<rect x="716" y="134" width="300" height="100" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="716" y="134" width="7" height="100" fill="#1565C0"/>
+<text x="733" y="158" font-size="17.5" font-weight="700" fill="#0B2A5B">src/llm.py</text>
+<text x="733" y="180" font-size="15.5" fill="#111827">LLM_ORDRE absent : Azure seul</text>
+<text x="733" y="200" font-size="15.5" fill="#111827">(test_llm.py, lignes 13-18) ;</text>
+<text x="733" y="220" font-size="15.5" fill="#111827">max_completion_tokens</text>
+<rect x="1046" y="134" width="298" height="100" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="1046" y="134" width="7" height="100" fill="#6D28D9"/>
+<text x="1063" y="158" font-size="17.5" font-weight="700" fill="#4C1D95">Azure AI Foundry</text>
+<text x="1063" y="180" font-size="15.5" fill="#111827">déploiement gpt-5.4-dzs-eu,</text>
+<text x="1063" y="200" font-size="15.5" fill="#111827">configuré en Data Zone EU ;</text>
+<text x="1063" y="220" font-size="15.5" fill="#111827">Sweden Central lu le 09/10</text>
+<rect x="1046" y="246" width="298" height="44" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="1046" y="246" width="7" height="44" fill="#475569"/>
+<text x="1063" y="270" font-size="17.5" font-weight="700" fill="#0B2A5B">AZURE_FOUNDRY_API_KEY</text>
+<rect x="386" y="354" width="300" height="100" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="386" y="354" width="7" height="100" fill="#6D28D9"/>
+<text x="403" y="378" font-size="17.5" font-weight="700" fill="#4C1D95">Langfuse, région UE</text>
+<text x="403" y="400" font-size="15.5" fill="#111827">une trace par briefing ;</text>
+<text x="403" y="420" font-size="15.5" fill="#111827">métadonnées seules depuis</text>
+<text x="403" y="440" font-size="15.5" fill="#111827">le 20/10</text>
+<rect x="716" y="354" width="300" height="100" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="716" y="354" width="7" height="100" fill="#C2410C"/>
+<text x="733" y="378" font-size="17.5" font-weight="700" fill="#9A3412">2 alertes, depuis le 04/10</text>
+<text x="733" y="400" font-size="15.5" fill="#111827">erreurs &gt; 0 sur 1 jour ;</text>
+<text x="733" y="420" font-size="15.5" fill="#111827">p95 &gt; 15 000 ms sur 1 jour</text>
+<rect x="1046" y="354" width="298" height="100" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="1046" y="354" width="7" height="100" fill="#1E293B"/>
+<text x="1063" y="378" font-size="17.5" font-weight="700" fill="#0B2A5B">Issue GitHub</text>
+<text x="1063" y="400" font-size="15.5" fill="#111827">alerte-incident.yml ; un retour</text>
+<text x="1063" y="420" font-size="15.5" fill="#111827">à OK n&#x27;ouvre plus d&#x27;issue</text>
+<text x="1063" y="440" font-size="15.5" fill="#111827">(INC-009, main du 01/11)</text>
+<rect x="56" y="354" width="300" height="100" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="56" y="354" width="7" height="100" fill="#C2410C"/>
+<text x="73" y="378" font-size="17.5" font-weight="700" fill="#9A3412">La vigie /sante</text>
+<text x="73" y="400" font-size="15.5" fill="#111827">erreurs, refus, latence, coût,</text>
+<text x="73" y="420" font-size="15.5" fill="#111827">fraîcheur ; seuils dans</text>
+<text x="73" y="440" font-size="15.5" fill="#111827">monitorage/seuils.json</text>
+<rect x="56" y="466" width="1288" height="44" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="56" y="466" width="7" height="44" fill="#475569"/>
+<text x="73" y="490" font-size="17.5" font-weight="700" fill="#0B2A5B">Guide d&#x27;exploitation, docs/exploitation.md : accès, installation, tests, services, données ; remise prévue le 05/11</text>
+<rect x="56" y="574" width="300" height="110" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
+<rect x="56" y="574" width="7" height="110" fill="#D32F2F"/>
+<text x="73" y="598" font-size="17.5" font-weight="700" fill="#C62828">Pas de secours</text>
+<text x="73" y="620" font-size="15.5" fill="#111827">une panne d&#x27;Azure rend</text>
+<text x="73" y="640" font-size="15.5" fill="#111827">le briefing indisponible</text>
+<rect x="386" y="574" width="300" height="110" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
+<rect x="386" y="574" width="7" height="110" fill="#D32F2F"/>
+<text x="403" y="598" font-size="17.5" font-weight="700" fill="#C62828">Mistral Large 4</text>
+<text x="403" y="620" font-size="15.5" fill="#111827">branche mistral-ue, PR #88</text>
+<text x="403" y="640" font-size="15.5" fill="#111827">non fusionnée ; contrat</text>
+<text x="403" y="660" font-size="15.5" fill="#111827">pas encore lu</text>
+<rect x="716" y="574" width="300" height="110" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
+<rect x="716" y="574" width="7" height="110" fill="#D32F2F"/>
+<text x="733" y="598" font-size="17.5" font-weight="700" fill="#C62828">Code présent, inutilisé</text>
+<text x="733" y="620" font-size="15.5" fill="#111827">appels Anthropic, OpenRouter :</text>
+<text x="733" y="640" font-size="15.5" fill="#111827">seulement si LLM_ORDRE les</text>
+<text x="733" y="660" font-size="15.5" fill="#111827">nomme ; plus en production</text>
+<rect x="1046" y="574" width="298" height="110" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
+<rect x="1046" y="574" width="7" height="110" fill="#D32F2F"/>
+<text x="1063" y="598" font-size="17.5" font-weight="700" fill="#C62828">Limites du suivi</text>
+<text x="1063" y="620" font-size="15.5" fill="#111827">portail Azure non décrit ;</text>
+<text x="1063" y="640" font-size="15.5" fill="#111827">poste et production ont partagé</text>
+<text x="1063" y="660" font-size="15.5" fill="#111827">un projet Langfuse ; #77 ouvert</text>
+<line x1="356" y1="184.0" x2="386" y2="184.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="686" y1="184.0" x2="716" y2="184.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1016" y1="184.0" x2="1046" y2="184.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1046" y1="268.0" x2="1016" y2="219.0" stroke="#15803D" stroke-width="3" marker-end="url(#fl-lecture)"/>
+<line x1="746.0" y1="234" x2="656.0" y2="354" stroke="#1565C0" stroke-width="3" marker-end="url(#fl-ecriture)"/>
+<text x="701.0" y="298.0" font-size="15" font-weight="700" fill="#1565C0" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">trace</text>
+<line x1="686" y1="404.0" x2="716" y2="404.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1016" y1="404.0" x2="1046" y2="404.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="54" y="122" font-size="16" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">L&#x27;APPEL D&#x27;UN BRIEFING</text>
+<text x="54" y="342" font-size="16" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">LA SURVEILLANCE</text>
+<text x="54" y="562" font-size="16" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">CE QUI MANQUE</text>
+<rect x="40" y="726" width="1320" height="1.5" fill="#94A3B8"/>
+<text x="40" y="757" font-size="16" font-weight="700" fill="#0B2A5B">Légende</text>
+<rect x="124.0" y="743" width="28" height="18" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="124.0" y="743" width="6" height="18" fill="#1E293B"/>
+<text x="160.0" y="757" font-size="15" fill="#111827">client, ticket</text>
+<rect x="295.0" y="743" width="28" height="18" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="295.0" y="743" width="6" height="18" fill="#C2410C"/>
+<text x="331.0" y="757" font-size="15" fill="#111827">contrôle, alerte</text>
+<rect x="481.0" y="743" width="28" height="18" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="481.0" y="743" width="6" height="18" fill="#1565C0"/>
+<text x="517.0" y="757" font-size="15" fill="#111827">réglage du fournisseur</text>
+<rect x="712.0" y="743" width="28" height="18" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="712.0" y="743" width="6" height="18" fill="#6D28D9"/>
+<text x="748.0" y="757" font-size="15" fill="#111827">service externe</text>
+<rect x="890.5" y="743" width="28" height="18" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="890.5" y="743" width="6" height="18" fill="#475569"/>
+<text x="926.5" y="757" font-size="15" fill="#111827">clé, guide</text>
+<rect x="1031.5" y="743" width="28" height="18" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="5,3"/>
+<rect x="1031.5" y="743" width="6" height="18" fill="#D32F2F"/>
+<text x="1067.5" y="757" font-size="15" fill="#111827">manque, pas actif</text>
+<line x1="1225.0" y1="752" x2="1265.0" y2="752" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="1275.0" y="757" font-size="15" fill="#111827">appel</text>
+<line x1="124.0" y1="782" x2="164.0" y2="782" stroke="#15803D" stroke-width="3" marker-end="url(#fl-lecture)"/>
+<text x="174.0" y="787" font-size="15" fill="#111827">lit</text>
+<line x1="226.5" y1="782" x2="266.5" y2="782" stroke="#1565C0" stroke-width="3" marker-end="url(#fl-ecriture)"/>
+<text x="276.5" y="787" font-size="15" fill="#111827">écrit</text>
+<text x="40" y="816" font-size="15" fill="#1F2937">Sources : src/llm.py et tests/test_llm.py à 922349d, evidence/C8/, evidence/C11/preuve-alertes-2026-10-04.md ; rapport E2, section 4.</text>
+</g>
+</svg>
