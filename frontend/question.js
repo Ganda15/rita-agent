@@ -135,6 +135,7 @@ async function poserQuestion(cle, question) {
   if (reponse.status === 403) {
     // Une clé refusée n'est pas une panne : on l'oublie et on la redemande.
     sessionStorage.removeItem(CLE_STOCKAGE);
+    cleEnEssai = null;
     demanderCle("Clé d'API refusée. Saisissez-la à nouveau.");
     return;
   }
@@ -264,6 +265,7 @@ async function ouvrirFiche(cle, id) {
   }
   if (reponse.status === 403) {
     sessionStorage.removeItem(CLE_STOCKAGE);
+    cleEnEssai = null;
     demanderCle("Clé d'API refusée. Saisissez-la à nouveau.");
     return;
   }
@@ -311,15 +313,19 @@ function afficherFiche(fiche) {
 }
 
 // --- DÉMARRAGE ---------------------------------------------------------------
+// #73 (01/11/2026) : la clé saisie reste en mémoire, pas en sessionStorage, tant qu'aucun appel ne l'a acceptée.
+// Elle n'est gardée qu'après un appel réussi (`poserQuestion`), et oubliée sur un 403.
+let cleEnEssai = null;
+
 document.getElementById("form-cle").addEventListener("submit", (evenement) => {
   evenement.preventDefault();
-  sessionStorage.setItem(CLE_STOCKAGE, document.getElementById("cle").value.trim());
+  cleEnEssai = document.getElementById("cle").value.trim();
   ouvrirDemande();
 });
 
 document.getElementById("form-question").addEventListener("submit", (evenement) => {
   evenement.preventDefault();
-  const cle = sessionStorage.getItem(CLE_STOCKAGE);
+  const cle = sessionStorage.getItem(CLE_STOCKAGE) || cleEnEssai;
   if (!cle) {
     demanderCle("Saisissez d'abord votre clé d'API.");
     return;

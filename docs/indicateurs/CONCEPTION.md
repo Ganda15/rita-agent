@@ -236,7 +236,7 @@ traitement à déclarer** — mais à vérifier au moment de coder, pas à suppo
 
 | | |
 |---|---|
-| **Formule** | `MIN( cloture_t / MAX(cloture) jusqu'à t − 1 ) × 100` — résultat ≤ 0 |
+| **Formule** | `MIN( LEAST(0, cloture_t / plus_haut_veille_t − 1) ) × 100`, où `plus_haut_veille_t` est le plus haut des clôtures jusqu'à la séance t − 1 ; résultat ≤ 0. Corrigé le 01/11/2026 (#79) : la formule écrite oubliait de retrancher 1, et le calcul gardait les jours au-dessus du plus haut comme des gains. Un jour au-dessus du plus haut compte pour 0 ; une série qui ne fait que monter vaut 0 % ; la première séance, sans plus haut antérieur, reste indisponible (`NULL`). |
 | **Fenêtre** | 252 séances |
 | **Piège** | le maximum est **glissant** (le plus haut *atteint jusqu'ici*), pas le maximum de toute la période. Confondre les deux est l'erreur classique et donne un chiffre trop favorable. |
 | **Test** | série 100 → 150 → 90 → 120 ⇒ drawdown max = −40,00 % (150 → 90), **pas** −25 %. |
@@ -250,6 +250,7 @@ traitement à déclarer** — mais à vérifier au moment de coder, pas à suppo
 | **Piège majeur** | 🔴 **le lissage de Wilder est récursif** : chaque moyenne dépend de la précédente. Ce n'est **pas** exprimable en fonction fenêtre SQL simple. Deux issues : un CTE récursif (illisible), ou un calcul en Python. **Décision : Python**, avec une moyenne exponentielle de facteur `1/14`. |
 | **Piège 2** | la variante « moyenne simple » circule partout et donne des valeurs **différentes**. Écrire laquelle est implémentée, sinon le chiffre n'est pas reproductible. |
 | **Piège 3** | 14 séances sans aucune baisse ⇒ division par zéro ⇒ RSI = 100 par convention. À coder explicitement. |
+| **Série entièrement plate** (01/11/2026, #78) | aucune hausse **et** aucune baisse ⇒ aucune force relative à mesurer ⇒ RSI **indéfini** (`None`) : « — » à l'écran ; le prompt du briefing reçoit « non disponible », jamais 0 (cela ne garantit pas que chaque briefing reprenne ces mots). Rendre 100, comme pour une hausse continue, ferait croire à un fort élan haussier. Le piège 3 reste vrai dès qu'il y a au moins une hausse. |
 | **Test** | 14 hausses consécutives ⇒ 100. 14 baisses ⇒ 0. Puis une série de référence dont la valeur attendue est fixée à la main. |
 
 ---

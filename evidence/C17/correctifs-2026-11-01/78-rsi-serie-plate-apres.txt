@@ -1,0 +1,3 @@
+# #78, APRÈS correctif : 01/11/2026 16:29, indicateurs/risque.py modifié (série entièrement plate : None)
+# commande : C:\Python314\python.exe -m pytest -q -p no:cacheprovider tests/test_indicateurs_risque.py
+20 passed, 1 warning in 3.26s

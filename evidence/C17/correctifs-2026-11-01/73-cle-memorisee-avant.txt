@@ -1,0 +1,9 @@
+# #73, AVANT correctif : 01/11/2026 16:30, base ac35e5c, frontend/briefing.js et frontend/question.js inchangés
+# commande : C:\Python314\python.exe -m pytest -q -p no:cacheprovider tests/test_cle_memorisee_ui.py (Chrome sans fenêtre, API interceptée)
+E       AssertionError: assert 'cle-pas-encore-verifiee' is None
+E        +  where 'cle-pas-encore-verifiee' = _cle_gardee(<Page url='http://127.0.0.1:61810/briefing.html'>)
+E       AssertionError: assert 'cle-pas-encore-verifiee' is None
+E        +  where 'cle-pas-encore-verifiee' = _cle_gardee(<Page url='http://127.0.0.1:61810/question.html'>)
+FAILED tests/test_cle_memorisee_ui.py::test_une_cle_saisie_n_est_pas_gardee_avant_un_appel_reussi[briefing]
+FAILED tests/test_cle_memorisee_ui.py::test_une_cle_saisie_n_est_pas_gardee_avant_un_appel_reussi[question]
+2 failed, 6 passed, 1 warning in 23.89s

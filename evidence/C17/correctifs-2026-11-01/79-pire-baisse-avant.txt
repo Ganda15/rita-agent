@@ -1,0 +1,11 @@
+# #79, AVANT correctif : 01/11/2026 16:49, base ac35e5c, db/indicateurs_risque.sql inchangé
+# base : conteneur jetable postgres:18-alpine, 127.0.0.1:55432, schéma db/schema.sql chargé (10 tables, 1 vue), aucune donnée ; fichier de secrets du poste désactivé (PYTHON_DOTENV_DISABLED=1)
+# commande : C:\Python314\python.exe -m pytest -q -rs --tb=line -p no:cacheprovider tests/test_indicateurs_risque_base.py
+F..                                                                      [100%]
+================================== FAILURES ===================================
+E   AssertionError: assert Decimal('9.09') == Decimal('0.00')
+     +  where Decimal('9.09') = _pire_baisse(<cursor object at 0x000001A19D379850; closed: 0>, 'ESSAI.R79A', [100.0, 110.0, 120.0])
+     +  and   Decimal('0.00') = Decimal('0.00')
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_indicateurs_risque_base.py:51: AssertionError: assert Decimal('9.09') == Decimal('0.00')
+tests/test_indicateurs_risque_base.py::test_hausse_continue_aucune_baisse_vaut_zero
+1 failed, 2 passed, 1 warning in 3.62s

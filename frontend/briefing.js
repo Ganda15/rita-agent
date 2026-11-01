@@ -100,6 +100,7 @@ async function demanderBriefing(cle, ticker) {
   if (reponse.status === 403) {
     // Une clé refusée n'est pas une panne : on l'oublie et on la redemande.
     sessionStorage.removeItem(CLE_STOCKAGE);
+    cleEnEssai = null;
     demanderCle("Clé d'API refusée. Saisissez-la à nouveau.");
     return;
   }
@@ -206,17 +207,19 @@ function afficher(donnees, requestId) {
 }
 
 // --- DÉMARRAGE ---------------------------------------------------------------
+// #73 (01/11/2026) : la clé saisie reste en mémoire, pas en sessionStorage, tant qu'aucun appel ne l'a acceptée.
+// Elle n'est gardée qu'après un appel réussi (`demanderBriefing`), et oubliée sur un 403.
+let cleEnEssai = null;
+
 document.getElementById("form-cle").addEventListener("submit", (evenement) => {
   evenement.preventDefault();
-  const cle = document.getElementById("cle").value.trim();
-  // La clé n'est mémorisée qu'après un appel réussi ; ici on ouvre seulement la demande.
-  sessionStorage.setItem(CLE_STOCKAGE, cle);
-  ouvrirDemande(cle);
+  cleEnEssai = document.getElementById("cle").value.trim();
+  ouvrirDemande(cleEnEssai);
 });
 
 document.getElementById("form-briefing").addEventListener("submit", (evenement) => {
   evenement.preventDefault();
-  const cle = sessionStorage.getItem(CLE_STOCKAGE);
+  const cle = sessionStorage.getItem(CLE_STOCKAGE) || cleEnEssai;
   if (!cle) {
     demanderCle("Saisissez d'abord votre clé d'API.");
     return;
