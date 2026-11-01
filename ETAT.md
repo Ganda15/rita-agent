@@ -53,10 +53,14 @@ de la PR #171 dans `develop`, puis le passage sur `main` (le correctif n'agit su
   quatre). Chaque ligne imprimée vérifiée contre son commit (23 sur 23). Textes redondants raccourcis, glossaires sur
   deux colonnes : E4 reste à 20 pages, E5 à 5 ; aucun statut changé. Copies OneDrive du 01/11 (v0.9 et v0.3).
 
+- **01/11, liens de la veille S41** : les deux liens signalés n'étaient pas morts (certificat incomplet chez l'UCF,
+  403 intermittent de Wikipédia) ; remplacés par la page de faculté de David Mohaisen (`www.cecs.ucf.edu`) et la page
+  d'auteur de Mark Russinovich sur le blog Azure, contenu vérifié ; remplacement noté dans le relevé. Vérificateur
+  de liens : **0 lien cassé** sur tout le dépôt (322 internes, 418 externes).
+
 **En attente d'Era** : fusion de la PR #171 ; fermeture de #137 une fois sur `main` ; #77 (commentaire prêt) et #132
 (« clôture manuelle de l'exercice ») ; deux règles de fermeture à trancher (vigie ou humaine) ; séparation exercice et
-production dans Langfuse à vérifier ; GitHub CLI à ajouter au guide d'exploitation ; deux liens cassés de
-`docs/veille/_candidats-2026-S41.md` (lignes 93 et 188) à corriger avant tout tag ; liens vers les fichiers au moment
+production dans Langfuse à vérifier ; GitHub CLI à ajouter au guide d'exploitation ; liens vers les fichiers au moment
 du tag ; traduction anglaise d'E5 non faite.
 
 ## ▶️ 31/10 : E2 v0.6 RÉDIGÉ, À RELIRE ; PRODUCTION REMISE À AZURE SEUL ; NOTATION C7 TERMINÉE
