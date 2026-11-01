@@ -21,10 +21,10 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ---
 
-## ▶️ 02/11, NUIT : MARQUEUR `postgresql` À LA PLACE DE LA RECHERCHE DU MOT (LOCAL, À COMMITER)
+## ▶️ 02/11, NUIT : MARQUEUR `postgresql` À LA PLACE DE LA RECHERCHE DU MOT (`997aae6`, PUIS UN CORRECTIF)
 
-**Prochaine action** : Era commite et pousse ; lire le job `base` sur GitHub (attendu : 24 réussis, 0 sauté, 1 902
-désélectionnés) ; ensuite reprendre la recette critère par critère (`docs/recette/registre-des-partiels.md`), sans
+**Prochaine action** : Era commite et pousse le correctif du job `base` (Playwright, voir plus bas) ; lire le
+job `base` sur GitHub (attendu : 24 réussis, 0 sauté) ; ensuite reprendre la recette critère par critère (`docs/recette/registre-des-partiels.md`), sans
 changer de statut sur la seule preuve locale.
 
 - **Les 24 tests qui demandent PostgreSQL portent le marqueur** (`pytestmark` dans six fichiers, trois tests de
@@ -35,6 +35,10 @@ changer de statut sur la seule preuve locale.
   à 23 ; fichier restauré. Tests écrits avant : 11 échecs, puis 17 réussis.
 - **Rejoué en local** sur une base jetable : 24 réussis, code 0 ; sans base, 24 sautés, code 1. Suite complète :
   1 877 réussis, 47 sautés (dont les 24), 2 échecs attendus. Preuves : `evidence/C18/marqueur-postgresql-2026-11-02.md`.
+- **Premier passage sur GitHub en échec** (`997aae6`, passage 41363062480) : 24 réussis mais 3 sautés. Tous les
+  fichiers se chargent avant la sélection, et `test_smoke_ui.py` importe Playwright, absent du job `base`.
+  Reproduit sur le poste, test d'abord, correctif `pip install playwright` dans le job ; règle « aucun saut »
+  gardée. Preuve : `evidence/C18/marqueur-premier-passage-github-echec-2026-11-02.md`. À pousser.
 - `docs/CI-CD.md` et le registre de la recette suivent ; `ETAT.md` porte aussi les précisions de la relecture du 02/11
   (seconde revue de #152 terminée ; 24 des 46 tests du job demandaient PostgreSQL).
 
