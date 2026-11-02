@@ -15,7 +15,7 @@ h2#matrice + p + table td:first-child{ width:27%; }
 
 # Rapport E4 : réaliser une application intégrant un service d'IA (C14 à C19)
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.1, 2 novembre 2026 · version de référence de l'application : commit `174b0c1` de `main` (tags `livrable-E1-v5`, `livrable-E2-v1` et `livrable-E3-v3`), en production le 02/11/2026 ; les exécutions de livraison citées en section 6 datent du 27/10 (`d3a4198`) · code et preuves : dépôt GitHub privé [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1)
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.1, 2 novembre 2026 · version de référence de l'application : commit `174b0c1` de `main` (tags `livrable-E1-v5`, `livrable-E2-v1` et `livrable-E3-v3`), en production le 02/11/2026 ; les exécutions citées en section 6 vont du 21/10 au 02/11 · code et preuves : dépôt GitHub privé [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1)
 {: .identite }
 
 > **En une minute.** RITA aide un investisseur particulier à suivre son portefeuille et à lire l'actualité d'une
@@ -127,7 +127,7 @@ renvoie à un test automatisé ou à une lecture du code.
 | 1. Portefeuille (US-1) | 5 | 11 |
 | 2. Indicateurs (US-2) | 9 | 15 |
 | 3. Briefing (US-3) | 8 | 14 |
-| 4. Question (US-4, qui rattache US1 et US2 du 15/10) | 10 | 19 (Q1 à Q19, dont les 13 du sprint 3) |
+| 4. Question (US-4, qui rattache US1 et US2 du 15/10) | 10 | 19 (Q1 à Q19, qui reprennent 9 des 13 critères du sprint 3 ; les 4 autres restent dans sa spécification) |
 | 5. Tableau de bord (US-5) | 10 | 17 (T1 à T17) |
 
 Les scénarios couvrent aussi les cas qui ne marchent pas : clé refusée, serveur arrêté, valeur inconnue, texte retenu
@@ -149,8 +149,8 @@ Quelques objectifs de l'écran 1 :
 
 Depuis le 02/11, les écrans 4 et 5 ont aussi leurs critères d'accessibilité, numérotés : RGAA 3.1, 7.5, 8.3, 8.5,
 9.1, 9.3, 11.1 et 12.6 ; WCAG 2.4.3 (le focus), 1.4.10 (l'écran étroit) et 2.2.2 (suspendre l'actualisation, corrigé
-le jour même, test d'abord). Tous sont tenus par un test, sauf la liste numérotée des sources (RGAA 9.3), vérifiée par
-lecture du code. Ces tests vérifient le balisage et le comportement, pas l'intégralité des critères RGAA.
+le jour même, test d'abord). Tous sont reliés à un test, sauf la liste numérotée des sources (9.3), la structure des titres (9.1) et
+le titre de l'écran Question (8.5), vérifiés par lecture du code ; l'écran étroit est testé à 375 px, pas à 320 px. Ces tests vérifient le balisage et le comportement, pas l'intégralité des critères RGAA.
 
 Un **lecteur d'écran** est un logiciel qui lit la page à voix haute pour une personne aveugle. L'audit automatique
 local du 03/10 (Lighthouse, application servie sur le poste, briefing enregistré pour l'écran 3) a obtenu 100 sur 100
@@ -214,7 +214,7 @@ hors de l'API, n'y figure pas.
 | Indicateurs ([`indicateurs/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/indicateurs)) | 13 indicateurs par valeur ; calculs SQL et traitements Python, dont le RSI de Wilder | SQL (fonctions fenêtre), Python |
 | Recherche ([`rag/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/rag)) | index des articles, recherche hybride (sens et mots-clés) | ChromaDB |
 | Graphe ([`graph/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/graph)) | trois étapes fixes : lire la base, chercher les articles, rédiger | LangGraph |
-| Appel au modèle ([`src/llm.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/src/llm.py)) | un ordre de fournisseurs ; le suivant n'est essayé que si le premier échoue | Azure AI Foundry en premier |
+| Appel au modèle ([`src/llm.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/src/llm.py)) | fournisseurs réglés par `LLM_ORDRE` ; par défaut, Azure AI Foundry seul depuis le 31/10 (règle UE seule) | Azure AI Foundry |
 | Garde-fous ([`guardrails/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/guardrails)) | relisent la question, les articles collectés et le texte produit | Python |
 | API ([`api/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/api)) | 19 chemins le 24/10, contrat OpenAPI 3.1.0 publié sur `/docs`, clé d'API | FastAPI |
 | Interface ([`frontend/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/frontend)) | cinq écrans, aucune clé dans le code | HTML, CSS, JavaScript sans outil de construction |
@@ -303,7 +303,7 @@ toujours à côté. La conclusion « Poursuivre » reste valable, mais elle date
 - **La taille de l'image (595 Mo) date du 18/08** et n'a pas été remesurée.
 - **La production n'est vérifiée que par la page servie** : après la livraison du 02/11 (exécution 41488421204,
   déploiement réussi à 17 h 22 UTC), le tableau de bord contient le nouveau bouton ; aucun parcours complet rejoué.
-- **Le dossier [`evidence/C15/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/evidence/C15) n'a pas été mis à jour depuis le 04/10** : la pré-production réelle est prouvée ailleurs
+- **Le dossier [`evidence/C15/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/evidence/C15) n'a reçu, depuis le 04/10, que le diagramme de flux du 02/11** : la pré-production réelle est prouvée ailleurs
   ([`deploy/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/deploy), [`evidence/sprint-2/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/evidence/sprint-2)).
 
 ## 3. Coordonner en agile (C16) {: #c16 }
@@ -399,23 +399,13 @@ Le même travail a fait découvrir un autre manque, écrit le jour même : la sa
 
 ### 4.1 Vue d'ensemble
 
-Je distingue « j'ai une preuve » et « tout le critère est satisfait ».
+Je distingue « j'ai une preuve » et « tout le critère est satisfait ». Sur les onze critères de C17, six sont
+satisfaits : l'environnement (§ 4.2), les comportements (§ 4.3), les composants métier et les flux (§ 4.4), les tests
+(§ 4.8) et les sources (§ 4.9). Cinq restent partiels : les maquettes (§ 4.3), les droits d'accès (§ 4.5), la sécurité
+OWASP (§ 4.6), l'éco-conception (§ 4.7) et la communication de la documentation (§ 4.9). La preuve et la limite de
+chacun sont dans la matrice (section 8).
 
-| Critère C17 | État | Où |
-|---|---|---|
-| 1. Environnement de développement conforme | partiel | § 4.2 |
-| 2. Interfaces conformes aux maquettes | partiel | § 4.3 |
-| 3. Comportements et navigation conformes | satisfait : recette des cinq écrans le 02/11, deux écarts corrigés | § 4.3 |
-| 4. Composants métier conformes | satisfait : #78 et #79 corrigés et déployés ; un écart d'affichage, pas de calcul | § 4.4 |
-| 5. Droits d'accès | partiel | § 4.5 |
-| 6. Flux de données intégrés | prouvé : briefing (03/10) et Question (évaluation en production du 16/10) | § 4.4 |
-| 7. Éco-conception | pratiques documentées et mesures historiques sur trois écrans | § 4.7 |
-| 8. Préconisations OWASP | partiel | § 4.6 |
-| 9. Tests des composants et des accès | résultats prouvés, avec leurs exclusions | § 4.8 |
-| 10. Sources versionnées sur un dépôt distant | prouvé | § 4.9 |
-| 11. Documentation technique | partiel : contenu complet ; format contrôlé (guide, [`ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/docs/ARCHITECTURE.md), [`CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/docs/CI-CD.md), `README`) ; communication non prouvée | § 4.9 |
-
-### 4.2 L'environnement de développement (critère 1, partiel)
+### 4.2 L'environnement de développement (critère 1)
 
 Les treize dépendances directes de l'API sont épinglées ([`requirements-api.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/requirements-api.txt)). L'intégration continue tourne sur une
 machine fixée (`ubuntu-24.04`) avec Python 3.13 ; sur mon poste, j'utilise Python 3.14. La reproductibilité complète
@@ -443,10 +433,12 @@ situations chacun (normal, refus, erreur, clavier) : 54 tests dans un vrai navig
 | [`tests/test_frontend.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/tests/test_frontend.py) | 69 | surtout le contenu des pages, lu comme du texte, et leur desserte par l'API |
 | [`tests/test_smoke_ui.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/tests/test_smoke_ui.py) | 11 | de vrais gestes dans un navigateur ; plusieurs réponses de l'API y sont simulées |
 | [`tests/test_smoke_tableau_de_bord.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/tests/test_smoke_tableau_de_bord.py), [`tests/test_tableau_de_bord.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/tests/test_tableau_de_bord.py) | 14 et 13 | le tableau de bord, dont son balisage d'accessibilité |
+| [`tests/test_cle_memorisee_ui.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/tests/test_cle_memorisee_ui.py) | 5 | #73 dans un navigateur : la clé gardée seulement après un appel accepté |
 | [`tests/test_recette_clavier.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/tests/test_recette_clavier.py), [`tests/test_recette_erreurs.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/tests/test_recette_erreurs.py) | 7 et 5 | 14 tests au clavier ; 8 cas d'erreur dans un navigateur, sept mutations détectées |
 
-La recette a trouvé deux écarts : le tableau de bord ne posait pas le focus sur le champ de clé (corrigé le 02/11,
-test d'abord) ; des cas d'erreur n'étaient vérifiés que par lecture du code (joués depuis dans un navigateur). Le
+La recette a trouvé trois écarts : le tableau de bord ne posait pas le focus sur le champ de clé (corrigé le 02/11,
+test d'abord) ; des cas d'erreur n'étaient vérifiés que par lecture du code (joués depuis dans un navigateur) ; le
+troisième, « +0,00 % » pour une pire baisse nulle, reste ouvert (§ 4.4). Le
 défaut #73, la clé gardée avant d'avoir servi sur Briefing et Question, est corrigé le 01/11 et en production le
 02/11. Limite : aucune recette manuelle en production.
 
@@ -554,7 +546,8 @@ Mesure du 02/11 sur le commit de référence `174b0c1` (exécution 41488421537).
 
 **1 925 tests réussis, 47 ignorés, 2 en échec attendu** dans le job `pytest`. Parmi les ignorés, les 25 tests qui
 exigent PostgreSQL : le job `base` les joue à part, sur une base jetable créée avec le schéma et les rôles du dépôt
-(25 réussis, 0 sauté). Les 22 autres manquent d'un élément absent de la CI (motifs non relevés pour cette exécution).
+(25 réussis, 0 sauté). Les 22 autres : 9 tests des hooks, réservés à Windows ; 7 tests des sommaires de rapport, qui relisent les PDF ;
+5 tests de Spark ; 1 test des schémas d'E1.
 Les deux échecs attendus déclarent que les garde-fous n'atteignent pas leur seuil, sans le baisser.
 
 **Couverture : 96,32 %** pour un seuil de 90 % ([`.coveragerc`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/.coveragerc)). Elle porte sur le périmètre Python configuré, pas sur
@@ -584,7 +577,8 @@ format contrôlé ([`evidence/C17/controle-accessibilite-readme-2026-11-02.md`](
 - **Aucun écran n'a été construit à partir d'une maquette préalable** ; Question et Tableau de bord n'ont qu'un schéma de parcours relevé sur l'existant ; la
   refonte validée le 04/10 n'est pas implémentée.
 - **Des défauts ouverts** : le rôle propriétaire de l'API (#76) ; l'affichage « +0,00 % » d'une pire baisse nulle.
-  #73, #78 et #79 sont corrigés et déployés le 02/11, sans vérification manuelle en production.
+  #73, #78 et #79 sont corrigés et déployés le 02/11 ; leurs cartes restent ouvertes sur GitHub jusqu'à une
+  vérification manuelle en production.
 - **Sécurité** : en-têtes absents en production au 03/10 et non revérifiés depuis (S1), `/docs` public (S2), panne
   des fournisseurs du briefing (S6), mots de passe par défaut (S8), garde-fous sous leur seuil (S9).
 - **Les tests** : 22 ignorés en CI faute d'un élément absent de la CI ; une couverture qui exclut l'interface, la
@@ -604,7 +598,8 @@ peuvent exiger ses résultats.
 
 | Workflow | Déclencheur | Ce qu'il fait |
 |---|---|---|
-| [`test.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/.github/workflows/test.yml), Tests | chaque envoi et chaque pull request sur `main` et `develop` | deux travaux : `pytest` (la suite et la couverture) et `evals` (les portes des garde-fous) |
+| [`test.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/.github/workflows/test.yml), Tests | chaque envoi et chaque pull request sur `main` et `develop` | trois travaux : `pytest` (la suite et la couverture), `evals` (les portes des garde-fous) et `base` (les 25 tests
+PostgreSQL sur une base jetable) |
 | [`livraison.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/.github/workflows/livraison.yml), Livraison | chaque envoi et chaque pull request sur `main` et `develop`, chaque tag `livrable-*` | `lint` (`ruff`), `secrets` (`gitleaks` sur tout l'historique), puis la construction et la vérification de l'image (section 6) |
 | [`revue-pr.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/.github/workflows/revue-pr.yml), Revue PR | chaque pull request vers `main` | une revue automatisée commentée sur la pull request |
 
@@ -617,7 +612,7 @@ Le travail `pytest` de [`test.yml`](https://github.com/Ganda15/rita-agent/blob/l
 
 1. installer les dépendances ([`requirements.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/requirements.txt)) ;
 2. installer le navigateur du test d'écran (Playwright) et les outils de l'évaluation des garde-fous ;
-3. **tester d'abord les données** (collecte, nettoyage, import, RGPD) : le 30/10, 296 réussis et 3 ignorés, en
+3. **tester d'abord les données** (collecte, nettoyage, import, RGPD) : le 02/11, 296 réussis et 3 ignorés, en
    7 secondes ; une erreur sur les données se voit avant le reste ;
 4. lancer toute la suite et mesurer la couverture, avec un seuil de 90 % ([`.coveragerc`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/.coveragerc)).
 
@@ -642,7 +637,7 @@ Les sept workflows sont dans le dépôt ([`.github/workflows/`](https://github.c
 [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/docs/CI-CD.md) rassemble tout en un endroit : les déclencheurs (§ 2), les étapes workflow par workflow (§ 3), les
 secrets et les permissions (§ 4), comment installer la chaîne sur un dépôt neuf (§ 5), comment la tester avant de
 compter dessus (§ 6), et quoi faire quand elle est rouge (§ 7). Le document est en Markdown, lisible sur GitHub ; son
-accessibilité n'a pas été contrôlée avec un outil.
+format a été contrôlé avec des outils le 01/11, puis le 02/11 ([`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/evidence/C17)) ; ce n'est pas un audit complet.
 
 ### 5.6 Les limites
 
@@ -680,11 +675,11 @@ par un workflow dédié ([`retour-arriere.yml`](https://github.com/Ganda15/rita-
 | 39653430203, un tag de livrable, 21/10 | **la porte a refusé** : tests rouges, construction et publication sautées, rien n'est parti |
 | 40325990967, `main`, 26/10 | GitHub n'a lancé aucun travail (incident de facturation du compte) : rien n'a été livré, la chaîne a échoué fermée |
 
-Sur l'ensemble : 49 exécutions sur `main`, dont 48 vertes (la rouge est celle du 26/10) ; 17 exécutions sur des tags
-`livrable-*`, dont 15 vertes. Le 24/10, une correction est allée de la fusion à la production en 9 min 02 s, sans
+Sur l'ensemble : 52 exécutions sur `main` au 02/11, dont 51 vertes (la rouge est celle du 26/10) ; 20 exécutions sur
+des tags `livrable-*`, dont 18 vertes. Le 24/10, une correction est allée de la fusion à la production en 9 min 02 s, sans
 intervention ([`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/docs/CI-CD.md), § 3).
 
-**L'ordre est garanti par le fichier lui-même** ([`livraison.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/.github/workflows/livraison.yml), lignes 349 à 351, commit `d3a4198`) :
+**L'ordre est garanti par le fichier lui-même** ([`livraison.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/.github/workflows/livraison.yml), lignes 349 à 351, commit `174b0c1`) :
 
 ```yaml
 deployer:
@@ -709,7 +704,7 @@ figes` (un tag de livrable ne se déplace ni ne se supprime).
 - **Le retour arrière restaure l'application, pas la base de données** ; et la sauvegarde de la base n'est pas tenue
   (dernier dump le 27/09 ; manque écrit le 24/10 dans [`CHANGELOG.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/CHANGELOG.md)).
 - **La collecte des cours n'est pas planifiée sur le serveur** : avant une démonstration, les cours de production sont
-  rattrapés à la main ([`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/docs/exploitation.md), procédure écrite le 27/10 au soir, après la version de référence).
+  rattrapés à la main ([`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/docs/exploitation.md), procédure écrite le 27/10 au soir).
 - **Le déploiement attend un créneau** : une fusion faite entre 7 h 30 et 9 h n'est livrée qu'après 9 h ; c'est voulu,
   mais une correction urgente du matin attend.
 
@@ -753,7 +748,7 @@ Le détail est dans les limites de chaque section.
 | Cadre technique (C15) | schéma d'architecture sans la vigie ; hébergeur non choisi sur un critère environnemental | § 2.7 |
 | Organisation (C16) | tableau non mis à jour après le 14/10 ; revues du lundi sans compte rendu ; pas de rétrospective | § 3.6 |
 | Développement (C17) | environnement non entièrement reproductible ; aucun écran construit d'après une maquette préalable ; défaut ouvert #76 et un écart d'affichage (« +0,00 % ») ; constats OWASP S1, S2, S6, S8, S9 ; pas de mesure d'éco-conception « après » | § 4.10 |
-| Tests (C18) | 22 tests ignorés en CI ; couverture sans l'interface, la recherche ni la surveillance ; trois paquets de CI sans version | § 5.6 |
+| Tests (C18) | 22 tests ignorés en CI ; couverture sans l'interface, la recherche, la surveillance ni la passerelle MCP ; trois paquets de CI sans version | § 5.6 |
 | Livraison (C19) | un tag reconstruit l'image ; retour arrière sans la base ; sauvegarde non tenue ; collecte non planifiée sur le serveur | § 6.4 |
 
 ## 8. Matrice de preuves {: #matrice }
@@ -765,12 +760,12 @@ partie du critère manque. ❌ : aucune preuve.
 |---|---|---|---|---|
 | **C14.1** La modélisation des données respecte un formalisme (Merise…) | ✅ | MCD Merise revu le 02/11 (`VALEUR 0,n`, comme la base), [`evidence/C4/MCD-MERISE-RITA-2026-11-02.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C4/MCD-MERISE-RITA-2026-11-02.png) | le MCD ne représente pas les articles utilisés par l'écran Question (6 entités pour 8 tables : [`evidence/C4/preuve-mcd-merise.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C4/preuve-mcd-merise.md), § 4) | 1.4 |
 | **C14.2** La modélisation des parcours respecte un formalisme (wireframes…) | ✅ | trois wireframes d'état ; parcours des écrans 4 et 5, 02/11 ([`evidence/C14/parcours/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/evidence/C14/parcours)) | les deux derniers parcours relevés après développement | 1.4 |
-| **C14.3** Chaque spécification couvre contexte, scénarios, critères de validation | ✅ | US-1 à US-5 : contexte, scénarios, critères ([`evidence/C14/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/evidence/C14)) | US-2 à US-5 écrites après le code | 1.3, 1.5 |
+| **C14.3** Chaque spécification couvre contexte, scénarios, critères de validation | ✅ | US-1 à US-5 : contexte, scénarios, critères ([`evidence/C14/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/evidence/C14)) | US-1, 2, 3 et 5 écrites après leur écran ; US-4 complétée après | 1.3, 1.5 |
 | **C14.4** Accessibilité intégrée aux critères d'acceptation | ✅ | critères RGAA et WCAG des cinq écrans, reliés à des tests | restitution par un lecteur d'écran non testée | 1.6 |
 | **C14.5** Accessibilité formulée selon un standard (RGAA…) | ✅ | objectifs des cinq écrans formulés avec des règles RGAA ou WCAG numérotées, chacun relié à un test ou à une lecture du code ([`evidence/C14/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/evidence/C14)) | aucun test avec un lecteur d'écran | 1.6 |
 | **C15.1** Spécifications techniques : architecture, dépendances, environnement | ✅ | [`docs/ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/docs/ARCHITECTURE.md), [`requirements-api.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/requirements-api.txt) | schéma d'architecture du 24/10, sans la vigie | 2.1 à 2.3 |
 | **C15.2** Services éco-responsables favorisés | ⚠️ | choix d'architecture, éco-responsables par effet | hébergeur choisi pour la continuité, impact non mesuré | 2.5 |
-| **C15.3** Diagramme de flux de données | ✅ | [`evidence/C15/flux/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/evidence/C15/flux), relevé sur le code le 02/11 ; celui du 18/08 gardé | relevé après le code ; la purge RGPD, lancée à la main, n'y figure pas | 2.4 |
+| **C15.3** Diagramme de flux de données | ✅ | [`evidence/C15/flux/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/evidence/C15/flux), relevé sur le code le 02/11 ; celui du 18/08 gardé | relevé après le code ; questions (T8) non marquées personnelles ; purge RGPD absente | 2.4 |
 | **C15.4** Preuve de concept accessible et fonctionnelle en pré-production | ✅ | preuve du 18/08 ; pré-test sur le serveur depuis le 14/10 | | 2.6 |
 | **C15.5** Conclusion de la preuve de concept donnant un avis précis | ✅ | « Poursuivre », [`evidence/C15/preuve-preproduction-docker.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C15/preuve-preproduction-docker.md) | avis antérieur à la mise en production | 2.6 |
 | **C16.1** Cycles, étapes, rôles, rituels et outils de la méthode respectés tout au long du projet | ⚠️ | méthode écrite ; cycles réels datés | suivi interrompu après le 14/10 ; revues sans compte rendu ; agile seulement depuis le 26/09 | 3.2, 3.6 |
@@ -779,13 +774,13 @@ partie du critère manque. ❌ : aucune preuve.
 | **C16.4** Éléments de pilotage accessibles à toutes les parties tout au long du projet | ⚠️ | dépôt en lecture pour le formateur (vérifié le 30/10) | accès au tableau non revérifié ; jury pas encore invité | 3.4 |
 | **C17.1** Environnement de développement conforme aux spécifications | ✅ | environnement prévu ([`evidence/C15/preuve-specifications-techniques.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C15/preuve-specifications-techniques.md)) et installé, rapprochés le 01/11 : Windows 11, Python 3.14.6, PostgreSQL 18.4 sur le port 5433 ; Python 3.13 en CI ([`test.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/.github/workflows/test.yml)) | [`requirements.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/requirements.txt) et trois paquets de CI sans version : limite de reproductibilité | 4.2 |
 | **C17.2** Interfaces intégrées et conformes aux maquettes | ⚠️ | cinq écrans intégrés | wireframes dessinés après ; deux écrans sans maquette | 4.3 |
-| **C17.3** Comportements des composants et navigation conformes | ✅ | recette du 02/11 : 54 tests dans un navigateur, dont 14 au clavier ; 8 cas d'erreur ; #73 corrigé et déployé | comportements vérifiés en navigateur ; pas de recette manuelle en production | 4.3 |
-| **C17.4** Composants métier conformes aux spécifications | ✅ | composants testés ; #78 et #79 corrigés et déployés ; valeurs vérifiées sur 111 valeurs | affichage : « +0,00 % » pour une pire baisse nulle ; le calcul est juste | 4.4 |
+| **C17.3** Comportements des composants et navigation conformes | ✅ | recette du 02/11 : 54 tests en navigateur, dont 14 au clavier, et 8 cas d'erreur ; #73 déployé | API simulée ; 375 px, pas 320 ; pas de recette manuelle en production | 4.3 |
+| **C17.4** Composants métier conformes aux spécifications | ✅ | composants testés ; #78 et #79 déployés ; 111 valeurs vérifiées | « +0,00 % » affiché pour un zéro ; valeurs vérifiées en local | 4.4 |
 | **C17.5** Gestion des droits d'accès développée et conforme | ⚠️ | clé sur les routeurs, journal des refus, quota partagé | rôle propriétaire (#76) ; `/docs` public | 4.5 |
 | **C17.6** Flux de données intégrés | ✅ | briefing ([`evidence/C10/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/evidence/C10), 03/10) ; Question : évaluation en production du 16/10 sur `72dba4d` ([`evidence/sprint-3/evaluation-production-2026-10-16-relecture.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/sprint-3/evaluation-production-2026-10-16-relecture.md)) et tests | preuves antérieures à la version de référence | 4.4 |
 | **C17.7** Éco-conception | ⚠️ | pratiques documentées ; mesures historiques sur trois écrans | pas de mesure « après » ; deux écrans non mesurés | 4.7 |
 | **C17.8** Préconisations OWASP Top 10 implémentées | ⚠️ | revue S1 à S10 ; S4 et S5 corrigés, S3 et S7 en partie | S1, S2, S6, S8, S9 ouverts | 4.6 |
-| **C17.9** Tests couvrant composants métier et gestion des accès | ✅ | les tests des composants métier et des accès API ont été exécutés avec succès (1 925 réussis, couverture 96,32 %, 02/11) ; les 4 tests du rôle en lecture seule passent dans le job `base` | | 4.8 |
+| **C17.9** Tests couvrant composants métier et gestion des accès | ✅ | les tests des composants métier et des accès API ont été exécutés avec succès (1 925 réussis, couverture 96,32 %, 02/11) ; les 4 tests du rôle en lecture seule passent dans le job `base` | 22 tests ignorés ; couverture sans interface, `rag/`, `monitorage/`, MCP | 4.8 |
 | **C17.10** Sources versionnées et accessibles sur un dépôt distant | ✅ | dépôt GitHub privé, 21 tags `livrable-*` protégés | jury pas encore invité | 4.9 |
 | **C17.11** Documentation technique : installation, architecture, dépendances, tests, accessible | ⚠️ | [`docs/ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/docs/ARCHITECTURE.md), [`README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/README.md), [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/docs/CI-CD.md), [`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/docs/exploitation.md) ; format contrôlé pour le guide (31/10), [`ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/docs/ARCHITECTURE.md) et [`CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/docs/CI-CD.md) (01/11), [`README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/README.md) (02/11, [`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/evidence/C17)) | communication non prouvée | 4.9 |
 | **C18.1** Documentation de la chaîne : outils, étapes, tâches, déclencheurs | ✅ | [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/docs/CI-CD.md), § 2 et § 3 | | 5.5 |
@@ -828,7 +823,7 @@ existait, ateliers des sprints compris ; ici, un ✅ exige tout le critère, sur
 - **Commanditaire** : la personne qui exprime le besoin et commande l'application.
 - **Exploitant** : la personne qui fait tourner le service et surveille sa santé.
 - **Clé d'API** : secret technique envoyé pour accéder aux fonctions protégées de l'API.
-- **Garde-fou** : contrôle qui détecte certains contenus interdits et bloque alors la réponse.
+- **Garde-fou** : contrôle qui cherche à détecter certains contenus interdits et bloque alors la réponse.
 - **User story** : besoin décrit du point de vue de l'utilisateur.
 - **Critère d'acceptation** : condition vérifiable pour dire qu'une user story est terminée.
 - **MCD, Merise** : modèle conceptuel de données ; Merise est la méthode française qui en fixe le formalisme.
@@ -858,14 +853,15 @@ existait, ateliers des sprints compris ; ici, un ✅ exige tout le critère, sur
 - **Dépendance indirecte** : bibliothèque installée parce qu'une autre en a besoin.
 - **Playwright** : outil qui pilote un vrai navigateur pour tester des pages web.
 - **RSI de Wilder** : indicateur de 0 à 100 de la force des hausses et des baisses récentes d'un cours.
-- **`compare_digest`** : comparaison en temps constant, dont la durée ne révèle rien de la clé.
+- **`compare_digest`** : comparaison qui ne s'arrête pas au premier caractère différent, pour limiter ce que sa
+  durée pourrait révéler de la clé.
 - **429, 503** : codes HTTP « trop de requêtes » et « service indisponible ».
 - **OWASP Top 10** : liste de référence des dix risques de sécurité les plus courants des applications web.
 - **En-tête de sécurité** : consigne envoyée au navigateur avec la page, par exemple « pas d'affichage dans un autre site ».
 - **Proxy** : serveur placé devant l'API, qui reçoit les demandes et peut ajouter des en-têtes.
 - **EcoIndex** : note de A à G de l'impact environnemental d'une page web.
 - **Couverture** : part du code exécutée par les tests, sur un périmètre choisi.
-- **Livraison continue** : chaîne qui prépare, vérifie puis met en service une version.
+- **Livraison continue** : chaîne qui prépare et vérifie une version livrable ; le déploiement la met ensuite en service.
 - **Lint** : lecture automatique du code qui signale les erreurs sans l'exécuter.
 - **Porte de livraison** : contrôle qui bloque la suite de la chaîne si une condition n'est pas remplie.
 - **Registre d'images** : endroit où sont rangées les images publiées, ici celui de GitHub.

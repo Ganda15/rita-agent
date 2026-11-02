@@ -42,7 +42,7 @@ est identique mot pour mot aux originaux du dépôt, cités dans chaque légende
 jour pour cette annexe.
 
 **Ce que l'annexe ne contient pas, et pourquoi.** Les écrans Question et Tableau de bord n'ont pas de maquette
-préalable (rapport, critère C14.2) : leurs parcours (A6) et le diagramme de flux (A4) sont relevés sur l'existant le
+préalable (rapport, critère C17.2) : leurs parcours (A6) et le diagramme de flux (A4) sont relevés sur l'existant le
 02/11, et le disent. Ils décrivent l'application ; ils n'ont pas guidé sa construction.
 
 
@@ -86,7 +86,7 @@ wireframes : sous le troisième, page 5.
 **Écran Briefing, 03/10/2026** ([`evidence/C14/WIREFRAMES-C14-ecran-briefing.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C14/WIREFRAMES-C14-ecran-briefing.svg)). **Limites des trois
 wireframes** : chacun a été dessiné après son écran ; il ne prouve ni qu'une maquette a guidé le développement, ni que
 l'écran actuel lui est conforme. Les écrans Question et Tableau de bord n'ont pas de maquette (rapport, § 4.3 et
-critère C14.2).
+critère C17.2).
 
 ## A3. L'architecture de l'application (C15) {: #a3 }
 
@@ -98,7 +98,7 @@ critère C14.2).
 recherche documentaire, rédacteur) et la question (recherche, puis réponse JSON stricte) ; les garde-fous avant et après
 le modèle ; les données lues (PostgreSQL, index des articles) ; la surveillance (traces, alertes, `/sante`).
 **Limites** : la vigie n'y figure pas (rapport, § 2.1 et critère C15.1) ; il montre l'état du 24/10, « briefing :
-cascade, Azure d'abord » ; depuis le 31/10, après la version de référence, Azure est seul par défaut.
+cascade, Azure d'abord » ; depuis le 31/10, et donc dans la version de référence, Azure est seul par défaut.
 
 ## A4. Le diagramme de flux de données (C15) {: #a4 }
 
@@ -106,7 +106,8 @@ cascade, Azure d'abord » ; depuis le 31/10, après la version de référence, A
 
 **Diagramme de flux de données, relevé sur le code flux par flux le 02/11/2026** ([`evidence/C15/flux/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/evidence/C15/flux), généré par
 [`generer_flux.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C15/flux/generer_flux.py) ; preuve : [`evidence/C15/preuve-flux-donnees-2026-11-02.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C15/preuve-flux-donnees-2026-11-02.md)). Il se lit dans le sens de la donnée ;
-les flux de données personnelles sont marqués. Celui du 18/08 est gardé ([`evidence/C15/FLUX-DONNEES-C15-application-RITA.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C15/FLUX-DONNEES-C15-application-RITA.png)).
+seules les positions (T1) y sont marquées comme données personnelles, pas le texte des questions (T8) ; la purge
+RGPD n'y figure pas. Celui du 18/08 est gardé ([`evidence/C15/FLUX-DONNEES-C15-application-RITA.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C15/FLUX-DONNEES-C15-application-RITA.png)).
 **Limite** : relevé après le code, il décrit l'existant ; il n'a pas guidé la construction.
 
 ## A5. La chaîne d'intégration et de livraison (C18, C19) {: #a5 }
