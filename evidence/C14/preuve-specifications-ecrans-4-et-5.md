@@ -183,6 +183,14 @@ requêtes, le verdict est INCONNU), ni décider à la place de l'exploitant.
 - Aucun test avec un lecteur d'écran réel, aucun test avec un utilisateur extérieur au projet.
 - Ces spécifications sont rétrospectives : elles décrivent l'existant, elles n'ont pas guidé la construction.
 
+## 6. Correctifs appliqués après cette écriture (02/11/2026, le matin)
+
+Les deux écarts de l'écran 5 (§ 4) ont été corrigés, tests écrits d'abord, sur décision d'Era : le bouton « Suspendre
+l'actualisation automatique » (T17, WCAG 2.2.2) et le pied de page. Preuves avant et après :
+`evidence/C17/correctifs-2026-11-02/`. Les tableaux ci-dessus restent tels qu'écrits avant la correction ; T17 est
+désormais vérifié par `test_un_bouton_permet_de_suspendre_l_actualisation_automatique` et
+`test_l_actualisation_automatique_se_suspend_et_reprend` (vrai navigateur, horloge simulée).
+
 ## 📖 Glossaire
 
 - **User story** : un besoin écrit du point de vue de celui qui l'a (« en tant que…, je…, afin de… »).

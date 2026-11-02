@@ -93,3 +93,21 @@ def test_la_page_a_un_bandeau_pour_l_exercice_de_panne():
     # Étape 6 : pendant une panne simulée, le tableau le dit, pour qu'on ne la prenne pas pour une vraie panne.
     html = (FRONTEND / PAGE).read_text(encoding="utf-8")
     assert '<p id="bandeau-exercice"' in html and "hidden" in html.split('id="bandeau-exercice"')[1].split(">")[0]
+
+
+# --- 02/11/2026 : spécification de l'écran 5 (`evidence/C14/preuve-specifications-ecrans-4-et-5.md`), deux écarts ----
+
+def test_un_bouton_permet_de_suspendre_l_actualisation_automatique():
+    """Critère T17, WCAG 2.2.2 : un contenu qui se met à jour seul doit pouvoir être suspendu. Bouton à bascule : son
+    nom reste le même, son état passe par `aria-pressed` ; un texte visible dit si l'actualisation tourne."""
+    html = (FRONTEND / PAGE).read_text(encoding="utf-8")
+    assert re.search(r'<button id="suspendre" type="button" aria-pressed="false">\s*'
+                     r"Suspendre l'actualisation automatique\s*</button>", html)
+    assert 'id="etat-actualisation"' in html
+
+
+def test_le_pied_de_page_ne_dit_plus_prototype_local():
+    """L'écran est en production depuis le 23/10 : « Prototype local du sprint 5 » était faux (rapport E4, § 1.7)."""
+    pied = (FRONTEND / PAGE).read_text(encoding="utf-8").split("<footer>")[1].split("</footer>")[0]
+    assert "Prototype" not in pied
+    assert "jamais présenté comme sain" in pied

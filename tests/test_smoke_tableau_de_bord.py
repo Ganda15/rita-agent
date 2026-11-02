@@ -164,3 +164,63 @@ def test_pendant_un_exercice_le_bandeau_le_dit(page, serveur):  # noqa: F811
 def test_sans_exercice_le_bandeau_est_cache(page, serveur):  # noqa: F811
     _tableau(page, serveur, _sante(*SAIN).json())
     assert not page.locator("#bandeau-exercice").is_visible()
+
+
+def test_l_actualisation_automatique_se_suspend_et_reprend(page, serveur):  # noqa: F811
+    """Critère T17, WCAG 2.2.2 (02/11/2026). Horloge simulée de Playwright, dans un contexte à part : les autres tests
+    partagent la page du module et gardent l'heure réelle. On compte les vrais appels à `/sante`."""
+    from playwright.sync_api import expect
+
+    corps = json.dumps(_sante(*SAIN).json())
+    appels = []
+
+    def sante(route):
+        appels.append(route.request.url)
+        route.fulfill(status=200, content_type="application/json", body=corps)
+
+    def attendre(n):
+        for _ in range(100):
+            if len(appels) >= n:
+                break
+            onglet.wait_for_timeout(50)
+        expect(onglet.locator("body")).to_have_attribute("data-etat", "pret")
+
+    contexte = page.context.browser.new_context()
+    onglet = contexte.new_page()
+    try:
+        onglet.clock.install()
+        onglet.route("**/sante", sante)
+        onglet.route("**/health", lambda route: route.fulfill(status=200, content_type="application/json",
+                                                              body='{"status": "ok"}'))
+        onglet.goto(serveur + "/tableau-de-bord.html")
+        onglet.evaluate(f"sessionStorage.setItem('rita_api_key', '{CLE}')")
+        onglet.goto(serveur + "/tableau-de-bord.html")
+        attendre(1)
+        assert len(appels) == 1
+
+        onglet.clock.run_for(31_000)                  # témoin : sans pause, le tableau s'actualise seul
+        attendre(2)
+        assert len(appels) == 2
+
+        bouton = onglet.locator("#suspendre")
+        bouton.click()
+        expect(bouton).to_have_attribute("aria-pressed", "true")
+        assert "suspendue" in onglet.locator("#etat-actualisation").inner_text()
+        onglet.clock.run_for(61_000)
+        onglet.wait_for_timeout(300)
+        assert len(appels) == 2, "suspendu : aucune actualisation automatique en une minute"
+
+        onglet.locator("#actualiser").click()         # à la main : un appel, sans relancer l'automatique
+        attendre(3)
+        onglet.clock.run_for(61_000)
+        onglet.wait_for_timeout(300)
+        assert len(appels) == 3
+
+        bouton.click()                                # reprise : un appel aussitôt, puis toutes les 30 secondes
+        expect(bouton).to_have_attribute("aria-pressed", "false")
+        attendre(4)
+        onglet.clock.run_for(31_000)
+        attendre(5)
+        assert len(appels) == 5
+    finally:
+        contexte.close()

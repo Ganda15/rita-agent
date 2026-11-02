@@ -1,0 +1,4 @@
+# Tableau de bord, deux correctifs : APRES, 02/11/2026 (local, non commite)
+# commande : PYTHON_DOTENV_DISABLED=1 C:\Python314\python.exe -m pytest -q -p no:cacheprovider --no-cov tests/test_tableau_de_bord.py tests/test_smoke_tableau_de_bord.py tests/test_frontend.py tests/test_smoke_ui.py
+
+140 passed, 1 warning in 65.96s (0:01:05)
