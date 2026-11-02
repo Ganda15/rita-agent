@@ -37,7 +37,7 @@ Les fichiers de cette preuve :
 
 | # | Critère officiel | Où |
 |---|---|---|
-| 2 | *« La modélisation des parcours utilisateurs respecte un formalisme : schéma fonctionnel, wireframes »* | **pas ici** : les schémas de parcours des écrans 4 et 5 restent à faire (registre, C14.2) |
+| 2 | *« La modélisation des parcours utilisateurs respecte un formalisme : schéma fonctionnel, wireframes »* | § 7, ajouté le 02/11 après la première écriture : un schéma fonctionnel par écran, relevé sur la version actuelle |
 | 3 | *« Chaque spécification fonctionnelle couvre le contexte, les scénarios d'utilisation et les critères de validation »* | § 2 (US-4) et § 3 (US-5) |
 | 4 | *« Les objectifs d'accessibilité sont intégrés aux critères d'acceptation des user stories »* | § 2 : lignes Q12 à Q18 ; § 3 : lignes T12 à T17 |
 | 5 | *« …formulés en s'appuyant sur un standard : WCAG, RGAA »* | RGAA 4.1.2 pour les numéros déjà contrôlés sur le texte officiel (preuve des écrans 2 et 3, § 6) ; sinon le critère WCAG, dit comme tel |
@@ -190,6 +190,16 @@ l'actualisation automatique » (T17, WCAG 2.2.2) et le pied de page. Preuves ava
 `evidence/C17/correctifs-2026-11-02/`. Les tableaux ci-dessus restent tels qu'écrits avant la correction ; T17 est
 désormais vérifié par `test_un_bouton_permet_de_suspendre_l_actualisation_automatique` et
 `test_l_actualisation_automatique_se_suspend_et_reprend` (vrai navigateur, horloge simulée).
+
+## 7. Les schémas de parcours (C14.2), ajoutés le 02/11/2026
+
+Un schéma fonctionnel par écran, **relevé sur la version actuelle** (commit `12cc00c`), pas une maquette initiale :
+chaque étape, chaque refus et chaque panne des scénarios ci-dessus, dans l'ordre où l'utilisateur les rencontre.
+Sources modifiables (`.drawio`), générateur et commande de rendu : [`parcours/`](parcours/README.md).
+
+![Schéma du parcours de l'écran Question, en quatre colonnes. Entrer : ouvrir l'écran, vérifier la clé de l'onglet, sinon la saisir ; une clé refusée (403) est oubliée et redemandée. Demander : écrire une question de 3 à 500 caractères, puis l'envoyer à POST /question ; hors bornes, une erreur 422 est dite dans le statut. Répondre ou refuser : la réponse avec ses sources numérotées, un refus avec son motif en mots, une erreur technique dans un encart à part, ou l'API arrêtée. Remonter à la source : ouvrir une référence, lire la fiche stockée, voir la ligne et le passage transmis au modèle.](parcours/PARCOURS-C14-ecran-question.png)
+
+![Schéma du parcours de l'écran Tableau de bord, en quatre colonnes. Entrer : ouvrir l'écran, vérifier la clé de l'onglet, sinon la saisir ; une clé refusée (401 ou 403) ramène au formulaire. Lire : /health et /sante en parallèle, cinq secondes au plus, déclenchés toutes les 30 secondes ou à la main. Montrer : sept cartes avec leur état en mots et « Que faire », INCONNU sans donnée, une lecture en panne qui laisse l'autre lisible, un bandeau pendant un exercice. Laisser lire : seul le résumé est annoncé aux lecteurs d'écran ; suspendre l'actualisation automatique, puis la reprendre.](parcours/PARCOURS-C14-ecran-tableau-de-bord.png)
 
 ## 📖 Glossaire
 
