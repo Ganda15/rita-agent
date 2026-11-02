@@ -9,6 +9,20 @@
 
 ---
 
+## 2026-11-02, soir : `main` en production (`174b0c1`) ; livrables E1, E2, E3 tagués ; E4 v1.1 prêt pour `livrable-E4-v1`
+
+**Décisions d'Era** : fusion de la PR #173 et déploiement ; tags `livrable-E1-v5`, `livrable-E2-v1`, `livrable-E3-v3` ;
+C6.2 réévalué sur la planification ; dans E4 v1.1, C14.2, C14.3, C14.4, C15.3, C17.3 et C17.4 passent à ✅, chaque
+limite comparée aux mots du critère et gardée dans sa colonne ; tag `livrable-E4-v1` à poser après la fusion.
+
+**Manques découverts** : la passerelle MCP n'est pas dans l'image de production (#152 n'est donc pas « en production ») ;
+le tableau OWASP d'E3 confond 503 et 403 pour les routes d'exercice (le code les distingue) ; le présentateur ouvrait
+encore le livret v3 et gardait d'anciennes notes de budget et de MCD (corrigés hors du dépôt).
+
+**Rien n'est encore envoyé au formateur** : l'entrée « livrable envoyé » viendra avec la preuve datée.
+
+---
+
 ## 2026-11-02 : retour écrit du formateur appliqué, MCD aligné sur la base ; E1 v5, E2 v0.9 et E3 v2.0 prêts
 
 **Manques découverts** : par la recette des écrans, un focus absent sur le tableau de bord (corrigé) et des cas d'erreur

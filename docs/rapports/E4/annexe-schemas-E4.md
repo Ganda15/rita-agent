@@ -61,29 +61,29 @@ préalable (rapport, critère C14.2) : leurs parcours (A6) et le diagramme de fl
 
 ![Modèle conceptuel des données de RITA, au formalisme Merise, revu le 2 novembre 2026](../../../evidence/C4/MCD-MERISE-RITA-2026-11-02.png)
 
-**MCD au formalisme Merise**, revu le 02/11/2026 (`evidence/C4/MCD-MERISE-RITA-2026-11-02.png`) : 6 entités et 6
+**MCD au formalisme Merise**, revu le 02/11/2026 ([`evidence/C4/MCD-MERISE-RITA-2026-11-02.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C4/MCD-MERISE-RITA-2026-11-02.png)) : 6 entités et 6
 associations, le même modèle que dans le livret E1 v5. Une valeur peut exister sans cotation (`VALEUR 0,n`), comme
-dans la base ; un test le vérifie (`tests/test_mcd_c4.py`). Celui du 01/08 est gardé (`evidence/C4/MCD-MERISE-RITA.png`). **Limite** : la table `article`, qui porte les
+dans la base ; un test le vérifie ([`tests/test_mcd_c4.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/tests/test_mcd_c4.py)). Celui du 01/08 est gardé ([`evidence/C4/MCD-MERISE-RITA.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C4/MCD-MERISE-RITA.png)). **Limite** : la table `article`, qui porte les
 données de l'écran Question, n'y figure pas (choix du 11/08 ; rapport, § 1.4 et critère C14.1).
 
 ## A2. Les wireframes d'état des trois premiers écrans (C14, C17) {: #a2 }
 
 ![Wireframe de l'écran Portefeuille](../../../evidence/C14/WIREFRAMES-C14-ecran-portefeuille.svg){: .grand }
 
-**Écran Portefeuille, 18/08/2026** (`evidence/C14/WIREFRAMES-C14-ecran-portefeuille.svg`). Limites des trois
+**Écran Portefeuille, 18/08/2026** ([`evidence/C14/WIREFRAMES-C14-ecran-portefeuille.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C14/WIREFRAMES-C14-ecran-portefeuille.svg)). Limites des trois
 wireframes : sous le troisième, page 5.
 
 <div class="saut"></div>
 
 ![Wireframe de l'écran Indicateurs](../../../evidence/C14/WIREFRAMES-C14-ecran-indicateurs.svg){: .grand }
 
-**Écran Indicateurs, 03/10/2026** (`evidence/C14/WIREFRAMES-C14-ecran-indicateurs.svg`).
+**Écran Indicateurs, 03/10/2026** ([`evidence/C14/WIREFRAMES-C14-ecran-indicateurs.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C14/WIREFRAMES-C14-ecran-indicateurs.svg)).
 
 <div class="saut"></div>
 
 ![Wireframe de l'écran Briefing](../../../evidence/C14/WIREFRAMES-C14-ecran-briefing.svg){: .grand }
 
-**Écran Briefing, 03/10/2026** (`evidence/C14/WIREFRAMES-C14-ecran-briefing.svg`). **Limites des trois
+**Écran Briefing, 03/10/2026** ([`evidence/C14/WIREFRAMES-C14-ecran-briefing.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C14/WIREFRAMES-C14-ecran-briefing.svg)). **Limites des trois
 wireframes** : chacun a été dessiné après son écran ; il ne prouve ni qu'une maquette a guidé le développement, ni que
 l'écran actuel lui est conforme. Les écrans Question et Tableau de bord n'ont pas de maquette (rapport, § 4.3 et
 critère C14.2).
@@ -93,7 +93,7 @@ critère C14.2).
 ![Architecture de RITA : le chemin d'un briefing et le chemin d'une question](schemas/E4-architecture-mise-en-forme.svg)
 
 **Architecture de l'application, état du code au 24/10/2026** (commit `9683f04`), mise en forme du 31/10, texte inchangé
-(original : `docs/rapports/E3/schemas/E3-architecture.svg`). **Ce qu'il montre pour E4** : les clients, dont les cinq
+(original : [`docs/rapports/E3/schemas/E3-architecture.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/docs/rapports/E3/schemas/E3-architecture.svg)). **Ce qu'il montre pour E4** : les clients, dont les cinq
 écrans de l'interface ; l'API et ses refus (403, 422, 429) ; les deux chemins vers le modèle, le briefing (scout,
 recherche documentaire, rédacteur) et la question (recherche, puis réponse JSON stricte) ; les garde-fous avant et après
 le modèle ; les données lues (PostgreSQL, index des articles) ; la surveillance (traces, alertes, `/sante`).
@@ -104,9 +104,9 @@ cascade, Azure d'abord » ; depuis le 31/10, après la version de référence, A
 
 ![Diagramme de flux de données de RITA, relevé sur le code le 2 novembre 2026 : des sources aux cinq écrans, avec le chemin des questions, la passerelle MCP, les traces et la vigie](../../../evidence/C15/flux/FLUX-DONNEES-C15-application-RITA-2026-11-02.svg){: .grand }
 
-**Diagramme de flux de données, relevé sur le code flux par flux le 02/11/2026** (`evidence/C15/flux/`, généré par
-`generer_flux.py` ; preuve : `evidence/C15/preuve-flux-donnees-2026-11-02.md`). Il se lit dans le sens de la donnée ;
-les flux de données personnelles sont marqués. Celui du 18/08 est gardé (`evidence/C15/FLUX-DONNEES-C15-application-RITA.png`).
+**Diagramme de flux de données, relevé sur le code flux par flux le 02/11/2026** ([`evidence/C15/flux/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1/evidence/C15/flux), généré par
+[`generer_flux.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C15/flux/generer_flux.py) ; preuve : [`evidence/C15/preuve-flux-donnees-2026-11-02.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C15/preuve-flux-donnees-2026-11-02.md)). Il se lit dans le sens de la donnée ;
+les flux de données personnelles sont marqués. Celui du 18/08 est gardé ([`evidence/C15/FLUX-DONNEES-C15-application-RITA.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C15/FLUX-DONNEES-C15-application-RITA.png)).
 **Limite** : relevé après le code, il décrit l'existant ; il n'a pas guidé la construction.
 
 ## A5. La chaîne d'intégration et de livraison (C18, C19) {: #a5 }
@@ -114,23 +114,23 @@ les flux de données personnelles sont marqués. Celui du 18/08 est gardé (`evi
 ![Chaîne d'intégration et de livraison de RITA](schemas/E4-chaine-livraison-mise-en-forme.png)
 
 **Chaîne d'intégration et de livraison, état au 24/10/2026** (commit `9683f04`), mise en forme du 31/10, texte inchangé
-(original : `docs/rapports/E3/schemas/E3-chaine-livraison.svg` ; cette mise en forme n'existe qu'en image, pas en
+(original : [`docs/rapports/E3/schemas/E3-chaine-livraison.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/docs/rapports/E3/schemas/E3-chaine-livraison.svg) ; cette mise en forme n'existe qu'en image, pas en
 vectoriel). **Ce qu'il montre pour E4** : du poste à la production, les contrôles de chaque étape, la protection de
 `main`, la livraison au serveur avec pré-test et retour arrière (rapport, sections 5 et 6). **Limite** : l'installation
 à la main d'un fichier Compose modifié, qui conditionne une livraison, n'y figure pas (§ 6.1). Le créneau « 8 h à 9 h » est celui où
 le serveur refuse toute bascule ; GitHub commence à attendre 30 minutes plus tôt, pour qu'une livraison ne démarre pas
-son pré-test juste avant 8 h, d'où les « 7 h 30 à 9 h » du rapport (`deploy/deployer.py`, `secondes_avant_livraison`).
+son pré-test juste avant 8 h, d'où les « 7 h 30 à 9 h » du rapport ([`deploy/deployer.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/deploy/deployer.py), `secondes_avant_livraison`).
 
 ## A6. Les parcours des écrans Question et Tableau de bord (C14) {: #a6 }
 
 ![Schéma du parcours de l'écran Question : entrer, demander, répondre ou refuser, remonter à la source](../../../evidence/C14/parcours/PARCOURS-C14-ecran-question.svg){: .grand }
 
-**Écran Question, relevé le 02/11/2026** (`evidence/C14/parcours/PARCOURS-C14-ecran-question.svg`) : chaque étape,
-chaque refus et chaque panne des scénarios de la spécification (`evidence/C14/preuve-specifications-ecrans-4-et-5.md`).
+**Écran Question, relevé le 02/11/2026** ([`evidence/C14/parcours/PARCOURS-C14-ecran-question.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C14/parcours/PARCOURS-C14-ecran-question.svg)) : chaque étape,
+chaque refus et chaque panne des scénarios de la spécification ([`evidence/C14/preuve-specifications-ecrans-4-et-5.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C14/preuve-specifications-ecrans-4-et-5.md)).
 
 <div class="saut"></div>
 
 ![Schéma du parcours de l'écran Tableau de bord : entrer, lire, montrer, laisser lire, dont la suspension de l'actualisation](../../../evidence/C14/parcours/PARCOURS-C14-ecran-tableau-de-bord.svg){: .grand }
 
-**Écran Tableau de bord, relevé le 02/11/2026** (`evidence/C14/parcours/PARCOURS-C14-ecran-tableau-de-bord.svg`).
+**Écran Tableau de bord, relevé le 02/11/2026** ([`evidence/C14/parcours/PARCOURS-C14-ecran-tableau-de-bord.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v1/evidence/C14/parcours/PARCOURS-C14-ecran-tableau-de-bord.svg)).
 **Limite des deux schémas** : relevés sur la version actuelle, ce ne sont pas des maquettes initiales.
