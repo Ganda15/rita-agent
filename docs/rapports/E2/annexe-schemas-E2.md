@@ -16,7 +16,7 @@ img{ display:block; margin:3mm auto; max-width:100%; max-height:132mm; width:aut
 
 # Annexe du rapport E2 : les schémas
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · compétences C6 à C8 · annexe du rapport E2, version 0.7, 1er novembre 2026
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · compétences C6 à C8 · annexe du rapport E2, version 0.8, 2 novembre 2026 (schémas inchangés depuis la version 0.7)
 {: .identite }
 
 > Cette annexe montre trois schémas, un par compétence, chacun sur sa page et suivi de sa légende : ce qu'il montre

@@ -15,7 +15,7 @@ h2#criteres, h2#criteres + p{ break-after:avoid; }
 
 # Rapport E2 : veille, choix d'un service de modèle, et son paramétrage
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 0.7, 1er novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 0.8, 2 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
 {: .identite }
 
 > **En une minute.** RITA rédige en français un court briefing sur une valeur boursière, avec un modèle de langage
@@ -40,11 +40,11 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 <li><a href="#contexte">1. Le contexte, une seule fois</a><span>p. 1</span></li>
 <li><a href="#c6">2. C6 : la veille technique et réglementaire</a><span>p. 2</span></li>
 <li><a href="#c7">3. C7 : le choix du service de modèle</a><span>p. 4</span></li>
-<li><a href="#c8">4. C8 : le service retenu, paramétré et suivi</a><span>p. 10</span></li>
-<li><a href="#criteres">5. Les 20 critères, un par un</a><span>p. 13</span></li>
+<li><a href="#c8">4. C8 : le service retenu, paramétré et suivi</a><span>p. 11</span></li>
+<li><a href="#criteres">5. Les 20 critères, un par un</a><span>p. 14</span></li>
 <li><a href="#reste">6. Ce qui n'est pas fait</a><span>p. 15</span></li>
-<li><a href="#glossaire">Glossaire</a><span>p. 15</span></li>
-<li>Annexe A1 à A3 : les schémas (PDF avec annexe)<span>p. 17</span></li>
+<li><a href="#glossaire">Glossaire</a><span>p. 16</span></li>
+<li>Annexe A1 à A3 : les schémas (PDF avec annexe)<span>p. 18</span></li>
 </ol>
 </div>
 
@@ -102,10 +102,15 @@ L'assistant de développement peut aider à lire les flux pendant le relevé ; i
 pas la note.
 
 **Un exemple de qualification de source, tiré de la note S41.** La note retient un préprint d'arXiv (2610.03448, version
-du 2 octobre 2026) qui réévalue des détecteurs d'injection. Auteur identifié (Zhuowen Liu, JAIST) ; aucun intérêt
-commercial repéré ; c'est une prépublication, non relue par des pairs ; ses conclusions convergent avec celles d'un
-autre préprint du même relevé (arXiv 2610.08571), sans confirmation indépendante des résultats. Réserve écrite : auteur unique, notoriété non établie, chiffres cités
-tels que l'auteur les rapporte, rien répliqué. Le même relevé écarte deux autres préprints pour intérêt commercial.
+du 2 octobre 2026) qui réévalue des détecteurs d'injection. Auteur identifié : Zhuowen Liu, étudiant en deuxième année
+de master au Cybersecurity Lab du JAIST (vérifié le 02/11 sur la page du laboratoire) ; notoriété non établie, aucune
+autre publication trouvée ; aucun intérêt commercial déclaré ; l'article dit avoir été rédigé avec un assistant d'IA
+sous la direction de l'auteur, et il n'est pas relu par des pairs. Recoupement du 02/11 : le coût des faux positifs
+est **recoupé** par AgentDojo, relu par les pairs (NeurIPS 2024), et, comme principe, par Simon Willison et OWASP ; le
+constat central, des scores portés par la ressemblance entre entraînement et test, n'est **pas recoupé** : seul un
+autre préprint du même relevé (arXiv 2610.08571) va dans ce sens. Je le traite donc comme une piste
+(`docs/veille/2026-S41-mesurer-le-gardefou.md`, complément du 02/11). Le même relevé écarte deux autres préprints pour
+intérêt commercial.
 
 **Les sources, une par une.** Le protocole retient cinq sources principales et deux sous condition
 (`docs/veille/README.md`, § 3). Chaque note qualifie celles qu'elle utilise dans un tableau « auteur identifié,
@@ -358,6 +363,24 @@ baisse quand la séance monte, ou seulement des mots de hausse quand elle baisse
 lignes 101 à 113). Si les deux sortes de mots sont présentes, ou aucune, il passe. Il ne lit ni les dates, ni le sens
 des autres journées citées. Il est donc à élargir aux dates et aux variations tirées des articles.
 
+**L'adéquation au besoin, service par service et usage par usage (ajout du 02/11).** RITA demande deux choses au
+modèle : rédiger le briefing et, depuis le 16/10, répondre à une question à partir des articles. Le banc du 03/10 ne
+porte que sur le briefing. Le tableau distingue ce qui a été mesuré, ce qui a été retenu et ce qui n'a pas été testé.
+
+| Service | Briefing (`/briefing`) | Question sur les articles (`/question`) |
+|---|---|---|
+| GPT-5.4 par Azure | **mesuré et retenu** : le 03/10, 30 textes sur 30 passent le garde-fou de sortie et le contrôle minimal de fidélité ; médiane de 3,21 s ; français noté 1 sur 2 ; banc fait sur le déploiement *Global Standard*, pas sur le déploiement UE actuel | **observé, sans comparaison** : le 16/10, sur le poste puis en production, les 8 scénarios connus donnent le résultat attendu : 4 réponses jugées fidèles aux passages cités, 1 abstention après appel au modèle, 3 refus avant tout appel |
+| Claude par OpenRouter | **mesuré, non retenu** : sur le même banc, 30 sur 30 aux mêmes contrôles ; médiane de 6,33 s ; français noté 1 sur 2 ; traitement dans l'UE non garanti (3.6) | **non testé** : le parcours Question n'appelle qu'Azure depuis sa conception (décision D5 du sprint 3) |
+| Claude par l'API directe d'Anthropic | **non mesuré** : aucune clé sur le poste le 03/10 ; les résultats d'OpenRouter ne sont pas ceux de l'API directe | **non testé** |
+| Mistral Large 3 et 4 | **essai exploratoire** du 10/10, un briefing par modèle : Large 3 a inventé une date de séance, Large 4 non sur cet exemple ; trop peu pour conclure (3.4) | **non testé** |
+
+Deux lectures à éviter. Les 30 sur 30 du briefing ne veulent pas dire « aucune erreur factuelle » : la relecture du
+français en a trouvé trois que le contrôle automatique a laissé passer (ci-dessus). Et les trois refus de Question
+sans appel au modèle montrent un comportement de RITA, pas une qualité du modèle. Les verdicts sur Question sont les
+miens, sur une lecture proposée par l'assistant, lors d'un seul passage réussi en production, sur des questions
+connues à l'avance (`evidence/sprint-3/evaluation-production-2026-10-16-relecture.md`). Aucun nouveau banc n'a été
+fait pour cette version.
+
 ### 3.4 L'essai de Mistral du 10/10
 
 Un vrai briefing (MC.PA, même prompt qu'Azure) a été servi par Mistral Large 3, puis par Mistral Large 4 sans
@@ -423,7 +446,8 @@ frais de la ressource Azure, ou un banc où Mistral ferait nettement mieux.
   rendu, je m'appuie sur le banc historique du 03/10, complété par une notation datée, assistée par IA et validée
   par moi. Ce report protège le temps des autres livrables ; il n'est pas imposé par une impossibilité technique : le
   banc pourrait tourner à part, sur la branche, sans toucher la production.
-- **L'usage Question** (`/question`) n'est pas mesuré par le banc.
+- **L'usage Question** (`/question`) n'est pas mesuré par le banc : Azure y a été observé le 16/10, sur cinq appels
+  au modèle, dont une abstention, et trois refus avant tout appel ; aucun autre service n'y a été essayé (3.3).
 - **L'API directe d'Anthropic** n'a jamais été mesurée, faute de clé.
 - **La variation d'un jour à l'autre** n'est pas mesurée : tout date du 03/10.
 - **Le contrat de Mistral** (sous-traitants, conservation, entraînement) n'est pas lu.
@@ -610,7 +634,7 @@ n'est pas avoir reçu le guide.
 
 ## 5. Les 20 critères, un par un {: #criteres }
 
-Auto-évaluation du 31 octobre 2026, revue le 1er novembre. ✅ critère entier satisfait, avec preuve · ⚠️ preuve partielle · ❌ aucune preuve.
+Auto-évaluation du 31 octobre 2026, revue le 1er novembre, complétée le 2 novembre pour C6.6, C6.8 et C7.4 (preuves ajoutées, états inchangés). ✅ critère entier satisfait, avec preuve · ⚠️ preuve partielle · ❌ aucune preuve.
 
 | Critère | État | Preuve ou manque |
 |---|---|---|
@@ -619,13 +643,13 @@ Auto-évaluation du 31 octobre 2026, revue le 1er novembre. ✅ critère entier 
 | C6.3 outils d'agrégation cohérents avec sources et budget | ✅ | choix des flux RSS et Atom, justifié contre un agrégateur payant et les newsletters, budget 0 € (`docs/veille/README.md`, § 4) ; usage réel dans les relevés, dont S41 (2.2) ; limite : relevé à la main, sans outil automatique |
 | C6.4 synthèses communiquées, format accessible | ⚠️ | notes en Markdown ; synthèse S33 à S36 rendue au format lisible et contrôlée le 01/11 (2.6) ; partage du 11/10 prouvé par capture ; envoi au formateur pas encore fait (2.5) |
 | C6.5 informations conformes à la thématique | ✅ | les cinq notes portent sur la thématique (2.3) |
-| C6.6 fiabilité des sources : auteur, compétences, intérêts | ⚠️ | qualification de l'auteur et de ses intérêts dans chaque note, mais incomplète : pour S41, la notoriété de l'auteur n'est pas établie (2.2) |
+| C6.6 fiabilité des sources : auteur, compétences, intérêts | ⚠️ | qualification de l'auteur et de ses intérêts dans chaque note ; pour S41, auteur vérifié le 02/11 (étudiant en master au JAIST), mais notoriété non établie (2.2) |
 | C6.7 fiabilité des sources : contenu récent, sourcé, structuré | ✅ | les sources retenues sont datées et structurées : S41 s'appuie sur un préprint daté (v1 du 02/10/2026), avec son auteur, son statut et les sections citées ; les notes S33 à S36 datent et citent leurs sources (2.2) |
-| C6.8 fiabilité des sources : accessibilité, recoupement | ⚠️ | S41 recoupée par un autre préprint seulement ; préférence pour les sources accessibles non démontrée (2.2) |
+| C6.8 fiabilité des sources : accessibilité, recoupement | ⚠️ | S41 : le coût des faux positifs recoupé le 02/11 par une source relue par les pairs et deux sources du protocole ; constat central non recoupé ; préférence pour les sources accessibles non démontrée note par note (2.2) |
 | C7.1 besoin reformulé, objectifs et contraintes | ✅ | besoin reformulé (un briefing court en français, à partir de faits fournis), contraintes mesurables, règle UE, usage Question (3.1) ; plafond du banc fixé avant la mesure, 5 USD (D2) ; limite : consommation réelle de la clé OpenRouter non lue, facturation Azure non vérifiée |
 | C7.2 services étudiés et non étudiés | ✅ | inventaire : deux services comparés, un inclus mais non mesuré, Mistral hors banc, Gemini et modèle local non étudiés, chacun avec sa raison (3.2) |
 | C7.3 raisons d'écartement | ✅ | services étudiés et non étudiés, chacun avec sa raison (3.2) : Gemini hors du périmètre de ce banc (décision D1, `docs/PLAN-C7-benchmark.md`), modèle local et services payants exclus, Claude écarté pour la règle UE (3.6) ; limite : Gemini n'est pas jugé moins bon, il est hors du périmètre |
-| C7.4 adéquation au besoin, par service | ⚠️ | 30 appels par service, français noté ; fidélité minimale, usage Question et Mistral non mesurés (3.3, 3.7) |
+| C7.4 adéquation au besoin, par service | ⚠️ | 30 appels par service, français noté ; adéquation donnée service par service et usage par usage (3.3) : briefing comparé, Question observée avec Azure seul, API directe d'Anthropic non mesurée, Mistral exploratoire ; fidélité minimale (3.3, 3.7) |
 | C7.5 démarche éco-responsable | ✅ | démarche « en fonction des informations disponibles » : relevé daté du 03/10 qui sépare les chiffres d'entreprise, ceux des éditeurs et ce qui reste inconnu par modèle (3.5) ; limite : rien ne permet de dire qu'Azure est plus sobre, ni de donner l'empreinte réelle d'un briefing ; rien sur Mistral |
 | C7.6 contraintes techniques et prérequis | ✅ | prérequis d'Azure et d'OpenRouter côte à côte : point d'accès, clé, paramètre de longueur, délai, limites de débit, lieu du traitement (3.5) ; limite : débit d'OpenRouter non relevé |
 | C7.7 conclusions : services adaptés et non adaptés | ✅ | conclusion étayée pour le briefing : service retenu et services écartés, avec leurs avantages et leurs limites ; configuration actuelle et secours envisagé séparés (3.6) ; limite : le banc ne mesure pas l'usage Question (C7.4) ; banc et contrat de Mistral manquent |
