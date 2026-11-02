@@ -16,3 +16,13 @@ puis la reprise. Captures de la barre d'outils, suspendue, en largeur normale et
 
 Limite : le bouton enfoncé ne change pas d'aspect par lui-même ; l'état est dit par le texte placé dessous et par
 `aria-pressed` pour les lecteurs d'écran.
+
+## Ajout du 02/11/2026, 11 h 30 : le focus sur le champ de clé (écart E2 de la recette)
+
+Trouvé par la recette des cinq écrans (`evidence/C17/recette-2026-11-02/README.md`, écart E2) : à l'ouverture, le
+tableau de bord était le seul écran à ne pas poser le focus sur le champ de clé. Test écrit d'abord, sur le code de
+`99de9fa`, correction ensuite, sur décision d'Era.
+
+| Écart | Avant | Après | Correction |
+|---|---|---|---|
+| Écran 5 : à l'ouverture sans clé, rien n'a le focus (WCAG 2.4.3) | `focus-cle-avant.txt` : 4 écrans réussis, le tableau de bord échoue : le focus reste sur la page, sur aucun champ | `focus-cle-apres.txt` : 54 réussis (recette au clavier et tests du tableau de bord) | une ligne dans `montrerConnexion` (`frontend/tableau-de-bord.js`), la même que sur les quatre autres écrans ; elle vaut aussi après une clé refusée |

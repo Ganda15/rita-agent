@@ -1,0 +1,5 @@
+# Ecart E2 de la recette du 02/11 : APRES la correction (une ligne dans montrerConnexion, frontend/tableau-de-bord.js), 02/11/2026 11 h 30, base 99de9fa
+# commande : PYTHON_DOTENV_DISABLED=1 C:\Python314\python.exe -m pytest -q -p no:cacheprovider --no-cov tests/test_recette_clavier.py tests/test_tableau_de_bord.py tests/test_smoke_tableau_de_bord.py -rf --tb=line
+
+......................................................                   [100%]
+54 passed in 50.02s

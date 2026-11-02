@@ -111,6 +111,13 @@ def test_au_clavier_le_champ_de_cle_est_atteint_nomme_et_son_focus_se_voit(ongle
 
 
 @pytest.mark.parametrize("ecran", ECRANS)
+def test_a_l_ouverture_sans_cle_le_focus_est_sur_le_champ_de_cle(onglet, serveur, ecran):  # noqa: F811
+    # Écart E2 de la recette du 02/11 : le tableau de bord était le seul écran à ne pas le faire.
+    _ouvrir_sans_cle(onglet, serveur, ecran)
+    assert _actif(onglet) == "cle", f"{ecran} : le focus est sur « {_actif(onglet)} », pas sur le champ de clé"
+
+
+@pytest.mark.parametrize("ecran", ECRANS)
 def test_au_clavier_entree_envoie_la_cle_et_ouvre_l_ecran(onglet, serveur, ecran):  # noqa: F811
     _ouvrir_sans_cle(onglet, serveur, ecran)
     onglet.focus("#cle")

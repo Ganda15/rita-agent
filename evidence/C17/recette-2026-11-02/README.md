@@ -79,3 +79,11 @@ trouve à l'écran est un défaut d'affichage, pas de calcul.
   réel ; aucune vérification à 320 px de large. Le test de la clé refusée sur Portefeuille attend 1,5 s fixes : il a
   échoué une fois le 02/11 pendant une suite chargée, puis réussi ; une attente sur l'état de l'écran est proposée à
   part, non appliquée.
+
+## Suite donnée, 02/11/2026, 11 h 30
+
+- **E2 corrigé**, sur décision d'Era, test écrit d'abord : `test_a_l_ouverture_sans_cle_le_focus_est_sur_le_champ_de_cle`
+  (cinq écrans) a échoué sur le seul tableau de bord, puis réussi après une ligne dans `frontend/tableau-de-bord.js`.
+  Preuves avant et après : [`../correctifs-2026-11-02/`](../correctifs-2026-11-02/README.md). Le texte ci-dessus reste
+  tel qu'écrit pendant la recette.
+- **E1** attend la décision d'Era (elle change la règle I3) ; **E3** reste à faire.

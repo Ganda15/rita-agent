@@ -201,6 +201,14 @@ Sources modifiables (`.drawio`), générateur et commande de rendu : [`parcours/
 
 ![Schéma du parcours de l'écran Tableau de bord, en quatre colonnes. Entrer : ouvrir l'écran, vérifier la clé de l'onglet, sinon la saisir ; une clé refusée (401 ou 403) ramène au formulaire. Lire : /health et /sante en parallèle, cinq secondes au plus, déclenchés toutes les 30 secondes ou à la main. Montrer : sept cartes avec leur état en mots et « Que faire », INCONNU sans donnée, une lecture en panne qui laisse l'autre lisible, un bandeau pendant un exercice. Laisser lire : seul le résumé est annoncé aux lecteurs d'écran ; suspendre l'actualisation automatique, puis la reprendre.](parcours/PARCOURS-C14-ecran-tableau-de-bord.png)
 
+## 8. Ce que la recette du 02/11/2026 a ajouté (C17.3)
+
+La recette des cinq écrans (`evidence/C17/recette-2026-11-02/README.md`) tient désormais par un test, dans un vrai
+navigateur, un point vérifié ci-dessus par lecture seulement : le déplacement du focus de l'écran 4 (Q18), par
+`test_au_clavier_une_question_se_pose_et_la_fiche_s_ouvre`. Elle a aussi trouvé un écart que ces
+spécifications n'avaient pas écrit : à l'ouverture, l'écran 5 ne posait pas le focus sur le champ de clé (WCAG 2.4.3).
+Corrigé le même jour, test d'abord (`evidence/C17/correctifs-2026-11-02/`).
+
 ## 📖 Glossaire
 
 - **User story** : un besoin écrit du point de vue de celui qui l'a (« en tant que…, je…, afin de… »).

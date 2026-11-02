@@ -204,6 +204,7 @@ function montrerConnexion(message) {
   elTableau.hidden = true;
   elConnexion.hidden = false;
   elResume.textContent = message;
+  document.getElementById("cle").focus();   // le clavier arrive au bon endroit, comme sur les quatre autres écrans
   if (minuterie) clearInterval(minuterie);
   minuterie = null;
 }
