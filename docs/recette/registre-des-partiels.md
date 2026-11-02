@@ -37,6 +37,18 @@ spécifique RNCP 37827 ; pour E3, le libellé est celui de la grille du rapport.
 
 Lignes d'E2 à renforcer en parallèle : C6.2, C6.6, C6.8, C7.4, C8.2 ; et E4 C16.1.
 
+## Point au 02/11/2026 : ce qui est fait, ce qui reste, et qui le fait
+
+Étapes 1 et 3 faites : registre corrigé ; #78, #73, #79 et #152 corrigés, tests rouges puis verts, sur `develop` et
+dans la CI GitHub (job `base` compris), **pas en production** (`main` inchangée). **Aucun statut n'a changé** : chaque
+ligne se réévalue avec sa preuve (étape 7), par Era.
+
+| Qui | Lignes | Ce qu'il faut |
+|---|---|---|
+| **Era envoie** (Drive partagé, formateur prévenu ; preuve datée : quel fichier, avec qui, quand) | E2 C6.4, C8.5 ; E4 C16.3, C17.11, C18.6, C19.7 ; E5 C20.7 ; et la capture de C16.4 | synthèse de veille (`docs/veille/Veille-C6-synthese-S33-a-S36.pdf`), guide (`docs/EXPLOITATION.pdf`), rituels (`docs/PILOTAGE-AGILE.md`), documentation technique (`README.md`, `docs/ARCHITECTURE.md`), chaîne (`docs/CI-CD.md`) ; capture de la page d'accès du tableau Kanban |
+| **Preuve à produire, sans fonctionnalité nouvelle** | E2 C6.6, C6.8, C7.4, C8.2 ; E3 C11 (deux lignes) ; E4 C14.2, C14.3, C14.4, C15.2, C15.3, C16.1, C17.3, C17.4, C17.11 (contenu du `README.md`) | recherches, notes, schémas, spécifications, recette des écrans ; chaque décision reste à Era |
+| **Décision d'Era avant tout changement** (code ou production) | E3 C9 et E4 C17.8 (#75) ; E4 C17.5 (#76), C17.7 (#74) ; E5 C20.5 (vigie planifiée) ; E4 C17.2 (nouvelle itération de maquettes, validées par Era) | proposition écrite d'abord, test d'abord ensuite |
+
 ## E2 : 6 ⚠️ et 1 ❌
 
 | Ligne | Texte exact du critère | Écart réel | Action minimale | Preuve de réussite | Situation |
@@ -54,8 +66,8 @@ Lignes d'E2 à renforcer en parallèle : C6.2, C6.6, C6.8, C7.4, C8.2 ; et E4 C1
 | Ligne | Critère (libellé de la grille) | Écart réel | Action minimale | Preuve de réussite | Situation |
 |---|---|---|---|---|---|
 | C9 🟠 | Recommandations OWASP intégrées quand nécessaire | API4 et API8 partiels : aucun en-tête de sécurité en production (24/10) | proposer les en-têtes de sécurité, test d'abord (#75) | test vert ; en-têtes lus en production | preuve actuelle à produire, après validation |
-| C10 🟠 | Tous les points de terminaison concernés sont intégrés | parcours portefeuille de la passerelle MCP refusé sur le jeu importé (#152) | correction proposée, test d'abord, **sans laisser passer de positions personnelles** | test rouge puis vert, et test qui refuse toujours des positions personnelles | correctif local du 01/11, non commité, preuves dans `evidence/C17/correctifs-2026-11-01/` ; statut réévalué après vérification, pas automatiquement |
-| C10 🟠 | Adaptations d'interface conformes aux spécifications | clé mémorisée avant d'être vérifiée (#73), sur Briefing **et sur Question** (`frontend/question.js`, envoi du formulaire de clé) | correction proposée, test d'abord, sur tous les écrans concernés | tests rouges puis verts dans un vrai navigateur | correctif local du 01/11, non commité, preuves dans `evidence/C17/correctifs-2026-11-01/` ; statut réévalué après vérification, pas automatiquement |
+| C10 🟠 | Tous les points de terminaison concernés sont intégrés | parcours portefeuille de la passerelle MCP refusé sur le jeu importé (#152) | correction proposée, test d'abord, **sans laisser passer de positions personnelles** | test rouge puis vert, et test qui refuse toujours des positions personnelles | corrigé sur `develop` (`c0ce2b9`), tests verts dans la CI GitHub, vrai import compris (job `base`) ; pas en production ; E3 étant tagué, changer son statut demande une nouvelle version d'E3 ; à réévaluer par Era |
+| C10 🟠 | Adaptations d'interface conformes aux spécifications | clé mémorisée avant d'être vérifiée (#73), sur Briefing **et sur Question** (`frontend/question.js`, envoi du formulaire de clé) | correction proposée, test d'abord, sur tous les écrans concernés | tests rouges puis verts dans un vrai navigateur | corrigé sur `develop` (`fd12d1d`), tests verts dans la CI GitHub ; pas en production ; E3 étant tagué, changer son statut demande une nouvelle version d'E3 ; à réévaluer par Era |
 | C11 🟠 | Les outils sont adaptés au contexte et aux contraintes | le contrat de Langfuse permet un traitement hors de la région ; vérification « UE seule » incomplète | relire le contrat de Langfuse (DPA) ; décision d'Era écrite : garder ou remplacer | décision datée au registre RGPD, T3 | preuve actuelle à produire |
 | C11 🟠 | Accessibilité prise en compte dans le choix de l'outil | examinée après le choix | **réexaminer le choix aujourd'hui** : besoins d'accessibilité des utilisateurs concernés (Era, exploitant), possibilités de Langfuse et d'outils comparables, décision écrite : garder, adapter ou remplacer | note datée de réexamen et décision | l'examen initial : historique non modifiable ; le réexamen : preuve actuelle |
 
@@ -72,12 +84,12 @@ Lignes d'E2 à renforcer en parallèle : C6.2, C6.6, C6.8, C7.4, C8.2 ; et E4 C1
 | C16.3 | « Les objectifs et les modalités des rituels sont partagés à toutes les parties prenantes et rappeler si besoin. » | décrits, pas communiqués | Era envoie la section des rituels au formateur | preuve datée | preuve actuelle à produire |
 | C16.4 | « Les éléments de pilotage sont rendus accessibles à toutes les parties du projet et ce tout au long du projet… » | accès au tableau non revérifié | capture de la page d'accès du tableau (Era) | capture datée | preuve actuelle ; « tout au long » : lacunes à expliquer |
 | C17.2 | « Les interfaces sont intégrées et respectent les maquettes. » | les maquettes existantes ont été dessinées après les écrans ; deux écrans n'en ont pas. Le référentiel n'exige pas que la maquette précède la toute première version du code | **nouvelle itération de conception et de validation** : besoins, maquettes validées par Era, comparaison aux cinq écrans, corrections, recette ; datée honnêtement | maquettes validées et datées ; tableau de comparaison ; recette | preuve actuelle à produire |
-| C17.3 | « Les comportements des composants d'interface… et la navigation respectent les spécifications fonctionnelles. » | #73 ; aucune recette des cinq écrans | recette des cinq écrans (normal, refus, erreur, clavier) ; correction de #73 | tableau de recette avec tests ; tests de #73 rouges puis verts | preuve actuelle à produire |
-| C17.4 | « Les composants métier sont développés et fonctionnent comme prévu par les spécifications… » | #78 (RSI d'une série plate), #79 (pire baisse positive) | corrections, tests d'abord | tests rouges puis verts, valeurs affichées vérifiées | preuve actuelle à produire, après validation |
+| C17.3 | « Les comportements des composants d'interface… et la navigation respectent les spécifications fonctionnelles. » | #73 ; aucune recette des cinq écrans | recette des cinq écrans (normal, refus, erreur, clavier) ; correction de #73 | tableau de recette avec tests ; tests de #73 rouges puis verts | #73 fait (`fd12d1d`, CI verte) ; la recette des cinq écrans reste à faire : preuve actuelle à produire |
+| C17.4 | « Les composants métier sont développés et fonctionnent comme prévu par les spécifications… » | #78 (RSI d'une série plate), #79 (pire baisse positive) | corrections, tests d'abord | tests rouges puis verts, valeurs affichées vérifiées | #78 et #79 faits (`fd12d1d`), tests rouges puis verts, #79 sur PostgreSQL dans le job `base` ; reste : vérifier les valeurs affichées à l'écran |
 | C17.5 | « La gestion des droits d'accès… est développée et respecte les spécifications fonctionnelles. » | l'API lit et écrit avec le rôle propriétaire (#76) ; elle écrit aussi le journal d'audit MCP (`mcp_calls`, `api/main.py`) ; `/docs` public | viser les **permissions minimales nécessaires** : lecture des données métier, écriture limitée au journal d'audit, toute autre modification refusée ; tests d'accès permis et refusés ; évaluer `/docs` dans le contexte du projet avant de le fermer | tests verts ; configuration de production relue | preuve actuelle à produire, après validation ; touche la production |
 | C17.7 | « Les développements sont réalisés dans le respect des bonnes pratiques d'éco-conception… » | trois écrans mesurés ; compression et cache absents (#74) | mesurer les cinq écrans dans des états utiles ; proposer #74 | mesures datées ; correction testée | preuve actuelle à produire |
 | C17.8 | « Les préconisations du top 10 d'OWASP sont implémentées dans l'application quand nécessaire. » | S1, S2, S6, S8, S9 ouverts (#75) | pour chacun : correction ou inapplicabilité justifiée, avec test | tableau S1 à S10 à jour | preuve actuelle à produire, après validation |
-| C17.11 | « La documentation technique couvre l'installation, l'architecture, les dépendances, l'exécution des tests », communiquée dans un format accessible | `README.md` non contrôlé ; communication non prouvée | contrôler `README.md` ; Era partage la documentation | contrôle daté ; preuve d'envoi | preuve actuelle à produire |
+| C17.11 | « La documentation technique couvre l'installation, l'architecture, les dépendances, l'exécution des tests », communiquée dans un format accessible | `README.md` contrôlé le 02/11 (`evidence/C17/controle-accessibilite-readme-2026-11-02.md`) : format conforme ; contenu en retard (« AppLocker » au lieu de Smart App Control, chiffres du 10/10, tests PostgreSQL non décrits, aucun lien vers `docs/ARCHITECTURE.md`) ; communication non prouvée | mettre `README.md` à jour, chiffres remesurés (décision d'Era) ; Era partage la documentation | contrôle daté ; `README.md` à jour ; preuve d'envoi | preuve actuelle à produire |
 | C18.6 | « …couvre la procédure d'installation, de configuration et de test de la chaîne », format accessible | communication non prouvée | Era partage `docs/CI-CD.md` | preuve d'envoi | preuve actuelle à produire |
 | C19.6 | « La documentation de la chaîne de livraison continue couvre la procédure d'installation, de configuration et de test de la chaîne. » | manquait : la vérification d'une publication par tag | **fait** : procédure ajoutée au § 6 de `docs/CI-CD.md` le 01/11, vérifiée sur l'exécution du 27/10 du tag `livrable-E3-v2` (40490834495) | ligne du § 6 ; exécution du 27/10 ; vérification documentaire du 01/11 | ✅ validé par Era |
 | C19.7 | « La documentation est communiquée dans un format qui respecte les recommandations d'accessibilité… » | communication non prouvée | Era partage `docs/CI-CD.md` | preuve d'envoi | preuve actuelle à produire |
@@ -99,10 +111,10 @@ Lignes d'E2 à renforcer en parallèle : C6.2, C6.6, C6.8, C7.4, C8.2 ; et E4 C1
 | #152 | le verrou de démonstration de la passerelle MCP refuse aussi le jeu d'exemple importé | accepter le jeu de démonstration **sans laisser passer de positions personnelles** | jeu importé : réponse attendue ; positions personnelles : toujours refusées |
 | #76, #75, #74 | rôle propriétaire ; constats OWASP ; compression et cache | permissions minimales (le journal d'audit MCP reste écrit) ; chaque constat corrigé ou déclaré inapplicable ; compression testée | tests d'accès permis et refusés, d'en-têtes et de compression ; changements de production à décider à part |
 
-## État des correctifs (01/11/2026)
+## État des correctifs (01/11/2026, poussés les 01 et 02/11)
 
-Preuves avant et après : `evidence/C17/correctifs-2026-11-01/` (README). Ces corrections sont **locales et non commitées** au
-01/11 : rien n'est en production. Suite complète après les quatre correctifs et la seconde revue de #152 (01/11, 22 h) : 1 871 réussis, **47 sautés**, 2 échecs attendus, 0 échec ;
+Preuves avant et après : `evidence/C17/correctifs-2026-11-01/` (README). Commités sur `develop` (`fd12d1d`, `c0ce2b9`) et
+vérifiés dans la CI GitHub ; rien n'est en production (`main` inchangée). Suite complète après les quatre correctifs et la seconde revue de #152 (01/11, 22 h) : 1 871 réussis, **47 sautés**, 2 échecs attendus, 0 échec ;
 parmi les sautés, les 24 tests PostgreSQL, exécutés à part sur la base jetable (46 réussis, 0 sauté).
 
 | Défaut | Avant | Après | État |
@@ -110,7 +122,7 @@ parmi les sautés, les 24 tests PostgreSQL, exécutés à part sur la base jetab
 | #78 | 1 échec : 100 au lieu de `None` | 20 réussis | **corrigé** (`indicateurs/risque.py`) ; convention dans `docs/indicateurs/CONCEPTION.md`, § 7.3 ; l'écran affiche « — » et le prompt du briefing reçoit « non disponible », jamais 0 |
 | #73 | 2 échecs (Briefing, Question) | 12 réussis, dont la panne au premier essai (503 ou réseau) ; 105 tests d'interface existants toujours verts | **corrigé** (`frontend/briefing.js`, `frontend/question.js`) ; vérifié aussi dans le navigateur contre l'API locale : 403, clé non gardée |
 | #152 | 1 échec : le verrou accepte d'autres prix de revient ; puis 7 échecs avec les nouveaux tests, dont le jeu importé refusé | 44 réussis, 0 sauté, dont le vrai import du fichier d'exemple sur base jetable ; une mutation du jeu attendu est détectée ; seconde revue : contenu des champs vérifié (3 échecs, puis 47 réussis, 0 sauté), fichier fictif imposé au test | **corrigé** (`passerelle_mcp/serveur.py`, jeu attendu versionné `passerelle_mcp/jeu_demo_attendu.csv`, sans route d'alias) ; conception : `docs/recette/conception-152-verrou-demo.md` |
-| #79 | 1 échec : +9,09 % au lieu de 0 % sur une hausse continue (base jetable, 01/11) | 5 réussis, dont une seule cotation (`NULL`) et une série plate (0 %) ; les 38 tests de base passent sur la même base | **corrigé** (`db/indicateurs_risque.sql`), validé localement sur PostgreSQL ; formule de `docs/indicateurs/CONCEPTION.md`, § 7.2, alignée ; job de CI `base` préparé, exécution sur GitHub à confirmer |
+| #79 | 1 échec : +9,09 % au lieu de 0 % sur une hausse continue (base jetable, 01/11) | 5 réussis, dont une seule cotation (`NULL`) et une série plate (0 %) ; les 38 tests de base passent sur la même base | **corrigé** (`db/indicateurs_risque.sql`), validé localement sur PostgreSQL ; formule de `docs/indicateurs/CONCEPTION.md`, § 7.2, alignée ; job `base` vert sur GitHub (passages 41357550846, puis 41364533942 par le marqueur) |
 
 ## Base PostgreSQL de test isolée (faite le 01/11/2026)
 
@@ -130,8 +142,9 @@ en local puis dans le job `base` de GitHub : 43 réussis, 0 sauté sur `516fbf5`
 24 qui demandent PostgreSQL (`evidence/C18/job-base-*`). `base` est exigé pour fusionner dans `main` depuis le 01/11 à
 23 h 11 (sept checks). Le 02/11, la recherche du mot `dsn_de_test`, fragile (`tests/test_ci_base.py` y entrait parce
 que le mot figure dans son texte), est remplacée par le marqueur `postgresql` : il choisit les mêmes 24 tests, nom par
-nom, et un test qui demande la base sans le marqueur échoue (`evidence/C18/marqueur-postgresql-2026-11-02.md`). Son
-exécution sur GitHub reste à confirmer sur le commit qui le porte.
+nom, et un test qui demande la base sans le marqueur échoue (`evidence/C18/marqueur-postgresql-2026-11-02.md`). Vérifié
+sur GitHub le 02/11 : 24 réussis, 0 sauté, sur `a32571f` (passage 41364533942), après un premier passage en
+échec, cause trouvée et corrigée (`evidence/C18/marqueur-premier-passage-github-echec-2026-11-02.md`).
 
 ## Preuves des sprints à réutiliser
 
@@ -145,7 +158,7 @@ poste) et **test simulé** (API interceptée ou données fabriquées).
 | E3 C9 ; E4 C17.5, C17.8 (sécurité, accès, quota) | `docs/sprint-4/SPEC.md` ; `evidence/sprint-4/` : essais d'article et de briefing piégés (20/10), rejeux en production (20 et 21/10) | production et test simulé | chaque mesure garde son périmètre : elle ne prouve pas une sécurité totale | rattacher chaque constat OWASP S1 à S10 à une mesure ou à un écart |
 | E5 C20, C21 (surveillance) | `evidence/sprint-5/production-2026-10-23.md` ; `monitorage/seuils.json` ; alerte #130 du 23/10 | production | vigie lancée à la main | annoncer « production » seulement pour ce qui y a tourné |
 | E5 C20, C21 (exercices) | `evidence/sprint-5/copie-locale-2026-10-22.md` ; `evidence/sprint-5/test-doc-et-repetitions-2026-10-23.md` (panne simulée, retour arrière, dérive) | exercice local | à présenter comme exercice, jamais comme incident de production ; la répétition de la documentation a été faite par Era lui-même (ligne 9), pas par une autre personne | un test du guide par une autre personne serait une démarche distincte |
-| #79, #152 (intégration) | `tests/garde_base.py` (garde de la base de test, sprint 4) | test simulé | base jetable utilisée en local le 01/11 ; exécution dans la CI GitHub à confirmer | job `base`, après la poussée de la branche |
+| #79, #152 (intégration) | `tests/garde_base.py` (garde de la base de test, sprint 4) | test simulé, puis base réelle jetable | aucun : le job `base` tourne sur GitHub à chaque poussée (24 réussis, 0 sauté, le 02/11) et il est exigé pour fusionner dans `main` | faite (`evidence/C18/`) |
 
 ## E1
 
