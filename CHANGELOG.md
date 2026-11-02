@@ -9,6 +9,22 @@
 
 ---
 
+## 2026-11-02 : retour écrit du formateur appliqué, MCD aligné sur la base ; E1 v5, E2 v0.9 et E3 v2.0 prêts
+
+**Manques découverts** : par la recette des écrans, un focus absent sur le tableau de bord (corrigé) et des cas d'erreur
+vérifiés seulement par lecture du code (testés depuis) ; par le formateur, l'écart entre le MCD et la base (un `1,n` que
+rien n'imposait) ; par la relecture d'E2, un « contrôle automatique du prompt » annoncé que le banc ne faisait pas, et
+`/sante` confondu avec la vigie ; dans le PDF E1 avec annexes, une ancienne page 6 à 0,12 ms.
+
+**Décisions structurantes d'Era** : `VALEUR 0,n` pour la cotation (le modèle s'aligne sur la base, aucun contrôle ajouté
+à l'import) ; nouvelles versions E1 v5 et E3 v2.0, et pas seulement un oral ajusté ; la réponse 403 est gardée et
+défendue ; E2 v0.8 pour la relecture du formateur, v0.9 pour le jury. Détail dans `CONTINUITE.md`, D.
+
+**Rien n'est envoyé ni fusionné dans `main`** : les tags `livrable-E1-v5`, `livrable-E2-v1` et `livrable-E3-v3` se posent
+après la fusion, avant tout envoi, et les liens se vérifient alors (zéro cassé exigé).
+
+---
+
 ## 2026-11-01, nuit : recette, quatre manques corrigés avec leurs tests ; job `base` exigé pour fusionner dans `main`
 
 **Manques découverts, puis corrigés sur `develop`, tests écrits avant** (pas encore en production) : #78, un RSI de 100
