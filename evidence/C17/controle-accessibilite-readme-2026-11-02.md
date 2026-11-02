@@ -44,3 +44,20 @@ code exclus, le 02/11/2026.
 - Le rendu de GitHub n'a pas été audité, et aucun lecteur d'écran n'a été passé.
 - Les écarts de contenu ne sont pas corrigés ici : la mise à jour de `README.md` attend la décision d'Era.
 - La communication n'est pas faite : un document présent dans le dépôt n'est pas un document communiqué.
+
+## Après la mise à jour (02/11/2026, la même nuit, sur décision d'Era)
+
+Les quatre écarts de contenu sont corrigés dans `README.md` : Smart App Control au lieu d'« AppLocker » ; chiffres
+remesurés le 02/11 (1 927 tests collectés, 1 878 réussis sur le poste ; schéma recompté, inchangé ; API : 19 chemins,
+dont 12 de données) ; une section sur les tests qui demandent PostgreSQL ; des liens vers `docs/ARCHITECTURE.md` et
+`docs/CI-CD.md`. Le tableau des livrables est à l'état du 02/11 (tags `livrable-E1-v3` et `livrable-E3-v2`, rapports
+E2, E4 et E5 rédigés sur `develop`), et la ligne « Présents » dit ce que sert la production (`922349d`, `/health` lu
+le 02/11).
+
+| Vérification | Résultat |
+|---|---|
+| Règles d'accessibilité, même script | un seul titre de premier niveau (11 titres), aucun niveau sauté, 29 liens au texte explicite (sept ont pour texte un chemin ou un tag en code), aucune URL nue, 3 tableaux avec en-tête, aucune information par la seule couleur |
+| Tests qui lisent `README.md` (`tests/test_livrable_sprint5_doc.py`, `tests/test_verifier_liens.py`) | 29 réussis |
+| `scripts/verifier_liens.py`, tout le dépôt | 341 liens internes et 427 externes vérifiés, 0 cassé |
+
+La communication de la documentation reste à faire et à prouver.
