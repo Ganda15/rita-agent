@@ -24,7 +24,8 @@ un document daté), **Proposé** (conception, rien de réalisé), **À vérifier
 `position.date_cloture` (03/10), ni `macro_observation` (27/09), ni `mcp_calls` (03/10), et sa note « devise sans taux
 ≠ taux 1 » est réglée depuis le 03/10 (la vue rend `taux_manquant` au lieu d'un taux supposé). Ses cardinalités sont
 celles des tables (0,N : une clé étrangère n'oblige pas une valeur à avoir un alias ou une cotation) ; le MCD donne
-celles du métier (1,n). Dans les données du 04/10, aucune valeur n'est sans alias ni sans cotation, et aucune devise
+celles du métier (1,n) ; depuis le 02/11, le MCD dit aussi `0,n` pour la cotation
+(`evidence/C4/preuve-mcd-merise.md`, section 5 bis). Dans les données du 04/10, aucune valeur n'est sans alias ni sans cotation, et aucune devise
 n'est sans taux. L'architecture des données est une conception datée : les noms des trois outils MCP
 (`rita_fraicheur`, `rita_indicateurs`, `rita_portefeuille`) sont ceux de `passerelle_mcp/serveur.py`, les éléments
 marqués « Proposé » ne sont pas construits.

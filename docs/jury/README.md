@@ -20,7 +20,7 @@ du travail.
 | C1, collecter | les cinq types de sources et la collecte du soir | [`sources/`](../../sources), [`pipelines/ingest.py`](../../pipelines/ingest.py), [preuves C1](../../evidence/C1/README.md) |
 | C2, interroger | les requêtes documentées, en SQL et en Spark | [`db/requetes.sql`](../../db/requetes.sql), [`bigdata/`](../../bigdata), [preuve C2](../../evidence/C2/preuve-requetes-sql.md) |
 | C3, nettoyer | chaque défaut mesuré devient une règle | [`db/importer.py`](../../db/importer.py), [`tests/test_importer.py`](../../tests/test_importer.py), [preuves C3](../../evidence/C3) |
-| C4, modéliser | le MCD Merise, le schéma PostgreSQL, le rôle de lecture, le RGPD | [MCD](../../evidence/C4/MCD-MERISE-RITA.png), [`db/schema.sql`](../../db/schema.sql), [`db/roles.sql`](../../db/roles.sql), [registre RGPD](../../db/RGPD-registre-des-traitements.md), [`db/rgpd_purge.py`](../../db/rgpd_purge.py) |
+| C4, modéliser | le MCD Merise, le schéma PostgreSQL, le rôle de lecture, le RGPD | [MCD du 02/11](../../evidence/C4/MCD-MERISE-RITA-2026-11-02.png) (celui du 01/08 est gardé à côté), [`db/schema.sql`](../../db/schema.sql), [`db/roles.sql`](../../db/roles.sql), [registre RGPD](../../db/RGPD-registre-des-traitements.md), [`db/rgpd_purge.py`](../../db/rgpd_purge.py) |
 | C5, servir | l'API REST des données, protégée par une clé | [`api/donnees.py`](../../api/donnees.py), [`tests/test_api_donnees.py`](../../tests/test_api_donnees.py), [preuve C5](../../evidence/C5/preuve-api-jeu-de-donnees.md) |
 
 ## E3 : le modèle, exposé, intégré, surveillé, testé, livré

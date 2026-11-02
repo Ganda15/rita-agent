@@ -1,0 +1,12 @@
+# C4, VALEUR 0,n : test ecrit AVANT le nouveau MCD, 02/11/2026 14 h 24, base 06fb64a
+# commande : PYTHON_DOTENV_DISABLED=1 C:\Python314\python.exe -m pytest -q -p no:cacheprovider --no-cov tests/test_mcd_c4.py -rs --tb=line
+
+F.Fs                                                                     [100%]
+================================== FAILURES ===================================
+E   FileNotFoundError: [Errno 2] No such file or directory: 'D:\\KandaWork\\RITA_PROJECT\\rita-agent\\evidence\\C4\\MCD-MERISE-RITA-2026-11-02.drawio'
+C:\Python314\Lib\pathlib\__init__.py:771: FileNotFoundError: [Errno 2] No such file or directory: 'D:\\KandaWork\\RITA_PROJECT\\rita-agent\\evidence\\C4\\MCD-MERISE-RITA-2026-11-02.drawio'
+E   FileNotFoundError: [Errno 2] No such file or directory: 'D:\\KandaWork\\RITA_PROJECT\\rita-agent\\evidence\\C4\\MCD-MERISE-RITA-2026-11-02.drawio'
+C:\Python314\Lib\pathlib\__init__.py:771: FileNotFoundError: [Errno 2] No such file or directory: 'D:\\KandaWork\\RITA_PROJECT\\rita-agent\\evidence\\C4\\MCD-MERISE-RITA-2026-11-02.drawio'
+=========================== short test summary info ===========================
+SKIPPED [1] tests\test_mcd_c4.py:64: pas de DATABASE_URL : base locale absente (CI)
+2 failed, 1 passed, 1 skipped in 3.17s

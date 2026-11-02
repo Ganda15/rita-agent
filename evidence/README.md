@@ -56,7 +56,7 @@ suivantes ont été créées ou complétées du 02 au 04/10/2026.
 | Nettoyage : défaut mesuré, décision, fichier (04/10) | **C3** | [`../docs/rapports/E1/schemas/E1-nettoyage.png`](../docs/rapports/E1/schemas/E1-nettoyage.png), générée depuis le code |
 | *Partition pruning* Parquet + Spark | **C1** | [`../bigdata/schemas/`](../bigdata/schemas/) |
 | Les 3 requêtes Spark SQL | **C2** | [`../bigdata/schemas/`](../bigdata/schemas/) |
-| MCD Merise | **C4** | [`C4/MCD-MERISE-RITA.png`](C4/MCD-MERISE-RITA.png) |
+| MCD Merise | **C4** | [`C4/MCD-MERISE-RITA-2026-11-02.png`](C4/MCD-MERISE-RITA-2026-11-02.png) (`VALEUR 0,n`, décision du 02/11) ; celui du 01/08 : [`C4/MCD-MERISE-RITA.png`](C4/MCD-MERISE-RITA.png) |
 
 Chaque schéma a sa **source éditable** à côté (`.svg`, et `.drawio` quand il existe) — un
 schéma qu'on ne peut pas rouvrir est un schéma qu'on ne peut pas corriger.
