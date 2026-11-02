@@ -87,3 +87,9 @@ trouve à l'écran est un défaut d'affichage, pas de calcul.
   Preuves avant et après : [`../correctifs-2026-11-02/`](../correctifs-2026-11-02/README.md). Le texte ci-dessus reste
   tel qu'écrit pendant la recette.
 - **E1** attend la décision d'Era (elle change la règle I3) ; **E3** reste à faire.
+- **E3 fait à 12 h**, sans toucher au code de l'application : `tests/test_recette_erreurs.py`, 8 tests dans un vrai
+  navigateur (API simulée), qui jouent la panne et le serveur muet sur Portefeuille et Indicateurs, la clé refusée
+  oubliée et redemandée sur les deux, la panne du lot 3 (le lot 1 reste lisible, trois tirets) et la panne 503 de
+  Question dans l'encart d'erreur, jamais comme un refus. Mis à l'épreuve : 7 lignes du code cassées une à une, 7
+  échecs, chaque fichier restauré à l'octet près ; le serveur muet sur Indicateurs n'a pas eu sa mutation. Sortie et
+  mutations : [`erreurs-navigateur.txt`](erreurs-navigateur.txt).

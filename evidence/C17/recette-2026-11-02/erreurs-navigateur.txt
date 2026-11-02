@@ -1,0 +1,23 @@
+# Ecart E3 de la recette du 02/11 : les situations d'erreur jouees dans un vrai navigateur, 02/11/2026 12 h 02, base eca894b, code de l'application inchange
+# API simulee (routes Playwright) : test simule, pas une preuve de production
+# commande : PYTHON_DOTENV_DISABLED=1 C:\Python314\python.exe -m pytest -v -p no:cacheprovider --no-cov tests/test_recette_erreurs.py
+
+tests/test_recette_erreurs.py::test_une_reponse_en_erreur_est_dite_et_rien_ne_s_affiche[portefeuille] PASSED [ 12%]
+tests/test_recette_erreurs.py::test_une_reponse_en_erreur_est_dite_et_rien_ne_s_affiche[indicateurs] PASSED [ 25%]
+tests/test_recette_erreurs.py::test_un_serveur_qui_ne_repond_pas_est_dit[portefeuille] PASSED [ 37%]
+tests/test_recette_erreurs.py::test_un_serveur_qui_ne_repond_pas_est_dit[indicateurs] PASSED [ 50%]
+tests/test_recette_erreurs.py::test_une_cle_refusee_est_oubliee_et_redemandee[portefeuille] PASSED [ 62%]
+tests/test_recette_erreurs.py::test_une_cle_refusee_est_oubliee_et_redemandee[indicateurs] PASSED [ 75%]
+tests/test_recette_erreurs.py::test_une_panne_du_lot_3_laisse_le_lot_1_lisible PASSED [ 87%]
+tests/test_recette_erreurs.py::test_une_panne_s_affiche_dans_l_encart_d_erreur_et_pas_comme_un_refus PASSED [100%]
+============================= 8 passed in 16.12s ==============================
+
+# Mise a l'epreuve : une ligne du code cassee a la fois, le test qui la garde lance, le fichier restaure a l'octet pres
+# script : mutations_e3.py (hors depot), 7 mutations
+ECHEC ATTENDU | app.js : la réponse en erreur n'est plus traitée | -k "une_reponse_en_erreur and portefeuille" | 1 failed, 7 deselected in 15.97s
+ECHEC ATTENDU | indicateurs.js : la réponse en erreur n'est plus traitée | -k "une_reponse_en_erreur and indicateurs" | 1 failed, 7 deselected in 15.97s
+ECHEC ATTENDU | app.js : le serveur muet n'est plus dit | -k "ne_repond_pas and portefeuille" | 1 failed, 7 deselected in 15.38s
+ECHEC ATTENDU | app.js : la clé refusée n'est plus oubliée | -k "cle_refusee and portefeuille" | 1 failed, 7 deselected in 10.15s
+ECHEC ATTENDU | indicateurs.js : la clé refusée n'est plus oubliée | -k "cle_refusee and indicateurs" | 1 failed, 7 deselected in 10.38s
+ECHEC ATTENDU | indicateurs.js : le lot 3 est lu même en panne | -k "lot_3" | 1 failed, 7 deselected in 15.83s
+ECHEC ATTENDU | question.js : une panne 503 s'affiche comme un refus | -k "encart_d_erreur" | 1 failed, 7 deselected in 18.63s
