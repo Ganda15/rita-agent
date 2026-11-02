@@ -32,3 +32,5 @@ rendu » (Chrome exige un `--user-data-dir`) :
 
 Chaque PNG a été regardé avant d'être rangé, le 01/11/2026 : aucune flèche ne traverse une boîte ni un titre, aucun
 texte n'est coupé.
+
+Corrigés le 02/11/2026 (rapport E2 v0.9, après relecture) : dans A2, la case « Le résultat » compare désormais deux estimations au prix public par briefing (0,0047 contre 0,0060 USD), au lieu d'un montant déclaré et d'une estimation ; dans A3, la case « /sante, puis la vigie » sépare la route qui fournit les mesures et le programme qui ouvre l'alerte ; dans A1, « La leçon, S41 va dans ce sens » remplace « confirmée en S41 », qui disait plus que la note. Les trois PNG ont été rendus et regardés de nouveau.

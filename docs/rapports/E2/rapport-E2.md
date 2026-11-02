@@ -8,6 +8,7 @@
 .sommaire li a{ color:var(--ink); }
 .sommaire li span{ color:var(--accent); font-weight:600; }
 p, li{ orphans:3; widows:3; }
+.saut-page{ break-before:page; }
 h2#criteres, h2#criteres + p{ break-after:avoid; }
 </style>
 
@@ -15,7 +16,7 @@ h2#criteres, h2#criteres + p{ break-after:avoid; }
 
 # Rapport E2 : veille, choix d'un service de modèle, et son paramétrage
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 0.8, 2 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 0.9, 2 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
 {: .identite }
 
 > **En une minute.** RITA rédige en français un court briefing sur une valeur boursière, avec un modèle de langage
@@ -37,14 +38,16 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 <p class="sommaire-titre">Sommaire</p>
 <ol>
 <li><a href="#lire">Lire ce rapport</a><span>p. 1</span></li>
-<li><a href="#contexte">1. Le contexte, une seule fois</a><span>p. 1</span></li>
+<li><a href="#contexte">1. Le contexte, une seule fois</a><span>p. 2</span></li>
 <li><a href="#c6">2. C6 : la veille technique et réglementaire</a><span>p. 2</span></li>
-<li><a href="#c7">3. C7 : le choix du service de modèle</a><span>p. 4</span></li>
+<li><a href="#c7">3. C7 : le choix du service de modèle</a><span>p. 5</span></li>
 <li><a href="#c8">4. C8 : le service retenu, paramétré et suivi</a><span>p. 11</span></li>
 <li><a href="#criteres">5. Les 20 critères, un par un</a><span>p. 14</span></li>
-<li><a href="#reste">6. Ce qui n'est pas fait</a><span>p. 15</span></li>
+<li><a href="#reste">6. Ce qui n'est pas fait</a><span>p. 16</span></li>
 <li><a href="#glossaire">Glossaire</a><span>p. 16</span></li>
-<li>Annexe A1 à A3 : les schémas (PDF avec annexe)<span>p. 18</span></li>
+<li>Annexe A1 : la veille (PDF avec annexe)<span>p. 18</span></li>
+<li>Annexe A2 : le choix du service<span>p. 19</span></li>
+<li>Annexe A3 : le service aujourd'hui<span>p. 20</span></li>
 </ol>
 </div>
 
@@ -56,7 +59,9 @@ il est configuré, surveillé, documenté et remis à quelqu'un d'autre. Un chif
 source ; ce qui n'existe pas est écrit comme tel. Un brouillon de ce rapport existait en juillet 2026 dans mes notes ;
 ses tableaux comparatifs portaient des scores d'exemple d'un gabarit de formation, jamais mesurés. **Rien n'en est
 repris** ; ce rapport repart des faits. Chaque compétence a son schéma en annexe : A1 pour la veille, A2 pour le
-choix du service, A3 pour le service tel qu'il tourne aujourd'hui (PDF avec annexe). Trois preuves s'ouvrent
+choix du service, A3 pour le service tel qu'il tourne aujourd'hui (PDF avec annexe). Ils ont été dessinés le 01/11
+pour ce rapport, à partir des preuves qu'il cite : ce sont des figures de synthèse, pas des documents de conception
+d'époque. Trois preuves s'ouvrent
 directement dans le dépôt GitHub privé, à la version `922349d` (le formateur y a un accès en lecture, compte `bybysker`, vérifié le 30/10 ; l'accès du jury n'est pas
 confirmé) :
 [les 60 résultats bruts du banc](https://github.com/Ganda15/rita-agent/blob/922349da2042a6f2272f9c7c0738641aa63eb1f3/evidence/C7/resultats-2026-10-03.jsonl),
@@ -104,7 +109,7 @@ pas la note.
 **Un exemple de qualification de source, tiré de la note S41.** La note retient un préprint d'arXiv (2610.03448, version
 du 2 octobre 2026) qui réévalue des détecteurs d'injection. Auteur identifié : Zhuowen Liu, étudiant en deuxième année
 de master au Cybersecurity Lab du JAIST (vérifié le 02/11 sur la page du laboratoire) ; notoriété non établie, aucune
-autre publication trouvée ; aucun intérêt commercial déclaré ; l'article dit avoir été rédigé avec un assistant d'IA
+autre publication trouvée dans la liste consultée du laboratoire ; aucun intérêt commercial déclaré ; l'article dit avoir été rédigé avec un assistant d'IA
 sous la direction de l'auteur, et il n'est pas relu par des pairs. Recoupement du 02/11 : le coût des faux positifs
 est **recoupé** par AgentDojo, relu par les pairs (NeurIPS 2024), et, comme principe, par Simon Willison et OWASP ; le
 constat central, des scores portés par la ressemblance entre entraînement et test, n'est **pas recoupé** : seul un
@@ -156,7 +161,7 @@ générale de RITA.
 
 Le seuil cible reste fixé à 85 %. Le test est marqué en échec attendu (`xfail`, `tests/test_evals.py`) : cette
 insuffisance reste visible dans chaque rapport de tests, mais elle ne bloque pas la chaîne. Une CI verte ne signifie
-donc pas que le seuil est atteint. La note S41 (11/10) a confirmé la leçon avec la littérature : un détecteur peut
+donc pas que le seuil est atteint. La note S41 (11/10) va dans le même sens, avec la littérature : un détecteur peut
 réussir le test sur lequel il a été entraîné et rater presque tout sur un autre jeu.
 
 ### 2.5 Le partage
@@ -208,12 +213,13 @@ Au 03/10, date du banc, RITA demandait au modèle **une seule tâche** : rédige
 | Un français lisible par un particulier | une note de 0 à 2 par texte, fournisseur masqué |
 | Une latence acceptable | médiane et 95e centile, sans seuil fixé à l'avance |
 | Le coût par briefing | jetons rapportés par le fournisseur, prix public daté |
-| Aucune donnée personnelle dans le prompt | contrôle automatique du prompt envoyé |
+| Pour le briefing, ni position du portefeuille, ni quantité détenue, ni prix de revient dans le prompt | par construction : le briefing ne lit que des données de marché (`agents/scout.py`), et un test vérifie que la trace du scout n'en porte aucune (`tests/test_trace_chemin.py`) ; le banc ne contrôlait pas le prompt lui-même |
 | Aucune donnée personnelle hors de l'UE (règle du projet, 05/10) | type de déploiement et région renvoyée par le service |
 
 Ce que le besoin n'exige pas : du code, de l'image, de la conversation, un long contexte (le prompt tient en moins de
 1 000 jetons). Depuis le 16/10, un second usage s'ajoute : répondre à une question libre à partir des articles
-(`/question`), avec Azure seul et une réponse au format JSON imposé (registre RGPD, T8). Le banc du 03/10 ne le couvre
+(`/question`), avec Azure seul et une réponse au format JSON imposé (registre RGPD, T8) ; le texte saisi par
+l'utilisateur est alors transmis au modèle (4.3). Le banc du 03/10 ne le couvre
 pas.
 
 **Le budget qui a pesé sur le choix.** Deux règles l'encadrent : aucune nouvelle dépense hors modèle (3.2), et des
@@ -347,8 +353,7 @@ remarques factuelles séparées de la note (`evidence/C7/notes-francais-2026-10-
 datée ; le fichier d'origine et ses textes sont intacts). Notes et remarques ont été proposées avec l'aide de Codex,
 puis relues, corrigées si nécessaire et validées par moi : c'est une évaluation assistée par IA, pas une évaluation
 humaine indépendante. La correspondance entre textes et fournisseurs n'a été ouverte qu'après l'enregistrement des 60
-notes. Les 60 textes ont reçu la note de 1 sur 2 pour la qualité du français, selon une évaluation assistée par IA puis
-relue et validée par moi. Ce critère ne départage pas les fournisseurs. Le choix doit donc s'appuyer également sur les
+notes. Les 60 textes ont reçu la note de 1 sur 2 : ce critère ne départage pas les fournisseurs. Le choix doit donc s'appuyer également sur les
 autres mesures du benchmark et leurs limites.
 
 Les remarques ont pourtant appris quelque chose. Elles relèvent des défauts qui reviennent : le RSI et les moyennes
@@ -366,6 +371,7 @@ des autres journées citées. Il est donc à élargir aux dates et aux variation
 **L'adéquation au besoin, service par service et usage par usage (ajout du 02/11).** RITA demande deux choses au
 modèle : rédiger le briefing et, depuis le 16/10, répondre à une question à partir des articles. Le banc du 03/10 ne
 porte que sur le briefing. Le tableau distingue ce qui a été mesuré, ce qui a été retenu et ce qui n'a pas été testé.
+{: .saut-page }
 
 | Service | Briefing (`/briefing`) | Question sur les articles (`/question`) |
 |---|---|---|
@@ -537,6 +543,7 @@ production ne fait plus (conteneur relu le 31/10). Un second test vérifie que C
 remplace pas cet ordre par le sien (`tests/test_docker_compose.py`, ligne 144).
 
 **Ce qui reste ouvert.**
+
 - **Aucun secours.** Mistral Large 4 a été choisi le 10/10 comme futur second fournisseur, sous conditions, mais il
   n'est ni validé ni actif : il n'existe que sur la branche
   `mistral-ue` (PR #88, ouverte depuis le 10/10, en conflit avec `develop`), et son contrat n'est pas lu. Si Azure
@@ -580,10 +587,13 @@ elle a révélé une erreur de configuration. Le 24/10, elle a aussi ouvert à t
 retour à la normale : corrigé dans `main` le 1er novembre 2026 (`922349d`), les tests de non-régression passent, sans
 qu'un nouveau retour à la normale réel ait encore été observé ; l'incident est détaillé dans le rapport E5 (INC-009).
 
-**La vigie.** La route `/sante` (`api/sante.py`) expose les signaux du service et leur verdict : erreurs, refus,
+**`/sante` et la vigie.** La route `/sante` (`api/sante.py`) fournit les mesures du service et leurs verdicts : erreurs, refus,
 latence, coût, fraîcheur, avec des seuils écrits et argumentés (`monitorage/seuils.json`). Le coût est estimé au prix
 public d'Azure relevé le 22/10 pour ce déploiement (`monitorage/prix.json` : 2,42 € par million de jetons en entrée,
 14,52 € en sortie).
+La vigie (`monitorage/vigie.py`) est un programme à part : elle interroge le service de dehors, `/health` puis
+`/sante`, et peut ouvrir ou mettre à jour une alerte, sous forme d'issue GitHub ; elle ne se lance aujourd'hui qu'à la
+main (rapport E5).
 
 **Limites.** La supervision fournie par Azure lui-même (les métriques du portail) n'est décrite nulle part ; le guide
 renvoie seulement à « l'état du service sur le portail Azure ». L'issue #77, ouverte par la première alerte du 04/10,
@@ -716,5 +726,5 @@ limite. Décision d'Era.
 | **Cascade de fournisseurs** | si un service échoue, le suivant de la liste est essayé ; la trace dit lequel a répondu |
 | **Hook** | contrôle automatique lancé par l'outil de développement avant une action, qui peut la refuser |
 | **Trace, métadonnées** | le relevé d'un appel (étapes, durée, modèle, jetons) ; les métadonnées décrivent l'appel sans son contenu |
-| **Vigie** | la route `/sante` de RITA, qui compare les signaux du service à des seuils écrits |
+| **Vigie** | le programme `monitorage/vigie.py`, qui interroge le service de dehors et peut ouvrir ou mettre à jour une alerte (une issue GitHub) ; les mesures et leurs verdicts viennent de la route `/sante` |
 | **Remise (handover)** | donner la documentation à quelqu'un qui peut faire tourner le service sans vous, et en garder la preuve |

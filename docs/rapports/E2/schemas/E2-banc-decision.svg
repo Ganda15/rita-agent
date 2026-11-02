@@ -4,7 +4,7 @@
 <rect width="1400" height="692" fill="#FFFFFF"/>
 <rect x="40" y="16" width="1320" height="5" fill="#1565C0"/>
 <text x="40" y="54" font-size="32" font-weight="700" fill="#0B2A5B">Le choix du service (C7) : le banc du 03/10, puis les décisions datées</text>
-<text x="40" y="80" font-size="17" fill="#1F2937">Rapport E2, section 3 · dessiné le 01/11/2026 pour ce rapport, d&#x27;après evidence/C7/ et CONTINUITE.md</text>
+<text x="40" y="80" font-size="17" fill="#1F2937">Rapport E2, section 3 · dessiné le 01/11/2026 pour ce rapport, corrigé le 02/11, d&#x27;après evidence/C7/ et CONTINUITE.md</text>
 <g transform="translate(0,16)">
 <rect x="40" y="100" width="1320" height="168" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
 <rect x="40" y="288" width="1320" height="168" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
@@ -31,7 +31,8 @@
 <text x="1051" y="158" font-size="17.5" font-weight="700" fill="#0B2A5B">Le résultat</text>
 <text x="1051" y="180" font-size="15.5" fill="#111827">égalité : 30 sur 30 partout ;</text>
 <text x="1051" y="200" font-size="15.5" fill="#111827">médiane 3,21 s contre 6,33 s ;</text>
-<text x="1051" y="220" font-size="15.5" fill="#111827">0 € déclaré contre 0,0060 USD</text>
+<text x="1051" y="220" font-size="15.5" fill="#111827">prix public par briefing :</text>
+<text x="1051" y="240" font-size="15.5" fill="#111827">0,0047 contre 0,0060 USD</text>
 <rect x="56" y="322" width="240" height="116" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
 <rect x="56" y="322" width="7" height="116" fill="#C2410C"/>
 <text x="73" y="346" font-size="17.5" font-weight="700" fill="#9A3412">05/10, règle UE</text>

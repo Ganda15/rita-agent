@@ -36,3 +36,18 @@ def test_le_rapport_tient_entre_quinze_et_vingt_pages():
     """Rapport pro 2 : de 15 à 20 pages (support de certification, détail des livrables, E2)."""
     pypdf = pytest.importorskip("pypdf", reason="pypdf absent : le PDF se relit sur le poste")
     assert 15 <= len(pypdf.PdfReader(str(RAPPORT.with_suffix(".pdf"))).pages) <= 20
+
+
+ANNEXE = re.compile(r"<li>Annexe (A\d)[^<]*<span>p\. (\d+)</span></li>")
+
+
+def test_les_pages_de_l_annexe_annoncees_sont_celles_du_pdf_avec_annexe():
+    # E2 v0.9 (02/11/2026) : la page des miniatures est retirée, le sommaire annonce A1, A2 et A3 chacun à sa page du
+    # PDF avec annexe. Ces numéros ne sont pas calculés par `scripts/rendre_pdf.py` : ce test les tient.
+    fitz = pytest.importorskip("fitz", reason="PyMuPDF absent : le PDF se relit sur le poste, la CI ne rend pas de PDF")
+    annonces = ANNEXE.findall(RAPPORT.read_text(encoding="utf-8"))
+    assert [a for a, _ in annonces] == ["A1", "A2", "A3"]
+    with fitz.open(RAPPORT.with_name("rapport-E2-avec-annexe.pdf")) as pdf:
+        assert len(pdf) == len(fitz.open(RAPPORT.with_suffix(".pdf"))) + 3
+        for schema, page in annonces:
+            assert f"{schema}. " in pdf[int(page) - 1].get_text(), f"{schema} n'est pas en page {page}"

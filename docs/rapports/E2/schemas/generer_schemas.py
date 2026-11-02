@@ -27,7 +27,7 @@ _spec.loader.exec_module(moteur)
 
 Schema, Boite, Fleche = moteur.Schema, moteur.Boite, moteur.Fleche
 
-DESSIN = "dessiné le 01/11/2026 pour ce rapport"
+DESSIN = "dessiné le 01/11/2026 pour ce rapport, corrigé le 02/11"
 
 # =============================================================================
 # B1 : la veille, de la source à la décision (C6)
@@ -50,7 +50,7 @@ VEILLE = Schema(
         Boite("zc", 940, 100, 420, 400, "3. UTILISER ET PARTAGER", genre="zone"),
         Boite("chg", 956, 134, 388, 100, "Ce que ça change dans RITA", ["S34 (17/08) : 3 cas adverses,", "le filtre d'injection bloque 7 sur 10 ;", "seuil 85 %, test en échec attendu"], "lavis"),
         Boite("par", 956, 254, 388, 100, "Le partage", ["11/10 : note S41 sur Discord,", "canal #veille ; capture versée ;", "aucune réponse au 31/10"], "normal"),
-        Boite("lec", 956, 374, 388, 100, "La leçon, confirmée en S41", ["un détecteur réussit le test sur", "lequel il a été réglé, et rate", "presque tout sur un autre jeu"], "note"),
+        Boite("lec", 956, 374, 388, 100, "La leçon, S41 va dans ce sens", ["un détecteur peut réussir le test", "sur lequel il a été réglé, et rater", "presque tout sur un autre jeu"], "note"),
 
         Boite("lim", 40, 520, 1320, 80, "Limites", ["7 relevés et 5 notes de S33 à S44, dont 3 en rattrapage ; rien depuis le 11/10 · aucun échange collectif documenté", "accessibilité des notes non consignée (cases non cochées en S41) · envoi au formateur non effectué"], "manque"),
     ],
@@ -81,7 +81,7 @@ BANC = Schema(
         Boite("jeu", 56, 134, 306, 116, "Le jeu figé", ["10 cas, construits par le", "vrai code : 7 du portefeuille,", "hausse, baisse, Londres"], "stock"),
         Boite("srv", 382, 134, 306, 116, "2 services, 3 passages", ["Azure gpt-5.4 (Global", "Standard), Claude par", "OpenRouter : 60 résultats"], "lavis"),
         Boite("ctl", 708, 134, 306, 116, "Les contrôles", ["garde-fou de sortie, fidélité", "minimale, latence, coût ;", "français noté le 31/10"], "garde"),
-        Boite("res", 1034, 134, 306, 116, "Le résultat", ["égalité : 30 sur 30 partout ;", "médiane 3,21 s contre 6,33 s ;", "0 € déclaré contre 0,0060 USD"], "note"),
+        Boite("res", 1034, 134, 306, 116, "Le résultat", ["égalité : 30 sur 30 partout ;", "médiane 3,21 s contre 6,33 s ;", "prix public par briefing :", "0,0047 contre 0,0060 USD"], "note"),
 
         Boite("zd", 40, 288, 1320, 168, "PUIS, LES DÉCISIONS DATÉES", genre="zone"),
         Boite("d1", 56, 322, 240, 116, "05/10, règle UE", ["aucune donnée", "personnelle hors de", "l'Union européenne"], "garde"),
@@ -126,7 +126,7 @@ SERVICE = Schema(
         Boite("lf", 386, 354, 300, 100, "Langfuse, région UE", ["une trace par briefing ;", "métadonnées seules depuis", "le 20/10"], "stock"),
         Boite("al", 716, 354, 300, 100, "2 alertes, depuis le 04/10", ["erreurs > 0 sur 1 jour ;", "p95 > 15 000 ms sur 1 jour"], "garde"),
         Boite("is", 1046, 354, 298, 100, "Issue GitHub", ["alerte-incident.yml ; un retour", "à OK n'ouvre plus d'issue", "(INC-009, main du 01/11)"], "normal"),
-        Boite("vg", 56, 354, 300, 100, "La vigie /sante", ["erreurs, refus, latence, coût,", "fraîcheur ; seuils dans", "monitorage/seuils.json"], "garde"),
+        Boite("vg", 56, 354, 300, 100, "/sante, puis la vigie", ["/sante : mesures et verdicts ;", "la vigie l'interroge de dehors", "et ouvre ou met à jour l'issue"], "garde"),
         Boite("gd", 56, 466, 1288, 44, "Guide d'exploitation, docs/exploitation.md : accès, installation, tests, services, données ; remise prévue le 05/11", [], "note"),
 
         Boite("zm", 40, 540, 1320, 160, "CE QUI MANQUE", genre="zone"),

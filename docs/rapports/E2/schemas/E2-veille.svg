@@ -4,7 +4,7 @@
 <rect width="1400" height="716" fill="#FFFFFF"/>
 <rect x="40" y="16" width="1320" height="5" fill="#1565C0"/>
 <text x="40" y="54" font-size="32" font-weight="700" fill="#0B2A5B">La veille (C6) : de la source à ce qui change dans RITA</text>
-<text x="40" y="80" font-size="17" fill="#1F2937">Rapport E2, section 2 · dessiné le 01/11/2026 pour ce rapport, d&#x27;après docs/veille/README.md et les notes S33 à S41</text>
+<text x="40" y="80" font-size="17" fill="#1F2937">Rapport E2, section 2 · dessiné le 01/11/2026 pour ce rapport, corrigé le 02/11, d&#x27;après docs/veille/README.md et les notes S33 à S41</text>
 <g transform="translate(0,16)">
 <rect x="40" y="100" width="420" height="400" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
 <rect x="490" y="100" width="420" height="400" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
@@ -59,9 +59,9 @@
 <text x="973" y="340" font-size="15.5" fill="#111827">aucune réponse au 31/10</text>
 <rect x="956" y="374" width="388" height="100" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
 <rect x="956" y="374" width="7" height="100" fill="#475569"/>
-<text x="973" y="398" font-size="17.5" font-weight="700" fill="#0B2A5B">La leçon, confirmée en S41</text>
-<text x="973" y="420" font-size="15.5" fill="#111827">un détecteur réussit le test sur</text>
-<text x="973" y="440" font-size="15.5" fill="#111827">lequel il a été réglé, et rate</text>
+<text x="973" y="398" font-size="17.5" font-weight="700" fill="#0B2A5B">La leçon, S41 va dans ce sens</text>
+<text x="973" y="420" font-size="15.5" fill="#111827">un détecteur peut réussir le test</text>
+<text x="973" y="440" font-size="15.5" fill="#111827">sur lequel il a été réglé, et rater</text>
 <text x="973" y="460" font-size="15.5" fill="#111827">presque tout sur un autre jeu</text>
 <rect x="40" y="520" width="1320" height="80" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
 <rect x="40" y="520" width="7" height="80" fill="#D32F2F"/>
