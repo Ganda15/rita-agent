@@ -154,6 +154,13 @@ def rsi_wilder(cours: Sequence[float], periode: int = PERIODE_RSI) -> float | No
         moyenne_hausses = (moyenne_hausses * (periode - 1) + hausses[i]) / periode
         moyenne_baisses = (moyenne_baisses * (periode - 1) + baisses[i]) / periode
 
+    if moyenne_hausses == 0.0 and moyenne_baisses == 0.0:
+        # #78 (01/11/2026) : une série entièrement plate n'a ni hausse ni baisse, donc aucune force relative à
+        # mesurer. Rendre 100, comme pour une hausse continue, ferait croire à un fort élan haussier. Convention
+        # écrite dans la spécification, § 7.3 : RSI indéfini, affiché « — » à l'écran ; le prompt du briefing reçoit
+        # « non disponible », jamais 0.
+        return None
+
     if moyenne_baisses == 0.0:
         # ⚠️ Piège 3 de la spec : 14 séances sans AUCUNE baisse ⇒ division par
         # zéro ⇒ RSI = 100 PAR CONVENTION. Codé explicitement, pas laissé

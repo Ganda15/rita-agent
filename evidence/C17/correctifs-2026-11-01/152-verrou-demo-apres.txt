@@ -1,0 +1,32 @@
+# #152 apres le correctif : 01/11/2026 21 h 44, passerelle_mcp/serveur.py corrige (local, non commite)
+# Base PostgreSQL 18 jetable (postgres:18-alpine, 127.0.0.1:55432, compte rita en mode trust, aucun mot de passe),
+# schema db/schema.sql puis roles db/roles.sql du depot, aucune donnee personnelle ; detruite apres les tests.
+
+## 1. Tests unitaires de la passerelle et vrai import du fichier d'exemple sur la base
+# DATABASE_URL=postgresql://rita@127.0.0.1:55432/rita_recette RITA_BASE_DE_TEST=rita_recette PYTHON_DOTENV_DISABLED=1
+# C:\Python314\python.exe -m pytest -q -p no:cacheprovider --no-cov -rs tests/test_passerelle_mcp.py tests/test_jeu_demo_mcp_base.py
+............................................                             [100%]
+44 passed, 1 warning in 5.18s
+# 0 saute.
+
+## 2. Le test du vrai import peut echouer (mutation)
+# Le prix de revient de MC.PA passe de 632.4000 a 632.4001 dans passerelle_mcp/jeu_demo_attendu.csv, le temps d'un
+# passage, puis le fichier est restaure a l'octet pres. Commande : la meme, sur tests/test_jeu_demo_mcp_base.py seul.
+# (sortie brute, decodee en cp1252, l'encodage de la console)
+E   AssertionError: NUMERIC de la base et fichier versionné, comparés sans arrondi
+    assert Counter({('MC...), 'EUR'): 1}) == Counter({('MC...), 'EUR'): 1})
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_jeu_demo_mcp_base.py:72: AssertionError: NUMERIC de la base et fichier versionné, comparés sans arrondi
+1 failed, 2 passed, 1 warning in 4.07s
+# Les deux tests de refus passaient aussi sous mutation (la reference fausse refuse tout) ; ils ont ete renforces :
+# chacun verifie d'abord que le jeu importe est servi, puis ajoute la position et attend le refus.
+
+## 3. Le job base de la CI, rejoue en local (meme selection, meme controle des sauts)
+# fichiers=$(grep -l dsn_de_test tests/*.py | grep -v garde_base.py)
+# avec la base : pytest -q -rs --no-cov $fichiers
+46 passed, 1 warning in 5.40s
+# aucun 'skipped' : le job sort en code 0
+# sans base (memes fichiers, sans DATABASE_URL) :
+22 passed, 24 skipped, 1 warning in 4.78s
+# 'skipped' present : le job sort en code 1
+# Sur les 46 tests de la selection, 24 demandent PostgreSQL (21 avant #152, plus les 3 du vrai import) ; les 22 autres
+# n'en demandent pas, dont les 5 controles du fichier de workflow (tests/test_ci_base.py). Execution sur GitHub : a confirmer.

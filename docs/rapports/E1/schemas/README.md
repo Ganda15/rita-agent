@@ -79,3 +79,4 @@ par rôle de boîte (bande à gauche) et par sens de flèche ; une légende dess
 que les couleurs employées et ce qu'elles veulent dire dans ce schéma. Le 04/10, le texte de chaque boîte a été
 mesuré dans Chrome (largeur réelle de chaque ligne) : aucun ne dépasse de sa boîte.
 
+Corrigé le 02/11/2026 (livret E1 v5) : dans `../images/mcd-recadre.png`, la cardinalité côté VALEUR de « est cotée lors » passe de `1,n` à `0,n` (décision d'Era, `evidence/C4/preuve-mcd-merise.md`, section 5 bis) ; seul ce chiffre a été redessiné, le reste de la figure est inchangé.

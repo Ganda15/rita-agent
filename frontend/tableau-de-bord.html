@@ -42,6 +42,10 @@
       <div class="barre-outils">
         <p id="horodatages" class="horodatages"></p>
         <button id="actualiser" type="button">Actualiser</button>
+        <!-- 02/11/2026, WCAG 2.2.2 : un contenu qui se met à jour seul doit pouvoir être suspendu. Bouton à bascule : son
+             nom ne change pas, son état passe par aria-pressed ; le texte d'à côté le dit à tous. -->
+        <button id="suspendre" type="button" aria-pressed="false">Suspendre l'actualisation automatique</button>
+        <p id="etat-actualisation" class="horodatages">Actualisation automatique toutes les 30 secondes.</p>
       </div>
       <div id="cartes" class="cartes"></div>
       <details>
@@ -52,7 +56,7 @@
   </main>
 
   <footer>
-    <p>Prototype local du sprint 5. Un état « inconnu » n'est jamais présenté comme sain.</p>
+    <p>RNCP 37827 · Eramalingam GANDAKUMAR · un état « inconnu » n'est jamais présenté comme sain</p>
   </footer>
   <script src="tableau-de-bord.js"></script>
 </body>

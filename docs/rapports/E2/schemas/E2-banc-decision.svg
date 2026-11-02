@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="692" viewBox="0 0 1400 692" font-family="Segoe UI,Calibri,Arial,sans-serif">
+<defs><marker id="fl-flux" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#0B2A5B"/></marker><marker id="fl-ecriture" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#1565C0"/></marker><marker id="fl-lecture" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#15803D"/></marker><marker id="fl-erreur" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#D32F2F"/></marker><marker id="fl-manuel" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#64748B"/></marker><marker id="fl-perso" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#A21CAF"/></marker></defs>
+<rect width="1400" height="692" fill="#FFFFFF"/>
+<rect x="40" y="16" width="1320" height="5" fill="#1565C0"/>
+<text x="40" y="54" font-size="32" font-weight="700" fill="#0B2A5B">Le choix du service (C7) : le banc du 03/10, puis les décisions datées</text>
+<text x="40" y="80" font-size="17" fill="#1F2937">Rapport E2, section 3 · dessiné le 01/11/2026 pour ce rapport, corrigé le 02/11, d&#x27;après evidence/C7/ et CONTINUITE.md</text>
+<g transform="translate(0,16)">
+<rect x="40" y="100" width="1320" height="168" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="40" y="288" width="1320" height="168" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="56" y="134" width="306" height="116" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="56" y="134" width="7" height="116" fill="#6D28D9"/>
+<text x="73" y="158" font-size="17.5" font-weight="700" fill="#4C1D95">Le jeu figé</text>
+<text x="73" y="180" font-size="15.5" fill="#111827">10 cas, construits par le</text>
+<text x="73" y="200" font-size="15.5" fill="#111827">vrai code : 7 du portefeuille,</text>
+<text x="73" y="220" font-size="15.5" fill="#111827">hausse, baisse, Londres</text>
+<rect x="382" y="134" width="306" height="116" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="382" y="134" width="7" height="116" fill="#1565C0"/>
+<text x="399" y="158" font-size="17.5" font-weight="700" fill="#0B2A5B">2 services, 3 passages</text>
+<text x="399" y="180" font-size="15.5" fill="#111827">Azure gpt-5.4 (Global</text>
+<text x="399" y="200" font-size="15.5" fill="#111827">Standard), Claude par</text>
+<text x="399" y="220" font-size="15.5" fill="#111827">OpenRouter : 60 résultats</text>
+<rect x="708" y="134" width="306" height="116" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="708" y="134" width="7" height="116" fill="#C2410C"/>
+<text x="725" y="158" font-size="17.5" font-weight="700" fill="#9A3412">Les contrôles</text>
+<text x="725" y="180" font-size="15.5" fill="#111827">garde-fou de sortie, fidélité</text>
+<text x="725" y="200" font-size="15.5" fill="#111827">minimale, latence, coût ;</text>
+<text x="725" y="220" font-size="15.5" fill="#111827">français noté le 31/10</text>
+<rect x="1034" y="134" width="306" height="116" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="1034" y="134" width="7" height="116" fill="#475569"/>
+<text x="1051" y="158" font-size="17.5" font-weight="700" fill="#0B2A5B">Le résultat</text>
+<text x="1051" y="180" font-size="15.5" fill="#111827">égalité : 30 sur 30 partout ;</text>
+<text x="1051" y="200" font-size="15.5" fill="#111827">médiane 3,21 s contre 6,33 s ;</text>
+<text x="1051" y="220" font-size="15.5" fill="#111827">prix public par briefing :</text>
+<text x="1051" y="240" font-size="15.5" fill="#111827">0,0047 contre 0,0060 USD</text>
+<rect x="56" y="322" width="240" height="116" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="56" y="322" width="7" height="116" fill="#C2410C"/>
+<text x="73" y="346" font-size="17.5" font-weight="700" fill="#9A3412">05/10, règle UE</text>
+<text x="73" y="368" font-size="15.5" fill="#111827">aucune donnée</text>
+<text x="73" y="388" font-size="15.5" fill="#111827">personnelle hors de</text>
+<text x="73" y="408" font-size="15.5" fill="#111827">l&#x27;Union européenne</text>
+<rect x="318" y="322" width="240" height="116" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="318" y="322" width="7" height="116" fill="#1565C0"/>
+<text x="335" y="346" font-size="17.5" font-weight="700" fill="#0B2A5B">09/10, zone UE</text>
+<text x="335" y="368" font-size="15.5" fill="#111827">gpt-5.4-dzs-eu ;</text>
+<text x="335" y="388" font-size="15.5" fill="#111827">3 appels réels,</text>
+<text x="335" y="408" font-size="15.5" fill="#111827">Sweden Central</text>
+<rect x="580" y="322" width="240" height="116" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
+<rect x="580" y="322" width="7" height="116" fill="#D32F2F"/>
+<text x="597" y="346" font-size="17.5" font-weight="700" fill="#C62828">10/10, Mistral</text>
+<text x="597" y="368" font-size="15.5" fill="#111827">futur second, sous</text>
+<text x="597" y="388" font-size="15.5" fill="#111827">conditions ; PR #88</text>
+<text x="597" y="408" font-size="15.5" fill="#111827">non fusionnée</text>
+<rect x="842" y="322" width="240" height="116" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="842" y="322" width="7" height="116" fill="#1565C0"/>
+<text x="859" y="346" font-size="17.5" font-weight="700" fill="#0B2A5B">11/10, poste</text>
+<text x="859" y="368" font-size="15.5" fill="#111827">Azure seul sur</text>
+<text x="859" y="388" font-size="15.5" fill="#111827">le poste ; Claude</text>
+<text x="859" y="408" font-size="15.5" fill="#111827">plus appelé</text>
+<rect x="1104" y="322" width="240" height="116" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="1104" y="322" width="7" height="116" fill="#1565C0"/>
+<text x="1121" y="346" font-size="17.5" font-weight="700" fill="#0B2A5B">31/10, production</text>
+<text x="1121" y="368" font-size="15.5" fill="#111827">Azure seul, défaut</text>
+<text x="1121" y="388" font-size="15.5" fill="#111827">du code ; conteneur</text>
+<text x="1121" y="408" font-size="15.5" fill="#111827">relu le 31/10</text>
+<rect x="40" y="476" width="1320" height="100" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
+<rect x="40" y="476" width="7" height="100" fill="#D32F2F"/>
+<text x="57" y="500" font-size="17.5" font-weight="700" fill="#C62828">Limites</text>
+<text x="57" y="522" font-size="15.5" fill="#111827">banc mesuré en Global Standard, pas rejoué en zone UE · notes de français toutes à 1 sur 2 : elles ne départagent pas</text>
+<text x="57" y="542" font-size="15.5" fill="#111827">2 appels Azure sur 30 au-dessus de 10 s, tous sur MC.PA · fidélité minimale : 3 erreurs passées (textes 26, 32, 35)</text>
+<text x="57" y="562" font-size="15.5" fill="#111827">Anthropic direct jamais mesuré, faute de clé · contrat de Microsoft non relu en entier</text>
+<line x1="362" y1="192.0" x2="382" y2="192.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="688" y1="192.0" x2="708" y2="192.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1014" y1="192.0" x2="1034" y2="192.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="296" y1="380.0" x2="318" y2="380.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="558" y1="380.0" x2="580" y2="380.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="820" y1="380.0" x2="842" y2="380.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1082" y1="380.0" x2="1104" y2="380.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="54" y="122" font-size="16" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">LE BANC DU 03/10</text>
+<text x="54" y="310" font-size="16" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">PUIS, LES DÉCISIONS DATÉES</text>
+<rect x="40" y="602" width="1320" height="1.5" fill="#94A3B8"/>
+<text x="40" y="633" font-size="16" font-weight="700" fill="#0B2A5B">Légende</text>
+<rect x="124.0" y="619" width="28" height="18" fill="#F1EAFE" stroke="#6D28D9" stroke-width="2"/>
+<rect x="124.0" y="619" width="6" height="18" fill="#6D28D9"/>
+<text x="160.0" y="633" font-size="15" fill="#111827">jeu de test</text>
+<rect x="272.5" y="619" width="28" height="18" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="272.5" y="619" width="6" height="18" fill="#1565C0"/>
+<text x="308.5" y="633" font-size="15" fill="#111827">mesure, décision appliquée</text>
+<rect x="533.5" y="619" width="28" height="18" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="533.5" y="619" width="6" height="18" fill="#C2410C"/>
+<text x="569.5" y="633" font-size="15" fill="#111827">contrôle, règle</text>
+<rect x="712.0" y="619" width="28" height="18" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="712.0" y="619" width="6" height="18" fill="#475569"/>
+<text x="748.0" y="633" font-size="15" fill="#111827">résultat</text>
+<rect x="838.0" y="619" width="28" height="18" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="5,3"/>
+<rect x="838.0" y="619" width="6" height="18" fill="#D32F2F"/>
+<text x="874.0" y="633" font-size="15" fill="#111827">pas actif, limite</text>
+<line x1="1031.5" y1="628" x2="1071.5" y2="628" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="1081.5" y="633" font-size="15" fill="#111827">puis</text>
+<text x="40" y="662" font-size="15" fill="#1F2937">Sources : evidence/C7/preuve-benchmark-2026-10-03.md, resultats-2026-10-03.jsonl, CONTINUITE.md ; rapport E2, sections 3.3 à 3.6.</text>
+</g>
+</svg>

@@ -40,10 +40,13 @@ const elHorodatages = document.getElementById("horodatages");
 const elAPropos = document.getElementById("a-propos");
 const elBouton = document.getElementById("actualiser");
 const elBandeau = document.getElementById("bandeau-exercice");
+const elSuspendre = document.getElementById("suspendre");
+const elEtatActualisation = document.getElementById("etat-actualisation");
 
 let enCours = false;
 let cleEnEssai = null;
 let minuterie = null;
+let suspendu = false;   // 02/11/2026, WCAG 2.2.2 : l'exploitant peut arrêter l'actualisation automatique
 
 // --- Les mots ----------------------------------------------------------------
 function nombre(valeur, decimales) {
@@ -201,6 +204,7 @@ function montrerConnexion(message) {
   elTableau.hidden = true;
   elConnexion.hidden = false;
   elResume.textContent = message;
+  document.getElementById("cle").focus();   // le clavier arrive au bon endroit, comme sur les quatre autres écrans
   if (minuterie) clearInterval(minuterie);
   minuterie = null;
 }
@@ -240,7 +244,7 @@ async function actualiser() {
     elConnexion.hidden = true;
     elTableau.hidden = false;
     rendre(serviceOk, etat, erreurLecture);
-    if (!minuterie) minuterie = setInterval(actualiser, INTERVALLE_MS);
+    if (!minuterie && !suspendu) minuterie = setInterval(actualiser, INTERVALLE_MS);
   } finally {
     enCours = false;
     elBouton.disabled = false;
@@ -255,6 +259,22 @@ document.getElementById("form-cle").addEventListener("submit", (evenement) => {
   actualiser();
 });
 elBouton.addEventListener("click", actualiser);
+
+// Suspendre arrête l'actualisation automatique ; « Actualiser » reste possible à la main, sans la relancer. Reprendre
+// relance une lecture aussitôt, puis toutes les 30 secondes.
+elSuspendre.addEventListener("click", () => {
+  suspendu = !suspendu;
+  elSuspendre.setAttribute("aria-pressed", String(suspendu));
+  if (suspendu) {
+    if (minuterie) clearInterval(minuterie);
+    minuterie = null;
+    elEtatActualisation.textContent = "Actualisation automatique suspendue.";
+  } else {
+    elEtatActualisation.textContent = "Actualisation automatique toutes les 30 secondes.";
+    if (!minuterie) minuterie = setInterval(actualiser, INTERVALLE_MS);
+    actualiser();
+  }
+});
 
 if (sessionStorage.getItem(CLE_STOCKAGE)) {
   actualiser();

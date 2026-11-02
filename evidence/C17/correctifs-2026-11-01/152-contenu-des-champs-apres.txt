@@ -1,0 +1,20 @@
+# #152, seconde revue : contenu des champs. APRES le complement : 01/11/2026 22 h 01 (local, non commite)
+# Base PostgreSQL 18 jetable (postgres:18-alpine, 127.0.0.1:55432, compte rita en mode trust, aucun mot de passe),
+# schema puis roles du depot ; detruite apres les tests.
+
+## 1. Passerelle et vrai import (dont une ligne avec cours, six sans)
+# DATABASE_URL=postgresql://rita@127.0.0.1:55432/rita_recette RITA_BASE_DE_TEST=rita_recette PYTHON_DOTENV_DISABLED=1
+# C:\Python314\python.exe -m pytest -q -p no:cacheprovider --no-cov -rs tests/test_passerelle_mcp.py tests/test_jeu_demo_mcp_base.py
+...............................................                          [100%]
+47 passed, 1 warning in 4.76s
+# 0 saute.
+
+## 2. Le fichier fictif est impose par le test
+# Meme commande sur tests/test_jeu_demo_mcp_base.py, avec POSITIONS_CSV pose sur un autre fichier (inexistant) :
+3 passed, 1 warning in 4.16s
+# Le test pose POSITIONS_CSV sur data/positions-exemple.csv et le verifie avant d'importer.
+
+## 3. Le job base de la CI, rejoue en local
+# fichiers=$(grep -l dsn_de_test tests/*.py | grep -v garde_base.py) ; pytest -q -rs --no-cov $fichiers
+46 passed, 1 warning in 5.52s
+# aucun 'skipped' : code 0. Selection : 46 tests, dont 24 demandent PostgreSQL. Execution sur GitHub : a confirmer.

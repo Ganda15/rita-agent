@@ -20,6 +20,19 @@ import pytest
 CLE_DE_TEST = "cle-de-test-pour-la-suite-pytest-32c"
 
 
+def pytest_configure(config):
+    # 02/11/2026 : le marqueur des tests qui demandent PostgreSQL ; le job `base` de la CI les choisit par lui.
+    config.addinivalue_line("markers", "postgresql: test qui demande la base PostgreSQL de test (job base de la CI)")
+
+
+def pytest_collection_finish(session):
+    """Donne à `tests/garde_base.py` la liste des tests marqués : `dsn_de_test()` refuse un test qui ne l'est pas."""
+    from tests import garde_base
+    garde_base.TESTS_MARQUES.clear()
+    garde_base.TESTS_MARQUES.update(item.nodeid for item in session.items
+                                    if item.get_closest_marker(garde_base.MARQUEUR))
+
+
 @pytest.fixture(autouse=True)
 def cle_api_de_test(monkeypatch):
     """Pose `RITA_API_KEY` avant chaque test, et la retire après.

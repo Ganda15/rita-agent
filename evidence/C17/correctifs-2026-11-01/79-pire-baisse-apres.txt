@@ -1,0 +1,4 @@
+# #79, APRÈS correctif : 01/11/2026 16:58, db/indicateurs_risque.sql modifié (CASE, LEAST(0, ...))
+# base : même conteneur jetable ; fichier de secrets du poste désactivé
+# commande : C:\Python314\python.exe -m pytest -q -rs --tb=line -p no:cacheprovider tests/test_indicateurs_risque_base.py
+5 passed, 1 warning in 3.28s

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="756" viewBox="0 0 1400 756" font-family="Segoe UI,Calibri,Arial,sans-serif">
+<defs><marker id="fl-flux" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#0B2A5B"/></marker><marker id="fl-ecriture" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#1565C0"/></marker><marker id="fl-lecture" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#15803D"/></marker><marker id="fl-erreur" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#D32F2F"/></marker><marker id="fl-manuel" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#64748B"/></marker><marker id="fl-perso" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto" markerUnits="strokeWidth"><polygon points="0 0,5 2.5,0 5" fill="#A21CAF"/></marker></defs>
+<rect width="1400" height="756" fill="#FFFFFF"/>
+<rect x="40" y="16" width="1320" height="5" fill="#1565C0"/>
+<text x="40" y="54" font-size="32" font-weight="700" fill="#0B2A5B">Écran 5, Tableau de bord : lire l&#x27;état du service, et savoir quoi faire</text>
+<text x="40" y="80" font-size="17" fill="#1F2937">Schéma fonctionnel du parcours de l&#x27;exploitant, relevé le 02/11/2026 sur la version actuelle (commit 12cc00c)</text>
+<g transform="translate(0,16)">
+<rect x="40" y="100" width="312" height="474" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="376" y="100" width="312" height="474" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="712" y="100" width="312" height="474" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="1048" y="100" width="312" height="474" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
+<rect x="52" y="134" width="288" height="100" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="52" y="134" width="7" height="100" fill="#1E293B"/>
+<text x="69" y="158" font-size="17.5" font-weight="700" fill="#0B2A5B">Ouvrir le tableau de bord</text>
+<text x="69" y="180" font-size="15.5" fill="#111827">depuis la navigation</text>
+<text x="69" y="200" font-size="15.5" fill="#111827">commune aux cinq écrans</text>
+<rect x="52" y="242" width="288" height="100" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="52" y="242" width="7" height="100" fill="#C2410C"/>
+<text x="69" y="266" font-size="17.5" font-weight="700" fill="#9A3412">Une clé dans l&#x27;onglet ?</text>
+<text x="69" y="288" font-size="15.5" fill="#111827">sessionStorage, partagée</text>
+<text x="69" y="308" font-size="15.5" fill="#111827">avec les autres écrans</text>
+<rect x="52" y="350" width="288" height="100" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="52" y="350" width="7" height="100" fill="#1E293B"/>
+<text x="69" y="374" font-size="17.5" font-weight="700" fill="#0B2A5B">Saisir la clé d&#x27;API</text>
+<text x="69" y="396" font-size="15.5" fill="#111827">champ masqué et étiqueté</text>
+<rect x="52" y="458" width="288" height="100" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="52" y="458" width="7" height="100" fill="#C2410C"/>
+<text x="69" y="482" font-size="17.5" font-weight="700" fill="#9A3412">Clé refusée (401, 403)</text>
+<text x="69" y="504" font-size="15.5" fill="#111827">oubliée ; retour au</text>
+<text x="69" y="524" font-size="15.5" fill="#111827">formulaire de clé</text>
+<rect x="388" y="134" width="288" height="100" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="388" y="134" width="7" height="100" fill="#475569"/>
+<text x="405" y="158" font-size="17.5" font-weight="700" fill="#0B2A5B">Toutes les 30 secondes</text>
+<text x="405" y="180" font-size="15.5" fill="#111827">actualisation automatique,</text>
+<text x="405" y="200" font-size="15.5" fill="#111827">sauf si elle est suspendue</text>
+<rect x="388" y="242" width="288" height="100" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="388" y="242" width="7" height="100" fill="#1565C0"/>
+<text x="405" y="266" font-size="17.5" font-weight="700" fill="#0B2A5B">Lire /health et /sante</text>
+<text x="405" y="288" font-size="15.5" fill="#111827">en parallèle, 5 s au plus ;</text>
+<text x="405" y="308" font-size="15.5" fill="#111827">un seul appel à la fois</text>
+<rect x="388" y="350" width="288" height="100" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="388" y="350" width="7" height="100" fill="#1E293B"/>
+<text x="405" y="374" font-size="17.5" font-weight="700" fill="#0B2A5B">Actualiser, à la main</text>
+<text x="405" y="396" font-size="15.5" fill="#111827">bouton bloqué pendant</text>
+<text x="405" y="416" font-size="15.5" fill="#111827">la lecture</text>
+<rect x="724" y="134" width="288" height="100" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="724" y="134" width="7" height="100" fill="#1565C0"/>
+<text x="741" y="158" font-size="17.5" font-weight="700" fill="#0B2A5B">Sept cartes</text>
+<text x="741" y="180" font-size="15.5" fill="#111827">état en mots, valeur, période ;</text>
+<text x="741" y="200" font-size="15.5" fill="#111827">« Que faire » s&#x27;il faut agir</text>
+<rect x="724" y="242" width="288" height="100" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="724" y="242" width="7" height="100" fill="#C2410C"/>
+<text x="741" y="266" font-size="17.5" font-weight="700" fill="#9A3412">Sans donnée : INCONNU</text>
+<text x="741" y="288" font-size="15.5" fill="#111827">jamais SAIN ;</text>
+<text x="741" y="308" font-size="15.5" fill="#111827">la carte dit pourquoi</text>
+<rect x="724" y="350" width="288" height="100" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="724" y="350" width="7" height="100" fill="#C2410C"/>
+<text x="741" y="374" font-size="17.5" font-weight="700" fill="#9A3412">Une lecture en panne</text>
+<text x="741" y="396" font-size="15.5" fill="#111827">l&#x27;autre reste lisible ;</text>
+<text x="741" y="416" font-size="15.5" fill="#111827">mal formée : INCONNU</text>
+<rect x="724" y="458" width="288" height="100" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="724" y="458" width="7" height="100" fill="#475569"/>
+<text x="741" y="482" font-size="17.5" font-weight="700" fill="#0B2A5B">Exercice de panne</text>
+<text x="741" y="504" font-size="15.5" fill="#111827">un bandeau le dit, pour ne</text>
+<text x="741" y="524" font-size="15.5" fill="#111827">pas le prendre pour une vraie</text>
+<rect x="1060" y="134" width="288" height="100" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="1060" y="134" width="7" height="100" fill="#475569"/>
+<text x="1077" y="158" font-size="17.5" font-weight="700" fill="#0B2A5B">Seul le résumé est annoncé</text>
+<text x="1077" y="180" font-size="15.5" fill="#111827">aria-live : pas les sept</text>
+<text x="1077" y="200" font-size="15.5" fill="#111827">cartes à chaque lecture</text>
+<rect x="1060" y="242" width="288" height="100" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="1060" y="242" width="7" height="100" fill="#C2410C"/>
+<text x="1077" y="266" font-size="17.5" font-weight="700" fill="#9A3412">Suspendre</text>
+<text x="1077" y="288" font-size="15.5" fill="#111827">l&#x27;actualisation automatique</text>
+<text x="1077" y="308" font-size="15.5" fill="#111827">s&#x27;arrête ; l&#x27;état écrit dessous</text>
+<rect x="1060" y="350" width="288" height="100" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="1060" y="350" width="7" height="100" fill="#1E293B"/>
+<text x="1077" y="374" font-size="17.5" font-weight="700" fill="#0B2A5B">Reprendre</text>
+<text x="1077" y="396" font-size="15.5" fill="#111827">une lecture aussitôt, puis</text>
+<text x="1077" y="416" font-size="15.5" fill="#111827">toutes les 30 secondes</text>
+<rect x="40" y="594" width="1320" height="76" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="40" y="594" width="7" height="76" fill="#475569"/>
+<text x="57" y="618" font-size="17.5" font-weight="700" fill="#0B2A5B">Relevé du jour, pas une maquette initiale</text>
+<text x="57" y="640" font-size="15.5" fill="#111827">Dessiné le 02/11/2026 d&#x27;après frontend/tableau-de-bord.html, tableau-de-bord.js et leurs tests (12cc00c), après le code (22/10).</text>
+<text x="57" y="660" font-size="15.5" fill="#111827">Spécification : evidence/C14/preuve-specifications-ecrans-4-et-5.md, US-5, scénarios S1 à S10, critères T1 à T17.</text>
+<line x1="196.0" y1="234" x2="196.0" y2="242" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="340" y1="292.0" x2="388" y2="292.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="364.0" y="296.0" font-size="15" font-weight="700" fill="#0B2A5B" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">oui</text>
+<line x1="196.0" y1="342" x2="196.0" y2="350" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="196.0" y="350.0" font-size="15" font-weight="700" fill="#0B2A5B" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">non</text>
+<line x1="340" y1="380.0" x2="388" y2="322.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="356.8" y="363.7" font-size="15" font-weight="700" fill="#0B2A5B" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">saisie</text>
+<line x1="532.0" y1="234" x2="532.0" y2="242" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="532.0" y1="350" x2="532.0" y2="342" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="676" y1="262.0" x2="724" y2="184.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="702.4" y="223.1" font-size="15" font-weight="700" fill="#0B2A5B" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">lisible</text>
+<line x1="676" y1="292.0" x2="724" y2="292.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="676" y1="322.0" x2="724" y2="390.0" stroke="#D32F2F" stroke-width="3" marker-end="url(#fl-erreur)" stroke-dasharray="9,6"/>
+<text x="702.4" y="363.4" font-size="15" font-weight="700" fill="#D32F2F" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">panne</text>
+<line x1="388" y1="332.0" x2="340" y2="508.0" stroke="#D32F2F" stroke-width="3" marker-end="url(#fl-erreur)" stroke-dasharray="9,6"/>
+<text x="364.0" y="424.0" font-size="15" font-weight="700" fill="#D32F2F" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">401, 403</text>
+<line x1="196.0" y1="458" x2="196.0" y2="450" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1012" y1="184.0" x2="1060" y2="184.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<line x1="1204.0" y1="342" x2="1204.0" y2="350" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="1204.0" y="350.0" font-size="15" font-weight="700" fill="#0B2A5B" text-anchor="middle" stroke="#FFFFFF" stroke-width="5" paint-order="stroke">bascule</text>
+<text x="54" y="122" font-size="16" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">1. ENTRER</text>
+<text x="390" y="122" font-size="16" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">2. LIRE</text>
+<text x="726" y="122" font-size="16" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">3. MONTRER</text>
+<text x="1062" y="122" font-size="16" font-weight="700" fill="#0B2A5B" letter-spacing="0.3" stroke="#F8FAFC" stroke-width="5" paint-order="stroke">4. LAISSER LIRE</text>
+<rect x="40" y="666" width="1320" height="1.5" fill="#94A3B8"/>
+<text x="40" y="697" font-size="16" font-weight="700" fill="#0B2A5B">Légende</text>
+<rect x="124.0" y="683" width="28" height="18" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+<rect x="124.0" y="683" width="6" height="18" fill="#1E293B"/>
+<text x="160.0" y="697" font-size="15" fill="#111827">étape</text>
+<rect x="227.5" y="683" width="28" height="18" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
+<rect x="227.5" y="683" width="6" height="18" fill="#1565C0"/>
+<text x="263.5" y="697" font-size="15" fill="#111827">appel ou affichage</text>
+<rect x="428.5" y="683" width="28" height="18" fill="#FFF1E6" stroke="#C2410C" stroke-width="2"/>
+<rect x="428.5" y="683" width="6" height="18" fill="#C2410C"/>
+<text x="464.5" y="697" font-size="15" fill="#111827">contrôle, refus</text>
+<rect x="607.0" y="683" width="28" height="18" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
+<rect x="607.0" y="683" width="6" height="18" fill="#475569"/>
+<text x="643.0" y="697" font-size="15" fill="#111827">précision, relevé</text>
+<line x1="800.5" y1="692" x2="840.5" y2="692" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
+<text x="850.5" y="697" font-size="15" fill="#111827">suite du parcours</text>
+<line x1="1008.0" y1="692" x2="1048.0" y2="692" stroke="#D32F2F" stroke-width="3" stroke-dasharray="9,6" marker-end="url(#fl-erreur)"/>
+<text x="1058.0" y="697" font-size="15" fill="#111827">refus ou panne</text>
+<text x="40" y="726" font-size="15" fill="#1F2937">Sources : frontend/tableau-de-bord.html, frontend/tableau-de-bord.js, tests/test_tableau_de_bord.py, tests/test_smoke_tableau_de_bord.py (12cc00c).</text>
+</g>
+</svg>

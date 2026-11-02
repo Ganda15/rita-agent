@@ -1,0 +1,13 @@
+# #152, seconde revue : contenu des champs. Tests ecrits AVANT ce complement : 01/11/2026 22 h 00
+# Code : passerelle_mcp/serveur.py dans sa premiere version corrigee (verifiait le nom des 13 champs, pas leur contenu).
+# commande : PYTHON_DOTENV_DISABLED=1 C:\Python314\python.exe -m pytest -q -p no:cacheprovider --no-cov tests/test_passerelle_mcp.py -rf --tb=line
+# Les trois cas de la revue : un objet a la place du cours, du texte a la place de la valorisation, un taux manquant
+# avec une valorisation chiffree. Tous trois etaient transmis au lieu d'etre refuses.
+
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_passerelle_mcp.py:449: AssertionError: assert (False)
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_passerelle_mcp.py:456: AssertionError: assert (False)
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_passerelle_mcp.py:464: AssertionError: assert False
+FAILED tests/test_passerelle_mcp.py::test_un_objet_a_la_place_du_cours_fait_refuser
+FAILED tests/test_passerelle_mcp.py::test_du_texte_a_la_place_de_la_valorisation_fait_refuser
+FAILED tests/test_passerelle_mcp.py::test_un_taux_manquant_avec_une_valorisation_chiffree_fait_refuser
+3 failed, 41 passed, 1 warning in 4.56s

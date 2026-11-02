@@ -68,6 +68,43 @@ Quel lot de contenus bénins représentatifs de nos vraies sources (articles RSS
 champs extraits des pages par scraping) pour mesurer le taux de faux positifs là où le filtre sera réellement
 branché (première règle pratique de l'auteur) ?
 
+## Complément du 02/11/2026 : l'auteur et le recoupement (C6.6, C6.8)
+
+> Ajouté pendant la recette (`docs/recette/registre-des-partiels.md`, lignes C6.6 et C6.8). Le texte du 11/10
+> au-dessus reste tel qu'il a été écrit et partagé.
+
+### L'auteur
+
+Le 11/10, j'avais écrit « pas de page institutionnelle trouvée ». Je l'ai cherchée de nouveau le 02/11.
+
+| Ce que demande le critère | Ce que j'ai trouvé le 02/11 | Où |
+|---|---|---|
+| Auteur identifié | Zhuowen Liu, Cybersecurity Lab du JAIST (Japan Advanced Institute of Science and Technology), adresse de l'institut en tête de l'article | [l'article sur arXiv](https://arxiv.org/abs/2610.03448) |
+| Compétences | étudiant en deuxième année de master (M2) dans ce laboratoire, dirigé par Razvan Beuran ; sujet de recherche affiché : les usages de l'IA agentique en cybersécurité | [membres du laboratoire](https://www.jaist.ac.jp/is/labs/beuran-lab/members.html) (page modifiée le 23/10/2026) |
+| Notoriété | **non établie** : aucune autre publication à son nom dans la liste du laboratoire ; DBLP n'a pas pu être consulté (accès refusé à mon outil) | [publications du laboratoire](https://www.jaist.ac.jp/is/labs/beuran-lab/publications.html) |
+| Intérêts personnels | aucun produit vendu, aucun financement déclaré ; code et données publics | [code de l'étude](https://github.com/lzwhehe/benign-instruction-bench) |
+| À savoir aussi | l'article déclare que le code, les expériences et la rédaction ont été faits par Claude (Anthropic), sous la direction de l'auteur, qui en prend la responsabilité ; il n'est pas relu par des pairs | section « Acknowledgments and Use of AI Tools » de l'article |
+
+Bilan : auteur identifié, niveau master, notoriété non établie. La réserve du 11/10 tient : les chiffres sont ceux
+que l'auteur rapporte, et il faut une autre source avant d'en tirer davantage.
+
+### Le recoupement hors préprint
+
+| Ce que dit S41 | Confirmé ailleurs ? | Par qui, et quel statut | Accessibilité de la source |
+|---|---|---|---|
+| Un filtre anti-injection signale beaucoup de contenus sains, et cela coûte des tâches à l'agent | **Oui**, sur un autre banc : le détecteur « has too many false positives » ; avec GPT-4o, la part de tâches réussies sans attaque passe de 69,0 % à 41,49 % (tableau 5) | AgentDojo, Debenedetti et al., [NeurIPS 2024, Datasets and Benchmarks Track](https://proceedings.neurips.cc/paper_files/paper/2024/hash/97091a5177d8dc64b1da8bf3e1f6fb54-Abstract-Datasets_and_Benchmarks_Track.html), **relu par les pairs** ; ETH Zurich ; trois des six auteurs sont aussi affiliés à Invariant Labs, qui vend des garde-fous pour agents (rachetée par Snyk) : intérêt à signaler, même si l'étude montre les limites d'un détecteur | actes en PDF ; [version HTML sur arXiv](https://arxiv.org/html/2406.13352) |
+| Un bon score de détection ne suffit pas face à un attaquant | **Oui**, comme principe : « a solution that works 99% of the time is no good » | Simon Willison, [You can't solve AI security problems with more AI](https://simonwillison.net/2022/Sep/17/prompt-injection-more-ai/), 17/09/2022 ; source retenue au protocole | HTML sobre (protocole, § 3) |
+| Aucune défense n'est complète | **Oui**, comme principe : « unclear if there are fool-proof methods of prevention » | OWASP, [LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) ; source retenue au protocole | site structuré, navigable au clavier (protocole, § 3) |
+| Les bons scores viennent d'un entraînement qui ressemble au test (le cœur de l'article) | **Non**, pas hors préprint : seul RAG-PIBench, autre préprint, va dans le même sens | aucune source relue par les pairs trouvée le 02/11 | sans objet |
+
+L'article lui-même existe en [version HTML sur arXiv](https://arxiv.org/html/2610.03448v1), lisible sans ouvrir de
+PDF. Le protocole (`README.md`, § 3) laissait vide la colonne « Accessibilité » pour arXiv ; pour cette source, elle
+est maintenant renseignée. L'ANSSI n'a pas été consultée sur ce point.
+
+Bilan : ce que S41 dit des faux positifs et des limites d'un filtre est confirmé par une source relue par les pairs et
+par deux sources du protocole. Le constat central, le lien entre score et données d'entraînement, ne l'est pas : il
+reste une piste, et c'est ainsi que RITA l'utilise (garder un lot de test disjoint des motifs).
+
 ## 📖 Glossaire
 
 | Terme | En clair |
@@ -76,6 +113,10 @@ branché (première règle pratique de l'auteur) ?
 | Point de fonctionnement | Le seuil choisi pour le filtre. Ici 1 % de faux positifs, sauf mention contraire : les 29,5 % et 59,8 % sont au seuil par défaut (0,5). |
 | Jeu de test disjoint | Des cas de test jamais utilisés pour écrire ou régler le filtre ; le contraire du « jeu circulaire » mesuré le 29/07. |
 | Bornes supérieures | Des chiffres qui ne peuvent qu'être revus à la baisse en conditions réelles, ici parce que les attaques sont figées et les environnements simulés. |
+| Préprint | Un article mis en ligne par son auteur avant toute relecture par d'autres chercheurs. |
+| Relu par les pairs | Accepté par une conférence ou une revue après l'avis d'autres chercheurs du domaine. |
+| Utilité d'un agent | La part des tâches qu'il réussit ; un filtre trop sévère la fait baisser. |
+| M2 | Deuxième année de master. |
 
 ### ✅ Contrôle d'accessibilité avant publication
 

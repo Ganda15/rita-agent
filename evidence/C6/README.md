@@ -58,6 +58,13 @@ Registre des envois : `../../docs/veille/_JOURNAL-DES-ENVOIS.md` — vide, et il
 
 `../../docs/veille/Veille-C6-synthese-S33-a-S36.pdf` (produite le 08/09/2026, regénérée le 03/10 depuis sa source `Veille-C6-synthese-S33-a-S36.md` après correction des étiquettes de semaine de S35 et S36) rassemble les quatre notes S33 à S36. Elle vivait hors du dépôt, à la racine de `D:\KandaWork\RITA_PROJECT\` ; un évaluateur ne pouvait pas la trouver. Vérifié avant de la ranger : les 28 titres de section des quatre notes s'y retrouvent, et aucune note n'a été modifiée depuis le 08/09 (`git log`). Ce qu'elle prouve : la récurrence (quatre semaines, dont deux rédigées en rattrapage, et le PDF le dit). Ce qu'elle ne prouve pas : le partage et l'animation, qui restent sans capture. Si une note change avant le gel de E2, le PDF se regénère, il ne se retouche pas.
 
+## Ajout du 01/11/2026 : contrôle d'accessibilité de la synthèse
+
+[`controle-accessibilite-synthese-2026-11-01.md`](controle-accessibilite-synthese-2026-11-01.md) : la synthèse S33 à
+S36 rendue au format lisible (texte à 12 pt, 45 signets, liens soulignés) et contrôlée règle par règle, avant et après.
+Il prouve le **format** du document qui sera remis, pas son **envoi** : la remise reste à faire par Era, avec les
+livrables, et sa preuve datée sera ajoutée ici.
+
 ## 📖 Glossaire
 
 | Terme | En clair |

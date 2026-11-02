@@ -58,3 +58,49 @@ jobs:
         run: python -m evals.mesurer_gardefou
       - name: Gates non compensables
         run: pytest tests/test_evals.py -v
+
+  # Les tests qui exigent PostgreSQL (01/11/2026, défaut #79). Sans ce job, ils se sautaient en CI et la chaîne restait
+  # verte sans les avoir exécutés. Base jetable de la version de production, schéma et rôles du dépôt, données fictives
+  # créées puis annulées par chaque test. Aucun mot de passe : mode `trust`, sur un service que seul ce job atteint.
+  # Un test sauté fait échouer le job : une base indisponible ne donne plus une validation verte.
+  # Depuis le 02/11/2026, les tests sont choisis par le marqueur `postgresql`, plus par la recherche d'un mot dans les
+  # fichiers ; un test qui demande la base sans ce marqueur échoue partout (`tests/garde_base.py`). Si aucun test n'est
+  # choisi, pytest sort en code 5 et le job échoue aussi.
+  base:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: rita
+          POSTGRES_DB: rita_recette
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U rita -d rita_recette"
+          --health-interval 2s --health-timeout 5s --health-retries 15
+    env:
+      DATABASE_URL: postgresql://rita@localhost:5432/rita_recette
+      RITA_BASE_DE_TEST: rita_recette
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Installer les dépendances
+        # Playwright, le paquet seul, sans navigateur (02/11/2026) : `-m postgresql tests` charge tous les fichiers avant
+        # de choisir, et deux fichiers l'importent au chargement ; sans lui, ils sautent et le job échoue alors qu'aucun
+        # test PostgreSQL n'est en cause (premier passage du marqueur, `997aae6`).
+        run: |
+          pip install -r requirements.txt
+          pip install playwright
+      - name: Charger le schéma puis les rôles du dépôt
+        run: |
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -q -f db/schema.sql
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -q -f db/roles.sql
+      - name: Lancer tous les tests qui demandent une base, sans aucun saut
+        run: |
+          set -o pipefail
+          pytest -q -rs --no-cov -m postgresql tests | tee sortie-base.txt
+          if grep -E "[0-9]+ skipped" sortie-base.txt; then echo "Des tests de base ont été sautés : échec." && exit 1; fi

@@ -1,0 +1,43 @@
+# #152, nouveaux tests ecrits AVANT le correctif : 01/11/2026 (soir), base ac35e5c, passerelle_mcp/serveur.py inchange
+# commande : PYTHON_DOTENV_DISABLED=1 C:\Python314\python.exe -m pytest -q -p no:cacheprovider --no-cov tests/test_passerelle_mcp.py tests/test_jeu_demo_mcp_base.py -rs --tb=line
+#
+# Lecture. Le premier echec montre le defaut principal : l'ancien verrou refuse les 7 positions que l'import produit.
+# Plusieurs tests de refus passent donc AVANT le correctif pour une mauvaise raison (l'ancien verrou refuse tout jeu
+# importe) ; ce sont les tests du jeu servi, du jeu attendu, de la liste blanche et du total qui sont rouges. Le refus
+# d'un prix de revient different est prouve rouge par 152-verrou-prix-de-revient-avant.txt, sur l'ancien jeu de dix
+# lignes. Les 3 tests sautes demandent la base de test ; ils tournent dans 152-verrou-demo-apres.txt.
+
+.............F.....F................FFFFFsss                             [100%]
+================================== FAILURES ===================================
+E   assert False is True
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_passerelle_mcp.py:242: assert False is True
+E   AttributeError: module 'passerelle_mcp.serveur' has no attribute '_jeu_attendu'
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_passerelle_mcp.py:334: AttributeError: module 'passerelle_mcp.serveur' has no attribute '_jeu_attendu'
+E   AttributeError: <module 'passerelle_mcp.serveur' from 'D:\\KandaWork\\RITA_PROJECT\\rita-agent\\passerelle_mcp\\serveur.py'> has no attribute 'JEU_DEMO_ATTENDU'
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_passerelle_mcp.py:402: AttributeError: <module 'passerelle_mcp.serveur' from 'D:\\KandaWork\\RITA_PROJECT\\rita-agent\\passerelle_mcp\\serveur.py'> has no attribute 'JEU_DEMO_ATTENDU'
+E   AttributeError: <module 'passerelle_mcp.serveur' from 'D:\\KandaWork\\RITA_PROJECT\\rita-agent\\passerelle_mcp\\serveur.py'> has no attribute 'JEU_DEMO_ATTENDU'
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_passerelle_mcp.py:402: AttributeError: <module 'passerelle_mcp.serveur' from 'D:\\KandaWork\\RITA_PROJECT\\rita-agent\\passerelle_mcp\\serveur.py'> has no attribute 'JEU_DEMO_ATTENDU'
+E   assert False is True
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_passerelle_mcp.py:412: assert False is True
+E   KeyError: 'data'
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_passerelle_mcp.py:423: KeyError: 'data'
+E   assert (False is True)
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_passerelle_mcp.py:432: assert (False is True)
+
+=========================== short test summary info ===========================
+SKIPPED [1] tests\test_jeu_demo_mcp_base.py:67: pas de DATABASE_URL : base locale absente (CI)
+SKIPPED [1] tests\test_jeu_demo_mcp_base.py:77: pas de DATABASE_URL : base locale absente (CI)
+SKIPPED [1] tests\test_jeu_demo_mcp_base.py:84: pas de DATABASE_URL : base locale absente (CI)
+7 failed, 34 passed, 3 skipped, 1 warning in 7.76s
+
+# Liste des echecs, relancee le meme soir contre la version de HEAD de passerelle_mcp/serveur.py (git stash du seul
+# fichier, puis restauration a l'octet pres) : PYTHON_DOTENV_DISABLED=1 C:\Python314\python.exe -m pytest -q
+# -p no:cacheprovider --no-cov tests/test_passerelle_mcp.py -rf --tb=no
+FAILED tests/test_passerelle_mcp.py::test_en_demonstration_le_jeu_d_exemple_est_servi
+FAILED tests/test_passerelle_mcp.py::test_le_jeu_attendu_est_le_fichier_d_exemple_passe_par_les_regles_de_l_import
+FAILED tests/test_passerelle_mcp.py::test_un_jeu_attendu_absent_ou_vide_fait_refuser[None]
+FAILED tests/test_passerelle_mcp.py::test_un_jeu_attendu_absent_ou_vide_fait_refuser[ticker;quantite;pru;devise\n]
+FAILED tests/test_passerelle_mcp.py::test_la_reponse_servie_ne_porte_que_les_champs_de_la_liste
+FAILED tests/test_passerelle_mcp.py::test_le_total_est_recalcule_sur_les_positions_verifiees
+FAILED tests/test_passerelle_mcp.py::test_sans_valorisation_pour_une_ligne_le_total_est_indisponible
+7 failed, 34 passed, 1 warning in 5.65s

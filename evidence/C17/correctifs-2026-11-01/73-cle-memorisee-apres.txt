@@ -1,0 +1,3 @@
+# #73, APRÈS correctif : 01/11/2026 16:31, frontend/briefing.js et frontend/question.js modifiés (clé en mémoire jusqu'au premier appel réussi)
+# commande : C:\Python314\python.exe -m pytest -q -p no:cacheprovider tests/test_cle_memorisee_ui.py
+8 passed, 1 warning in 22.08s

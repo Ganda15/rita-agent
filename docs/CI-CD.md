@@ -15,7 +15,7 @@ chaîne sont versionnés avec le code dans `.github/workflows/`. Sept workflows,
 
 | Fichier | Nom affiché | Se déclenche sur | Travaux | Durée mesurée | Requis pour fusionner dans `main` |
 |---|---|---|---|---|---|
-| `test.yml` | Tests | poussée et pull request sur `main` et `develop` | `pytest` (suite et couverture), `evals` (garde-fous mesurés, portes) | 4 min 04 s · 1 min 45 s (24/10) | **oui**, les deux |
+| `test.yml` | Tests | poussée et pull request sur `main` et `develop` | `pytest` (suite et couverture), `evals` (garde-fous mesurés, portes), `base` (tests qui demandent PostgreSQL, depuis le 01/11/2026) | 4 min 04 s · 1 min 45 s (24/10) · 1 min 56 s (01/11) | **oui**, les trois (`base` depuis le 01/11/2026) |
 | `livraison.yml` | Livraison | poussée et pull request sur `main` et `develop` ; tag `livrable-*` | `lint`, `secrets`, `construire-et-publier` ; après une fusion dans `main` : `attendre-creneau`, `deployer`, et si besoin `attendre-reprise`, `deployer-reprise` | 9 s · 43 s · 4 min 20 s · déploiement 3 min 44 s (24/10) | **oui** : `lint`, `secrets`, `construire-et-publier` |
 | `revue-pr.yml` | Revue PR | pull request vers `main` (ouverte, mise à jour, rouverte, prête) | `revue` | 42 s le 24/10 ; jusqu'à 20 min déjà vu | **oui** |
 | `scan-giskard.yml` | Scan Giskard | bouton manuel (`workflow_dispatch`), avec un plafond de scénarios saisi | scan des deux frontières | 10 à 30 min, coût du juge | non |
@@ -28,8 +28,8 @@ Scan 10, Ingestion 5, Retour arrière 2).
 
 Deux règles tiennent la chaîne par les deux bouts. **Sur le poste**, le hook `pre-push` (`.githooks/`, activé une fois
 par clone par `git config core.hooksPath .githooks`) refuse toute poussée directe sur `main`. **Sur GitHub**, le ruleset
-`main protegee` exige une pull request et **six** checks verts (`lint`, `secrets`, `pytest`, `evals`,
-`construire-et-publier`, `revue` ; trois jusqu'au sprint 2), interdit la suppression et le force-push, sans acteur de
+`main protegee` exige une pull request et **sept** checks verts (`lint`, `secrets`, `pytest`, `evals`,
+`construire-et-publier`, `revue`, et `base` depuis le 01/11/2026 ; trois jusqu'au sprint 2), interdit la suppression et le force-push, sans acteur de
 contournement ; un second ruleset, `tags livrable-* figes`, interdit de supprimer ou de déplacer un tag de livrable.
 Si le hook n'est pas activé, GitHub refuse quand même.
 
@@ -66,6 +66,16 @@ pour qu'un défaut de données arrête la chaîne en premier ; le 24/10, 296 tes
 Travail `evals` : récupérer le dépôt · Python 3.13 · dépendances · `python -m evals.mesurer_gardefou` ·
 `pytest tests/test_evals.py -v` (les portes non compensables : faux positifs au plus 15 %, latence sous 250 ms ; le
 taux de blocage à 85 % est déclaré non atteint par un `xfail` strict, qui rendrait la suite rouge s'il passait).
+
+Travail `base` (depuis le 01/11/2026) : un service `postgres:18-alpine` (même version que la production, compte `rita`,
+mode `trust`, donc aucun mot de passe ni secret) · Python 3.13 · dépendances, plus le paquet Playwright (tous les
+fichiers de tests se chargent avant la sélection, et deux l'importent au chargement) · `db/schema.sql` puis
+`db/roles.sql`
+chargés par `psql` avec `ON_ERROR_STOP=1` · les tests marqués `postgresql` (`pytest -m postgresql tests`, depuis le
+02/11/2026 ; un test qui demande la base sans ce marqueur échoue, `tests/garde_base.py`) · **échec si un seul test
+est sauté**. Avant lui, ces tests se sautaient en CI faute de base, et la chaîne restait verte sans les avoir
+exécutés. Premier passage : 43 réussis, 0 sauté, sur `516fbf5` (passage 41353566356,
+`evidence/C18/job-base-premier-passage-github-2026-11-01.md`) ; la sélection est figée par `tests/test_ci_base.py`.
 
 Le seuil de couverture (`fail_under = 90`) vit dans `.coveragerc`, pas dans le workflow : un seuil écrit ici serait
 invisible depuis le poste, et la régression se verrait en CI au lieu d'avant la poussée. Le périmètre exclut `tests/`
@@ -202,9 +212,10 @@ Chaque workflow déclare le minimum de permissions dont il a besoin :
 | Ce qu'on veut vérifier | Comment | Ce qu'on doit voir |
 |---|---|---|
 | Tests et Livraison partent sur une poussée | pousser un commit sur `develop`, puis `gh run list --limit 4` | deux exécutions `in_progress` puis `success` |
-| La revue tourne et bloque | ouvrir une pull request vers `main` : `gh pr create --base main --head develop` | les six checks requis sur la PR ; le bouton de fusion reste gris tant qu'un check requis manque |
+| La revue tourne et bloque | ouvrir une pull request vers `main` : `gh pr create --base main --head develop` | les sept checks requis sur la PR ; le bouton de fusion reste gris tant qu'un check requis manque |
 | La production suit `main` | après une fusion : `gh run list --workflow livraison.yml --branch main --limit 1`, puis `curl.exe -s https://178-104-184-125.sslip.io/health` | `deployer` en `success`, et `/health` annonce le commit de la fusion |
 | Le retour arrière marche | `gh workflow run retour-arriere.yml --repo Ganda15/rita-agent --ref main -f acteur="Era" -f motif="essai"` | `retour arriere` dans le journal du serveur (fait le 14/10 et le 15/10) ; remettre ensuite la version annulée ([procédure](exploitation.md#rollback-production)) |
+| Un tag `livrable-*` publie son image, sans déployer | `gh run list --workflow livraison.yml --branch <tag> --limit 1`, puis `gh run view <identifiant> --json jobs` et `gh run view <identifiant> --log`, où l'on cherche `rita-api:<tag>` (dans PowerShell, ajouter `\| Select-String "rita-api:<tag>"`) | `construire-et-publier` en `success`, `deployer` en `skipped` ; le journal nomme `ghcr.io/ganda15/rita-api:<tag>` et son empreinte `sha256` (fait le 01/11/2026 sur `livrable-E3-v2`, exécution 40490834495) |
 | L'alerte ouvre une issue | `gh workflow run alerte-incident.yml --ref main -f titre="Test manuel"` | une issue `incident` dans la minute (fait le 03/10/2026 : #71) |
 | Un échec est lisible | `gh run view <identifiant> --log-failed` | l'étape rouge et sa sortie |
 | La même chose sur le poste, avant de pousser | `C:\Python314\python.exe -m pytest --cov -q` · `C:\Python314\python.exe -X utf8 -m evals.mesurer_gardefou` · `C:\Python314\python.exe scripts\verifier_livrable.py --ci` | les mêmes trois verdicts que la CI ; si le poste refuse une roue (Smart App Control), `Dockerfile.tests` donne le même environnement en Python 3.13 |
@@ -228,7 +239,10 @@ Trois choses qu'on ne fait jamais pour « que ça passe » : désactiver un test
 ## 8. Limites, déclarées
 
 - **Tests ignorés en CI** : 30 le 24/10. 16 exigent une vraie base PostgreSQL, absente en CI, 9 testent les hooks de
-  l'assistant de développement, muets hors Windows, et 5 exigent Spark (pas de JDK).
+  l'assistant de développement, muets hors Windows, et 5 exigent Spark (pas de JDK). Depuis le 01/11/2026, les tests
+  qui demandent PostgreSQL tournent dans le job `base`, qui échoue si l'un d'eux est sauté ; ils restent ignorés dans
+  le job `pytest`. Depuis le 02/11/2026, ils sont choisis par le marqueur `postgresql`, et un test qui demande la
+  base sans ce marqueur échoue (`evidence/C18/marqueur-postgresql-2026-11-02.md`).
 - Pas de cache `pip`, pas de filtre de chemin, une seule version de Python testée (3.13 ; le poste est en 3.14). Pas de
   rapport de couverture conservé comme artefact.
 - `requirements.txt` n'est épinglé que pour six dépendances (`langfuse`, `feedparser`, `chromadb`, `rank-bm25`, `ruff`,

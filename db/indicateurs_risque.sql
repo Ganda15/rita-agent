@@ -73,10 +73,13 @@ rendements AS (
 
 avec_drawdown AS (
     SELECT r.*,
-           -- Résultat toujours ≤ 0 : le jour du plus haut lui-même donne un
-           -- nombre POSITIF ici (le cours dépasse le plus haut de la VEILLE),
-           -- ce qui est correct — il n'entrera jamais dans un MIN.
-           (r.cloture / NULLIF(r.plus_haut_avant_ce_jour, 0) - 1) * 100 AS baisse_pct
+           -- Résultat toujours ≤ 0 (#79, corrigé le 01/11/2026) : un jour au-dessus du
+           -- plus haut de la veille n'est pas une baisse et compte pour 0, pas pour un
+           -- gain. Sans plus haut antérieur (première séance), la valeur reste NULL :
+           -- LEAST seul ne suffit pas, PostgreSQL y ignore les NULL et rendrait 0.
+           CASE WHEN r.plus_haut_avant_ce_jour IS NULL THEN NULL
+                ELSE LEAST(0, (r.cloture / NULLIF(r.plus_haut_avant_ce_jour, 0) - 1) * 100)
+           END AS baisse_pct
     FROM   rendements r
 ),
 

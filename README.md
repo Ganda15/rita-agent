@@ -27,19 +27,20 @@ Simplon & Wild Code School · Eramalingam GANDAKUMAR · ganda70@gmail.com · 202
 > *Un dépôt unique qui grandit est la règle du référentiel ; le tag est ce qui permet
 > malgré tout d'évaluer un livrable dans son état d'origine.*
 
-| Épreuve | Compétences | État au 10/10/2026 | Documents | 🔒 Livrable figé |
+| Épreuve | Compétences | État au 02/11/2026 | Documents | 🔒 Livrable figé |
 |---|---|---|---|---|
-| **E1** : Données | C1–C5 | ✅ **livré** le 13/08 (26 critères / 28). **Version 2 rédigée le 03/10**, gel et tag `livrable-E1-v2` le **15/10** : dates de l'archive en date locale (INC-005), 10 tables, FRED stockée, vue sans taux supposé, clôture des positions, traçage UE, étape `ecb` en échec déclaré, 836 tests collectés (10/10) | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) (v2.2, 5 pages) · [preuves C1 à C5](evidence/) | **[`livrable-E1-v1`](https://github.com/Ganda15/rita-agent/tree/livrable-E1-v1)** |
-| **E2** : Veille & services IA | C6–C8 | 🟡 **le plus en retard**. C6 : protocole, 4 notes (S33 à S36) et leur synthèse PDF, un partage sans capture, S37 à S40 sans note ; C7 : **première comparaison mesurée le 03/10** (GPT-5.4 par Azure contre Claude par OpenRouter, 30 appels chacun, `evidence/C7/`), banc Azure contre Mistral Large 4 après le gel ; C8 : Azure en zone UE depuis le 09/10, OpenRouter en secours sur `develop`, Mistral Large 4 sur la branche `mistral-ue`, remise non prouvée (#43). Rapport : v0.3 du 09/10 (`docs/rapports/E2/`), partie C7 à écrire, dû le 05/11 | [docs/veille/](docs/veille/) · [evidence/C6/](evidence/C6/) | aucun |
-| **E3** : API modèle & MLOps | C9–C13 | 🔨 **proche du gel** (15/10). API du modèle, garde-fous mesurés, 836 tests collectés (10/10), CI avec portes d'évaluation, traces et tableau de bord Langfuse, chaîne d'alerte, journal des appels MCP. Rapport v1.4 en relecture | [rapport-E3.pdf](docs/rapports/E3/rapport-E3.pdf) (v1.4, 20 pages) · [evidence/C11/](evidence/C11/) · [evidence/C12/](evidence/C12/) | aucun |
-| **E4** : Application | C14–C19 | 🔨 **27 critères / 36** au recomptage du 03/10 (9 partiels) : 3 écrans, spécifications et schémas, pré-production Docker, intégration continue, `main` protégée par pull request et tests verts. Rapport : 0 page, gel le 25/10 | [evidence/C14/](evidence/C14/) · [evidence/C15/](evidence/C15/) · [evidence/C19/](evidence/C19/) | aucun |
-| **E5** : Monitorage | C20–C21 | 🔨 **en construction** : jauge de fraîcheur, identifiant de requête dans journal et traces, alerte vers une issue, manifeste de collecte, journal des appels MCP ; 7 post-mortems d'incidents (INC-001 à INC-007). Rapport : 0 page, dû le 05/11 | [evidence/C20/](evidence/C20/) · [evidence/C21/](evidence/C21/) | aucun |
+| **E1** : Données | C1–C5 | ✅ **livré et accepté** : livret v3 envoyé au formateur le 28/10 ; **v5 préparé le 02/11** (MCD `VALEUR 0,n`, budget, PDF avec annexes refait, `rapport-E1-v5-avec-annexes.pdf`), tag `livrable-E1-v5` à poser après la fusion. Versions figées précédentes : `livrable-E1-v1` (13/08), `livrable-E1-v2` (24/10) | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) · [rapport-E1-v3-avec-annexes.pdf](docs/rapports/E1/rapport-E1-v3-avec-annexes.pdf) · [preuves C1 à C5](evidence/) | **[`livrable-E1-v3`](https://github.com/Ganda15/rita-agent/tree/livrable-E1-v3)** |
+| **E2** : Veille & services IA | C6–C8 | 📝 **rapport v0.9 rédigé** (17 pages, annexe de 3 schémas : 20 pages en tout), sur `develop` ; auto-évaluation 13 ✅ · 6 ⚠️ · 1 ❌ ; remise du guide d'exploitation (C8.5) non prouvée ; dû le 05/11 | [rapport-E2.pdf](docs/rapports/E2/rapport-E2.pdf) · [docs/veille/](docs/veille/) · [evidence/C6/](evidence/C6/) | à venir, après la fusion dans `main` |
+| **E3** : API modèle & MLOps | C9–C13 | ✅ **livré** : rapport v1.9 envoyé au formateur le 29/10 ; **v2.0 préparé le 02/11** après le retour écrit du formateur (OWASP API en entier, accessibilité mesurée, séparation des traces prouvée, 20 pages), tag `livrable-E3-v3` à poser après la fusion ; version précédente figée : `livrable-E3-v1` (24/10) | [rapport-E3.pdf](docs/rapports/E3/rapport-E3.pdf) (v2.0) · [evidence/C11/](evidence/C11/) · [evidence/C12/](evidence/C12/) | **[`livrable-E3-v2`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v2)** |
+| **E4** : Application | C14–C19 | 📝 **rapport v1.0 rédigé** (20 pages, 29 avec l'annexe), sur `develop` ; auto-évaluation 21 ✅ · 17 ⚠️ · 0 ❌ ; dû le 05/11 | [rapport-E4.pdf](docs/rapports/E4/rapport-E4.pdf) · [evidence/C14/](evidence/C14/) · [evidence/C17/](evidence/C17/) | à venir, après la fusion dans `main` |
+| **E5** : Monitorage | C20–C21 | 📝 **rapport v0.5 rédigé** (5 pages), sur `develop` ; auto-évaluation 10 ✅ · 2 ⚠️ ; 9 post-mortems d'incidents (INC-001 à INC-009) ; dû le 05/11 | [rapport-E5.pdf](docs/rapports/E5/rapport-E5.pdf) · [evidence/C20/](evidence/C20/) · [evidence/C21/](evidence/C21/) | à venir, après la fusion dans `main` |
 
 *Les 2 critères restants d'E1 (C1#6, C3#2) demandent un accès au dépôt Git — ils sont
 satisfaits par l'accès collaborateur, non par du code.*
 
 *Conception des données validée par le formateur le 03/10/2026 : [docs/conception/donnees/](docs/conception/donnees/).
-Tableau tenu à jour à chaque séance ; le détail du jour est dans [`ETAT.md`](ETAT.md).*
+Tableau tenu à jour à chaque séance ; le détail du jour est dans [`ETAT.md`](ETAT.md), et les lignes encore
+partielles d'E2 à E5 dans [le registre de la recette](docs/recette/registre-des-partiels.md).*
 
 ---
 
@@ -54,11 +55,11 @@ recommandation d'achat ou de vente.
 
 | | |
 |---|---|
-| Tests | **836 collectés** · **832 réussis**, 2 ignorés, 2 échecs attendus (`pytest -q` complet sur le poste, 10/10) |
-| Base de données | **10 tables · 1 vue · 8 index créés explicitement · 12 contraintes CHECK** (compté dans `db/schema.sql`, 10/10) |
+| Tests | **1 927 collectés** · sur le poste : **1 878 réussis**, 47 ignorés (dont les 24 qui demandent PostgreSQL), 2 échecs attendus ; en CI : 1 880 réussis, couverture 96,32 %, et les 24 tests PostgreSQL réussis dans le job `base` (02/11) |
+| Base de données | **10 tables · 1 vue · 8 index créés explicitement · 12 contraintes CHECK** (compté dans `db/schema.sql`, inchangé depuis le 10/10, recompté le 02/11) |
 | Données en base | **273 608 lignes** importées en juillet (276 168 lues − 2 560 doublons) ; 278 473 cotations au 02/10 (mesure d'E1) |
 | Archive big data | **11 partitions Parquet · 14 Mo · 10 ans** (29/07/2016 → 29/07/2026, dates locales de la place depuis INC-005) |
-| API | **OpenAPI 3.1.0 · 14 chemins, 14 opérations, dont 11 chemins de données `/donnees`** (`app.openapi()`, 10/10) |
+| API | **OpenAPI 3.1.0 · 19 chemins, 19 opérations, dont 12 chemins de données `/donnees`** (`app.openapi()`, 02/11) |
 
 ### Les 5 types de sources (C1)
 
@@ -83,10 +84,11 @@ recommandation d'achat ou de vente.
 - **Orchestration** : LangGraph
 - **CI** : GitHub Actions — tests + **porte d'évaluation des garde-fous**
 
-> **Présents au 10/10** : interface web de trois écrans (`frontend/`), conteneurisation (`Dockerfile`, `Dockerfile.tests`,
-> `docker-compose.yml`), cinq workflows GitHub Actions (tests, livraison, revue des pull requests, scan Giskard, alerte
-> d'incident), traces Langfuse avec deux alertes réglées. **Pas encore** : restitution en temps réel ; le serveur en
-> ligne sert le code du 19/08.
+> **Présents au 02/11** : interface web de cinq écrans (portefeuille, indicateurs, briefing, question, tableau de bord
+> de la vigie, `frontend/`), passerelle MCP (`passerelle_mcp/`), conteneurisation (`Dockerfile`, `Dockerfile.tests`,
+> `docker-compose.yml`), sept workflows GitHub Actions (tests, livraison, revue des pull requests, scan Giskard, alerte
+> d'incident, ingestion, retour arrière), traces Langfuse avec deux alertes réglées. La production sert le code de
+> `922349d`, livré le 01/11 (`/health`, lu le 02/11). **Pas encore** : restitution en temps réel.
 
 ## Structure
 
@@ -97,20 +99,28 @@ rita-agent/
 ├── bigdata/      # PySpark + Parquet — 11 partitions, 10 ans
 ├── data/         # CSV sources + archive Parquet
 ├── db/           # schema.sql · requetes.sql · registre RGPD · import
+├── deploy/       # déploiement sur le serveur de production
 ├── docs/
 │   ├── rapports/ # un dossier par épreuve (E1/, E3/, …)
 │   └── veille/   # une note par semaine (C6)
 ├── evals/        # mesure des garde-fous — porte de qualité de la CI
 ├── evidence/     # preuves par compétence : C1/ … C21/
-├── frontend/     # interface web : trois écrans (C10, E4)
+├── frontend/     # interface web : cinq écrans (C10, E4)
 ├── graph/        # LangGraph — état + workflow
 ├── guardrails/   # trois garde-fous : entrée, injection indirecte, sortie
+├── indicateurs/  # indicateurs de marché et de portefeuille
+├── monitorage/   # vigie : fraîcheur, compteurs, seuils
+├── passerelle_mcp/ # serveur MCP : trois outils en lecture
 ├── pipelines/    # ingestion
+├── rag/          # index et recherche dans les articles
 ├── scripts/      # planification de la collecte
 ├── sources/      # les 5 types de sources C1
 ├── src/          # appel du modèle
-└── tests/        # pytest : 836 tests collectés (10/10)
+└── tests/        # pytest : 1 927 tests collectés (02/11)
 ```
+
+L'architecture, avec le chemin d'un briefing et d'une question : [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+La chaîne d'intégration et de livraison continues : [docs/CI-CD.md](docs/CI-CD.md).
 
 ## Lancer le projet
 
@@ -136,16 +146,32 @@ qui lance le serveur.
 .venv\Scripts\python.exe -m pytest -q
 ```
 
-Si la création d'environnement virtuel est bloquée par une politique de sécurité
-(AppLocker), les tests s'exécutent aussi avec l'interpréteur système :
+Si la création d'environnement virtuel est bloquée (sur le poste du projet, Smart App Control de Windows refuse les
+exécutables sans réputation, dont ceux d'un environnement virtuel), les tests s'exécutent aussi avec l'interpréteur
+système :
 
 ```powershell
 python -m pytest -q
 ```
 
-> **Dernière exécution vérifiée : 832 réussis, 2 ignorés, 2 échecs attendus sur 836 collectés** (Python 3.14.6, Windows, 10/10/2026).
-> Les tests d'intégration PySpark de `tests/test_spark.py` sont **ignorés** — et non en
-> échec — si aucun JDK 21 n'est présent dans `JAVA_HOME`.
+> **Dernière exécution vérifiée : 1 878 réussis, 47 ignorés, 2 échecs attendus sur 1 927 collectés** (Python 3.14.6,
+> Windows, 02/11/2026). Les 47 ignorés : les 24 tests qui demandent PostgreSQL (ci-dessous), et 23 tests qui ne
+> tournent que sous Linux, dans la CI (simulations `bash`, `jq`, verrous de fichiers, liens symboliques).
+> Les tests d'intégration PySpark de `tests/test_spark.py` sont **ignorés**, et non en échec, si aucun JDK 21 n'est
+> présent dans `JAVA_HOME`.
+
+### Les tests qui demandent PostgreSQL
+
+Ces 24 tests portent le marqueur `postgresql`. Ils n'écrivent que dans une base de test déclarée : `DATABASE_URL` doit
+viser une base dont le nom est celui de `RITA_BASE_DE_TEST`, sinon ils sont ignorés (`tests/garde_base.py`). Pour les
+lancer seuls, sur une base de test chargée avec `db/schema.sql` puis `db/roles.sql` :
+
+```powershell
+python -m pytest -q -m postgresql tests
+```
+
+En CI, le job `base` les lance sur une base PostgreSQL 18 jetable et échoue si l'un d'eux est ignoré
+([docs/CI-CD.md](docs/CI-CD.md)).
 
 ## RGPD
 

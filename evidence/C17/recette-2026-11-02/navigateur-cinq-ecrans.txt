@@ -1,0 +1,58 @@
+# Recette des cinq ecrans dans un vrai navigateur (Chrome, Playwright), API interceptee : 02/11/2026 10:50, commit e818ed7 plus tests/test_recette_clavier.py (local)
+# commande : PYTHON_DOTENV_DISABLED=1 C:\Python314\python.exe -m pytest -v -p no:cacheprovider --no-cov tests/test_smoke_ui.py tests/test_smoke_tableau_de_bord.py tests/test_cle_memorisee_ui.py tests/test_recette_clavier.py
+
+tests/test_smoke_ui.py::test_la_page_d_accueil_se_charge_avec_son_titre PASSED
+tests/test_smoke_ui.py::test_le_formulaire_de_cle_est_visible_et_vide PASSED
+tests/test_smoke_ui.py::test_aucune_erreur_javascript_au_chargement PASSED
+tests/test_smoke_ui.py::test_une_mauvaise_cle_est_refusee_a_l_ecran PASSED
+tests/test_smoke_ui.py::test_une_position_sans_taux_affiche_indisponible_a_l_ecran PASSED
+tests/test_smoke_ui.py::test_l_ecran_briefing_affiche_le_texte_et_le_verdict PASSED
+tests/test_smoke_ui.py::test_l_ecran_briefing_dit_quand_le_ticker_est_introuvable PASSED
+tests/test_smoke_ui.py::test_l_ecran_briefing_dit_quand_la_valeur_est_inconnue PASSED
+tests/test_smoke_ui.py::test_l_ecran_briefing_affiche_le_refus_de_debit PASSED
+tests/test_smoke_ui.py::test_l_ecran_question_affiche_le_refus_de_debit PASSED
+tests/test_smoke_ui.py::test_l_ecran_question_dit_le_motif_en_mots[TENTATIVE_DETOURNEMENT-d\xe9tourner le service] PASSED
+tests/test_smoke_ui.py::test_l_ecran_question_dit_le_motif_en_mots[FUITE_BLOQUEE-informations internes] PASSED
+tests/test_smoke_ui.py::test_l_ecran_question_dit_le_motif_en_mots[NOMBRE_NON_SOURCE-chiffre absent] PASSED
+tests/test_smoke_tableau_de_bord.py::test_tout_va_bien_et_les_sept_cartes_le_disent PASSED
+tests/test_smoke_tableau_de_bord.py::test_un_probleme_dit_quoi_faire PASSED
+tests/test_smoke_tableau_de_bord.py::test_une_attention_dit_aussi_quoi_faire PASSED
+tests/test_smoke_tableau_de_bord.py::test_sans_trafic_les_cartes_disent_inconnu_et_pourquoi_sans_consigne PASSED
+tests/test_smoke_tableau_de_bord.py::test_les_trois_heures_sont_affichees PASSED
+tests/test_smoke_tableau_de_bord.py::test_sante_en_panne_et_health_sain PASSED
+tests/test_smoke_tableau_de_bord.py::test_health_en_panne_et_sante_lisible PASSED
+tests/test_smoke_tableau_de_bord.py::test_une_reponse_mal_formee_ne_casse_pas_la_page[ceci n'est pas du JSON] PASSED
+tests/test_smoke_tableau_de_bord.py::test_une_reponse_mal_formee_ne_casse_pas_la_page[corps1] PASSED
+tests/test_smoke_tableau_de_bord.py::test_une_cle_refusee_ramene_au_formulaire PASSED
+tests/test_smoke_tableau_de_bord.py::test_sur_un_ecran_de_telephone_rien_ne_deborde PASSED
+tests/test_smoke_tableau_de_bord.py::test_pendant_le_chargement_le_bouton_est_bloque_et_un_seul_appel_part PASSED
+tests/test_smoke_tableau_de_bord.py::test_pendant_un_exercice_le_bandeau_le_dit PASSED
+tests/test_smoke_tableau_de_bord.py::test_sans_exercice_le_bandeau_est_cache PASSED
+tests/test_smoke_tableau_de_bord.py::test_l_actualisation_automatique_se_suspend_et_reprend PASSED
+tests/test_cle_memorisee_ui.py::test_une_cle_saisie_n_est_pas_gardee_avant_un_appel_reussi[briefing] PASSED
+tests/test_cle_memorisee_ui.py::test_une_cle_saisie_n_est_pas_gardee_avant_un_appel_reussi[question] PASSED
+tests/test_cle_memorisee_ui.py::test_une_cle_refusee_n_est_pas_gardee[briefing] PASSED
+tests/test_cle_memorisee_ui.py::test_une_cle_refusee_n_est_pas_gardee[question] PASSED
+tests/test_cle_memorisee_ui.py::test_une_cle_acceptee_est_gardee[briefing] PASSED
+tests/test_cle_memorisee_ui.py::test_une_cle_acceptee_est_gardee[question] PASSED
+tests/test_cle_memorisee_ui.py::test_une_panne_du_service_n_efface_pas_une_cle_deja_verifiee[briefing] PASSED
+tests/test_cle_memorisee_ui.py::test_une_panne_du_service_n_efface_pas_une_cle_deja_verifiee[question] PASSED
+tests/test_cle_memorisee_ui.py::test_une_panne_au_premier_essai_ne_garde_pas_une_cle_jamais_verifiee[briefing-503] PASSED
+tests/test_cle_memorisee_ui.py::test_une_panne_au_premier_essai_ne_garde_pas_une_cle_jamais_verifiee[briefing-reseau] PASSED
+tests/test_cle_memorisee_ui.py::test_une_panne_au_premier_essai_ne_garde_pas_une_cle_jamais_verifiee[question-503] PASSED
+tests/test_cle_memorisee_ui.py::test_une_panne_au_premier_essai_ne_garde_pas_une_cle_jamais_verifiee[question-reseau] PASSED
+tests/test_recette_clavier.py::test_au_clavier_le_champ_de_cle_est_atteint_nomme_et_son_focus_se_voit[index.html] PASSED
+tests/test_recette_clavier.py::test_au_clavier_le_champ_de_cle_est_atteint_nomme_et_son_focus_se_voit[indicateurs.html] PASSED
+tests/test_recette_clavier.py::test_au_clavier_le_champ_de_cle_est_atteint_nomme_et_son_focus_se_voit[briefing.html] PASSED
+tests/test_recette_clavier.py::test_au_clavier_le_champ_de_cle_est_atteint_nomme_et_son_focus_se_voit[question.html] PASSED
+tests/test_recette_clavier.py::test_au_clavier_le_champ_de_cle_est_atteint_nomme_et_son_focus_se_voit[tableau-de-bord.html] PASSED
+tests/test_recette_clavier.py::test_au_clavier_entree_envoie_la_cle_et_ouvre_l_ecran[index.html] PASSED
+tests/test_recette_clavier.py::test_au_clavier_entree_envoie_la_cle_et_ouvre_l_ecran[indicateurs.html] PASSED
+tests/test_recette_clavier.py::test_au_clavier_entree_envoie_la_cle_et_ouvre_l_ecran[briefing.html] PASSED
+tests/test_recette_clavier.py::test_au_clavier_entree_envoie_la_cle_et_ouvre_l_ecran[question.html] PASSED
+tests/test_recette_clavier.py::test_au_clavier_entree_envoie_la_cle_et_ouvre_l_ecran[tableau-de-bord.html] PASSED
+tests/test_recette_clavier.py::test_au_clavier_un_briefing_se_demande_et_le_resultat_recoit_le_focus PASSED
+tests/test_recette_clavier.py::test_au_clavier_une_question_se_pose_et_la_fiche_s_ouvre PASSED
+tests/test_recette_clavier.py::test_au_clavier_le_tableau_de_bord_s_actualise_et_se_suspend PASSED
+tests/test_recette_clavier.py::test_au_clavier_la_zone_du_tableau_des_indicateurs_est_atteinte PASSED
+================== 54 passed, 1 warning in 106.49s (0:01:46) ==================

@@ -1,0 +1,10 @@
+# Tableau de bord, deux correctifs : tests ecrits AVANT, 02/11/2026 09 h 02, base d97d5bb, code inchange
+# commande : PYTHON_DOTENV_DISABLED=1 C:\Python314\python.exe -m pytest -q -p no:cacheprovider --no-cov tests/test_tableau_de_bord.py tests/test_smoke_tableau_de_bord.py -rf --tb=line
+
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_tableau_de_bord.py:104: assert None
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_tableau_de_bord.py:112: AssertionError: assert 'Prototype' not in '\n    <p>Pr...ain.</p>\n  '
+C:\Users\kanda\AppData\Roaming\Python\Python314\site-packages\playwright\_impl\_connection.py:632: playwright._impl._errors.TimeoutError: Locator.click: Timeout 30000ms exceeded.
+FAILED tests/test_tableau_de_bord.py::test_un_bouton_permet_de_suspendre_l_actualisation_automatique
+FAILED tests/test_tableau_de_bord.py::test_le_pied_de_page_ne_dit_plus_prototype_local
+FAILED tests/test_smoke_tableau_de_bord.py::test_l_actualisation_automatique_se_suspend_et_reprend
+3 failed, 32 passed, 1 warning in 69.40s (0:01:09)

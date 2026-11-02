@@ -1,0 +1,21 @@
+# C4 : le script d'import en action, sur une base jetable et le jeu de demonstration fictif
+# 02/11/2026 17:39 ; depot au commit 113b279 ; PostgreSQL 18 (postgres:18-alpine), mode trust, aucun secret ; detruite a la fin
+
+$ docker run -d --name rita-import-demo-jetable -e POSTGRES_USER=rita -e POSTGRES_DB=rita_demo -e POSTGRES_HOST_AUTH_METHOD=trust -p 55433:5432 postgres:18-alpine
+c4efd4ac316a
+
+$ psql -f db/schema.sql ; psql -f db/roles.sql
+tables avant import :
+valeur 0 ; cotation 0 ; position 0 ; article 0
+
+$ python -m db.importer --demo data/demo --dsn postgresql://rita@localhost:55433/rita_demo      (1er passage)
+{'valeurs': 3, 'cotations': 222, 'articles': 6, 'positions': 3}
+tables apres import :
+valeur 3 ; cotation 222 ; position 3 ; article 6
+marque de la base : rita-demonstration
+
+$ python -m db.importer --demo data/demo --dsn postgresql://rita@localhost:55433/rita_demo      (2e passage : rien ne doit entrer)
+{'valeurs': 0, 'cotations': 0, 'articles': 0, 'positions': 0}
+
+$ docker rm -f rita-import-demo-jetable
+rita-import-demo-jetable

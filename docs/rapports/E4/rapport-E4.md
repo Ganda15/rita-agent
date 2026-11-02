@@ -8,13 +8,14 @@
 .sommaire li a{ color:var(--ink); }
 .sommaire li span{ color:var(--accent); font-weight:600; }
 h2#glossaire + ul{ columns:2; column-gap:18pt; }
+h2#matrice + p + table td:first-child{ width:27%; }
 </style>
 
 <div><img class="logo" src="../E3/logo/rita-logo-marque.png" alt="Logo de RITA"></div>
 
 # Rapport E4 : réaliser une application intégrant un service d'IA (C14 à C19)
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 0.9, 1er novembre 2026, relue de façon indépendante contre le dépôt et GitHub · version de référence de l'application : commit `d3a4198` de `main` (tags `livrable-E1-v3` et `livrable-E3-v2`), en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.0, 1er novembre 2026, relue de façon indépendante contre le dépôt et GitHub · version de référence de l'application : commit `d3a4198` de `main` (tags `livrable-E1-v3` et `livrable-E3-v2`), en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
 {: .identite }
 
 > **En une minute.** RITA aide un investisseur particulier à suivre son portefeuille et à lire l'actualité d'une
@@ -757,11 +758,11 @@ partie du critère manque. ❌ : aucune preuve.
 
 | Critère | État | Preuve | Limite restante | Section |
 |---|---|---|---|---|
-| **C14.1** La modélisation des données respecte un formalisme (Merise…) | ⚠️ | MCD Merise, `evidence/C4/MCD-MERISE-RITA.png` ; le formalisme est respecté | la table `article`, qui porte les données de Question, n'est pas dans le MCD | 1.4 |
+| **C14.1** La modélisation des données respecte un formalisme (Merise…) | ✅ | MCD Merise, `evidence/C4/MCD-MERISE-RITA.png` ; le formalisme est respecté | le MCD ne représente pas les articles utilisés par l'écran Question (6 entités pour 8 tables : `evidence/C4/preuve-mcd-merise.md`, § 4) | 1.4 |
 | **C14.2** La modélisation des parcours respecte un formalisme (wireframes…) | ⚠️ | trois wireframes d'état, `evidence/C14/` | rien pour Question et Tableau de bord | 1.4 |
 | **C14.3** Chaque spécification couvre contexte, scénarios, critères de validation | ⚠️ | US-1 à US-3 ; US1 et US2 de Question | scénarios de Question non formalisés ; aucune spécification fonctionnelle du Tableau de bord | 1.3, 1.5 |
 | **C14.4** Accessibilité intégrée aux critères d'acceptation | ⚠️ | critères RGAA des écrans 1 à 3 | aucun critère pour Question ; pour le Tableau de bord, le balisage seul est testé | 1.6 |
-| **C14.5** Accessibilité formulée selon un standard (RGAA…) | ⚠️ | règles RGAA numérotées dans les critères des écrans 1 à 3 | aucun objectif formalisé pour Question et Tableau de bord ; aucun test avec un lecteur d'écran | 1.6 |
+| **C14.5** Accessibilité formulée selon un standard (RGAA…) | ✅ | objectifs des écrans 1 à 3 formulés avec des règles RGAA numérotées (3.1, 5.4, 5.7…), chacun relié à un test (`evidence/C14/`) | aucun objectif pour Question et Tableau de bord (C14.4 reste partiel) ; aucun test avec un lecteur d'écran | 1.6 |
 | **C15.1** Spécifications techniques : architecture, dépendances, environnement | ✅ | `docs/ARCHITECTURE.md`, `requirements-api.txt` | diagramme de flux du 18/08 ; schéma d'architecture du 24/10, sans la vigie | 2.1 à 2.3 |
 | **C15.2** Services éco-responsables favorisés | ⚠️ | choix d'architecture, éco-responsables par effet | hébergeur choisi pour la continuité, impact non mesuré | 2.5 |
 | **C15.3** Diagramme de flux de données | ⚠️ | `evidence/C15/FLUX-DONNEES-C15-application-RITA.png` | daté du 18/08 : sans Question ni vigie | 2.4 |
@@ -771,7 +772,7 @@ partie du critère manque. ❌ : aucune preuve.
 | **C16.2** Outils de pilotage disponibles (kanban, burndown, backlog) | ✅ | tableau Kanban, backlog d'issues, plans de travail ; burndown écarté et expliqué | tableau non tenu après le 14/10 | 3.3 |
 | **C16.3** Objectifs et modalités des rituels partagés aux parties prenantes | ⚠️ | méthode dans le dépôt, file de validation | partage surtout documentaire | 3.4 |
 | **C16.4** Éléments de pilotage accessibles à toutes les parties tout au long du projet | ⚠️ | dépôt en lecture pour le formateur (vérifié le 30/10) | accès au tableau non revérifié ; jury pas encore invité | 3.4 |
-| **C17.1** Environnement de développement conforme aux spécifications | ⚠️ | dépendances directes de l'API épinglées | `requirements.txt` et trois paquets de CI libres | 4.2 |
+| **C17.1** Environnement de développement conforme aux spécifications | ✅ | environnement prévu (`evidence/C15/preuve-specifications-techniques.md`) et installé, rapprochés le 01/11 : Windows 11, Python 3.14.6, PostgreSQL 18.4 sur le port 5433 ; Python 3.13 en CI (`test.yml`) | `requirements.txt` et trois paquets de CI sans version : limite de reproductibilité | 4.2 |
 | **C17.2** Interfaces intégrées et conformes aux maquettes | ⚠️ | cinq écrans intégrés | wireframes dessinés après ; deux écrans sans maquette | 4.3 |
 | **C17.3** Comportements des composants et navigation conformes | ⚠️ | scénarios testés, dont dans un navigateur | défaut #73 | 4.3 |
 | **C17.4** Composants métier conformes aux spécifications | ⚠️ | composants implémentés et testés | défauts #78 et #79 | 4.4 |
@@ -781,29 +782,36 @@ partie du critère manque. ❌ : aucune preuve.
 | **C17.8** Préconisations OWASP Top 10 implémentées | ⚠️ | revue S1 à S10 ; S4 et S5 corrigés, S3 et S7 en partie | S1, S2, S6, S8, S9 ouverts | 4.6 |
 | **C17.9** Tests couvrant composants métier et gestion des accès | ✅ | les tests des composants métier et des accès API ont été exécutés avec succès (1 808 réussis, couverture 96,32 %) | la vérification des permissions du rôle PostgreSQL en lecture seule reste non démontrée par cette exécution de la CI | 4.8 |
 | **C17.10** Sources versionnées et accessibles sur un dépôt distant | ✅ | dépôt GitHub privé, 18 tags `livrable-*` protégés | jury pas encore invité | 4.9 |
-| **C17.11** Documentation technique : installation, architecture, dépendances, tests, accessible | ⚠️ | `docs/ARCHITECTURE.md`, `README.md`, `docs/CI-CD.md`, `docs/exploitation.md` | accessibilité contrôlée le 31/10 pour le seul guide d'exploitation, sans audit PDF/UA complet, les autres documents non ; une affirmation fausse à la version de référence, corrigée le 30/10 | 4.9 |
+| **C17.11** Documentation technique : installation, architecture, dépendances, tests, accessible | ⚠️ | `docs/ARCHITECTURE.md`, `README.md`, `docs/CI-CD.md`, `docs/exploitation.md` ; format contrôlé pour le guide (31/10), `ARCHITECTURE.md` et `CI-CD.md` (01/11, `evidence/C17/`) | `README.md` non contrôlé ; communication non prouvée ; une affirmation fausse à la version de référence, corrigée le 30/10 | 4.9 |
 | **C18.1** Documentation de la chaîne : outils, étapes, tâches, déclencheurs | ✅ | `docs/CI-CD.md`, § 2 et § 3 | | 5.5 |
 | **C18.2** Outil d'intégration continue cohérent avec l'environnement | ✅ | GitHub Actions, machine et Python fixés | | 5.1, 5.2 |
 | **C18.3** Étapes préalables aux tests intégrées (build, configuration) | ✅ | installation, navigateur, tests des données d'abord | | 5.2 |
 | **C18.4** La chaîne exécute les tests au déclenchement | ✅ | `test.yml` ; six contrôles exigés avant toute fusion | | 5.3 |
 | **C18.5** Configurations versionnées sur le dépôt distant | ✅ | sept workflows, `ruff.toml`, `.coveragerc` | | 5.4 |
-| **C18.6** Documentation d'installation, configuration et test de la chaîne, format accessible | ⚠️ | `docs/CI-CD.md`, § 4 à § 7 | accessibilité non contrôlée | 5.5 |
+| **C18.6** Documentation d'installation, configuration et test de la chaîne, format accessible | ⚠️ | `docs/CI-CD.md`, § 4 à § 7 ; format contrôlé le 01/11 (`evidence/C17/`) | communication non prouvée | 5.5 |
 | **C19.1** Documentation : étapes, tâches, déclencheurs | ✅ | `docs/CI-CD.md`, § 3 | | 6.1 |
 | **C19.2** Fichiers de configuration reconnus et exécutés | ✅ | `livraison.yml` ; exécutions vertes sur `main`, `develop` et les tags | | 6.2 |
 | **C19.3** Packaging intégré et sans erreur | ✅ | image construite et vérifiée à chaque exécution | | 6.1, 6.2 |
 | **C19.4** Livraison exécutée une fois le packaging validé | ✅ | `needs:` et `if:` de `livraison.yml` ; refus de la porte le 21/10 | un tag reconstruit l'image | 6.2, 6.4 |
 | **C19.5** Sources de la chaîne versionnées sur le dépôt distant | ✅ | workflows, `deploy/`, règles GitHub | | 6.3 |
+| **C19.6** Documentation : installation, configuration et test de la chaîne de livraison | ✅ | `docs/CI-CD.md`, § 5 (installation) et § 6 (huit vérifications, dont la publication d'un tag) | vérification d'un tag écrite le 01/11, sur l'exécution du 27/10 de `livrable-E3-v2` (40490834495) | 6.1 |
+| **C19.7** Documentation communiquée, format accessible | ⚠️ | format de `docs/CI-CD.md` contrôlé le 01/11 (`evidence/C17/`) | communication non prouvée | 6.1 |
 
-**Total : 17 ✅, 19 ⚠️, 0 ❌.**
+**Total : 21 ✅, 17 ⚠️, 0 ❌.**
 
 | Compétence | ✅ | ⚠️ |
 |---|---|---|
-| C14 | 0 | 5 |
+| C14 | 2 | 3 |
 | C15 | 3 | 2 |
 | C16 | 1 | 3 |
-| C17 | 3 | 8 |
+| C17 | 4 | 7 |
 | C18 | 5 | 1 |
-| C19 | 5 | 0 |
+| C19 | 6 | 1 |
+
+**Version 1.0 du 01/11.** C14.1, C14.5 et C17.1 passent à ✅ après relecture contre le référentiel
+(environnement installé remesuré le 01/11) ; C16.3 et C17.7 restent partiels ; deux lignes C19 ajoutées pour la
+documentation de la chaîne, absente de la grille (référentiel, p. 21), dont C19.6 en ✅ une fois la vérification
+d'un tag écrite. Décisions d'Era.
 
 **Pourquoi ce total diffère du recomptage du 30/10 (30 ✅, 6 ⚠️).** Le recomptage comptait un ✅ dès qu'une preuve
 existait, ateliers des sprints compris ; ici, un ✅ exige tout le critère, sur les cinq écrans de la version présentée.

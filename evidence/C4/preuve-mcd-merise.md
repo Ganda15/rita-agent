@@ -156,6 +156,43 @@ Merise a des **règles mécaniques** de traduction. C'est ce qui explique que
 
 ---
 
+## 5 bis. Décision du 02/11/2026 : une valeur peut n'avoir aucune cotation (`VALEUR 0,n`)
+
+> Ajout daté. Les sections au-dessus restent telles qu'écrites le 01/08 ; le MCD du 01/08
+> (`MCD-MERISE-RITA.png` et `.drawio`) est gardé tel quel.
+
+**L'écart.** Retour écrit du formateur sur l'oral blanc du 30/10 : « écart entre le MCD et la base (une valeur sans
+cotation est acceptée) ». La section 3 écrit `VALEUR 1,n ── est cotée lors ── 1,1 COTATION` et qu'une valeur sans
+cotation « n'existe pas ». Rien ne l'impose :
+
+- dans `db/schema.sql`, la clé étrangère va de `cotation` vers `valeur` ; aucune contrainte n'oblige une valeur à avoir
+  une cotation ;
+- `db/importer.py` (fonction `importer`) enregistre tout l'univers, puis les cotations ; aucun contrôle ne vérifie que
+  chaque valeur en a reçu une ;
+- le chapitre « Données » le notait déjà le 04/10 (`docs/conception/donnees/README.md`) : « 0,N » pour les tables,
+  « 1,n » pour le métier.
+
+Dans la base locale du 02/11, aucune des 111 valeurs n'est sans cotation : la règle tenait dans les données, pas dans le
+modèle physique.
+
+**La décision d'Era.** Aligner le modèle sur la règle réelle, `VALEUR 0,n ── est cotée lors ── 1,1 COTATION`, plutôt
+que d'ajouter un contrôle à l'import. Une valeur entre dans l'univers avant son premier cours, et un téléchargement raté
+ne la fait pas disparaître. Le côté COTATION ne change pas : une cotation appartient à une seule valeur.
+
+**Ce qui change, ce qui ne change pas.**
+
+| Fichier | Changement |
+|---|---|
+| `MCD-MERISE-RITA-2026-11-02.drawio` et `.png` | nouvelle version : la cardinalité `l2b` passe de `1,n` à `0,n`, et le titre dit la révision ; le `.png` est rendu depuis ce `.drawio` par la visionneuse draw.io |
+| `docs/rapports/E1/images/mcd-recadre.png` | la figure du livret E1 dit `0,n` ; livret E1 v5, section 5 |
+| `db/schema.sql`, `db/importer.py` | aucun : le modèle physique acceptait déjà une valeur sans cotation |
+| `VALEUR 1,n ── est nommée ── 1,1 ALIAS` | inchangé : la base n'impose pas non plus d'alias, mais l'importeur crée chaque valeur à partir d'au moins un libellé de l'univers ; cette question n'a pas été tranchée par cette décision |
+
+**Preuve.** `tests/test_mcd_c4.py`, écrit avant le nouveau MCD (`rouge-mcd-0n-2026-11-02.txt` : 2 échecs, le fichier
+manquait) : le MCD du 02/11 dit `0,n` côté VALEUR et `1,1` côté COTATION ; celui du 01/08 dit toujours `1,n` ; seuls la
+cardinalité et le titre diffèrent ; et, sur la base PostgreSQL jetable du job `base`, une valeur sans cotation est
+acceptée.
+
 ## 6. 📖 Glossaire
 
 | Terme | En clair | Pourquoi ça compte ici |

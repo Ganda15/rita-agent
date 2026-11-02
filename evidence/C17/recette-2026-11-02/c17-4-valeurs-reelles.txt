@@ -1,0 +1,11 @@
+# C17.4 : valeurs reelles de la base locale (cotations jusqu'au 30/10), 02/11/2026 10:52, lecture seule
+# 1. Valeurs calculees par le code corrige (indicateurs/risque.py, db/indicateurs_risque.sql au commit fd12d1d)
+valeurs (lot 3) : 111 | pire baisse renseignee : 111 | pire baisse > 0 : 0 | maximum : 0.0
+RSI calcules : 108 | RSI None : 0
+# 2. Meme base, requete d'AVANT le correctif #79 (git show fd12d1d~1:db/indicateurs_risque.sql)
+tickers : 111 | pire baisse > 0 avant correctif : 0 | valeurs differentes avant/apres : 0
+pire baisse a 0,00 : ['GTO.PA']
+# 3. A l'ecran Indicateurs (API locale sur la base locale, cle de test sur localhost, Chrome)
+LIGNES 111 | colonnes : Pire baisse (1 an) / RSI 14
+BAISSE AFFICHEE AVEC + {'GTO.PA': ('+0,00 %', '—')}
+GTO.PA ('+0,00 %', '—') | MC.PA ('-41,00 %', '43,99') | RSI tiret 3

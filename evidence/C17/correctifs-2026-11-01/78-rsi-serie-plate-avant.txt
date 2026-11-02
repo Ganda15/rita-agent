@@ -1,0 +1,7 @@
+# #78, AVANT correctif : 01/11/2026 16:29, base ac35e5c, indicateurs/risque.py inchangé
+# commande : C:\Python314\python.exe -m pytest -q -p no:cacheprovider tests/test_indicateurs_risque.py
+>       assert rsi_wilder([100.0] * 20) is None
+E       assert 100.0 is None
+E        +  where 100.0 = rsi_wilder(([100.0] * 20))
+FAILED tests/test_indicateurs_risque.py::test_serie_entierement_plate_rend_none
+1 failed, 19 passed, 1 warning in 4.65s

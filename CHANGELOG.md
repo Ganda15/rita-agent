@@ -9,6 +9,74 @@
 
 ---
 
+## 2026-11-02 : retour écrit du formateur appliqué, MCD aligné sur la base ; E1 v5, E2 v0.9 et E3 v2.0 prêts
+
+**Manques découverts** : par la recette des écrans, un focus absent sur le tableau de bord (corrigé) et des cas d'erreur
+vérifiés seulement par lecture du code (testés depuis) ; par le formateur, l'écart entre le MCD et la base (un `1,n` que
+rien n'imposait) ; par la relecture d'E2, un « contrôle automatique du prompt » annoncé que le banc ne faisait pas, et
+`/sante` confondu avec la vigie ; dans le PDF E1 avec annexes, une ancienne page 6 à 0,12 ms.
+
+**Décisions structurantes d'Era** : `VALEUR 0,n` pour la cotation (le modèle s'aligne sur la base, aucun contrôle ajouté
+à l'import) ; nouvelles versions E1 v5 et E3 v2.0, et pas seulement un oral ajusté ; la réponse 403 est gardée et
+défendue ; E2 v0.8 pour la relecture du formateur, v0.9 pour le jury. Détail dans `CONTINUITE.md`, D.
+
+**Rien n'est envoyé ni fusionné dans `main`** : les tags `livrable-E1-v5`, `livrable-E2-v1` et `livrable-E3-v3` se posent
+après la fusion, avant tout envoi, et les liens se vérifient alors (zéro cassé exigé).
+
+---
+
+## 2026-11-01, nuit : recette, quatre manques corrigés avec leurs tests ; job `base` exigé pour fusionner dans `main`
+
+**Manques découverts, puis corrigés sur `develop`, tests écrits avant** (pas encore en production) : #78, un RSI de 100
+sur une série plate ; #73, une clé gardée avant d'avoir été acceptée, sur Briefing et Question ; #79, une pire baisse
+positive quand le cours ne fait que monter ; #152, un verrou de démonstration de la passerelle MCP qui refusait le jeu
+réellement importé, acceptait d'autres prix de revient et absorbait les doublons, puis, à la seconde revue, transmettait
+des champs mal formés. Preuves avant et après : `evidence/C17/correctifs-2026-11-01/`.
+
+**Manque découvert dans la CI** : les tests qui demandent PostgreSQL se sautaient en intégration continue, faute de
+base, et la chaîne restait verte sans les avoir exécutés.
+
+**Décisions structurantes** : un job `base` (PostgreSQL 18 jetable, schéma et rôles du dépôt, échec au moindre test
+sauté), vérifié sur GitHub (43 puis 46 réussis, 0 sauté), puis ajouté le 01/11 à 23 h 11, sur décision d'Era, aux
+contrôles exigés de `main protegee` (sept checks). Pour #152 : un jeu de démonstration versionné de sept positions,
+relié au vrai import par un test, sans nouvelle route d'API pour les alias. Détail dans `CONTINUITE.md`, D.
+
+**Rapports sur `develop`** : E2 v0.7 (16 pages, annexe de 4), E4 v1.0 (20 pages, 29 avec l'annexe ; 21 ✅ · 17 ⚠️ ·
+0 ❌), E5 v0.5 (5 pages). La recette ne change aucun statut d'elle-même : réévaluation critère par critère après
+vérification (`docs/recette/registre-des-partiels.md`).
+
+---
+
+## 2026-11-01 : manque découvert dans la chaîne d'alerte (INC-009), corrigé et en production ; E4 v0.9, E5 v0.4 ; décisions avant la remise
+
+**Manque découvert** : un message de retour à la normale de Langfuse (« [OK] … recovered ») a ouvert le 24/10 un
+nouveau ticket d'incident, #137, l'issue #130 de la même alerte ayant été fermée la veille. Le workflow
+`alerte-incident.yml` lisait la gravité mais ne s'en servait pas pour décider. Trouvé le 31/10 en relisant les issues
+`incident` restées ouvertes pour E5 : #137 depuis sept jours, #77 depuis quatre semaines. Aucune routine ne relit ces
+issues.
+
+**Corrigé et en production** : reproduit sur le workflow de `4be89d0` dans un conteneur jetable (13 passed, 1 failed),
+14 passed après correctif, mêmes tests ; PR #171 vers `develop`, puis PR #172 vers `main` (`922349d`), livrée le 01/11 ;
+#137 fermée avec sa justification. Post-mortem `evidence/C21/INC-009-retour-a-la-normale-ouvre-un-incident.md`. Un
+retour à la normale réel n'a pas encore été traité par le nouveau code.
+
+**Rapports** : E4 v0.9 (première page et sommaire sur le modèle d'E3, annexe des schémas, deux extraits de code
+commentés) et E5 v0.4 (premier rapport E5, cinq pages, un extrait de code), sur `develop` ; E4 aussi sur `main`.
+
+**Décisions d'Era** (détail dans `CONTINUITE.md`, D) : remise du guide d'exploitation avec les livrables du 05/11, dans
+son dossier Drive partagé, formateur prévenu, preuve datée à conserver (quel fichier, avec qui, quand) ; périmètre
+d'E5 ; ni nouvelle fonctionnalité ni nouveau banc avant le 05/11 ; la preuve de l'isolement de la copie du 23/10 en
+entier dans E5, une phrase dans E2. **Manque assumé** : l'accès du jury au dépôt privé n'est pas confirmé (le formateur, lui, le lit).
+
+**Auto-évaluation d'E2 revue contre le règlement** (p. 22 à 24) : C6.3, C7.1, C7.3, C7.5 et C7.7 passent à ✅, sans preuve nouvelle, chacun avec sa limite ; C7.6 aussi, une fois
+les prérequis d'Azure et d'OpenRouter présentés côte à côte ; décompte 13 ✅ · 6 ⚠️ · 1 ❌ (avant : 7 · 12 · 1). **Manque découvert** : la
+grille d'E4 n'a pas de ligne pour les deux critères de documentation de C19 (installation et test de la chaîne,
+format accessible), présents dans le référentiel (p. 21) ; à décider par Era. **Feuille
+de route proposée pour la suite, à confirmer par Era** (`CONTINUITE.md`, G) : d'abord la date de séance et l'heure de
+rédaction à l'écran, ensuite un pilote d'annonces réglementées sur une entreprise.
+
+---
+
 ## 2026-10-31 : manque découvert en production (Claude encore en repli), corrigé et livré ; notation C7 terminée
 
 **Manque découvert** : la variable `LLM_ORDRE` lue dans le conteneur de production valait

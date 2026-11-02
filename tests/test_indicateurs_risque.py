@@ -274,3 +274,12 @@ def test_cotation_perimee_signale_une_valeur_radiee():
     assert radiee.cotation_perimee is True
     # La mesure reste affichée — ce n'est pas masqué, seulement signalé.
     assert radiee.en_dict()["volatilite_annualisee_pct"] == 16.70
+
+
+# --- #78 (recette du 01/11/2026) : la série entièrement plate ------------------
+
+def test_serie_entierement_plate_rend_none():
+    """#78 : une série sans aucune hausse ni aucune baisse n'a pas de force relative à mesurer. Convention retenue le
+    01/11 : RSI indéfini (`None`), affiché « n.d. : aucune variation ». Rendre 100 ferait croire à un fort élan haussier,
+    comme pour 14 hausses consécutives (test ci-dessus, qui doit rester à 100)."""
+    assert rsi_wilder([100.0] * 20) is None

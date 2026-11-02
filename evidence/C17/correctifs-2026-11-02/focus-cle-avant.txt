@@ -1,0 +1,12 @@
+# Ecart E2 de la recette du 02/11 (focus sur le champ de cle a l'ouverture) : test ecrit AVANT, 02/11/2026 11 h 30, base 99de9fa, code inchange
+# commande : PYTHON_DOTENV_DISABLED=1 C:\Python314\python.exe -m pytest -q -p no:cacheprovider --no-cov tests/test_recette_clavier.py -k a_l_ouverture -rf --tb=line
+
+....F                                                                    [100%]
+================================== FAILURES ===================================
+E   AssertionError: tableau-de-bord.html : le focus est sur «  », pas sur le champ de clé
+    assert '' == 'cle'
+      - cle
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_recette_clavier.py:117: AssertionError: tableau-de-bord.html : le focus est sur «  », pas sur le champ de clé
+=========================== short test summary info ===========================
+FAILED tests/test_recette_clavier.py::test_a_l_ouverture_sans_cle_le_focus_est_sur_le_champ_de_cle[tableau-de-bord.html]
+1 failed, 4 passed, 14 deselected in 13.46s
