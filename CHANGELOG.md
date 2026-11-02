@@ -9,6 +9,16 @@
 
 ---
 
+## 2026-11-02, nuit : `livrable-E4-v1` posé ; E5 v0.6 prêt pour `livrable-E5-v1`
+
+**Décisions d'Era** : fusion de la PR #174 et tag `livrable-E4-v1` ; statuts d'E5 confirmés (10 ✅, C20.5 et C20.7 ⚠️).
+
+**Manques découverts** : la relecture indépendante d'E4 a trouvé 17 écarts entre le rapport et le dépôt (dont des
+surpromesses sur l'accessibilité testée et des décomptes périmés), tous corrigés avant le tag ; E5 ne citait pas
+l'issue #132, encore ouverte depuis le 23/10.
+
+---
+
 ## 2026-11-02, soir : `main` en production (`174b0c1`) ; livrables E1, E2, E3 tagués ; E4 v1.1 prêt pour `livrable-E4-v1`
 
 **Décisions d'Era** : fusion de la PR #173 et déploiement ; tags `livrable-E1-v5`, `livrable-E2-v1`, `livrable-E3-v3` ;
