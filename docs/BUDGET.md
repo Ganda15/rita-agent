@@ -87,13 +87,13 @@ facturé, pour donner l'ordre de grandeur du projet. Il ne s'ajoute pas aux 259,
 
 | Élément | Valeur | D'où il vient |
 |---|---|---|
-| Journées de travail | **63** | estimation d'Era du 03/11, pas une mesure. Pour repère, Git compte 60 jours distincts avec au moins un commit du 14/05 au 31/10, toutes branches (`git log --all --format=%ad --date=short`, dates uniques) : il date l'activité, il ne compte ni les heures ni le travail sans commit (lecture, conception, oraux) |
+| Journées de travail | **63** | estimation d'Era du 03/11. Pour repère, Git compte 60 jours distincts avec au moins un commit du 14/05 au 31/10, toutes branches (`git log --all --format=%ad --date=short`, dates uniques) : il date l'activité, il ne compte ni les heures ni le travail sans commit (lecture, conception, oraux) |
 | Taux journalier (TJM) | **400 € HT** | bas de la fourchette « TJM Ingénieur IA / Prompt Engineer Junior (0-2 ans) 2026 : 400-550€/jour », hors taxes (« par jour (HT) » sur la même page), du [simulateur de travail-industrie.com](https://travail-industrie.com/simulateur-tjm/data-ia/ingenieur-ia/junior), consulté le 03/11 ; profil junior, en reconversion. C'est la seule hypothèse ajustable de ce fichier |
 | **Valeur du travail** | **25 200 € HT** | 63 × 400 € HT ; environ 491 h à 39 h par semaine de cinq jours (63 × 7,8 h) |
 
 ## Troisième montant : le fonctionnement par mois
 
-Un **scénario**, pas une mesure : ce que coûterait un mois d'exploitation à un volume fixé, pour 30 jours.
+Un **scénario** : ce que coûterait un mois d'exploitation de 30 jours, à un volume choisi d'avance.
 
 | Poste | Hypothèse | Par mois | Source |
 |---|---|---|---|
@@ -103,8 +103,8 @@ Un **scénario**, pas une mesure : ce que coûterait un mois d'exploitation à u
 | Langfuse, sources de données, HTTPS | palier gratuit | 0 | voir le tableau |
 | **Total** | | **7,19 € et environ 2,31 $** | |
 
-Sur la ressource Azure du projet, le modèle est déclaré à 0 € (ligne Azure du tableau) : les 2,31 $ disent ce que
-coûteraient les appels au prix public, pas une facture.
+Sur la ressource Azure du projet, le modèle est déclaré à 0 € (ligne Azure du tableau) : les 2,31 $ sont le prix public
+de ces appels, que le projet ne paie pas aujourd'hui.
 
 ## L'évolution prévue avant le jury : une clé par client (C5)
 

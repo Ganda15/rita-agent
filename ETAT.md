@@ -40,7 +40,8 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
   environ 2,31 $ par mois pour 10 briefings et 5 questions par jour) ; limite C5 avec l'évolution prévue avant le jury
   (une clé par client ; la clé révoquée reçoit 403, une autre garde 200 ; 1 à 2 journées, 400 à 800 € HT) ; 5 pages ;
   31 liens vers `livrable-E1-v6`. Seconde relecture avant le tag : 11 liens du sommaire rétablis dans le PDF avec
-  annexes, « 11 partitions au total, une par année », TJM hors taxes, « guide du jury » et « accès sur invitation »
+  annexes, « 11 partitions au total, une par année » (livret, puis
+  schémas des annexes A et C, pages 7 et 9, corrigés avant le tag), TJM hors taxes, « guide du jury » et « accès sur invitation »
   (le jury n'est pas encore invité), budget détaillé en lien. Guide du jury : tags `livrable-E1-v6` et `livrable-E3-v3`.
   **Remise prévue (décision d'Era du 03/11)** : le PDF de 10 pages, annoncé comme « Livret E1 de 5 pages, accompagné
   d'une couverture et de 4 pages d'annexes » ; le texte officiel dit « Livrable d'entre 2 et 5 pages » (p. 9) sans parler

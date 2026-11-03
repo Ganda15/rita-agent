@@ -79,4 +79,10 @@ par rôle de boîte (bande à gauche) et par sens de flèche ; une légende dess
 que les couleurs employées et ce qu'elles veulent dire dans ce schéma. Le 04/10, le texte de chaque boîte a été
 mesuré dans Chrome (largeur réelle de chaque ligne) : aucun ne dépasse de sa boîte.
 
+Corrigé le 03/11/2026 (livret E1 v6, avant le tag) : la collecte et le nettoyage disaient « 11 partitions par année » ;
+le Parquet a 11 partitions en tout, une par année (`annee=2016` à `annee=2026`). Collecte : « 11 partitions au total, une
+par année » ; nettoyage : « 11 partitions, une par année » (la forme longue passait sur deux lignes dans sa boîte, vu au
+rendu). Test d'abord (`test_les_partitions_se_comptent_au_total_une_par_annee`, 2 échecs), puis générateur, texte de
+l'illustration de la collecte, rendu PNG, et les deux images remplacées dans les pages 7 et 9 du PDF avec annexes.
+
 Corrigé le 02/11/2026 (livret E1 v5) : dans `../images/mcd-recadre.png`, la cardinalité côté VALEUR de « est cotée lors » passe de `1,n` à `0,n` (décision d'Era, `evidence/C4/preuve-mcd-merise.md`, section 5 bis) ; seul ce chiffre a été redessiné, le reste de la figure est inchangé.

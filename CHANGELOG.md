@@ -9,6 +9,15 @@
 
 ---
 
+## 2026-11-03, après-midi : annexes A et C d'E1 v6 corrigées avant le tag
+
+**Manque découvert** par une relecture des 10 pages : les schémas des annexes A (collecte) et C (nettoyage) disaient encore
+« 11 partitions par année », comme le livret avant sa correction ; le Parquet en a 11 au total, une par année. Corrigé dans
+le générateur des schémas (test d'abord), l'illustration de la collecte, les PNG et les pages 7 et 9 du PDF avec annexes,
+sur la PR #176, avant le tag `livrable-E1-v6`.
+
+---
+
 ## 2026-11-03 : `livrable-E5-v1` posé ; budget d'E1 en trois montants avec TJM ; E1 v6 prêt pour `livrable-E1-v6`
 
 **Décisions d'Era** : fusion de la PR #175 et tag `livrable-E5-v1` ; après le retour écrit du formateur du 03/11, le
