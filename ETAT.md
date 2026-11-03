@@ -35,6 +35,10 @@ remis à jour (versions avec annexes à envoyer, copies sans annexes dans `sans-
   portait la note de mise à jour (huit critères passés à ✅, deux corrections d'E3, une phrase d'E4), qui est
   remplacée et ne part pas avec la remise. E1 v6 ne change pas (son seul « partiels » parle de deux soirs de collecte).
   Annexe d'E4 : six schémas remis en forme par Era au style d'E1 (texte identique aux originaux, vérifié), 10 pages.
+  Annexe d'E2 : trois schémas remis en forme par Era ; A1 et A3 disaient encore l'envoi « non effectué » et « prévu le
+  05/11 » : corrigés dans le générateur (test d'abord) et dans les images ; 3 pages.
+  **Mistral testé, non activé** (décision d'Era du 03/11) : A2 et A3 d'E2 le disent ; classeurs (98 cellules, statuts
+  inchangés) et présentateur (liens PDF d'E2, « J'ai testé Mistral ») remis d'accord.
   Pages inchangées : 17 (20), 20, 20 (30), 5. Restent à l'ancien libellé : le nom du fichier
   `docs/recette/registre-des-partiels.md` et la liste déroulante « PARTIELLEMENT » du classeur détaillé : décision d'Era.
 

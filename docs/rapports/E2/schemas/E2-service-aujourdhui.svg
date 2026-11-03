@@ -4,7 +4,7 @@
 <rect width="1400" height="846" fill="#FFFFFF"/>
 <rect x="40" y="16" width="1320" height="5" fill="#1565C0"/>
 <text x="40" y="54" font-size="32" font-weight="700" fill="#0B2A5B">Le service retenu aujourd&#x27;hui (C8) : accès, réglage, surveillance</text>
-<text x="40" y="80" font-size="17" fill="#1F2937">Rapport E2, section 4 · dessiné le 01/11/2026 pour ce rapport, corrigé le 02/11 · état de main 922349d, en production depuis le 01/11</text>
+<text x="40" y="80" font-size="17" fill="#1F2937">Rapport E2, section 4 · dessiné le 01/11/2026 pour ce rapport, corrigé le 03/11 · état de main 922349d, en production depuis le 01/11</text>
 <g transform="translate(0,16)">
 <rect x="40" y="100" width="1320" height="200" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
 <rect x="40" y="320" width="1320" height="200" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
@@ -60,7 +60,7 @@
 <text x="73" y="440" font-size="15.5" fill="#111827">et ouvre ou met à jour l&#x27;issue</text>
 <rect x="56" y="466" width="1288" height="44" fill="#F1F5F9" stroke="#475569" stroke-width="2"/>
 <rect x="56" y="466" width="7" height="44" fill="#475569"/>
-<text x="73" y="490" font-size="17.5" font-weight="700" fill="#0B2A5B">Guide d&#x27;exploitation, docs/exploitation.md : accès, installation, tests, services, données ; remise prévue le 05/11</text>
+<text x="73" y="490" font-size="17.5" font-weight="700" fill="#0B2A5B">Guide d&#x27;exploitation, docs/exploitation.md : accès, installation, tests, services, données ; envoyé au formateur le 03/11</text>
 <rect x="56" y="574" width="300" height="110" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
 <rect x="56" y="574" width="7" height="110" fill="#D32F2F"/>
 <text x="73" y="598" font-size="17.5" font-weight="700" fill="#C62828">Pas de secours</text>
@@ -69,9 +69,9 @@
 <rect x="386" y="574" width="300" height="110" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
 <rect x="386" y="574" width="7" height="110" fill="#D32F2F"/>
 <text x="403" y="598" font-size="17.5" font-weight="700" fill="#C62828">Mistral Large 4</text>
-<text x="403" y="620" font-size="15.5" fill="#111827">branche mistral-ue, PR #88</text>
-<text x="403" y="640" font-size="15.5" fill="#111827">non fusionnée ; contrat</text>
-<text x="403" y="660" font-size="15.5" fill="#111827">pas encore lu</text>
+<text x="403" y="620" font-size="15.5" fill="#111827">secours envisagé : banc</text>
+<text x="403" y="640" font-size="15.5" fill="#111827">sur 10 cas contre Azure UE</text>
+<text x="403" y="660" font-size="15.5" fill="#111827">et contrat à vérifier</text>
 <rect x="716" y="574" width="300" height="110" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
 <rect x="716" y="574" width="7" height="110" fill="#D32F2F"/>
 <text x="733" y="598" font-size="17.5" font-weight="700" fill="#C62828">Code présent, inutilisé</text>

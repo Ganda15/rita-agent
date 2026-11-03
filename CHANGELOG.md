@@ -25,6 +25,17 @@ vers les nouveaux tags (E3 : 133, E4 : 185 et 16 dans l'annexe, E5 : 21) ; pages
 elle reste dans le dépôt, elle ne part pas avec la remise. E1 v6 ne change pas. Annexe d'E4 : six schémas (A1, A3, A4,
 A5, les deux A6) remplacés par la mise en forme fournie par Era au style des schémas d'E1, texte comparé aux originaux,
 identique ; les originaux restent dans `evidence/` ; annexe toujours de 10 pages.
+Annexe d'E2 : les trois schémas remplacés par la mise en forme fournie par Era ; deux phrases dépassées, dans A1
+(« envoi au formateur non effectué ») et A3 (« remise prévue le 05/11 »), corrigées dans le générateur (test d'abord)
+et dans les deux images, pour dire l'envoi du 03/11 ; annexe toujours de 3 pages.
+
+**Décision d'Era, le même soir : « Mistral testé, non activé ».** Azure reste seul en production pour la remise. Le
+10/10, Mistral Large 4 a servi un vrai briefing (LVMH) par la route de RITA, sur la branche `mistral-ue` ; avant d'en
+faire le secours d'Azure, il reste une comparaison sur les 10 cas du banc et la lecture de son contrat. Annexe d'E2 :
+A2 (case du 10/10) et A3 (secours envisagé) le disent, générateur et images d'accord, test d'abord ; la preuve est
+citée en texte, sans lien vers la branche ni vers la PR #88, qui reste séparée. Classeurs remis d'accord (B52 décrivait
+encore trois fournisseurs en cascade ; versions E2 v1.0, E3 v2.1, E4 v1.2, E5 v0.7 ; 98 cellules, statuts inchangés,
+120 ✅ · 17 🟡 · 0 ❌) ; présentateur : six liens PDF d'E2 réparés, « J'ai testé Mistral ».
 
 ---
 

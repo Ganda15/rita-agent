@@ -4,7 +4,7 @@
 <rect width="1400" height="716" fill="#FFFFFF"/>
 <rect x="40" y="16" width="1320" height="5" fill="#1565C0"/>
 <text x="40" y="54" font-size="32" font-weight="700" fill="#0B2A5B">La veille (C6) : de la source à ce qui change dans RITA</text>
-<text x="40" y="80" font-size="17" fill="#1F2937">Rapport E2, section 2 · dessiné le 01/11/2026 pour ce rapport, corrigé le 02/11, d&#x27;après docs/veille/README.md et les notes S33 à S41</text>
+<text x="40" y="80" font-size="17" fill="#1F2937">Rapport E2, section 2 · dessiné le 01/11/2026 pour ce rapport, corrigé le 03/11, d&#x27;après docs/veille/README.md et les notes S33 à S41</text>
 <g transform="translate(0,16)">
 <rect x="40" y="100" width="420" height="400" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
 <rect x="490" y="100" width="420" height="400" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
@@ -67,7 +67,7 @@
 <rect x="40" y="520" width="7" height="80" fill="#D32F2F"/>
 <text x="57" y="544" font-size="17.5" font-weight="700" fill="#C62828">Limites</text>
 <text x="57" y="566" font-size="15.5" fill="#111827">7 relevés et 5 notes de S33 à S44, dont 3 en rattrapage ; rien depuis le 11/10 · aucun échange collectif documenté</text>
-<text x="57" y="586" font-size="15.5" fill="#111827">accessibilité des notes non consignée (cases non cochées en S41) · envoi au formateur non effectué</text>
+<text x="57" y="586" font-size="15.5" fill="#111827">accessibilité des notes non consignée (cases non cochées en S41) · envoi au formateur le 03/11, sans réponse</text>
 <line x1="250.0" y1="234" x2="250.0" y2="254" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
 <line x1="250.0" y1="354" x2="250.0" y2="374" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>
 <line x1="444" y1="424.0" x2="506" y2="184.0" stroke="#0B2A5B" stroke-width="3" marker-end="url(#fl-flux)"/>

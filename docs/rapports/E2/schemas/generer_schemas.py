@@ -28,6 +28,8 @@ _spec.loader.exec_module(moteur)
 Schema, Boite, Fleche = moteur.Schema, moteur.Boite, moteur.Fleche
 
 DESSIN = "dessiné le 01/11/2026 pour ce rapport, corrigé le 02/11"
+# 03/11 : la synthèse de veille et le guide sont envoyés au formateur (evidence/C8/) ; A1 et A3 le disent.
+DESSIN_03_11 = "dessiné le 01/11/2026 pour ce rapport, corrigé le 03/11"
 
 # =============================================================================
 # B1 : la veille, de la source à la décision (C6)
@@ -35,7 +37,7 @@ DESSIN = "dessiné le 01/11/2026 pour ce rapport, corrigé le 02/11"
 VEILLE = Schema(
     nom="E2-veille", largeur=1400, hauteur=660,
     titre="La veille (C6) : de la source à ce qui change dans RITA",
-    sous_titre=f"Rapport E2, section 2 · {DESSIN}, d'après docs/veille/README.md et les notes S33 à S41",
+    sous_titre=f"Rapport E2, section 2 · {DESSIN_03_11}, d'après docs/veille/README.md et les notes S33 à S41",
     boites=[
         Boite("za", 40, 100, 420, 400, "1. CHERCHER ET TRIER", genre="zone"),
         Boite("src", 56, 134, 388, 100, "Les sources", ["5 principales : OWASP, ANSSI, CNIL,", "NIST, Simon Willison ; 2 sous", "condition : éditeurs, arXiv"], "normal"),
@@ -52,7 +54,7 @@ VEILLE = Schema(
         Boite("par", 956, 254, 388, 100, "Le partage", ["11/10 : note S41 sur Discord,", "canal #veille ; capture versée ;", "aucune réponse au 31/10"], "normal"),
         Boite("lec", 956, 374, 388, 100, "La leçon, S41 va dans ce sens", ["un détecteur peut réussir le test", "sur lequel il a été réglé, et rater", "presque tout sur un autre jeu"], "note"),
 
-        Boite("lim", 40, 520, 1320, 80, "Limites", ["7 relevés et 5 notes de S33 à S44, dont 3 en rattrapage ; rien depuis le 11/10 · aucun échange collectif documenté", "accessibilité des notes non consignée (cases non cochées en S41) · envoi au formateur non effectué"], "manque"),
+        Boite("lim", 40, 520, 1320, 80, "Limites", ["7 relevés et 5 notes de S33 à S44, dont 3 en rattrapage ; rien depuis le 11/10 · aucun échange collectif documenté", "accessibilité des notes non consignée (cases non cochées en S41) · envoi au formateur le 03/11, sans réponse"], "manque"),
     ],
     fleches=[
         Fleche("src", "tri", sortie="b", entree="h"),
@@ -75,7 +77,7 @@ VEILLE = Schema(
 BANC = Schema(
     nom="E2-banc-decision", largeur=1400, hauteur=636,
     titre="Le choix du service (C7) : le banc du 03/10, puis les décisions datées",
-    sous_titre=f"Rapport E2, section 3 · {DESSIN}, d'après evidence/C7/ et CONTINUITE.md",
+    sous_titre=f"Rapport E2, section 3 · {DESSIN_03_11}, d'après evidence/C7/ et CONTINUITE.md",
     boites=[
         Boite("zb", 40, 100, 1320, 168, "LE BANC DU 03/10", genre="zone"),
         Boite("jeu", 56, 134, 306, 116, "Le jeu figé", ["10 cas, construits par le", "vrai code : 7 du portefeuille,", "hausse, baisse, Londres"], "stock"),
@@ -86,7 +88,7 @@ BANC = Schema(
         Boite("zd", 40, 288, 1320, 168, "PUIS, LES DÉCISIONS DATÉES", genre="zone"),
         Boite("d1", 56, 322, 240, 116, "05/10, règle UE", ["aucune donnée", "personnelle hors de", "l'Union européenne"], "garde"),
         Boite("d2", 318, 322, 240, 116, "09/10, zone UE", ["gpt-5.4-dzs-eu ;", "3 appels réels,", "Sweden Central"], "lavis"),
-        Boite("d3", 580, 322, 240, 116, "10/10, Mistral", ["futur second, sous", "conditions ; PR #88", "non fusionnée"], "manque"),
+        Boite("d3", 580, 322, 240, 116, "10/10, Mistral", ["Large 4 : briefing LVMH", "réussi en essai ;", "non activé en production"], "manque"),
         Boite("d4", 842, 322, 240, 116, "11/10, poste", ["Azure seul sur", "le poste ; Claude", "plus appelé"], "lavis"),
         Boite("d5", 1104, 322, 240, 116, "31/10, production", ["Azure seul, défaut", "du code ; conteneur", "relu le 31/10"], "lavis"),
 
@@ -113,7 +115,7 @@ BANC = Schema(
 SERVICE = Schema(
     nom="E2-service-aujourdhui", largeur=1400, hauteur=760,
     titre="Le service retenu aujourd'hui (C8) : accès, réglage, surveillance",
-    sous_titre=f"Rapport E2, section 4 · {DESSIN} · état de main 922349d, en production depuis le 01/11",
+    sous_titre=f"Rapport E2, section 4 · {DESSIN_03_11} · état de main 922349d, en production depuis le 01/11",
     boites=[
         Boite("za", 40, 100, 1320, 200, "L'APPEL D'UN BRIEFING", genre="zone"),
         Boite("cli", 56, 134, 300, 100, "Écran ou client", ["/briefing, /question ;", "clé X-API-Key exigée"], "normal"),
@@ -127,11 +129,11 @@ SERVICE = Schema(
         Boite("al", 716, 354, 300, 100, "2 alertes, depuis le 04/10", ["erreurs > 0 sur 1 jour ;", "p95 > 15 000 ms sur 1 jour"], "garde"),
         Boite("is", 1046, 354, 298, 100, "Issue GitHub", ["alerte-incident.yml ; un retour", "à OK n'ouvre plus d'issue", "(INC-009, main du 01/11)"], "normal"),
         Boite("vg", 56, 354, 300, 100, "/sante, puis la vigie", ["/sante : mesures et verdicts ;", "la vigie l'interroge de dehors", "et ouvre ou met à jour l'issue"], "garde"),
-        Boite("gd", 56, 466, 1288, 44, "Guide d'exploitation, docs/exploitation.md : accès, installation, tests, services, données ; remise prévue le 05/11", [], "note"),
+        Boite("gd", 56, 466, 1288, 44, "Guide d'exploitation, docs/exploitation.md : accès, installation, tests, services, données ; envoyé au formateur le 03/11", [], "note"),
 
         Boite("zm", 40, 540, 1320, 160, "CE QUI MANQUE", genre="zone"),
         Boite("m1", 56, 574, 300, 110, "Pas de secours", ["une panne d'Azure rend", "le briefing indisponible"], "manque"),
-        Boite("m2", 386, 574, 300, 110, "Mistral Large 4", ["branche mistral-ue, PR #88", "non fusionnée ; contrat", "pas encore lu"], "manque"),
+        Boite("m2", 386, 574, 300, 110, "Mistral Large 4", ["secours envisagé : banc", "sur 10 cas contre Azure UE", "et contrat à vérifier"], "manque"),
         Boite("m3", 716, 574, 300, 110, "Code présent, inutilisé", ["appels Anthropic, OpenRouter :", "seulement si LLM_ORDRE les", "nomme ; plus en production"], "manque"),
         Boite("m4", 1046, 574, 298, 110, "Limites du suivi", ["portail Azure non décrit ;", "poste et production ont partagé", "un projet Langfuse ; #77 ouvert"], "manque"),
     ],
