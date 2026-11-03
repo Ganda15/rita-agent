@@ -34,6 +34,7 @@ remis à jour (versions avec annexes à envoyer, copies sans annexes dans `sans-
   tags étant figés, cela fait de nouvelles versions : E2 v1.0, E3 v2.1, E4 v1.2, E5 v0.7. Elles intègrent ce que
   portait la note de mise à jour (huit critères passés à ✅, deux corrections d'E3, une phrase d'E4), qui est
   remplacée et ne part pas avec la remise. E1 v6 ne change pas (son seul « partiels » parle de deux soirs de collecte).
+  Annexe d'E4 : six schémas remis en forme par Era au style d'E1 (texte identique aux originaux, vérifié), 10 pages.
   Pages inchangées : 17 (20), 20, 20 (30), 5. Restent à l'ancien libellé : le nom du fichier
   `docs/recette/registre-des-partiels.md` et la liste déroulante « PARTIELLEMENT » du classeur détaillé : décision d'Era.
 

@@ -22,7 +22,9 @@ aussi la note de mise à jour écrite plus tôt le même jour : huit critères p
 C6.2, C6.4, C8.5 ; E4 : C16.3, C17.11, C18.6, C19.7 ; E5 : C20.7), l'en-tête d'E3 (accès des examinateurs) et la clé
 d'exercice (403, 503), la phrase d'E4 (§ 1.7 et § 7.3). Chaque remplacement compté avant d'écrire ; liens déplacés
 vers les nouveaux tags (E3 : 133, E4 : 185 et 16 dans l'annexe, E5 : 21) ; pages inchangées. La note est remplacée :
-elle reste dans le dépôt, elle ne part pas avec la remise. E1 v6 ne change pas.
+elle reste dans le dépôt, elle ne part pas avec la remise. E1 v6 ne change pas. Annexe d'E4 : six schémas (A1, A3, A4,
+A5, les deux A6) remplacés par la mise en forme fournie par Era au style des schémas d'E1, texte comparé aux originaux,
+identique ; les originaux restent dans `evidence/` ; annexe toujours de 10 pages.
 
 ---
 
