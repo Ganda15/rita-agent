@@ -9,6 +9,22 @@
 
 ---
 
+## 2026-11-03, nuit : « à consolider » dans tous les rapports, E2 v1.0, E3 v2.1, E4 v1.2, E5 v0.7
+
+**Manque découvert** par Era : le libellé « à consolider », choisi le 03/11 pour la grille des compétences, n'avait
+pas été reporté dans les rapports. E3 écrivait encore « 🟠 partiel » (11 fois « partiel », 7 🟠), E4 « partiel » (4)
+et ⚠️ (15), E2 ⚠️ (8) et « preuve partielle », E5 ⚠️ (2). La recherche de l'ancienne valeur dans tout le dépôt n'avait
+pas été faite.
+
+**Décision d'Era** : partout, « à consolider » (🟡). Les tags étant figés, quatre nouvelles versions, qui intègrent
+aussi la note de mise à jour écrite plus tôt le même jour : huit critères passés à ✅ après l'envoi du 03/11 (E2 :
+C6.2, C6.4, C8.5 ; E4 : C16.3, C17.11, C18.6, C19.7 ; E5 : C20.7), l'en-tête d'E3 (accès des examinateurs) et la clé
+d'exercice (403, 503), la phrase d'E4 (§ 1.7 et § 7.3). Chaque remplacement compté avant d'écrire ; liens déplacés
+vers les nouveaux tags (E3 : 133, E4 : 185 et 16 dans l'annexe, E5 : 21) ; pages inchangées. La note est remplacée :
+elle reste dans le dépôt, elle ne part pas avec la remise. E1 v6 ne change pas.
+
+---
+
 ## 2026-11-03, soir : note de mise à jour des rapports E2 à E5
 
 **Manque découvert** par une relecture externe des rapports tagués, vérifiée point par point dans le dépôt : E3 annonce
