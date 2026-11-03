@@ -16,7 +16,7 @@ h2#criteres + p + table td:first-child{ width:44%; }
 
 # Rapport E5 : surveiller l'application et résoudre un incident (C20 et C21)
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C20 et C21 · version 0.6, 2 novembre 2026 · application de référence : commit `174b0c1` de `main`, en production le 02/11/2026 ; correctif de l'incident : PR #171 du 31/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C20 et C21 · version 0.7, 3 novembre 2026 · application de référence : commit `174b0c1` de `main`, en production le 02/11/2026 ; correctif de l'incident : PR #171 du 31/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
 {: .identite }
 
 > **En une minute.** Ce document est la documentation technique du monitorage de RITA, écrite pour la personne qui
@@ -49,15 +49,15 @@ version de référence `174b0c1`.
 
 | Partie | Où | Ce qu'elle fait |
 |---|---|---|
-| Les **compteurs** | dans l'API, [`monitorage/compteurs.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/monitorage/compteurs.py) | une observation par appel à `/briefing` et `/question` : route, résultat, motif, durée, jetons ; jamais de texte |
-| Les **verdicts** | `GET /sante` ([`api/sante.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/api/sante.py), [`monitorage/signaux.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/monitorage/signaux.py), [`monitorage/seuils.json`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/monitorage/seuils.json)) | calcule chaque signal sur sa fenêtre et le classe : sain, attention, problème ou inconnu |
-| Le **tableau de bord** | [`frontend/tableau-de-bord.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/frontend/tableau-de-bord.html) | affiche les verdicts de `/sante`, avec la clé de l'API ; s'actualise toutes les 30 s, suspendable depuis le 02/11 |
-| La **vigie** | hors de l'API, [`monitorage/vigie.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/monitorage/vigie.py) | sonde `/health`, lit `/sante`, ouvre une issue `incident` par signal en problème et la ferme à la résolution écrite |
-| Les **alertes Langfuse** | Langfuse Cloud, puis [`.github/workflows/alerte-incident.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/.github/workflows/alerte-incident.yml) | deux alertes sur les traces du modèle ; chacune ouvre ou commente une issue `incident` |
+| Les **compteurs** | dans l'API, [`monitorage/compteurs.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/monitorage/compteurs.py) | une observation par appel à `/briefing` et `/question` : route, résultat, motif, durée, jetons ; jamais de texte |
+| Les **verdicts** | `GET /sante` ([`api/sante.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/api/sante.py), [`monitorage/signaux.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/monitorage/signaux.py), [`monitorage/seuils.json`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/monitorage/seuils.json)) | calcule chaque signal sur sa fenêtre et le classe : sain, attention, problème ou inconnu |
+| Le **tableau de bord** | [`frontend/tableau-de-bord.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/frontend/tableau-de-bord.html) | affiche les verdicts de `/sante`, avec la clé de l'API ; s'actualise toutes les 30 s, suspendable depuis le 02/11 |
+| La **vigie** | hors de l'API, [`monitorage/vigie.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/monitorage/vigie.py) | sonde `/health`, lit `/sante`, ouvre une issue `incident` par signal en problème et la ferme à la résolution écrite |
+| Les **alertes Langfuse** | Langfuse Cloud, puis [`.github/workflows/alerte-incident.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/.github/workflows/alerte-incident.yml) | deux alertes sur les traces du modèle ; chacune ouvre ou commente une issue `incident` |
 
 ## 2. Les signaux et leurs seuils {: #signaux }
 
-Les seuils sont écrits dans [`monitorage/seuils.json`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/monitorage/seuils.json) (version du 22/10/2026), chacun avec sa raison, l'action à mener
+Les seuils sont écrits dans [`monitorage/seuils.json`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/monitorage/seuils.json) (version du 22/10/2026), chacun avec sa raison, l'action à mener
 et la condition de résolution. Ils sont **provisoires** : écrits avant toute mesure du trafic réel, à relire sur des
 données réelles. Pour les taux et le temps de réponse, sous le minimum de requêtes ou sans donnée, le verdict est « inconnu », jamais
 « sain » ; la fraîcheur est « inconnue » quand la base ne répond pas.
@@ -78,8 +78,8 @@ Le **p95** est la durée sous laquelle se trouvent 95 % des réponses. Le seuil 
 5 requêtes parce que le trafic de RITA est faible : une erreur sur cinq vaut déjà 20 %. Le seuil Langfuse de latence
 a d'abord été écrit `15` en pensant à des secondes, alors que la mesure est en millisecondes : il a sonné à tort le
 04/10 et a été corrigé à `15000` le jour même, sans changer la cible de quinze secondes
-([`evidence/C11/preuve-alertes-2026-10-04.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/evidence/C11/preuve-alertes-2026-10-04.md)). Pour chaque signal, le guide d'exploitation dit quoi vérifier, quoi
-faire et quand l'alerte est résolue ([`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/docs/exploitation.md), « Les alertes : que faire »).
+([`evidence/C11/preuve-alertes-2026-10-04.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/evidence/C11/preuve-alertes-2026-10-04.md)). Pour chaque signal, le guide d'exploitation dit quoi vérifier, quoi
+faire et quand l'alerte est résolue ([`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/docs/exploitation.md), « Les alertes : que faire »).
 
 ## 3. Pourquoi ces outils {: #outils }
 
@@ -102,7 +102,7 @@ faire et quand l'alerte est résolue ([`docs/exploitation.md`](https://github.co
 
 Chaque requête reçoit un identifiant (`request_id`), renvoyé dans l'en-tête `X-Request-ID` de chaque réponse, erreurs
 comprises, et repris dans les lignes du journal de l'API. Lorsqu'une trace Langfuse est produite, cet identifiant est
-ajouté à ses métadonnées pour retrouver l'exécution correspondante. Format d'une ligne du journal ([`api/main.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/api/main.py)) :
+ajouté à ses métadonnées pour retrouver l'exécution correspondante. Format d'une ligne du journal ([`api/main.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/api/main.py)) :
 `briefing servi : request_id=… ticker=… conforme_amf=… duree_ms=…` ; les refus portent leur motif
 (`TENTATIVE_DETOURNEMENT`, `FUITE_BLOQUEE`, etc.). Chaque résultat est classé dans une catégorie métier (réponse, refus
 de sécurité, refus de corpus, refus de qualité, erreur technique, rejet d'accès) : un motif inconnu compte comme
@@ -111,13 +111,13 @@ erreur technique, avec une ligne de journal, parce qu'une mesure inconnue n'est 
 **Ce qui n'est jamais enregistré** : le texte d'une question ou d'une réponse, la consigne envoyée au modèle, la clé
 d'API. Depuis le 20/10, les traces conservent des métadonnées techniques : identifiant de requête, ticker, verdicts du
 garde-fou, modèle, fournisseur, consommation et durées, sans enregistrer le contenu des questions et des réponses. Ces traitements sont
-inscrits au registre RGPD ([`db/RGPD-registre-des-traitements.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/db/RGPD-registre-des-traitements.md)) : T3 pour les traces (Langfuse, région UE, actives
+inscrits au registre RGPD ([`db/RGPD-registre-des-traitements.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/db/RGPD-registre-des-traitements.md)) : T3 pour les traces (Langfuse, région UE, actives
 en production depuis le 21/10), T5 pour le journal des appels MCP (huit colonnes, purge à 90 jours), T8 pour les
 questions (texte jamais conservé, vérifié par des tests).
 
 ## 5. Installer, configurer, lancer {: #installer }
 
-La procédure complète est dans [`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/docs/exploitation.md) : installation avec ou sans Docker, clés, et les sections
+La procédure complète est dans [`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/docs/exploitation.md) : installation avec ou sans Docker, clés, et les sections
 « Les alertes : que faire » et « La vigie et les exercices ». L'essentiel :
 
 | Outil | Dépendances et réglages | Lancer |
@@ -169,7 +169,7 @@ supposait qu'un incident reste ouvert jusqu'à son retour à OK.
 Python aurait testé un autre code que celui qui tourne : l'idée a été abandonnée.
 
 **Résolution.** Le titre d'origine envoyé par Langfuse est conservé pour reconnaître le retour à la normale (gravité
-`OK` ou titre « [OK] », ligne 78). La décision devient ([`.github/workflows/alerte-incident.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/.github/workflows/alerte-incident.yml), lignes 140 à 148,
+`OK` ou titre « [OK] », ligne 78). La décision devient ([`.github/workflows/alerte-incident.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/.github/workflows/alerte-incident.yml), lignes 140 à 148,
 commit `a57dccb`) :
 
 ```bash
@@ -188,7 +188,7 @@ Une issue ouverte est commentée, comme avant ; sans issue ouverte, un retour à
 journal de l'exécution ; une alerte crée l'issue, comme avant. Rien n'est fermé automatiquement : la fermeture reste
 une décision humaine, justifiée.
 
-**Tests en succès.** Le test qui empêche le défaut de revenir ([`tests/test_alerte_incident.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/tests/test_alerte_incident.py), lignes 225 à 228) :
+**Tests en succès.** Le test qui empêche le défaut de revenir ([`tests/test_alerte_incident.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/tests/test_alerte_incident.py), lignes 225 à 228) :
 
 ```python
 def test_un_retour_a_la_normale_sans_issue_ouverte_ne_cree_aucune_issue(etapes, tmp_path):
@@ -205,10 +205,10 @@ passent**. Sur la PR #171, [l'intégration continue passe](https://github.com/Ga
 [PR #171](https://github.com/Ganda15/rita-agent/pull/171) vers `develop`, puis
 [PR #172](https://github.com/Ganda15/rita-agent/pull/172) vers `main`, en production le 01/11. Le débogage est écrit
 [dans l'issue #137](https://github.com/Ganda15/rita-agent/issues/137#issuecomment-6549650079), le post-mortem dans
-[`evidence/C21/INC-009-retour-a-la-normale-ouvre-un-incident.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/evidence/C21/INC-009-retour-a-la-normale-ouvre-un-incident.md), les journaux avant et après dans
-[`evidence/C21/INC-009-reproduction/`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v1/evidence/C21/INC-009-reproduction).
+[`evidence/C21/INC-009-retour-a-la-normale-ouvre-un-incident.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/evidence/C21/INC-009-retour-a-la-normale-ouvre-un-incident.md), les journaux avant et après dans
+[`evidence/C21/INC-009-reproduction/`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v2/evidence/C21/INC-009-reproduction).
 
-Huit autres incidents ont leur fiche dans [`evidence/C21/`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v1/evidence/C21) ; seuls INC-005 et INC-009 ont suivi la chaîne complète
+Huit autres incidents ont leur fiche dans [`evidence/C21/`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v2/evidence/C21) ; seuls INC-005 et INC-009 ont suivi la chaîne complète
 (issue, PR, post-mortem), les autres sont passés le plus souvent par un commit direct, chaque fiche le dit.
 
 ## 8. Les limites {: #limites }
@@ -219,7 +219,7 @@ Huit autres incidents ont leur fiche dans [`evidence/C21/`](https://github.com/G
   été faute de requêtes), la chaîne Langfuse ne ferme jamais. L'écart est à trancher.
 - **Exercice et production** ont partagé le même projet Langfuse (INC-006, #130). Le 23/10, la copie testée a été isolée sur
   `rita-copie-sprint5`, vérifié par l'API : une question de test y est arrivée, pas en production
-  ([`evidence/sprint-5/test-doc-et-repetitions-2026-10-23.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/evidence/sprint-5/test-doc-et-repetitions-2026-10-23.md), l. 48). Vaut pour cette copie, pas pour tous les postes.
+  ([`evidence/sprint-5/test-doc-et-repetitions-2026-10-23.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/evidence/sprint-5/test-doc-et-repetitions-2026-10-23.md), l. 48). Vaut pour cette copie, pas pour tous les postes.
 - **Aucune routine ne relit les issues `incident`** : le 02/11, #77 (depuis le 04/10) et #132 (vigie, copie locale,
   depuis le 23/10) sont encore ouvertes ; #137 l'est restée sept jours.
 - **Le correctif d'INC-009 est intégré à `main` depuis le 1er novembre 2026** (`922349d`) et les tests de
@@ -228,17 +228,17 @@ Huit autres incidents ont leur fiche dans [`evidence/C21/`](https://github.com/G
 
 ## 9. Les douze critères {: #criteres }
 
-Auto-évaluation d'Era au 02/11/2026.
+Auto-évaluation d'Era au 03/11/2026 ; 🟡 : à consolider, le point qui manque est dans la ligne.
 
 | Critère | Statut | Preuve |
 |---|---|---|
 | C20.1 Métriques, seuils et valeurs d'alerte | ✅ | § 2 ; seuils provisoires, dits |
 | C20.2 Arguments des choix d'outillage | ✅ | § 3 : un argument écrit pour chaque outil |
 | C20.3 Outils installés, opérationnels en local a minima | ✅ | § 5 et 6 ; exercices locaux, production |
-| C20.4 Journalisation intégrée aux sources | ✅ | § 4 ; `compteurs.py`, [`api/main.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v1/api/main.py) |
-| C20.5 Alertes configurées et en état de marche | ⚠️ | § 6 : alertes Langfuse automatiques ; vigie lancée à la main |
+| C20.4 Journalisation intégrée aux sources | ✅ | § 4 ; `compteurs.py`, [`api/main.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v2/api/main.py) |
+| C20.5 Alertes configurées et en état de marche | 🟡 | § 6 : alertes Langfuse automatiques ; vigie lancée à la main |
 | C20.6 Installation et configuration documentées | ✅ | § 5, dont GitHub CLI |
-| C20.7 Documentation communiquée dans un format accessible | ⚠️ | guide d'exploitation, format contrôlé le 31/10 ([`evidence/C8/`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v1/evidence/C8)) ; communication non prouvée |
+| C20.7 Documentation communiquée dans un format accessible | ✅ | guide d'exploitation, format contrôlé le 31/10, envoyé au formateur le 03/11 en PDF joint ([`evidence/C8/`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v2/evidence/C8)) |
 | C21.1 Causes identifiées | ✅ | § 7, post-mortem INC-009 |
 | C21.2 Reproduit en environnement de développement | ✅ | § 7 ; `pytest-avant.txt` |
 | C21.3 Débogage documenté dans l'outil de suivi | ✅ | issue #137, commentaire du 31/10 |

@@ -9,6 +9,36 @@
 
 ---
 
+## 2026-11-03, nuit : « à consolider » dans tous les rapports, E2 v1.0, E3 v2.1, E4 v1.2, E5 v0.7
+
+**Manque découvert** par Era : le libellé « à consolider », choisi le 03/11 pour la grille des compétences, n'avait
+pas été reporté dans les rapports. E3 écrivait encore « 🟠 partiel » (11 fois « partiel », 7 🟠), E4 « partiel » (4)
+et ⚠️ (15), E2 ⚠️ (8) et « preuve partielle », E5 ⚠️ (2). La recherche de l'ancienne valeur dans tout le dépôt n'avait
+pas été faite.
+
+**Décision d'Era** : partout, « à consolider » (🟡). Les tags étant figés, quatre nouvelles versions, figées par les
+tags `livrable-E2-v2`, `livrable-E3-v4`, `livrable-E4-v2` et `livrable-E5-v2` à poser sur `main` après la PR #178, qui intègrent
+aussi la note de mise à jour écrite plus tôt le même jour : huit critères passés à ✅ après l'envoi du 03/11 (E2 :
+C6.2, C6.4, C8.5 ; E4 : C16.3, C17.11, C18.6, C19.7 ; E5 : C20.7), l'en-tête d'E3 (accès des examinateurs) et la clé
+d'exercice (403, 503), la phrase d'E4 (§ 1.7 et § 7.3). Chaque remplacement compté avant d'écrire ; liens déplacés
+vers les nouveaux tags (E3 : 133, E4 : 185 et 16 dans l'annexe, E5 : 21) ; pages inchangées. La note est remplacée :
+elle reste dans le dépôt, elle ne part pas avec la remise. E1 v6 ne change pas. Annexe d'E4 : six schémas (A1, A3, A4,
+A5, les deux A6) remplacés par la mise en forme fournie par Era au style des schémas d'E1, texte comparé aux originaux,
+identique ; les originaux restent dans `evidence/` ; annexe toujours de 10 pages.
+Annexe d'E2 : les trois schémas remplacés par la mise en forme fournie par Era ; deux phrases dépassées, dans A1
+(« envoi au formateur non effectué ») et A3 (« remise prévue le 05/11 »), corrigées dans le générateur (test d'abord)
+et dans les deux images, pour dire l'envoi du 03/11 ; annexe toujours de 3 pages.
+
+**Décision d'Era, le même soir : « Mistral testé, non activé ».** Azure reste seul en production pour la remise. Le
+10/10, Mistral Large 4 a servi un vrai briefing (LVMH) par la route de RITA, sur la branche `mistral-ue` ; avant d'en
+faire le secours d'Azure, il reste une comparaison sur les 10 cas du banc et la lecture de son contrat. Annexe d'E2 :
+A2 (case du 10/10) et A3 (secours envisagé) le disent, générateur et images d'accord, test d'abord ; la preuve est
+citée en texte, sans lien vers la branche ni vers la PR #88, qui reste séparée. Classeurs remis d'accord (B52 décrivait
+encore trois fournisseurs en cascade ; versions E2 v1.0, E3 v2.1, E4 v1.2, E5 v0.7 ; 98 cellules, statuts inchangés,
+120 ✅ · 17 🟡 · 0 ❌) ; présentateur : six liens PDF d'E2 réparés, « J'ai testé Mistral ».
+
+---
+
 ## 2026-11-03, soir : note de mise à jour des rapports E2 à E5
 
 **Manque découvert** par une relecture externe des rapports tagués, vérifiée point par point dans le dépôt : E3 annonce

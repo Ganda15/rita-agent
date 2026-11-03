@@ -4,7 +4,7 @@
 <rect width="1400" height="692" fill="#FFFFFF"/>
 <rect x="40" y="16" width="1320" height="5" fill="#1565C0"/>
 <text x="40" y="54" font-size="32" font-weight="700" fill="#0B2A5B">Le choix du service (C7) : le banc du 03/10, puis les décisions datées</text>
-<text x="40" y="80" font-size="17" fill="#1F2937">Rapport E2, section 3 · dessiné le 01/11/2026 pour ce rapport, corrigé le 02/11, d&#x27;après evidence/C7/ et CONTINUITE.md</text>
+<text x="40" y="80" font-size="17" fill="#1F2937">Rapport E2, section 3 · dessiné le 01/11/2026 pour ce rapport, corrigé le 03/11, d&#x27;après evidence/C7/ et CONTINUITE.md</text>
 <g transform="translate(0,16)">
 <rect x="40" y="100" width="1320" height="168" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
 <rect x="40" y="288" width="1320" height="168" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="8,6"/>
@@ -48,9 +48,9 @@
 <rect x="580" y="322" width="240" height="116" fill="#FDECEC" stroke="#D32F2F" stroke-width="2" stroke-dasharray="8,5"/>
 <rect x="580" y="322" width="7" height="116" fill="#D32F2F"/>
 <text x="597" y="346" font-size="17.5" font-weight="700" fill="#C62828">10/10, Mistral</text>
-<text x="597" y="368" font-size="15.5" fill="#111827">futur second, sous</text>
-<text x="597" y="388" font-size="15.5" fill="#111827">conditions ; PR #88</text>
-<text x="597" y="408" font-size="15.5" fill="#111827">non fusionnée</text>
+<text x="597" y="368" font-size="15.5" fill="#111827">Large 4 : briefing LVMH</text>
+<text x="597" y="388" font-size="15.5" fill="#111827">réussi en essai ;</text>
+<text x="597" y="408" font-size="15.5" fill="#111827">non activé en production</text>
 <rect x="842" y="322" width="240" height="116" fill="#E3F0FD" stroke="#1565C0" stroke-width="2"/>
 <rect x="842" y="322" width="7" height="116" fill="#1565C0"/>
 <text x="859" y="346" font-size="17.5" font-weight="700" fill="#0B2A5B">11/10, poste</text>

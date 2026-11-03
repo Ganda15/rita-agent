@@ -16,7 +16,7 @@ h2#criteres, h2#criteres + p{ break-after:avoid; }
 
 # Rapport E2 : veille, choix d'un service de modèle, et son paramétrage
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 0.9, 2 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 1.0, 3 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
 {: .identite }
 
 > **En une minute.** RITA rédige en français un court briefing sur une valeur boursière, avec un modèle de langage
@@ -170,10 +170,10 @@ réussir le test sur lequel il a été entraîné et rater presque tout sur un a
 |---|---|---|---|---|
 | 16/08 | la promotion | Discord, canal général | S33 | partage consigné dans le journal ; capture absente ; aucun retour documenté |
 | 11/10 | la promotion | Discord, canal #veille, 20 h 04 | S41, avec une question ouverte | partage prouvé par capture (`evidence/C6/envoi-2026-10-11-promo-discord-veille.png`) ; aucune réponse au 31/10 |
-| | le formateur | mail et PDF | S33 | l'envoi reste indiqué comme non effectué dans le suivi |
+| 03/11 | le formateur | mail, 14 h 42, PDF joint | synthèse S33 à S36 | envoi prouvé (`evidence/C8/envoi-documents-formateur-2026-11-03.md`) ; accusé de réception demandé |
 
-Une synthèse des quatre premières notes existe en PDF (`docs/veille/Veille-C6-synthese-S33-a-S36.pdf`) ; aucune preuve
-d'envoi n'est trouvée. Le registre des envois (`docs/veille/_JOURNAL-DES-ENVOIS.md`) le dit lui-même : un message sans
+Une synthèse des quatre premières notes existe en PDF (`docs/veille/Veille-C6-synthese-S33-a-S36.pdf`) ; elle a été
+envoyée au formateur le 03/11. Le registre des envois (`docs/veille/_JOURNAL-DES-ENVOIS.md`) le dit lui-même : un message sans
 réponse prouve qu'on a publié, pas qu'on a animé un travail collectif. Ce qui manque, c'est un échange collectif
 documenté.
 
@@ -191,8 +191,8 @@ GitHub ; la synthèse existe aussi en PDF.
 
 - **Le rythme hebdomadaire n'a pas été maintenu** : sept relevés et cinq notes entre S33 et S44, dont trois notes en
   rattrapage ; rien de conservé dans le dépôt depuis le 11/10.
-- **Aucun échange collectif documenté** : deux partages à la promotion sans réponse documentée, aucun envoi au
-  formateur prouvé.
+- **Aucun échange collectif documenté** : deux partages à la promotion sans réponse documentée ; la synthèse
+  envoyée au formateur le 03/11 attend sa réponse.
 - **Le partage du 16/08 n'a pas de capture.**
 - **La vérification d'accessibilité des notes n'est pas consignée.**
 
@@ -627,51 +627,49 @@ nouveau le 31/10 depuis le guide à jour (35 pages). **Reste** : l'ancien chemin
 ### 4.6 La remise aux parties prenantes
 
 Le référentiel demande que la documentation soit « communiquée aux parties prenantes dans un format qui respecte les
-recommandations d'accessibilité ». **Ce n'est pas prouvé.** Aucun envoi daté du guide n'est consigné : ni dans
-`docs/FILE-DE-VALIDATION.md`, ni dans `evidence/C8/` ; l'issue #43 est ouverte.
+recommandations d'accessibilité ». **C'est prouvé depuis le 03/11** : le guide a été envoyé au formateur ce jour-là
+à 14 h 42, en PDF joint (`evidence/C8/envoi-documents-formateur-2026-11-03.md`) ; l'issue #43 reste ouverte, l'accusé de réception est demandé.
 
 **Le format, lui, est prêt depuis le 31/10** (`evidence/C8/controle-accessibilite-guide-2026-10-31.md`). Le PDF est
 rendu avec une option de lecture facilitée, écrite test d'abord : texte et tableaux à 12 pt, code à 11 pt, titres sans
 empattement, liens soulignés plutôt que seulement colorés. Lu avec des outils de lecture de PDF : il est balisé, en
 français, porte son titre, et compte 66 signets tirés des titres ; aucun lien ne renvoie plus vers un fichier du poste.
 Ce n'est pas un audit PDF/UA complet : aucun outil de référence ni lecteur d'écran n'a été passé, et le contraste n'est
-pas mesuré. Reste sa remise, **non prouvée à ce jour** : décision du 31/10, pas d'envoi séparé au formateur. Je
-remettrai le guide avec les livrables du 05/11, dans mon dossier Drive partagé, en prévenant le formateur ; la preuve
-datée dira quel fichier a été partagé, avec qui et quand, et sera conservée dans `evidence/C8/`. Avoir accès au dépôt
-n'est pas avoir reçu le guide.
+pas mesuré. La remise est faite le 03/11, par mail, PDF joint ; la preuve dit quel fichier, à qui et quand
+(`evidence/C8/`). Avoir accès au dépôt n'est pas avoir reçu le guide : c'est pourquoi le PDF est joint.
 
 ---
 
 ## 5. Les 20 critères, un par un {: #criteres }
 
-Auto-évaluation du 31 octobre 2026, revue le 1er novembre, complétée le 2 novembre pour C6.6, C6.8 et C7.4 (preuves ajoutées, états inchangés). ✅ critère entier satisfait, avec preuve · ⚠️ preuve partielle · ❌ aucune preuve.
+Auto-évaluation du 31 octobre 2026, revue le 1er novembre, complétée le 2 novembre pour C6.6, C6.8 et C7.4 (preuves ajoutées, états inchangés), mise à jour le 3 novembre pour C6.2, C6.4 et C8.5. ✅ critère entier satisfait, avec preuve · 🟡 à consolider : une preuve existe, le point qui manque est écrit dans la ligne · ❌ aucune preuve.
 
 | Critère | État | Preuve ou manque |
 |---|---|---|
 | C6.1 thématique liée au projet | ✅ | injection de prompt, mobilisée dans `guardrails/injection.py` (2.1) |
-| C6.2 temps de veille planifiés, une heure par semaine | ⚠️ | temps planifié : créneau du lundi, de 9 h à 10 h (`docs/veille/README.md`, § 2) ; exécution interrompue : sept relevés et cinq notes de S33 à S44, trois en rattrapage, rien depuis le 11/10 (2.3) |
+| C6.2 temps de veille planifiés, une heure par semaine | ✅ | temps planifié, ce que demande le critère : créneau du lundi, de 9 h à 10 h (`docs/veille/README.md`, § 2) ; exécution irrégulière, dite telle quelle : sept relevés et cinq notes de S33 à S44, trois en rattrapage, rien depuis le 11/10 (2.3) |
 | C6.3 outils d'agrégation cohérents avec sources et budget | ✅ | choix des flux RSS et Atom, justifié contre un agrégateur payant et les newsletters, budget 0 € (`docs/veille/README.md`, § 4) ; usage réel dans les relevés, dont S41 (2.2) ; limite : relevé à la main, sans outil automatique |
-| C6.4 synthèses communiquées, format accessible | ⚠️ | notes en Markdown ; synthèse S33 à S36 rendue au format lisible et contrôlée le 01/11 (2.6) ; partage du 11/10 prouvé par capture ; envoi au formateur pas encore fait (2.5) |
+| C6.4 synthèses communiquées, format accessible | ✅ | notes en Markdown ; synthèse S33 à S36 rendue au format lisible et contrôlée le 01/11 (2.6) ; partage du 11/10 prouvé par capture ; synthèse envoyée au formateur le 03/11, PDF joint (2.5) |
 | C6.5 informations conformes à la thématique | ✅ | les cinq notes portent sur la thématique (2.3) |
-| C6.6 fiabilité des sources : auteur, compétences, intérêts | ⚠️ | qualification de l'auteur et de ses intérêts dans chaque note ; pour S41, auteur vérifié le 02/11 (étudiant en master au JAIST), mais notoriété non établie (2.2) |
+| C6.6 fiabilité des sources : auteur, compétences, intérêts | 🟡 | qualification de l'auteur et de ses intérêts dans chaque note ; pour S41, auteur vérifié le 02/11 (étudiant en master au JAIST), mais notoriété non établie (2.2) |
 | C6.7 fiabilité des sources : contenu récent, sourcé, structuré | ✅ | les sources retenues sont datées et structurées : S41 s'appuie sur un préprint daté (v1 du 02/10/2026), avec son auteur, son statut et les sections citées ; les notes S33 à S36 datent et citent leurs sources (2.2) |
-| C6.8 fiabilité des sources : accessibilité, recoupement | ⚠️ | S41 : le coût des faux positifs recoupé le 02/11 par une source relue par les pairs et deux sources du protocole ; constat central non recoupé ; préférence pour les sources accessibles non démontrée note par note (2.2) |
+| C6.8 fiabilité des sources : accessibilité, recoupement | 🟡 | S41 : le coût des faux positifs recoupé le 02/11 par une source relue par les pairs et deux sources du protocole ; constat central non recoupé ; préférence pour les sources accessibles non démontrée note par note (2.2) |
 | C7.1 besoin reformulé, objectifs et contraintes | ✅ | besoin reformulé (un briefing court en français, à partir de faits fournis), contraintes mesurables, règle UE, usage Question (3.1) ; plafond du banc fixé avant la mesure, 5 USD (D2) ; limite : consommation réelle de la clé OpenRouter non lue, facturation Azure non vérifiée |
 | C7.2 services étudiés et non étudiés | ✅ | inventaire : deux services comparés, un inclus mais non mesuré, Mistral hors banc, Gemini et modèle local non étudiés, chacun avec sa raison (3.2) |
 | C7.3 raisons d'écartement | ✅ | services étudiés et non étudiés, chacun avec sa raison (3.2) : Gemini hors du périmètre de ce banc (décision D1, `docs/PLAN-C7-benchmark.md`), modèle local et services payants exclus, Claude écarté pour la règle UE (3.6) ; limite : Gemini n'est pas jugé moins bon, il est hors du périmètre |
-| C7.4 adéquation au besoin, par service | ⚠️ | 30 appels par service, français noté ; adéquation donnée service par service et usage par usage (3.3) : briefing comparé, Question observée avec Azure seul, API directe d'Anthropic non mesurée, Mistral exploratoire ; fidélité minimale (3.3, 3.7) |
+| C7.4 adéquation au besoin, par service | 🟡 | 30 appels par service, français noté ; adéquation donnée service par service et usage par usage (3.3) : briefing comparé, Question observée avec Azure seul, API directe d'Anthropic non mesurée, Mistral exploratoire ; fidélité minimale (3.3, 3.7) |
 | C7.5 démarche éco-responsable | ✅ | démarche « en fonction des informations disponibles » : relevé daté du 03/10 qui sépare les chiffres d'entreprise, ceux des éditeurs et ce qui reste inconnu par modèle (3.5) ; limite : rien ne permet de dire qu'Azure est plus sobre, ni de donner l'empreinte réelle d'un briefing ; rien sur Mistral |
 | C7.6 contraintes techniques et prérequis | ✅ | prérequis d'Azure et d'OpenRouter côte à côte : point d'accès, clé, paramètre de longueur, délai, limites de débit, lieu du traitement (3.5) ; limite : débit d'OpenRouter non relevé |
 | C7.7 conclusions : services adaptés et non adaptés | ✅ | conclusion étayée pour le briefing : service retenu et services écartés, avec leurs avantages et leurs limites ; configuration actuelle et secours envisagé séparés (3.6) ; limite : le banc ne mesure pas l'usage Question (C7.4) ; banc et contrat de Mistral manquent |
 | C8.1 service accessible, avec authentification | ✅ | appels réels du 09/10, briefing en production du 21/10, clés hors du code (4.1) |
-| C8.2 configuré selon les besoins et les contraintes | ⚠️ | configuration des replis corrigée le 31/10, après la version de référence ; vérifications contractuelles encore ouvertes (Microsoft, Mistral) ; aucun secours ; prompt corrigé non appliqué (4.2) |
+| C8.2 configuré selon les besoins et les contraintes | 🟡 | configuration des replis corrigée le 31/10, après la version de référence ; vérifications contractuelles encore ouvertes (Microsoft, Mistral) ; aucun secours ; prompt corrigé non appliqué (4.2) |
 | C8.3 monitorage disponible opérationnel | ✅ | Langfuse et alertes en production, chaîne d'alerte prouvée le 23/10, vigie ; limites écrites (4.4) |
 | C8.4 documentation : accès, installation, tests, dépendances, données | ✅ | les quatre sujets couverts et testés contre le code ; PDF rendu de nouveau le 31/10 (4.5) |
-| C8.5 documentation communiquée, format accessible | ❌ | format préparé et contrôlé le 31/10, sans audit PDF/UA complet ; aucun envoi daté (4.6) |
+| C8.5 documentation communiquée, format accessible | ✅ | format préparé et contrôlé le 31/10, sans audit PDF/UA complet ; guide envoyé au formateur le 03/11, PDF joint (4.6) |
 
-**Décompte** : 13 ✅ · 6 ⚠️ · 1 ❌ sur 20. Historique : version 0.3 du 03/10, 6 · 13 · 1 ; version 0.4 du 31/10, 6 · 13 · 1 (C6.6 et C7.2 baissent, C6.7 et C8.3 montent) ; depuis la version 0.5 du 31/10, C7.2 repasse à ✅, une fois l'inventaire des services écrit (3.2). Version 0.7 du 01/11 : C6.3, C7.1, C7.3, C7.5 et C7.7 passent à ✅ après relecture contre le texte du
+**Décompte** : 16 ✅ · 4 🟡 · 0 ❌ sur 20. Historique : version 0.3 du 03/10, 6 · 13 · 1 ; version 0.4 du 31/10, 6 · 13 · 1 (C6.6 et C7.2 baissent, C6.7 et C8.3 montent) ; depuis la version 0.5 du 31/10, C7.2 repasse à ✅, une fois l'inventaire des services écrit (3.2). Version 0.7 du 01/11 : C6.3, C7.1, C7.3, C7.5 et C7.7 passent à ✅ après relecture contre le texte du
 règlement (pages 22 à 24), sans preuve nouvelle : les preuves existaient, la grille leur demandait plus que le critère ;
-C7.6 passe à ✅ une fois les prérequis d'Azure et d'OpenRouter présentés côte à côte (3.5). Chaque ligne garde sa
+C7.6 passe à ✅ une fois les prérequis d'Azure et d'OpenRouter présentés côte à côte (3.5). Version 1.0 du 03/11 : C6.4 et C8.5 passent à ✅ après l'envoi au formateur du 03/11 ; C6.2 passe à ✅, le critère demandant la planification ; les lignes incomplètes s'écrivent « à consolider » (🟡), comme dans la grille. Chaque ligne garde sa
 limite. Décision d'Era.
 
 ---
@@ -680,15 +678,13 @@ limite. Décision d'Era.
 
 **Avant la remise du 05/11.**
 
-1. **Remettre le guide d'exploitation** (C8.5) : le PDF est prêt et contrôlé (31/10) ; remise non prouvée à ce jour ;
-   je le remettrai avec les livrables du 05/11, dans mon dossier Drive partagé, formateur prévenu, avec une preuve
-   datée (quel fichier, avec qui, quand) conservée dans `evidence/C8/` (#43).
-2. **Le rapport** : relecture, PDF, tag `livrable-E2-v1`.
+1. **Remettre le guide d'exploitation** (C8.5) : fait le 03/11, par mail, PDF joint, preuve datée dans `evidence/C8/` ;
+   reste l'accusé de réception du formateur (#43).
+2. **Le rapport** : relecture, PDF, tag `livrable-E2-v2` (cette version 1.0 ; la 0.9 reste sous `livrable-E2-v1`).
 
 **Ensuite.**
 
-3. **Reprendre la veille** (C6) : relevés et notes des semaines suivantes, un échange collectif documenté, l'envoi au
-   formateur.
+3. **Reprendre la veille** (C6) : relevés et notes des semaines suivantes, un échange collectif documenté.
 4. **La configuration** (C8.2) : appliquer le prompt corrigé (option B), la réponse 503 « aucun fournisseur » (#75),
    relire le contrat de Microsoft, décider pour Langfuse.
 

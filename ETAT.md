@@ -21,14 +21,28 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ---
 
-## ▶️ 03/11, SOIR : LES CINQ LIVRABLES TAGUÉS ; NOTE DE MISE À JOUR E2-E5 À RELIRE ; REMISE LE 05/11
+## ▶️ 03/11, NUIT : E2 v1.0, E3 v2.1, E4 v1.2, E5 v0.7 « À CONSOLIDER » PRÊTS ; QUATRE TAGS À POSER ; REMISE LE 05/11
 
-**Prochaine action** : Era relit la note de mise à jour (`docs/rapports/note-mise-a-jour-2026-11-03.pdf`, une page).
-S'il valide : commit (note, `README.md`, `ETAT.md`, `CONTINUITE.md`, `CHANGELOG.md`), push de `develop` (avec `1c47709`,
-le README, déjà commité), PR `develop` → `main`, fusion par Era ; pas de nouveau tag. Puis la remise au formateur avant
-le 05/11, par Era : les 9 fichiers de `Downloads\Remise-RITA-2026-11-02\` et la note.
+**Prochaine action** : Era relit les lignes changées des quatre rapports (`docs/rapports/E2/rapport-E2-avec-annexe.pdf`,
+`docs/rapports/E3/rapport-E3.pdf`, `docs/rapports/E4/rapport-E4-avec-annexe.pdf`, `docs/rapports/E5/rapport-E5.pdf`).
+S'il valide : commit, push, PR `develop` → `main`, fusion, puis les tags `livrable-E2-v2`, `livrable-E3-v4`,
+`livrable-E4-v2` et `livrable-E5-v2` sur `main`, et la vérification des liens à chaque tag. Ensuite le dossier de remise
+remis à jour (versions avec annexes à envoyer, copies sans annexes dans `sans-annexes\`) et l'envoi par Era.
 
-- **Note de mise à jour du 03/11** (décision d'Era, à la place de nouvelles versions) : les huit critères passés à ✅
+- **Décision d'Era du 03/11, au soir** (« partiel change all places », « even E4 ») : partout dans les rapports,
+  « partiel » et les symboles ⚠️ et 🟠 deviennent « à consolider » (🟡), comme dans la grille des compétences. Les
+  tags étant figés, cela fait de nouvelles versions : E2 v1.0, E3 v2.1, E4 v1.2, E5 v0.7. Elles intègrent ce que
+  portait la note de mise à jour (huit critères passés à ✅, deux corrections d'E3, une phrase d'E4), qui est
+  remplacée et ne part pas avec la remise. E1 v6 ne change pas (son seul « partiels » parle de deux soirs de collecte).
+  Annexe d'E4 : six schémas remis en forme par Era au style d'E1 (texte identique aux originaux, vérifié), 10 pages.
+  Annexe d'E2 : trois schémas remis en forme par Era ; A1 et A3 disaient encore l'envoi « non effectué » et « prévu le
+  05/11 » : corrigés dans le générateur (test d'abord) et dans les images ; 3 pages.
+  **Mistral testé, non activé** (décision d'Era du 03/11) : A2 et A3 d'E2 le disent ; classeurs (98 cellules, statuts
+  inchangés) et présentateur (liens PDF d'E2, « J'ai testé Mistral ») remis d'accord.
+  Pages inchangées : 17 (20), 20, 20 (30), 5. Restent à l'ancien libellé : le nom du fichier
+  `docs/recette/registre-des-partiels.md` et la liste déroulante « PARTIELLEMENT » du classeur détaillé : décision d'Era.
+
+- **Note de mise à jour du 03/11, remplacée le soir même par les nouvelles versions** (ce qu'elle portait) : les huit critères passés à ✅
   après les tags, avec leur preuve (E2 : C6.2, C6.4, C8.5 ; E4 : C16.3, C17.11, C18.6, C19.7 ; E5 : C20.7) ; deux
   erreurs d'E3 (p. 1, « formateur et jury invités », alors que le jury n'est pas invité ; p. 3 et 4, « 503 » au lieu de
   403 sans la clé d'exercice) ; une phrase d'E4 (p. 4, § 1.7, et p. 16, § 7.3 : la spécification de l'écran Question date du 15/10,

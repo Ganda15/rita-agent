@@ -1,6 +1,6 @@
 # Pour le jury : RITA en fichiers essentiels (E1 et E3)
 
-> Ouvrez cette page depuis le tag du livrable, `livrable-E1-v6` ou `livrable-E3-v3` : chaque lien s'ouvre alors dans le
+> Ouvrez cette page depuis le tag du livrable, `livrable-E1-v6` ou `livrable-E3-v4` : chaque lien s'ouvre alors dans le
 > code tel qu'il a été livré, et non dans le projet d'aujourd'hui. Le dépôt est privé : il faut y être invité en lecture.
 
 ## Les deux rapports
