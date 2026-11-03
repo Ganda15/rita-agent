@@ -16,7 +16,8 @@ pas été reporté dans les rapports. E3 écrivait encore « 🟠 partiel » (11
 et ⚠️ (15), E2 ⚠️ (8) et « preuve partielle », E5 ⚠️ (2). La recherche de l'ancienne valeur dans tout le dépôt n'avait
 pas été faite.
 
-**Décision d'Era** : partout, « à consolider » (🟡). Les tags étant figés, quatre nouvelles versions, qui intègrent
+**Décision d'Era** : partout, « à consolider » (🟡). Les tags étant figés, quatre nouvelles versions, figées par les
+tags `livrable-E2-v2`, `livrable-E3-v4`, `livrable-E4-v2` et `livrable-E5-v2` à poser sur `main` après la PR #178, qui intègrent
 aussi la note de mise à jour écrite plus tôt le même jour : huit critères passés à ✅ après l'envoi du 03/11 (E2 :
 C6.2, C6.4, C8.5 ; E4 : C16.3, C17.11, C18.6, C19.7 ; E5 : C20.7), l'en-tête d'E3 (accès des examinateurs) et la clé
 d'exercice (403, 503), la phrase d'E4 (§ 1.7 et § 7.3). Chaque remplacement compté avant d'écrire ; liens déplacés
