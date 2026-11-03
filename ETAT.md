@@ -21,13 +21,18 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ---
 
-## ▶️ 03/11, NUIT : E2 v1.0, E3 v2.1, E4 v1.2, E5 v0.7 « À CONSOLIDER » PRÊTS ; QUATRE TAGS À POSER ; REMISE LE 05/11
+## ▶️ 03/11, NUIT : LES CINQ LIVRABLES TAGUÉS (E1-v6, E2-v2, E3-v4, E4-v2, E5-v2) ; REMISE À ENVOYER PAR ERA
 
-**Prochaine action** : Era relit les lignes changées des quatre rapports (`docs/rapports/E2/rapport-E2-avec-annexe.pdf`,
-`docs/rapports/E3/rapport-E3.pdf`, `docs/rapports/E4/rapport-E4-avec-annexe.pdf`, `docs/rapports/E5/rapport-E5.pdf`).
-S'il valide : commit, push, PR `develop` → `main`, fusion, puis les tags `livrable-E2-v2`, `livrable-E3-v4`,
-`livrable-E4-v2` et `livrable-E5-v2` sur `main`, et la vérification des liens à chaque tag. Ensuite le dossier de remise
-remis à jour (versions avec annexes à envoyer, copies sans annexes dans `sans-annexes\`) et l'envoi par Era.
+**Prochaine action** : Era envoie la remise au formateur avant le 05/11 (message prêt ; les cinq fichiers du haut de
+`Downloads\Remise-RITA-2026-11-02\`, identiques aux tags), puis dit « envoyé » pour la preuve datée.
+
+- **Tags du 03/11, nuit** : PR #178 fusionnée (`2310f87`, 21:28 UTC) ; `livrable-E2-v2`, `livrable-E3-v4`,
+  `livrable-E4-v2` et `livrable-E5-v2` posés sur `2310f87`. **Aucune exécution de « Livraison » sur ces tags** : ils ont été
+  poussés en une seule commande, et GitHub ne crée pas d'événement de push quand plus de trois tags arrivent ensemble ;
+  donc pas d'image publiée sous leur nom. L'image du même commit est construite, publiée et déployée par l'exécution
+  de `main` (41722049240, verte). La Definition of Done est rejouée sur le poste (`verifier_livrable.py livrable-E3-v4` :
+  1 928 tests, évaluations, liens, tag cité, arbre propre : livrable) ; les 244 liens des quatre PDF répondent à leur
+  tag ; les dix fichiers de la remise sont identiques aux tags. Désormais : un tag par commande.
 
 - **Décision d'Era du 03/11, au soir** (« partiel change all places », « even E4 ») : partout dans les rapports,
   « partiel » et les symboles ⚠️ et 🟠 deviennent « à consolider » (🟡), comme dans la grille des compétences. Les
