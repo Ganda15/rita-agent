@@ -27,20 +27,23 @@ Simplon & Wild Code School · Eramalingam GANDAKUMAR · ganda70@gmail.com · 202
 > *Un dépôt unique qui grandit est la règle du référentiel ; le tag est ce qui permet
 > malgré tout d'évaluer un livrable dans son état d'origine.*
 
-| Épreuve | Compétences | État au 02/11/2026 | Documents | 🔒 Livrable figé |
+| Épreuve | Compétences | État au 03/11/2026 | Documents | 🔒 Livrable figé |
 |---|---|---|---|---|
-| **E1** : Données | C1–C5 | ✅ **livré et accepté** : livret v3 envoyé au formateur le 28/10 ; v5 tagué le 02/11 (MCD `VALEUR 0,n`) ; **v6 préparé le 03/11** (budget en trois montants avec TJM, limite C5 avec l'évolution prévue, `rapport-E1-v6-avec-annexes.pdf`), tag `livrable-E1-v6` à poser après la fusion. Versions figées précédentes : `livrable-E1-v1` (13/08), `livrable-E1-v2` (24/10), `livrable-E1-v3` (27/10), `livrable-E1-v5` (02/11) | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) · [rapport-E1-v6-avec-annexes.pdf](docs/rapports/E1/rapport-E1-v6-avec-annexes.pdf) · [preuves C1 à C5](evidence/) | **[`livrable-E1-v5`](https://github.com/Ganda15/rita-agent/tree/livrable-E1-v5)** |
-| **E2** : Veille & services IA | C6–C8 | 📝 **rapport v0.9 rédigé** (17 pages, annexe de 3 schémas : 20 pages en tout), sur `develop` ; auto-évaluation 13 ✅ · 6 ⚠️ · 1 ❌ ; remise du guide d'exploitation (C8.5) non prouvée ; dû le 05/11 | [rapport-E2.pdf](docs/rapports/E2/rapport-E2.pdf) · [docs/veille/](docs/veille/) · [evidence/C6/](evidence/C6/) | à venir, après la fusion dans `main` |
-| **E3** : API modèle & MLOps | C9–C13 | ✅ **livré** : rapport v1.9 envoyé au formateur le 29/10 ; **v2.0 préparé le 02/11** après le retour écrit du formateur (OWASP API en entier, accessibilité mesurée, séparation des traces prouvée, 20 pages), tag `livrable-E3-v3` à poser après la fusion ; version précédente figée : `livrable-E3-v1` (24/10) | [rapport-E3.pdf](docs/rapports/E3/rapport-E3.pdf) (v2.0) · [evidence/C11/](evidence/C11/) · [evidence/C12/](evidence/C12/) | **[`livrable-E3-v2`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v2)** |
-| **E4** : Application | C14–C19 | 📝 **rapport v1.0 rédigé** (20 pages, 29 avec l'annexe), sur `develop` ; auto-évaluation 21 ✅ · 17 ⚠️ · 0 ❌ ; dû le 05/11 | [rapport-E4.pdf](docs/rapports/E4/rapport-E4.pdf) · [evidence/C14/](evidence/C14/) · [evidence/C17/](evidence/C17/) | à venir, après la fusion dans `main` |
-| **E5** : Monitorage | C20–C21 | 📝 **rapport v0.5 rédigé** (5 pages), sur `develop` ; auto-évaluation 10 ✅ · 2 ⚠️ ; 9 post-mortems d'incidents (INC-001 à INC-009) ; dû le 05/11 | [rapport-E5.pdf](docs/rapports/E5/rapport-E5.pdf) · [evidence/C20/](evidence/C20/) · [evidence/C21/](evidence/C21/) | à venir, après la fusion dans `main` |
+| **E1** : Données | C1–C5 | ✅ **figé, prêt pour la remise du 05/11** : livret v6 tagué le 03/11 (budget en trois montants avec TJM, limite C5 avec l'évolution prévue avant le jury, schémas d'annexe corrigés) ; remis en 5 pages, avec une couverture et 4 pages d'annexes ; auto-évaluation **28 ✅** ; le livret v3 envoyé le 28/10 a été accepté par le formateur. Versions figées précédentes : `livrable-E1-v1` (13/08), `livrable-E1-v2` (24/10), `livrable-E1-v3` (27/10), `livrable-E1-v5` (02/11) | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) · [rapport-E1-v6-avec-annexes.pdf](docs/rapports/E1/rapport-E1-v6-avec-annexes.pdf) · [budget détaillé](docs/BUDGET.md) · [preuves C1 à C5](evidence/) | **[`livrable-E1-v6`](https://github.com/Ganda15/rita-agent/tree/livrable-E1-v6)** |
+| **E2** : Veille & services IA | C6–C8 | ✅ **figé, prêt pour la remise du 05/11** : rapport v0.9 tagué le 02/11 (17 pages, annexe de 3 schémas : 20 pages en tout) ; synthèse de veille et guide d'exploitation envoyés au formateur le 03/11 ; auto-évaluation **16 ✅ · 4 🟡 à consolider** | [rapport-E2-avec-annexe.pdf](docs/rapports/E2/rapport-E2-avec-annexe.pdf) · [rapport-E2.pdf](docs/rapports/E2/rapport-E2.pdf) · [docs/veille/](docs/veille/) · [evidence/C6/](evidence/C6/) | **[`livrable-E2-v1`](https://github.com/Ganda15/rita-agent/tree/livrable-E2-v1)** |
+| **E3** : API modèle & MLOps | C9–C13 | ✅ **figé, prêt pour la remise du 05/11** : rapport v2.0 tagué le 02/11 (20 pages), après le retour écrit du formateur du 30/10 ; c'est la version remise ; auto-évaluation **34 ✅ · 5 🟡 à consolider**. Versions figées précédentes : `livrable-E3-v1` (24/10), `livrable-E3-v2` (27/10, v1.9 envoyée le 29/10) | [rapport-E3.pdf](docs/rapports/E3/rapport-E3.pdf) (v2.0) · [evidence/C11/](evidence/C11/) · [evidence/C12/](evidence/C12/) | **[`livrable-E3-v3`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v3)** |
+| **E4** : Application | C14–C19 | ✅ **figé, prêt pour la remise du 05/11** : rapport v1.1 tagué le 02/11 (20 pages, 30 avec l'annexe) ; méthode Kanban et documentation technique envoyées au formateur le 03/11 ; auto-évaluation **31 ✅ · 7 🟡 à consolider** | [rapport-E4-avec-annexe.pdf](docs/rapports/E4/rapport-E4-avec-annexe.pdf) · [rapport-E4.pdf](docs/rapports/E4/rapport-E4.pdf) · [evidence/C14/](evidence/C14/) · [evidence/C17/](evidence/C17/) | **[`livrable-E4-v1`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v1)** |
+| **E5** : Monitorage | C20–C21 | ✅ **figé, prêt pour la remise du 05/11** : rapport v0.6 tagué le 02/11 (5 pages) ; 9 post-mortems d'incidents (INC-001 à INC-009) ; guide d'exploitation envoyé au formateur le 03/11 ; auto-évaluation **11 ✅ · 1 🟡 à consolider** | [rapport-E5.pdf](docs/rapports/E5/rapport-E5.pdf) · [evidence/C20/](evidence/C20/) · [evidence/C21/](evidence/C21/) | **[`livrable-E5-v1`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v1)** |
 
-*Les 2 critères restants d'E1 (C1#6, C3#2) demandent un accès au dépôt Git — ils sont
-satisfaits par l'accès collaborateur, non par du code.*
+*Auto-évaluation d'Era au 03/11, critère par critère, dans les classeurs des compétences : **120 ✅ · 17 🟡 à consolider ·
+0 ❌** sur 137. « À consolider » : la ligne dit ce qui est fait, la preuve disponible et ce qui manque ; les points ouverts
+sont revus avec le formateur à l'examen blanc des 12 et 13 novembre. Chaque rapport tagué garde le décompte du jour de son tag ;
+la [note de mise à jour du 03/11](docs/rapports/note-mise-a-jour-2026-11-03.pdf) (une page) donne les huit critères passés
+à ✅ depuis, et corrige deux erreurs d'E3 et une phrase d'E4, sans réécrire les rapports.*
 
 *Conception des données validée par le formateur le 03/10/2026 : [docs/conception/donnees/](docs/conception/donnees/).
-Tableau tenu à jour à chaque séance ; le détail du jour est dans [`ETAT.md`](ETAT.md), et les lignes encore
-partielles d'E2 à E5 dans [le registre de la recette](docs/recette/registre-des-partiels.md).*
+Tableau tenu à jour à chaque séance ; le détail du jour est dans [`ETAT.md`](ETAT.md), et les lignes à
+consolider d'E2 à E5 dans [le registre de la recette](docs/recette/registre-des-partiels.md).*
 
 ---
 
@@ -55,7 +58,7 @@ recommandation d'achat ou de vente.
 
 | | |
 |---|---|
-| Tests | **1 927 collectés** · sur le poste : **1 878 réussis**, 47 ignorés (dont les 24 qui demandent PostgreSQL), 2 échecs attendus ; en CI : 1 880 réussis, couverture 96,32 %, et les 24 tests PostgreSQL réussis dans le job `base` (02/11) |
+| Tests | **1 976 collectés** · sur le poste : **1 926 réussis**, 48 ignorés (dont les 25 qui demandent PostgreSQL), 2 échecs attendus ; en CI : 1 927 réussis, couverture 96,32 %, et les 25 tests PostgreSQL réussis dans le job `base` (03/11) |
 | Base de données | **10 tables · 1 vue · 8 index créés explicitement · 12 contraintes CHECK** (compté dans `db/schema.sql`, inchangé depuis le 10/10, recompté le 02/11) |
 | Données en base | **273 608 lignes** importées en juillet (276 168 lues − 2 560 doublons) ; 278 473 cotations au 02/10 (mesure d'E1) |
 | Archive big data | **11 partitions Parquet · 14 Mo · 10 ans** (29/07/2016 → 29/07/2026, dates locales de la place depuis INC-005) |
@@ -116,7 +119,7 @@ rita-agent/
 ├── scripts/      # planification de la collecte
 ├── sources/      # les 5 types de sources C1
 ├── src/          # appel du modèle
-└── tests/        # pytest : 1 927 tests collectés (02/11)
+└── tests/        # pytest : 1 976 tests collectés (03/11)
 ```
 
 L'architecture, avec le chemin d'un briefing et d'une question : [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
@@ -154,15 +157,15 @@ système :
 python -m pytest -q
 ```
 
-> **Dernière exécution vérifiée : 1 878 réussis, 47 ignorés, 2 échecs attendus sur 1 927 collectés** (Python 3.14.6,
-> Windows, 02/11/2026). Les 47 ignorés : les 24 tests qui demandent PostgreSQL (ci-dessous), et 23 tests qui ne
+> **Dernière exécution vérifiée : 1 926 réussis, 48 ignorés, 2 échecs attendus sur 1 976 collectés** (Python 3.14.6,
+> Windows, 03/11/2026). Les 48 ignorés : les 25 tests qui demandent PostgreSQL (ci-dessous), et 23 tests qui ne
 > tournent que sous Linux, dans la CI (simulations `bash`, `jq`, verrous de fichiers, liens symboliques).
 > Les tests d'intégration PySpark de `tests/test_spark.py` sont **ignorés**, et non en échec, si aucun JDK 21 n'est
 > présent dans `JAVA_HOME`.
 
 ### Les tests qui demandent PostgreSQL
 
-Ces 24 tests portent le marqueur `postgresql`. Ils n'écrivent que dans une base de test déclarée : `DATABASE_URL` doit
+Ces 25 tests portent le marqueur `postgresql`. Ils n'écrivent que dans une base de test déclarée : `DATABASE_URL` doit
 viser une base dont le nom est celui de `RITA_BASE_DE_TEST`, sinon ils sont ignorés (`tests/garde_base.py`). Pour les
 lancer seuls, sur une base de test chargée avec `db/schema.sql` puis `db/roles.sql` :
 
