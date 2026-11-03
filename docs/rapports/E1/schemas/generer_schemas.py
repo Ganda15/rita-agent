@@ -289,7 +289,7 @@ def collecte() -> SchemaPropre:
             Boite("scrap", 32, 424, 422, 76, "PAGE WEB (scraping) · Boursorama", ["sources/scraper.py · robots.txt lu et mis en cache", "structure changée : exception StructurePageModifiee"], "normal"),
             Boite("rss", 32, 512, 422, 76, "COMPLÉMENT · flux RSS d'actualité", [f"sources/rss.py · {f['flux_generaux']} flux de presse générale ; Google News", "par valeur détenue arrêté le 16/10 (décision D3)"], "note"),
             Boite("csv", 32, 616, 422, 76, "FICHIER · export courtier (CSV des positions)", ["sources/positions.py · « ; », cp1252, nombres à la française", "démonstration : positions inventées, CSV versionné"], "normal"),
-            Boite("parq", 32, 704, 422, 76, "SYSTÈME BIG DATA · Parquet + Spark", ["bigdata/ · dix ans de cotations, 11 partitions par année", "276 168 lignes ; requêtes Spark SQL (C2)"], "normal"),
+            Boite("parq", 32, 704, 422, 76, "SYSTÈME BIG DATA · Parquet + Spark", ["bigdata/ · dix ans de cotations, 11 partitions au total, une par année", "276 168 lignes ; requêtes Spark SQL (C2)"], "normal"),
             Boite("pgl", 32, 812, 422, 76, "BASE DE DONNÉES · PostgreSQL relu", ["sources/database.py, indicateurs/ · requêtes paramétrées", "scout : DATABASE_URL ; rita_lecture : outils, pré-test"], "normal"),
 
             Boite("zo", 566, 104, 384, 800, "2. TRAITEMENTS", genre="zone"),
@@ -342,7 +342,7 @@ def nettoyage() -> SchemaPropre:
         titre="RITA : nettoyer et agréger, chaque défaut mesuré devient une règle",
         sous_titre="Rapport E1, section 4 (C3) · analyse exploratoire de juillet 2026, INC-005 du 27/09 · comptages du 4 octobre, schéma revu le 28 octobre 2026",
         boites=[
-            Boite("brut", 40, 104, 300, 124, "1. Le jeu brut", ["dix ans de cotations, 111 valeurs", "Parquet, 11 partitions par année", "276 168 lignes analysées", "0 valeur manquante"], "stock"),
+            Boite("brut", 40, 104, 300, 124, "1. Le jeu brut", ["dix ans de cotations, 111 valeurs", "Parquet, 11 partitions, une par année", "276 168 lignes analysées", "0 valeur manquante"], "stock"),
             Boite("eda", 380, 104, 330, 124, "2. Analyse exploratoire (juillet)", ["compter avant de modéliser :", "doublons, bornes, volumes, extrêmes,", "libellés ; preuves dans evidence/C3/", "chaque défaut → une décision de schéma"], "lavis"),
             Boite("agr", 750, 104, 330, 124, "3. Agrégation en un seul jeu", ["dates ISO 8601 dans le fuseau de la place", "devises ISO 4217, nombres français convertis", "codes ISIN complétés", "puis chargement par db/importer.py"], "lavis"),
             Boite("res", 1120, 104, 340, 124, "4. Le jeu contrôlé, en base", ["276 168 lues → 2 560 doublons écartés", "→ 273 608 insérées (juillet 2026)", "→ 278 473 cotations au 02/10/2026", "après 40 collectes du soir"], "stock"),

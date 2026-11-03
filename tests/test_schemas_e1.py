@@ -229,3 +229,15 @@ def test_l_api_ne_promet_pas_le_jeu_complet(gen):
     assert "taux_change" not in (RACINE / "api/donnees.py").read_text(encoding="utf-8")
     texte = gen.svg(gen.SCHEMAS["E1-api"]())
     assert "jeu complet" not in texte and "taux de change" in texte
+
+
+@pytest.mark.parametrize("nom", ("E1-collecte", "E1-nettoyage"))
+def test_les_partitions_se_comptent_au_total_une_par_annee(gen, nom):
+    """03/11/2026 : les annexes A et C disaient « 11 partitions par année ». Le Parquet a 11 partitions en tout, une par
+    année (data/bigdata/ohlcv/annee=2016 à annee=2026, `PARQUET_27_10`) ; le livret E1 v6 le dit déjà ainsi. Le
+    nettoyage dit « 11 partitions, une par année » : la forme longue passait sur deux lignes dans sa boîte (rendu du 03/11)."""
+    assert len(gen.PARQUET_27_10) == 11
+    texte = gen.svg(gen.SCHEMAS[nom]())
+    assert "partitions par année" not in texte
+    assert re.search(r"11 partitions(?: au total)?, une par année", texte)
+    assert "partitions par année" not in (DOSSIER / f"{nom}-illustre.html").read_text(encoding="utf-8")

@@ -9,6 +9,40 @@
 
 ---
 
+## 2026-11-03, après-midi : annexes A et C d'E1 v6 corrigées avant le tag
+
+**Manque découvert** par une relecture des 10 pages : les schémas des annexes A (collecte) et C (nettoyage) disaient encore
+« 11 partitions par année », comme le livret avant sa correction ; le Parquet en a 11 au total, une par année. Corrigé dans
+le générateur des schémas (test d'abord), l'illustration de la collecte, les PNG et les pages 7 et 9 du PDF avec annexes,
+sur la PR #176, avant le tag `livrable-E1-v6`.
+
+---
+
+## 2026-11-03 : `livrable-E5-v1` posé ; budget d'E1 en trois montants avec TJM ; E1 v6 prêt pour `livrable-E1-v6`
+
+**Décisions d'Era** : fusion de la PR #175 et tag `livrable-E5-v1` ; après le retour écrit du formateur du 03/11, le
+budget du livret E1 se présente en trois montants séparés (dépenses, travail au TJM de 400 €, fonctionnement par
+mois), ce qui remplace la décision du 28/10 « pas de TJM » ; la clé par client (C5) devient une évolution prévue avant
+le jury, chiffrée à 1 à 2 journées ; remise d'E1 en 10 pages (« Livret E1 de 5 pages, accompagné d'une couverture et
+de 4 pages d'annexes »), le texte officiel fixant « Livrable d'entre 2 et 5 pages » sans parler des annexes ; tag
+`livrable-E1-v6` à poser après la fusion.
+
+**Manques découverts** : par le formateur, la limite C5 présentée sans solution ni coût, et une démo E3 limitée au
+service d'IA (intégration, monitoring, tests et CI/CD absents) ; la consommation OpenRouter, « à lire » depuis le 31/10,
+relevée à 0,97 $ sur les trois clés du projet. Par la seconde relecture d'E1 v6 : le PDF avec annexes avait perdu les
+11 liens du sommaire (rétablis) ; « 11 partitions par année », inexact depuis la v5 (11 au total, une par année) ; le
+livret disait le jury invité, alors qu'il ne l'est pas encore ; le guide du jury citait encore `livrable-E1-v3` et
+`livrable-E3-v2`.
+
+**Preuve reçue** : le formateur confirme par écrit, le 03/11 à 11 h 55, qu'il ouvre le tableau Kanban privé depuis son
+compte (C16.4, `evidence/C16/preuve-acces-kanban-formateur-2026-11-03.md`).
+
+**Envoyé au formateur** (03/11, 14 h 42) : la synthèse de veille et le guide d'exploitation en PDF joints, les liens de
+la méthode Kanban et de la documentation technique, le schéma du parcours Question ; preuve datée dans
+`evidence/C8/envoi-documents-formateur-2026-11-03.md`. **Décision d'Era** : les sept critères qui attendaient cet
+envoi (C6.4, C8.5, C16.3, C17.11, C18.6, C19.7, C20.7) passent à ✅ dans les classeurs, qui comptent 119 ✅ · 18 🟡 ·
+0 ❌. **Rien n'est encore envoyé** pour E1 v6.
+
 ## 2026-11-02, nuit : `livrable-E4-v1` posé ; E5 v0.6 prêt pour `livrable-E5-v1`
 
 **Décisions d'Era** : fusion de la PR #174 et tag `livrable-E4-v1` ; statuts d'E5 confirmés (10 ✅, C20.5 et C20.7 ⚠️).
