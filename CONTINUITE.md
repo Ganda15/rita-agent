@@ -214,6 +214,8 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | 30/10 | choisi puis retiré | **Note de l'atelier n°5** écrite après coup et ajoutée au dépôt (`d8680b6`), puis **retirée à la demande d'Era** (`8b700b6`) : sprints et `rita-agent` restent séparés ; seul le périmètre d'E4 décidé ensuite fait entrer les écrans intégrés | E4 (C16) |
 | 30/10 | choisi | **Périmètre d'E4 : cinq écrans, ateliers exclus** ; ordre E4 puis E2 puis E5 ; présentation finale construite sur la convocation (01/12, 11 h 15, visio) | E2, E4, E5, oral |
 | 03/11 | changé | **Budget avec TJM, en trois montants séparés** (dépenses, travail à 400 € la journée, fonctionnement par mois), à la place du budget sans TJM du 28/10 ; la limite C5 présentée avec l'évolution prévue avant le jury et son coût ; livret E1 v6 | E1 (C1, C5) |
+| 03/11 | choisi | **E3 remis en v2.0 (`livrable-E3-v3`), sans v2.1** ; l'erreur 503/403 de la ligne API5 s'explique à l'oral, le code distingue les deux | E3 (C9) |
+| 03/11 | choisi | **Note de mise à jour d'une page pour E2 à E5** (`docs/rapports/note-mise-a-jour-2026-11-03.pdf`), plutôt que de nouvelles versions et de nouveaux tags : huit critères passés à ✅ après les tags, deux erreurs d'E3 (en-tête « formateur et jury invités », 503 au lieu de 403), une phrase d'E4 (§ 1.7 et § 7.3) ; rapports et tags inchangés ; la note s'ajoute à la remise du 05/11 | E2, E3, E4, E5 |
 | 03/11 | choisi | **Remise d'E1 en 10 pages** : livret de 5 pages, couverture et 4 pages d'annexes ; gardée même sans réponse du formateur, sauf consigne écrite qui fixerait 5 pages annexes comprises | E1 (livraison) |
 
 ## G. Questions ouvertes

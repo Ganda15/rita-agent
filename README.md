@@ -37,7 +37,9 @@ Simplon & Wild Code School · Eramalingam GANDAKUMAR · ganda70@gmail.com · 202
 
 *Auto-évaluation d'Era au 03/11, critère par critère, dans les classeurs des compétences : **120 ✅ · 17 🟡 à consolider ·
 0 ❌** sur 137. « À consolider » : la ligne dit ce qui est fait, la preuve disponible et ce qui manque ; les points ouverts
-sont revus avec le formateur à l'examen blanc des 12 et 13 novembre. Chaque rapport tagué garde le décompte du jour de son tag.*
+sont revus avec le formateur à l'examen blanc des 12 et 13 novembre. Chaque rapport tagué garde le décompte du jour de son tag ;
+la [note de mise à jour du 03/11](docs/rapports/note-mise-a-jour-2026-11-03.pdf) (une page) donne les huit critères passés
+à ✅ depuis, et corrige deux erreurs d'E3 et une phrase d'E4, sans réécrire les rapports.*
 
 *Conception des données validée par le formateur le 03/10/2026 : [docs/conception/donnees/](docs/conception/donnees/).
 Tableau tenu à jour à chaque séance ; le détail du jour est dans [`ETAT.md`](ETAT.md), et les lignes à

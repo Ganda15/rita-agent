@@ -9,6 +9,22 @@
 
 ---
 
+## 2026-11-03, soir : note de mise à jour des rapports E2 à E5
+
+**Manque découvert** par une relecture externe des rapports tagués, vérifiée point par point dans le dépôt : E3 annonce
+en en-tête « formateur et jury invités » alors que le jury ne l'est pas (`rapport-E3.md:27`, contredit par la ligne 151),
+et dit « 503 » sans la clé d'exercice là où l'API répond 403 (`api/exercice.py:36-45`) ; une phrase d'E4 (§ 1.7, reprise au § 7.3) dit
+rétrospective la spécification de l'écran Question, versionnée le 15/10 (`e16ec77`), avant l'écran du 16/10 (`98177c2`).
+Les auto-évaluations d'E2, E4 et E5 sont aussi en retard sur huit critères passés à ✅ après leurs tags (C6.2, C6.4,
+C8.5, C16.3, C17.11, C18.6, C19.7, C20.7).
+
+**Décision d'Era** : une note d'une page, datée, à côté des rapports
+([`docs/rapports/note-mise-a-jour-2026-11-03.pdf`](docs/rapports/note-mise-a-jour-2026-11-03.pdf)), plutôt que de
+nouvelles versions à 36 heures de la remise. Chaque correction pointe vers sa preuve, au tag ou au commit ; 12 liens
+vérifiés par `gh api`. Les rapports et leurs tags ne changent pas ; la note s'ajoute aux 9 fichiers de la remise.
+
+---
+
 ## 2026-11-03, après-midi : annexes A et C d'E1 v6 corrigées avant le tag
 
 **Manque découvert** par une relecture des 10 pages : les schémas des annexes A (collecte) et C (nettoyage) disaient encore
