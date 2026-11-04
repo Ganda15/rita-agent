@@ -1,7 +1,7 @@
 """Sprint 2, tâche 3 : le contrôle des secrets dans la chaîne.
 
 Trois garanties, testées sans lancer gitleaks :
-- les règles par défaut de gitleaks sont gardées, et les seules exceptions visent les cinq fausses clés de test du
+- les règles par défaut de gitleaks sont gardées, et les seules exceptions visent les six fausses clés de test du
   dépôt, chacune écrite en entier (aucun motif large qui laisserait passer une vraie clé) ;
 - `.gitleaksignore` ne contient que les deux secrets historiques RÉVOQUÉS de l'incident INC-008, jamais un faux
   positif ;
@@ -29,6 +29,10 @@ FAUSSES_CLES = {
     "cle-de-test-smoke-ui-32-caracteres-x",
     "cle-de-reconstruction-ci-32-caracteres",
     "remplacer-par-une-cle-generee-de-32-octets",
+    # 04/11/2026 : clé périmée simulée de tests/test_commun_ui.py (la page oublie une clé refusée par un 401 ou un 403) ;
+    # les requêtes y sont interceptées par Playwright, aucune n'atteint une API. Signalée par la règle generic-api-key
+    # dans le commit 7b18394 : le travail `secrets` de la PR #179 était rouge.
+    "cle-perimee-0123456789",
 }
 
 
@@ -38,7 +42,7 @@ def _exceptions() -> list[str]:
     return [motif for liste in config["allowlists"] for motif in liste.get("regexes", [])]
 
 
-def test_les_exceptions_ne_visent_que_les_cinq_fausses_cles():
+def test_les_exceptions_ne_visent_que_les_six_fausses_cles():
     motifs = _exceptions()
     assert len(motifs) == len(FAUSSES_CLES)
     for motif in motifs:

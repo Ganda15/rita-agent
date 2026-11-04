@@ -1,6 +1,6 @@
 # Configuration de gitleaks (sprint 2, tâche 3), lue par le travail `secrets` de .github/workflows/livraison.yml.
 #
-# Les règles par défaut de gitleaks sont gardées. Les seules exceptions sont les CINQ fausses clés de test du dépôt,
+# Les règles par défaut de gitleaks sont gardées. Les seules exceptions sont les SIX fausses clés de test du dépôt,
 # chacune écrite en entier et ancrée (^...$) : aucun motif large qui laisserait passer une vraie clé.
 # tests/test_gitleaks_config.py le vérifie, y compris sur des clés tirées au hasard.
 #
@@ -18,6 +18,7 @@ regexes = [
   '''^cle-de-test-smoke-ui-32-caracteres-x$''',        # tests/test_smoke_ui.py : smoke test de l'interface
   '''^cle-de-reconstruction-ci-32-caracteres$''',      # docs/sprint-2/PLAN-TRAVAIL.md, tâche 6 (exemple)
   '''^remplacer-par-une-cle-generee-de-32-octets$''',  # .env.example : valeur à remplacer par chacun
+  '''^cle-perimee-0123456789$''',                      # tests/test_commun_ui.py : clé refusée simulée (04/11/2026)
 ]
 
 # Un faux positif de l'historique : l'étiquette d'une image Docker de la copie du sprint 5 (« rita-api:s5- » suivi des

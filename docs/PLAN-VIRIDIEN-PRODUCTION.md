@@ -18,6 +18,10 @@ l'interface est servie en `no-cache` ; le prompt du rédacteur, l'ordre des four
 L'image est construite par la CI à partir du commit de fusion, publiée sous `ghcr.io/ganda15/rita-api:sha-<fusion>` et
 transmise au serveur par son empreinte `@sha256` ; contrôle : l'arbre du commit de fusion doit être celui du commit relu.
 Le code n'a pas changé depuis la suite complète (2 180 réussis, deux fois, à `6f6e94e`) : seuls quatre documents ont changé.
+Contrôle des secrets : la PR #179 était rouge sur `secrets` (gitleaks, 1 trouvaille) ; c'est un faux positif, la clé périmée
+simulée `cle-perimee-0123456789` de `tests/test_commun_ui.py` (requêtes interceptées par Playwright), ajoutée aux exceptions
+exactes et ancrées de `.gitleaks.toml` selon la convention du dépôt, test d'abord (`tests/test_gitleaks_config.py`, rouge
+puis vert) ; gitleaks rejoué sur tout l'historique comme la CI : 695 commits, aucune fuite. **À valider par Era avec A.**
 
 **Ce qui change en base (B).** Exactement 4 cellules (§ 2.1), répétées sur S1, la vraie copie de la production. Chiffres
 attendus, calculés avec les cours présents en production (ceux du 27/10), jamais avec le total local :
@@ -41,9 +45,14 @@ puis B1 et B2, deux minutes ; puis S2 et les vérifications. Pendant la bascule,
 
 **Le risque pour MCP.** La passerelle MCP n'est pas dans l'image (aucun `COPY` dans le `Dockerfile`) et aucun client MCP
 configuré ne la lance ; chaque appel qu'elle fait à l'API laisse une ligne dans `mcp_calls`, et S1 en compte **0** : elle n'a
-jamais appelé la production. Son jeu attendu est déjà Viridien corrigé sur le poste : une passerelle pointée vers la
-production refuserait `rita_portefeuille`, sans rendre aucune donnée, jusqu'à B2, puis l'accepterait. Risque : une démonstration
-MCP impossible pendant quelques minutes ; aucune fuite.
+jamais appelé la production. A et B ne changent donc rien pour MCP. **Défaut antérieur trouvé le 04/11 en préparant le
+contrôle MCP** : `rita_portefeuille` refuse aussi la base locale déjà corrigée. L'API sert les quantités, prix de revient,
+cours et montants comme des **textes** (des `Decimal` sérialisés par Pydantic 2 : `"quantite":"15.0000"`), et le contrôle
+de cohérence de la passerelle exige des nombres JSON (`_nombre_json`, `passerelle_mcp/serveur.py:156`) ; ses tests lui
+donnent des réponses écrites à la main, en nombres, jamais une vraie réponse de l'API. Le défaut date de la recette #152
+(`c0ce2b9`, 01/11) et il est déjà dans le code de production : avant comme après A et B, `rita_portefeuille` refuse, sans
+rendre aucune donnée (le refus est sûr, pas une fuite). `rita_fraicheur` et `rita_indicateurs` fonctionnent. Le corriger est
+une décision d'Era (§ 4) : un changement de la passerelle seule, hors de l'image, test d'abord.
 
 **Les conditions d'arrêt.** Une case rouge sur la PR : pas de fusion. Arbre du commit de fusion différent de celui relu :
 arrêt. Déploiement en échec : le serveur remet lui-même l'ancienne image ; arrêt, B n'est pas lancé. Après A, `/health` ou
@@ -297,7 +306,11 @@ changement de code (test d'abord), noté comme défaut de monitorage (C20), hors
 5. **Avant A, demandé par la revue** : l'examen complet des 93 fichiers livrés et de leurs changements de comportement, avec
    les contrôles relus sur le commit final ; la fenêtre où la passerelle MCP refuserait la production (entre A et B2) et ce
    qu'on fait si B échoue ; le retour arrière sans perte des données écrites depuis S1 (§ 2.7).
-6. Les scripts de préparation (sauvegarde S1 et S2, vérification des fichiers servis, répétition, comparaison cellule par
+6. **La passerelle MCP** (§ 0) : corriger maintenant son contrôle de types (changement de la passerelle seule, hors image,
+   test d'abord avec une vraie réponse de l'API), ou après la livraison ; sans correction, le contrôle MCP final ne porte que
+   sur `rita_fraicheur` et `rita_indicateurs`, et `rita_portefeuille` reste refusé comme aujourd'hui.
+7. **L'exception gitleaks** de la clé périmée simulée (§ 0), à accepter ou à refuser avec A.
+8. Les scripts de préparation (sauvegarde S1 et S2, vérification des fichiers servis, répétition, comparaison cellule par
    cellule, lecture L3) sont sur le poste, hors du dépôt : les verser dans `scripts/` avec leurs tests, ou les garder comme outils de cette opération.
 
 ## 📖 Glossaire
