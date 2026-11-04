@@ -23,9 +23,10 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ## ▶️ 04/11, NUIT : E4 v1.3 PRÊT À RELIRE (PR #185, BROUILLON) ; DEUX DÉFAUTS DE L'ÉCRAN BRIEFING TROUVÉS EN PRODUCTION
 
-**Prochaine action** : Era relit `docs/rapports/E4/rapport-E4-avec-annexe.pdf` (34 pages : rapport 20, annexe 14), décide
-de C17.3 (✅ gardé ou « à consolider ») et du sigle du MCD ; puis #185 prête, fusion vers `develop`, `develop` vers `main`,
-un seul tag `livrable-E4-v3` ; ensuite les copies OneDrive et le dossier de remise (avec et sans annexes).
+**Prochaine action** : attendre les contrôles verts du dernier commit de #185 ; Era relit le PDF (34 pages : rapport 20,
+annexe 14), passe #185 en prête et la fusionne vers `develop`, puis `develop` vers `main`, un seul tag `livrable-E4-v3` ;
+ensuite les copies OneDrive et le dossier de remise (avec et sans annexes). C17.3 reste ✅ (preuve : 19 tests au clavier
+et 8 cas d'erreur verts en CI sur `8ecc5a7`) ; C17.2 reste « à consolider ».
 
 - **Annexe relue en entier**, texte des images compris : légendes datées du 04/11 (A2 historiques, `autocomplete`,
   garde-fou, 503 ; A4 périmètre du workflow ; A5 contrôle `base` ; A6 commit `12cc00c`), images non retouchées.
@@ -34,8 +35,9 @@ un seul tag `livrable-E4-v3` ; ensuite les copies OneDrive et le dossier de remi
   Question pour Era : « zone neutre de 30 à 70 » (spécification 001, R2) suggère-t-il que les autres zones sont des signaux ?
 - **Défauts trouvés sur l'écran Briefing livré** : l'aide promet « retenue, jamais diffusée » (`frontend/briefing.html`,
   ligne 57) ; les astérisques de mise en forme du modèle s'affichent. À corriger à part, test d'abord, avant l'oral blanc.
-- **Sigle** : le titre du MCD (A1, livret E1) dit « Retrieval Intelligence Trading Assistant », l'interface « pour le
-  Tracking et l'Analyse » ; décision d'Era.
+- **Sigle** : le MCD garde son intitulé historique (« Trading Assistant ») ; la légende d'A1 donne le nom de
+  l'application livrée, « pour le Tracking et l'Analyse ». Le livret E1, déjà tagué, n'est pas modifié.
+- **Réception confirmée** : Elbby a reçu l'envoi du 03/11 et ouvre tous ses liens (`evidence/C8/reponse-formateur-2026-11-04.md`).
 - Aucun statut de critère changé.
 
 ## ▶️ 04/11, 22 H 35 : RATTRAPAGE DES COURS FAIT ET VÉRIFIÉ EN PRODUCTION ; LE 05/11 : REMISE DES CINQ LIVRABLES, OBLIGATOIRE

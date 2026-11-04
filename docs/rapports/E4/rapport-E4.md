@@ -358,8 +358,8 @@ que Kanban n'a pas.
 
 | Statut | Lignes |
 |---|---|
-| envoyé, avec réponse | E1 v1 (début août, relu avant le gel, trois réponses écrites) ; E1 v3 (envoyé le 28/10, accepté selon la réponse sur Discord que j'ai rapportée, capture encore à joindre) |
-| envoyé, réponse attendue | grilles des compétences (28/10) ; E3 v1.9 (29/10) ; méthode, rituels, documentation technique et synthèse de veille (03/11, 14 h 42, [preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/evidence/C8/envoi-documents-formateur-2026-11-03.md)) |
+| envoyé, avec réponse | E1 v1 (début août, relu avant le gel, trois réponses écrites) ; E1 v3 (envoyé le 28/10, accepté selon la réponse sur Discord que j'ai rapportée, capture encore à joindre) ; méthode, rituels, documentation technique et synthèse de veille (envoyés le 03/11, réception et liens confirmés le 04/11, [preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/evidence/C8/reponse-formateur-2026-11-04.md)) |
+| envoyé, réponse attendue | grilles des compétences (28/10) ; E3 v1.9 (29/10) |
 | non envoyé | protocole de veille, conception des indicateurs, note de veille S33 ; E1 v2.6 et E3 v1.5, remplacés par les versions suivantes |
 
 **L'accès des parties prenantes.** Au dépôt : le formateur y a un accès en lecture (compte `bybysker`), vérifié le
@@ -443,8 +443,9 @@ La recette a trouvé trois écarts : le tableau de bord ne posait pas le focus s
 test d'abord) ; des cas d'erreur n'étaient vérifiés que par lecture du code (joués depuis dans un navigateur) ; le
 troisième, « +0,00 % » pour une pire baisse nulle, reste ouvert (§ 4.4). Le
 défaut #73, la clé gardée avant d'avoir servi sur Briefing et Question, est corrigé le 01/11 et en production le
-02/11. Limite : cette recette porte sur l'interface d'avant la refonte ; en production, seuls Portefeuille et
-Indicateurs ont été contrôlés à l'écran, le 04/11 (§ 6.5).
+02/11. Sur la version livrée le 04/11 (`8ecc5a7`), 19 tests au clavier et 8 cas d'erreur passent en CI ([exécution
+41904329461](https://github.com/Ganda15/rita-agent/actions/runs/41904329461/job/126834827998)). Limite : réponses de l'API simulées pour ces scénarios ; pas de recette intégrale des cinq
+écrans en production (§ 6.5).
 
 ### 4.4 Les composants métier et les flux de données (critères 4 et 6)
 
@@ -592,7 +593,7 @@ format contrôlé ([`evidence/C17/controle-accessibilite-readme-2026-11-02.md`](
 - **L'éco-conception** n'a que des mesures historiques, sans mesure « après », sur trois écrans sur cinq.
 - **La documentation** : le format du guide d'exploitation (31/10, PDF de 12 pt et 66 signets), d'[`ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/ARCHITECTURE.md)
   et de [`CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/CI-CD.md) (01/11) et du `README` (02/11) est contrôlé avec des outils ([`evidence/C8/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v3/evidence/C8), [`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v3/evidence/C17)) ; ce
-  n'est pas un audit complet. Envoyés au formateur le 03/11, ils attendent son accusé de réception.
+  n'est pas un audit complet. Envoyés au formateur le 03/11 ; réception et liens confirmés par Elbby le 04/11 ([preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/evidence/C8/reponse-formateur-2026-11-04.md)).
 
 ## 5. Automatiser les tests (C18) {: #c18 }
 
@@ -749,7 +750,8 @@ visible) → s'il tape un code inconnu, il lit un message qui dit pourquoi (la g
 
 ### 7.2 Ce qui se prépare avant l'oral
 
-- **Rattraper les cours de production à la main** ([`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/exploitation.md), procédure du 27/10) : la collecte n'est pas planifiée.
+- **Vérifier la date des cours** ; s'ils sont anciens, utiliser les captures datées : la collecte n'est pas planifiée, et le
+  script du rattrapage est à renforcer avant toute réutilisation (§ 6.5).
 - **Vérifier `/health`** : la version servie et l'index annoncés.
 - **Captures de secours datées** pour chaque étape en direct : Portefeuille, Indicateurs et le briefing AIR.PA
   existent (A7) ; restent le code inconnu, Question, Tableau de bord et la chaîne. Si le direct échoue, je passe à la capture.
@@ -787,11 +789,11 @@ mais une partie du critère manque, écrite dans la colonne « Limite restante �
 | **C15.5** Conclusion de la preuve de concept donnant un avis précis | ✅ | « Poursuivre », [`evidence/C15/preuve-preproduction-docker.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/evidence/C15/preuve-preproduction-docker.md) | avis antérieur à la mise en production | 2.6 |
 | **C16.1** Cycles, étapes, rôles, rituels et outils de la méthode respectés tout au long du projet | 🟡 | méthode écrite ; cycles réels datés | suivi interrompu après le 14/10 ; revues sans compte rendu ; agile seulement depuis le 26/09 | 3.2, 3.6 |
 | **C16.2** Outils de pilotage disponibles (kanban, burndown, backlog) | ✅ | tableau Kanban, backlog d'issues, plans de travail ; burndown écarté et expliqué | tableau non tenu après le 14/10 | 3.3 |
-| **C16.3** Objectifs et modalités des rituels partagés aux parties prenantes | ✅ | méthode dans le dépôt, file de validation ; section des rituels envoyée au formateur le 03/11 ([preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/evidence/C8/envoi-documents-formateur-2026-11-03.md)) | partage surtout documentaire ; accusé de réception demandé | 3.4 |
+| **C16.3** Objectifs et modalités des rituels partagés aux parties prenantes | ✅ | méthode dans le dépôt, file de validation ; section des rituels envoyée au formateur le 03/11 ([preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/evidence/C8/envoi-documents-formateur-2026-11-03.md)) | partage surtout documentaire ; réception et liens confirmés par Elbby, 04/11 | 3.4 |
 | **C16.4** Éléments de pilotage accessibles à toutes les parties tout au long du projet | 🟡 | dépôt en lecture pour le formateur (vérifié le 30/10) | accès au tableau non revérifié ; jury pas encore invité | 3.4 |
 | **C17.1** Environnement de développement conforme aux spécifications | ✅ | environnement prévu ([`evidence/C15/preuve-specifications-techniques.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/evidence/C15/preuve-specifications-techniques.md)) et installé, rapprochés le 01/11 : Windows 11, Python 3.14.6, PostgreSQL 18.4 sur le port 5433 ; Python 3.13 en CI ([`test.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/.github/workflows/test.yml)) | [`requirements.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/requirements.txt) et trois paquets de CI sans version : limite de reproductibilité | 4.2 |
 | **C17.2** Interfaces intégrées et conformes aux maquettes | 🟡 | cinq écrans intégrés ; refonte d'après maquettes (04/11) | comparaison visuelle partielle (A7) ; deux écrans sans maquette | 4.3 |
-| **C17.3** Comportements des composants et navigation conformes | ✅ | recette du 02/11 : 54 tests en navigateur, dont 14 au clavier, et 8 cas d'erreur ; #73 déployé | recette sur l'ancienne interface, API simulée ; 375 px, pas 320 ; deux écrans contrôlés en production | 4.3 |
+| **C17.3** Comportements des composants et navigation conformes | ✅ | recette initiale du 02/11 (54 tests en navigateur) ; sur `8ecc5a7` (04/11), 19 tests au clavier et 8 cas d'erreur verts en CI ; #73 déployé | API simulée ; 375 px, pas 320 ; pas de recette des cinq écrans en production | 4.3 |
 | **C17.4** Composants métier conformes aux spécifications | ✅ | composants testés ; #78 et #79 déployés ; 111 valeurs vérifiées | « +0,00 % » affiché pour un zéro ; valeurs vérifiées en local | 4.4 |
 | **C17.5** Gestion des droits d'accès développée et conforme | 🟡 | clé sur les routeurs, journal des refus, quota partagé | rôle propriétaire (#76) ; `/docs` public | 4.5 |
 | **C17.6** Flux de données intégrés | ✅ | briefing ([`evidence/C10/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v3/evidence/C10), 03/10) ; Question : évaluation en production du 16/10 sur `72dba4d` ([`evidence/sprint-3/evaluation-production-2026-10-16-relecture.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/evidence/sprint-3/evaluation-production-2026-10-16-relecture.md)) et tests | preuves antérieures à la version de référence | 4.4 |
@@ -799,20 +801,20 @@ mais une partie du critère manque, écrite dans la colonne « Limite restante �
 | **C17.8** Préconisations OWASP Top 10 implémentées | 🟡 | revue S1 à S10 ; S4 et S5 corrigés, S3 et S7 en partie | S1, S2, S6, S8, S9 ouverts | 4.6 |
 | **C17.9** Tests couvrant composants métier et gestion des accès | ✅ | les tests des composants métier et des accès API ont été exécutés avec succès (1 925 réussis, couverture 96,32 %, 02/11) ; les 4 tests du rôle en lecture seule passent dans le job `base` | 22 tests ignorés ; couverture sans interface, `rag/`, `monitorage/`, MCP | 4.8 |
 | **C17.10** Sources versionnées et accessibles sur un dépôt distant | ✅ | dépôt GitHub privé, 21 tags `livrable-*` protégés | jury pas encore invité | 4.9 |
-| **C17.11** Documentation technique : installation, architecture, dépendances, tests, accessible | ✅ | [`docs/ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/ARCHITECTURE.md), [`README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/README.md), [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/CI-CD.md), [`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/exploitation.md) ; format contrôlé pour le guide (31/10), [`ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/ARCHITECTURE.md) et [`CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/CI-CD.md) (01/11), [`README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/README.md) (02/11, [`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v3/evidence/C17)) ; envoyée au formateur le 03/11 | accusé de réception demandé | 4.9 |
+| **C17.11** Documentation technique : installation, architecture, dépendances, tests, accessible | ✅ | [`docs/ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/ARCHITECTURE.md), [`README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/README.md), [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/CI-CD.md), [`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/exploitation.md) ; format contrôlé pour le guide (31/10), [`ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/ARCHITECTURE.md) et [`CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/CI-CD.md) (01/11), [`README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/README.md) (02/11, [`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v3/evidence/C17)) ; envoyée au formateur le 03/11 | réception et liens confirmés par Elbby, 04/11 | 4.9 |
 | **C18.1** Documentation de la chaîne : outils, étapes, tâches, déclencheurs | ✅ | [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/CI-CD.md), § 2 et § 3 | | 5.5 |
 | **C18.2** Outil d'intégration continue cohérent avec l'environnement | ✅ | GitHub Actions, machine et Python fixés | | 5.1, 5.2 |
 | **C18.3** Étapes préalables aux tests intégrées (build, configuration) | ✅ | installation, navigateur, tests des données d'abord | | 5.2 |
 | **C18.4** La chaîne exécute les tests au déclenchement | ✅ | [`test.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/.github/workflows/test.yml) ; sept contrôles exigés avant toute fusion, dont la base jetable | | 5.3 |
 | **C18.5** Configurations versionnées sur le dépôt distant | ✅ | sept workflows, [`ruff.toml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/ruff.toml), [`.coveragerc`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/.coveragerc) | | 5.4 |
-| **C18.6** Documentation d'installation, configuration et test de la chaîne, format accessible | ✅ | [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/CI-CD.md), § 4 à § 7 ; format contrôlé le 01/11 ([`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v3/evidence/C17)) ; lien envoyé au formateur le 03/11 | accusé de réception demandé | 5.5 |
+| **C18.6** Documentation d'installation, configuration et test de la chaîne, format accessible | ✅ | [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/CI-CD.md), § 4 à § 7 ; format contrôlé le 01/11 ([`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v3/evidence/C17)) ; lien envoyé au formateur le 03/11 | réception et liens confirmés par Elbby, 04/11 | 5.5 |
 | **C19.1** Documentation : étapes, tâches, déclencheurs | ✅ | [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/CI-CD.md), § 3 | | 6.1 |
 | **C19.2** Fichiers de configuration reconnus et exécutés | ✅ | [`livraison.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/.github/workflows/livraison.yml) ; exécutions vertes sur `main`, `develop` et les tags | | 6.2 |
 | **C19.3** Packaging intégré et sans erreur | ✅ | image construite et vérifiée à chaque exécution | | 6.1, 6.2 |
 | **C19.4** Livraison exécutée une fois le packaging validé | ✅ | `needs:` et `if:` de [`livraison.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/.github/workflows/livraison.yml) ; refus de la porte le 21/10 | un tag reconstruit l'image | 6.2, 6.4 |
 | **C19.5** Sources de la chaîne versionnées sur le dépôt distant | ✅ | workflows, [`deploy/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v3/deploy), règles GitHub | | 6.3 |
 | **C19.6** Documentation : installation, configuration et test de la chaîne de livraison | ✅ | [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/CI-CD.md), § 5 (installation) et § 6 (huit vérifications, dont la publication d'un tag) | vérification d'un tag écrite le 01/11, sur l'exécution du 27/10 de `livrable-E3-v2` (40490834495) | 6.1 |
-| **C19.7** Documentation communiquée, format accessible | ✅ | format de [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/CI-CD.md) contrôlé le 01/11 ([`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v3/evidence/C17)) ; lien envoyé au formateur le 03/11 | accusé de réception demandé | 6.1 |
+| **C19.7** Documentation communiquée, format accessible | ✅ | format de [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/CI-CD.md) contrôlé le 01/11 ([`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v3/evidence/C17)) ; lien envoyé au formateur le 03/11 | réception et liens confirmés par Elbby, 04/11 | 6.1 |
 
 **Total : 31 ✅, 7 🟡, 0 ❌.**
 

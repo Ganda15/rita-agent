@@ -78,7 +78,8 @@ comparés à leurs maquettes en A7, sur des captures de production.
 **MCD au formalisme Merise**, revu le 02/11/2026, mise en forme du 03/11, texte inchangé (original : [`evidence/C4/MCD-MERISE-RITA-2026-11-02.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/evidence/C4/MCD-MERISE-RITA-2026-11-02.png)) : 6 entités et 6
 associations, le même modèle que dans le livret E1 v6. Une valeur peut exister sans cotation (`VALEUR 0,n`), comme
 dans la base ; un test le vérifie ([`tests/test_mcd_c4.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/tests/test_mcd_c4.py)). Celui du 01/08 est gardé ([`evidence/C4/MCD-MERISE-RITA.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/evidence/C4/MCD-MERISE-RITA.png)). **Limite** : la table `article`, qui porte les
-données de l'écran Question, n'y figure pas (choix du 11/08 ; rapport, § 1.4 et critère C14.1).
+données de l'écran Question, n'y figure pas (choix du 11/08 ; rapport, § 1.4 et critère C14.1). Le schéma conserve son
+intitulé historique ; dans l'application livrée, RITA signifie « Retrieval Intelligence pour le Tracking et l'Analyse ».
 
 ## A2. Les wireframes historiques des trois premiers écrans, avant la refonte (C14, C17) {: #a2 }
 
