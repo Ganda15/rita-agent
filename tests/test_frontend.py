@@ -52,7 +52,7 @@ def test_la_racine_sert_la_page(client):
     reponse = client.get("/")
     assert reponse.status_code == 200
     assert "text/html" in reponse.headers["content-type"]
-    assert "RITA — Mon portefeuille" in reponse.text
+    assert "RITA : Mon portefeuille" in reponse.text   # refonte 001 : titre sans tiret long
 
 
 @pytest.mark.parametrize("fichier", ["style.css", "app.js"])
@@ -197,14 +197,18 @@ def test_la_zone_qui_defile_est_atteignable_au_clavier():
 def test_le_signe_est_toujours_affiche_sur_les_indicateurs():
     """RGAA 3.1 : l'information n'est jamais portée par la seule couleur.
     Une performance négative doit se lire au signe, pas à la teinte."""
-    assert 'signDisplay: "always"' in code_sans_commentaires("indicateurs.js")
+    # Refonte 001 (tâche 8) : le signe est écrit avec la flèche (« ▲ + », « ▼ - ») ; le rendu est vérifié dans un vrai
+    # navigateur (tests/test_indicateurs_ui.py::test_carte_des_performances_lisible_sans_couleur).
+    code = code_sans_commentaires("indicateurs.js")
+    assert '"▲ +"' in code and '"▼ -"' in code
 
 
 def test_une_valeur_absente_devient_un_tiret_et_non_un_zero():
     """`null` signifie « pas calculable » ; `0` signifierait « aucune variation ».
     Afficher 0 à la place d'un tiret ferait lire une performance nulle inexistante."""
     code = code_sans_commentaires("indicateurs.js")
-    assert 'return n === null ? "—"' in code or "n === null ? \"—\"" in code
+    # Refonte 001 (tâche 8) : le tiret est « – » (tiret simple ; le tiret long est banni des textes du projet).
+    assert 'n === null ? "–"' in code
 
 
 def test_la_peremption_est_signalee_en_texte_pas_seulement_en_couleur():
@@ -286,7 +290,8 @@ def test_aucun_seuil_de_concentration_n_est_affiche():
 
 def test_les_3_colonnes_du_lot_3_existent():
     html = (FRONTEND / "indicateurs.html").read_text(encoding="utf-8")
-    for colonne in ("Volatilité (1 an)", "Pire baisse (1 an)", "RSI 14"):
+    # 04/11/2026 : « annualisée (20 séances) », la fenêtre réelle de db/indicateurs_risque.sql, et non plus « (1 an) ».
+    for colonne in ("Volatilité annualisée (20 séances)", "Pire baisse (1 an)", "RSI 14"):
         assert f'<th scope="col">{colonne}</th>' in html
 
 
@@ -316,7 +321,7 @@ def test_la_volatilite_s_affiche_sans_signe():
     """Une volatilité est une amplitude, toujours ≥ 0 — jamais « +22,14 % »,
     qui suggérerait une variation."""
     code = code_sans_commentaires("indicateurs.js")
-    assert "formatPourcentSansSigne" in code
+    assert "function pourcentSansSigne" in code   # refonte 001 (tâche 8) : renommée, même règle
 
 
 def test_le_rsi_n_est_pas_affiche_pour_une_valeur_perimee():
@@ -450,9 +455,10 @@ def test_les_trois_ecrans_se_relient(client):
 
 
 def test_l_ecran_briefing_appelle_le_point_de_terminaison_du_modele_en_post_avec_la_cle():
+    # Refonte 001 (tâche 7) : l'appel passe par RITA.appeler (commun.js, tâche 5), qui pose l'en-tête de la clé.
     assert '"/briefing"' in BRIEFING_JS
-    assert 'method: "POST"' in BRIEFING_JS
-    assert '"X-API-Key"' in BRIEFING_JS
+    assert "RITA.appeler" in BRIEFING_JS and 'methode: "POST"' in BRIEFING_JS
+    assert '"X-API-Key"' in code_sans_commentaires("commun.js")
 
 
 def test_aucune_cle_d_api_dans_le_code_de_l_ecran_briefing():
@@ -490,7 +496,12 @@ def test_le_verdict_du_garde_fou_est_dit_en_texte_pas_seulement_en_couleur():
 def test_un_ticker_inconnu_est_dit_en_clair_et_une_cle_refusee_est_oubliee():
     code = code_sans_commentaires("briefing.js")
     assert "502" in code and "introuvable" in code
-    assert "403" in code and "sessionStorage.removeItem" in code
+    # Refonte 001 (tâche 7) : sur 401 ou 403, RITA.appeler oublie la clé (commun.js) ; l'écran la redemande.
+    assert "403" in code and "demanderCle" in code
+    commun = code_sans_commentaires("commun.js")
+    assert "reponse.status === 403" in commun and "oublierCle()" in commun
+    # Le 502 ne veut plus dire « aucun fournisseur » : c'est le 503 (tâche 3).
+    assert "503" in code and "Aucun fournisseur de modèle n'a répondu" in code
 
 
 def test_le_texte_du_modele_est_rendu_en_paragraphes_sans_html():

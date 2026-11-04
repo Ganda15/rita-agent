@@ -9,6 +9,7 @@ Scout ne le rendait plus).
 from unittest.mock import patch
 
 from graph.workflow import generer_briefing_complet
+from tests.conftest import faux_resultat_texte
 
 
 def scout_lvmh(**surcharges):
@@ -26,7 +27,7 @@ def scout_lvmh(**surcharges):
 
 def test_graphe_complet_scout_puis_redacteur():
     with patch("graph.workflow.collect", return_value=scout_lvmh()), \
-         patch("graph.workflow.generate_briefing", return_value="Briefing test.") as redacteur:
+         patch("graph.workflow.generate_briefing_detaille", return_value=faux_resultat_texte("Briefing test.")) as redacteur:
         resultat = generer_briefing_complet("MC.PA")
 
     assert resultat["briefing"] == "Briefing test."
@@ -41,7 +42,7 @@ def test_le_redacteur_recoit_adtv20_et_jamais_un_champ_volume():
     test ne le signale.
     """
     with patch("graph.workflow.collect", return_value=scout_lvmh()), \
-         patch("graph.workflow.generate_briefing", return_value="x") as redacteur:
+         patch("graph.workflow.generate_briefing_detaille", return_value=faux_resultat_texte("x")) as redacteur:
         resultat = generer_briefing_complet("MC.PA")
 
     assert "volume" not in resultat
@@ -53,7 +54,7 @@ def test_le_redacteur_est_prevenu_dune_cotation_perimee():
     """Une cotation de 2018 ne doit pas être rédigée comme celle d'hier."""
     with patch("graph.workflow.collect",
                return_value=scout_lvmh(fraicheur_jours=2000, cotation_perimee=True)), \
-         patch("graph.workflow.generate_briefing", return_value="x") as redacteur:
+         patch("graph.workflow.generate_briefing_detaille", return_value=faux_resultat_texte("x")) as redacteur:
         generer_briefing_complet("MC.PA")
 
     assert redacteur.call_args.kwargs["cotation_perimee"] is True
@@ -65,7 +66,7 @@ def test_graphe_saute_le_redacteur_si_erreur_scout():
                         currency="", indicateurs={},
                         error="ticker absent de la base : XXX.PA")
     with patch("graph.workflow.collect", return_value=erreur), \
-         patch("graph.workflow.generate_briefing") as redacteur:
+         patch("graph.workflow.generate_briefing_detaille") as redacteur:
         resultat = generer_briefing_complet("XXX.PA")
 
     assert resultat["briefing"] == ""
@@ -99,7 +100,7 @@ def test_le_noeud_rag_filtre_par_ticker_avant_de_chercher():
     mieux qu'une similarité. Le ticker est connu — on ne cherche que dedans."""
     with patch("graph.workflow.collect", return_value=scout_lvmh()), \
          patch("graph.workflow.rechercher", return_value=resultat_rag()) as moteur, \
-         patch("graph.workflow.generate_briefing", return_value="x"):
+         patch("graph.workflow.generate_briefing_detaille", return_value=faux_resultat_texte("x")):
         generer_briefing_complet("MC.PA")
 
     assert moteur.call_args.kwargs["ticker"] == "MC.PA"
@@ -108,7 +109,7 @@ def test_le_noeud_rag_filtre_par_ticker_avant_de_chercher():
 def test_les_passages_trouves_arrivent_dans_letat():
     with patch("graph.workflow.collect", return_value=scout_lvmh()), \
          patch("graph.workflow.rechercher", return_value=resultat_rag()), \
-         patch("graph.workflow.generate_briefing", return_value="x"):
+         patch("graph.workflow.generate_briefing_detaille", return_value=faux_resultat_texte("x")):
         resultat = generer_briefing_complet("MC.PA")
 
     assert resultat["motif_rag"] == "OK"
@@ -126,7 +127,7 @@ def test_un_refus_out_of_corpus_ne_bloque_pas_le_briefing():
     with patch("graph.workflow.collect", return_value=scout_lvmh()), \
          patch("graph.workflow.rechercher",
                return_value=resultat_rag(trouve=False, motif="OUT_OF_CORPUS", passages=[])), \
-         patch("graph.workflow.generate_briefing", return_value="Briefing sans article."):
+         patch("graph.workflow.generate_briefing_detaille", return_value=faux_resultat_texte("Briefing sans article.")):
         resultat = generer_briefing_complet("MC.PA")
 
     assert resultat["briefing"] == "Briefing sans article."
@@ -144,7 +145,7 @@ def test_le_rag_nest_jamais_appele_si_le_ticker_est_absent_de_la_base():
     erreur = scout_lvmh(ticker="TTE.PA", error="ticker absent de la base : TTE.PA")
     with patch("graph.workflow.collect", return_value=erreur), \
          patch("graph.workflow.rechercher") as moteur, \
-         patch("graph.workflow.generate_briefing") as redacteur:
+         patch("graph.workflow.generate_briefing_detaille") as redacteur:
         resultat = generer_briefing_complet("TTE.PA")
 
     moteur.assert_not_called()
@@ -160,7 +161,7 @@ def test_le_redacteur_recoit_les_passages_trouves_par_le_rag():
     """
     with patch("graph.workflow.collect", return_value=scout_lvmh()), \
          patch("graph.workflow.rechercher", return_value=resultat_rag()), \
-         patch("graph.workflow.generate_briefing", return_value="x") as redacteur:
+         patch("graph.workflow.generate_briefing_detaille", return_value=faux_resultat_texte("x")) as redacteur:
         generer_briefing_complet("MC.PA")
 
     passages = redacteur.call_args.kwargs["passages"]
@@ -185,7 +186,7 @@ def test_la_question_du_rag_utilise_le_nom_court_pas_la_raison_sociale():
     lvmh = scout_lvmh(indicateurs={"nom_officiel": "LVMH MOET VUITTON"})
     with patch("graph.workflow.collect", return_value=lvmh), \
          patch("graph.workflow.rechercher", return_value=resultat_rag()) as moteur, \
-         patch("graph.workflow.generate_briefing", return_value="x"):
+         patch("graph.workflow.generate_briefing_detaille", return_value=faux_resultat_texte("x")):
         generer_briefing_complet("MC.PA")
 
     question = moteur.call_args[0][0]
@@ -197,6 +198,39 @@ def test_la_question_du_rag_utilise_le_nom_court_pas_la_raison_sociale():
 def test_le_redacteur_recoit_les_indicateurs_du_scout():
     """Les 13 indicateurs calculés par le scout vont jusqu'au rédacteur, pas seulement quatre nombres."""
     indicateurs = {"ma20": 404.9, "rsi_14": 38.4, "volatilite_annualisee_pct": 22.5}
-    with patch("graph.workflow.collect", return_value=scout_lvmh(indicateurs=indicateurs)),          patch("graph.workflow.generate_briefing", return_value="x") as redacteur:
+    with patch("graph.workflow.collect", return_value=scout_lvmh(indicateurs=indicateurs)),          patch("graph.workflow.generate_briefing_detaille", return_value=faux_resultat_texte("x")) as redacteur:
         generer_briefing_complet("MC.PA")
     assert redacteur.call_args.kwargs["indicateurs"] == indicateurs
+
+
+
+# --- Refonte 001, tâche 2 (exigence R4) : le graphe garde qui a rédigé --------------------------------
+
+def test_redacteur_range_le_diagnostic_dans_l_etat():
+    """L'écran du briefing affichera le fournisseur, le modèle et les tentatives : le graphe les garde dans l'état,
+    sous `modele_info`, tels que la cascade les a rendus (`src.llm.ResultatTexte`)."""
+    from src.llm import ResultatTexte
+    redaction = ResultatTexte(texte="Briefing test.", fournisseur="anthropic", modele="claude-sonnet-5",
+                              tentatives=[{"fournisseur": "foundry", "reussi": False},
+                                          {"fournisseur": "anthropic", "reussi": True}])
+    with patch("graph.workflow.collect", return_value=scout_lvmh()), \
+         patch("graph.workflow.rechercher", return_value=resultat_rag(passages=[])), \
+         patch("graph.workflow.generate_briefing_detaille", return_value=redaction):
+        resultat = generer_briefing_complet("MC.PA")
+
+    assert resultat["briefing"] == "Briefing test."
+    assert resultat["modele_info"] == {"fournisseur": "anthropic", "modele": "claude-sonnet-5",
+                                       "tentatives": [{"fournisseur": "foundry", "reussi": False},
+                                                      {"fournisseur": "anthropic", "reussi": True}]}
+
+
+def test_redacteur_saute_laisse_un_diagnostic_vide():
+    """Une valeur absente : le rédacteur n'est pas appelé, il n'y a donc personne à nommer."""
+    erreur = scout_lvmh(ticker="XXX.PA", price=0.0, change_pct=0.0, adtv20=None,
+                        currency="", indicateurs={}, error="ticker absent de la base : XXX.PA")
+    with patch("graph.workflow.collect", return_value=erreur), \
+         patch("graph.workflow.generate_briefing_detaille") as redacteur:
+        resultat = generer_briefing_complet("XXX.PA")
+
+    redacteur.assert_not_called()
+    assert resultat["modele_info"] == {}

@@ -30,8 +30,21 @@ un `graphiques.js` de fonctions pures qui fabriquent du SVG, et trois écrans r�
 - **Clé** : `sessionStorage`, clé de stockage `rita_api_key`, jamais `localStorage`, jamais écrite dans le code ; gardée
   seulement après une réponse réussie, effacée sur 401 ou 403 (correctif #73, à préserver).
 - **Aucune ressource tierce** : pas de CDN, pas de police distante, pas de bibliothèque de graphiques.
-- **Couleurs** des écrans (style A) : Portefeuille `#1e7b45`, Indicateurs `#3f3fa8`, Briefing `#a35a00` ; Question et
-  Tableau de bord gardent leur couleur actuelle (`--accent #12507a`). Si Lighthouse signale un contraste, foncer la teinte.
+- **Couleurs** des écrans, **deux thèmes** (décision d'Era du 04/11 après-midi : style B sombre par défaut, style A clair
+  au choix). Thème clair : Portefeuille `#1e7b45`, Indicateurs `#3f3fa8`, Briefing `#a35a00`, Question et Tableau de bord
+  `#12507a`. Thème sombre : `#4ccb8a`, `#a5a8ff`, `#f2a93b`, `#6cb8ea`, sur des cartes `#0f2643` ; le fond est un
+  **dégradé CSS** du bleu nuit `#061527` au bleu `#14507f` (couverture du livret E1, demande d'Era du 04/11 au soir),
+  sans image ; textes éclaircis (`#f5f8fc`, `#c5d3e4`) pour être plus lisibles.
+- **Logo** : la marque officielle de RITA dans l'en-tête des cinq pages, réduite à 64 px (environ 3 Ko), carré blanc
+  sur le sombre, carré bleu nuit sur le clair, en image de fond (une seule version téléchargée) ; la version bleu nuit
+  sert d'icône d'onglet, ce qui supprime le 404 de `favicon.ico` (constat F3 du 03/10).
+  Chaque paire texte et fond est calculée par un test, dans les deux thèmes, contre le seuil de 4,5:1.
+- **Thème** : `<html data-theme="clair">` pour le clair, rien pour le sombre ; `theme.js`, chargé dans `<head>`
+  avant l'affichage, lit le choix dans `sessionStorage` (`rita_theme`), jamais dans `localStorage` ; sans JavaScript,
+  le site s'affiche en sombre et le bouton reste caché.
+- **Polices** (demande d'Era du 04/11) : déjà installées, aucune téléchargée, aucun `@font-face` : `--police-texte`
+  (Segoe UI Variable Text, SF Pro Text), `--police-titres` (Segoe UI Variable Display, SF Pro Display),
+  `--police-chiffres` (Cascadia Mono, SF Mono), chacune finie par une famille générique.
 - **Rien par la couleur seule** : chiffres signés, flèches ▲ ▼, légendes ; chaque graphique a une alternative en chiffres.
 - **Écriture** : français, aucun tiret long (le tiret cadratin), dans le code comme dans les textes.
 
@@ -139,7 +152,7 @@ un `graphiques.js` de fonctions pures qui fabriquent du SVG, et trois écrans r�
 - [ ] Code, puis `pytest tests/test_briefing_diagnostic.py tests/test_briefing_422.py tests/test_api_donnees.py tests/test_request_id.py -q` vert, puis la suite complète.
 - [ ] Commit.
 
-## Tâche 4 : un en-tête identique dans les cinq pages, et le style A (R5)
+## Tâche 4 : un en-tête identique dans les cinq pages, et les deux thèmes (R5)
 
 **Fichiers** : modifier les cinq `frontend/*.html` (bloc `<header>`), `frontend/style.css` ; tests `tests/test_entete_commun.py`
 (nouveau), `tests/test_frontend.py`, `tests/test_tableau_de_bord.py`.
@@ -149,11 +162,14 @@ un `graphiques.js` de fonctions pures qui fabriquent du SVG, et trois écrans r�
   navigation vers les cinq écrans, l'écran courant en `aria-current="page"` ; aujourd'hui Indicateurs et Briefing n'ont
   pas le lien Question, et Tableau de bord n'a pas l'avertissement AMF : les deux écarts sont corrigés ;
 - `body` porte `data-ecran="portefeuille|indicateurs|briefing|question|tableau-de-bord"` ; `style.css` définit
-  `--couleur-ecran` par écran (couleurs des contraintes globales), cartes blanches sur fond clair, focus visible,
+  `--couleur-ecran` par écran (couleurs des contraintes globales), dans les deux thèmes, focus visible,
   `prefers-reduced-motion`.
 
 - [ ] Tests rouges : `test_les_cinq_entetes_sont_identiques_hors_page_courante` ; `test_chaque_page_a_les_cinq_liens` ;
       `test_chaque_page_a_l_avertissement_amf` ; `test_une_couleur_par_ecran_refait` ;
+      `test_contrastes_des_deux_themes` (chaque paire texte et fond, clair et sombre, au moins 4,5:1) ;
+      `test_theme_sombre_par_defaut_et_bouton_cache_sans_javascript` ; `test_le_theme_n_utilise_jamais_localstorage` ;
+      dans un vrai navigateur, `test_bascule_du_theme_suit_la_navigation` (le choix tient sur les cinq écrans) ;
       `test_aucun_chargement_tiers` (aucun script, feuille de style, police, image, `iframe`, `@import` ni `url()` vers
       un autre site ; les liens `<a href>` en `http(s)` vers les sources restent permis).
 - [ ] Code, puis `pytest tests/test_entete_commun.py tests/test_frontend.py tests/test_tableau_de_bord.py -q`, et les tests
@@ -178,6 +194,17 @@ simulation, `question.js` et `tableau-de-bord.js` s'arrêtent dès leur démarra
 l'envoi du formulaire neutralisé (clavier compris), la mention « Simulation non disponible pour cet écran » et un
 bouton « Quitter la simulation » (décision D1).
 
+Précisé le 04/11 au soir, avant le code (le plan ne disait pas où se fait le choix explicite) :
+- le **choix explicite** est un bouton « Mode simulation » de l'en-tête commun, à côté de « Thème clair » (`aria-pressed`,
+  caché sans JavaScript) ; changer de mode **recharge la page**, ce qui efface les résultats affichés dans les deux sens ;
+- **deuxième barrière** : en simulation, `commun.js` refuse tout appel vers une route de RITA (`/briefing`, `/question`,
+  `/donnees`, `/sante`, `/health`, `/audit`, `/exercice`) ; les fichiers statiques et le futur jeu d'exemple restent permis ;
+- jusqu'à la tâche 10, les **cinq** écrans se suspendent en simulation (aucun n'a encore de données d'exemple) : à chaque
+  commit, aucune donnée réelle sous la mention « Simulation » ;
+- **cache** (trouvé en vérifiant dans le navigateur) : sans `Cache-Control`, Chrome gardait l'ancien `tableau-de-bord.js` à
+  côté du nouveau `commun.js`, et la page montrait le vrai tableau sous la mention ; l'interface est désormais servie avec
+  `Cache-Control: no-cache` (revalidée à chaque visite, 304 sans corps si rien n'a changé) ; test `tests/test_cache_frontend.py`.
+
 - [ ] Tests rouges : `test_cle_gardee_seulement_apres_succes` ; `test_cle_oubliee_sur_403` ;
       `test_mention_simulation_visible_sur_chaque_ecran` ; `test_mode_reel_par_defaut` ;
       `test_question_et_tableau_suspendus_en_simulation` (aucune requête vers `/question`, `/sante`, `/health`,
@@ -191,7 +218,8 @@ bouton « Quitter la simulation » (décision D1).
 **Fichiers** : créer `frontend/graphiques.js` ; tests `tests/test_graphiques_ui.py` (nouveau, Playwright `page.evaluate`).
 
 **Interfaces produites** (globales `window.GRAPHIQUES`), chacune renvoie `{svg: SVGElement, alternative: HTMLElement}` :
-`courbe(seances: {date, cloture}[])` avec moyennes 20 et 50 séances ; `anneau(poids: {nom, poids_pct}[])` ;
+`courbe(cotations: {date_seance, cloture}[])` avec moyennes 20 et 50 séances (les noms de champs de l'API ; `cloture` arrive
+en texte décimal, « 401.5000 », mesuré le 04/11, et `lireNombre` le convertit, tout autre texte étant écarté) ; `anneau(poids: {nom, poids_pct}[])` ;
 `barres(lignes: {nom, performance_pct}[])` ; `jauge(rsi: number)` ; plus `moyenneMobile(valeurs: number[], n) -> (number|null)[]`,
 **seul calcul fait par l'écran** (exception écrite dans la spécification, § 5) : le serveur fournit les dernières valeurs
 de MA20 et MA50 (`db/indicateurs.sql:95-107`, `/donnees/indicateurs`) ; pour tracer leurs courbes historiques, le
@@ -279,6 +307,12 @@ jour `docs/ARCHITECTURE.md`, `docs/exploitation.md`, `docs/conception/frontend/r
       refus et les pannes, par pannes injectées sur une copie du même commit ou par interception déclarée ; **aucune
       panne réelle provoquée en production** ; la preuve sépare les deux sortes de contrôles.
 - [ ] Tester le retour à la version précédente (`retour-arriere.yml`), puis revenir à la nouvelle.
+- [ ] Après le déploiement, recharger une fois sans cache (Ctrl+F5) dans le navigateur de la démonstration, par prudence.
+      Ce n'est plus la protection : depuis le 04/11 au soir (`scripts/versionner_interface.py`, `tests/test_mise_a_jour_cache_ui.py`)
+      chaque script et feuille de style porte la version de son contenu dans son adresse, donc un navigateur qui a gardé
+      l'ancien `indicateurs.js` ne peut plus le mélanger avec la page neuve. Avant de pousser : relancer le script de version.
+      Vérifier aussi que le serveur de production répond `Cache-Control: no-cache` (`curl -sI`), un ancien processus n'en
+      envoie pas (constaté le 04/11 sur le serveur local du port 8000, démarré avant la tâche 5).
 - [ ] Enregistrer une démonstration datée de secours ; noter le tout dans la preuve datée de la tâche 11.
 
 ---

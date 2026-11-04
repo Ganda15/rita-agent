@@ -3,27 +3,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>RITA — Briefing</title>
-  <link rel="stylesheet" href="style.css">
+  <title>RITA : Briefing</title>
+  <link rel="stylesheet" href="style.css?v=d0e888a819">
+  <link rel="icon" type="image/png" href="logo-rita-clair.png">
+  <script src="theme.js?v=32a0dab24c"></script>
 </head>
-<body>
-  <header>
-    <h1>RITA — Briefing</h1>
-    <p class="sous-titre">Retrieval Intelligence pour le Tracking et l'Analyse</p>
-    <p class="avertissement">
-      Aide à la lecture. Aucune recommandation d'achat ou de vente.
-    </p>
+<body data-ecran="briefing">
+  <header class="entete">
+    <div class="entete-ligne">
+      <p class="marque"><span class="logo" aria-hidden="true"></span> RITA <span class="devise">Retrieval Intelligence pour le Tracking et l'Analyse</span></p>
+      <div class="entete-actions">
+        <button type="button" id="bascule-simulation" class="bascule-simulation" aria-pressed="false" hidden>Mode simulation</button>
+        <button type="button" id="bascule-theme" class="bascule-theme" aria-pressed="false" hidden>Thème clair</button>
+      </div>
+    </div>
     <nav aria-label="Navigation principale">
       <a href="index.html">Mon portefeuille</a>
       <a href="indicateurs.html">Indicateurs</a>
       <span aria-current="page">Briefing</span>
+      <a href="question.html">Question</a>
       <a href="tableau-de-bord.html">Tableau de bord</a>
     </nav>
+    <p class="avertissement">Aide à la lecture. Aucune recommandation d'achat ou de vente.</p>
   </header>
 
   <main>
-    <!-- ÉTAT 1 — pas de clé d'API : on la demande. Même clé que les deux autres écrans,
-         même sessionStorage : saisie une fois, oubliée à la fermeture de l'onglet. -->
+    <h1>Briefing</h1>
+    <!-- ÉTAT 1 : pas de clé d'API, on la demande. Même clé que les autres écrans, même sessionStorage : saisie une
+         fois, oubliée à la fermeture de l'onglet. Gardée seulement après un appel accepté (commun.js, correctif #73). -->
     <section id="connexion" hidden>
       <h2>Connexion</h2>
       <form id="form-cle">
@@ -33,10 +40,8 @@
       </form>
     </section>
 
-    <!-- ÉTAT 2 — la demande. Un seul champ : le code de la valeur. La liste déroulante
-         (datalist) est remplie depuis l'univers suivi, pour ne pas avoir à connaître les
-         codes par cœur ; la saisie libre reste possible, et un code inconnu est dit en clair
-         (état 3). -->
+    <!-- ÉTAT 2 : la demande. Un seul champ, le code de la valeur ; la liste déroulante est remplie depuis l'univers
+         suivi, la saisie libre reste possible, et un code inconnu est dit en clair. -->
     <section id="demande" hidden>
       <h2>Demander un briefing</h2>
       <form id="form-briefing">
@@ -48,43 +53,50 @@
       </form>
       <p class="precision">
         Le texte est rédigé par un modèle de langage à partir des données collectées
-        (cours, variation, capitaux échangés, articles). Il est relu par un garde-fou avant
+        (cours, variation, indicateurs, articles). Il est relu par un garde-fou avant
         affichage&nbsp;: une recommandation d'achat ou de vente est retenue, jamais diffusée.
       </p>
     </section>
 
-    <!-- ÉTAT 3 — chargement / erreur. role="status" + aria-live : annoncé par un lecteur
-         d'écran sans interrompre la lecture. Un appel au modèle dure 5 à 15 s : le dire. -->
-    <p id="statut" role="status" aria-live="polite"></p>
+    <!-- Les messages : la rédaction en cours, ou la panne. Annoncés sans interrompre la lecture (aria-live) ; le focus y
+         va quand une demande échoue. -->
+    <p id="statut" role="status" aria-live="polite" tabindex="-1"></p>
 
-    <!-- ÉTAT 4 — le briefing. Une région nommée, le focus y est posé à l'arrivée du texte
-         (une personne au clavier ou au lecteur d'écran sait que c'est prêt). -->
+    <!-- ÉTAT 3 : le résultat, en flux vertical, dans l'ordre où RITA travaille (spécification R3). Une panne n'efface
+         jamais ce qui fonctionne : la courbe peut rester si le briefing échoue, et l'inverse. -->
     <section id="resultat" hidden tabindex="-1" aria-labelledby="titre-resultat">
-      <h2 id="titre-resultat">Briefing</h2>
-      <p id="donnees" class="total"></p>
-      <!-- Le verdict du garde-fou est un TEXTE : « conforme » ou « retenu », avec les motifs.
-           La couleur ne fait que le répéter (RGAA 3.1). -->
-      <p id="verdict" class="fraicheur"></p>
-      <div id="texte"></div>
-      <p id="reference" class="precision"></p>
-      <details>
-        <summary>D'où vient ce texte&nbsp;?</summary>
-        <dl>
-          <dt>Les données</dt>
-          <dd>Le dernier cours collecté, la variation sur une séance, les capitaux échangés en
-              moyenne sur 20 séances, et jusqu'à trois passages d'articles retrouvés par la
-              recherche documentaire. Rien de votre portefeuille n'est envoyé au modèle.</dd>
-          <dt>Le modèle</dt>
-          <dd>Un modèle de langage fourni par un service extérieur, appelé par l'API de RITA.
-              Si le premier fournisseur échoue, le suivant est essayé.</dd>
-          <dt>Le garde-fou</dt>
-          <dd>Le texte est relu avant affichage. S'il contient une recommandation d'achat ou de
-              vente, il est remplacé par un message de refus et le motif est affiché ici.</dd>
-          <dt>La référence</dt>
-          <dd>L'identifiant de la requête, le même dans le journal de l'API et dans la trace
-              du monitorage. À citer pour signaler un problème.</dd>
-        </dl>
-      </details>
+      <h2 id="titre-resultat">Briefing <span id="valeur-resultat"></span></h2>
+
+      <!-- 1. Les chiffres clés -->
+      <div id="chiffres" class="chiffres">
+        <div class="chiffre chiffre-cours"><p class="libelle">Cours</p><p class="valeur" id="chiffre-cours">–</p></div>
+        <div class="chiffre chiffre-seance"><p class="libelle">Séance</p><p class="valeur" id="chiffre-seance">–</p></div>
+        <div class="chiffre chiffre-mois"><p class="libelle">1 mois (indicateurs)</p><p class="valeur" id="chiffre-mois">–</p></div>
+        <div class="chiffre chiffre-verdict"><p class="libelle">Garde-fou</p><p class="valeur" id="verdict">–</p></div>
+      </div>
+
+      <!-- 2. La courbe du cours et de ses moyennes mobiles -->
+      <figure id="bloc-courbe" class="bloc-graphique">
+        <figcaption>Cours et moyennes mobiles 20 et 50 séances (dates réelles sous la courbe)</figcaption>
+        <div id="courbe"></div>
+      </figure>
+
+      <!-- 3. Le texte du briefing. Rendu par textContent, paragraphe par paragraphe : c'est une donnée, pas du code. -->
+      <div id="bloc-texte" class="bloc-texte"><div id="texte"></div></div>
+
+      <!-- 4. Comprendre ce résultat : ce qui s'est réellement passé, lu dans le bloc `diagnostic` de l'API (R4). -->
+      <section id="comprendre" class="comprendre" aria-labelledby="titre-comprendre">
+        <h3 id="titre-comprendre">Comprendre ce résultat</h3>
+        <ol id="etapes" class="etapes"></ol>
+        <p id="reference" class="precision"></p>
+      </section>
+
+      <!-- 5. Les sources : des liens vers les articles, jamais leur texte. -->
+      <section id="sources" class="sources" aria-labelledby="titre-sources">
+        <h3 id="titre-sources">Sources fournies au modèle</h3>
+        <ul id="liste-sources"></ul>
+        <p class="precision">Leur présence ne prouve pas que chaque phrase du texte en vient.</p>
+      </section>
     </section>
   </main>
 
@@ -92,6 +104,8 @@
     <p>RNCP 37827 · Eramalingam GANDAKUMAR · le texte est produit par un modèle de langage et relu par un garde-fou ; il n'engage aucun conseil</p>
   </footer>
 
-  <script src="briefing.js"></script>
+  <script src="commun.js?v=5dc68886dd"></script>
+  <script src="graphiques.js?v=c2b8a60636"></script>
+  <script src="briefing.js?v=3590321af6"></script>
 </body>
 </html>

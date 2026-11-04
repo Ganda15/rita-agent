@@ -15,7 +15,10 @@ import re
 import secrets
 import time
 import uuid
+from datetime import date, datetime
 from pathlib import Path
+from urllib.parse import urlparse
+from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, Security
@@ -26,7 +29,7 @@ from typing import Literal
 from fastapi.security.api_key import APIKeyHeader
 from fastapi.staticfiles import StaticFiles
 
-from agents.analyst import CONSIGNES_REDACTION, ROLE_REDACTEUR
+from agents.analyst import CONSIGNES_REDACTION, ROLE_REDACTEUR, articles_surs
 from api.donnees import routeur as routeur_donnees
 from api.exercice import routeur as routeur_exercice, verifier_cle_exercice
 from api.limiteur import limiter_debit
@@ -37,8 +40,11 @@ from graph.workflow import generer_briefing_complet
 from guardrails.sortie import verifier_fuite, verifier_sortie
 from indicateurs.socle import valeur_existe
 from monitorage import compteurs
+from monitorage.fraicheur import jours_ouvres_ecoules
 from rag import indexation
+from sources.marches import place_de_cotation
 from src import traces
+from src.llm import AucunFournisseur
 
 load_dotenv()
 
@@ -275,9 +281,129 @@ app.include_router(routeur_sante, dependencies=[Depends(verify_api_key)])
 app.include_router(routeur_exercice, dependencies=[Depends(verifier_cle_exercice)])
 
 
+# --- Refonte 001, tâche 3 (exigence R4) : le diagnostic du briefing --------------------------------------------------
+# L'écran du briefing montre qui a rédigé, d'après quel cours et quelles sources. Tout vient de ce que le graphe a
+# réellement fait : rien n'est reconstruit, rien n'est deviné ; ce qui manque vaut `null`.
+
+FUSEAU_DE_REFERENCE = ZoneInfo("Europe/Paris")   # `tzdata` est une dépendance de pandas : présent dans l'image aussi
+TEXTE_AUCUN_FOURNISSEUR = "Aucun fournisseur de modèle n'a répondu."
+
+
+def aujourd_hui_a_paris() -> date:
+    """La date de référence de l'âge du cours : le jour à Paris au moment de la réponse (remplacée dans les tests)."""
+    return datetime.now(FUSEAU_DE_REFERENCE).date()
+
+
+def _lien_sur(lien) -> str | None:
+    """Un lien n'est rendu que s'il est http(s) et nomme un hôte : `javascript:`, `data:` et le reste deviennent null,
+    pour qu'aucun lien piégé ne devienne cliquable à l'écran."""
+    if not isinstance(lien, str) or not lien:
+        return None
+    try:
+        morceaux = urlparse(lien)
+    except ValueError:
+        return None
+    return lien if morceaux.scheme.lower() in ("http", "https") and morceaux.netloc else None
+
+
+def sources_du_prompt(passages: list[dict] | None) -> list[dict]:
+    """Un élément par article réellement transmis au modèle, dans l'ordre : le même filtre que le prompt
+    (`articles_surs`), puis un seul élément par `article_id`. Deux articles distincts ne sont jamais fusionnés, même
+    sans lien. Jamais le texte de l'article."""
+    vus: set = set()
+    sources = []
+    for passage in articles_surs(passages):
+        article_id = passage.get("article_id")
+        if article_id is not None and article_id in vus:
+            continue
+        vus.add(article_id)
+        sources.append({"titre": passage.get("titre"), "source": passage.get("source"),
+                        "publie_le": passage.get("publie_le"), "lien": _lien_sur(passage.get("lien"))})
+    return sources
+
+
+def _date_iso(valeur) -> date | None:
+    if isinstance(valeur, date):
+        return valeur
+    try:
+        return date.fromisoformat(valeur) if isinstance(valeur, str) else None
+    except ValueError:
+        return None
+
+
+def construire_diagnostic(resultat: dict, duree_ms: int, reference: date) -> dict:
+    """Le bloc `diagnostic` de la réponse : qui a rédigé (`modele_info`, rempli par le graphe), la date du cours telle
+    que la base l'a enregistrée, son âge par rapport à `reference`, et les sources transmises au modèle.
+
+    Les séances écoulées ne se comptent qu'avec le calendrier Euronext, le seul que RITA modélise : pour Londres ou
+    New York, `jours_bourse_ecoules` et `calendrier` valent null, et l'âge en jours de calendrier reste donné.
+    """
+    info = resultat.get("modele_info") or {}
+    date_cours = _date_iso((resultat.get("indicateurs") or {}).get("date_cours"))
+    try:
+        euronext = place_de_cotation(resultat.get("ticker") or "") == "Euronext"
+    except ValueError:
+        euronext = False
+    compter = date_cours is not None and euronext
+    return {
+        "fournisseur": info.get("fournisseur"),
+        "modele": info.get("modele"),
+        "tentatives": info.get("tentatives") or [],
+        "duree_ms": duree_ms,
+        "date_cours": date_cours.isoformat() if date_cours else None,
+        "age_calendaire_jours": (reference - date_cours).days if date_cours else None,
+        "jours_bourse_ecoules": jours_ouvres_ecoules(date_cours, reference) if compter else None,
+        "calendrier": "Euronext" if compter else None,
+        "sources": sources_du_prompt(resultat.get("passages")),
+    }
+
+
+class TentativeModele(BaseModel):
+    fournisseur: str = Field(description="foundry, anthropic ou openrouter")
+    reussi: bool = Field(description="jamais le message de l'erreur, qui peut recopier le prompt")
+
+
+class SourceBriefing(BaseModel):
+    titre: str | None
+    source: str | None
+    publie_le: str | None
+    lien: str | None = Field(description="http(s) seulement ; null pour tout autre lien (javascript:, data:...)")
+
+
+class DiagnosticBriefing(BaseModel):
+    fournisseur: str | None = Field(description="le fournisseur qui a rédigé le texte")
+    modele: str | None = Field(description="le modèle renvoyé par le fournisseur, null s'il ne le dit pas")
+    tentatives: list[TentativeModele]
+    duree_ms: int = Field(ge=0)
+    date_cours: str | None = Field(description="date de la dernière séance, telle que la base l'enregistre (ISO)")
+    age_calendaire_jours: int | None = Field(description="jours de calendrier entre la séance et aujourd'hui à Paris")
+    jours_bourse_ecoules: int | None = Field(description="séances Euronext écoulées depuis ; null hors Euronext")
+    calendrier: Literal["Euronext"] | None
+    sources: list[SourceBriefing] = Field(description="un élément par article transmis au modèle, sans son texte")
+
+
+class ReponseBriefing(BaseModel):
+    ticker: str
+    price: float
+    change_pct: float
+    currency: str
+    briefing: str
+    conforme_amf: bool
+    motifs_amf: list[str]
+    articles_transmis: int
+    diagnostic: DiagnosticBriefing
+
+
 # --- C9 : le briefing rédigé ------------------------------------------------
 @app.post("/briefing", tags=["briefing IA"],
-          summary="Générer un briefing rédigé pour une valeur")
+          summary="Générer un briefing rédigé pour une valeur",
+          responses={
+              200: {"model": ReponseBriefing, "description": "Le briefing, son verdict AMF et son diagnostic"},
+              503: {"description": "Aucun fournisseur de modèle n'a répondu (code AUCUN_FOURNISSEUR)",
+                    "content": {"application/json": {"example": {"detail": {
+                        "code": "AUCUN_FOURNISSEUR", "message": TEXTE_AUCUN_FOURNISSEUR}}}}},
+              500: {"description": "Erreur interne imprévue ; le corps donne l'identifiant de requête"},
+          })
 def briefing(ticker: str = Query(min_length=1, max_length=20), api_key: str = Security(verify_api_key),
              _debit: None = Depends(limiter_debit)):
     """Produit un texte en français à partir des données de la valeur.
@@ -300,7 +426,17 @@ def briefing(ticker: str = Query(min_length=1, max_length=20), api_key: str = Se
     # Sprint 5 (étape 1) : les jetons de toutes les tentatives de ce briefing s'additionnent ici.
     compteurs.debuter_consommation()
     with traces.briefing(ticker, request_id=request_id) as racine:
-        resultat = generer_briefing_complet(ticker)
+        try:
+            resultat = generer_briefing_complet(ticker)
+        except AucunFournisseur:
+            # Refonte 001 (R4) : tous les fournisseurs ont échoué. Ce n'est pas un défaut de RITA (500) mais un service
+            # dont elle dépend qui ne répond pas : 503, avec un code stable que l'écran sait lire. Le message de
+            # l'exception (types d'erreur par fournisseur) reste dans le journal du serveur, jamais dans la réponse.
+            logger.warning("briefing en erreur 503 : aucun fournisseur : request_id=%s ticker=%r", request_id, ticker)
+            compteurs.COMPTEURS.noter("/briefing", 503, "erreur", "AUCUN_FOURNISSEUR",
+                                      int((time.perf_counter() - debut) * 1000), compteurs.consommation())
+            raise HTTPException(status_code=503, detail={"code": "AUCUN_FOURNISSEUR",
+                                                         "message": TEXTE_AUCUN_FOURNISSEUR}) from None
         if resultat["error"]:
             logger.warning("briefing en erreur 502 : request_id=%s ticker=%r",
                            request_id, ticker)
@@ -362,6 +498,8 @@ def briefing(ticker: str = Query(min_length=1, max_length=20), api_key: str = Se
         # Sprint 2 (14/10) : le nombre d'articles distincts transmis au modèle. Un briefing est rédigé même sans
         # article ; sans ce compte, un index vide en production passait tous les contrôles du script du serveur.
         "articles_transmis": len({p["article_id"] for p in resultat.get("passages") or []}),
+        # Refonte 001 (R4) : qui a rédigé, d'après quel cours et quelles sources (construire_diagnostic).
+        "diagnostic": construire_diagnostic(resultat, duree_ms, aujourd_hui_a_paris()),
     }
 
 
@@ -369,7 +507,17 @@ def briefing(ticker: str = Query(min_length=1, max_length=20), api_key: str = Se
 # Servie par la MÊME application que l'API : même origine, donc aucune règle CORS
 # à ouvrir. Une porte de moins à justifier dans la revue OWASP.
 #
+# Refonte 001, tâche 5 (mesuré le 04/11) : sans `Cache-Control`, Chrome gardait l'ancien `tableau-de-bord.js` à côté
+# du nouveau `commun.js`, et la page montrait le vrai tableau sous la mention « Simulation ». `no-cache` : le navigateur
+# demande à chaque visite si le fichier a changé ; s'il n'a pas changé, la réponse est un 304 sans corps (éco-conception).
+class InterfaceToujoursRevalidee(StaticFiles):
+    async def get_response(self, path, scope):
+        reponse = await super().get_response(path, scope)
+        reponse.headers["Cache-Control"] = "no-cache"
+        return reponse
+
+
 # ⚠️ Ce montage doit rester la DERNIÈRE instruction du fichier : `/` capture toutes
 # les adresses restantes. Placé plus haut, il masquerait /donnees et /briefing.
-app.mount("/", StaticFiles(directory=Path(__file__).parent.parent / "frontend",
-                           html=True), name="interface")
+app.mount("/", InterfaceToujoursRevalidee(directory=Path(__file__).parent.parent / "frontend",
+                                          html=True), name="interface")

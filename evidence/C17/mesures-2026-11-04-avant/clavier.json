@@ -1,0 +1,174 @@
+{
+ "portefeuille": {
+  "focus_au_chargement_sans_cle": {
+   "balise": "input",
+   "repere": "#cle",
+   "role": null,
+   "contour": "3px solid",
+   "focus_visible": true,
+   "visible_a_l_ecran": true
+  },
+  "ordre_de_tabulation_avec_cle": [
+   {
+    "balise": "a",
+    "repere": "Indicateurs",
+    "role": null,
+    "contour": "3px solid",
+    "focus_visible": true,
+    "visible_a_l_ecran": true
+   },
+   {
+    "balise": "a",
+    "repere": "Briefing",
+    "role": null,
+    "contour": "3px solid",
+    "focus_visible": true,
+    "visible_a_l_ecran": true
+   },
+   {
+    "balise": "a",
+    "repere": "Question",
+    "role": null,
+    "contour": "3px solid",
+    "focus_visible": true,
+    "visible_a_l_ecran": true
+   },
+   {
+    "balise": "a",
+    "repere": "Tableau de bord",
+    "role": null,
+    "contour": "3px solid",
+    "focus_visible": true,
+    "visible_a_l_ecran": true
+   },
+   {
+    "balise": "summary",
+    "repere": "Comment lire ce tableau ?",
+    "role": null,
+    "contour": "3px solid",
+    "focus_visible": true,
+    "visible_a_l_ecran": true
+   }
+  ]
+ },
+ "indicateurs": {
+  "focus_au_chargement_sans_cle": {
+   "balise": "input",
+   "repere": "#cle",
+   "role": null,
+   "contour": "3px solid",
+   "focus_visible": true,
+   "visible_a_l_ecran": true
+  },
+  "ordre_de_tabulation_avec_cle": [
+   {
+    "balise": "a",
+    "repere": "Mon portefeuille",
+    "role": null,
+    "contour": "3px solid",
+    "focus_visible": true,
+    "visible_a_l_ecran": true
+   },
+   {
+    "balise": "a",
+    "repere": "Briefing",
+    "role": null,
+    "contour": "3px solid",
+    "focus_visible": true,
+    "visible_a_l_ecran": true
+   },
+   {
+    "balise": "a",
+    "repere": "Tableau de bord",
+    "role": null,
+    "contour": "3px solid",
+    "focus_visible": true,
+    "visible_a_l_ecran": true
+   },
+   {
+    "balise": "input",
+    "repere": "#masquer-perimees",
+    "role": null,
+    "contour": "3px solid",
+    "focus_visible": true,
+    "visible_a_l_ecran": true
+   },
+   {
+    "balise": "div",
+    "repere": "[Tableau des indicateurs, défilement horizontal]",
+    "role": "region",
+    "contour": "2px solid",
+    "focus_visible": true,
+    "visible_a_l_ecran": true
+   },
+   {
+    "balise": "summary",
+    "repere": "Comment lire ce tableau ?",
+    "role": null,
+    "contour": "3px solid",
+    "focus_visible": true,
+    "visible_a_l_ecran": true
+   }
+  ]
+ },
+ "briefing": {
+  "focus_au_chargement_sans_cle": {
+   "balise": "input",
+   "repere": "#cle",
+   "role": null,
+   "contour": "3px solid",
+   "focus_visible": true,
+   "visible_a_l_ecran": true
+  },
+  "ordre_de_tabulation_avec_cle": [
+   {
+    "balise": "a",
+    "repere": "Mon portefeuille",
+    "role": null,
+    "contour": "3px solid",
+    "focus_visible": true,
+    "visible_a_l_ecran": true
+   },
+   {
+    "balise": "a",
+    "repere": "Indicateurs",
+    "role": null,
+    "contour": "3px solid",
+    "focus_visible": true,
+    "visible_a_l_ecran": true
+   },
+   {
+    "balise": "a",
+    "repere": "Tableau de bord",
+    "role": null,
+    "contour": "3px solid",
+    "focus_visible": true,
+    "visible_a_l_ecran": true
+   },
+   {
+    "balise": "input",
+    "repere": "#ticker",
+    "role": null,
+    "contour": "3px solid",
+    "focus_visible": true,
+    "visible_a_l_ecran": true
+   },
+   {
+    "balise": "button",
+    "repere": "Rédiger le briefing",
+    "role": null,
+    "contour": "3px solid",
+    "focus_visible": true,
+    "visible_a_l_ecran": true
+   }
+  ],
+  "focus_apres_arrivee_du_texte": {
+   "balise": "section",
+   "repere": "#resultat",
+   "role": null,
+   "contour": "3px solid",
+   "focus_visible": true,
+   "visible_a_l_ecran": true
+  }
+ }
+}

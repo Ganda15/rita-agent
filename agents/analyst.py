@@ -2,7 +2,7 @@
 import logging
 
 from guardrails.injection import neutraliser
-from src.llm import generer_texte
+from src.llm import ResultatTexte, generer_texte_detaille
 
 logger = logging.getLogger(__name__)
 
@@ -172,6 +172,20 @@ def generate_briefing(ticker: str, price: float, change_pct: float,
                       cotation_perimee: bool = False,
                       passages: list[dict] | None = None,
                       indicateurs: dict | None = None) -> str:
+    """Le texte seul, pour les appelants qui n'ont pas besoin de savoir qui l'a écrit (banc C7, essais du sprint 4).
+
+    Mêmes paramètres et même prompt que `generate_briefing_detaille`, dont elle rend `.texte`.
+    """
+    return generate_briefing_detaille(ticker, price, change_pct, adtv20, currency,
+                                      fraicheur_jours, cotation_perimee, passages, indicateurs).texte
+
+
+def generate_briefing_detaille(ticker: str, price: float, change_pct: float,
+                               adtv20: float | None, currency: str,
+                               fraicheur_jours: int = 0,
+                               cotation_perimee: bool = False,
+                               passages: list[dict] | None = None,
+                               indicateurs: dict | None = None) -> ResultatTexte:
     """Rédige un briefing français à partir des données lues en base et des articles.
 
     Args:
@@ -188,8 +202,9 @@ def generate_briefing(ticker: str, price: float, change_pct: float,
         indicateurs: le dictionnaire du scout (13 indicateurs) ; `None` = prompt d'avant le 03/10/2026.
 
     Returns:
-        Briefing en français, 3 à 5 phrases.
+        Le briefing en français (3 à 5 phrases) et qui l'a écrit : fournisseur, modèle renvoyé, tentatives
+        (refonte 001, exigence R4 : l'écran du briefing les affiche).
     """
     prompt = construire_prompt(ticker, price, change_pct, adtv20, currency,
                                fraicheur_jours, cotation_perimee, passages, indicateurs)
-    return generer_texte(prompt, max_tokens=500)
+    return generer_texte_detaille(prompt, max_tokens=500)

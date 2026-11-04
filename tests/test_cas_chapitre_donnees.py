@@ -16,6 +16,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from agents.analyst import generate_briefing
+from tests.conftest import faux_resultat_texte
 from rag import recherche
 from tests.test_analyst import prompt_produit
 from tests.test_rag_recherche import _index_jetable
@@ -75,7 +76,7 @@ def test_R13_le_prompt_exige_des_affirmations_soutenues_et_des_contradictions_di
          "source": "B", "lien": "https://exemple.test/b", "publie_le": "2026-09-02", "tickers": ["MC.PA"],
          "rang_dense": 1, "rang_lexical": 1, "distance_dense": 0.31, "score_lexical": 4.0, "article_id": 2},
     ]
-    with patch("agents.analyst.generer_texte", return_value="x") as mock_llm:
+    with patch("agents.analyst.generer_texte_detaille", return_value=faux_resultat_texte("x")) as mock_llm:
         generate_briefing(ticker="MC.PA", price=600.0, change_pct=0.4, adtv20=None, currency="EUR",
                           passages=passages)
     prompt = prompt_produit(mock_llm)

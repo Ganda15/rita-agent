@@ -40,7 +40,12 @@ Critères d'acceptation :
 2. chaque dessin a, à côté, les **mêmes chiffres** écrits ;
 3. si une valorisation est incomplète (taux de change manquant), **aucun anneau trompeur** : un cadre dit combien de lignes
    n'ont pas de taux ; le tableau détaillé reste ;
-4. la fraîcheur du jeu de données est affichée ; chaque ligne garde la date de son cours.
+4. la fraîcheur du jeu de données est affichée ; chaque ligne garde la date de son cours ;
+5. (ajouté le 04/11 au soir, après Viridien à +4 856 % en première place) l'écran **doute de ses données** : une
+   performance hors du commun (gain de 900 % ou plus, perte de 90 % ou plus : un prix multiplié ou divisé par dix) est
+   signalée en texte, au-dessus des dessins, comme une chose à vérifier (prix de revient resté à l'échelle d'avant un
+   regroupement ou une division d'actions ?), jamais comme un fait ni un conseil. Le seuil est une convention déclarée,
+   pas une mesure : il ne repère pas tout (un regroupement de 5 pour 1 passe dessous).
 
 ### R2. Indicateurs : comparer les valeurs et lire un indicateur comme un fait (priorité 2)
 
@@ -52,7 +57,22 @@ Critères d'acceptation :
    signés, flèches, légende) ;
 2. le RSI s'écrit comme un fait (« RSI 14 : 41, zone neutre de 30 à 70 »), jamais comme un signal ;
 3. au choix d'une valeur, sa courbe s'affiche ; si l'historique est court, l'écran le dit (seuils de la conception, § 5) ;
-4. le nombre de valeurs suivies vient des données, jamais d'un chiffre écrit à la main.
+4. le nombre de valeurs suivies vient des données, jamais d'un chiffre écrit à la main ;
+5. (ajouté le 04/11 au soir) chaque chiffre est sous son titre, et chaque titre dit le calcul réel : la volatilité est
+   « annualisée (20 séances) », la fenêtre de `db/indicateurs_risque.sql`, pas « (1 an) » ;
+6. (demande d'Era du 04/11 au soir) une colonne sur deux est légèrement teintée, pour suivre les chiffres d'une ligne à
+   l'autre ; la teinte s'ajoute à celle des performances sans la cacher, contrastes calculés dans les deux thèmes ;
+7. (demande d'Era du 04/11 au soir, « pas de défilement pour voir tous les codes ») la zone de recherche propose la liste
+   de **toutes** les valeurs suivies, à parcourir en la faisant défiler (code et nom), sans qu'il faille connaître un code ;
+   la liste vient des données, jamais d'un chiffre ou d'un nom écrit à la main ;
+8. (relecture extérieure du 04/11 au soir) quand la valeur dont le détail est ouvert n'est plus dans les résultats, son
+   détail se ferme ; une recherche sans résultat le dit (« Aucune valeur trouvée pour cette recherche ») et, si la valeur
+   existe mais que sa cotation périmée est masquée, le dit aussi ;
+9. les cotations périmées sont **masquées par défaut** (leurs pourcentages décrivent un passé ancien, sous des titres
+   « 1 jour » ou « depuis le 1er janvier ») ; une case les montre ; leur nombre reste écrit au-dessus du tableau ;
+10. le tableau défile dans sa zone, en-têtes fixes, barre de défilement horizontale visible sans descendre au bas des 111
+    lignes ; l'aide dit ce que fait vraiment l'écran (il permet de comparer, le tri et les repères du RSI ne donnent aucune
+    consigne) et ne décrit plus la volatilité et la pire baisse comme un « détail ».
 
 ### R3. Briefing : lire le briefing et comprendre comment il a été produit (priorité 1)
 
@@ -136,7 +156,14 @@ Critères d'acceptation :
 - rien ne passe par la **couleur seule** ; chaque graphique a son alternative en chiffres ;
 - tout s'atteint au **clavier** ; le focus va au résultat ou au message d'erreur ; zoom à 200 % sans perte ;
 - aucun texte venu des données n'est interprété comme du code dans la page ;
-- aucune ressource chargée depuis un site tiers : la démonstration marche sans dépendre d'un autre service que RITA.
+- aucune ressource chargée depuis un site tiers : la démonstration marche sans dépendre d'un autre service que RITA ;
+- **une mise à jour ne mélange jamais l'ancienne et la nouvelle version** (ajouté le 04/11 au soir, après un décalage d'une
+  colonne vu sur Indicateurs et sur Portefeuille : page neuve, script ancien gardé en cache) : chaque script et chaque
+  feuille de style porte dans son adresse la version de son contenu ; un test ouvre l'ancienne version, livre la nouvelle
+  et recharge normalement, sans Ctrl+F5, sur les cinq écrans ;
+- **deux thèmes, sombre et clair**, sur les cinq écrans (décision d'Era du 04/11, § 7) : le sombre par défaut, le clair
+  au choix par un bouton de l'en-tête ; le choix vaut pour les cinq écrans pendant la session ; chaque texte garde un
+  contraste d'au moins 4,5:1 dans les **deux** thèmes.
 
 ## 5. Hors périmètre
 
@@ -166,6 +193,16 @@ Le plan devra **confirmer la faisabilité** de ce calendrier, tâche par tâche,
 - **Périmètre pour le 12/11** : les **trois écrans**, dans cet ordre : Briefing (avec R4 et les erreurs), Indicateurs,
   Portefeuille ; Question et Tableau de bord gardent leur fonctionnement et leur cohérence (R5).
 - **Question et Tableau de bord** : ils gardent leur aspect actuel et reçoivent le nouvel en-tête ; pas de nouvelle couleur.
+  Mise à jour de l'après-midi : ils prennent aussi les deux thèmes ; leur bleu `#12507a` reste celui du thème clair, et
+  le thème sombre en prend l'équivalent lumineux.
+- **Style (changé le 04/11 après-midi)** : Era choisit le **style B, sombre** (« terminal de marché », planche 1 des
+  maquettes du 04/10), avec un **thème clair** au choix, pour tout le site. Le style A (clair) validé le 04/10 devient le
+  thème clair. La raison écrite le 04/10 pour écarter le sombre (« moins lisible en projection ») pèse moins pour un
+  oral en visioconférence, où l'écran est partagé ; le thème clair reste à un clic si la lecture l'exige.
+- **Polices (04/11 après-midi)** : un aspect moderne, sans rien télécharger (éco-conception, C17) : Segoe UI Variable
+  (Windows 11) ou SF Pro (macOS) pour le texte et les titres, Cascadia Mono pour les chiffres.
+- **Logo et fond (04/11 au soir)** : le logo officiel de RITA dans l'en-tête ; le fond sombre passe en dégradé du bleu
+  nuit au bleu, comme la couverture du livret E1, sans image ; textes plus visibles, contrastes toujours calculés.
 - **Démonstration** : en **production**, version identifiée, retour arrière testé, enregistrement de secours (R6).
 - **Mode simulation** : dans le périmètre, clairement indiqué, pour répéter (R7).
 

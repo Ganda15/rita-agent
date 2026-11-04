@@ -15,6 +15,7 @@ fournisseur échoue. Sans clés Langfuse, le traçage est un no-op : la cascade 
 import logging
 import os
 import sys
+from dataclasses import dataclass
 
 import httpx
 from anthropic import Anthropic
@@ -202,11 +203,45 @@ def _resume_erreur(erreur: BaseException) -> str:
     return f"{type(erreur).__name__} (HTTP {code})" if code else type(erreur).__name__
 
 
+@dataclass
+class ResultatTexte:
+    """Le texte, et qui l'a écrit (refonte 001, exigence R4 : l'écran du briefing le montre).
+
+    `modele` est celui que le fournisseur a renvoyé (`Reponse.modele`), `None` s'il ne le dit pas : jamais celui que la
+    configuration annonce (`_modele_prevu`). Une tentative ne garde que le nom du fournisseur et son issue,
+    `{"fournisseur": str, "reussi": bool}`, jamais le message de son erreur, qui peut recopier le prompt (sprint 4, D9).
+    """
+    texte: str
+    fournisseur: str
+    modele: str | None
+    tentatives: list[dict]
+
+
+class AucunFournisseur(RuntimeError):
+    """Tous les fournisseurs de `LLM_ORDRE` ont échoué.
+
+    Hérite de `RuntimeError` : les appelants qui l'attrapaient déjà restent justes. `/briefing` la reconnaît pour
+    répondre 503 au lieu de 500 (refonte 001, tâche 3). `tentatives` a la même forme que dans `ResultatTexte`.
+    """
+
+    def __init__(self, message: str, tentatives: list[dict]):
+        super().__init__(message)
+        self.tentatives = tentatives
+
+
 def generer_texte(prompt: str, max_tokens: int = 500) -> str:
+    """Le texte seul, pour les appelants qui n'ont pas besoin de savoir qui a répondu."""
+    return generer_texte_detaille(prompt, max_tokens).texte
+
+
+def generer_texte_detaille(prompt: str, max_tokens: int = 500) -> ResultatTexte:
     erreurs: list[str] = []
+    tentatives: list[dict] = []
     module = sys.modules[__name__]
     tentative = 0
     texte_final: str | None = None
+    fournisseur_final: str | None = None
+    modele_final: str | None = None
     # Un appel = un trace Langfuse (span racine), les tentatives dessous. Sans clés,
     # `appel` et `generation` rendent None et tout ce qui suit est un no-op (src/traces.py).
     # Sprint 4 (B3, D9) : ni le prompt ni la réponse ne partent vers la trace, seulement des métadonnées.
@@ -230,14 +265,16 @@ def generer_texte(prompt: str, max_tokens: int = 500) -> str:
                 except Exception as erreur:  # noqa: BLE001, on passe au fournisseur suivant
                     traces.echouer(gen, erreur)
                     erreurs.append(f"{nom} : {_resume_erreur(erreur)}")
+                    tentatives.append({"fournisseur": nom, "reussi": False})
                     logger.warning("Fournisseur %s indisponible : %s", nom, _resume_erreur(erreur))
                     continue
-            texte_final = reponse.texte
+            tentatives.append({"fournisseur": nom, "reussi": True})
+            texte_final, fournisseur_final, modele_final = reponse.texte, nom, reponse.modele
             break
         if texte_final is None:
             traces.echouer(racine, RuntimeError("aucun fournisseur disponible"))
     # Le flush vient APRÈS la fermeture du span racine : un span encore ouvert n'est pas exporté.
     traces.vider()
     if texte_final is None:
-        raise RuntimeError("Aucun fournisseur LLM disponible." + chr(10) + chr(10).join(erreurs))
-    return texte_final
+        raise AucunFournisseur("Aucun fournisseur LLM disponible." + chr(10) + chr(10).join(erreurs), tentatives)
+    return ResultatTexte(texte=texte_final, fournisseur=fournisseur_final, modele=modele_final, tentatives=tentatives)

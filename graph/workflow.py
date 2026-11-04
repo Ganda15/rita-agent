@@ -1,11 +1,12 @@
 """Superviseur — StateGraph LangGraph : Scout puis Rédacteur (C8, C14)."""
 from langgraph.graph import StateGraph, END
 
-from agents.analyst import articles_surs, generate_briefing
+from agents.analyst import articles_surs, generate_briefing_detaille
 from agents.scout import collect
 from graph.state import RitaState
 from rag.recherche import rechercher
 from src import traces
+from src.llm import ResultatTexte
 
 
 def noeud_scout(state: RitaState) -> RitaState:
@@ -66,16 +67,18 @@ def noeud_redacteur(state: RitaState) -> RitaState:
     with traces.etape("redacteur") as span:
         if state["error"]:
             traces.terminer_etape(span, output={"saute": True})
-            return {**state, "briefing": ""}
-        texte = _rediger(state)
+            return {**state, "briefing": "", "modele_info": {}}
+        redaction = _rediger(state)
         # La longueur seulement : le texte est dans la génération, et il n'est pas encore
         # passé par le garde-fou de sortie (api/main.py).
-        traces.terminer_etape(span, output={"longueur": len(texte)})
-    return {**state, "briefing": texte}
+        traces.terminer_etape(span, output={"longueur": len(redaction.texte)})
+    return {**state, "briefing": redaction.texte,
+            "modele_info": {"fournisseur": redaction.fournisseur, "modele": redaction.modele,
+                            "tentatives": redaction.tentatives}}
 
 
-def _rediger(state: RitaState) -> str:
-    return generate_briefing(
+def _rediger(state: RitaState) -> ResultatTexte:
+    return generate_briefing_detaille(
         ticker=state["ticker"],
         price=state["price"],
         change_pct=state["change_pct"],
@@ -107,5 +110,5 @@ def generer_briefing_complet(ticker: str) -> RitaState:
         "ticker": ticker, "price": 0.0, "change_pct": 0.0, "adtv20": None,
         "currency": "", "fraicheur_jours": 0, "cotation_perimee": False,
         "indicateurs": {}, "passages": [], "motif_rag": "",
-        "briefing": "", "error": "",
+        "briefing": "", "modele_info": {}, "error": "",
     })

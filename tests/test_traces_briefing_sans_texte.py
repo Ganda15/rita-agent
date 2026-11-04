@@ -96,7 +96,11 @@ def test_ni_prompt_ni_reponse_quand_tous_les_fournisseurs_echouent(monkeypatch, 
          patch("src.llm._appel_anthropic", side_effect=RuntimeError(f"refus du fournisseur : {MARQUEUR_PROMPT}")), \
          caplog.at_level(logging.DEBUG):
         reponse = TestClient(app).post("/briefing?ticker=MC.PA", headers={"X-API-Key": CLE_DE_TEST})
-    assert reponse.status_code == 500
+    # Refonte 001, tâche 3 (spécification R4, validée le 04/11) : tous les fournisseurs en panne donnent désormais 503
+    # AUCUN_FOURNISSEUR, et non plus le 500 générique. La règle de sécurité de ce test ne change pas.
+    assert reponse.status_code == 503
+    assert reponse.json()["detail"]["code"] == "AUCUN_FOURNISSEUR"
+    assert MARQUEUR_PROMPT not in reponse.text and MARQUEUR_PROMPT[:12] not in reponse.text
     # L'erreur a bien traversé les étapes tracées : sinon, l'absence du marqueur ne prouverait rien.
     noms = [options.get("name") for (evenement, options) in client.journal if evenement == "ouvre"]
     assert "briefing" in noms and "redacteur" in noms

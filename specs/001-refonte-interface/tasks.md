@@ -8,7 +8,7 @@ Le détail de chaque tâche (fichiers, interfaces, tests) est dans `plan.md`. Un
 | 1 | le modèle dit qui a répondu (`generer_texte_detaille`, `AucunFournisseur`) | R4 | 05/11 |
 | 2 | le graphe garde le diagnostic (`modele_info`) | R4 | 05-06/11 |
 | 3 | `/briefing` : `diagnostic`, `503 AUCUN_FOURNISSEUR`, contrat | R4 | 06/11 |
-| 4 | en-tête identique dans les cinq pages, style A | R5 | 06/11 |
+| 4 | en-tête identique dans les cinq pages, thèmes sombre (défaut) et clair | R5 | 06/11 |
 | 5 | `commun.js` : clé, appels, mode simulation | R5, R7 | 06/11 |
 | 6 | `graphiques.js` : courbe, anneau, barres, jauge | R1, R2, R3 | 07/11 |
 | 7 | écran Briefing | R3 | 07/11 |

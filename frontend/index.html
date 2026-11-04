@@ -3,16 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>RITA — Mon portefeuille</title>
-  <link rel="stylesheet" href="style.css">
+  <title>RITA : Mon portefeuille</title>
+  <link rel="stylesheet" href="style.css?v=d0e888a819">
+  <link rel="icon" type="image/png" href="logo-rita-clair.png">
+  <script src="theme.js?v=32a0dab24c"></script>
 </head>
-<body>
-  <header>
-    <h1>RITA — Mon portefeuille</h1>
-    <p class="sous-titre">Retrieval Intelligence pour le Tracking et l'Analyse</p>
-    <p class="avertissement">
-      Aide à la lecture. Aucune recommandation d'achat ou de vente.
-    </p>
+<body data-ecran="portefeuille">
+  <header class="entete">
+    <div class="entete-ligne">
+      <p class="marque"><span class="logo" aria-hidden="true"></span> RITA <span class="devise">Retrieval Intelligence pour le Tracking et l'Analyse</span></p>
+      <div class="entete-actions">
+        <button type="button" id="bascule-simulation" class="bascule-simulation" aria-pressed="false" hidden>Mode simulation</button>
+        <button type="button" id="bascule-theme" class="bascule-theme" aria-pressed="false" hidden>Thème clair</button>
+      </div>
+    </div>
     <nav aria-label="Navigation principale">
       <span aria-current="page">Mon portefeuille</span>
       <a href="indicateurs.html">Indicateurs</a>
@@ -20,10 +24,12 @@
       <a href="question.html">Question</a>
       <a href="tableau-de-bord.html">Tableau de bord</a>
     </nav>
+    <p class="avertissement">Aide à la lecture. Aucune recommandation d'achat ou de vente.</p>
   </header>
 
   <main>
-    <!-- ÉTAT 1 — pas de clé d'API : on la demande -->
+    <h1>Mon portefeuille</h1>
+    <!-- ÉTAT 1 : pas de clé d'API : on la demande -->
     <section id="connexion" hidden>
       <h2>Connexion</h2>
       <form id="form-cle">
@@ -33,21 +39,21 @@
       </form>
     </section>
 
-    <!-- ÉTATS 2 et 3 — chargement / erreur.
+    <!-- ÉTATS 2 et 3 : chargement / erreur.
          role="status" + aria-live : tout changement de texte ici est annoncé par un
          lecteur d'écran, sans interrompre la lecture en cours. Sans ça, une personne
          aveugle ne saurait jamais que la page charge. -->
     <p id="statut" role="status" aria-live="polite"></p>
 
-    <!-- ÉTAT 4 — les données -->
+    <!-- ÉTAT 4 : les données -->
     <section id="resultat" hidden>
 
-      <!-- FRAÎCHEUR DES DONNÉES (C20) — répond à « vos données sont-elles à jour ? »
+      <!-- FRAÎCHEUR DES DONNÉES (C20) : répond à « vos données sont-elles à jour ? »
            sans rien relancer, donc sans dépendre du réseau au moment de la démo.
 
            ⚠️ Le statut n'est JAMAIS porté par la seule couleur : la pastille est
            décorative (aria-hidden) et c'est le TEXTE qui dit tout. RGAA 3.1 /
-           WCAG 1.4.1 — « l'information ne doit pas être véhiculée uniquement par
+           WCAG 1.4.1 : « l'information ne doit pas être véhiculée uniquement par
            la couleur ». Une personne daltonienne lit la même chose que les autres.
 
            Pas de role="status" ici : l'annonce de chargement est déjà portée par
@@ -55,8 +61,29 @@
            coupent la parole chez un lecteur d'écran. -->
       <p id="fraicheur" class="fraicheur" hidden></p>
 
+      <!-- Refonte 001 (R1) : les chiffres clés, puis la répartition et les gains en image. Chaque dessin a ses
+           chiffres écrits à côté ; une valorisation incomplète ne donne jamais d'anneau trompeur. -->
+      <div id="cartes-portefeuille" class="chiffres">
+        <div class="chiffre"><p class="libelle">Valeur totale</p><p class="valeur" id="carte-total">–</p></div>
+        <div class="chiffre"><p class="libelle">Lignes ouvertes</p><p class="valeur" id="carte-lignes">–</p></div>
+        <div class="chiffre"><p class="libelle">Sans taux de change</p><p class="valeur" id="carte-sans-taux">–</p></div>
+        <div class="chiffre"><p class="libelle">Positions closes</p><p class="valeur" id="carte-closes">–</p></div>
+      </div>
+      <!-- R1, critère 5 : une performance hors du commun est dite en texte, à vérifier, avant les dessins. -->
+      <div id="alertes-donnees" class="alerte-donnee" role="status" hidden></div>
+      <div class="graphiques-portefeuille">
+        <figure id="bloc-anneau" class="bloc-graphique">
+          <figcaption>Poids de chaque ligne</figcaption>
+          <div id="anneau"></div>
+        </figure>
+        <figure id="bloc-barres" class="bloc-graphique">
+          <figcaption>Gain ou perte de chaque ligne, par rapport au prix de revient</figcaption>
+          <div id="barres"></div>
+        </figure>
+      </div>
+
       <p class="total">
-        Total du portefeuille&nbsp;: <strong id="total">—</strong><span id="nb-lignes"></span>
+        Total du portefeuille&nbsp;: <strong id="total">–</strong><span id="nb-lignes"></span>
       </p>
 
       <table>
@@ -68,6 +95,7 @@
             <th scope="col">Qté</th>
             <th scope="col">PRU</th>
             <th scope="col">Cours</th>
+            <th scope="col">Date du cours</th>
             <th scope="col">Investi (€)</th>
             <th scope="col">Valorisation (€)</th>
             <th scope="col">Performance</th>
@@ -77,7 +105,7 @@
         <tbody id="lignes"></tbody>
       </table>
 
-      <!-- Exposition par devise — lot 2 des indicateurs.
+      <!-- Exposition par devise : lot 2 des indicateurs.
            Une liste de définitions (`dl`) et non un tableau : il s'agit de paires
            devise → part, pas d'un croisement de lignes et de colonnes. Un tableau
            à deux colonnes serait lu comme tel par un lecteur d'écran, avec des
@@ -85,7 +113,7 @@
       <section id="bloc-exposition" hidden>
         <h2>Exposition par devise</h2>
         <p class="precision">
-          Devise de <strong>cotation</strong> — pas l'exposition économique. Une valeur
+          Devise de <strong>cotation</strong> : pas l'exposition économique. Une valeur
           cotée en euros peut réaliser l'essentiel de son chiffre d'affaires ailleurs.
         </p>
         <dl id="exposition"></dl>
@@ -124,6 +152,8 @@
     <p>RNCP 37827 · Eramalingam GANDAKUMAR · données personnelles, traitement T1 du registre RGPD</p>
   </footer>
 
-  <script src="app.js"></script>
+  <script src="commun.js?v=5dc68886dd"></script>
+  <script src="graphiques.js?v=c2b8a60636"></script>
+  <script src="app.js?v=9234bd32ca"></script>
 </body>
 </html>

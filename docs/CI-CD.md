@@ -88,7 +88,7 @@ Travail `lint` : `ruff` à une version fixée (0.15.17, la même que dans `requi
 
 Travail `secrets` : gitleaks v8.30.1 lit **tout l'historique** (toutes les branches et tous les tags), valeurs masquées.
 Une clé effacée aujourd'hui reste lisible dans les anciens commits : c'est pour ça qu'il ne lit pas seulement le dernier.
-Exceptions : les cinq fausses clés des tests (`.gitleaks.toml`) et les secrets révoqués de l'incident INC-008
+Exceptions : les six fausses clés des tests (`.gitleaks.toml`) et les secrets révoqués de l'incident INC-008
 (`.gitleaksignore`). Puis `scripts/verifier_dockerfile.py` : aucune déclaration `ARG` ou `ENV` sensible dans le
 `Dockerfile`.
 
