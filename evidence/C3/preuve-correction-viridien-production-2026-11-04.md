@@ -182,3 +182,35 @@ Captures dans `captures-viridien-production/` :
 **Statuts finaux** : testé en local, oui ; déployé, oui (`8ecc5a7`) ; vérifié en production, oui (fichiers servis, base,
 API et MCP avec la clé, écrans). **La fraîcheur des cours reste à traiter à part** : dernière cotation de production le
 27/10/2026 ; un rattrapage, ou une collecte planifiée sur le serveur, est une décision d'Era, non prise ce soir.
+
+## 9. Opération C : rattrapage ciblé des cotations et des taux (accord d'Era, 04/11/2026, 22 h 20, heure de Paris)
+
+Opération séparée de la correction de Viridien : elle n'écrit que dans `cotation` et `taux_change`. Sorties brutes :
+`sorties-production-2026-11-04/9` à `13`, script `c2_modele.sh.txt` (les empreintes et les lignes de R1 y sont ajoutées).
+
+- **C0** : sauvegarde R1 (`rita-prod-R1-avant-rattrapage-2026-11-04-220009.dump`, SHA-256 `211244f2…`), mêmes contrôles que S1.
+- **C1, à blanc en production** : 756 cotations lues (séances du 26/10 au 04/11), 0 écrite ; BCE : GBP et JPY rejetés (14 taux
+  lus sur 28 attendus). Deux défauts du code relevés : aucune complétude par valeur, et une étape BCE partielle passe pour
+  réussie ; chaque étape a sa propre transaction.
+- **Périmètre réel** : chaque valeur repart de sa dernière séance en base, celle-ci comprise (27/10 pour 107 valeurs, 26/10
+  pour CRI.PA) ; les taux du 27/10 au 04/11. **Comptage BCE** : complet = 4 devises × 7 jours = 28 lus, 35 écrits avec les 7
+  lignes EUR. **Complétude** : 108 valeurs demandées, 7 séances chacune ; seule exception permise : CRI.PA, 6 séances (Yahoo
+  n'a pas le 04/11), jamais forcée.
+- **Répétition sur une copie de R1** : BCE puis cotations ; 756 lues et écrites ; R1 contre la copie : `cotation` 245 cellules
+  changées, 648 lignes ajoutées, 0 retirée ; `taux_change` 30 ajoutées ; tout le reste identique ; aucune ligne antérieure au
+  26/10 modifiée. Retour arrière table par table : cotations seules, puis taux : 0 différence avec R1.
+- **Script de C2** (conditions d'Era) : garde de date (UTC et Paris), verrou du serveur tenu de bout en bout, données vérifiées
+  identiques à R1 avant toute écriture, BCE exigée complète en 3 essais au plus sinon retour ciblé des taux, complétude par
+  valeur sinon retour ciblé des deux tables, retour vérifié par empreinte. **Cinq scénarios essayés sur des copies de R1**, par
+  l'entrée standard comme en production : normal (0) ; BCE incomplète (20, retour, 0 différence) ; cotations incomplètes (30,
+  retour des deux tables, 0 différence) ; données changées depuis R1 (12, rien écrit) ; mauvais jour (10, rien écrit).
+- **C2 en production : réussi** (21 h 1x UTC) : données identiques à R1 sous verrou ; BCE complète au 2e essai (1 devise rejetée
+  au 1er) ; 756 cotations lues et écrites, 0 rejetée ; 107 valeurs à 7 séances, exception CRI.PA:6 ; aucune séance après le
+  04/11 ; lignes anciennes inchangées ; `ANALYZE` fait ; dernière séance 04/11/2026, 281 166 cotations, cinq devises au 04/11.
+- **C3** : sauvegarde R2 (`rita-prod-R2-apres-rattrapage-2026-11-04-221935.dump`, SHA-256 `6546e8a5…`) ; R1 et R2 sur les deux
+  disques. R1 contre R2 : **0 différence hors `cotation` et `taux_change`** ; `position`, `valeur`, `alias_valeur` identiques
+  (quantités et prix de revient inchangés, Viridien non réappliqué). Vue recalculée avec les clôtures du 04/11 : VIRIDIEN
+  94,85 €, -48,73 %, poids 0,43 % ; **total 21 935,75 € sur 7 lignes** (résultat du calcul, jamais imposé).
+- **Reste à vérifier par Era avec sa clé (C4)** : écrans Portefeuille et Indicateurs au 04/11, bandeau de fraîcheur, MCP.
+- **Hors périmètre, non fait** : la collecte planifiée sur le serveur et le texte du bandeau. Sans collecte planifiée, les cours
+  vieilliront de nouveau à partir du 05/11 au soir.

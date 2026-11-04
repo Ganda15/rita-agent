@@ -1,0 +1,22 @@
+== garde de date
+   jour UTC 2026-11-04 ; jour a Paris 2026-11-04 ; jour attendu 2026-11-04
+== verrou du serveur tenu jusqu'a la fin
+== donnees concernees identiques a R1 ?
+   cotation >= 2026-10-26 : identique ; taux >= 2026-10-27 : identique ; plus anciennes : identiques
+== 1. BCE, exigee complete : 4 devises et EUR, 7 jours chacune, rien apres le 2026-11-04
+   essai 1 : taux_change (BCE) lues 21 | ecrites 28 | rejetees 1
+   devises completes : 4 sur 5 ; taux apres le 2026-11-04 : 0
+   essai 2 : taux_change (BCE) lues 28 | ecrites 35 | rejetees 0
+   devises completes : 5 sur 5 ; taux apres le 2026-11-04 : 0
+== 2. cotations
+    cotations (yfinance) lues 756 | ecrites 756 | rejetees 0
+    - 3 valeur(s) radiee(s) non demandee(s) : ELE.PA, GTO.PA, ZC.PA
+    - seances du 2026-10-26 au 2026-11-04
+    Etapes reussies : 1/1 Duree : 18.9 s
+== 3. completude, valeur par valeur
+   valeurs demandees 108 (attendu 108) ; 7 seances : 107 ; exceptions : CRI.PA:6 (permises : CRI.PA:6) ; seances apres le 2026-11-04 : 0 ; lignes anciennes inchangees : oui
+== 4. statistiques du planificateur
+   ANALYZE fait
+   derniere seance 2026-11-04 ; cotations 281166
+   taux : CHF 2026-11-04, EUR 2026-11-04, GBP 2026-11-04, JPY 2026-11-04, USD 2026-11-04
+== C2 REUSSI
