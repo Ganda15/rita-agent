@@ -1,55 +1,193 @@
 /* =============================================================================
-   RITA — mise en forme.
+   RITA : mise en forme.
    Éco-conception (C17) : aucune police téléchargée, aucune bibliothèque, aucune
    image. Uniquement des polices déjà présentes sur la machine.
-   Contrastes vérifiés ≥ 4,5:1 sur fond blanc (RGAA 3.2).
+
+   Deux thèmes (refonte 001, décision d'Era du 04/11) : le SOMBRE par défaut (style B
+   des maquettes du 04/10), le CLAIR au choix (style A), posé par theme.js sur
+   <html data-theme="clair">. Chaque couleur de texte a au moins 4,5:1 sur son fond,
+   dans les deux thèmes : le calcul est un test (tests/test_entete_commun.py).
    ============================================================================= */
 
-:root {
-  --texte: #1a1a1a;          /* 16,1:1 sur blanc */
-  --texte-doux: #4a4a4a;     /*  8,6:1 sur blanc */
-  --bord: #d0d0d0;
-  --fond-alt: #f6f6f6;
-  --accent: #12507a;         /*  7,6:1 sur blanc */
-  --alerte: #8a1f11;         /*  8,2:1 sur blanc */
-  /* Fraîcheur des données (C20). Teintes SOMBRES et non saturées : le texte du
-     bandeau doit rester lisible, pas seulement coloré. Ratios calculés sur blanc. */
-  --frais-ok: #145a32;       /*  8,3:1 sur blanc */
-  --frais-attention: #7a4f00;/*  7,1:1 sur blanc */
+:root {                       /* thème sombre, par défaut */
+  color-scheme: dark;
+  /* Polices modernes, déjà installées : rien n'est téléchargé (éco-conception, C17 ; demande d'Era du 04/11).
+     Segoe UI Variable sous Windows 11, SF Pro sous macOS ; Cascadia Mono (Windows Terminal) pour les chiffres. */
+  --police-texte: "Segoe UI Variable Text", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "SF Pro Text",
+                  "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --police-titres: "Segoe UI Variable Display", "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                   "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --police-chiffres: "Cascadia Mono", "SF Mono", ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+  --fond: #0b2a4d;
+  --surface: #0f2643;
+  --fond-alt: #163256;
+  --bord: #2b4a72;
+  --texte: #f5f8fc;
+  --texte-doux: #c5d3e4;
+  --texte-sur-couleur: #0b1a2e; /* texte posé sur une couleur d'écran (bouton, page courante) */
+  --alerte: #ff9a8c;
+  /* Fraîcheur des données (C20) : le texte du bandeau doit rester lisible, pas seulement coloré. */
+  --frais-ok: #5fd394;
+  --frais-attention: #f0b54d;
+  --perimee: #3a2f12;
+  --perimee-survol: #45381a;
+  /* Une couleur par écran, et sa teinte (fond des liens de navigation). */
+  --couleur-portefeuille: #4ccb8a;
+  --teinte-portefeuille: #12382a;
+  --couleur-indicateurs: #a5a8ff;
+  --teinte-indicateurs: #25295a;
+  --couleur-briefing: #f2a93b;
+  --teinte-briefing: #40300f;
+  --couleur-service: #6cb8ea;   /* Question et Tableau de bord */
+  --teinte-service: #123a5c;
+  /* Le fond de la page : du bleu nuit au bleu, comme la couverture du livret E1, avec une lueur teal (la couleur du
+     point du logo) en haut à droite. Des dégradés CSS, aucune image : rien de plus à télécharger. */
+  --degrade-debut: #061527;
+  --degrade-milieu: #0b2a4d;
+  --degrade-fin: #14507f;
+  --degrade: radial-gradient(circle at 88% 0%, rgba(32, 168, 153, .22), transparent 42%),
+             linear-gradient(135deg, var(--degrade-debut) 0%, var(--degrade-milieu) 45%, var(--degrade-fin) 100%);
+  --couleur-marque: #45d3c1;     /* le teal du logo, éclairci pour un fond sombre */
+  --logo: url("logo-rita-sombre.png");   /* la marque officielle, carré blanc pour fond sombre, 64 px */
 }
+
+:root[data-theme="clair"] {   /* thème clair, au choix */
+  color-scheme: light;
+  --fond: #f0f4f9;
+  --surface: #ffffff;
+  --fond-alt: #eef0f3;
+  --bord: #d0d0d0;
+  --texte: #1a1a1a;
+  --texte-doux: #4a4a4a;
+  --texte-sur-couleur: #ffffff;
+  --alerte: #8a1f11;
+  --frais-ok: #145a32;
+  --frais-attention: #7a4f00;
+  --perimee: #fdf6e3;
+  --perimee-survol: #f8edd0;
+  --couleur-portefeuille: #1e7b45;
+  --teinte-portefeuille: #f1f8f4;
+  --couleur-indicateurs: #3f3fa8;
+  --teinte-indicateurs: #f1f1fa;
+  --couleur-briefing: #a35a00;
+  --teinte-briefing: #fcf5ec;
+  --couleur-service: #12507a;
+  --teinte-service: #eef4f9;
+  --degrade-debut: #e6eef7;
+  --degrade-milieu: #f0f4f9;
+  --degrade-fin: #fafbfd;
+  --couleur-marque: #12395e;     /* le bleu nuit du logo */
+  --logo: url("logo-rita-clair.png");   /* carré bleu nuit pour fond clair */
+}
+
+/* La couleur de l'écran courant, lue partout ailleurs (bouton, focus, page courante). */
+body { --couleur-ecran: var(--couleur-service); --teinte-ecran: var(--teinte-service); }
+body[data-ecran="portefeuille"] { --couleur-ecran: var(--couleur-portefeuille); --teinte-ecran: var(--teinte-portefeuille); }
+body[data-ecran="indicateurs"] { --couleur-ecran: var(--couleur-indicateurs); --teinte-ecran: var(--teinte-indicateurs); }
+body[data-ecran="briefing"] { --couleur-ecran: var(--couleur-briefing); --teinte-ecran: var(--teinte-briefing); }
+body[data-ecran="question"] { --couleur-ecran: var(--couleur-service); --teinte-ecran: var(--teinte-service); }
+body[data-ecran="tableau-de-bord"] { --couleur-ecran: var(--couleur-service); --teinte-ecran: var(--teinte-service); }
 
 * { box-sizing: border-box; }
 
 body {
-  margin: 0;
+  margin: 0 auto;
   padding: 1.5rem;
   max-width: 72rem;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--police-texte);
+  -webkit-font-smoothing: antialiased;   /* un texte clair sur fond sombre reste net (macOS) */
   font-size: 1rem;
   line-height: 1.5;
   color: var(--texte);
-  background: #fff;
+  /* transparent : le dégradé de <html> se voit sur toute la page */
 }
+
+html {
+  min-height: 100%;
+  background-color: var(--fond);     /* si le dégradé n'est pas peint */
+  background-image: var(--degrade);
+}
+
+/* Le contenu de chaque écran est une carte, sur le fond de la page. */
+main {
+  padding: 1.25rem 1.4rem;
+  border: 1px solid var(--bord);
+  border-radius: .6rem;
+  background: var(--surface);
+}
+
+a { color: var(--couleur-ecran); }
 
 /* --- Focus visible : indispensable pour la navigation au clavier (RGAA 10.7) */
 :focus-visible {
-  outline: 3px solid var(--accent);
+  outline: 3px solid var(--couleur-ecran);
   outline-offset: 2px;
 }
 
-/* --- En-tête ---------------------------------------------------------------- */
-h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+/* --- Mouvement réduit si le système le demande (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 
-.sous-titre {
-  margin: 0 0 .5rem;
+/* --- En-tête commun aux cinq écrans ------------------------------------------ */
+.entete {
+  margin: 0 0 1.25rem;
+  padding: .9rem 1.1rem;
+  border: 1px solid var(--bord);
+  border-radius: .6rem;
+  background: var(--surface);
+}
+.entete-ligne {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem 1rem;
+}
+.marque { margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--couleur-marque); }
+/* Le logo est décoratif (aria-hidden) : le mot « RITA » le suit. Image de fond, donc une seule des deux
+   versions est téléchargée, celle du thème affiché. */
+.logo {
+  display: inline-block;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-right: .35rem;
+  vertical-align: -.45rem;
+  background: var(--logo) center / contain no-repeat;
+}
+.devise { margin-left: .4rem; font-size: .85rem; font-weight: 400; color: var(--texte-doux); }
+.bascule-theme {
+  padding: .3rem .8rem;
+  border: 1px solid var(--bord);
+  background: transparent;
+  color: var(--texte);
+  font-size: .85rem;
+}
+/* L'état se voit aussi, pas seulement pour un lecteur d'écran (aria-pressed) : une coche quand le clair est actif. */
+.bascule-theme[aria-pressed="true"] { border-color: var(--couleur-ecran); }
+.bascule-theme[aria-pressed="true"]::before { content: "✓ "; }
+
+h1, h2, h3, .marque { font-family: var(--police-titres); letter-spacing: -.01em; }
+h1 { font-size: 1.6rem; font-weight: 650; margin: 0 0 .5rem; }
+
+/* Les chiffres : police à chasse fixe, alignés en colonnes (style B, « terminal de marché »). */
+.total strong, tbody td:nth-child(n+3) { font-family: var(--police-chiffres); }
+
+.sous-titre, .chapeau {
+  margin: 0 0 .75rem;
   color: var(--texte-doux);
   font-size: .95rem;
 }
 
 .avertissement {
-  margin: 0 0 1.5rem;
-  padding: .6rem .8rem;
-  border-left: 4px solid var(--accent);
+  margin: .8rem 0 0;
+  padding: .5rem .8rem;
+  border-left: 4px solid var(--couleur-ecran);
   background: var(--fond-alt);
   font-size: .9rem;
 }
@@ -68,23 +206,31 @@ label { font-weight: 600; }
 
 input[type="password"] {
   padding: .5rem .6rem;
-  min-width: 16rem;
+  /* 16rem au plus, jamais plus large que sa carte : un écran étroit ne défile pas de côté (WCAG 1.4.10). */
+  min-width: min(16rem, 100%);
   border: 1px solid var(--bord);
   border-radius: 4px;
   font: inherit;
 }
 
+input, select, textarea {
+  border: 1px solid var(--bord);
+  background: var(--fond);
+  color: var(--texte);
+}
+
 button {
   padding: .5rem 1.1rem;
-  border: 1px solid var(--accent);
+  border: 1px solid var(--couleur-ecran);
   border-radius: 4px;
-  background: var(--accent);
-  color: #fff;
+  background: var(--couleur-ecran);
+  color: var(--texte-sur-couleur);
   font: inherit;
   cursor: pointer;
 }
 
-button:hover { background: #0d3d5e; }
+/* Le survol assombrit le bouton sans changer sa couleur, dans les deux thèmes. */
+button:hover { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, .12); }
 
 /* --- Statut (chargement / erreur) ------------------------------------------- */
 #statut:not(:empty) {
@@ -144,7 +290,7 @@ summary {
   padding: .4rem 0;
   cursor: pointer;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--couleur-ecran);
 }
 
 dl { margin: .5rem 0 0; }
@@ -163,23 +309,35 @@ footer {
 /* --- Petits écrans : le tableau défile plutôt que de déborder --------------- */
 @media (max-width: 48rem) {
   body { padding: 1rem; }
+  main, .entete { padding: .9rem 1rem; }
   table { display: block; overflow-x: auto; }
 }
 
-/* --- Navigation entre les deux écrans ------------------------------------ */
+/* --- Navigation entre les cinq écrans ------------------------------------
+   Chaque lien porte la couleur de l'écran où il mène (maquette du 04/10) ; la page courante est pleine. */
 nav {
-  margin-top: .9rem;
+  margin-top: .75rem;
   display: flex;
   /* Sprint 5 : cinq entrées ne tiennent plus sur une ligne d'un écran de téléphone (395 px pour 375, mesuré par
      tests/test_smoke_tableau_de_bord.py) ; elles passent à la ligne au lieu de faire défiler la page. */
   flex-wrap: wrap;
-  gap: .4rem 1rem;
-  font-size: .95rem;
+  gap: .4rem;
+  font-size: .92rem;
 }
-nav a { color: var(--accent); }
+nav a, nav [aria-current="page"] {
+  padding: .2rem .75rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  text-decoration: none;
+}
+nav a[href="index.html"] { color: var(--couleur-portefeuille); background: var(--teinte-portefeuille); }
+nav a[href="indicateurs.html"] { color: var(--couleur-indicateurs); background: var(--teinte-indicateurs); }
+nav a[href="briefing.html"] { color: var(--couleur-briefing); background: var(--teinte-briefing); }
+nav a[href="question.html"], nav a[href="tableau-de-bord.html"] { color: var(--couleur-service); background: var(--teinte-service); }
+nav a:hover { border-color: currentColor; text-decoration: underline; }
 /* La page courante n'est pas un lien : cliquer sur l'endroit où l'on est déjà
    n'a aucun sens, et `aria-current` l'annonce aux lecteurs d'écran. */
-nav [aria-current="page"] { font-weight: 600; color: var(--texte-doux); }
+nav [aria-current="page"] { font-weight: 600; color: var(--texte-sur-couleur); background: var(--couleur-ecran); }
 
 /* --- Écran 2 : indicateurs ------------------------------------------------ */
 .barre-outils {
@@ -194,7 +352,7 @@ nav [aria-current="page"] { font-weight: 600; color: var(--texte-doux); }
 
 /* Douze colonnes ne tiennent pas sur un écran étroit. On fait défiler le TABLEAU,
    jamais la page entière. Les attributs `tabindex="0"` et `role="region"` sont posés
-   sur le div DANS LE HTML — sans eux, le défilement serait réservé à la souris. */
+   sur le div DANS LE HTML : sans eux, le défilement serait réservé à la souris. */
 .tableau-large {
   overflow-x: auto;
   margin-top: .5rem;
@@ -202,7 +360,7 @@ nav [aria-current="page"] { font-weight: 600; color: var(--texte-doux); }
 /* La zone est focalisable : son focus doit donc se voir. Un `outline: none` ici
    rendrait la navigation au clavier invisible. */
 .tableau-large:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--couleur-ecran);
   outline-offset: 2px;
 }
 .tableau-large table { min-width: 60rem; }
@@ -210,8 +368,8 @@ nav [aria-current="page"] { font-weight: 600; color: var(--texte-doux); }
 /* Une cotation périmée est signalée par le TEXTE de la cellule « Nom ».
    Ce fond n'est qu'un renfort : à lui seul, il ne porterait aucune information
    pour une personne qui ne perçoit pas les couleurs (RGAA 3.1). */
-tbody tr.perimee { background: #fdf6e3; }
-tbody tr.perimee:hover { background: #f8edd0; }
+tbody tr.perimee { background: var(--perimee); }
+tbody tr.perimee:hover { background: var(--perimee-survol); }
 
 /* --- Exposition par devise (lot 2) --------------------------------------- */
 #bloc-exposition { margin-top: 1.75rem; }
@@ -233,7 +391,7 @@ tbody tr.perimee:hover { background: #f8edd0; }
    La pastille est PUREMENT décorative : elle porte aria-hidden dans le HTML et
    n'ajoute aucune information que le texte ne dise déjà. Si l'utilisateur ne
    distingue pas les couleurs, ou si le CSS ne charge pas, le message reste
-   complet — c'est la condition posée par RGAA 3.1 / WCAG 1.4.1. */
+   complet : c'est la condition posée par RGAA 3.1 / WCAG 1.4.1. */
 .fraicheur {
   display: flex;
   align-items: center;

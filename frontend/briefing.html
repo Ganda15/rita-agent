@@ -5,23 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RITA — Briefing</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="logo-rita-clair.png">
+  <script src="theme.js"></script>
 </head>
-<body>
-  <header>
-    <h1>RITA — Briefing</h1>
-    <p class="sous-titre">Retrieval Intelligence pour le Tracking et l'Analyse</p>
-    <p class="avertissement">
-      Aide à la lecture. Aucune recommandation d'achat ou de vente.
-    </p>
+<body data-ecran="briefing">
+  <header class="entete">
+    <div class="entete-ligne">
+      <p class="marque"><span class="logo" aria-hidden="true"></span> RITA <span class="devise">Retrieval Intelligence pour le Tracking et l'Analyse</span></p>
+      <button type="button" id="bascule-theme" class="bascule-theme" aria-pressed="false" hidden>Thème clair</button>
+    </div>
     <nav aria-label="Navigation principale">
       <a href="index.html">Mon portefeuille</a>
       <a href="indicateurs.html">Indicateurs</a>
       <span aria-current="page">Briefing</span>
+      <a href="question.html">Question</a>
       <a href="tableau-de-bord.html">Tableau de bord</a>
     </nav>
+    <p class="avertissement">Aide à la lecture. Aucune recommandation d'achat ou de vente.</p>
   </header>
 
   <main>
+    <h1>Briefing</h1>
     <!-- ÉTAT 1 — pas de clé d'API : on la demande. Même clé que les deux autres écrans,
          même sessionStorage : saisie une fois, oubliée à la fermeture de l'onglet. -->
     <section id="connexion" hidden>
