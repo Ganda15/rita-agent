@@ -240,13 +240,36 @@ def test_une_cle_refusee_n_est_pas_regardee_par_un_appel_parallele(onglet, serve
 # cache par défaut (`--disable-back-forward-cache`) et on le rétablit. Mesuré le 04/11 : sans ce réglage, Précédent
 # recharge la page ; avec, la page est rendue telle quelle et reçoit `pageshow` avec `persisted`.
 
-def _le_cache_joue(nav, serveur):
-    """Sonde : une marque posée dans une page survit-elle à Précédent ? Sinon, la page a été rechargée, pas rendue."""
+PAGE_TEMOIN = "<!doctype html><meta charset='utf-8'><title>Témoin {}</title><p>Page témoin {}, sans script.</p>"
+
+
+@pytest.fixture(scope="module")
+def site_temoin(tmp_path_factory):
+    """Deux pages minimales, sans script, servies par un petit serveur à part : la sonde du cache ne dépend pas de RITA.
+    Relecture de la PR #182 (04/11/2026) : sondée sur `briefing.html`, une régression de `commun.js` qui recharge la page
+    faisait conclure « cache absent » et sauter les huit tests faits pour l'attraper (démontré par une régression simulée)."""
+    import functools
+    import http.server
+    import threading
+    dossier = tmp_path_factory.mktemp("temoin")
+    for nom in ("a", "b"):
+        (dossier / f"temoin-{nom}.html").write_text(PAGE_TEMOIN.format(nom, nom), encoding="utf-8")
+    gestion = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(dossier))
+    gestion.log_message = lambda *a, **k: None
+    serveur_temoin = http.server.ThreadingHTTPServer(("127.0.0.1", 0), gestion)
+    fil = threading.Thread(target=serveur_temoin.serve_forever, daemon=True)
+    fil.start()
+    yield f"http://127.0.0.1:{serveur_temoin.server_address[1]}"
+    serveur_temoin.shutdown()
+
+
+def _le_cache_joue(nav, adresse_temoin):
+    """Sonde sur la page témoin : une marque posée survit-elle à Précédent ? Sinon, la page a été rechargée, pas rendue."""
     contexte = nav.new_context()
     page = contexte.new_page()
-    page.goto(serveur + "/briefing.html")
+    page.goto(adresse_temoin + "/temoin-a.html")
     page.evaluate("window.__sonde = 'cache'")
-    page.goto(serveur + "/index.html")
+    page.goto(adresse_temoin + "/temoin-b.html")
     page.go_back(wait_until="commit")
     page.wait_for_timeout(1000)
     garde = page.evaluate("window.__sonde || null") == "cache"
@@ -254,28 +277,52 @@ def _le_cache_joue(nav, serveur):
     return garde
 
 
+def choisir_navigateur(lancer, canaux, cache_joue):
+    """Le premier canal qui se lance ET où le cache joue ; rend (navigateur ou None, raisons des canaux écartés).
+
+    Un échec de lancement n'est jamais pris pour une simple absence de cache : sa cause est gardée, et si AUCUN navigateur
+    ne se lance, c'est une erreur (une installation cassée doit faire échouer la suite, pas la faire sauter)."""
+    raisons, un_navigateur_lance = [], False
+    for canal in canaux:
+        nom = canal.get("channel", "chromium par défaut")
+        try:
+            nav = lancer(canal)
+        except Exception as erreur:
+            premiere_ligne = (str(erreur).splitlines() or [""])[0][:160]
+            raisons.append(f"{nom} : lancement impossible ({type(erreur).__name__} : {premiere_ligne})")
+            continue
+        un_navigateur_lance = True
+        if cache_joue(nav):
+            return nav, raisons
+        nav.close()
+        raisons.append(f"{nom} : lancé, mais le cache d'aller-retour ne joue pas sur la page témoin")
+    if not un_navigateur_lance:
+        raise RuntimeError("aucun navigateur ne s'est lancé : " + " ; ".join(raisons))
+    return None, raisons
+
+
 @pytest.fixture(scope="module")
-def navigateur_avec_cache(navigateur, serveur):  # noqa: F811
+def navigateur_avec_cache(navigateur, site_temoin):
     """Le même Playwright que `navigateur` (deux instances synchrones ne peuvent pas cohabiter), le cache rétabli.
 
-    Dans la CI (04/11/2026, PR #182) : le Chromium « headless shell » par défaut ne rend aucune page depuis ce cache, et
-    les tests de changement de mode y passaient sans rien prouver ; le témoin l'a montré. On essaie d'abord le Chromium
-    complet (canal `chromium`, installé par la même commande), puis on sonde : si le cache ne joue pas, les tests sont
-    sautés avec leur raison plutôt que verts pour rien. En local : le Chrome installé (canal `chrome`).
+    Dans la CI : on essaie d'abord le Chromium complet (canal `chromium`), car le « headless shell » par défaut ne rend
+    aucune page depuis ce cache ; en local, le Chrome installé (canal `chrome`). La sonde se fait sur la page témoin. Les
+    huit tests, eux, restent sur les vraies pages de RITA : si le cache joue sur le témoin et que RITA recharge à tort,
+    ils échouent. Saut seulement si un navigateur se lance mais que le cache ne joue pas sur le témoin, avec ses raisons.
     """
     canaux = [{"channel": "chromium"}, {}] if os.environ.get("CI") else [{"channel": "chrome"}]
-    for canal in canaux:
-        try:
-            nav = navigateur.browser_type.launch(headless=True, ignore_default_args=["--disable-back-forward-cache"],
-                                                 **canal)
-        except Exception:
-            continue
-        if _le_cache_joue(nav, serveur):
-            yield nav
-            nav.close()
-            return
-        nav.close()
-    pytest.skip("le cache d'aller-retour ne joue dans aucun navigateur disponible : ces tests ne prouveraient rien")
+
+    def lancer(canal):
+        return navigateur.browser_type.launch(headless=True, ignore_default_args=["--disable-back-forward-cache"],
+                                              **canal)
+    try:
+        nav, raisons = choisir_navigateur(lancer, canaux, lambda n: _le_cache_joue(n, site_temoin))
+    except RuntimeError as erreur:
+        pytest.fail(str(erreur))
+    if nav is None:
+        pytest.skip("cache d'aller-retour indisponible : " + " ; ".join(raisons))
+    yield nav
+    nav.close()
 
 
 @pytest.fixture
@@ -385,3 +432,42 @@ def test_sans_changement_de_mode_la_page_rendue_par_le_cache_est_gardee(onglet_a
     page.wait_for_timeout(1000)
     assert page.evaluate("window.__marque || null") == "cache"
     assert page.chargements == []
+
+
+# --- 04/11/2026 : le choix du navigateur des tests du cache, testé sans navigateur (relecture de la PR #182) -------------
+
+class _FauxNavigateur:
+    def __init__(self, nom, cache):
+        self.nom, self.cache, self.ferme = nom, cache, False
+
+    def close(self):
+        self.ferme = True
+
+
+def test_aucun_navigateur_lance_est_un_echec_avec_sa_cause():
+    def lancer(canal):
+        raise RuntimeError("Executable doesn't exist at /chemin/chrome")
+    with pytest.raises(RuntimeError, match="aucun navigateur ne s'est lancé.*Executable doesn't exist"):
+        choisir_navigateur(lancer, [{"channel": "chromium"}, {}], lambda nav: True)
+
+
+def test_un_navigateur_lance_sans_cache_rend_ses_raisons_et_se_ferme():
+    lances = []
+
+    def lancer(canal):
+        lances.append(_FauxNavigateur(canal.get("channel"), cache=False))
+        return lances[-1]
+    nav, raisons = choisir_navigateur(lancer, [{"channel": "chromium"}], lambda n: n.cache)
+    assert nav is None
+    assert raisons == ["chromium : lancé, mais le cache d'aller-retour ne joue pas sur la page témoin"]
+    assert lances[0].ferme
+
+
+def test_le_premier_canal_qui_marche_est_garde_et_l_echec_precedent_est_dit():
+    def lancer(canal):
+        if canal.get("channel") == "chromium":
+            raise RuntimeError("navigateur complet absent")
+        return _FauxNavigateur("defaut", cache=True)
+    nav, raisons = choisir_navigateur(lancer, [{"channel": "chromium"}, {}], lambda n: n.cache)
+    assert nav.nom == "defaut" and not nav.ferme
+    assert raisons == ["chromium : lancement impossible (RuntimeError : navigateur complet absent)"]
