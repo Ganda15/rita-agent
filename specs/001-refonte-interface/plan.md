@@ -218,7 +218,8 @@ Précisé le 04/11 au soir, avant le code (le plan ne disait pas où se fait le 
 **Fichiers** : créer `frontend/graphiques.js` ; tests `tests/test_graphiques_ui.py` (nouveau, Playwright `page.evaluate`).
 
 **Interfaces produites** (globales `window.GRAPHIQUES`), chacune renvoie `{svg: SVGElement, alternative: HTMLElement}` :
-`courbe(seances: {date, cloture}[])` avec moyennes 20 et 50 séances ; `anneau(poids: {nom, poids_pct}[])` ;
+`courbe(cotations: {date_seance, cloture}[])` avec moyennes 20 et 50 séances (les noms de champs de l'API ; `cloture` arrive
+en texte décimal, « 401.5000 », mesuré le 04/11, et `lireNombre` le convertit, tout autre texte étant écarté) ; `anneau(poids: {nom, poids_pct}[])` ;
 `barres(lignes: {nom, performance_pct}[])` ; `jauge(rsi: number)` ; plus `moyenneMobile(valeurs: number[], n) -> (number|null)[]`,
 **seul calcul fait par l'écran** (exception écrite dans la spécification, § 5) : le serveur fournit les dernières valeurs
 de MA20 et MA50 (`db/indicateurs.sql:95-107`, `/donnees/indicateurs`) ; pour tracer leurs courbes historiques, le

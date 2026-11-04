@@ -454,3 +454,33 @@ tbody tr.perimee:hover { background: var(--perimee-survol); }
 .detail { color: var(--texte-doux); font-size: .92rem; }
 .que-faire { font-weight: 600; }
 .bandeau-exercice { border: 2px dashed var(--frais-attention); padding: .6rem .9rem; font-weight: 600; color: var(--frais-attention); }
+
+/* --- Graphiques (refonte 001, tâche 6 : graphiques.js) ---------------------------------------------------------------
+   Des couleurs déjà vérifiées dans les deux thèmes (au moins 4,5:1 sur les cartes, le seuil des graphiques est 3:1).
+   Rien ne passe par la couleur seule : légende écrite, chiffres signés, flèches, et une alternative en texte. */
+.graphique { display: block; width: 100%; height: auto; max-width: 100%; }
+.graphique-anneau { max-width: 13rem; }
+.graphique-jauge { max-width: 16rem; }
+.graphique .etiquette { fill: var(--texte-doux); font-family: var(--police-chiffres); font-size: 12px; }
+.trace-cours { fill: none; stroke: var(--couleur-ecran); stroke-width: 2.2; }
+.trace-mm20 { fill: none; stroke: var(--texte-doux); stroke-width: 1.6; stroke-dasharray: 6 4; }
+.trace-mm50 { fill: none; stroke: var(--couleur-marque); stroke-width: 1.6; stroke-dasharray: 2 3; }
+circle.trace-cours { fill: var(--couleur-ecran); }
+circle.trace-mm20 { fill: var(--texte-doux); }
+circle.trace-mm50 { fill: var(--couleur-marque); }
+.part { fill: none; stroke-width: 28; }
+.part-0 { stroke: var(--couleur-portefeuille); }
+.part-1 { stroke: var(--couleur-indicateurs); }
+.part-2 { stroke: var(--couleur-briefing); }
+.part-3 { stroke: var(--couleur-service); }
+.part-4 { stroke: var(--couleur-marque); }
+.part-5 { stroke: var(--texte-doux); }
+.barre-hausse { fill: var(--frais-ok); }
+.barre-baisse { fill: var(--alerte); }
+.barre-nulle { fill: var(--texte-doux); }
+.graphique .axe { stroke: var(--bord); stroke-width: 1; }
+.jauge-arc { fill: none; stroke: var(--bord); stroke-width: 14; }
+.jauge-repere { stroke: var(--texte-doux); stroke-width: 2; }
+.jauge-aiguille { stroke: var(--texte); stroke-width: 3; stroke-linecap: round; }
+.valeur-jauge { fill: var(--texte); font-family: var(--police-chiffres); font-size: 18px; font-weight: 700; }
+.alternative-graphique p { margin: .2rem 0; color: var(--texte-doux); font-size: .9rem; }
