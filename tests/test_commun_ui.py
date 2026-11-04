@@ -210,3 +210,19 @@ def test_navigation_des_cinq_pages_avec_une_cle_gardee(onglet, serveur):  # noqa
         assert onglet.evaluate("typeof window.RITA") == "object", fichier
         assert onglet.evaluate("RITA.lireCle()") == CLE_SERVEUR, f"{fichier} : la clé est perdue"
     assert onglet.erreurs_js == []
+
+
+def test_une_cle_refusee_n_est_pas_regardee_par_un_appel_parallele(onglet, serveur):  # noqa: F811
+    """Trouvé par la recette du 02/11 rejouée le 04/11 : deux appels partent ensemble avec la même clé ; l'un est refusé
+    (403), l'autre réussit. Sans garde, le succès arrivé après le refus regardait la clé refusée. Une clé refusée une
+    fois n'est plus jamais gardée dans la page, quel que soit l'ordre des réponses."""
+    onglet.route("**/donnees/indicateurs", lambda r: r.fulfill(status=403, body="{}"))
+    onglet.route("**/donnees/fraicheur", lambda r: r.fulfill(status=200, content_type="application/json", body="{}"))
+    onglet.goto(serveur + "/question.html")
+    onglet.evaluate("sessionStorage.removeItem('rita_api_key')")
+    onglet.evaluate("""async () => {
+        const cle = 'cle-en-essai-0123456789';
+        await RITA.appeler('/donnees/indicateurs', {cle});   // refusée d'abord
+        await RITA.appeler('/donnees/fraicheur', {cle});     // puis un succès avec la même clé
+    }""")
+    assert _cle(onglet) is None

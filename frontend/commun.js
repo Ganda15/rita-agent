@@ -44,6 +44,10 @@
   function garderCle(cle) { ecrire(CLE_STOCKAGE, cle); }
   function oublierCle() { ecrire(CLE_STOCKAGE, null); }
 
+  // Les clés refusées pendant la vie de la page. Deux appels partent souvent ensemble avec la même clé : si l'un est
+  // refusé et que l'autre réussit APRÈS, le succès ne doit pas regarder la clé refusée (trouvé le 04/11).
+  var clesRefusees = new Set();
+
   // Un appel à RITA avec la clé. La clé n'est gardée qu'après une réponse réussie, et oubliée sur 401 ou 403 : une clé
   // refusée ne reste jamais en mémoire, une clé jamais vérifiée n'y entre pas (#73).
   async function appeler(chemin, options) {
@@ -55,8 +59,11 @@
     }
     var reponse = await fetch(chemin, { method: reglages.methode || "GET", headers: entetes });
     if (reponse.status === 401 || reponse.status === 403) {
+      if (cle) {
+        clesRefusees.add(cle);
+      }
       oublierCle();
-    } else if (reponse.ok && cle) {
+    } else if (reponse.ok && cle && !clesRefusees.has(cle)) {
       garderCle(cle);
     }
     return reponse;
