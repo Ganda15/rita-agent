@@ -85,6 +85,13 @@ def attendre_resultat(page):
     page.wait_for_selector("#resultat:not([hidden]) #texte p")
 
 
+def attendre_la_fin_de_la_demande(page):
+    """Le message de fin, pas le message d'attente : « Rédaction en cours » s'écrit dans `#statut` dès l'envoi (04/11/2026,
+    course trouvée dans la CI ; attendre un `#statut` non vide lisait parfois ce message-là)."""
+    page.wait_for_function("(() => { const t = document.getElementById('statut').textContent;"
+                           " return t.length > 0 && !t.startsWith('Rédaction en cours'); })()")
+
+
 # --- le flux et ce qu'il dit ------------------------------------------------------------------------------------------------
 
 def test_flux_vertical_dans_l_ordre(ecran):
@@ -205,12 +212,24 @@ def test_texte_refuse_jamais_affiche(ecran):
 def test_un_message_par_panne(ecran, statut, corps, attendu):
     servir(ecran, "**/briefing?*", statut, corps, {"X-Request-ID": "refpanne0123456789"})
     demander(ecran, "XXX.PA")
-    ecran.wait_for_function("document.getElementById('statut').textContent.length > 0")
+    attendre_la_fin_de_la_demande(ecran)
     message = ecran.locator("#statut").inner_text()
     assert attendu in message, message
     if statut == 500:
         assert "refpanne0123456789" in message, "la référence de la requête, pour retrouver la panne"
     assert not ecran.locator("#form-briefing button[type=submit]").is_disabled()
+
+
+def test_le_message_de_panne_remplace_le_message_d_attente_meme_avec_une_reponse_lente(ecran):
+    """04/11/2026 : `test_un_message_par_panne` échouait au hasard dans la CI (deux cas sur cinq au push de `develop` en
+    `55b9687`, aucun dans la PR sur le même commit). Cause : il attendait un `#statut` non vide, or « Rédaction en cours »
+    s'y écrit dès l'envoi ; sur une machine chargée, le test lisait ce message avant l'arrivée de la panne. Reproduit ici
+    à coup sûr par une réponse retardée de 600 ms."""
+    servir(ecran, "**/briefing?*", 503, {"detail": {"code": "AUCUN_FOURNISSEUR",
+                                                    "message": "Aucun fournisseur de modèle n'a répondu."}}, delai_ms=600)
+    demander(ecran, "XXX.PA")
+    attendre_la_fin_de_la_demande(ecran)
+    assert "Aucun fournisseur de modèle n'a répondu" in ecran.locator("#statut").inner_text()
 
 
 def test_cle_refusee_redemandee_et_oubliee(ecran):

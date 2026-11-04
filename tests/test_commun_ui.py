@@ -240,13 +240,42 @@ def test_une_cle_refusee_n_est_pas_regardee_par_un_appel_parallele(onglet, serve
 # cache par défaut (`--disable-back-forward-cache`) et on le rétablit. Mesuré le 04/11 : sans ce réglage, Précédent
 # recharge la page ; avec, la page est rendue telle quelle et reçoit `pageshow` avec `persisted`.
 
+def _le_cache_joue(nav, serveur):
+    """Sonde : une marque posée dans une page survit-elle à Précédent ? Sinon, la page a été rechargée, pas rendue."""
+    contexte = nav.new_context()
+    page = contexte.new_page()
+    page.goto(serveur + "/briefing.html")
+    page.evaluate("window.__sonde = 'cache'")
+    page.goto(serveur + "/index.html")
+    page.go_back(wait_until="commit")
+    page.wait_for_timeout(1000)
+    garde = page.evaluate("window.__sonde || null") == "cache"
+    contexte.close()
+    return garde
+
+
 @pytest.fixture(scope="module")
-def navigateur_avec_cache(navigateur):
-    """Le même Playwright que `navigateur` (deux instances synchrones ne peuvent pas cohabiter), le cache rétabli."""
-    canal = {} if os.environ.get("CI") else {"channel": "chrome"}
-    nav = navigateur.browser_type.launch(headless=True, ignore_default_args=["--disable-back-forward-cache"], **canal)
-    yield nav
-    nav.close()
+def navigateur_avec_cache(navigateur, serveur):  # noqa: F811
+    """Le même Playwright que `navigateur` (deux instances synchrones ne peuvent pas cohabiter), le cache rétabli.
+
+    Dans la CI (04/11/2026, PR #182) : le Chromium « headless shell » par défaut ne rend aucune page depuis ce cache, et
+    les tests de changement de mode y passaient sans rien prouver ; le témoin l'a montré. On essaie d'abord le Chromium
+    complet (canal `chromium`, installé par la même commande), puis on sonde : si le cache ne joue pas, les tests sont
+    sautés avec leur raison plutôt que verts pour rien. En local : le Chrome installé (canal `chrome`).
+    """
+    canaux = [{"channel": "chromium"}, {}] if os.environ.get("CI") else [{"channel": "chrome"}]
+    for canal in canaux:
+        try:
+            nav = navigateur.browser_type.launch(headless=True, ignore_default_args=["--disable-back-forward-cache"],
+                                                 **canal)
+        except Exception:
+            continue
+        if _le_cache_joue(nav, serveur):
+            yield nav
+            nav.close()
+            return
+        nav.close()
+    pytest.skip("le cache d'aller-retour ne joue dans aucun navigateur disponible : ces tests ne prouveraient rien")
 
 
 @pytest.fixture
