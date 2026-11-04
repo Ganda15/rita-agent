@@ -1,0 +1,10 @@
+image du conteneur en service : ghcr.io/ganda15/rita-api@sha256:9f6f56547c74af86b5e32afec192e6a8cb883d8ee43337cd300d2277e96eb2a9
+reseau rita-agent_default ; utilisateur de la base rita
+debut (UTC) : 2026-11-04T20:27:37Z ; mode reel
+INFO position VIRI.PA du 2021-10-14 : regroupement 100 pour 1 applique sur place, 120 a 1.85 devient 1 a 185.00 (20 rompus hors portefeuille ; communiqué Viridien du 31/07/2024, finalisation du regroupement (100 pour 1))
+
+=== CORRECTIONS CIBLEES (--corrections-seulement) ===
+Positions regroupees : 1   (corrigees sur place ; aucun CSV lu, aucune reconciliation)
+Noms officiels       : 1
+Prix de revient    : aucun hors de l'echelle des cours (lignes en devises differentes non comparees)
+fin (UTC) : 2026-11-04T20:27:39Z ; code 0

@@ -77,3 +77,78 @@ Différences avec la répétition sur la copie représentative : seulement l'`im
 mêmes cellules changées, mêmes chiffres après correction.
 
 Cet accord n'autorise ni la livraison (A), ni la correction (B1, B2), ni aucune restauration dans la base de production.
+
+## 5. L'intervention A et B (accord d'Era : « go a+b », 04/11/2026 vers 19 h 48, heure de Paris)
+
+Accord donné sur la demande regroupée (plan, § 0). Décisions lues dans cet accord : l'exception gitleaks de la clé de test
+simulée fait partie de A, donc acceptée avec A ; le correctif de la passerelle MCP n'a pas été demandé, il n'est **pas**
+livré (proposition gardée sur une branche locale, `db3c709`) ; la lecture L3 des journaux du serveur n'a pas été demandée,
+elle n'est pas faite.
+
+**Départ** : production à `2310f87` ; PR #179 (`refonte-interface` vers `develop`, 6 contrôles sur 6) fusionnée par l'agent
+après l'accord : `develop` à `55b9687`, arbre `ba74608177faac9676ea01aa2ade848bb4d9f001`, celui du commit relu `5318d11`.
+PR #180 (`develop` vers `main`) ouverte : 96 fichiers (les 93 comptés plus les 3 du correctif gitleaks).
+
+**Correctif MCP** (décision d'Era, après la fusion de #179) : PR #181 (`proposition-passerelle-nombres` vers `develop`,
+2 fichiers, hors image), puis #180 se met à jour et rejoue sa CI et sa revue sur le commit qui contient le correctif.
+
+**Revue automatique de #180 sur `55b9687`** : une trouvaille P2 (Codex), `frontend/commun.js:99` : une page restaurée par le
+cache de navigation (bouton Retour) ne relit pas le mode simulation activé entre-temps sur un autre écran. Évaluée : chaque
+page affiche son propre mode par sa mention ; aucune donnée fausse, aucune fuite ; décision laissée à Era.
+
+## 6. Fraîcheur : lecture L3 du serveur (accord d'Era, lecture seule, 04/11/2026 à 18 h 51 UTC)
+
+Gardes vérifiées en tête : `lecture_seule=on role=rita_lecture`. Constats, lus sur le serveur et non déduits :
+dernière séance 27/10 pour les 7 positions ouvertes et dernier taux 27/10 pour les 5 devises (280 518 cotations) ; dernière
+collecte d'articles le 27/10 à 15 h 46 UTC ; **9 manifestes** en tout dans `/root/rita-deploy/rapports` : les ingestions
+d'articles lancées par GitHub, et **un seul rattrapage des cours et des taux, le 27/10 à 15 h 43 UTC** (simulation, puis
+5 508 cotations et 255 taux écrits) ; **aucun manifeste depuis le 27/10 à 15 h 45 UTC** ; **aucune tâche planifiée de
+collecte** (aucun fichier cron ne la nomme ; les minuteries systemd sont celles du système) ; journal des opérations : dernière
+ingestion le 27/10 à 16 h 50 (heure de Paris, passage 40534178721), dernière livraison le 03/11 à 22 h 40 (`f36dda84…`).
+Petit défaut du script de lecture : l'`awk` de la liste des minuteries a échoué sur la ligne de résumé finale de
+`systemctl`. **Lecture corrigée** (même accord, 04/11 à 19 h 17 UTC, `lecture-L3-planification-production-2026-11-04.txt`) :
+18 minuteries systemd, toutes du système (apt, logrotate, sysstat...), aucune unité dont le nom contient « rita » ; aucun
+fichier cron qui cite la collecte ou RITA, crontab de root sans ligne active, aucun travail `at` ; conteneurs : `rita-api-preprod`
+(depuis le 03/11) et `rita-postgres-preprod` (depuis le 20/08), les autres appartiennent à d'autres projets, aucun ne collecte.
+Période couverte par les journaux de RITA sur le serveur : journal des opérations du 14/10 au 03/11 (47 lignes : 39
+livraisons, 2 retours arrière, 6 ingestions) ; manifestes de collecte du 16/10 au 27/10 (dossier des rapports créé le 16/10).
+**Conclusion, sans aller au-delà des preuves** : au 04/11, aucune planification de collecte n'est trouvée sur le serveur ; sur
+la période couverte par les journaux (depuis le 14/10), les cours n'y sont arrivés qu'une fois, par le rattrapage à la main du
+27/10 ; avant le 14/10, aucun journal du serveur ne permet de dire ce qui a tourné. La phrase « La collecte ne tourne plus »
+du bandeau est une déduction du code (`monitorage/fraicheur.py`), pas une lecture de journal.
+
+## 7. A puis B, exécutés (04/11/2026, plan validé par Era ; sorties brutes dans `sorties-production-2026-11-04/`)
+
+**Correctifs intégrés avant la livraison**, chacun sur sa PR vers `develop`, fusionnée par Era : #181 (passerelle MCP),
+#182 (mode simulation au retour par le cache d'aller-retour, plus l'attente corrigée d'un test du briefing), #183 (sonde du
+cache sur une page témoin). CI de #180 sur son contenu final `91b2971` : tous les contrôles verts, les huit tests du cache
+exécutés et réussis ; revue Claude verte sans nouvelle trouvaille ; **revue Codex non relancée sur cette version** (sa
+dernière revue de #180 porte sur `55b9687` ; #181, #182 et #183 ont chacune la leur, sans trouvaille).
+
+**A, interface déployée : réussi.** Fusion de #180 par Era (20 h 12 UTC) : commit `8ecc5a7`, arbre
+`19e38f035abbfe5a78c6d10e7bf88b9dd9e7cc2d`, identique à l'arbre relu. Livraison verte (passage 41904329612, `deployer` de
+20 h 18 à 20 h 22 UTC) ; image publiée `ghcr.io/ganda15/rita-api@sha256:9f6f56547c74af86b5e32afec192e6a8cb883d8ee43337cd300d2277e96eb2a9`,
+celle du conteneur en service (lue sur le serveur avant B1) ; `/health` annonce `8ecc5a7`, construit à 20 h 16 UTC.
+Fichiers réellement servis par l'adresse de production : **63 contrôles réussis, 0 échec** (avant : 11 réussis, 16 échecs) ;
+`Cache-Control: no-cache`, chaque script appelé avec sa version, chaque fichier servi identique à celui de `8ecc5a7`.
+
+**Avant B1 : données inchangées depuis S1.** Empreinte de chaque table (nombre de lignes et empreinte des lignes triées par
+clé, en UTC), même requête sur la production et sur S1 restaurée : 13 lignes sur 13 identiques. Valeurs des quatre cellules
+avant : `quantite` 120,0000 ; `pru` 1,8500 ; `importe_le` 2026-08-20 11:03:00.621572 UTC ; `nom_officiel` CGG BS.
+
+**B1, à blanc : réussi.** Image du conteneur vérifiée (celle de A), utilisateur `rita`, bilan 1 et 1, tout annulé ; relecture
+des empreintes après B1 : 13 sur 13 identiques à S1, rien n'a été écrit.
+
+**B2, réel : réussi.** 20 h 27 min 37 s à 20 h 27 min 39 s UTC, compteurs exigés 1 et 1, code 0.
+
+**S2 et comparaison : réussi.** Sauvegarde `rita-prod-S2-apres-correction-2026-11-04-212755.dump` (5 591 689 octets, SHA-256
+`453e47888d3dde4e16bf531c31784377723c72b75ad372ee00781d6377740fc6`), mêmes contrôles que S1. S1 et S2 restaurées et comparées
+cellule par cellule : **exactement 4 différences** (`quantite` 120 → 1, `pru` 1,85 → 185, `importe_le` → 2026-11-04 20:27:39 UTC,
+`nom_officiel` CGG BS → VIRIDIEN) ; toutes les autres tables identiques, dont 280 518 cotations, 2 166 articles et les journaux.
+Vue recalculée avec les cours présents en production (tous du 27/10) : VIRIDIEN 1 × 185, cours 96,15 €, valorisation 96,15 €,
+**-48,03 %**, poids **0,46 %** ; **total 20 835,20 € sur 7 lignes** ; les six autres lignes gardent quantités, prix de revient,
+cours, valorisations et performances ; seuls leurs poids changent (AI.PA 33,69 %, MC.PA 22,33 %, OR.PA 16,59 %, SU.PA 11,65 %,
+SAN.PA 9,03 %, BNP.PA 6,24 %).
+
+**Non vérifié par l'agent, à faire par Era avec sa clé** : les écrans Portefeuille et Indicateurs (dont les deux graphiques)
+et la passerelle MCP contre la production. **Collecte : non actualisée** par A ni par B ; les cours de production restent au 27/10.

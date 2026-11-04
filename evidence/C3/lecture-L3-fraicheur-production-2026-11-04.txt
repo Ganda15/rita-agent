@@ -1,0 +1,71 @@
+#garde
+lecture_seule=on role=rita_lecture
+horloge du serveur (UTC) : 2026-11-04T18:51:19Z
+#1 ce que contient la base
+cotations : derniere seance 2026-10-27 ; lignes 280518
+position ouverte AI.PA : derniere seance 2026-10-27
+position ouverte BNP.PA : derniere seance 2026-10-27
+position ouverte MC.PA : derniere seance 2026-10-27
+position ouverte OR.PA : derniere seance 2026-10-27
+position ouverte SAN.PA : derniere seance 2026-10-27
+position ouverte SU.PA : derniere seance 2026-10-27
+position ouverte VIRI.PA : derniere seance 2026-10-27
+taux CHF : 2026-10-27
+taux EUR : 2026-10-27
+taux GBP : 2026-10-27
+taux JPY : 2026-10-27
+taux USD : 2026-10-27
+articles : derniere collecte 2026-10-27 15:46:00.412082+00 ; lignes 2166
+#2 manifestes du serveur (nom du fichier, mode, etapes : nom, ok, lues, ecrites, rejetees ; jamais les details)
+nombre de manifestes : 9
+manifeste-2026-10-16-170439.json mode=execution periode=None 0/1 :: rss ok=False lues=0 ecrites=0 rejetees=0 erreur=oui
+manifeste-2026-10-16-190839.json mode=execution periode=None 1/1 :: articles (RSS) ok=True lues=30 ecrites=29 rejetees=1 erreur=non
+manifeste-2026-10-16-192124.json mode=execution periode=None 1/1 :: articles (RSS) ok=True lues=30 ecrites=0 rejetees=30 erreur=non
+manifeste-2026-10-18-092241.json mode=execution periode=None 1/1 :: articles (RSS) ok=True lues=30 ecrites=29 rejetees=1 erreur=non
+manifeste-2026-10-19-140603.json mode=execution periode=None 1/1 :: articles (RSS) ok=True lues=30 ecrites=30 rejetees=0 erreur=non
+manifeste-2026-10-27-154204.json mode=simulation periode=['2026-08-18', '2026-10-27'] 2/2 :: cotations (yfinance) ok=True lues=5508 ecrites=0 rejetees=0 erreur=non | taux_change (BCE) ok=True lues=153 ecrites=0 rejetees=1 erreur=non
+manifeste-2026-10-27-154334.json mode=execution periode=['2026-08-18', '2026-10-27'] 2/2 :: cotations (yfinance) ok=True lues=5508 ecrites=5508 rejetees=0 erreur=non | taux_change (BCE) ok=True lues=204 ecrites=255 rejetees=0 erreur=non
+manifeste-2026-10-27-154429.json mode=execution periode=['2026-08-18', '2026-10-27'] 1/1 :: taux_change (BCE) ok=True lues=204 ecrites=255 rejetees=0 erreur=non
+manifeste-2026-10-27-154559.json mode=execution periode=None 1/1 :: articles (RSS) ok=True lues=30 ecrites=26 rejetees=4 erreur=non
+#3 taches planifiees du serveur qui parlent de collecte (noms de fichiers seulement, jamais le contenu)
+aucune
+sysstat-collect.service sysstat-collect.timer
+update-notifier-download.service update-notifier-download.timer
+systemd-tmpfiles-clean.service systemd-tmpfiles-clean.timer
+motd-news.service motd-news.timer
+dpkg-db-backup.service dpkg-db-backup.timer
+sysstat-rotate.service sysstat-rotate.timer
+sysstat-summary.service sysstat-summary.timer
+logrotate.service logrotate.timer
+apt-daily-upgrade.service apt-daily-upgrade.timer
+man-db.service man-db.timer
+apt-daily.service apt-daily.timer
+update-notifier-motd.service update-notifier-motd.timer
+e2scrub_all.service e2scrub_all.timer
+xfs_scrub_all.service xfs_scrub_all.timer
+fstrim.service fstrim.timer
+apport-autoreport.service apport-autoreport.timer
+snapd.snap-repair.service snapd.snap-repair.timer
+ua-timer.service ua-timer.timer
+#4 journal des operations (cles en liste blanche) : 20 dernieres lignes
+date=2026-10-23T19:42:53+02:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:d7067868e0b4293e5dc1ca6274b41dd1f066d1eec2fee450f4b6a1202a5d3196 ; vers=ghcr.io/ganda15/rita-api@sha256:2bc988731bdbbaa396e2aef2706d233e97d62ba07c9f0d59b1c95f5abd8b634a
+date=2026-10-24T11:57:47+02:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:2bc988731bdbbaa396e2aef2706d233e97d62ba07c9f0d59b1c95f5abd8b634a ; vers=ghcr.io/ganda15/rita-api@sha256:c4064812e0b3db547a053d7c9ec339600b5b4b01fbfcca081cad63119529701b
+date=2026-10-24T18:51:32+02:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:c4064812e0b3db547a053d7c9ec339600b5b4b01fbfcca081cad63119529701b ; vers=ghcr.io/ganda15/rita-api@sha256:0be2a3dbcc8a68aeea294b941b9e602eae8cb8abcac2eb2566d5b9e0548e3a96
+date=2026-10-25T22:27:03+01:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:0be2a3dbcc8a68aeea294b941b9e602eae8cb8abcac2eb2566d5b9e0548e3a96 ; vers=ghcr.io/ganda15/rita-api@sha256:282f09396db874b5fb0c2d5d2f0d3c3aef5bbf3cb733af498294e891ceb8e904
+date=2026-10-26T10:27:15+01:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:282f09396db874b5fb0c2d5d2f0d3c3aef5bbf3cb733af498294e891ceb8e904 ; vers=ghcr.io/ganda15/rita-api@sha256:37c98d81d9f0c20e2207007c00231f502c1289bc7f3dad1578a48f373b7e8bcc
+date=2026-10-26T12:04:45+01:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:37c98d81d9f0c20e2207007c00231f502c1289bc7f3dad1578a48f373b7e8bcc ; vers=ghcr.io/ganda15/rita-api@sha256:a6e60fba9772b605aaa3cf6aafa353b7015c7e406596a44cb086303da2ffaef5
+date=2026-10-26T13:01:08+01:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:a6e60fba9772b605aaa3cf6aafa353b7015c7e406596a44cb086303da2ffaef5 ; vers=ghcr.io/ganda15/rita-api@sha256:2e9c3707c7276f1ccbcf420566c6c5edef3079692b08ac81c148b065e4878240
+date=2026-10-27T11:25:34+01:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:2e9c3707c7276f1ccbcf420566c6c5edef3079692b08ac81c148b065e4878240 ; vers=ghcr.io/ganda15/rita-api@sha256:70d786c08600e40fd6d621c44c7bdf6fb59aab22fd2e55c34a51965f42244acb
+date=2026-10-27T11:52:39+01:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:70d786c08600e40fd6d621c44c7bdf6fb59aab22fd2e55c34a51965f42244acb ; vers=ghcr.io/ganda15/rita-api@sha256:c818dcc57434532634d39ea63aeb53a162f4139fba1bda05b36892d8fd75d129
+date=2026-10-27T16:50:01+01:00 ; operation=ingerer ; resultat=ingeree ; passage=40534178721 ; manifeste=/root/rita-deploy/rapports/manifeste-2026-10-27-154559.json
+date=2026-10-31T13:45:50+01:00 ; operation=livrer ; resultat=refusee ; vers=ghcr.io/ganda15/rita-api@sha256:627e3eff6dbe053c7599ad4f64054cb41991114e25e3f4324ae6addc6d8d3e02
+date=2026-10-31T13:48:16+01:00 ; operation=livrer ; resultat=refusee ; vers=ghcr.io/ganda15/rita-api@sha256:627e3eff6dbe053c7599ad4f64054cb41991114e25e3f4324ae6addc6d8d3e02
+date=2026-10-31T13:54:56+01:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:c818dcc57434532634d39ea63aeb53a162f4139fba1bda05b36892d8fd75d129 ; vers=ghcr.io/ganda15/rita-api@sha256:627e3eff6dbe053c7599ad4f64054cb41991114e25e3f4324ae6addc6d8d3e02
+date=2026-11-01T11:51:49+01:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:627e3eff6dbe053c7599ad4f64054cb41991114e25e3f4324ae6addc6d8d3e02 ; vers=ghcr.io/ganda15/rita-api@sha256:689202be8ac335ae77c043a7c7d1d44ac02f416e34de637a879e74d0541a9595
+date=2026-11-02T18:22:34+01:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:689202be8ac335ae77c043a7c7d1d44ac02f416e34de637a879e74d0541a9595 ; vers=ghcr.io/ganda15/rita-api@sha256:8e7916075a59549afbbbd6ce2bbb574d377b62dfce3bb92edca17d28099c742f
+date=2026-11-02T22:49:10+01:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:8e7916075a59549afbbbd6ce2bbb574d377b62dfce3bb92edca17d28099c742f ; vers=ghcr.io/ganda15/rita-api@sha256:01d99d46423dab9b72c268c7a2c5a5c3f4f3a421bfd06869a18af6a5a24b7e3f
+date=2026-11-03T00:28:38+01:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:01d99d46423dab9b72c268c7a2c5a5c3f4f3a421bfd06869a18af6a5a24b7e3f ; vers=ghcr.io/ganda15/rita-api@sha256:760f972cb27db2eed732cf904b26b225d2704970796f7557bef2540fa49a9ce4
+date=2026-11-03T16:57:53+01:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:760f972cb27db2eed732cf904b26b225d2704970796f7557bef2540fa49a9ce4 ; vers=ghcr.io/ganda15/rita-api@sha256:de063eaae22cceb94f671e3891ea99464e4ec4f59ee715653f0ee87044c03fef
+date=2026-11-03T18:50:41+01:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:de063eaae22cceb94f671e3891ea99464e4ec4f59ee715653f0ee87044c03fef ; vers=ghcr.io/ganda15/rita-api@sha256:620732ac87efb3486220c36a82ec08d87c899648183d57cd712d4961e6bb3019
+date=2026-11-03T22:40:42+01:00 ; operation=livrer ; resultat=livree ; de=ghcr.io/ganda15/rita-api@sha256:620732ac87efb3486220c36a82ec08d87c899648183d57cd712d4961e6bb3019 ; vers=ghcr.io/ganda15/rita-api@sha256:f36dda849c34bd715cd99c8c6f5d47abd528469a6a49581a1f5808fd21efedb4
+#fin
