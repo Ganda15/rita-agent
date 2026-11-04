@@ -243,6 +243,58 @@ def test_en_demonstration_le_jeu_d_exemple_est_servi(monkeypatch):
     assert len(r["data"]["positions"]) == 7
 
 
+def _jeu_demo_servi_par_la_vraie_route(monkeypatch):
+    """Le même jeu, mais sérialisé par la VRAIE route `/donnees/portefeuille` (04/11/2026).
+
+    La fixture ci-dessus suppose des nombres en flottants. Faux avec FastAPI 0.136 et Pydantic 2 (les versions de
+    l'image) : un `Decimal`, ce que psycopg2 rend pour une colonne NUMERIC, sort en TEXTE (`"quantite":"15.0000"`),
+    mesuré sur la base locale et sur la sauvegarde de production. La passerelle refusait donc toute vraie réponse, et ses
+    tests ne le voyaient pas. Ici, seule la lecture en base est remplacée ; la route et sa sérialisation sont les vraies.
+    """
+    from fastapi.testclient import TestClient
+
+    from api import donnees
+    from api.main import app
+    from sources.database import Extraction
+    from tests.conftest import CLE_DE_TEST
+
+    def en_decimal(v):
+        return Decimal(str(v)) if isinstance(v, (int, float)) and not isinstance(v, bool) else v
+
+    lignes = [{k: en_decimal(v) for k, v in p.items()} for p in _jeu_demo_tel_que_l_api_le_rend()["positions"]]
+    for l in lignes:                               # les échelles des colonnes NUMERIC de db/schema.sql
+        l["quantite"], l["pru"] = l["quantite"].quantize(Decimal("0.0001")), l["pru"].quantize(Decimal("0.0001"))
+        l["taux_pour_eur"] = l["taux_pour_eur"].quantize(Decimal("0.000001"))
+    extraction = Extraction(nom="portefeuille", lignes=lignes, nb=len(lignes))
+    monkeypatch.setattr(donnees.database, "portefeuille", lambda *a, **k: extraction)
+    monkeypatch.setattr(donnees.database, "positions_closes", lambda *a, **k: 0)
+    reponse = TestClient(app).get("/donnees/portefeuille", headers={"X-API-Key": CLE_DE_TEST})
+    assert reponse.status_code == 200
+    return reponse.json()
+
+
+def test_une_vraie_reponse_de_la_route_est_servie(monkeypatch):
+    corps = _jeu_demo_servi_par_la_vraie_route(monkeypatch)
+    assert isinstance(corps["positions"][0]["quantite"], str), "la route sert bien les NUMERIC en texte"
+    _simuler(monkeypatch, reponse=_FausseReponse(200, corps))
+    monkeypatch.setenv("RITA_MCP_PORTEFEUILLE", "demo")
+    r = asyncio.run(passerelle.rita_portefeuille())
+    assert r["success"] is True, r
+    assert len(r["data"]["positions"]) == 7
+    assert Decimal(str(r["data"]["total_eur"])) == sum(Decimal(p["valorisation_eur"]) for p in corps["positions"])
+
+
+@pytest.mark.parametrize("texte", [" 12.5", "1e3", "NaN", "Infinity", "12,5", "12.", ""])
+def test_un_texte_presque_numerique_fait_toujours_refuser(monkeypatch, texte):
+    """Seul un décimal écrit comme l'API l'écrit passe : le doute vaut toujours refus (#152)."""
+    corps = _jeu_demo_servi_par_la_vraie_route(monkeypatch)
+    corps["positions"][0]["valorisation_eur"] = texte
+    _simuler(monkeypatch, reponse=_FausseReponse(200, corps))
+    monkeypatch.setenv("RITA_MCP_PORTEFEUILLE", "demo")
+    r = asyncio.run(passerelle.rita_portefeuille())
+    assert r["success"] is False and r["error"]["code"] == "NOT_AUTHORIZED"
+
+
 def test_en_demonstration_des_positions_qui_ne_sont_pas_le_jeu_d_exemple_sont_refusees(monkeypatch):
     """Le cas A04 : la déclaration dit « démo » mais l'API sert autre chose (un portefeuille réel).
     La passerelle le détecte en comparant aux positions du fichier d'exemple, et ne rend RIEN."""
