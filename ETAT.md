@@ -30,7 +30,8 @@ un seul tag `livrable-E4-v3` ; ensuite les copies OneDrive et le dossier de remi
 - **Annexe relue en entier**, texte des images compris : légendes datées du 04/11 (A2 historiques, `autocomplete`,
   garde-fou, 503 ; A4 périmètre du workflow ; A5 contrôle `base` ; A6 commit `12cc00c`), images non retouchées.
 - **A7 nouvelle** : maquettes de la refonte et écrans livrés, comparés élément par élément sur des captures de production
-  d'Era (`evidence/C17/refonte-ecrans-livres-2026-11-04/`). Restent non capturés : la jauge du RSI et le détail d'une valeur.
+  d'Era (`evidence/C17/refonte-ecrans-livres-2026-11-04/`, six captures). Reste non capturée : la colonne RSI de la carte.
+  Question pour Era : « zone neutre de 30 à 70 » (spécification 001, R2) suggère-t-il que les autres zones sont des signaux ?
 - **Défauts trouvés sur l'écran Briefing livré** : l'aide promet « retenue, jamais diffusée » (`frontend/briefing.html`,
   ligne 57) ; les astérisques de mise en forme du modèle s'affichent. À corriger à part, test d'abord, avant l'oral blanc.
 - **Sigle** : le titre du MCD (A1, livret E1) dit « Retrieval Intelligence Trading Assistant », l'interface « pour le
