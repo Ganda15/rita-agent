@@ -40,7 +40,7 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 <li><a href="#demo">7. Démonstration et limites</a><span>p. 16</span></li>
 <li><a href="#matrice">8. Matrice de preuves</a><span>p. 17</span></li>
 <li><a href="#glossaire">Glossaire</a><span>p. 20</span></li>
-<li>Annexe A1 à A6 : les schémas (PDF avec annexe)<span>p. 21</span></li>
+<li>Annexes A1 à A7 : schémas et comparaisons<span>p. 21</span></li>
 </ol>
 </div>
 
@@ -751,8 +751,8 @@ visible) → s'il tape un code inconnu, il lit un message qui dit pourquoi (la g
 
 - **Rattraper les cours de production à la main** ([`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/exploitation.md), procédure du 27/10) : la collecte n'est pas planifiée.
 - **Vérifier `/health`** : la version servie et l'index annoncés.
-- **Préparer des captures de secours datées** pour chaque étape en direct : Portefeuille et Indicateurs existent
-  (04/11, § 6.5), restent les trois autres écrans et la chaîne. Si le direct échoue, je le dis et je passe à la capture.
+- **Captures de secours datées** pour chaque étape en direct : Portefeuille, Indicateurs et le briefing AIR.PA
+  existent (A7) ; restent le code inconnu, Question, Tableau de bord et la chaîne. Si le direct échoue, je passe à la capture.
 - **Répéter la démonstration chronométrée**, partage d'écran compris.
 
 ### 7.3 Ce qui n'est pas fait, en résumé
