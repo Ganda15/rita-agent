@@ -21,11 +21,13 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ---
 
-## ▶️ 04/11, 22 H 35 : RATTRAPAGE DES COURS FAIT ET VÉRIFIÉ EN PRODUCTION ; LE 05/11 : REMISE D'E4, PUIS E2, PUIS E5 SI LE TEMPS RESTE
+## ▶️ 04/11, 22 H 35 : RATTRAPAGE DES COURS FAIT ET VÉRIFIÉ EN PRODUCTION ; LE 05/11 : REMISE DES CINQ LIVRABLES, OBLIGATOIRE
 
-**Prochaine action** : Era fusionne la PR des preuves (`preuves-production-2026-11-04` vers `develop`). Puis, le 05/11,
-le rapport E4 : décider entre une v3 courte et datée (la refonte livrée et vérifiée en production le 04/11) et la v2 telle
-quelle ; ensuite E2, et E5 si le temps reste.
+**Prochaine action** : la PR des preuves #184 est fusionnée par Era dans `develop` (`a4a6703`). Le 05/11, **la remise des
+cinq livrables (E1 à E5) est due : elle n'est pas facultative.** Seules les améliorations le sont, dans cet ordre :
+révision courte et datée d'E4 (document v1.3, futur tag `livrable-E4-v3`, préparée sur la branche
+`revision-E4-et-formulations`), puis E2, puis E5. Une amélioration qui n'est pas taguée à temps ne retarde pas la remise :
+on envoie alors la version taguée existante (E4 v1.2, `livrable-E4-v2`).
 
 - **Opération C** (accords d'Era : préparation reçue à 21 h 59, C2 à 22 h 08, heure de Paris) : R1, C1 à blanc, répétition
   sur une copie de R1, cinq scénarios d'échec essayés, C2 réussi sous verrou (22 h 17 à 22 h 19), R2. R1 contre R2 :

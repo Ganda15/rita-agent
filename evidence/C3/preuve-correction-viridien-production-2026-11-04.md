@@ -180,9 +180,10 @@ Captures dans `captures-viridien-production/` :
   33,7 %, LVMH 22,3 %, OREAL 16,6 %, conformes aux poids attendus) et barres des gains et pertes (VIRIDIEN -48,03 %, qui n'écrase
   plus les autres lignes) ; aucune alerte « performance hors du commun » ; bandeau rouge de fraîcheur toujours présent, attendu.
 
-**Statuts finaux** : testé en local, oui ; déployé, oui (`8ecc5a7`) ; vérifié en production, oui (fichiers servis, base,
-API et MCP avec la clé, écrans). **La fraîcheur des cours reste à traiter à part** : dernière cotation de production le
-27/10/2026 ; un rattrapage, ou une collecte planifiée sur le serveur, est une décision d'Era, non prise ce soir.
+**État à 21 h 48, avant le rattrapage décrit au § 9.** Statuts : testé en local, oui ; déployé, oui (`8ecc5a7`) ; vérifié
+en production, oui (fichiers servis, base, API et MCP avec la clé, écrans). La fraîcheur des cours restait à traiter à
+part : dernière cotation de production le 27/10/2026 ; un rattrapage, ou une collecte planifiée sur le serveur, était une
+décision d'Era, pas encore prise à cette heure-là.
 
 ## 9. Opération C : rattrapage ciblé des cotations et des taux (04/11/2026 ; accord de préparation reçu à 21 h 59, accord de C2 à 22 h 08, heure de Paris)
 
@@ -251,6 +252,6 @@ automatisation, chacun avec un essai qui montre l'arrêt attendu (numéros de li
    empêcher toute autre écriture dans ces tables pendant l'opération, soit limiter le retour aux seules lignes écrites par
    l'opération.
 
-La collecte automatique reste une décision séparée d'Era. **Secrets** : contrôle fait avant chaque push de cette branche ;
-la mention `DATABASE_URL` du script désigne une variable lue dans le conteneur du serveur, jamais sa valeur, et n'est pas une
+La collecte automatique reste une décision séparée d'Era. **Secrets** : avant le push du commit `6786877`, gitleaks v8.30.1
+a contrôlé les cinq commits absents de `main` : aucune fuite détectée. La mention `DATABASE_URL` du script désigne une variable lue dans le conteneur du serveur, jamais sa valeur, et n'est pas une
 clé.
