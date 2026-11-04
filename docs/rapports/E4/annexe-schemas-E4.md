@@ -176,7 +176,7 @@ Retenu le 04/10 : A ; changé le 04/11 : B par défaut, A en thème clair.
 
 **Les trois pages suivantes**, une par écran : la maquette et l'écran livré côte à côte, puis les différences, chacune
 avec son explication. **Limites d'A7** : comparaison visuelle, sur des captures de production du 04/11 ; aucune mesure ;
-la colonne RSI de la carte n'est pas capturée ; Question et Tableau de bord n'ont pas de maquette.
+Question et Tableau de bord n'ont pas de maquette.
 **Deux défauts de l'écran Briefing livré** sont relevés page 14 : une aide qui promet trop, des astérisques affichés ; ils
 sont à corriger à part, test d'abord.
 
@@ -205,7 +205,7 @@ sont à corriger à part, test d'abord.
 
 <div class="duo">
 <figure><img src="schemas/E4-A7-maquette-indicateurs-recadree.png" alt="Maquette de l'écran Indicateurs, style clair, valeurs illustratives"><figcaption>Maquette du 04/10, recadrée de la maquette 3</figcaption></figure>
-<figure><img src="../../../evidence/C3/captures-viridien-production/6-indicateurs-apres-rattrapage-2026-11-04.webp" alt="Écran Indicateurs livré, thème sombre, en production le 4 novembre 2026"><figcaption>Écran livré, en production, capture d'Era du 04/11 au soir ; carte, aide et détail : captures 2, 3 et 6 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v3/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a></figcaption></figure>
+<figure><img src="../../../evidence/C3/captures-viridien-production/6-indicateurs-apres-rattrapage-2026-11-04.webp" alt="Écran Indicateurs livré, thème sombre, en production le 4 novembre 2026"><figcaption>Écran livré, en production, capture d'Era du 04/11 au soir ; carte, colonnes de droite, aide et détail : captures 2, 3, 6 et 7 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v3/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a></figcaption></figure>
 </div>
 
 | Élément | Constat | Explication |
@@ -216,7 +216,7 @@ sont à corriger à part, test d'abord.
 | Colonnes Nom et Cours de la carte | absentes de la maquette, présentes à l'écran | gardées de l'écran d'avant (A2, état 4) |
 | Détail de la valeur choisie | jauge du RSI avec les repères 30 et 70, sa valeur écrite ; moyennes, échangé par jour, volatilité, pire baisse ; lien vers le briefing (capture 6, AC.PA) | conforme ; la courbe et ses deux moyennes y figurent aussi, comme l'annonçait la maquette |
 | Phrase de la jauge | « entre les repères 30 et 70 ; un fait, pas un signal » sur la maquette ; « RSI 14 : 66,4, zone neutre de 30 à 70 » à l'écran | l'écran suit la spécification 001 (R2) et la conception (§ 7), qui fixent « zone neutre de 30 à 70 » ; c'est l'image de la maquette qui disait autrement |
-| Colonne RSI de la carte | sur la maquette ; hors des captures (la carte défile en largeur) | non comparée |
+| Colonnes de droite de la carte | RSI en dernière colonne sur la maquette ; à l'écran aussi, après la volatilité annualisée et la pire baisse (capture 7) | conforme pour le RSI ; écart de lecture : la carte défile en largeur et le code de la valeur sort alors du champ |
 | Aide « Comment lire ce tableau ? » | une phrase sur la maquette ; à l'écran, une définition par indicateur (RSI 14 : « un fait mesuré », cotation périmée, tiret) | gardée et complétée de l'écran d'avant (A2, état 4) |
 
 <div class="saut"></div>
