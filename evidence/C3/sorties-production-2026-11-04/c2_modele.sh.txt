@@ -1,0 +1,114 @@
+#!/bin/bash
+# C2 : rattrapage des cotations et des taux, avec contrôles bloquants et retour arrière ciblé (04/11/2026, accord d'Era
+# sous conditions). Une seule opération, tenue sous le verrou du serveur du début à la fin.
+#   production : ssh root@178.104.184.125 bash -s -- production <image attendue> < c2_complet.sh
+#   essai      : bash c2_complet.sh essai <conteneur jetable> <dsn> [panne]   (panne : ecb | cotations | avant)
+# Ordre : garde de date -> verrou -> R1 vérifiée sur le serveur -> BCE (3 essais, complète ou retour des taux) ->
+# cotations -> complétude (sinon retour des deux tables) -> ANALYZE. Ne touche que `cotation` et `taux_change` ; une autre
+# table n'est jamais restaurée. Codes : 0 réussi ; 10 date ; 11 verrou ; 12 données différentes de R1 (rien écrit) ;
+# 20 BCE incomplète, taux remis à R1 ; 30 cotations incomplètes, les deux tables remises à R1 ; 40 retour arrière en échec.
+set -u
+ENV="$1"
+JOUR=2026-11-04; DU=2026-10-27; PLAGE_COT=2026-10-26
+VALEURS_ATTENDUES=108; EXCEPTIONS_PERMISES="CRI.PA:6"
+__EMPREINTES_R1__
+if [ "$ENV" = production ]; then
+  ATTENDUE="$2"; PYC=python3; C=rita-postgres-preprod
+  cd /root/rita-agent
+  IMAGE="$(docker inspect --format '{{.Config.Image}}' rita-api-preprod)"
+  [ "$IMAGE" = "$ATTENDUE" ] || { echo "ARRET : image inattendue"; exit 4; }
+  RESEAU="$(docker inspect -f '{{range $k, $v := .NetworkSettings.Networks}}{{println $k}}{{end}}' rita-api-preprod | head -n 1)"
+  DATABASE_URL="$(docker exec rita-api-preprod printenv DATABASE_URL)"; export DATABASE_URL
+  [ "$(printf '%s' "$DATABASE_URL" | cut -d: -f2 | tr -d /)" = rita ] || { unset DATABASE_URL; echo "ARRET : utilisateur inattendu"; exit 3; }
+  ingest() { docker run --rm --network "$RESEAU" -e DATABASE_URL -v /root/rita-deploy/rapports:/app/logs "$IMAGE" python -m pipelines.ingest "$@"; }
+else
+  C="$2"; DSN="$3"; PANNE="${4:-}"; PYC=C:/Python314/python.exe
+  ingest() { (cd "D:/KandaWork/RITA_PROJECT/rita-agent" && "$PYC" -X utf8 -m pipelines.ingest --dsn "$DSN" "$@"); }
+fi
+OPT="PGOPTIONS=-cTimeZone=UTC"
+# Sans -i : le script arrive par l'entrée standard (« bash -s ») ; une commande qui la lirait avalerait la suite du script.
+lire()  { docker exec -e "$OPT" $C psql -X -At -U rita -d rita -v ON_ERROR_STOP=1 "$@" < /dev/null; }
+ecrire(){ docker exec -i -e "$OPT" $C psql -X -q -U rita -d rita -v ON_ERROR_STOP=1 -1 "$@"; }
+empreinte() { lire -c "SELECT md5(coalesce(string_agg(t::text, '|' ORDER BY $2), '')) FROM $1 t WHERE $3"; }
+etat() {   # les quatre empreintes : cotation et taux, plage de C2 et lignes plus anciennes
+  echo "$(empreinte cotation 't.ticker, t.date_seance' "t.date_seance >= DATE '$PLAGE_COT'") $(empreinte taux_change 't.devise, t.date_taux' "t.date_taux >= DATE '$DU'") $(empreinte cotation 't.ticker, t.date_seance' "t.date_seance < DATE '$PLAGE_COT'") $(empreinte taux_change 't.devise, t.date_taux' "t.date_taux < DATE '$DU'")"
+}
+retour_taux() {
+  donnees_taux | ecrire -c "DELETE FROM taux_change WHERE date_taux >= DATE '$DU'" \
+    -c "\\copy taux_change FROM STDIN WITH (FORMAT csv, HEADER true)" \
+    -c "DO \$\$ BEGIN IF (SELECT count(*) FROM taux_change WHERE date_taux >= DATE '$DU') <> $NT THEN RAISE EXCEPTION 'taux : compte inattendu'; END IF; END \$\$"
+}
+retour_cotation() {
+  donnees_cotation | ecrire -c "DELETE FROM cotation WHERE date_seance >= DATE '$PLAGE_COT'" \
+    -c "\\copy cotation FROM STDIN WITH (FORMAT csv, HEADER true)" \
+    -c "DO \$\$ BEGIN IF (SELECT count(*) FROM cotation WHERE date_seance >= DATE '$PLAGE_COT') <> $NC THEN RAISE EXCEPTION 'cotation : compte inattendu'; END IF; END \$\$"
+}
+verifier_retour() {   # $1 = cotation et/ou taux attendus remis à R1
+  local e; e=$(etat)
+  set -- $e
+  [ "$1" = "$R1_COT" ] && [ "$2" = "$R1_TAUX" ] && [ "$3" = "$R1_COT_ANCIEN" ] && [ "$4" = "$R1_TAUX_ANCIEN" ] \
+    && echo "   retour verifie : cotation et taux identiques a R1" || { echo "   ECHEC : apres retour, l'etat differe de R1 ($e)"; exit 40; }
+}
+
+echo "== garde de date"
+J_UTC=$(date -u +%F); J_PARIS=$("$PYC" -c "from datetime import datetime; from zoneinfo import ZoneInfo; print(datetime.now(ZoneInfo('Europe/Paris')).date())")
+echo "   jour UTC $J_UTC ; jour a Paris $J_PARIS ; jour attendu $JOUR"
+[ "$J_UTC" = "$JOUR" ] && [ "$J_PARIS" = "$JOUR" ] || { echo "ARRET : hors du jour prevu, aucune seance de plus ne doit entrer"; exit 10; }
+
+if [ "$ENV" = production ]; then
+  exec 9>>/root/rita-deploy/verrou
+  flock -w 600 9 || { echo "ARRET : verrou du serveur non obtenu"; exit 11; }
+  echo "== verrou du serveur tenu jusqu'a la fin"
+fi
+
+[ "${PANNE:-}" = avant ] && lire -c "UPDATE cotation SET cloture = cloture + 1 WHERE ticker = 'AI.PA' AND date_seance = DATE '$DU'" >/dev/null && echo "   (essai : une cotation modifiee avant C2)"
+echo "== donnees concernees identiques a R1 ?"
+set -- $(etat)
+echo "   cotation >= $PLAGE_COT : $( [ "$1" = "$R1_COT" ] && echo identique || echo DIFFERENTE ) ; taux >= $DU : $( [ "$2" = "$R1_TAUX" ] && echo identique || echo DIFFERENTE ) ; plus anciennes : $( [ "$3" = "$R1_COT_ANCIEN" ] && [ "$4" = "$R1_TAUX_ANCIEN" ] && echo identiques || echo DIFFERENTES )"
+[ "$1" = "$R1_COT" ] && [ "$2" = "$R1_TAUX" ] && [ "$3" = "$R1_COT_ANCIEN" ] && [ "$4" = "$R1_TAUX_ANCIEN" ] || { echo "ARRET : les donnees ont change depuis R1, rien n'est ecrit"; exit 12; }
+
+echo "== 1. BCE, exigee complete : 4 devises et EUR, 7 jours chacune, rien apres le $JOUR"
+complet=0
+for essai in 1 2 3; do
+  if [ "${PANNE:-}" = ecb ]; then
+    lire -c "INSERT INTO taux_change SELECT d, j::date, 1.1 FROM unnest(ARRAY['USD','CHF']) d, generate_series(DATE '2026-10-28', DATE '$JOUR', '1 day') j WHERE extract(isodow FROM j) < 6 ON CONFLICT DO NOTHING" >/dev/null
+    echo "   essai $essai : (panne simulee : USD et CHF seulement)"
+  else
+    ingest --etapes ecb --du "$DU" --au "$JOUR" 2>&1 | grep -E "taux_change|: HTTP|ECHEC" | tr -s ' ' | sed "s/^/   essai $essai :/"
+  fi
+  n=$(lire -c "SELECT count(*) FROM (SELECT devise FROM taux_change WHERE date_taux BETWEEN DATE '$DU' AND DATE '$JOUR' GROUP BY devise HAVING count(*) = 7) x")
+  apres=$(lire -c "SELECT count(*) FROM taux_change WHERE date_taux > DATE '$JOUR'")
+  echo "   devises completes : $n sur 5 ; taux apres le $JOUR : $apres"
+  [ "$n" = 5 ] && [ "$apres" = 0 ] && { complet=1; break; }
+  [ "$essai" -lt 3 ] && sleep 30
+done
+if [ "$complet" != 1 ]; then
+  echo "ARRET : BCE incomplete apres 3 essais ; retour cible des taux a R1 (les cotations n'ont pas ete touchees)"
+  retour_taux || { echo "ECHEC du retour des taux"; exit 40; }
+  verifier_retour; exit 20
+fi
+
+echo "== 2. cotations"
+ingest --etapes cotations --strict 2>&1 | grep -E "cotations|seances|radiee|ECHEC|Etapes" | tr -s ' ' | sed 's/^/   /'
+[ "${PANNE:-}" = cotations ] && lire -c "DELETE FROM cotation WHERE ticker = 'AI.PA' AND date_seance = DATE '$JOUR'" >/dev/null && echo "   (essai : une seance d'AI.PA retiree apres la collecte)"
+echo "== 3. completude, valeur par valeur"
+n7=$(lire -c "SELECT count(*) FROM (SELECT v.ticker FROM valeur v JOIN cotation c ON c.ticker = v.ticker AND c.date_seance BETWEEN DATE '$DU' AND DATE '$JOUR' WHERE v.statut_qualite <> 'DELISTEE' GROUP BY v.ticker HAVING count(*) = 7) x")
+exc=$(lire -c "SELECT coalesce(string_agg(ticker || ':' || n, ',' ORDER BY ticker), '') FROM (SELECT v.ticker, count(c.date_seance) n FROM valeur v LEFT JOIN cotation c ON c.ticker = v.ticker AND c.date_seance BETWEEN DATE '$DU' AND DATE '$JOUR' WHERE v.statut_qualite <> 'DELISTEE' GROUP BY v.ticker HAVING count(c.date_seance) < 7) x")
+dem=$(lire -c "SELECT count(*) FROM valeur WHERE statut_qualite <> 'DELISTEE'")
+apres=$(lire -c "SELECT count(*) FROM cotation WHERE date_seance > DATE '$JOUR'")
+set -- $(etat); anciennes_ok=$( [ "$3" = "$R1_COT_ANCIEN" ] && [ "$4" = "$R1_TAUX_ANCIEN" ] && echo oui || echo non )
+echo "   valeurs demandees $dem (attendu $VALEURS_ATTENDUES) ; 7 seances : $n7 ; exceptions : ${exc:-aucune} (permises : $EXCEPTIONS_PERMISES) ; seances apres le $JOUR : $apres ; lignes anciennes inchangees : $anciennes_ok"
+exc_ok=non; { [ -z "$exc" ] || [ "$exc" = "$EXCEPTIONS_PERMISES" ]; } && exc_ok=oui
+if [ "$dem" != "$VALEURS_ATTENDUES" ] || [ "$exc_ok" != oui ] || [ "$apres" != 0 ] || [ "$anciennes_ok" != oui ]; then
+  echo "ARRET : cotations incompletes ou hors perimetre ; retour cible des deux tables a R1"
+  retour_cotation || { echo "ECHEC du retour des cotations"; exit 40; }
+  retour_taux || { echo "ECHEC du retour des taux"; exit 40; }
+  verifier_retour; exit 30
+fi
+echo "== 4. statistiques du planificateur"
+lire -c "ANALYZE cotation" -c "ANALYZE taux_change" >/dev/null && echo "   ANALYZE fait"
+lire -c "SELECT '   derniere seance ' || max(date_seance) || ' ; cotations ' || count(*) FROM cotation"
+lire -c "SELECT '   taux : ' || string_agg(devise || ' ' || d, ', ' ORDER BY devise) FROM (SELECT devise, max(date_taux) d FROM taux_change GROUP BY devise) x"
+[ "$ENV" = production ] && unset DATABASE_URL
+echo "== C2 REUSSI"
+exit 0

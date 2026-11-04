@@ -1,0 +1,37 @@
+restauration avant : code 0
+restauration apres : code 0
+alias_valeur : identique (112 lignes)
+article : identique (2166 lignes)
+cotation : identique (280518 lignes)
+devise : identique (5 lignes)
+macro_observation : identique (0 lignes)
+mcp_calls : identique (0 lignes)
+memory_audit : identique (0 lignes)
+position : 3 cellule(s) changee(s), 0 ligne(s) ajoutee(s), 0 retiree(s), sur 7 lignes
+   {'id': 14} importe_le : 2026-08-20 11:03:00.621572+00:00 -> 2026-11-04 20:27:39.439115+00:00
+   {'id': 14} pru : 1.8500 -> 185.0000
+   {'id': 14} quantite : 120.0000 -> 1.0000
+taux_change : identique (260 lignes)
+valeur : 1 cellule(s) changee(s), 0 ligne(s) ajoutee(s), 0 retiree(s), sur 111 lignes
+   {'ticker': 'VIRI.PA'} nom_officiel : CGG BS -> VIRIDIEN
+total : 4 difference(s) sur 10 table(s)
+== chiffres de la vue apres (cours en base au moment de la sauvegarde)
+   VIRI.PA : 1.0000 x 185.0000, cours 96.1500 du 2026-10-27, valorisation 96.15 EUR, performance -48.03 %
+   total : 20835.20 EUR sur 7 lignes ; poids VIRI.PA 0.46 %
+== les sept lignes, avant | apres (cours en base, valorisation, performance, poids)
+   avant AI.PA 40.0000 158.2500 175.5000 2026-10-27 7020.00 10.90 % 21.75 %
+   avant BNP.PA 15.0000 57.1500 86.7300 2026-10-27 1300.95 51.76 % 4.03 %
+   avant MC.PA 12.0000 632.4000 387.7500 2026-10-27 4653.00 -38.69 % 14.42 %
+   avant OR.PA 8.0000 415.1000 431.9500 2026-10-27 3455.60 4.06 % 10.71 %
+   avant SAN.PA 25.0000 89.6000 75.2600 2026-10-27 1881.50 -16.00 % 5.83 %
+   avant SU.PA 10.0000 181.9000 242.8000 2026-10-27 2428.00 33.48 % 7.52 %
+   avant VIRI.PA 120.0000 1.8500 96.1500 2026-10-27 11538.00 5097.30 % 35.75 %
+   apres AI.PA 40.0000 158.2500 175.5000 2026-10-27 7020.00 10.90 % 33.69 %
+   apres BNP.PA 15.0000 57.1500 86.7300 2026-10-27 1300.95 51.76 % 6.24 %
+   apres MC.PA 12.0000 632.4000 387.7500 2026-10-27 4653.00 -38.69 % 22.33 %
+   apres OR.PA 8.0000 415.1000 431.9500 2026-10-27 3455.60 4.06 % 16.59 %
+   apres SAN.PA 25.0000 89.6000 75.2600 2026-10-27 1881.50 -16.00 % 9.03 %
+   apres SU.PA 10.0000 181.9000 242.8000 2026-10-27 2428.00 33.48 % 11.65 %
+   apres VIRI.PA 1.0000 185.0000 96.1500 2026-10-27 96.15 -48.03 % 0.46 %
+== base jetable supprimee : 0 restante
+== BILAN : OK, exactement 4 differences hors ajouts permis

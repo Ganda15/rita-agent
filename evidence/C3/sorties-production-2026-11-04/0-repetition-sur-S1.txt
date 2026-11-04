@@ -1,0 +1,38 @@
+== 0. restauration de la sauvegarde (roles crees avant, comme en production)
+   code 0
+   10 tables, cotations 280518, derniere seance 2026-10-27
+== 1. instantane de toutes les tables (schema avant)
+   tables : 10 dans public, 10 dans l'instantane
+   ligne VIRI.PA : id 14, 120.0000 x 1.8500, importe_le 2026-08-20 11:03:00.621572+00 ; nom CGG BS
+== 2. passage a blanc (attendu : 1 et 1, puis tout annule)
+=== CORRECTIONS CIBLEES (--corrections-seulement) : A BLANC, TOUT EST ANNULE, RIEN N'EST VALIDE ===
+Positions regroupees : 1   (corrigees sur place ; aucun CSV lu, aucune reconciliation)
+Noms officiels       : 1
+   code de sortie : 0
+total : 0 difference(s) sur 10 table(s)
+   OK : 0 difference(s), attendu 0
+== 3. vrai passage, compteurs attendus 1 et 1 (attendu : 4 cellules, 3 de position et 1 de valeur)
+=== CORRECTIONS CIBLEES (--corrections-seulement) ===
+Positions regroupees : 1   (corrigees sur place ; aucun CSV lu, aucune reconciliation)
+Noms officiels       : 1
+   code de sortie : 0
+position : 3 cellule(s) changee(s), 0 ligne(s) ajoutee(s), 0 retiree(s), sur 7 lignes
+   {'id': 14} importe_le : 2026-08-20 11:03:00.621572+00:00 -> 2026-11-04 18:17:07.019725+00:00
+   {'id': 14} pru : 1.8500 -> 185.0000
+   {'id': 14} quantite : 120.0000 -> 1.0000
+valeur : 1 cellule(s) changee(s), 0 ligne(s) ajoutee(s), 0 retiree(s), sur 111 lignes
+   {'ticker': 'VIRI.PA'} nom_officiel : CGG BS -> VIRIDIEN
+total : 4 difference(s) sur 10 table(s)
+   OK : 4 difference(s), attendu 4
+== 4. chiffres de la vue apres correction (cours de la sauvegarde)
+   VIRI.PA : 1.0000 x 185.0000, cours 96.1500 du 2026-10-27, valorisation 96.15 EUR, performance -48.03 %
+   total : 20835.20 EUR sur 7 lignes ; poids VIRI.PA 0.46 %
+== 5. rejeu (doit refuser : plus rien a corriger)
+!! attendu (1, 1) (positions regroupees, noms corriges), obtenu (0, 0) : tout est annule, rien n'est valide
+   code de sortie : 1
+== 6. retour arriere garde (bloc DO, erreur si un compteur n'est pas 1)
+   compare a l'instantane du depart :
+total : 0 difference(s) sur 10 table(s)
+   OK : 0 difference(s), attendu 0
+== base jetable supprimee : 0 restante
+== BILAN : 0 controle(s) en echec
