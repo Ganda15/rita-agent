@@ -229,3 +229,159 @@ def test_une_cle_refusee_n_est_pas_regardee_par_un_appel_parallele(onglet, serve
         await RITA.appeler('/donnees/fraicheur', {cle});     // puis un succès avec la même clé
     }""")
     assert _cle(onglet) is None
+
+
+# --- 04/11/2026 : Précédent ou Suivant après un changement de mode (trouvaille P2 de la revue de la PR #180) --------------
+#
+# Le navigateur peut rendre une page depuis son cache d'aller-retour, telle qu'on l'a quittée, sans relancer ses scripts :
+# la barrière contre les appels à RITA reste celle posée au chargement. Une page quittée en mode réel puis rendue après
+# une bascule en simulation sur un autre écran laissait partir des appels réels ; une page quittée en simulation puis
+# rendue après un retour au réel les bloquait. Ces tests passent par un VRAI Précédent ou Suivant : Playwright coupe ce
+# cache par défaut (`--disable-back-forward-cache`) et on le rétablit. Mesuré le 04/11 : sans ce réglage, Précédent
+# recharge la page ; avec, la page est rendue telle quelle et reçoit `pageshow` avec `persisted`.
+
+def _le_cache_joue(nav, serveur):
+    """Sonde : une marque posée dans une page survit-elle à Précédent ? Sinon, la page a été rechargée, pas rendue."""
+    contexte = nav.new_context()
+    page = contexte.new_page()
+    page.goto(serveur + "/briefing.html")
+    page.evaluate("window.__sonde = 'cache'")
+    page.goto(serveur + "/index.html")
+    page.go_back(wait_until="commit")
+    page.wait_for_timeout(1000)
+    garde = page.evaluate("window.__sonde || null") == "cache"
+    contexte.close()
+    return garde
+
+
+@pytest.fixture(scope="module")
+def navigateur_avec_cache(navigateur, serveur):  # noqa: F811
+    """Le même Playwright que `navigateur` (deux instances synchrones ne peuvent pas cohabiter), le cache rétabli.
+
+    Dans la CI (04/11/2026, PR #182) : le Chromium « headless shell » par défaut ne rend aucune page depuis ce cache, et
+    les tests de changement de mode y passaient sans rien prouver ; le témoin l'a montré. On essaie d'abord le Chromium
+    complet (canal `chromium`, installé par la même commande), puis on sonde : si le cache ne joue pas, les tests sont
+    sautés avec leur raison plutôt que verts pour rien. En local : le Chrome installé (canal `chrome`).
+    """
+    canaux = [{"channel": "chromium"}, {}] if os.environ.get("CI") else [{"channel": "chrome"}]
+    for canal in canaux:
+        try:
+            nav = navigateur.browser_type.launch(headless=True, ignore_default_args=["--disable-back-forward-cache"],
+                                                 **canal)
+        except Exception:
+            continue
+        if _le_cache_joue(nav, serveur):
+            yield nav
+            nav.close()
+            return
+        nav.close()
+    pytest.skip("le cache d'aller-retour ne joue dans aucun navigateur disponible : ces tests ne prouveraient rien")
+
+
+@pytest.fixture
+def onglet_avec_cache(navigateur_avec_cache):
+    contexte = navigateur_avec_cache.new_context()
+    page = contexte.new_page()
+    page.erreurs_js = []
+    page.on("pageerror", lambda e: page.erreurs_js.append(str(e)))
+    page.chargements = []
+    page.on("load", lambda: page.chargements.append(page.url))
+    page.vues = []
+    page.on("request", lambda r: page.vues.append(r.url))
+    yield page
+    contexte.close()
+
+
+def _poser_le_mode(page, serveur, mode):
+    page.goto(serveur + "/index.html")
+    page.evaluate("sessionStorage.setItem('rita_simulation', 'oui')" if mode == "simulation"
+                  else "sessionStorage.removeItem('rita_simulation')")
+
+
+def _basculer(page):
+    with page.expect_navigation():
+        page.locator("#bascule-simulation").click()
+
+
+def _attendre_la_page(page):
+    """Une page rendue par le cache n'émet pas `load` : `wait_for_load_state` l'attendrait sans fin (constaté le 04/11).
+    On laisse le temps d'un éventuel rechargement, puis on attend que le document affiché soit complet."""
+    page.wait_for_timeout(1500)
+    page.wait_for_function("document.readyState === 'complete'")
+
+
+def _revenir(page, sens):
+    """Précédent ou Suivant, en attendant seulement l'engagement de la navigation."""
+    page.chargements.clear()
+    page.vues.clear()
+    (page.go_back if sens == "precedent" else page.go_forward)(wait_until="commit")
+    _attendre_la_page(page)
+
+
+def _scenario(page, serveur, sens, depart, changer=True):
+    """La page A (briefing) est quittée dans le mode `depart` ; le mode change ou non sur la page B (index) ; on revient
+    sur A par Précédent ou Suivant."""
+    _poser_le_mode(page, serveur, depart)
+    if sens == "precedent":
+        page.goto(serveur + "/briefing.html")
+        page.evaluate("window.__marque = 'cache'")
+        page.goto(serveur + "/index.html")
+        if changer:
+            _basculer(page)
+    else:
+        page.goto(serveur + "/index.html")
+        page.goto(serveur + "/briefing.html")
+        page.evaluate("window.__marque = 'cache'")
+        page.go_back(wait_until="commit")
+        _attendre_la_page(page)
+        if changer:
+            _basculer(page)
+    _revenir(page, sens)
+    assert page.url.endswith("/briefing.html"), page.url
+
+
+def _appel(page, route="/health"):
+    return page.evaluate(f"fetch('{route}').then(r => 'parti ' + r.status, e => e.message)")
+
+
+@pytest.mark.parametrize("sens", ["precedent", "suivant"])
+def test_reel_puis_simulation_ailleurs_aucun_appel_reel_au_retour(onglet_avec_cache, serveur, sens):  # noqa: F811
+    page = onglet_avec_cache
+    _scenario(page, serveur, sens, "reel")
+    assert page.evaluate("RITA.estSimulation()") is True
+    assert _appel(page).startswith("Simulation"), "en simulation, la barrière doit refuser l'appel"
+    assert appels_rita(page.vues) == [], page.vues
+    assert page.locator("#mention-simulation").count() == 1
+    assert page.erreurs_js == []
+
+
+@pytest.mark.parametrize("sens", ["precedent", "suivant"])
+def test_simulation_puis_reel_ailleurs_les_appels_repartent_au_retour(onglet_avec_cache, serveur, sens):  # noqa: F811
+    page = onglet_avec_cache
+    _scenario(page, serveur, sens, "simulation")
+    assert page.evaluate("RITA.estSimulation()") is False
+    assert page.locator("#mention-simulation").count() == 0
+    assert _appel(page) == "parti 200", "en mode réel, l'appel doit partir de nouveau"
+    assert any(a.endswith("/health") for a in page.vues), page.vues
+    assert page.erreurs_js == []
+
+
+@pytest.mark.parametrize("depart", ["reel", "simulation"])
+def test_un_changement_de_mode_recharge_une_seule_fois(onglet_avec_cache, serveur, depart):  # noqa: F811
+    """Aucune boucle : un seul rechargement au retour, puis plus rien."""
+    page = onglet_avec_cache
+    _scenario(page, serveur, "precedent", depart)
+    page.wait_for_timeout(1500)
+    assert len(page.chargements) == 1, page.chargements
+    assert page.evaluate("window.__marque || null") is None, "la page a bien été rechargée"
+
+
+@pytest.mark.parametrize("sens", ["precedent", "suivant"])
+def test_sans_changement_de_mode_la_page_rendue_par_le_cache_est_gardee(onglet_avec_cache, serveur, sens):  # noqa: F811
+    """Témoin : sans bascule, la page revient du cache telle quelle, sans rechargement. Il prouve aussi que le cache
+    d'aller-retour joue bien dans ces tests (sans lui, les tests ci-dessus passeraient sans rien prouver)."""
+    page = onglet_avec_cache
+    _scenario(page, serveur, sens, "reel", changer=False)
+    page.wait_for_timeout(1000)
+    assert page.evaluate("window.__marque || null") == "cache"
+    assert page.chargements == []

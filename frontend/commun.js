@@ -103,6 +103,17 @@
     };
   }
 
+  // Bouton Précédent ou Suivant (04/11/2026, revue de la PR #180) : le navigateur peut rendre la page depuis son cache
+  // d'aller-retour sans relancer ce script, et la barrière ci-dessus resterait celle du chargement. Si le mode a changé
+  // entre-temps sur un autre écran, la page est rechargée une fois, dans le bon mode ; sinon, elle est gardée telle quelle.
+  // Pas de boucle : après ce rechargement, le mode du chargement est celui de la session.
+  var simulationAuChargement = estSimulation();
+  window.addEventListener("pageshow", function (evenement) {
+    if (evenement.persisted && estSimulation() !== simulationAuChargement) {
+      window.location.reload();
+    }
+  });
+
   function afficherMentionSimulation() {
     if (!estSimulation() || document.getElementById("mention-simulation")) {
       return;
