@@ -161,7 +161,8 @@ a { color: var(--couleur-ecran); }
   background: var(--logo) center / contain no-repeat;
 }
 .devise { margin-left: .4rem; font-size: .85rem; font-weight: 400; color: var(--texte-doux); }
-.bascule-theme {
+.entete-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.bascule-theme, .bascule-simulation {
   padding: .3rem .8rem;
   border: 1px solid var(--bord);
   background: transparent;
@@ -169,8 +170,26 @@ a { color: var(--couleur-ecran); }
   font-size: .85rem;
 }
 /* L'état se voit aussi, pas seulement pour un lecteur d'écran (aria-pressed) : une coche quand le clair est actif. */
-.bascule-theme[aria-pressed="true"] { border-color: var(--couleur-ecran); }
-.bascule-theme[aria-pressed="true"]::before { content: "✓ "; }
+.bascule-theme[aria-pressed="true"], .bascule-simulation[aria-pressed="true"] { border-color: var(--couleur-ecran); }
+.bascule-theme[aria-pressed="true"]::before, .bascule-simulation[aria-pressed="true"]::before { content: "✓ "; }
+
+/* --- Mode simulation (R7) : une mention qu'on ne peut pas manquer, et l'écran suspendu sans données d'exemple. */
+.mention-simulation {
+  margin: .6rem 0 0;
+  padding: .45rem .8rem;
+  border: 2px dashed var(--frais-attention);
+  border-radius: .4rem;
+  color: var(--frais-attention);
+  font-weight: 700;
+}
+.suspension {
+  padding: 1rem 1.1rem;
+  border: 2px dashed var(--frais-attention);
+  border-radius: .5rem;
+}
+.suspension h2 { margin-top: 0; font-size: 1.15rem; }
+/* !important : le contenu de l'écran garde parfois un display propre (grille des cartes) que `hidden` ne battrait pas. */
+main.simulation-suspendue > :not(h1):not(.chapeau):not(#suspension) { display: none !important; }
 
 h1, h2, h3, .marque { font-family: var(--police-titres); letter-spacing: -.01em; }
 h1 { font-size: 1.6rem; font-weight: 650; margin: 0 0 .5rem; }

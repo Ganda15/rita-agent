@@ -194,6 +194,17 @@ simulation, `question.js` et `tableau-de-bord.js` s'arrêtent dès leur démarra
 l'envoi du formulaire neutralisé (clavier compris), la mention « Simulation non disponible pour cet écran » et un
 bouton « Quitter la simulation » (décision D1).
 
+Précisé le 04/11 au soir, avant le code (le plan ne disait pas où se fait le choix explicite) :
+- le **choix explicite** est un bouton « Mode simulation » de l'en-tête commun, à côté de « Thème clair » (`aria-pressed`,
+  caché sans JavaScript) ; changer de mode **recharge la page**, ce qui efface les résultats affichés dans les deux sens ;
+- **deuxième barrière** : en simulation, `commun.js` refuse tout appel vers une route de RITA (`/briefing`, `/question`,
+  `/donnees`, `/sante`, `/health`, `/audit`, `/exercice`) ; les fichiers statiques et le futur jeu d'exemple restent permis ;
+- jusqu'à la tâche 10, les **cinq** écrans se suspendent en simulation (aucun n'a encore de données d'exemple) : à chaque
+  commit, aucune donnée réelle sous la mention « Simulation » ;
+- **cache** (trouvé en vérifiant dans le navigateur) : sans `Cache-Control`, Chrome gardait l'ancien `tableau-de-bord.js` à
+  côté du nouveau `commun.js`, et la page montrait le vrai tableau sous la mention ; l'interface est désormais servie avec
+  `Cache-Control: no-cache` (revalidée à chaque visite, 304 sans corps si rien n'a changé) ; test `tests/test_cache_frontend.py`.
+
 - [ ] Tests rouges : `test_cle_gardee_seulement_apres_succes` ; `test_cle_oubliee_sur_403` ;
       `test_mention_simulation_visible_sur_chaque_ecran` ; `test_mode_reel_par_defaut` ;
       `test_question_et_tableau_suspendus_en_simulation` (aucune requête vers `/question`, `/sante`, `/health`,
@@ -295,6 +306,8 @@ jour `docs/ARCHITECTURE.md`, `docs/exploitation.md`, `docs/conception/frontend/r
       refus et les pannes, par pannes injectées sur une copie du même commit ou par interception déclarée ; **aucune
       panne réelle provoquée en production** ; la preuve sépare les deux sortes de contrôles.
 - [ ] Tester le retour à la version précédente (`retour-arriere.yml`), puis revenir à la nouvelle.
+- [ ] Après le déploiement, recharger une fois sans cache (Ctrl+F5) dans le navigateur de la démonstration : les copies
+      reçues avant le correctif du cache (tâche 5) n'avaient pas `no-cache` et peuvent rester quelques heures.
 - [ ] Enregistrer une démonstration datée de secours ; noter le tout dans la preuve datée de la tâche 11.
 
 ---

@@ -276,7 +276,11 @@ elSuspendre.addEventListener("click", () => {
   }
 });
 
-if (sessionStorage.getItem(CLE_STOCKAGE)) {
+// Refonte 001 (R7, décision D1) : en simulation, cet écran n'a pas encore de données d'exemple. Il ne démarre pas :
+// aucun appel, aucune minuterie ; commun.js affiche « Simulation non disponible pour cet écran ».
+if (window.RITA && window.RITA.estSimulation()) {
+  window.RITA.suspendreEcran();
+} else if (sessionStorage.getItem(CLE_STOCKAGE)) {
   actualiser();
 } else {
   montrerConnexion("Saisissez la clé d'API pour voir le tableau de bord.");

@@ -333,7 +333,11 @@ document.getElementById("form-question").addEventListener("submit", (evenement) 
   poserQuestion(cle, document.getElementById("question").value.trim());
 });
 
-if (sessionStorage.getItem(CLE_STOCKAGE)) {
+// Refonte 001 (R7, décision D1) : en simulation, cet écran n'a pas encore de données d'exemple. Il ne démarre pas :
+// aucun appel, aucune minuterie ; commun.js affiche « Simulation non disponible pour cet écran ».
+if (window.RITA && window.RITA.estSimulation()) {
+  window.RITA.suspendreEcran();
+} else if (sessionStorage.getItem(CLE_STOCKAGE)) {
   ouvrirDemande();
 } else {
   demanderCle();
