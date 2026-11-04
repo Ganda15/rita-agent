@@ -23,8 +23,8 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ## ▶️ 04/11, NUIT : E4 v1.3 PRÊT À RELIRE (PR #185, BROUILLON) ; DEUX DÉFAUTS DE L'ÉCRAN BRIEFING TROUVÉS EN PRODUCTION
 
-**Prochaine action** : attendre les contrôles verts du dernier commit de #185 ; Era relit le PDF (34 pages : rapport 20,
-annexe 14), passe #185 en prête et la fusionne vers `develop`, puis `develop` vers `main`, un seul tag `livrable-E4-v3` ;
+**Prochaine action** : #185 et #186 fusionnées par Era (`main` à `6f8474b`, PDF `790e67b1…`) ; l'entrée du CHANGELOG qui
+cite le tag passe par `develop` puis `main`, et le tag `livrable-E4-v3` se pose sur ce commit de fusion, seul dans son push ;
 ensuite les copies OneDrive et le dossier de remise (avec et sans annexes). C17.3 reste ✅ (preuve : 19 tests au clavier
 et 8 cas d'erreur verts en CI sur `8ecc5a7`) ; C17.2 reste « à consolider ».
 
