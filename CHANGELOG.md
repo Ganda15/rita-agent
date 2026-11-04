@@ -9,6 +9,19 @@
 
 ---
 
+## 2026-11-05, nuit : E4 v1.3 sur `main`, prête pour le tag `livrable-E4-v3`
+
+**Livrable** : E4 v1.3, `docs/rapports/E4/rapport-E4-avec-annexe.pdf` (34 pages : rapport 20, annexe 14 ; SHA-256
+`790e67b1…`), sur `main` par la PR #186 (`6f8474b`). Le tag `livrable-E4-v3` se pose sur le commit de fusion qui porte
+cette entrée, seul dans son push ; `livrable-E4-v1` et `livrable-E4-v2` restent. Aucun statut de critère changé.
+
+**Manque découvert** : la porte de livraison exige que le tag soit cité dans `ETAT.md` et `CHANGELOG.md`
+(`scripts/verifier_livrable.py`, `tag_cite`) ; sur `6f8474b`, le CHANGELOG ne le citait pas. Le tag posé là aurait été
+refusé par la livraison, sans image publiée sous son nom, et un tag `livrable-*` ne se déplace plus : d'où cette entrée
+avant le tag.
+
+---
+
 ## 2026-11-04, nuit : E4 v1.3 et son annexe relue en entier ; deux défauts de l'écran Briefing livré
 
 **Manque découvert** : la première préparation d'E4 v1.3 avait changé les liens de l'annexe sans relire ses textes ni ceux
