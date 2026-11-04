@@ -152,3 +152,12 @@ SAN.PA 9,03 %, BNP.PA 6,24 %).
 
 **Non vérifié par l'agent, à faire par Era avec sa clé** : les écrans Portefeuille et Indicateurs (dont les deux graphiques)
 et la passerelle MCP contre la production. **Collecte : non actualisée** par A ni par B ; les cours de production restent au 27/10.
+
+**MCP et API avec la clé, contre la production : réussi** (Era, 04/11/2026 à 21 h 36, heure de Paris ; `verifier_mcp_production.py`,
+passerelle de `main` `8ecc5a7`, clé saisie sans écho). Les trois routes appelées en HTTPS sur l'adresse de production répondent
+200 : `rita_fraicheur` OK, statut rouge, dernière séance 2026-10-27 ; `rita_portefeuille` OK, **verrou de démonstration accepté**
+(le défaut de #152, corrigé par #181, est levé en production), 7 positions, total 20 835,20 € ; VIRI.PA VIRIDIEN 1,0000 × 185,0000,
+cours 96,15 du 27/10, valorisation 96,15, -48,03 % ; les six autres lignes identiques à la vue de S2 ; `rita_indicateurs` OK
+(VIRI.PA) ; 0 échec. Ces appels ont laissé des lignes dans `mcp_calls`, comme prévu.
+
+**Reste à vérifier par Era** : les écrans Portefeuille et Indicateurs de la production et leurs deux graphiques.
