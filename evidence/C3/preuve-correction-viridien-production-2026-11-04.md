@@ -3,11 +3,12 @@
 Plan suivi : [`docs/PLAN-VIRIDIEN-PRODUCTION.md`](../../docs/PLAN-VIRIDIEN-PRODUCTION.md). Correction locale :
 [`preuve-correction-viridien-2026-11-04.md`](preuve-correction-viridien-2026-11-04.md).
 
-| Statut | État au 04/11/2026, 21 h 50 (heure de Paris) |
+| Statut | État au 04/11/2026, 21 h 50 (heure de Paris), complété par l'opération C (dernière ligne, § 9) |
 |---|---|
 | Testé en local | **oui** : base locale corrigée et vérifiée cellule par cellule et sur l'écran ; mode `--corrections-seulement` et ses portes testés sur des copies (id 8 à 14) ; suite complète 2 180 réussis, 60 sautés, 2 xfailed, deux fois (la seconde avec Azure injoignable) ; **répétition sur la sauvegarde S1 de la production : 0 contrôle en échec** (§ 4) |
 | Déployé | **oui** (04/11, 20 h 22 UTC) : `8ecc5a7`, image `rita-api@sha256:9f6f5654…`, § 7 |
-| Vérifié en production | **oui** : fichiers servis 63 sur 63 ; B2 puis S2 comparée à S1, exactement 4 cellules ; API et MCP avec la clé, 0 échec ; écrans Portefeuille et Indicateurs et leurs deux graphiques, captures d'Era (§ 7 et 8). Cours de production toujours au 27/10 : la fraîcheur est hors de cette correction |
+| Vérifié en production | **oui** : fichiers servis 63 sur 63 ; B2 puis S2 comparée à S1, exactement 4 cellules ; API et MCP avec la clé, 0 échec ; écrans Portefeuille et Indicateurs et leurs deux graphiques, captures d'Era (§ 7 et 8). Cours de production toujours au 27/10 à 21 h 50 : la fraîcheur est hors de cette correction |
+| Rattrapage des cours (opération C) | **fait et vérifié** : C2 réussi sous verrou ; R1 contre R2, aucune différence hors `cotation` et `taux_change` ; écrans contrôlés par Era avec sa clé (C4, captures 5 et 6). **Script à renforcer avant toute réutilisation** (§ 9.1) |
 
 ## 1. Avant (lecture seule et écran public)
 
@@ -183,7 +184,12 @@ Captures dans `captures-viridien-production/` :
 API et MCP avec la clé, écrans). **La fraîcheur des cours reste à traiter à part** : dernière cotation de production le
 27/10/2026 ; un rattrapage, ou une collecte planifiée sur le serveur, est une décision d'Era, non prise ce soir.
 
-## 9. Opération C : rattrapage ciblé des cotations et des taux (accord d'Era, 04/11/2026, 22 h 20, heure de Paris)
+## 9. Opération C : rattrapage ciblé des cotations et des taux (04/11/2026 ; accord de préparation reçu à 21 h 59, accord de C2 à 22 h 08, heure de Paris)
+
+*Chronologie corrigée le 04/11 au soir, après relecture. Ce titre donnait « 22 h 20 », heure impossible : R2, faite après C2,
+porte l'heure de 22 h 19 min 35 s. Les heures de ce paragraphe viennent maintenant du journal de session
+(`sorties-production-2026-11-04/14-chronologie-journal-de-session.txt`, horodatages vérifiés à l'extraction) et du nom des
+sauvegardes, qui est à l'heure de Paris.*
 
 Opération séparée de la correction de Viridien : elle n'écrit que dans `cotation` et `taux_change`. Sorties brutes :
 `sorties-production-2026-11-04/9` à `13`, script `c2_modele.sh.txt` (les empreintes et les lignes de R1 y sont ajoutées).
@@ -204,13 +210,47 @@ Opération séparée de la correction de Viridien : elle n'écrit que dans `cota
   valeur sinon retour ciblé des deux tables, retour vérifié par empreinte. **Cinq scénarios essayés sur des copies de R1**, par
   l'entrée standard comme en production : normal (0) ; BCE incomplète (20, retour, 0 différence) ; cotations incomplètes (30,
   retour des deux tables, 0 différence) ; données changées depuis R1 (12, rien écrit) ; mauvais jour (10, rien écrit).
-- **C2 en production : réussi** (21 h 1x UTC) : données identiques à R1 sous verrou ; BCE complète au 2e essai (1 devise rejetée
+- **C2 en production : réussi** (commande lancée à 21 h 17 min 23 s UTC et rendue à 21 h 19 min 17 s UTC, d'après le journal de
+  session ; dans le dépôt, C2 est encadrée par R1, nommée 22 h 00 min 09 s, et R2, nommée 22 h 19 min 35 s, heure de Paris,
+  soit 21 h 00 min 09 s et 21 h 19 min 35 s UTC) : données identiques à R1 sous verrou ; BCE complète au 2e essai (1 devise rejetée
   au 1er) ; 756 cotations lues et écrites, 0 rejetée ; 107 valeurs à 7 séances, exception CRI.PA:6 ; aucune séance après le
   04/11 ; lignes anciennes inchangées ; `ANALYZE` fait ; dernière séance 04/11/2026, 281 166 cotations, cinq devises au 04/11.
 - **C3** : sauvegarde R2 (`rita-prod-R2-apres-rattrapage-2026-11-04-221935.dump`, SHA-256 `6546e8a5…`) ; R1 et R2 sur les deux
   disques. R1 contre R2 : **0 différence hors `cotation` et `taux_change`** ; `position`, `valeur`, `alias_valeur` identiques
   (quantités et prix de revient inchangés, Viridien non réappliqué). Vue recalculée avec les clôtures du 04/11 : VIRIDIEN
   94,85 €, -48,73 %, poids 0,43 % ; **total 21 935,75 € sur 7 lignes** (résultat du calcul, jamais imposé).
-- **Reste à vérifier par Era avec sa clé (C4)** : écrans Portefeuille et Indicateurs au 04/11, bandeau de fraîcheur, MCP.
+- **C4, contrôle visuel par Era avec sa clé : conforme** (captures reçues à 22 h 28 min 56 s et 22 h 29 min 26 s, heure de
+  Paris, fichier 14). Portefeuille (`captures-viridien-production/5-portefeuille-apres-rattrapage-2026-11-04.webp`) : bandeau
+  vert « Données à jour », dernière séance du 04/11/2026 ; valeur totale 21 935,75 € ; 7 lignes ouvertes ; 0 ligne sans taux
+  de change ; VIRIDIEN -48,73 %, 0,4 % du portefeuille. Indicateurs (`6-indicateurs-apres-rattrapage-2026-11-04.webp`) :
+  « Carte des performances : cours du 04/11/2026 », 108 valeurs, 3 cotations périmées masquées ; l'adresse de production
+  (`178-104-184-125.sslip.io/indicateurs.html`) est visible dans la barre du navigateur. Constat écrit par Era le même soir :
+  il a vérifié les deux écrans et retrouve ces valeurs. Aucune clé visible sur les deux captures. CRI.PA, dont la dernière séance reste le 03/11, n'est pas dans la partie capturée ; cette exception est
+  attendue. Ces chiffres sont ceux de cette collecte et changeront à la prochaine actualisation. **Non refait après C2** :
+  la vérification MCP avec la clé (§ 7, faite avant le rattrapage).
 - **Hors périmètre, non fait** : la collecte planifiée sur le serveur et le texte du bandeau. Sans collecte planifiée, les cours
   vieilliront de nouveau à partir du 05/11 au soir.
+
+### 9.1 Réserves de la relecture du 04/11 au soir : à lever avant toute réutilisation du script
+
+Le résultat de C2 est établi par les sorties 12 et 13 ; C2 n'est pas relancée et Viridien n'est pas réappliqué. Le script, lui,
+n'est pas encore une procédure qu'on peut relancer sans précaution. Trois défauts sont à corriger avant toute réutilisation ou
+automatisation, chacun avec un essai qui montre l'arrêt attendu (numéros de ligne de `c2_modele.sh.txt`) :
+
+1. **Complétude** : la condition bloquante (ligne 102) ne teste ni le nombre de valeurs à 7 séances, calculé ligne 95 et
+   seulement affiché, ni les dates exactes. Une valeur avec une séance en trop, ou une séance à une mauvaise date dans la
+   période, passerait. À faire : comparer, valeur par valeur, les dates en base à la liste exacte des séances attendues, et
+   arrêter sur tout écart, en plus comme en moins.
+2. **Propagation des erreurs** : le script n'a que `set -u`. Le statut d'une collecte est celui du dernier filtre de la chaîne
+   (`sed`, lignes 77 et 92), pas celui de `ingest`. Une lecture en échec rend une chaîne vide, et une liste d'exceptions vide
+   passe pour « aucune exception » (ligne 96). L'échec d'`ANALYZE` n'arrête rien (ligne 109). À faire : toute erreur technique
+   déclenche le traitement prévu (arrêt, retour ciblé), jamais un « C2 REUSSI » ; un essai par panne.
+3. **Écritures concurrentes** : le retour arrière efface puis recharge toute une plage de dates (lignes 37 et 42). Le verrou du
+   serveur (ligne 59) ne protège que des programmes qui le prennent. Aucune planification de collecte n'a été trouvée (§ 6) et
+   aucun autre producteur connu n'écrit dans `cotation` ni `taux_change`, mais le script ne le garantit pas. À faire : soit
+   empêcher toute autre écriture dans ces tables pendant l'opération, soit limiter le retour aux seules lignes écrites par
+   l'opération.
+
+La collecte automatique reste une décision séparée d'Era. **Secrets** : contrôle fait avant chaque push de cette branche ;
+la mention `DATABASE_URL` du script désigne une variable lue dans le conteneur du serveur, jamais sa valeur, et n'est pas une
+clé.
