@@ -3,11 +3,11 @@
 Plan suivi : [`docs/PLAN-VIRIDIEN-PRODUCTION.md`](../../docs/PLAN-VIRIDIEN-PRODUCTION.md). Correction locale :
 [`preuve-correction-viridien-2026-11-04.md`](preuve-correction-viridien-2026-11-04.md).
 
-| Statut | État au 04/11/2026, 19 h 30 (heure de Paris) |
+| Statut | État au 04/11/2026, 21 h 50 (heure de Paris) |
 |---|---|
 | Testé en local | **oui** : base locale corrigée et vérifiée cellule par cellule et sur l'écran ; mode `--corrections-seulement` et ses portes testés sur des copies (id 8 à 14) ; suite complète 2 180 réussis, 60 sautés, 2 xfailed, deux fois (la seconde avec Azure injoignable) ; **répétition sur la sauvegarde S1 de la production : 0 contrôle en échec** (§ 4) |
-| Déployé | **non** : la production sert le commit `2310f87` ; le code de la correction est commité (`1dd8572`) et poussé sur `refonte-interface`, le plan l'est en `ca5b4f8`, rien n'est fusionné dans `main` |
-| Vérifié en production | **non** : aucune écriture faite ni autorisée ; seule la lecture S1 a été faite, sur l'accord d'Era |
+| Déployé | **oui** (04/11, 20 h 22 UTC) : `8ecc5a7`, image `rita-api@sha256:9f6f5654…`, § 7 |
+| Vérifié en production | **oui** : fichiers servis 63 sur 63 ; B2 puis S2 comparée à S1, exactement 4 cellules ; API et MCP avec la clé, 0 échec ; écrans Portefeuille et Indicateurs et leurs deux graphiques, captures d'Era (§ 7 et 8). Cours de production toujours au 27/10 : la fraîcheur est hors de cette correction |
 
 ## 1. Avant (lecture seule et écran public)
 
@@ -161,3 +161,24 @@ cours 96,15 du 27/10, valorisation 96,15, -48,03 % ; les six autres lignes ident
 (VIRI.PA) ; 0 échec. Ces appels ont laissé des lignes dans `mcp_calls`, comme prévu.
 
 **Reste à vérifier par Era** : les écrans Portefeuille et Indicateurs de la production et leurs deux graphiques.
+
+## 8. Écrans de la production vérifiés par Era avec sa clé (04/11/2026, 21 h 41 à 21 h 48, heure de Paris)
+
+Captures dans `captures-viridien-production/` :
+
+- **21 h 41, Portefeuille resté sur « Chargement du portefeuille… »** (`2-portefeuille-chargement-transitoire-2026-11-04.webp`).
+  Diagnostic, sans toucher au serveur : les journaux de l'API depuis la livraison ne montrent aucune erreur, et tous les appels
+  de la page ont reçu 200 (`/donnees/portefeuille` 8 fois, `/donnees/indicateurs-portefeuille` 7, `/donnees/fraicheur` 8) ; les
+  trois routes répondent en moins de 0,2 s ; mêmes en-têtes et mêmes scripts servis que sur le poste, aucune politique CSP. Le
+  code livré, lancé sur le poste contre S2 restaurée, affiche le portefeuille sans erreur JavaScript. Après un rechargement, la
+  page s'affiche (capture de 21 h 48). État transitoire, **non reproduit** ; sa cause n'est pas établie.
+- **21 h 46, Indicateurs** (`3-indicateurs-apres-2026-11-04.webp`) : nouvelle interface, 108 valeurs, 3 cotations périmées
+  masquées, recherche, tri, carte des performances au cours du 27/10/2026.
+- **21 h 48, Portefeuille** (`4-portefeuille-apres-2026-11-04.webp`) : nouvelle interface ; valeur totale **20 835,20 €**,
+  7 lignes ouvertes, 0 ligne sans taux, 0 position close ; **les deux graphiques lisibles** : anneau des poids (AIR LIQUIDE
+  33,7 %, LVMH 22,3 %, OREAL 16,6 %, conformes aux poids attendus) et barres des gains et pertes (VIRIDIEN -48,03 %, qui n'écrase
+  plus les autres lignes) ; aucune alerte « performance hors du commun » ; bandeau rouge de fraîcheur toujours présent, attendu.
+
+**Statuts finaux** : testé en local, oui ; déployé, oui (`8ecc5a7`) ; vérifié en production, oui (fichiers servis, base,
+API et MCP avec la clé, écrans). **La fraîcheur des cours reste à traiter à part** : dernière cotation de production le
+27/10/2026 ; un rattrapage, ou une collecte planifiée sur le serveur, est une décision d'Era, non prise ce soir.
