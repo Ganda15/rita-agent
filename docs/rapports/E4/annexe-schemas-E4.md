@@ -17,7 +17,7 @@ img.moyen{ max-height:128mm; }
 img.presque{ max-height:150mm; }
 .duo{ display:flex; gap:5mm; align-items:flex-start; margin:2mm 0 1mm; }
 .duo figure{ flex:1; margin:0; }
-.duo img{ max-height:78mm; margin:0 auto 1mm; }
+.duo img{ max-height:62mm; margin:0 auto 1mm; }
 .duo figcaption{ font-size:8.8pt; text-align:center; color:var(--ink-soft); }
 </style>
 
@@ -53,8 +53,8 @@ images ; les maquettes d'A7 sont recadrées pour la page.
 
 **Ce que l'annexe ne contient pas, et pourquoi.** Les écrans Question et Tableau de bord n'ont pas de maquette
 préalable (rapport, critère C17.2) : leurs parcours (A6) et le diagramme de flux (A4) sont relevés sur l'existant le
-02/11, et le disent. Ils décrivent l'application ; ils n'ont pas guidé sa construction. Le Briefing livré le 04/11 reste à
-comparer à sa maquette (A7).
+02/11, et le disent. Ils décrivent l'application ; ils n'ont pas guidé sa construction. Les écrans livrés le 04/11 sont
+comparés à leurs maquettes en A7, sur des captures de production.
 
 
 ### Les schémas en miniature
@@ -174,13 +174,19 @@ partie capturée. Une capture ne prouve pas à elle seule la conformité ; le cr
 **Maquette 1, les trois styles comparés le 04/10**, recadrée (original : [`maquette-1-style-visuel.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/conception/frontend/maquettes/maquette-1-style-visuel.png)).
 Retenu le 04/10 : A ; changé le 04/11 : B par défaut, A en thème clair.
 
+**Les trois pages suivantes**, une par écran : la maquette et l'écran livré côte à côte, puis les différences, chacune
+avec son explication. **Limites d'A7** : comparaison visuelle, sur des captures de production du 04/11 ; aucune mesure ;
+la jauge du RSI et le détail d'une valeur ne sont pas capturés ; Question et Tableau de bord n'ont pas de maquette.
+**Deux défauts de l'écran Briefing livré** sont relevés page 14 : une aide qui promet trop, des astérisques affichés ; ils
+sont à corriger à part, test d'abord.
+
 <div class="saut"></div>
 
 ### L'écran Portefeuille
 
 <div class="duo">
 <figure><img src="schemas/E4-A7-maquette-portefeuille-recadree.png" alt="Maquette de l'écran Portefeuille, style clair, valeurs illustratives"><figcaption>Maquette du 04/10, recadrée de la maquette 3</figcaption></figure>
-<figure><img src="../../../evidence/C3/captures-viridien-production/5-portefeuille-apres-rattrapage-2026-11-04.webp" alt="Écran Portefeuille livré, thème sombre, en production le 4 novembre 2026"><figcaption>Écran livré, en production, capture d'Era du 04/11 au soir</figcaption></figure>
+<figure><img src="../../../evidence/C3/captures-viridien-production/5-portefeuille-apres-rattrapage-2026-11-04.webp" alt="Écran Portefeuille livré, thème sombre, en production le 4 novembre 2026"><figcaption>Écran livré, en production, capture d'Era du 04/11 au soir ; page entière et aide dépliée : captures 4 et 5 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v3/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a></figcaption></figure>
 </div>
 
 | Élément | Constat | Explication |
@@ -190,7 +196,7 @@ Retenu le 04/10 : A ; changé le 04/11 : B par défaut, A en thème clair.
 | Centre de l'anneau | « 10 lignes » sur la maquette, rien à l'écran | écart constaté ; le nombre de lignes reste dans la carte « Lignes ouvertes » et dans le titre de l'anneau lu par un lecteur d'écran |
 | Répartition écrite | une ligne sous l'anneau sur la maquette ; une liste à l'écran, et une seconde liste sous les barres | même règle, rien n'est dit par la seule couleur ; présentation en liste |
 | Navigation | trois liens sur la maquette ; cinq onglets, le mode simulation et le thème à l'écran | Question (16/10) et Tableau de bord (22/10) sont venus après la maquette ; le mode simulation date du 04/11 |
-| Colonnes du détail | « taux appliqué (USD → EUR) » sur la maquette ; dans l'en-tête capturé, pas de colonne de taux, mais la date du cours et le poids | écart constaté ; la conversion en euros est expliquée dans l'aide de la page ([`frontend/index.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/frontend/index.html), ligne 128) |
+| Colonnes du détail | « taux appliqué (USD → EUR) » sur la maquette ; à l'écran, pas de colonne de taux, mais la date du cours et le poids, puis une section « Exposition par devise » | toutes les lignes du jeu de démonstration sont en euros (EUR 100 %) ; l'aide de la page dit la conversion : « converti en euros au dernier taux BCE connu » (capture 5) |
 | Valeurs | illustratives sur la maquette ; données de production du 04/11 à l'écran | voulu |
 
 <div class="saut"></div>
@@ -199,7 +205,7 @@ Retenu le 04/10 : A ; changé le 04/11 : B par défaut, A en thème clair.
 
 <div class="duo">
 <figure><img src="schemas/E4-A7-maquette-indicateurs-recadree.png" alt="Maquette de l'écran Indicateurs, style clair, valeurs illustratives"><figcaption>Maquette du 04/10, recadrée de la maquette 3</figcaption></figure>
-<figure><img src="../../../evidence/C3/captures-viridien-production/6-indicateurs-apres-rattrapage-2026-11-04.webp" alt="Écran Indicateurs livré, thème sombre, en production le 4 novembre 2026"><figcaption>Écran livré, en production, capture d'Era du 04/11 au soir</figcaption></figure>
+<figure><img src="../../../evidence/C3/captures-viridien-production/6-indicateurs-apres-rattrapage-2026-11-04.webp" alt="Écran Indicateurs livré, thème sombre, en production le 4 novembre 2026"><figcaption>Écran livré, en production, capture d'Era du 04/11 au soir ; carte entière et aide : captures 2 et 3 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v3/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a></figcaption></figure>
 </div>
 
 | Élément | Constat | Explication |
@@ -208,16 +214,26 @@ Retenu le 04/10 : A ; changé le 04/11 : B par défaut, A en thème clair.
 | Recherche, tri, carte des performances | présents ; chaque case garde son chiffre et son signe écrits, la couleur ne fait que les répéter | conforme sur la partie capturée |
 | Compte des valeurs, filtre des cotations périmées | absents de la maquette ; à l'écran : 108 valeurs, 3 cotations périmées masquées | gardés de l'écran d'avant (A2, état 4) |
 | Colonnes Nom et Cours de la carte | absentes de la maquette, présentes à l'écran | gardées de l'écran d'avant (A2, état 4) |
-| Jauge du RSI, détail de la valeur choisie | sur la maquette ; hors de la partie capturée | présents dans le code ([`frontend/indicateurs.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/frontend/indicateurs.html), ligne 104 ; [`frontend/indicateurs.js`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/frontend/indicateurs.js), ligne 245) ; non comparés à l'écran |
-| Colonne RSI de la carte | sur la maquette ; hors de la partie capturée (la carte défile) | non comparée |
+| Jauge du RSI, détail de la valeur choisie | sur la maquette ; hors des captures, mais annoncés sous la carte : « Choisir une valeur ouvre son détail : son RSI, sa courbe, ses moyennes et son risque » | présents dans le code ([`frontend/indicateurs.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/frontend/indicateurs.html), ligne 104 ; [`frontend/indicateurs.js`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/frontend/indicateurs.js), ligne 245) ; non comparés à l'écran |
+| Colonne RSI de la carte | sur la maquette ; hors des captures (la carte défile en largeur) | non comparée |
+| Aide « Comment lire ce tableau ? » | une phrase sur la maquette ; à l'écran, une définition par indicateur (RSI 14 : « un fait mesuré », cotation périmée, tiret) | gardée et complétée de l'écran d'avant (A2, état 4) |
 
 <div class="saut"></div>
 
 ### L'écran Briefing
 
-![Maquette 2 : l'écran Briefing, deux mises en page comparées, le flux vertical retenu](schemas/E4-A7-maquette-briefing-recadree.png)
+<div class="duo">
+<figure><img src="schemas/E4-A7-maquette-briefing-flux-vertical.png" alt="Maquette de l'écran Briefing, flux vertical retenu, style clair"><figcaption>Maquette du 04/10, mise en page retenue (flux vertical), recadrée de la <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/conception/frontend/maquettes/maquette-2-ecran-briefing.png">maquette 2</a></figcaption></figure>
+<figure><img src="../../../evidence/C17/refonte-ecrans-livres-2026-11-04/1-briefing-AIR-PA-production-2026-11-04.png" alt="Écran Briefing livré, thème sombre, briefing AIR.PA en production le 4 novembre 2026"><figcaption>Écran livré, en production, briefing AIR.PA, capture d'Era du 04/11 au soir (capture 1 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v3/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a>)</figcaption></figure>
+</div>
 
-**Maquette 2, l'écran Briefing, flux vertical retenu le 04/10**, recadrée (original : [`maquette-2-ecran-briefing.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/conception/frontend/maquettes/maquette-2-ecran-briefing.png)).
-**Écran livré : aucune capture en production à ce jour.** La comparaison reste à faire, avec la clé, avant l'oral blanc des
-12 et 13/11 (tâche 11 du plan). **Limites d'A7** : comparaison visuelle, sur la partie capturée de deux écrans ; aucune
-mesure ; Briefing non comparé ; Question et Tableau de bord n'ont pas de maquette.
+| Élément | Constat | Explication |
+|---|---|---|
+| Thème | maquette claire, écran sombre | choix du 04/11 |
+| Demande | liste « AIR.PA ▾ » et « Rédiger » sur la maquette ; à l'écran, un champ avec les suggestions de l'univers suivi et « Rédiger le briefing » | même geste ; le champ accepte aussi un code tapé ([`frontend/briefing.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/frontend/briefing.html), ligne 51) |
+| Quatre chiffres | cours, séance, 1 mois, garde-fou, dans le même ordre, signe écrit | conforme sur la capture |
+| Courbe | cours, MM20 et MM50 sur 130 séances, dates réelles sous la courbe | conforme ; l'écran écrit en plus la période, le plus bas, le plus haut et les deux moyennes |
+| Texte du briefing | présent sous la courbe | conforme ; **défaut constaté** : les astérisques de mise en forme du modèle s'affichent tels quels (« \*La Tribune\* ») |
+| Chaîne de production | « Comment RITA a produit ce texte », cinq étapes en pastilles | « Comprendre ce résultat » : les cinq mêmes étapes en liste numérotée, plus la référence de la requête (R4) |
+| Articles | trois cartes de source | « Sources fournies au modèle » : trois liens, source et date, et la limite « Leur présence ne prouve pas que chaque phrase du texte en vient » |
+| Aide sous le champ | absente de la maquette | **défaut constaté** : « une recommandation d'achat ou de vente est retenue, jamais diffusée », la promesse trop forte corrigée en A2 (page 5), est encore à l'écran ([`frontend/briefing.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/frontend/briefing.html), ligne 57) |

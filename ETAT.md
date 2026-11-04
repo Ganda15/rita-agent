@@ -21,6 +21,22 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ---
 
+## ▶️ 04/11, NUIT : E4 v1.3 PRÊT À RELIRE (PR #185, BROUILLON) ; DEUX DÉFAUTS DE L'ÉCRAN BRIEFING TROUVÉS EN PRODUCTION
+
+**Prochaine action** : Era relit `docs/rapports/E4/rapport-E4-avec-annexe.pdf` (34 pages : rapport 20, annexe 14), décide
+de C17.3 (✅ gardé ou « à consolider ») et du sigle du MCD ; puis #185 prête, fusion vers `develop`, `develop` vers `main`,
+un seul tag `livrable-E4-v3` ; ensuite les copies OneDrive et le dossier de remise (avec et sans annexes).
+
+- **Annexe relue en entier**, texte des images compris : légendes datées du 04/11 (A2 historiques, `autocomplete`,
+  garde-fou, 503 ; A4 périmètre du workflow ; A5 contrôle `base` ; A6 commit `12cc00c`), images non retouchées.
+- **A7 nouvelle** : maquettes de la refonte et écrans livrés, comparés élément par élément sur des captures de production
+  d'Era (`evidence/C17/refonte-ecrans-livres-2026-11-04/`). Restent non capturés : la jauge du RSI et le détail d'une valeur.
+- **Défauts trouvés sur l'écran Briefing livré** : l'aide promet « retenue, jamais diffusée » (`frontend/briefing.html`,
+  ligne 57) ; les astérisques de mise en forme du modèle s'affichent. À corriger à part, test d'abord, avant l'oral blanc.
+- **Sigle** : le titre du MCD (A1, livret E1) dit « Retrieval Intelligence Trading Assistant », l'interface « pour le
+  Tracking et l'Analyse » ; décision d'Era.
+- Aucun statut de critère changé.
+
 ## ▶️ 04/11, 22 H 35 : RATTRAPAGE DES COURS FAIT ET VÉRIFIÉ EN PRODUCTION ; LE 05/11 : REMISE DES CINQ LIVRABLES, OBLIGATOIRE
 
 **Prochaine action** : la PR des preuves #184 est fusionnée par Era dans `develop` (`a4a6703`). Le 05/11, **la remise des

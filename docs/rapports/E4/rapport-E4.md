@@ -581,7 +581,8 @@ format contrôlé ([`evidence/C17/controle-accessibilite-readme-2026-11-02.md`](
 - **La conformité aux maquettes n'est vérifiée qu'en partie** : la refonte, construite d'après les maquettes du 04/10 et
   livrée le 04/11, n'est comparée que sur la partie capturée des écrans (annexe A7) ; Question et Tableau de bord n'ont qu'un schéma
   de parcours relevé sur l'existant.
-- **Des défauts ouverts** : le rôle propriétaire de l'API (#76) ; l'affichage « +0,00 % » d'une pire baisse nulle.
+- **Des défauts ouverts** : le rôle propriétaire de l'API (#76) ; l'affichage « +0,00 % » d'une pire baisse nulle ; sur
+  l'écran Briefing livré, une aide qui promet trop et des astérisques affichés (annexe A7).
   #73, #78 et #79 sont corrigés et déployés le 02/11 ; leurs cartes restent ouvertes sur GitHub jusqu'à une
   vérification manuelle en production.
 - **Sécurité** : en-têtes absents en production au 03/10 et non revérifiés depuis (S1), `/docs` public (S2), panne
@@ -763,7 +764,7 @@ Le détail est dans les limites de chaque section.
 | Besoin (C14) | spécification de l'écran 5 et compléments de l'écran 4 rétrospectifs (02/11) ; table `article` hors du modèle ; aucun test avec un lecteur d'écran ni un utilisateur extérieur | § 1.7, § 1.8 |
 | Cadre technique (C15) | schéma d'architecture sans la vigie ; hébergeur non choisi sur un critère environnemental | § 2.7 |
 | Organisation (C16) | tableau non mis à jour après le 14/10 ; revues du lundi sans compte rendu ; pas de rétrospective | § 3.6 |
-| Développement (C17) | environnement non entièrement reproductible ; refonte comparée en partie à ses maquettes (A7) ; défaut ouvert #76 et un écart d'affichage (« +0,00 % ») ; constats OWASP S1, S2, S6, S8, S9 ; pas de mesure d'éco-conception « après » | § 4.10 |
+| Développement (C17) | environnement non entièrement reproductible ; refonte comparée en partie à ses maquettes (A7) ; défaut ouvert #76, un écart d'affichage (« +0,00 % ») et deux défauts de Briefing (A7) ; constats OWASP S1, S2, S6, S8, S9 ; pas de mesure d'éco-conception « après » | § 4.10 |
 | Tests (C18) | 22 tests ignorés en CI ; couverture sans l'interface, la recherche, la surveillance ni la passerelle MCP ; trois paquets de CI sans version | § 5.6 |
 | Livraison (C19) | un tag reconstruit l'image ; retour arrière sans la base ; aucune sauvegarde automatique ; collecte non planifiée ; script de rattrapage à renforcer | § 6.4, 6.5 |
 
