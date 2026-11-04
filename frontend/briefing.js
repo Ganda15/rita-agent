@@ -83,11 +83,19 @@ function demanderCle(message) {
   document.getElementById("cle").focus();
 }
 
+// Venue de l'écran Indicateurs (« Demander le briefing de cette valeur ») : le code est prérempli, RIEN n'est envoyé.
+// Un appel payant attend toujours un clic.
+const tickerDemande = new URLSearchParams(window.location.search).get("ticker");
+
 async function ouvrirDemande(cle) {
   elConnexion.hidden = true;
   elDemande.hidden = false;
   afficherStatut("");
-  document.getElementById("ticker").focus();
+  const champ = document.getElementById("ticker");
+  if (tickerDemande && !champ.value && /^[A-Za-z0-9.\-]{1,16}$/.test(tickerDemande)) {
+    champ.value = tickerDemande.toUpperCase();
+  }
+  champ.focus();
   await remplirUnivers(cle);
 }
 

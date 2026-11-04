@@ -123,7 +123,9 @@ def test_une_couleur_par_ecran_refait():
 PAIRES = [("--texte", "--surface"), ("--texte", "--fond"), ("--texte", "--fond-alt"), ("--texte-doux", "--surface"),
           ("--texte-doux", "--fond"), ("--texte-doux", "--fond-alt"), ("--alerte", "--surface"), ("--alerte", "--fond-alt"),
           ("--frais-ok", "--surface"), ("--frais-attention", "--surface"), ("--texte", "--perimee"),
-          ("--texte", "--perimee-survol"), ("--couleur-marque", "--surface")]
+          ("--texte", "--perimee-survol"), ("--couleur-marque", "--surface"),
+          # La carte des performances (tâche 8) : le chiffre reste lisible sur la teinte qui le répète.
+          ("--texte", "--fond-hausse"), ("--texte", "--fond-baisse")]
 # Le pied de page est posé sur le dégradé, sans carte : son texte doit tenir sur chacun des trois arrêts.
 PAIRES += [(texte, f"--degrade-{arret}") for texte in ("--texte", "--texte-doux") for arret in ("debut", "milieu", "fin")]
 PAIRES += [paire for p in ("portefeuille", "indicateurs", "briefing", "service")

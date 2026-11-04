@@ -40,6 +40,8 @@
   --teinte-briefing: #40300f;
   --couleur-service: #6cb8ea;   /* Question et Tableau de bord */
   --teinte-service: #123a5c;
+  --fond-hausse: #133a28;   /* la carte des performances */
+  --fond-baisse: #47201d;
   /* Le fond de la page : du bleu nuit au bleu, comme la couverture du livret E1, avec une lueur teal (la couleur du
      point du logo) en haut à droite. Des dégradés CSS, aucune image : rien de plus à télécharger. */
   --degrade-debut: #061527;
@@ -73,6 +75,8 @@
   --teinte-briefing: #fcf5ec;
   --couleur-service: #12507a;
   --teinte-service: #eef4f9;
+  --fond-hausse: #e4f4ea;
+  --fond-baisse: #fbe5e2;
   --degrade-debut: #e6eef7;
   --degrade-milieu: #f0f4f9;
   --degrade-fin: #fafbfd;
@@ -524,3 +528,25 @@ circle.trace-mm50 { fill: var(--couleur-marque); }
   .graphique-courbe .repere { display: none; }
   .graphique-courbe .legende { font-size: 24px; }
 }
+
+/* --- Écran Indicateurs (refonte 001, tâche 8) : la carte des performances et le détail de la valeur choisie ---------
+   Chaque case garde son chiffre signé et sa flèche ; la teinte ne fait que les répéter (contraste calculé, deux thèmes). */
+.carte-performances td.perf-hausse { background: var(--fond-hausse); }
+.carte-performances td.perf-baisse { background: var(--fond-baisse); }
+.carte-performances td.perf { font-family: var(--police-chiffres); white-space: nowrap; }
+.choisir-valeur { padding: .15rem .55rem; font-family: var(--police-chiffres); font-size: .88rem; }
+.barre-outils input[type="search"], .barre-outils select { padding: .35rem .5rem; border-radius: 4px; font: inherit; }
+.detail-valeur {
+  margin-top: 1.2rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--bord);
+  border-top: 3px solid var(--couleur-ecran);
+  border-radius: .5rem;
+}
+.detail-valeur h2 { margin-top: 0; font-size: 1.2rem; }
+.detail-grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 1rem; align-items: center; }
+.detail-liste { margin: 0; padding-left: 1.1rem; font-family: var(--police-chiffres); font-size: .9rem; }
+.detail-liste li { margin: .2rem 0; }
+.detail-valeur .bloc-graphique { margin-top: 1rem; }
+/* Le nom tient sur une ou deux lignes au lieu de trois : la carte gagne en lisibilité, le tableau défile dans sa zone. */
+.carte-performances td:nth-child(2) { min-width: 11rem; }

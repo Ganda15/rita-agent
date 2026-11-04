@@ -197,14 +197,18 @@ def test_la_zone_qui_defile_est_atteignable_au_clavier():
 def test_le_signe_est_toujours_affiche_sur_les_indicateurs():
     """RGAA 3.1 : l'information n'est jamais portée par la seule couleur.
     Une performance négative doit se lire au signe, pas à la teinte."""
-    assert 'signDisplay: "always"' in code_sans_commentaires("indicateurs.js")
+    # Refonte 001 (tâche 8) : le signe est écrit avec la flèche (« ▲ + », « ▼ - ») ; le rendu est vérifié dans un vrai
+    # navigateur (tests/test_indicateurs_ui.py::test_carte_des_performances_lisible_sans_couleur).
+    code = code_sans_commentaires("indicateurs.js")
+    assert '"▲ +"' in code and '"▼ -"' in code
 
 
 def test_une_valeur_absente_devient_un_tiret_et_non_un_zero():
     """`null` signifie « pas calculable » ; `0` signifierait « aucune variation ».
     Afficher 0 à la place d'un tiret ferait lire une performance nulle inexistante."""
     code = code_sans_commentaires("indicateurs.js")
-    assert 'return n === null ? "—"' in code or "n === null ? \"—\"" in code
+    # Refonte 001 (tâche 8) : le tiret est « – » (tiret simple ; le tiret long est banni des textes du projet).
+    assert 'n === null ? "–"' in code
 
 
 def test_la_peremption_est_signalee_en_texte_pas_seulement_en_couleur():
@@ -316,7 +320,7 @@ def test_la_volatilite_s_affiche_sans_signe():
     """Une volatilité est une amplitude, toujours ≥ 0 — jamais « +22,14 % »,
     qui suggérerait une variation."""
     code = code_sans_commentaires("indicateurs.js")
-    assert "formatPourcentSansSigne" in code
+    assert "function pourcentSansSigne" in code   # refonte 001 (tâche 8) : renommée, même règle
 
 
 def test_le_rsi_n_est_pas_affiche_pour_une_valeur_perimee():
