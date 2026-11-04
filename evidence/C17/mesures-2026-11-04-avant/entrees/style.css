@@ -1,0 +1,279 @@
+/* =============================================================================
+   RITA — mise en forme.
+   Éco-conception (C17) : aucune police téléchargée, aucune bibliothèque, aucune
+   image. Uniquement des polices déjà présentes sur la machine.
+   Contrastes vérifiés ≥ 4,5:1 sur fond blanc (RGAA 3.2).
+   ============================================================================= */
+
+:root {
+  --texte: #1a1a1a;          /* 16,1:1 sur blanc */
+  --texte-doux: #4a4a4a;     /*  8,6:1 sur blanc */
+  --bord: #d0d0d0;
+  --fond-alt: #f6f6f6;
+  --accent: #12507a;         /*  7,6:1 sur blanc */
+  --alerte: #8a1f11;         /*  8,2:1 sur blanc */
+  /* Fraîcheur des données (C20). Teintes SOMBRES et non saturées : le texte du
+     bandeau doit rester lisible, pas seulement coloré. Ratios calculés sur blanc. */
+  --frais-ok: #145a32;       /*  8,3:1 sur blanc */
+  --frais-attention: #7a4f00;/*  7,1:1 sur blanc */
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 1.5rem;
+  max-width: 72rem;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--texte);
+  background: #fff;
+}
+
+/* --- Focus visible : indispensable pour la navigation au clavier (RGAA 10.7) */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* --- En-tête ---------------------------------------------------------------- */
+h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+
+.sous-titre {
+  margin: 0 0 .5rem;
+  color: var(--texte-doux);
+  font-size: .95rem;
+}
+
+.avertissement {
+  margin: 0 0 1.5rem;
+  padding: .6rem .8rem;
+  border-left: 4px solid var(--accent);
+  background: var(--fond-alt);
+  font-size: .9rem;
+}
+
+/* --- Connexion -------------------------------------------------------------- */
+#connexion h2 { font-size: 1.2rem; }
+
+#form-cle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  align-items: center;
+}
+
+label { font-weight: 600; }
+
+input[type="password"] {
+  padding: .5rem .6rem;
+  min-width: 16rem;
+  border: 1px solid var(--bord);
+  border-radius: 4px;
+  font: inherit;
+}
+
+button {
+  padding: .5rem 1.1rem;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:hover { background: #0d3d5e; }
+
+/* --- Statut (chargement / erreur) ------------------------------------------- */
+#statut:not(:empty) {
+  margin: 1rem 0;
+  padding: .6rem .8rem;
+  border-left: 4px solid var(--alerte);
+  background: var(--fond-alt);
+  color: var(--alerte);
+  font-weight: 600;
+}
+
+/* --- Total ------------------------------------------------------------------ */
+.total {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+}
+
+.total strong { font-size: 1.35rem; }
+
+/* --- Tableau ---------------------------------------------------------------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;  /* les chiffres s'alignent en colonnes */
+}
+
+caption {
+  caption-side: top;
+  padding-bottom: .5rem;
+  color: var(--texte-doux);
+  text-align: left;
+  font-style: italic;
+}
+
+th, td {
+  padding: .45rem .6rem;
+  border-bottom: 1px solid var(--bord);
+  text-align: right;
+}
+
+thead th {
+  border-bottom: 2px solid var(--texte);
+  background: var(--fond-alt);
+  white-space: nowrap;
+}
+
+/* Les deux premières colonnes sont du texte : elles s'alignent à gauche. */
+th[scope="row"], tbody td:first-of-type { text-align: left; }
+thead th:nth-child(1), thead th:nth-child(2) { text-align: left; }
+
+tbody tr:hover { background: var(--fond-alt); }
+
+/* --- Aide « Comment lire ce tableau ? » ------------------------------------- */
+details { margin-top: 1.5rem; }
+
+summary {
+  padding: .4rem 0;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+dl { margin: .5rem 0 0; }
+dt { margin-top: .7rem; font-weight: 600; }
+dd { margin: .15rem 0 0 1.5rem; color: var(--texte-doux); }
+
+/* --- Pied de page ----------------------------------------------------------- */
+footer {
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--bord);
+  color: var(--texte-doux);
+  font-size: .85rem;
+}
+
+/* --- Petits écrans : le tableau défile plutôt que de déborder --------------- */
+@media (max-width: 48rem) {
+  body { padding: 1rem; }
+  table { display: block; overflow-x: auto; }
+}
+
+/* --- Navigation entre les deux écrans ------------------------------------ */
+nav {
+  margin-top: .9rem;
+  display: flex;
+  /* Sprint 5 : cinq entrées ne tiennent plus sur une ligne d'un écran de téléphone (395 px pour 375, mesuré par
+     tests/test_smoke_tableau_de_bord.py) ; elles passent à la ligne au lieu de faire défiler la page. */
+  flex-wrap: wrap;
+  gap: .4rem 1rem;
+  font-size: .95rem;
+}
+nav a { color: var(--accent); }
+/* La page courante n'est pas un lien : cliquer sur l'endroit où l'on est déjà
+   n'a aucun sens, et `aria-current` l'annonce aux lecteurs d'écran. */
+nav [aria-current="page"] { font-weight: 600; color: var(--texte-doux); }
+
+/* --- Écran 2 : indicateurs ------------------------------------------------ */
+.barre-outils {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.filtre { display: flex; align-items: center; gap: .45rem; }
+.filtre label { font-weight: 400; }
+
+/* Douze colonnes ne tiennent pas sur un écran étroit. On fait défiler le TABLEAU,
+   jamais la page entière. Les attributs `tabindex="0"` et `role="region"` sont posés
+   sur le div DANS LE HTML — sans eux, le défilement serait réservé à la souris. */
+.tableau-large {
+  overflow-x: auto;
+  margin-top: .5rem;
+}
+/* La zone est focalisable : son focus doit donc se voir. Un `outline: none` ici
+   rendrait la navigation au clavier invisible. */
+.tableau-large:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.tableau-large table { min-width: 60rem; }
+
+/* Une cotation périmée est signalée par le TEXTE de la cellule « Nom ».
+   Ce fond n'est qu'un renfort : à lui seul, il ne porterait aucune information
+   pour une personne qui ne perçoit pas les couleurs (RGAA 3.1). */
+tbody tr.perimee { background: #fdf6e3; }
+tbody tr.perimee:hover { background: #f8edd0; }
+
+/* --- Exposition par devise (lot 2) --------------------------------------- */
+#bloc-exposition { margin-top: 1.75rem; }
+#bloc-exposition h2 { font-size: 1.1rem; margin: 0 0 .3rem; }
+/* La précision « cotation, pas exposition économique » n'est pas un détail
+   décoratif : sans elle le chiffre se lit de travers. Elle reste donc lisible,
+   pas réduite à une note de bas de page grisée. */
+.precision {
+  margin: 0 0 .75rem;
+  font-size: .9rem;
+  color: var(--texte-doux);
+  max-width: 55ch;
+}
+#exposition { display: grid; grid-template-columns: auto 1fr; gap: .35rem 1rem; margin: 0; }
+#exposition dt { font-weight: 600; margin: 0; }
+#exposition dd { margin: 0; color: var(--texte-doux); }
+
+/* --- Bandeau de fraîcheur des données (C20) -------------------------------
+   La pastille est PUREMENT décorative : elle porte aria-hidden dans le HTML et
+   n'ajoute aucune information que le texte ne dise déjà. Si l'utilisateur ne
+   distingue pas les couleurs, ou si le CSS ne charge pas, le message reste
+   complet — c'est la condition posée par RGAA 3.1 / WCAG 1.4.1. */
+.fraicheur {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin: 0 0 .75rem;
+  font-size: .9rem;
+  color: var(--texte-doux);
+}
+.pastille {
+  width: .7rem;
+  height: .7rem;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  /* Une bordure sombre garde la pastille visible en contraste élevé forcé,
+     où les couleurs de fond sont écrasées par le système. */
+  border: 1px solid currentColor;
+  background: currentColor;
+}
+.fraicheur-vert   { color: var(--frais-ok); }
+.fraicheur-orange { color: var(--frais-attention); }
+.fraicheur-rouge  { color: var(--alerte); font-weight: 600; }
+
+/* --- Sprint 5 (étape 5) : le tableau de bord ---------------------------------------------------------------------------
+   L'état est écrit en toutes lettres dans chaque carte (RGAA 3.1 : jamais la couleur seule) ; la couleur de la bordure
+   ne fait que le doubler. Les cartes passent en une colonne sur un écran étroit, sans déborder. */
+.resume { font-size: 1.15rem; font-weight: 600; }
+.horodatages { margin: 0; color: var(--texte-doux); }
+.cartes { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: 1rem; margin-top: 1rem; }
+.carte { border: 1px solid var(--bord); border-left-width: .5rem; border-radius: .4rem; padding: .8rem 1rem; overflow-wrap: anywhere; }
+.carte h3 { margin: 0 0 .3rem; font-size: 1.05rem; }
+.carte p { margin: .25rem 0; }
+.etat { font-weight: 700; letter-spacing: .04em; }
+.carte-sain { border-left-color: var(--frais-ok); }
+.carte-attention { border-left-color: var(--frais-attention); }
+.carte-probleme { border-left-color: var(--alerte); }
+.carte-inconnu { border-left-color: var(--texte-doux); border-left-style: dashed; }
+.etat-sain { color: var(--frais-ok); }
+.etat-attention { color: var(--frais-attention); }
+.etat-probleme { color: var(--alerte); }
+.etat-inconnu { color: var(--texte-doux); }
+.detail { color: var(--texte-doux); font-size: .92rem; }
+.que-faire { font-weight: 600; }
+.bandeau-exercice { border: 2px dashed var(--frais-attention); padding: .6rem .9rem; font-weight: 600; color: var(--frais-attention); }

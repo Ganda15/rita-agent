@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RITA — Briefing</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>RITA — Briefing</h1>
+    <p class="sous-titre">Retrieval Intelligence pour le Tracking et l'Analyse</p>
+    <p class="avertissement">
+      Aide à la lecture. Aucune recommandation d'achat ou de vente.
+    </p>
+    <nav aria-label="Navigation principale">
+      <a href="index.html">Mon portefeuille</a>
+      <a href="indicateurs.html">Indicateurs</a>
+      <span aria-current="page">Briefing</span>
+      <a href="tableau-de-bord.html">Tableau de bord</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ÉTAT 1 — pas de clé d'API : on la demande. Même clé que les deux autres écrans,
+         même sessionStorage : saisie une fois, oubliée à la fermeture de l'onglet. -->
+    <section id="connexion" hidden>
+      <h2>Connexion</h2>
+      <form id="form-cle">
+        <label for="cle">Clé d'API</label>
+        <input type="password" id="cle" name="cle" required autocomplete="off">
+        <button type="submit">Se connecter</button>
+      </form>
+    </section>
+
+    <!-- ÉTAT 2 — la demande. Un seul champ : le code de la valeur. La liste déroulante
+         (datalist) est remplie depuis l'univers suivi, pour ne pas avoir à connaître les
+         codes par cœur ; la saisie libre reste possible, et un code inconnu est dit en clair
+         (état 3). -->
+    <section id="demande" hidden>
+      <h2>Demander un briefing</h2>
+      <form id="form-briefing">
+        <label for="ticker">Code de la valeur (ticker)</label>
+        <input type="text" id="ticker" name="ticker" list="univers" required
+               autocomplete="off" pattern="[A-Za-z0-9.\-]{1,16}" placeholder="MC.PA">
+        <datalist id="univers"></datalist>
+        <button type="submit">Rédiger le briefing</button>
+      </form>
+      <p class="precision">
+        Le texte est rédigé par un modèle de langage à partir des données collectées
+        (cours, variation, capitaux échangés, articles). Il est relu par un garde-fou avant
+        affichage&nbsp;: une recommandation d'achat ou de vente est retenue, jamais diffusée.
+      </p>
+    </section>
+
+    <!-- ÉTAT 3 — chargement / erreur. role="status" + aria-live : annoncé par un lecteur
+         d'écran sans interrompre la lecture. Un appel au modèle dure 5 à 15 s : le dire. -->
+    <p id="statut" role="status" aria-live="polite"></p>
+
+    <!-- ÉTAT 4 — le briefing. Une région nommée, le focus y est posé à l'arrivée du texte
+         (une personne au clavier ou au lecteur d'écran sait que c'est prêt). -->
+    <section id="resultat" hidden tabindex="-1" aria-labelledby="titre-resultat">
+      <h2 id="titre-resultat">Briefing</h2>
+      <p id="donnees" class="total"></p>
+      <!-- Le verdict du garde-fou est un TEXTE : « conforme » ou « retenu », avec les motifs.
+           La couleur ne fait que le répéter (RGAA 3.1). -->
+      <p id="verdict" class="fraicheur"></p>
+      <div id="texte"></div>
+      <p id="reference" class="precision"></p>
+      <details>
+        <summary>D'où vient ce texte&nbsp;?</summary>
+        <dl>
+          <dt>Les données</dt>
+          <dd>Le dernier cours collecté, la variation sur une séance, les capitaux échangés en
+              moyenne sur 20 séances, et jusqu'à trois passages d'articles retrouvés par la
+              recherche documentaire. Rien de votre portefeuille n'est envoyé au modèle.</dd>
+          <dt>Le modèle</dt>
+          <dd>Un modèle de langage fourni par un service extérieur, appelé par l'API de RITA.
+              Si le premier fournisseur échoue, le suivant est essayé.</dd>
+          <dt>Le garde-fou</dt>
+          <dd>Le texte est relu avant affichage. S'il contient une recommandation d'achat ou de
+              vente, il est remplacé par un message de refus et le motif est affiché ici.</dd>
+          <dt>La référence</dt>
+          <dd>L'identifiant de la requête, le même dans le journal de l'API et dans la trace
+              du monitorage. À citer pour signaler un problème.</dd>
+        </dl>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <p>RNCP 37827 · Eramalingam GANDAKUMAR · le texte est produit par un modèle de langage et relu par un garde-fou ; il n'engage aucun conseil</p>
+  </footer>
+
+  <script src="briefing.js"></script>
+</body>
+</html>

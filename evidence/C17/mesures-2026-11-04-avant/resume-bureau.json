@@ -1,0 +1,418 @@
+[
+ {
+  "ecran": "portefeuille",
+  "etape": "portefeuille : etat 1, aucune cle",
+  "mode": "bureau",
+  "mode_lighthouse": "navigation",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 1,
+   "accessibilite": 1,
+   "bonnes_pratiques": 0.96,
+   "seo": 0.9
+  },
+  "poids_octets": 28516,
+  "requetes": 4,
+  "requetes_detail": [
+   {
+    "url": "/index.html",
+    "type": "Document",
+    "octets": 5917,
+    "statut": 200
+   },
+   {
+    "url": "/style.css",
+    "type": "Stylesheet",
+    "octets": 9983,
+    "statut": 200
+   },
+   {
+    "url": "/app.js",
+    "type": "Script",
+    "octets": 12414,
+    "statut": 200
+   },
+   {
+    "url": "/favicon.ico",
+    "type": "Other",
+    "octets": 202,
+    "statut": 404
+   }
+  ],
+  "noeuds_dom": 67,
+  "fcp_ms": 318.0719,
+  "lcp_ms": 318.0719,
+  "cls": 0.006746727081691621,
+  "tbt_ms": 0,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 21,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "portefeuille",
+  "etape": "portefeuille : avec cle, donnees chargees",
+  "mode": "bureau",
+  "mode_lighthouse": "navigation",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 1,
+   "accessibilite": 1,
+   "bonnes_pratiques": 0.96,
+   "seo": 0.9
+  },
+  "poids_octets": 4016,
+  "requetes": 6,
+  "requetes_detail": [
+   {
+    "url": "/index.html",
+    "type": "Document",
+    "octets": 0,
+    "statut": 200
+   },
+   {
+    "url": "/style.css",
+    "type": "Stylesheet",
+    "octets": 0,
+    "statut": 200
+   },
+   {
+    "url": "/app.js",
+    "type": "Script",
+    "octets": 0,
+    "statut": 200
+   },
+   {
+    "url": "/donnees/portefeuille",
+    "type": "Fetch",
+    "octets": 2285,
+    "statut": 200
+   },
+   {
+    "url": "/donnees/indicateurs-portefeuille",
+    "type": "Fetch",
+    "octets": 1192,
+    "statut": 200
+   },
+   {
+    "url": "/donnees/fraicheur",
+    "type": "Fetch",
+    "octets": 539,
+    "statut": 200
+   }
+  ],
+  "noeuds_dom": 140,
+  "fcp_ms": 19.33832550048828,
+  "lcp_ms": 231.17299739379882,
+  "cls": 0.03876442474389283,
+  "tbt_ms": 0,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 24,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "portefeuille",
+  "etape": "portefeuille : instantane apres chargement",
+  "mode": "bureau",
+  "mode_lighthouse": "snapshot",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 0,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.75
+  },
+  "poids_octets": null,
+  "requetes": null,
+  "requetes_detail": [],
+  "noeuds_dom": null,
+  "fcp_ms": null,
+  "lcp_ms": null,
+  "cls": null,
+  "tbt_ms": null,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 24,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "indicateurs",
+  "etape": "indicateurs : etat 1, aucune cle",
+  "mode": "bureau",
+  "mode_lighthouse": "navigation",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 1,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.9
+  },
+  "poids_octets": 26322,
+  "requetes": 3,
+  "requetes_detail": [
+   {
+    "url": "/indicateurs.html",
+    "type": "Document",
+    "octets": 6870,
+    "statut": 200
+   },
+   {
+    "url": "/style.css",
+    "type": "Stylesheet",
+    "octets": 9983,
+    "statut": 200
+   },
+   {
+    "url": "/indicateurs.js",
+    "type": "Script",
+    "octets": 9469,
+    "statut": 200
+   }
+  ],
+  "noeuds_dom": 85,
+  "fcp_ms": 255.4719,
+  "lcp_ms": 255.4719,
+  "cls": 0,
+  "tbt_ms": 0,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 21,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "indicateurs",
+  "etape": "indicateurs : avec cle, donnees chargees",
+  "mode": "bureau",
+  "mode_lighthouse": "navigation",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 1,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.9
+  },
+  "poids_octets": 65456,
+  "requetes": 5,
+  "requetes_detail": [
+   {
+    "url": "/indicateurs.html",
+    "type": "Document",
+    "octets": 0,
+    "statut": 200
+   },
+   {
+    "url": "/style.css",
+    "type": "Stylesheet",
+    "octets": 0,
+    "statut": 200
+   },
+   {
+    "url": "/indicateurs.js",
+    "type": "Script",
+    "octets": 0,
+    "statut": 200
+   },
+   {
+    "url": "/donnees/indicateurs",
+    "type": "Fetch",
+    "octets": 39377,
+    "statut": 200
+   },
+   {
+    "url": "/donnees/indicateurs-risque",
+    "type": "Fetch",
+    "octets": 26079,
+    "statut": 200
+   }
+  ],
+  "noeuds_dom": 1861,
+  "fcp_ms": 18.300350189208984,
+  "lcp_ms": 18.300350189208984,
+  "cls": 0.04436879432624113,
+  "tbt_ms": 0,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 23,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "indicateurs",
+  "etape": "indicateurs : instantane apres chargement",
+  "mode": "bureau",
+  "mode_lighthouse": "snapshot",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 0,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.75
+  },
+  "poids_octets": null,
+  "requetes": null,
+  "requetes_detail": [],
+  "noeuds_dom": null,
+  "fcp_ms": null,
+  "lcp_ms": null,
+  "cls": null,
+  "tbt_ms": null,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 23,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "briefing",
+  "etape": "briefing : etat 1, aucune cle",
+  "mode": "bureau",
+  "mode_lighthouse": "navigation",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 1,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.9
+  },
+  "poids_octets": 24994,
+  "requetes": 3,
+  "requetes_detail": [
+   {
+    "url": "/briefing.html",
+    "type": "Document",
+    "octets": 4900,
+    "statut": 200
+   },
+   {
+    "url": "/style.css",
+    "type": "Stylesheet",
+    "octets": 9983,
+    "statut": 200
+   },
+   {
+    "url": "/briefing.js",
+    "type": "Script",
+    "octets": 10111,
+    "statut": 200
+   }
+  ],
+  "noeuds_dom": 47,
+  "fcp_ms": 255.74560000000002,
+  "lcp_ms": 255.74560000000002,
+  "cls": 0.006746727081691621,
+  "tbt_ms": 0,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 21,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "briefing",
+  "etape": "briefing : avec cle, donnees chargees",
+  "mode": "bureau",
+  "mode_lighthouse": "navigation",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 1,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.9
+  },
+  "poids_octets": 18394,
+  "requetes": 4,
+  "requetes_detail": [
+   {
+    "url": "/briefing.html",
+    "type": "Document",
+    "octets": 0,
+    "statut": 200
+   },
+   {
+    "url": "/style.css",
+    "type": "Stylesheet",
+    "octets": 0,
+    "statut": 200
+   },
+   {
+    "url": "/briefing.js",
+    "type": "Script",
+    "octets": 0,
+    "statut": 200
+   },
+   {
+    "url": "/donnees/valeurs?limite=200",
+    "type": "Fetch",
+    "octets": 18394,
+    "statut": 200
+   }
+  ],
+  "noeuds_dom": 158,
+  "fcp_ms": 22.275020599365234,
+  "lcp_ms": 252.27502059936523,
+  "cls": 0,
+  "tbt_ms": 0,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 21,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "briefing",
+  "etape": "briefing : instantane apres chargement",
+  "mode": "bureau",
+  "mode_lighthouse": "snapshot",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 0,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.75
+  },
+  "poids_octets": null,
+  "requetes": null,
+  "requetes_detail": [],
+  "noeuds_dom": null,
+  "fcp_ms": null,
+  "lcp_ms": null,
+  "cls": null,
+  "tbt_ms": null,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 21,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "briefing",
+  "etape": "briefing : etat 4, texte affiche (reponse enregistree)",
+  "mode": "bureau",
+  "mode_lighthouse": "snapshot",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 0,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.75
+  },
+  "poids_octets": null,
+  "requetes": null,
+  "requetes_detail": [],
+  "noeuds_dom": null,
+  "fcp_ms": null,
+  "lcp_ms": null,
+  "cls": null,
+  "tbt_ms": null,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 22,
+  "a11y_a_verifier_a_la_main": 10
+ }
+]
