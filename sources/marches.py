@@ -37,12 +37,28 @@ PLACES: dict[str, tuple[str, str, float]] = {
 }
 
 
+# Le nom de la place, pour dire quel calendrier compte les séances (refonte 001, tâche 3). Seuls les fériés Euronext
+# sont modélisés ici : Londres et New York sont nommés, leurs séances ne sont pas comptées.
+NOMS_DES_PLACES: dict[str, str] = {".PA": "Euronext", ".AS": "Euronext", ".BR": "Euronext", ".L": "Londres",
+                                   "": "New York"}
+
+
+def _suffixe(ticker: str) -> str:
+    return "." + ticker.rsplit(".", 1)[1] if "." in ticker else ""
+
+
 def _place(ticker: str) -> tuple[str, str, float]:
-    suffixe = "." + ticker.rsplit(".", 1)[1] if "." in ticker else ""
+    suffixe = _suffixe(ticker)
     try:
         return PLACES[suffixe]
     except KeyError:
         raise ValueError(f"Place de cotation inconnue pour {ticker!r} (suffixe {suffixe!r})") from None
+
+
+def place_de_cotation(ticker: str) -> str:
+    """La place où la valeur cote : « Euronext », « Londres » ou « New York ». Une place inconnue lève `ValueError`."""
+    _place(ticker)   # même refus bruyant que les autres fonctions du module
+    return NOMS_DES_PLACES[_suffixe(ticker)]
 
 
 def devise_de_cotation(ticker: str) -> str:

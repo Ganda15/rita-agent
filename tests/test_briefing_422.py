@@ -16,7 +16,7 @@ from tests.test_trace_chemin import _briefing
 
 CLE = {"X-API-Key": CLE_DE_TEST}
 CLES_DE_LA_REPONSE = {"ticker", "price", "change_pct", "currency", "briefing", "conforme_amf", "motifs_amf",
-                      "articles_transmis"}
+                      "articles_transmis", "diagnostic"}
 
 
 @pytest.fixture
