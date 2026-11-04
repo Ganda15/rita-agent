@@ -30,8 +30,21 @@ un `graphiques.js` de fonctions pures qui fabriquent du SVG, et trois écrans r�
 - **Clé** : `sessionStorage`, clé de stockage `rita_api_key`, jamais `localStorage`, jamais écrite dans le code ; gardée
   seulement après une réponse réussie, effacée sur 401 ou 403 (correctif #73, à préserver).
 - **Aucune ressource tierce** : pas de CDN, pas de police distante, pas de bibliothèque de graphiques.
-- **Couleurs** des écrans (style A) : Portefeuille `#1e7b45`, Indicateurs `#3f3fa8`, Briefing `#a35a00` ; Question et
-  Tableau de bord gardent leur couleur actuelle (`--accent #12507a`). Si Lighthouse signale un contraste, foncer la teinte.
+- **Couleurs** des écrans, **deux thèmes** (décision d'Era du 04/11 après-midi : style B sombre par défaut, style A clair
+  au choix). Thème clair : Portefeuille `#1e7b45`, Indicateurs `#3f3fa8`, Briefing `#a35a00`, Question et Tableau de bord
+  `#12507a`. Thème sombre : `#4ccb8a`, `#a5a8ff`, `#f2a93b`, `#6cb8ea`, sur des cartes `#0f2643` ; le fond est un
+  **dégradé CSS** du bleu nuit `#061527` au bleu `#14507f` (couverture du livret E1, demande d'Era du 04/11 au soir),
+  sans image ; textes éclaircis (`#f5f8fc`, `#c5d3e4`) pour être plus lisibles.
+- **Logo** : la marque officielle de RITA dans l'en-tête des cinq pages, réduite à 64 px (environ 3 Ko), carré blanc
+  sur le sombre, carré bleu nuit sur le clair, en image de fond (une seule version téléchargée) ; la version bleu nuit
+  sert d'icône d'onglet, ce qui supprime le 404 de `favicon.ico` (constat F3 du 03/10).
+  Chaque paire texte et fond est calculée par un test, dans les deux thèmes, contre le seuil de 4,5:1.
+- **Thème** : `<html data-theme="clair">` pour le clair, rien pour le sombre ; `theme.js`, chargé dans `<head>`
+  avant l'affichage, lit le choix dans `sessionStorage` (`rita_theme`), jamais dans `localStorage` ; sans JavaScript,
+  le site s'affiche en sombre et le bouton reste caché.
+- **Polices** (demande d'Era du 04/11) : déjà installées, aucune téléchargée, aucun `@font-face` : `--police-texte`
+  (Segoe UI Variable Text, SF Pro Text), `--police-titres` (Segoe UI Variable Display, SF Pro Display),
+  `--police-chiffres` (Cascadia Mono, SF Mono), chacune finie par une famille générique.
 - **Rien par la couleur seule** : chiffres signés, flèches ▲ ▼, légendes ; chaque graphique a une alternative en chiffres.
 - **Écriture** : français, aucun tiret long (le tiret cadratin), dans le code comme dans les textes.
 
@@ -139,7 +152,7 @@ un `graphiques.js` de fonctions pures qui fabriquent du SVG, et trois écrans r�
 - [ ] Code, puis `pytest tests/test_briefing_diagnostic.py tests/test_briefing_422.py tests/test_api_donnees.py tests/test_request_id.py -q` vert, puis la suite complète.
 - [ ] Commit.
 
-## Tâche 4 : un en-tête identique dans les cinq pages, et le style A (R5)
+## Tâche 4 : un en-tête identique dans les cinq pages, et les deux thèmes (R5)
 
 **Fichiers** : modifier les cinq `frontend/*.html` (bloc `<header>`), `frontend/style.css` ; tests `tests/test_entete_commun.py`
 (nouveau), `tests/test_frontend.py`, `tests/test_tableau_de_bord.py`.
@@ -149,11 +162,14 @@ un `graphiques.js` de fonctions pures qui fabriquent du SVG, et trois écrans r�
   navigation vers les cinq écrans, l'écran courant en `aria-current="page"` ; aujourd'hui Indicateurs et Briefing n'ont
   pas le lien Question, et Tableau de bord n'a pas l'avertissement AMF : les deux écarts sont corrigés ;
 - `body` porte `data-ecran="portefeuille|indicateurs|briefing|question|tableau-de-bord"` ; `style.css` définit
-  `--couleur-ecran` par écran (couleurs des contraintes globales), cartes blanches sur fond clair, focus visible,
+  `--couleur-ecran` par écran (couleurs des contraintes globales), dans les deux thèmes, focus visible,
   `prefers-reduced-motion`.
 
 - [ ] Tests rouges : `test_les_cinq_entetes_sont_identiques_hors_page_courante` ; `test_chaque_page_a_les_cinq_liens` ;
       `test_chaque_page_a_l_avertissement_amf` ; `test_une_couleur_par_ecran_refait` ;
+      `test_contrastes_des_deux_themes` (chaque paire texte et fond, clair et sombre, au moins 4,5:1) ;
+      `test_theme_sombre_par_defaut_et_bouton_cache_sans_javascript` ; `test_le_theme_n_utilise_jamais_localstorage` ;
+      dans un vrai navigateur, `test_bascule_du_theme_suit_la_navigation` (le choix tient sur les cinq écrans) ;
       `test_aucun_chargement_tiers` (aucun script, feuille de style, police, image, `iframe`, `@import` ni `url()` vers
       un autre site ; les liens `<a href>` en `http(s)` vers les sources restent permis).
 - [ ] Code, puis `pytest tests/test_entete_commun.py tests/test_frontend.py tests/test_tableau_de_bord.py -q`, et les tests

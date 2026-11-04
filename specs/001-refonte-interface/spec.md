@@ -136,7 +136,10 @@ Critères d'acceptation :
 - rien ne passe par la **couleur seule** ; chaque graphique a son alternative en chiffres ;
 - tout s'atteint au **clavier** ; le focus va au résultat ou au message d'erreur ; zoom à 200 % sans perte ;
 - aucun texte venu des données n'est interprété comme du code dans la page ;
-- aucune ressource chargée depuis un site tiers : la démonstration marche sans dépendre d'un autre service que RITA.
+- aucune ressource chargée depuis un site tiers : la démonstration marche sans dépendre d'un autre service que RITA ;
+- **deux thèmes, sombre et clair**, sur les cinq écrans (décision d'Era du 04/11, § 7) : le sombre par défaut, le clair
+  au choix par un bouton de l'en-tête ; le choix vaut pour les cinq écrans pendant la session ; chaque texte garde un
+  contraste d'au moins 4,5:1 dans les **deux** thèmes.
 
 ## 5. Hors périmètre
 
@@ -166,6 +169,16 @@ Le plan devra **confirmer la faisabilité** de ce calendrier, tâche par tâche,
 - **Périmètre pour le 12/11** : les **trois écrans**, dans cet ordre : Briefing (avec R4 et les erreurs), Indicateurs,
   Portefeuille ; Question et Tableau de bord gardent leur fonctionnement et leur cohérence (R5).
 - **Question et Tableau de bord** : ils gardent leur aspect actuel et reçoivent le nouvel en-tête ; pas de nouvelle couleur.
+  Mise à jour de l'après-midi : ils prennent aussi les deux thèmes ; leur bleu `#12507a` reste celui du thème clair, et
+  le thème sombre en prend l'équivalent lumineux.
+- **Style (changé le 04/11 après-midi)** : Era choisit le **style B, sombre** (« terminal de marché », planche 1 des
+  maquettes du 04/10), avec un **thème clair** au choix, pour tout le site. Le style A (clair) validé le 04/10 devient le
+  thème clair. La raison écrite le 04/10 pour écarter le sombre (« moins lisible en projection ») pèse moins pour un
+  oral en visioconférence, où l'écran est partagé ; le thème clair reste à un clic si la lecture l'exige.
+- **Polices (04/11 après-midi)** : un aspect moderne, sans rien télécharger (éco-conception, C17) : Segoe UI Variable
+  (Windows 11) ou SF Pro (macOS) pour le texte et les titres, Cascadia Mono pour les chiffres.
+- **Logo et fond (04/11 au soir)** : le logo officiel de RITA dans l'en-tête ; le fond sombre passe en dégradé du bleu
+  nuit au bleu, comme la couverture du livret E1, sans image ; textes plus visibles, contrastes toujours calculés.
 - **Démonstration** : en **production**, version identifiée, retour arrière testé, enregistrement de secours (R6).
 - **Mode simulation** : dans le périmètre, clairement indiqué, pour répéter (R7).
 
