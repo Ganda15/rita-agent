@@ -30,20 +30,36 @@
     return racine.getAttribute("data-theme") === "clair";
   }
 
+  // aria-pressed dit l'état ; le libellé « Thème clair » ne change pas (motif du bouton bascule, WAI-ARIA).
+  function montrerEtat() {
+    var bouton = document.getElementById("bascule-theme");
+    if (bouton) {
+      bouton.setAttribute("aria-pressed", estClair() ? "true" : "false");
+    }
+  }
+
   appliquer(lireChoix());
+
+  // Bouton Précédent ou Suivant : le navigateur peut rendre la page depuis son cache d'aller-retour, telle qu'on l'a
+  // quittée, sans relancer ce script. Le thème choisi entre-temps sur un autre écran est alors repris ici.
+  window.addEventListener("pageshow", function (evenement) {
+    if (evenement.persisted) {
+      appliquer(lireChoix());
+      montrerEtat();
+    }
+  });
 
   document.addEventListener("DOMContentLoaded", function () {
     var bouton = document.getElementById("bascule-theme");
     if (!bouton) {
       return;
     }
-    // aria-pressed dit l'état ; le libellé « Thème clair » ne change pas (motif du bouton bascule, WAI-ARIA).
-    bouton.setAttribute("aria-pressed", estClair() ? "true" : "false");
+    montrerEtat();
     bouton.hidden = false;
     bouton.addEventListener("click", function () {
       var theme = estClair() ? "sombre" : "clair";
       appliquer(theme);
-      bouton.setAttribute("aria-pressed", theme === "clair" ? "true" : "false");
+      montrerEtat();
       try {
         sessionStorage.setItem(CLE_THEME, theme);
       } catch (erreur) {

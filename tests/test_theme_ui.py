@@ -105,3 +105,19 @@ def test_aucun_defilement_horizontal_a_320_px(navigateur, serveur, fichier, larg
     largeurs = page.evaluate("[document.documentElement.scrollWidth, document.documentElement.clientWidth]")
     contexte.close()
     assert largeurs[0] <= largeurs[1], f"{fichier} : page de {largeurs[0]} px pour un écran de {largeurs[1]} px"
+
+
+def test_retour_arriere_depuis_le_cache_reapplique_le_theme(navigateur, serveur):  # noqa: F811
+    """Bouton Précédent : Chrome peut rendre une page depuis son cache d'aller-retour (bfcache), telle qu'on l'a quittée,
+    sans relancer theme.js. Si le clair a été choisi entre-temps sur une autre page, la page rendue doit le reprendre.
+    On simule ici l'événement que le navigateur envoie dans ce cas (`pageshow` avec `persisted`)."""
+    contexte = navigateur.new_context()
+    page = contexte.new_page()
+    page.goto(serveur + "/index.html")
+    assert _theme(page) is None
+    # Le clair a été choisi ailleurs pendant que cette page dormait dans le cache.
+    page.evaluate("sessionStorage.setItem('rita_theme', 'clair')")
+    page.evaluate("window.dispatchEvent(new PageTransitionEvent('pageshow', {persisted: true}))")
+    assert _theme(page) == "clair"
+    assert page.locator("#bascule-theme").get_attribute("aria-pressed") == "true"
+    contexte.close()
