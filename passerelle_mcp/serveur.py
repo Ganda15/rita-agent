@@ -73,6 +73,7 @@ import csv
 import logging
 import math
 import os
+import re
 import uuid
 from collections import Counter
 from datetime import date
@@ -153,8 +154,22 @@ def _jeu_attendu() -> Counter:
     return attendu
 
 
+# Un décimal écrit comme l'API l'écrit, et rien d'autre : ni espace, ni exposant, ni « NaN ».
+DECIMAL_ECRIT = re.compile(r"-?[0-9]+(\.[0-9]+)?")
+
+
 def _nombre_json(valeur: Any) -> bool:
-    return isinstance(valeur, (int, float)) and not isinstance(valeur, bool) and math.isfinite(valeur)
+    """Un nombre fini : un nombre JSON, ou un décimal écrit en texte (04/11/2026).
+
+    FastAPI 0.136 et Pydantic 2 servent les colonnes NUMERIC en texte (`"quantite":"15.0000"`) : sans ce second cas, la
+    passerelle refusait toute vraie réponse de l'API. Un booléen, un objet ou un texte qui n'est pas un décimal font
+    toujours refuser.
+    """
+    if isinstance(valeur, bool):
+        return False
+    if isinstance(valeur, (int, float)):
+        return math.isfinite(valeur)
+    return isinstance(valeur, str) and DECIMAL_ECRIT.fullmatch(valeur) is not None
 
 
 def _date_iso(valeur: Any) -> bool:
@@ -189,7 +204,7 @@ def _position_coherente(p: dict[str, Any]) -> bool:
     if sans_cours != (p["performance_pct"] is None):
         return False
     # Le taux : l'euro se convertit par 1 ; un taux manquant rend les montants en euros indisponibles, et lui seul.
-    if p["devise"] == "EUR" and (p["taux_manquant"] or p["taux_pour_eur"] != 1):
+    if p["devise"] == "EUR" and (p["taux_manquant"] or _decimal(p["taux_pour_eur"]) != 1):   # « 1.000000 » vaut 1
         return False
     if p["taux_manquant"] != (p["taux_pour_eur"] is None):
         return False

@@ -36,7 +36,7 @@ d'accès n'est jamais écrite dans le code ; aucun outil de construction (HTML, 
 
 | Choix | Retenu | Écarté, et pourquoi |
 |---|---|---|
-| Style | **A, clair et net** : fond clair, cartes blanches, une couleur par écran (portefeuille vert, indicateurs indigo, briefing ambre) | sombre (moins lisible en projection) ; éditorial |
+| Style | **A, clair et net** : fond clair, cartes blanches, une couleur par écran (portefeuille vert, indicateurs indigo, briefing ambre). **Changé le 04/11** : Era choisit le **B, sombre**, par défaut, avec le A comme thème clair au choix (`specs/001-refonte-interface/spec.md`, § 7) | sombre (moins lisible en projection), écarté le 04/10 puis retenu le 04/11 ; éditorial |
 | Mise en page du briefing | **flux vertical**, dans l'ordre où RITA travaille : chiffres, courbe, texte, « Comprendre ce résultat », sources | deux colonnes (plus dense, moins lisible en projection) |
 | Graphiques | portefeuille : anneau des poids, barres de gain ou perte ; indicateurs : carte des performances, jauge du RSI, courbe de la valeur choisie ; briefing : courbe du cours avec moyennes 20 et 50 séances | une petite courbe par ligne de la carte : demanderait un appel par valeur (environ 111 aujourd'hui) ; la courbe n'apparaît que dans le détail de la valeur choisie (un appel) |
 | Dessin des graphiques | **SVG construit à la main** en JavaScript, sans bibliothèque | bibliothèque par CDN (requête tierce, démonstration fragile sans réseau, `canvas` illisible par un lecteur d'écran) ; bibliothèque copiée dans le dépôt (lourde, même problème de `canvas`) |

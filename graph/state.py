@@ -3,7 +3,7 @@ from typing import Any, TypedDict
 
 
 class RitaState(TypedDict):
-    """⚠️ Doit rester aligné sur `agents.scout.ScoutState`, plus `briefing`.
+    """⚠️ Doit rester aligné sur `agents.scout.ScoutState`, plus `briefing` et `modele_info`.
 
     Pas de champ `volume` : la base rend `adtv20`, une *moyenne* sur 20 séances.
     Voir `agents/scout.py` — le nom dit la mesure.
@@ -26,4 +26,8 @@ class RitaState(TypedDict):
     motif_rag: str
 
     briefing: str
+    # Qui a écrit le briefing (refonte 001, exigence R4) : `fournisseur`, `modele` (celui que le fournisseur a renvoyé,
+    # None s'il ne le dit pas) et `tentatives` ([{"fournisseur": str, "reussi": bool}], sans message d'erreur).
+    # Vide quand le rédacteur est sauté : personne n'a écrit, il n'y a personne à nommer.
+    modele_info: dict[str, Any]
     error: str

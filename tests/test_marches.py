@@ -106,3 +106,14 @@ def test_derniere_seance():
     assert derniere_seance(date(2026, 9, 26)) == date(2026, 9, 25)   # samedi -> vendredi
     assert derniere_seance(date(2026, 9, 27)) == date(2026, 9, 25)   # dimanche -> vendredi
     assert derniere_seance(date(2026, 4, 6)) == date(2026, 4, 2)     # lundi de Pâques -> jeudi
+
+
+def test_place_de_cotation_nomme_euronext_et_les_autres_places():
+    """Refonte 001, tâche 3 : le diagnostic du briefing compte les séances avec le calendrier Euronext, et seulement
+    pour une valeur cotée sur Euronext (Paris, Amsterdam, Bruxelles). Une place inconnue échoue bruyamment."""
+    import pytest
+    from sources.marches import place_de_cotation
+    places = [place_de_cotation(t) for t in ("MC.PA", "ASML.AS", "UCB.BR", "HSBA.L", "SLB")]
+    assert places == ["Euronext", "Euronext", "Euronext", "Londres", "New York"]
+    with pytest.raises(ValueError):
+        place_de_cotation("BMW.DE")

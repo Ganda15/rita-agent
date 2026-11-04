@@ -59,7 +59,7 @@ def page(serveur):
 
 
 def test_la_page_d_accueil_se_charge_avec_son_titre(page):
-    assert page.title() == "RITA — Mon portefeuille"
+    assert page.title() == "RITA : Mon portefeuille"   # refonte 001 : titre sans tiret long
 
 
 def test_le_formulaire_de_cle_est_visible_et_vide(page):
@@ -139,8 +139,9 @@ def test_l_ecran_briefing_affiche_le_texte_et_le_verdict(page, serveur):
 
     texte = page.locator("#texte").inner_text()
     assert "378,55" in texte and page.locator("#texte p").count() == 2
-    verdict = page.locator("#verdict").inner_text().lower()
-    assert "conforme" in verdict and "retenu" not in verdict
+    # Refonte 001 (tâche 7) : le verdict s'écrit mot pour mot « Aucune recommandation d'achat ou de vente détectée »,
+    # jamais « conforme », « vérifié » ni « approuvé » (spécification R3, critère 6).
+    assert page.locator("#verdict").inner_text() == "Aucune recommandation d'achat ou de vente détectée"
     assert "abcdef1234567890" in page.locator("#reference").inner_text()
     assert page.erreurs_js == []
 

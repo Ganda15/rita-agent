@@ -9,6 +9,22 @@
 
 ---
 
+## 2026-11-03, nuit : quatre tags posés, sans exécution de livraison
+
+**Livrables figés** : `livrable-E2-v2` (E2 v1.0), `livrable-E3-v4` (E3 v2.1), `livrable-E4-v2` (E4 v1.2) et
+`livrable-E5-v2` (E5 v0.7), sur `2310f87`, fusion de la PR #178 ; E1 reste `livrable-E1-v6`.
+
+**Manque découvert** : les quatre tags ont été poussés en une seule commande. GitHub ne crée pas d'événement de push
+quand plus de trois tags arrivent ensemble (documentation GitHub, « Events that trigger workflows » :
+https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows, lue le 03/11) :
+aucune exécution de « Livraison » n'a suivi, donc ni Definition of Done
+rejouée par la chaîne, ni image publiée sous ces noms. Les tags ne peuvent être ni supprimés ni déplacés (ruleset), et
+le workflow n'a pas de déclencheur manuel. Compensé et prouvé autrement : la même image (commit `2310f87`) est
+construite, publiée et déployée par l'exécution de `main` 41722049240 ; la Definition of Done est rejouée sur le poste
+(livrable) ; les 244 liens des PDF répondent à leur tag. Règle : un tag par commande, jamais plus de trois à la fois.
+
+---
+
 ## 2026-11-03, nuit : « à consolider » dans tous les rapports, E2 v1.0, E3 v2.1, E4 v1.2, E5 v0.7
 
 **Manque découvert** par Era : le libellé « à consolider », choisi le 03/11 pour la grille des compétences, n'avait

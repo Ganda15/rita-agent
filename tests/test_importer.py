@@ -249,12 +249,19 @@ def test_les_lignes_absentes_du_csv_sont_closes_a_la_date_du_jour(sans_execute_v
     cur = _cur_positions(("MC.PA", "EUR"), actives=3, closes=2)
     with patch("sources.positions.lire", return_value=_Portefeuille([_Position("MC.PA", "LVMH")])):
         bilan = importer.importer_positions(cur)
-    cloture = [q for q in _requetes(cur) if "UPDATE POSITION" in q]
+    mises_a_jour = [q for q in _requetes(cur) if "UPDATE POSITION" in q]
+    cloture = [q for q in mises_a_jour if "SET DATE_CLOTURE" in q]
     assert len(cloture) == 1
     assert "SET DATE_CLOTURE = CURRENT_DATE" in cloture[0]
     assert "WHERE DATE_CLOTURE IS NULL" in cloture[0] and "NOT IN" in cloture[0]
     assert not any("DELETE" in q for q in _requetes(cur)), "l'import ne supprime jamais"
     assert bilan["closes"] == 2
+    # 04/11/2026 : l'autre mise à jour est la correction des regroupements (une par entrée de REGROUPEMENTS). Elle ne
+    # clôt rien, et passe avant la clôture : sinon la ligne à corriger serait déjà close.
+    correction = [q for q in mises_a_jour if q not in cloture]
+    assert len(correction) == len(importer.REGROUPEMENTS)
+    assert all("DATE_CLOTURE" not in q.split(" WHERE ")[0] for q in correction)
+    assert mises_a_jour[-1] == cloture[0]
 
 
 def test_moins_de_la_moitie_des_actives_clot_quand_meme_mais_avertit(sans_execute_values):
@@ -289,6 +296,8 @@ def test_importer_assemble_les_statistiques_et_commit(monkeypatch):
     bilan_positions = {"lignes": 7, "inserees": 0, "mises_a_jour": 7, "rouvertes": 0, "closes": 0,
                        "ignorees": 0, "devises_differentes": 0, "avertissement": None}
     monkeypatch.setattr(importer, "importer_positions", MagicMock(return_value=bilan_positions))
+    monkeypatch.setattr(importer, "controler_prix_de_revient",   # 04/11 : le garde
+                        MagicMock(return_value={"hors_echelle": [], "non_controlees": []}))
 
     with patch("db.importer.psycopg2.connect") as connect:
         r = importer.importer("postgresql://test", limite_annees=3)
@@ -296,7 +305,8 @@ def test_importer_assemble_les_statistiques_et_commit(monkeypatch):
     connect.assert_called_once_with("postgresql://test")
     connect.return_value.__enter__.return_value.commit.assert_called_once()
     assert r == {"lues": 10, "dedoublonnees": 1, "inserees": 9,
-                 "valeurs": 1, "alias": 1, "positions": 7, "positions_detail": bilan_positions}
+                 "valeurs": 1, "alias": 1, "positions": 7, "positions_detail": bilan_positions,
+                 "controle_prix_de_revient": {"hors_echelle": [], "non_controlees": []}}
 
 
 # --- 27/09/2026 : issues #53, #47 et #48 ----------------------------------------
@@ -476,3 +486,50 @@ def test_importer_demo_complet_marque_importe_et_valide_en_une_transaction():
     connexion.assert_called_once_with("postgresql://demo")
     assert bilan["cotations"] == 222 and cur.marque == importer.MARQUE_DEMO
     conn.commit.assert_called_once()
+
+
+# --- 04/11/2026 au soir : un import ciblé, et l'option --limite-annees qui plantait ------------------------------------------
+
+def test_import_positions_seulement_ne_touche_ni_aux_cotations_ni_aux_bornes(monkeypatch):
+    """Corriger une position ne demande ni de relire dix ans de cotations ni de recalculer les dates de première et de
+    dernière cotation de toutes les valeurs (108 valeurs changeaient, mesuré sur la base locale le 04/11, et l'API en lit
+    deux colonnes). Les valeurs et les positions passent, rien d'autre."""
+    monkeypatch.setattr(importer, "charger_univers", lambda: ({"AC.PA": {}}, [("ACCOR", "AC.PA")]))
+    valeurs, cotations = MagicMock(), MagicMock()
+    monkeypatch.setattr(importer, "importer_valeurs", valeurs)
+    monkeypatch.setattr(importer, "importer_cotations", cotations)
+    bilan = {"lignes": 7, "inserees": 0, "mises_a_jour": 7, "rouvertes": 0, "closes": 0, "corrigees": 1, "converties": 0,
+             "ignorees": 0, "devises_differentes": 0, "avertissement": None}
+    monkeypatch.setattr(importer, "importer_positions", MagicMock(return_value=bilan))
+    monkeypatch.setattr(importer, "controler_prix_de_revient",
+                        MagicMock(return_value={"hors_echelle": [], "non_controlees": []}))
+    with patch("db.importer.psycopg2.connect") as connect:
+        r = importer.importer("postgresql://test", positions_seulement=True)
+    cotations.assert_not_called()
+    valeurs.assert_called_once()
+    connect.return_value.__enter__.return_value.commit.assert_called_once()
+    assert "lues" not in r and r["positions"] == 7 and r["positions_detail"] == bilan
+
+
+def test_positions_seulement_et_limite_annees_s_excluent(monkeypatch):
+    monkeypatch.setattr("sys.argv", ["importer", "--positions-seulement", "--limite-annees", "1"])
+    with pytest.raises(SystemExit):
+        importer.lire_arguments()
+
+
+def test_limite_annees_lit_la_colonne_de_partition_comme_un_entier(tmp_path, monkeypatch):
+    """Sur ce poste, pandas lit la colonne `annee` d'un Parquet partitionné comme une catégorie : `.max()` levait
+    « Categorical is not ordered » et `--limite-annees` plantait (constaté le 04/11, jamais vu : les tests simulaient un
+    entier). Un vrai Parquet partitionné, écrit et relu."""
+    df = pd.DataFrame({"ticker": ["AC.PA"] * 3, "date": pd.to_datetime(["2024-03-01", "2025-03-03", "2026-03-02"]),
+                       "ouverture": [1.0] * 3, "haut": [1.0] * 3, "bas": [1.0] * 3, "cloture": [1.0] * 3,
+                       "volume": [1] * 3, "annee": [2024, 2025, 2026]})
+    dossier = tmp_path / "ohlcv"
+    df.to_parquet(dossier, partition_cols=["annee"])
+    monkeypatch.setattr(importer, "PARQUET", dossier)
+    cur = MagicMock()
+    cur.fetchall.return_value = [("AC.PA",)]
+    with patch("db.importer.execute_values") as insertion:
+        bilan = importer.importer_cotations(cur, limite_annees=2)
+    assert bilan["lues"] == 3
+    assert len(insertion.call_args.args[2]) == 2, "deux années gardées sur trois (2025 et 2026)"

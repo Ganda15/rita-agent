@@ -1,5 +1,5 @@
 // =============================================================================
-// LA COUTURE — l'écran parle à l'API RITA. Rien d'autre.
+// LA COUTURE : l'écran parle à l'API RITA. Rien d'autre.
 //
 // C'est le seul fichier du front qui relève de **C10** :
 //   « les étapes d'authentification sont intégrées correctement »
@@ -14,7 +14,7 @@ const ENDPOINT = "/donnees/portefeuille";
 //
 // Deux points de terminaison plutôt qu'un seul élargi : chacun garde une
 // responsabilité. `/portefeuille` valorise, `/indicateurs-portefeuille` répartit.
-// Les deux appels partent EN PARALLÈLE (`Promise.all`) — le temps d'attente est
+// Les deux appels partent EN PARALLÈLE (`Promise.all`) : le temps d'attente est
 // celui du plus lent, pas la somme des deux.
 const ENDPOINT_INDICATEURS = "/donnees/indicateurs-portefeuille";
 // Fraîcheur du jeu de données (C20) : répond à « ces chiffres datent de quand ? »
@@ -79,7 +79,7 @@ async function chargerPortefeuille(cle) {
     ]);
   } catch (erreurReseau) {
     // Le serveur n'a pas répondu DU TOUT : il n'y a aucun statut HTTP à lire.
-    // C'est un cas différent d'une réponse en erreur — d'où le try/catch.
+    // C'est un cas différent d'une réponse en erreur : d'où le try/catch.
     afficherStatut("Le serveur ne répond pas. Vérifiez que l'API est démarrée.");
     return;
   }
@@ -92,7 +92,7 @@ async function chargerPortefeuille(cle) {
   }
 
   if (!reponse.ok) {
-    afficherStatut(`Erreur ${reponse.status} — le serveur n'a pas pu répondre.`);
+    afficherStatut(`Erreur ${reponse.status} : le serveur n'a pas pu répondre.`);
     return;
   }
 
@@ -108,7 +108,7 @@ async function chargerPortefeuille(cle) {
 
   // Même raisonnement pour la fraîcheur, et il compte double ici : une jauge de
   // santé qui casse l'écran qu'elle surveille serait un comble. Si l'appel
-  // échoue, le bandeau ne s'affiche pas — le portefeuille, si.
+  // échoue, le bandeau ne s'affiche pas : le portefeuille, si.
   const fraicheur = reponseFraicheur.ok
     ? await reponseFraicheur.json()
     : null;
@@ -122,7 +122,7 @@ async function chargerPortefeuille(cle) {
 // --- LE BANDEAU DE FRAÎCHEUR (C20) -------------------------------------------
 // Trois statuts et trois seulement. `statut` vient de l'API : on ne le colle pas
 // tel quel dans un nom de classe sans le vérifier. Une liste blanche coûte une
-// ligne et ferme la question — le jour où l'API rendrait autre chose, on affiche
+// ligne et ferme la question : le jour où l'API rendrait autre chose, on affiche
 // le message sans couleur plutôt que de fabriquer une classe inconnue.
 const STATUTS_FRAICHEUR = ["vert", "orange", "rouge"];
 
@@ -143,7 +143,7 @@ function afficherFraicheur(fraicheur) {
 
   // La pastille est décorative : aria-hidden la retire de l'arbre d'accessibilité.
   // Un lecteur d'écran lit le message, pas « puce ». L'information est dans le
-  // texte — la couleur ne fait que la répéter pour ceux qui la voient.
+  // texte : la couleur ne fait que la répéter pour ceux qui la voient.
   const pastille = document.createElement("span");
   pastille.className = "pastille";
   pastille.setAttribute("aria-hidden", "true");
@@ -179,7 +179,7 @@ function afficher(donnees, indicateurs) {
 
     // A3 (RGAA 3.1) : le SIGNE porte l'information, pas la couleur.
     // Un daltonien lit « -11,10 % » aussi bien que n'importe qui.
-    const textePerf = perf === null ? "—" : `${pourcent.format(perf)} %`;
+    const textePerf = perf === null ? "–" : `${pourcent.format(perf)} %`;
 
     ajouterCellule(tr, p.ticker, "th");
     ajouterCellule(tr, p.statut_qualite === "OK"
@@ -188,6 +188,8 @@ function afficher(donnees, indicateurs) {
     ajouterCellule(tr, nombre.format(nb(p.quantite)));
     ajouterCellule(tr, nombre.format(nb(p.pru)));
     ajouterCellule(tr, nombre.format(nb(p.cours)));
+    // Refonte 001 (R1, critère 4) : chaque ligne garde la date de SON cours, pas celle de la première ligne.
+    ajouterCellule(tr, p.date_cours ? dateFr(p.date_cours) : "–").classList.add("date-cours");
     // Un montant sans taux de change est « indisponible », avec la raison au survol ;
     // « 0,00 € » se lirait comme un montant nul, et absent n'est pas nul.
     const raisonTaux = p.taux_manquant ? `taux de change manquant pour ${p.devise}` : "";
@@ -195,22 +197,26 @@ function afficher(donnees, indicateurs) {
     ajouterCellule(tr, p.taux_manquant ? "indisponible" : euro.format(nb(p.valorisation_eur)), "td", raisonTaux);
     ajouterCellule(tr, textePerf);
 
-    // Un tiret si le poids manque — jamais « 0,00 % », qui se lirait comme une
+    // Un tiret si le poids manque : jamais « 0,00 % », qui se lirait comme une
     // ligne de valeur nulle. Absent et nul ne sont pas la même chose.
     const poids = poidsParTicker.get(p.ticker);
     ajouterCellule(tr, poids === undefined || poids === null
-      ? "—"
+      ? "–"
       : `${pourcentSansSigne.format(poids)} %`);
 
     corps.appendChild(tr);
   }
 
   afficherExposition(indicateurs?.exposition);
+  afficherCartes(donnees, indicateurs);
+  afficherAlertes(donnees);
+  afficherGraphiques(donnees, indicateurs);
 
   const date = donnees.positions[0]?.date_cours;
   if (date) {
     document.getElementById("legende").textContent =
-      `Portefeuille valorisé — cours du ${date}`;
+      // Refonte 001 (R1) : les lignes peuvent avoir des dates différentes ; la légende renvoie à la colonne.
+      "Portefeuille valorisé : chaque ligne porte la date de son cours";
   }
 
   afficherStatut("");
@@ -240,8 +246,8 @@ function afficherExposition(expositions) {
     // Le nombre de lignes est donné en toutes lettres : « 7 lignes » se comprend
     // sans en-tête de colonne, contrairement à un « 7 » isolé.
     dd.textContent =
-      `${part === null ? "—" : pourcentSansSigne.format(part)} %`
-      + ` — ${e.nb_lignes} ligne${e.nb_lignes > 1 ? "s" : ""},`
+      `${part === null ? "–" : pourcentSansSigne.format(part)} %`
+      + ` : ${e.nb_lignes} ligne${e.nb_lignes > 1 ? "s" : ""},`
       + ` ${nb(e.valorisation_eur) === null ? "indisponible" : euro.format(nb(e.valorisation_eur))}`;
 
     liste.append(dt, dd);
@@ -255,9 +261,10 @@ function ajouterCellule(tr, texte, balise = "td", titre = "") {
   if (balise === "th") cellule.setAttribute("scope", "row");   // RGAA 5.7
   if (titre) cellule.title = titre;   // la raison d'un « indisponible », au survol
   // textContent, JAMAIS innerHTML : un nom d'instrument contenant du HTML
-  // serait exécuté. C'est OWASP A03 — injection.
+  // serait exécuté. C'est OWASP A03 : injection.
   cellule.textContent = texte;
   tr.appendChild(cellule);
+  return cellule;   // refonte 001 : la cellule de date reçoit sa classe (date-cours)
 }
 
 // --- DÉMARRAGE ---------------------------------------------------------------
@@ -269,8 +276,74 @@ document.getElementById("form-cle").addEventListener("submit", (evenement) => {
 // sessionStorage (et non localStorage) : la clé disparaît à la fermeture
 // de l'onglet. Elle n'est jamais écrite dans le code, donc jamais dans Git.
 const cleMemorisee = sessionStorage.getItem(CLE_STOCKAGE);
-if (cleMemorisee) {
+// Refonte 001 (R7, décision D1) : en simulation, cet écran n'a pas encore de données d'exemple. Il ne démarre pas :
+// aucun appel, aucune minuterie ; commun.js affiche « Simulation non disponible pour cet écran ».
+if (window.RITA && window.RITA.estSimulation()) {
+  window.RITA.suspendreEcran();
+} else if (cleMemorisee) {
   chargerPortefeuille(cleMemorisee);
 } else {
   demanderCle();
+}
+
+// --- Refonte 001, tâche 9 (R1) : les chiffres clés et les deux graphiques -------------------------------------------
+// Rien n'est recalculé ici : le total, les poids et les performances viennent de l'API ; aucune performance globale
+// n'est inventée (l'API n'en fournit pas). Les dessins viennent de graphiques.js, avec leurs chiffres écrits à côté.
+function dateFr(iso) {
+  const t = String(iso);
+  return /^\d{4}-\d{2}-\d{2}/.test(t) ? `${t.slice(8, 10)}/${t.slice(5, 7)}/${t.slice(0, 4)}` : "–";
+}
+
+function afficherCartes(donnees, indicateurs) {
+  const total = nb(donnees.total_eur);
+  document.getElementById("carte-total").textContent = total === null ? "non calculable" : euro.format(total);
+  const autres = (indicateurs?.exposition ?? []).filter((e) => e.devise !== "EUR" && nb(e.nb_lignes));
+  document.getElementById("carte-lignes").textContent = `${donnees.nb}`
+    + (autres.length ? ` (dont ${autres.map((e) => `${e.nb_lignes} en ${e.devise}`).join(", ")})` : "");
+  const sansTaux = nb(donnees.positions_sans_taux) ?? 0;
+  document.getElementById("carte-sans-taux").textContent = `${sansTaux} ligne${sansTaux > 1 ? "s" : ""}`;
+  document.getElementById("carte-closes").textContent = `${nb(donnees.positions_closes) ?? 0}`;
+}
+
+// R1, critère 5 (04/11/2026) : l'écran doute de ses données. Viridien est resté en tête à +4 856 % : le calcul était juste,
+// la donnée fausse (un prix de revient resté à l'échelle d'avant un regroupement d'actions). Un prix multiplié ou divisé
+// par dix suffit à le dire. Convention de vérification déclarée, pas une mesure : elle ne repère pas tout (un regroupement
+// de 5 pour 1 passe dessous). Dit comme une chose à vérifier, jamais comme un fait ni un conseil ; rien n'est caché ni plafonné.
+const SEUIL_HAUT_PCT = 900;
+const SEUIL_BAS_PCT = -90;
+
+function afficherAlertes(donnees) {
+  const zone = document.getElementById("alertes-donnees");
+  const suspectes = donnees.positions.filter((p) => {
+    const n = nb(p.performance_pct);
+    return n !== null && (n >= SEUIL_HAUT_PCT || n <= SEUIL_BAS_PCT);
+  });
+  zone.replaceChildren(...suspectes.map((p) => paragraphe(
+    `Performance hors du commun, à vérifier : ${p.nom_officiel} (${p.ticker}) affiche ${pourcent.format(nb(p.performance_pct))} % `
+    + "depuis l'achat. Cause possible : un prix de revient resté à l'échelle d'avant un regroupement ou une division d'actions. "
+    + "L'écran ne modifie pas la donnée.")));
+  zone.hidden = suspectes.length === 0;
+}
+
+function afficherGraphiques(donnees, indicateurs) {
+  const anneau = document.getElementById("anneau");
+  const sansTaux = nb(donnees.positions_sans_taux) ?? 0;
+  if (!indicateurs) {
+    anneau.replaceChildren(paragraphe("Poids indisponibles pour le moment ; le tableau détaillé reste à jour."));
+  } else if (indicateurs.complet === false) {
+    // Une valorisation incomplète : pas d'anneau, qui dessinerait des parts fausses (conception § 7).
+    anneau.replaceChildren(paragraphe(`Poids non calculables : ${sansTaux} ligne${sansTaux > 1 ? "s" : ""} sans taux de change.`));
+  } else {
+    const dessin = GRAPHIQUES.anneau((indicateurs.lignes ?? []).map((l) => ({ nom: l.nom_officiel, poids_pct: nb(l.poids_pct) })));
+    anneau.replaceChildren(...[dessin.svg, dessin.alternative].filter(Boolean));
+  }
+  const barres = GRAPHIQUES.barres(donnees.positions.map((p) => ({ nom: p.nom_officiel, performance_pct: nb(p.performance_pct) })));
+  document.getElementById("barres").replaceChildren(...[barres.svg, barres.alternative].filter(Boolean));
+}
+
+function paragraphe(texte) {
+  const p = document.createElement("p");
+  p.className = "precision";
+  p.textContent = texte;
+  return p;
 }

@@ -73,7 +73,8 @@ def test_une_panne_du_lot_3_laisse_le_lot_1_lisible(onglet, serveur):  # noqa: F
     onglet.wait_for_selector("#lignes tr", timeout=5_000)
     cellules = onglet.locator("#lignes tr").first.locator("th, td").all_inner_texts()
     assert cellules[0] == "MC.PA"
-    assert cellules[-3:] == ["—", "—", "—"], "volatilité, pire baisse et RSI : un tiret quand le lot 3 manque"
+    # Refonte 001 (tâche 8) : le tiret est « – » (le tiret long est banni des textes du projet) ; la règle ne change pas.
+    assert cellules[-3:] == ["–", "–", "–"], "volatilité, pire baisse et RSI : un tiret quand le lot 3 manque"
     assert onglet.locator("#statut").inner_text() == ""
 
 
