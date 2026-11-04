@@ -178,6 +178,30 @@ def test_barres_signees_et_non_disponibles(page):
         assert attendu in rendu["alternative"], attendu
 
 
+def test_barres_une_valeur_extreme_garde_l_echelle_commune_un_zero_visible_et_tous_ses_chiffres(page):
+    """Viridien à +4 856,76 % écrasait les autres barres (04/11/2026). Le dessin ne triche pas : une échelle commune, la
+    valeur extrême n'est ni plafonnée ni cachée, le zéro a son axe, et chaque ligne garde son pourcentage exact écrit.
+    Rendre le graphique plus lisible se fait en corrigeant la donnée ou par un zoom annoncé, jamais en plafonnant en
+    silence."""
+    rendu = dessiner(page, "barres", [{"nom": "A", "performance_pct": 4856.76}, {"nom": "B", "performance_pct": 53.3},
+                                      {"nom": "C", "performance_pct": 0}, {"nom": "D", "performance_pct": -36.51}])
+    assert rendu["series"] == ["hausse", "hausse", "nulle", "baisse"]
+    texte = rendu["alternative"].replace(" ", " ").replace(" ", " ")
+    for attendu in ("A : ▲ +4 856,76 %", "B : ▲ +53,30 %", "C : 0,00 %", "D : ▼ -36,51 %"):
+        assert attendu in texte, attendu
+    dessin = page.evaluate("""(donnees) => {
+        const svg = GRAPHIQUES.barres(donnees).svg;
+        return {largeurs: [...svg.querySelectorAll('rect')].map(r => Number(r.getAttribute('width'))),
+                axe: svg.querySelectorAll('line.axe').length};
+    }""", [{"nom": "A", "performance_pct": 4856.76}, {"nom": "B", "performance_pct": 53.3},
+           {"nom": "C", "performance_pct": 0}, {"nom": "D", "performance_pct": -36.51}])
+    a, b, c, d = dessin["largeurs"]
+    assert dessin["axe"] == 1, "le zéro a son axe"
+    assert a == 160, "la valeur extrême prend toute la demi-zone : ni plafonnée ni réduite"
+    assert abs(b / a - 53.3 / 4856.76) < 0.001 and abs(d / a - 36.51 / 4856.76) < 0.001, "échelle commune, proportions exactes"
+    assert c == 1, "une valeur nulle garde un trait d'un pixel, jamais une barre vide qui disparaît"
+
+
 @pytest.mark.parametrize("rsi, texte, dessinee", [
     (41.2, "RSI 14 : 41,2, zone neutre de 30 à 70", True),
     (None, "RSI 14 : non disponible", False),

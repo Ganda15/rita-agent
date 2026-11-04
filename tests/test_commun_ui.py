@@ -33,8 +33,11 @@ REPONSE = {"statut": "reponse", "texte": "Netflix supprime 2 000 postes [1].", "
 @pytest.mark.parametrize("fichier, script", ECRANS.items())
 def test_chaque_page_charge_commun_js_avant_son_script(fichier, script):
     page = (FRONTEND / fichier).read_text(encoding="utf-8")
-    assert '<script src="commun.js"></script>' in page, fichier
-    assert page.index('<script src="commun.js"></script>') < page.index(f'<script src="{script}"></script>'), fichier
+    # 04/11/2026 : chaque adresse porte sa version (`commun.js?v=...`) ; tests/test_interface_versionnee.py la contrôle.
+    def balise(nom):
+        return re.search(rf'<script src="{re.escape(nom)}(\?v=[0-9a-f]+)?"></script>', page)
+    assert balise("commun.js"), fichier
+    assert balise("commun.js").start() < balise(script).start(), fichier
 
 
 @pytest.mark.parametrize("fichier", ECRANS)

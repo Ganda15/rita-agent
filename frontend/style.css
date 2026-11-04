@@ -42,6 +42,7 @@
   --teinte-service: #123a5c;
   --fond-hausse: #133a28;   /* la carte des performances */
   --fond-baisse: #47201d;
+  --teinte-colonne: rgba(255, 255, 255, 0.08);   /* une colonne sur deux, posée par-dessus le fond de la case */
   /* Le fond de la page : du bleu nuit au bleu, comme la couverture du livret E1, avec une lueur teal (la couleur du
      point du logo) en haut à droite. Des dégradés CSS, aucune image : rien de plus à télécharger. */
   --degrade-debut: #061527;
@@ -77,6 +78,7 @@
   --teinte-service: #eef4f9;
   --fond-hausse: #e4f4ea;
   --fond-baisse: #fbe5e2;
+  --teinte-colonne: rgba(11, 42, 77, 0.07);
   --degrade-debut: #e6eef7;
   --degrade-milieu: #f0f4f9;
   --degrade-fin: #fafbfd;
@@ -377,9 +379,14 @@ nav [aria-current="page"] { font-weight: 600; color: var(--texte-sur-couleur); b
    jamais la page entière. Les attributs `tabindex="0"` et `role="region"` sont posés
    sur le div DANS LE HTML : sans eux, le défilement serait réservé à la souris. */
 .tableau-large {
-  overflow-x: auto;
+  overflow: auto;
   margin-top: .5rem;
+  /* 04/11 : cent onze lignes rendaient la zone aussi haute que la page, et la barre de défilement horizontale
+     était tout en bas, les trois dernières colonnes cachées à droite. La zone tient dans la fenêtre ; ses titres
+     restent visibles. */
+  max-height: calc(100vh - 7rem);
 }
+.tableau-large thead th { position: sticky; top: 0; z-index: 1; }
 /* La zone est focalisable : son focus doit donc se voir. Un `outline: none` ici
    rendrait la navigation au clavier invisible. */
 .tableau-large:focus-visible {
@@ -531,8 +538,14 @@ circle.trace-mm50 { fill: var(--couleur-marque); }
 
 /* --- Écran Indicateurs (refonte 001, tâche 8) : la carte des performances et le détail de la valeur choisie ---------
    Chaque case garde son chiffre signé et sa flèche ; la teinte ne fait que les répéter (contraste calculé, deux thèmes). */
-.carte-performances td.perf-hausse { background: var(--fond-hausse); }
-.carte-performances td.perf-baisse { background: var(--fond-baisse); }
+.carte-performances td.perf-hausse { background-color: var(--fond-hausse); }
+.carte-performances td.perf-baisse { background-color: var(--fond-baisse); }
+/* Demande d'Era du 04/11 au soir (R2, critère 6) : une colonne sur deux légèrement teintée, pour suivre les chiffres d'une
+   ligne à l'autre. La teinte est une couche transparente PAR-DESSUS le fond de la case : la couleur de hausse ou de
+   baisse, le survol et la ligne périmée restent visibles dessous. Contrastes calculés dans les deux thèmes. */
+.colonnes-alternees tr > :nth-child(even) { background-image: linear-gradient(var(--teinte-colonne), var(--teinte-colonne)); }
+/* Le titre exact « Volatilité annualisée (20 séances) » passe à la ligne : sur une seule il ferait une colonne de 267 px. */
+.carte-performances thead th:nth-child(9) { white-space: normal; min-width: 8.5rem; max-width: 10rem; }
 .carte-performances td.perf { font-family: var(--police-chiffres); white-space: nowrap; }
 .choisir-valeur { padding: .15rem .55rem; font-family: var(--police-chiffres); font-size: .88rem; }
 .barre-outils input[type="search"], .barre-outils select { padding: .35rem .5rem; border-radius: 4px; font: inherit; }
@@ -550,3 +563,14 @@ circle.trace-mm50 { fill: var(--couleur-marque); }
 .detail-valeur .bloc-graphique { margin-top: 1rem; }
 /* Le nom tient sur une ou deux lignes au lieu de trois : la carte gagne en lisibilité, le tableau défile dans sa zone. */
 .carte-performances td:nth-child(2) { min-width: 11rem; }
+
+/* --- Écran Portefeuille (refonte 001, tâche 9) : les chiffres clés, puis l'anneau et les barres côte à côte. */
+#cartes-portefeuille { margin: 0 0 1rem; }
+.graphiques-portefeuille { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 1rem; margin-bottom: 1.2rem; }
+.graphiques-portefeuille .graphique-anneau { margin: 0 auto; }
+td.date-cours { white-space: nowrap; }
+/* La donnée suspecte, dite avant les dessins : un bandeau, pas une couleur seule (le texte porte l'information). */
+.alerte-donnee { margin: 0 0 1rem; padding: .2rem .9rem; border-left: 4px solid var(--couleur-ecran); background: var(--fond-alt); }
+.alerte-donnee p { margin: .5rem 0; }
+/* Les barres : des étiquettes lisibles, la figure étant réduite dans sa colonne. */
+.graphique-barres .etiquette { font-size: 15px; }

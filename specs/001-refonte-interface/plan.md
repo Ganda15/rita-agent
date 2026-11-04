@@ -307,8 +307,12 @@ jour `docs/ARCHITECTURE.md`, `docs/exploitation.md`, `docs/conception/frontend/r
       refus et les pannes, par pannes injectées sur une copie du même commit ou par interception déclarée ; **aucune
       panne réelle provoquée en production** ; la preuve sépare les deux sortes de contrôles.
 - [ ] Tester le retour à la version précédente (`retour-arriere.yml`), puis revenir à la nouvelle.
-- [ ] Après le déploiement, recharger une fois sans cache (Ctrl+F5) dans le navigateur de la démonstration : les copies
-      reçues avant le correctif du cache (tâche 5) n'avaient pas `no-cache` et peuvent rester quelques heures.
+- [ ] Après le déploiement, recharger une fois sans cache (Ctrl+F5) dans le navigateur de la démonstration, par prudence.
+      Ce n'est plus la protection : depuis le 04/11 au soir (`scripts/versionner_interface.py`, `tests/test_mise_a_jour_cache_ui.py`)
+      chaque script et feuille de style porte la version de son contenu dans son adresse, donc un navigateur qui a gardé
+      l'ancien `indicateurs.js` ne peut plus le mélanger avec la page neuve. Avant de pousser : relancer le script de version.
+      Vérifier aussi que le serveur de production répond `Cache-Control: no-cache` (`curl -sI`), un ancien processus n'en
+      envoie pas (constaté le 04/11 sur le serveur local du port 8000, démarré avant la tâche 5).
 - [ ] Enregistrer une démonstration datée de secours ; noter le tout dans la preuve datée de la tâche 11.
 
 ---

@@ -59,7 +59,7 @@ def page(serveur):
 
 
 def test_la_page_d_accueil_se_charge_avec_son_titre(page):
-    assert page.title() == "RITA — Mon portefeuille"
+    assert page.title() == "RITA : Mon portefeuille"   # refonte 001 : titre sans tiret long
 
 
 def test_le_formulaire_de_cle_est_visible_et_vide(page):

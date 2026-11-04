@@ -52,7 +52,7 @@ def test_la_racine_sert_la_page(client):
     reponse = client.get("/")
     assert reponse.status_code == 200
     assert "text/html" in reponse.headers["content-type"]
-    assert "RITA — Mon portefeuille" in reponse.text
+    assert "RITA : Mon portefeuille" in reponse.text   # refonte 001 : titre sans tiret long
 
 
 @pytest.mark.parametrize("fichier", ["style.css", "app.js"])
@@ -290,7 +290,8 @@ def test_aucun_seuil_de_concentration_n_est_affiche():
 
 def test_les_3_colonnes_du_lot_3_existent():
     html = (FRONTEND / "indicateurs.html").read_text(encoding="utf-8")
-    for colonne in ("Volatilité (1 an)", "Pire baisse (1 an)", "RSI 14"):
+    # 04/11/2026 : « annualisée (20 séances) », la fenêtre réelle de db/indicateurs_risque.sql, et non plus « (1 an) ».
+    for colonne in ("Volatilité annualisée (20 séances)", "Pire baisse (1 an)", "RSI 14"):
         assert f'<th scope="col">{colonne}</th>' in html
 
 

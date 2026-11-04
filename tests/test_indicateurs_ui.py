@@ -117,12 +117,14 @@ def test_recherche_filtre_le_tableau(ecran):
 
 
 def test_tri_par_performance(ecran):
+    ecran.uncheck("#masquer-perimees")   # 04/11 : les périmées sont masquées par défaut ; ce test trie aussi l'absent
     ecran.select_option("#tri", "perf_1m_pct")
     ordre = ecran.evaluate("[...document.querySelectorAll('#lignes tr')].map(tr => tr.dataset.ticker)")
     assert ordre == ["AI.PA", "MC.PA", "VK.PA"], "de la plus forte hausse à la plus forte baisse, l'absent à la fin"
 
 
 def test_cotation_perimee_sans_rsi(ecran):
+    ecran.uncheck("#masquer-perimees")   # 04/11 : masquées par défaut
     nom = ligne(ecran, "VK.PA").inner_text()
     assert "cotation périmée" in nom
     choisir(ecran, "VK.PA")
@@ -144,14 +146,14 @@ def test_courbe_au_choix_d_une_valeur(navigateur, serveur):  # noqa: F811
     choisir(page, "AI.PA")
     page.wait_for_selector("#detail-courbe svg")
     assert "moyennes indisponibles (moins de 20 séances)" in page.locator("#detail-courbe").inner_text()
-    for attendu in ("MM20 : 388,18", "volatilité (1 an) : 18,00 %", "pire baisse (1 an) : -12,50 %"):
+    for attendu in ("MM20 : 388,18", "volatilité annualisée (20 séances) : 18,00 %", "pire baisse (1 an) : -12,50 %"):
         assert attendu in page.locator("#detail").inner_text(), attendu
     contexte.close()
 
 
 def test_un_bloc_en_panne_n_efface_pas_les_autres(navigateur, serveur):  # noqa: F811
     contexte, page = ouvrir(navigateur, serveur, risque=(500, {"detail": "panne"}), courbe=(500, {"detail": "panne"}))
-    assert page.locator("#lignes tr").count() == 3, "le tableau reste"
+    assert page.locator("#lignes tr").count() == 2, "le tableau reste (les deux valeurs à jour, la périmée est masquée)"
     assert "▼ -3,86 %" in ligne(page, "MC.PA").inner_text()
     assert "indisponibles pour le moment" in page.locator("#note-risque").inner_text()
     choisir(page, "MC.PA")

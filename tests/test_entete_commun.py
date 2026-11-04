@@ -158,7 +158,7 @@ def test_theme_sombre_par_defaut_et_bouton_cache_sans_javascript(fichier):
     page = html(fichier)
     assert '<html lang="fr">' in page, "aucun thème écrit dans la page : le sombre est celui par défaut"
     tete = re.search(r"<head>.*?</head>", page, re.S).group(0)
-    assert '<script src="theme.js"></script>' in tete
+    assert re.search(r'<script src="theme\.js(\?v=[0-9a-f]+)?"></script>', tete)   # 04/11 : adresse versionnée
     bouton = re.search(r'<button\b[^>]*\bid="bascule-theme"[^>]*>', entete(fichier))
     assert bouton, f"{fichier} : pas de bouton de thème dans l'en-tête"
     assert 'type="button"' in bouton.group(0) and " hidden" in bouton.group(0)

@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RITA : Indicateurs de marché</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=d0e888a819">
   <link rel="icon" type="image/png" href="logo-rita-clair.png">
-  <script src="theme.js"></script>
+  <script src="theme.js?v=32a0dab24c"></script>
 </head>
 <body data-ecran="indicateurs">
   <header class="entete">
@@ -51,7 +51,7 @@
         <p class="total"><strong id="nb-valeurs">–</strong><span id="mention-perimees"></span></p>
         <p class="filtre">
           <label for="recherche">Chercher une valeur</label>
-          <input type="search" id="recherche" aria-controls="tableau-indicateurs" autocomplete="off" placeholder="LVMH, AI.PA…">
+          <input type="search" id="recherche" aria-controls="tableau-indicateurs" autocomplete="off" placeholder="LVMH, AI.PA…" list="valeurs-suivies"><datalist id="valeurs-suivies"></datalist>
         </p>
         <p class="filtre">
           <label for="tri">Trier par</label>
@@ -65,7 +65,7 @@
           </select>
         </p>
         <p class="filtre">
-          <input type="checkbox" id="masquer-perimees" aria-controls="tableau-indicateurs">
+          <input type="checkbox" id="masquer-perimees" aria-controls="tableau-indicateurs" checked>
           <label for="masquer-perimees">Masquer les cotations périmées</label>
         </p>
       </div>
@@ -75,7 +75,7 @@
            atteignable qu'à la souris (RGAA / WCAG 2.1.1). -->
       <div class="tableau-large" tabindex="0" role="region"
            aria-label="Tableau des indicateurs, défilement horizontal">
-        <table id="tableau-indicateurs" class="carte-performances">
+        <table id="tableau-indicateurs" class="carte-performances colonnes-alternees">
           <caption id="legende">Carte des performances</caption>
           <thead>
             <tr>
@@ -87,7 +87,7 @@
               <th scope="col">1 mois</th>
               <th scope="col">Depuis le 1<sup>er</sup> janv.</th>
               <th scope="col">1 an</th>
-              <th scope="col">Volatilité (1 an)</th>
+              <th scope="col">Volatilité annualisée (20 séances)</th>
               <th scope="col">Pire baisse (1 an)</th>
               <th scope="col">RSI 14</th>
             </tr>
@@ -119,8 +119,7 @@
         <dl>
           <dt>Indicateur, et non stratégie</dt>
           <dd>Chaque colonne est un <strong>fait mesuré</strong> : un nombre, son unité,
-              sa date. Aucune n'indique quoi faire. RITA ne classe pas les valeurs et
-              ne signale aucun seuil : ce serait un conseil. Le tri ne fait qu'ordonner les chiffres.</dd>
+              sa date. Aucune n'indique quoi faire. RITA permet de comparer les indicateurs. Le tri et les repères du RSI ne donnent pas de consigne d'achat ou de vente.</dd>
           <dt>1 jour, 1 semaine, 1 mois, 1 an</dt>
           <dd>Écart entre le dernier cours et celui de la dernière séance <em>à ou avant</em>
               la date visée. Les jours fériés ne faussent donc pas le calcul.</dd>
@@ -133,16 +132,16 @@
           <dt>Échangé par jour (détail)</dt>
           <dd>Valeur moyenne échangée par séance sur 20 séances (volume × cours).
               Approximation : RITA n'a pas le détail intraséance.</dd>
-          <dt>Volatilité et pire baisse (détail)</dt>
-          <dd>L'amplitude des variations quotidiennes, annualisée, et la plus forte chute entre un sommet et le creux qui
+          <dt>Volatilité annualisée et pire baisse</dt>
+          <dd>L'amplitude des variations quotidiennes des 20 dernières séances, annualisée, et la plus forte chute entre un sommet et le creux qui
               a suivi, sur un an. Des nombres, jamais un jugement.</dd>
           <dt>RSI 14</dt>
           <dd>Rapport entre hausses et baisses des 14 dernières séances, sur 100. Un
               <strong>fait mesuré</strong> : RITA n'indique jamais qu'un niveau de RSI
               signifierait qu'il faut acheter ou vendre.</dd>
           <dt>Cotation périmée</dt>
-          <dd>La valeur n'a plus coté depuis longtemps : elle est probablement
-              <strong>radiée</strong>. Ses chiffres sont affichés tels quels, mais ils
+          <dd>La dernière cotation disponible est ancienne. La cause reste à vérifier :
+              collecte interrompue, suspension ou radiation. Ses chiffres sont affichés tels quels, mais ils
               décrivent le passé ; leur nombre est donné au-dessus du tableau, lu dans les données.
               <strong>Le RSI, lui, n'est pas affiché</strong> pour ces valeurs : un RSI
               calculé sur des cours anciens ne dirait rien d'utile sur aujourd'hui.</dd>
@@ -154,11 +153,11 @@
   </main>
 
   <footer>
-    <p>RNCP 37827 · Eramalingam GANDAKUMAR · indicateurs calculés par la base, lus par l'écran</p>
+    <p>RNCP 37827 · Eramalingam GANDAKUMAR · indicateurs calculés par RITA à partir des cotations collectées, lus par l'écran</p>
   </footer>
 
-  <script src="commun.js"></script>
-  <script src="graphiques.js"></script>
-  <script src="indicateurs.js"></script>
+  <script src="commun.js?v=5dc68886dd"></script>
+  <script src="graphiques.js?v=c2b8a60636"></script>
+  <script src="indicateurs.js?v=77e991cfb3"></script>
 </body>
 </html>

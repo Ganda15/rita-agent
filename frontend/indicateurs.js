@@ -34,6 +34,7 @@ let donneesChargees = null;
 let risqueParTicker = new Map();   // lot 3 ; reste vide si ce point de terminaison échoue
 let cleUtilisee = null;
 let choixCourant = 0;              // chaque choix de valeur porte un numéro ; une réponse périmée est ignorée
+let valeurChoisie = null;          // le code de la valeur dont le détail est ouvert
 
 // --- Mise en forme : null n'est pas 0 -------------------------------------------
 function nb(valeur) {
@@ -115,7 +116,20 @@ async function chargerIndicateurs(cle) {
   risqueParTicker = new Map((risque?.indicateurs ?? []).map((r) => [r.ticker, r]));
   document.getElementById("note-risque").textContent = risque
     ? "" : "Volatilité, pire baisse et RSI indisponibles pour le moment ; les performances restent à jour.";
+  remplirListeDesValeurs();
   afficher();
+}
+
+// La liste de la zone de recherche (R2, critère 7) : TOUTES les valeurs reçues, code et nom, à parcourir en la faisant
+// défiler. Elle vient des données ; le filtre « masquer les périmées » ne la réduit pas, elle sert à choisir un code.
+function remplirListeDesValeurs() {
+  const options = donneesChargees.indicateurs.map((i) => {
+    const option = document.createElement("option");
+    option.value = String(i.ticker);
+    option.label = i.cotation_perimee ? `${i.nom_officiel} (cotation périmée)` : String(i.nom_officiel);
+    return option;
+  });
+  document.getElementById("valeurs-suivies").replaceChildren(...options);
 }
 
 // --- LA CARTE DES PERFORMANCES -----------------------------------------------
@@ -150,12 +164,24 @@ function afficher() {
   const corps = document.getElementById("lignes");
   corps.replaceChildren();   // vide le tableau sans passer par innerHTML
   for (const i of lignes) corps.appendChild(ligneDuTableau(i));
+  if (valeurChoisie !== null && !lignes.some((i) => String(i.ticker) === valeurChoisie)) fermerDetail();
 
   const date = donneesChargees.indicateurs.find((i) => !i.cotation_perimee)?.date_cours;
   document.getElementById("legende").textContent = date
     ? `Carte des performances : cours du ${dateFr(date)}` : "Carte des performances";
-  afficherStatut("");
+  afficherStatut(lignes.length === 0 ? messageSansResultat() : "");
   elResultat.hidden = false;
+}
+
+// Une recherche sans résultat le dit. Si des valeurs correspondent mais que leur cotation périmée est masquée, il le dit
+// aussi : « aucune valeur » serait faux, elles existent.
+function messageSansResultat() {
+  const recherche = elRecherche.value.trim().toLowerCase();
+  const masquees = !recherche || !elMasquer.checked ? 0 : donneesChargees.indicateurs.filter((i) => i.cotation_perimee
+    && `${i.ticker} ${i.nom_officiel}`.toLowerCase().includes(recherche)).length;
+  const base = "Aucune valeur trouvée pour cette recherche.";
+  return masquees === 0 ? base
+    : `${base} ${masquees} correspond${masquees > 1 ? "ent" : ""} à une cotation périmée masquée : décocher « Masquer les cotations périmées » pour la voir.`;
 }
 
 function ligneDuTableau(i) {
@@ -173,7 +199,8 @@ function ligneDuTableau(i) {
   // La péremption est dite EN TEXTE : une pastille colorée ne serait perçue que par ceux qui voient les couleurs.
   ajouterCellule(tr, i.cotation_perimee
     ? `${i.nom_officiel} (cotation périmée : dernière séance le ${dateFr(i.date_cours)})` : String(i.nom_officiel));
-  ajouterCellule(tr, nb(i.cours) === null ? "–" : nombre(nb(i.cours)));
+  // 04/11/2026 : des marchés différents dans un même tableau ; chaque cours dit sa devise, lue dans les données.
+  ajouterCellule(tr, nb(i.cours) === null ? "–" : `${nombre(nb(i.cours))} ${String(i.devise ?? "")}`.trim());
   for (const champ of PERIODES) {
     const cellule = ajouterCellule(tr, variation(i[champ]));
     const n = nb(i[champ]);
@@ -198,8 +225,18 @@ function ajouterCellule(tr, texte, balise = "td") {
 }
 
 // --- LE DÉTAIL DE LA VALEUR CHOISIE --------------------------------------------
+// Un détail qui ne correspond plus aux résultats se ferme : sinon, sous une recherche sans résultat, le détail de la
+// valeur précédente ferait croire qu'il répond à la nouvelle recherche. Le numéro change aussi, pour qu'une réponse
+// tardive ne le rouvre pas.
+function fermerDetail() {
+  ++choixCourant;
+  valeurChoisie = null;
+  elDetail.hidden = true;
+}
+
 async function choisirValeur(i) {
   const numero = ++choixCourant;
+  valeurChoisie = String(i.ticker);
   const r = risqueParTicker.get(i.ticker);
   document.getElementById("detail-titre").textContent = `${i.ticker} : ${i.nom_officiel}`;
 
@@ -218,10 +255,12 @@ async function choisirValeur(i) {
   ajouter(`cours du ${dateFr(i.date_cours)} : ${nb(i.cours) === null ? "–" : nombre(nb(i.cours))} ${String(i.devise ?? "")}`.trim());
   ajouter(`MM20 : ${nb(i.ma20) === null ? "– (moins de 20 séances)" : nombre(nb(i.ma20))}`);
   ajouter(`MM50 : ${nb(i.ma50) === null ? "– (moins de 50 séances)" : nombre(nb(i.ma50))}`);
-  ajouter(`échangé par jour (20 séances) : ${nb(i.adtv20) === null ? "–"
-    : new Intl.NumberFormat("fr-FR", { notation: "compact", maximumFractionDigits: 1 }).format(nb(i.adtv20))}`);
+  // La devise accompagne le montant, jamais un tiret seul.
+  const capitaux = nb(i.adtv20) === null ? "–"
+    : `${new Intl.NumberFormat("fr-FR", { notation: "compact", maximumFractionDigits: 1 }).format(nb(i.adtv20))} ${String(i.devise ?? "")}`.trim();
+  ajouter(`échangé par jour (20 séances) : ${capitaux}`);
   ajouter(`écart au plus haut (1 an) : ${pourcentSigne(i.distance_plus_haut_1a_pct)}`);
-  ajouter(`volatilité (1 an) : ${pourcentSansSigne(r?.volatilite_annualisee_pct)}`);
+  ajouter(`volatilité annualisée (20 séances) : ${pourcentSansSigne(r?.volatilite_annualisee_pct)}`);
   ajouter(`pire baisse (1 an) : ${pourcentSigne(r?.drawdown_max_1a_pct)}`);
 
   const lien = elDetail.querySelector("a.vers-briefing");
