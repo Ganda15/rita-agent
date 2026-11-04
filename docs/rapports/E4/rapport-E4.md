@@ -424,8 +424,8 @@ L'interface est en **HTML, CSS et JavaScript sans outil de construction** : cinq
 **Conformité aux maquettes (critère 2, à consolider).** Les wireframes des trois premiers écrans ont été dessinés après
 les écrans d'avant la refonte ; Question et Tableau de bord n'ont pas de maquette, leurs schémas de parcours du 02/11
 décrivent l'existant. La refonte des trois premiers écrans a eu ses maquettes d'abord ([`refonte-2026-10.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/docs/conception/frontend/refonte-2026-10.md),
-validées le 04/10), puis sa spécification ([`spec.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/specs/001-refonte-interface/spec.md), validée le 04/11), puis le code, livré le 04/11 (§ 6.5). Sa
-comparaison écran par écran avec les maquettes n'est pas encore faite (tâche 11 du plan).
+validées le 04/10), puis sa spécification ([`spec.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/specs/001-refonte-interface/spec.md), validée le 04/11), puis le code, livré le 04/11 (§ 6.5). Une
+première comparaison, maquette contre écran livré, est en annexe A7 (tâche 11 du plan).
 
 **Comportements et navigation (critère 3).** Le 02/11, une recette a joué les cinq écrans dans quatre
 situations chacun (normal, refus, erreur, clavier) : 54 tests dans un vrai navigateur, l'API simulée
@@ -578,8 +578,8 @@ format contrôlé ([`evidence/C17/controle-accessibilite-readme-2026-11-02.md`](
 
 - **L'environnement n'est pas entièrement reproductible** : [`requirements.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/requirements.txt) libre, trois paquets de CI sans
   version, dépendances indirectes non verrouillées.
-- **La conformité aux maquettes n'est pas vérifiée** : la refonte, construite d'après les maquettes du 04/10 et livrée
-  le 04/11, n'a pas encore été comparée écran par écran à ces maquettes ; Question et Tableau de bord n'ont qu'un schéma
+- **La conformité aux maquettes n'est vérifiée qu'en partie** : la refonte, construite d'après les maquettes du 04/10 et
+  livrée le 04/11, n'est comparée que sur la partie capturée des écrans (annexe A7) ; Question et Tableau de bord n'ont qu'un schéma
   de parcours relevé sur l'existant.
 - **Des défauts ouverts** : le rôle propriétaire de l'API (#76) ; l'affichage « +0,00 % » d'une pire baisse nulle.
   #73, #78 et #79 sont corrigés et déployés le 02/11 ; leurs cartes restent ouvertes sur GitHub jusqu'à une
@@ -763,7 +763,7 @@ Le détail est dans les limites de chaque section.
 | Besoin (C14) | spécification de l'écran 5 et compléments de l'écran 4 rétrospectifs (02/11) ; table `article` hors du modèle ; aucun test avec un lecteur d'écran ni un utilisateur extérieur | § 1.7, § 1.8 |
 | Cadre technique (C15) | schéma d'architecture sans la vigie ; hébergeur non choisi sur un critère environnemental | § 2.7 |
 | Organisation (C16) | tableau non mis à jour après le 14/10 ; revues du lundi sans compte rendu ; pas de rétrospective | § 3.6 |
-| Développement (C17) | environnement non entièrement reproductible ; refonte non comparée à ses maquettes ; défaut ouvert #76 et un écart d'affichage (« +0,00 % ») ; constats OWASP S1, S2, S6, S8, S9 ; pas de mesure d'éco-conception « après » | § 4.10 |
+| Développement (C17) | environnement non entièrement reproductible ; refonte comparée en partie à ses maquettes (A7) ; défaut ouvert #76 et un écart d'affichage (« +0,00 % ») ; constats OWASP S1, S2, S6, S8, S9 ; pas de mesure d'éco-conception « après » | § 4.10 |
 | Tests (C18) | 22 tests ignorés en CI ; couverture sans l'interface, la recherche, la surveillance ni la passerelle MCP ; trois paquets de CI sans version | § 5.6 |
 | Livraison (C19) | un tag reconstruit l'image ; retour arrière sans la base ; aucune sauvegarde automatique ; collecte non planifiée ; script de rattrapage à renforcer | § 6.4, 6.5 |
 
@@ -789,7 +789,7 @@ mais une partie du critère manque, écrite dans la colonne « Limite restante �
 | **C16.3** Objectifs et modalités des rituels partagés aux parties prenantes | ✅ | méthode dans le dépôt, file de validation ; section des rituels envoyée au formateur le 03/11 ([preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/evidence/C8/envoi-documents-formateur-2026-11-03.md)) | partage surtout documentaire ; accusé de réception demandé | 3.4 |
 | **C16.4** Éléments de pilotage accessibles à toutes les parties tout au long du projet | 🟡 | dépôt en lecture pour le formateur (vérifié le 30/10) | accès au tableau non revérifié ; jury pas encore invité | 3.4 |
 | **C17.1** Environnement de développement conforme aux spécifications | ✅ | environnement prévu ([`evidence/C15/preuve-specifications-techniques.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/evidence/C15/preuve-specifications-techniques.md)) et installé, rapprochés le 01/11 : Windows 11, Python 3.14.6, PostgreSQL 18.4 sur le port 5433 ; Python 3.13 en CI ([`test.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/.github/workflows/test.yml)) | [`requirements.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/requirements.txt) et trois paquets de CI sans version : limite de reproductibilité | 4.2 |
-| **C17.2** Interfaces intégrées et conformes aux maquettes | 🟡 | cinq écrans intégrés ; refonte d'après maquettes (04/11) | refonte non comparée à ses maquettes ; deux écrans sans maquette | 4.3 |
+| **C17.2** Interfaces intégrées et conformes aux maquettes | 🟡 | cinq écrans intégrés ; refonte d'après maquettes (04/11) | comparaison visuelle partielle (A7) ; deux écrans sans maquette | 4.3 |
 | **C17.3** Comportements des composants et navigation conformes | ✅ | recette du 02/11 : 54 tests en navigateur, dont 14 au clavier, et 8 cas d'erreur ; #73 déployé | recette sur l'ancienne interface, API simulée ; 375 px, pas 320 ; deux écrans contrôlés en production | 4.3 |
 | **C17.4** Composants métier conformes aux spécifications | ✅ | composants testés ; #78 et #79 déployés ; 111 valeurs vérifiées | « +0,00 % » affiché pour un zéro ; valeurs vérifiées en local | 4.4 |
 | **C17.5** Gestion des droits d'accès développée et conforme | 🟡 | clé sur les routeurs, journal des refus, quota partagé | rôle propriétaire (#76) ; `/docs` public | 4.5 |
