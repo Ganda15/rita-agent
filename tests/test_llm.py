@@ -147,3 +147,65 @@ def test_appel_openrouter_lit_le_point_de_sortie_dans_le_champ_provider(monkeypa
     monkeypatch.setattr(llm.httpx, "post", lambda *a, **k: _ReponseHttpAvecEntetes(corps))
     r = llm._appel_openrouter("x", 5)
     assert r.origine == "Anthropic" and r.modele == "anthropic/claude-sonnet-4.5"
+
+
+# --- Le modèle dit qui a répondu (refonte 001, tâche 1, exigence R4) ---------------------------------
+#
+# L'écran du briefing affichera quel fournisseur et quel modèle ont répondu, et combien de tentatives il a fallu.
+# Le modèle affiché est celui que le fournisseur a renvoyé (`Reponse.modele`), jamais celui que la configuration
+# annonce (`_modele_prevu`) : une valeur supposée n'est pas une valeur mesurée. Une tentative ne garde jamais le
+# message de son erreur, qui peut recopier le prompt (sprint 4, D9).
+
+def test_detaille_dit_le_fournisseur_et_le_modele_reels(monkeypatch):
+    from src import llm
+    monkeypatch.setenv("LLM_ORDRE", "foundry")
+    monkeypatch.setenv("AZURE_FOUNDRY_DEPLOYMENT", "gpt-5.4")
+    with patch("src.llm._appel_foundry", return_value=traces.Reponse(texte="Texte.", modele="gpt-5.4-2026-03-05")):
+        resultat = llm.generer_texte_detaille("prompt test")
+    assert resultat.texte == "Texte."
+    assert resultat.fournisseur == "foundry"
+    assert resultat.modele == "gpt-5.4-2026-03-05", "le modèle renvoyé, pas celui de la configuration (gpt-5.4)"
+    assert resultat.tentatives == [{"fournisseur": "foundry", "reussi": True}]
+
+
+def test_modele_null_si_non_renvoye(monkeypatch):
+    from src import llm
+    monkeypatch.setenv("LLM_ORDRE", "anthropic")
+    with patch("src.llm._appel_anthropic", return_value="texte seul"):
+        resultat = llm.generer_texte_detaille("prompt test")
+    assert resultat.fournisseur == "anthropic"
+    assert resultat.modele is None, "un fournisseur qui ne dit pas son modèle : on n'invente pas"
+
+
+def test_tentatives_sans_message_d_erreur(monkeypatch):
+    from src import llm
+    monkeypatch.setenv("LLM_ORDRE", "foundry,anthropic")
+    recopie = "PROMPT RECOPIE DANS LE MESSAGE D ERREUR"
+    with patch("src.llm._appel_foundry", side_effect=RuntimeError(recopie)), \
+         patch("src.llm._appel_anthropic", return_value=traces.Reponse(texte="ok", modele="claude-sonnet-5")):
+        resultat = llm.generer_texte_detaille("prompt test")
+    assert resultat.tentatives == [{"fournisseur": "foundry", "reussi": False},
+                                   {"fournisseur": "anthropic", "reussi": True}]
+    assert resultat.fournisseur == "anthropic" and resultat.modele == "claude-sonnet-5"
+    assert recopie not in repr(resultat)
+
+
+def test_tous_en_panne_leve_aucun_fournisseur(monkeypatch):
+    from src import llm
+    monkeypatch.setenv("LLM_ORDRE", "foundry,anthropic")
+    with patch("src.llm._appel_foundry", side_effect=RuntimeError("panne")), \
+         patch("src.llm._appel_anthropic", side_effect=RuntimeError("panne")):
+        with pytest.raises(llm.AucunFournisseur) as erreur:
+            llm.generer_texte_detaille("prompt test")
+    assert isinstance(erreur.value, RuntimeError), "les appelants qui attrapent RuntimeError restent justes"
+    assert "Aucun fournisseur LLM disponible." in str(erreur.value)
+    assert erreur.value.tentatives == [{"fournisseur": "foundry", "reussi": False},
+                                       {"fournisseur": "anthropic", "reussi": False}]
+
+
+def test_fournisseur_inconnu_absent_des_tentatives(monkeypatch):
+    from src import llm
+    monkeypatch.setenv("LLM_ORDRE", "inconnu,foundry")
+    with patch("src.llm._appel_foundry", return_value="ok"):
+        resultat = llm.generer_texte_detaille("prompt test")
+    assert resultat.tentatives == [{"fournisseur": "foundry", "reussi": True}], "un nom ignoré n'est pas une tentative"
