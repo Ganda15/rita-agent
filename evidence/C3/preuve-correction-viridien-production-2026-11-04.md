@@ -55,7 +55,9 @@ ni superutilisateur, ni création de rôles ou de bases, ni contournement des r�
 public, 0 illisible, 0 où le compte pourrait écrire. Résultat : code 0 ;
 `D:\KandaWork\RITA_PROJECT\sauvegardes\rita-prod-S1-avant-correction-2026-11-04-191640.dump` (hors du dépôt), 5 591 673
 octets, 10 blocs de données, SHA-256 `cb3cd2aee247881d6a4919da1e08dea1e6c4e2604e0f7271a43951792a7bae9a`, lecture seule,
-accès limité à `ERAMALINGAM\kanda`. Seconde copie protégée : à faire avant toute écriture, sur le disque choisi par Era.
+accès limité à `ERAMALINGAM\kanda`. Le disque D: est un disque externe USB (Toshiba) : **seconde copie** faite le même soir
+sur le disque interne (C:, SSD NVMe), dans `C:\Users\kanda\RITA-sauvegardes\`, hors OneDrive et hors Git, protégée de la même
+façon ; empreinte identique, et conforme à celle notée au moment du dump.
 
 **Restauration complète dans une base jetable** (`postgres:18-alpine`, sur le poste, supprimée ensuite) : code 0. Lignes :
 devise 5, valeur 111, alias_valeur 112, position 7, cotation 280 518, taux_change 260, macro_observation 0, article 2 166,

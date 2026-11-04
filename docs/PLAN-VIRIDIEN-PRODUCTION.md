@@ -6,6 +6,59 @@ en trois opérations à la demande de la revue : « Ne mélange pas correction d
 Preuve de la correction locale : [`evidence/C3/preuve-correction-viridien-2026-11-04.md`](../evidence/C3/preuve-correction-viridien-2026-11-04.md) ;
 preuve en production, écrite au fil de l'opération : [`evidence/C3/preuve-correction-viridien-production-2026-11-04.md`](../evidence/C3/preuve-correction-viridien-production-2026-11-04.md).
 
+## 0. La demande de validation regroupée (A et B), 04/11/2026 au soir
+
+Objectif fixé par Era : une seule validation avant les changements en production. Ce paragraphe la résume ; le détail suit.
+
+**Ce qui est déployé (A).** Le contenu de `refonte-interface`, porté par la PR `develop` vers `main`. Dans l'image, par rapport
+à la production (`2310f87`) : 7 fichiers Python (`api/main.py`, `agents/analyst.py`, `graph/state.py`, `graph/workflow.py`,
+`sources/marches.py`, `src/llm.py`, `db/importer.py`) et 16 fichiers de l'interface ; rien d'autre (§ 1.1). Changements de
+comportement : `/briefing` ajoute un bloc `diagnostic` et répond 503 au lieu de 500 quand aucun fournisseur ne répond ;
+l'interface est servie en `no-cache` ; le prompt du rédacteur, l'ordre des fournisseurs, le schéma et les rôles ne changent pas.
+L'image est construite par la CI à partir du commit de fusion, publiée sous `ghcr.io/ganda15/rita-api:sha-<fusion>` et
+transmise au serveur par son empreinte `@sha256` ; contrôle : l'arbre du commit de fusion doit être celui du commit relu.
+Le code n'a pas changé depuis la suite complète (2 180 réussis, deux fois, à `6f6e94e`) : seuls quatre documents ont changé.
+
+**Ce qui change en base (B).** Exactement 4 cellules (§ 2.1), répétées sur S1, la vraie copie de la production. Chiffres
+attendus, calculés avec les cours présents en production (ceux du 27/10), jamais avec le total local :
+
+| Ligne | Valorisation | Poids avant | Poids après |
+|---|---|---|---|
+| VIRI.PA (VIRIDIEN, 1 × 185,00, cours 96,15, -48,03 %) | 11 538,00 € → 96,15 € | 35,75 % | 0,46 % |
+| BNP.PA | 1 300,95 € | 4,03 % | 6,24 % |
+| SU.PA | 2 428,00 € | 7,52 % | 11,65 % |
+| AI.PA | 7 020,00 € | 21,75 % | 33,69 % |
+| OR.PA | 3 455,60 € | 10,71 % | 16,59 % |
+| SAN.PA | 1 881,50 € | 5,83 % | 9,03 % |
+| MC.PA | 4 653,00 € | 14,42 % | 22,33 % |
+| **Total** | **32 277,05 € → 20 835,20 €** | | |
+
+Les poids « avant » sont ceux de l'écran de production, ce qui valide le calcul ; les six autres lignes ne changent pas.
+
+**La fenêtre.** Hors du créneau protégé (7 h 30 à 9 h). Mesuré le 03/11 : 13 minutes de la fusion à la fin du déploiement ;
+puis B1 et B2, deux minutes ; puis S2 et les vérifications. Pendant la bascule, la production a déjà répondu 502 environ
+7 secondes (14/10). Entre la fin de A et B2, quelques minutes : la nouvelle interface montre encore Viridien à 120 × 1,85.
+
+**Le risque pour MCP.** La passerelle MCP n'est pas dans l'image (aucun `COPY` dans le `Dockerfile`) et aucun client MCP
+configuré ne la lance ; chaque appel qu'elle fait à l'API laisse une ligne dans `mcp_calls`, et S1 en compte **0** : elle n'a
+jamais appelé la production. Son jeu attendu est déjà Viridien corrigé sur le poste : une passerelle pointée vers la
+production refuserait `rita_portefeuille`, sans rendre aucune donnée, jusqu'à B2, puis l'accepterait. Risque : une démonstration
+MCP impossible pendant quelques minutes ; aucune fuite.
+
+**Les conditions d'arrêt.** Une case rouge sur la PR : pas de fusion. Arbre du commit de fusion différent de celui relu :
+arrêt. Déploiement en échec : le serveur remet lui-même l'ancienne image ; arrêt, B n'est pas lancé. Après A, `/health` ou
+fichiers servis non conformes : retour arrière de A, B n'est pas lancé. B1 ou B2 sans le bilan exact 1 et 1 : rien n'est
+validé, arrêt. S2 différente de S1 par autre chose que les 4 cellules (hors ajouts permis) : retour arrière de B.
+
+**Le retour arrière, sans effacer de données légitimes.** B : le bloc `DO` gardé (§ 2.7), qui ne vise que les deux lignes
+par leurs valeurs et remet la valeur d'origine lue dans S1 ; répété sur S1 : retour exact. A : le workflow « Retour arrière »,
+qui remet l'image précédente sans toucher aux données. Restaurer S1 en entier est exclu. Sauvegardes : S1 sur le disque USB
+(D:) et une copie sur le disque interne (C:), même empreinte.
+
+**Ce que l'accord couvre** : fusion de la PR vers `main` (A), lecture de l'empreinte de l'image sur le serveur, B1 puis B2,
+S2 et sa comparaison avec S1, vérifications. Era vérifie l'écran et l'API avec sa clé, et la passerelle MCP s'il le souhaite.
+Hors accord : toute collecte ou synchronisation des cours (§ 3) ; la lecture L3 reste à part.
+
 | Opération | Ce qu'elle change | Accords | Dépend de |
 |---|---|---|---|
 | 1. Livrer la nouvelle interface | le code servi (image, écrans, API, importateur) ; aucune donnée | **A** (fusion) | rien |
