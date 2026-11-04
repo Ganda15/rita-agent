@@ -507,7 +507,17 @@ def briefing(ticker: str = Query(min_length=1, max_length=20), api_key: str = Se
 # Servie par la MÊME application que l'API : même origine, donc aucune règle CORS
 # à ouvrir. Une porte de moins à justifier dans la revue OWASP.
 #
+# Refonte 001, tâche 5 (mesuré le 04/11) : sans `Cache-Control`, Chrome gardait l'ancien `tableau-de-bord.js` à côté
+# du nouveau `commun.js`, et la page montrait le vrai tableau sous la mention « Simulation ». `no-cache` : le navigateur
+# demande à chaque visite si le fichier a changé ; s'il n'a pas changé, la réponse est un 304 sans corps (éco-conception).
+class InterfaceToujoursRevalidee(StaticFiles):
+    async def get_response(self, path, scope):
+        reponse = await super().get_response(path, scope)
+        reponse.headers["Cache-Control"] = "no-cache"
+        return reponse
+
+
 # ⚠️ Ce montage doit rester la DERNIÈRE instruction du fichier : `/` capture toutes
 # les adresses restantes. Placé plus haut, il masquerait /donnees et /briefing.
-app.mount("/", StaticFiles(directory=Path(__file__).parent.parent / "frontend",
-                           html=True), name="interface")
+app.mount("/", InterfaceToujoursRevalidee(directory=Path(__file__).parent.parent / "frontend",
+                                          html=True), name="interface")
