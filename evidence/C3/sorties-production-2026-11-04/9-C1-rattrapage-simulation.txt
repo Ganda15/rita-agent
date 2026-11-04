@@ -1,0 +1,21 @@
+image du conteneur en service : ghcr.io/ganda15/rita-api@sha256:9f6f56547c74af86b5e32afec192e6a8cb883d8ee43337cd300d2277e96eb2a9
+reseau rita-agent_default ; utilisateur de la base rita
+debut (UTC) : 2026-11-04T21:02:18Z ; mode simulation ; taux du 2026-10-27 au 2026-11-04 ; cours depuis la derniere seance de chaque valeur
+INFO Failed to create TzCache, reason: Error creating TzCache folder: '/home/rita/.cache/py-yfinance' reason: [Errno 17] File exists: '/home/rita/.cache/py-yfinance'. TzCache will not be used. Tip: You can direct cache to use a different location with 'set_tz_cache_location(mylocation)'
+
+====================================================================
+PIPELINE D'AGREGATION  --  SIMULATION (rien n'est ecrit)  --  RATTRAPAGE du 2026-10-27 au 2026-11-04
+====================================================================
+
+  cotations (yfinance)         lues  756 | ecrites    0 | rejetees   0
+      - 3 valeur(s) radiee(s) non demandee(s) : ELE.PA, GTO.PA, ZC.PA
+      - seances du 2026-10-26 au 2026-11-04
+
+  taux_change (BCE)            lues   14 | ecrites    0 | rejetees   2
+      - GBP : HTTPStatusError
+      - JPY : HTTPStatusError
+
+  Etapes reussies : 2/2   Duree : 84.4 s
+  Manifeste : /app/logs/manifeste-2026-11-04-210219.json
+
+fin (UTC) : 2026-11-04T21:03:44Z ; code 0

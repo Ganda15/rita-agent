@@ -1,0 +1,40 @@
+== R1 restauree
+== instantane : 10 tables
+== lignes de retour arriere extraites de R1 : cotation 215 (depuis le 26/10), taux 5 (depuis le 2026-10-27)
+== 1. taux d'abord, exiges complets (4 devises), jusqu'a 3 essais
+   essai 1 :  taux_change (BCE) lues 28 | ecrites 35 | rejetees 0  Etapes reussies : 1/1 Duree : 1.6 s 
+== 2. cotations
+ cotations (yfinance) lues 756 | ecrites 756 | rejetees 0
+ - 3 valeur(s) radiee(s) non demandee(s) : ELE.PA, GTO.PA, ZC.PA
+ - seances du 2026-10-26 au 2026-11-04
+ Etapes reussies : 1/1 Duree : 4.9 s
+   (manifestes de la repetition ranges hors de logs/ : 2)
+== 3. completude, valeur par valeur (valeurs non radiees)
+   valeurs demandees : 108
+   derniere seance 2026-11-04 : 107 valeur(s)
+   derniere seance 2026-11-03 : 1 valeur(s)
+   seances du 2026-10-27 au 2026-11-04 par valeur : 7 seances -> 107 valeur(s) ; 6 seances -> 1 valeur(s)
+   exceptions (moins de 7 seances) : CRI.PA 6 (27/10,28/10,29/10,30/10,02/11,03/11)
+   taux du 2026-10-27 au 2026-11-04 : CHF 7 jour(s), dernier 2026-11-04 ; EUR 7 jour(s), dernier 2026-11-04 ; GBP 7 jour(s), dernier 2026-11-04 ; JPY 7 jour(s), dernier 2026-11-04 ; USD 7 jour(s), dernier 2026-11-04
+   lignes anterieures modifiees : cotation avant le 26/10 0 ; taux avant le 2026-10-27 0
+== 4. comparaison de toutes les tables avec R1 (changements permis : cotation et taux_change seulement)
+cotation : 245 cellule(s) changee(s), 648 ligne(s) ajoutee(s) (changements et ajouts permis : non comptes), 0 retiree(s), sur 280518 lignes
+taux_change : 0 cellule(s) changee(s), 30 ligne(s) ajoutee(s) (changements et ajouts permis : non comptes), 0 retiree(s), sur 260 lignes
+total : 0 difference(s) sur 10 table(s)
+== 5. chiffres de la vue apres rattrapage
+   AI.PA AIR LIQUIDE : 40.0000 x 158.2500, cours 187.3600 du 2026-11-04, 18.39 %, poids 34.17 %
+   BNP.PA BNP PARIBAS : 15.0000 x 57.1500, cours 91.7000 du 2026-11-04, 60.45 %, poids 6.27 %
+   MC.PA LVMH MOET VUITTON : 12.0000 x 632.4000, cours 416.2500 du 2026-11-04, -34.18 %, poids 22.77 %
+   OR.PA OREAL(L') : 8.0000 x 415.1000, cours 444.7500 du 2026-11-04, 7.14 %, poids 16.22 %
+   SAN.PA SANOFI : 25.0000 x 89.6000, cours 84.1000 du 2026-11-04, -6.14 %, poids 9.58 %
+   SU.PA SCHNEIDER ELECTRIC : 10.0000 x 181.9000, cours 231.5500 du 2026-11-04, 27.30 %, poids 10.56 %
+   VIRI.PA VIRIDIEN : 1.0000 x 185.0000, cours 94.8500 du 2026-11-04, -48.73 %, poids 0.43 %
+   total : 21935.75 EUR sur 7 lignes
+== 6. retour arriere, table par table (chacun en une transaction, verifie par compte)
+   cotation remise a R1 (seule) : code 0
+   apres le retour de cotation seule : cotation : identique (280518 lignes)
+   apres le retour de cotation seule : taux_change : 0 cellule(s) changee(s), 30 ligne(s) ajoutee(s), 0 retiree(s), sur 260 lignes
+   apres le retour de cotation seule : total : 30 difference(s) sur 10 table(s)
+   taux_change remise a R1 : code 0
+   apres les deux retours, toutes tables contre R1 : total : 0 difference(s) sur 10 table(s)
+== base jetable supprimee : 0 restante

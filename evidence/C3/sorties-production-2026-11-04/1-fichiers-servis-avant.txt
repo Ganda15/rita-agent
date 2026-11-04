@@ -1,0 +1,30 @@
+/health : 200, commit servi 2310f87, construit le 2026-11-03T21:33:15Z
+OK    /health annonce le commit attendu 2310f87
+OK    index.html : statut 200
+ECHEC index.html : Cache-Control (absent)
+OK    index.html : page servie identique a celle du commit (180e3ad3cc)
+ECHEC index.html -> style.css : appele sans ?v= (le navigateur peut garder un ancien fichier)
+ECHEC index.html -> app.js : appele sans ?v= (le navigateur peut garder un ancien fichier)
+OK    indicateurs.html : statut 200
+ECHEC indicateurs.html : Cache-Control (absent)
+OK    indicateurs.html : page servie identique a celle du commit (145f04b3bf)
+ECHEC indicateurs.html -> style.css : appele sans ?v= (le navigateur peut garder un ancien fichier)
+ECHEC indicateurs.html -> indicateurs.js : appele sans ?v= (le navigateur peut garder un ancien fichier)
+ECHEC indicateurs.html : phrase temoin « Volatilité annualisée (20 séances) »
+OK    briefing.html : statut 200
+ECHEC briefing.html : Cache-Control (absent)
+OK    briefing.html : page servie identique a celle du commit (753412a2e3)
+ECHEC briefing.html -> style.css : appele sans ?v= (le navigateur peut garder un ancien fichier)
+ECHEC briefing.html -> briefing.js : appele sans ?v= (le navigateur peut garder un ancien fichier)
+OK    question.html : statut 200
+ECHEC question.html : Cache-Control (absent)
+OK    question.html : page servie identique a celle du commit (68e1e31753)
+ECHEC question.html -> style.css : appele sans ?v= (le navigateur peut garder un ancien fichier)
+ECHEC question.html -> question.js : appele sans ?v= (le navigateur peut garder un ancien fichier)
+OK    tableau-de-bord.html : statut 200
+ECHEC tableau-de-bord.html : Cache-Control (absent)
+OK    tableau-de-bord.html : page servie identique a celle du commit (3418c7a126)
+ECHEC tableau-de-bord.html -> style.css : appele sans ?v= (le navigateur peut garder un ancien fichier)
+ECHEC tableau-de-bord.html -> tableau-de-bord.js : appele sans ?v= (le navigateur peut garder un ancien fichier)
+
+16 echec(s)

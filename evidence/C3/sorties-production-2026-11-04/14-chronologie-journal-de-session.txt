@@ -1,0 +1,17 @@
+Chronologie de l'operation C, 04/11/2026, extraite du journal de session de l'agent (hors depot) :
+C:\Users\kanda\.claude\projects\D--KandaWork-RITA-PROJECT-rita-agent\b15be30e-9654-40db-a49e-a50845bfa0e4.jsonl
+Chaque horodatage ci-dessous existe tel quel dans ce journal (verifie a l'extraction). Heure UTC, puis heure de Paris (UTC+1).
+Les horodatages des commandes sont ceux de leur lancement et de leur retour cote poste, pas ceux du serveur.
+Les noms des sauvegardes sont a l'heure de Paris : S1 nommee 19 h 16 min 40 s pour un dump fait de 18 h 16 min 39 s a 41 s UTC (sortie 3).
+
+20:59:56 UTC  21:59:56 Paris  accord de preparation du rattrapage recu (C0, simulation C1, repetition sur une copie de R1)
+21:00:01 UTC  22:00:01 Paris  debut de la commande de sauvegarde R1
+21:00:17 UTC  22:00:17 Paris  fin de la commande de sauvegarde R1 (fichier nomme 22 h 00 min 09 s, heure de Paris)
+21:08:50 UTC  22:08:50 Paris  accord de C2 recu (« Go C2 sous les conditions suivantes »)
+21:17:23 UTC  22:17:23 Paris  debut de la commande C2 en production
+21:19:17 UTC  22:19:17 Paris  fin de la commande C2 en production (sortie 12, « C2 REUSSI »)
+21:19:27 UTC  22:19:27 Paris  debut de la commande de sauvegarde R2
+21:19:43 UTC  22:19:43 Paris  fin de la commande de sauvegarde R2 (fichier nomme 22 h 19 min 35 s, heure de Paris)
+21:25:54 UTC  22:25:54 Paris  relecture recue : « Ne relance pas C2 », controle visuel C4 demande
+21:28:56 UTC  22:28:56 Paris  capture C4 recue : Portefeuille (capture 5)
+21:29:26 UTC  22:29:26 Paris  capture C4 recue : Indicateurs (capture 6)

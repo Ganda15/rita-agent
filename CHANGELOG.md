@@ -9,6 +9,35 @@
 
 ---
 
+## 2026-11-04, nuit : E4 v1.3 et son annexe relue en entier ; deux défauts de l'écran Briefing livré
+
+**Manque découvert** : la première préparation d'E4 v1.3 avait changé les liens de l'annexe sans relire ses textes ni ceux
+de ses images ; une relecture extérieure l'a vu. L'annexe est maintenant relue en entier : légendes datées pour ce qui
+promettait trop ou avait vieilli, images non retouchées, et une section A7 qui compare les maquettes de la refonte aux
+écrans livrés. Cette comparaison a trouvé deux défauts sur l'écran Briefing en production : l'aide promet qu'une
+recommandation est « retenue, jamais diffusée », ce que le garde-fou ne garantit pas, et les astérisques de mise en forme
+du modèle s'affichent. À corriger à part, test d'abord. Aucun statut de critère changé.
+
+---
+
+## 2026-11-04, soir : nouvelle interface et Viridien en production, cours rattrapés au 04/11 ; trois manques du script de rattrapage
+
+**Décisions structurantes** (accords d'Era, chacun sur une demande écrite) : la refonte de l'interface est livrée en
+production (`8ecc5a7`, fichiers servis vérifiés) ; la ligne Viridien est corrigée en base de production, exactement quatre
+cellules, sauvegardes S1 et S2 comparées cellule par cellule ; les cotations et les taux sont rattrapés une fois, jusqu'au
+04/11, sous verrou, sauvegardes R1 et R2 sans différence hors `cotation` et `taux_change`. Écrans vérifiés par Era avec sa
+clé. Preuve : `evidence/C3/preuve-correction-viridien-production-2026-11-04.md`.
+
+**Manque découvert** (relecture du 04/11) : le script du rattrapage a réussi, mais il n'est pas réutilisable en l'état. Sa
+condition de complétude ne vérifie pas les dates exactes ; une erreur technique peut ne pas l'arrêter ; son retour arrière
+recharge toute une plage de dates. À corriger, essai à l'appui, avant toute réutilisation ou automatisation (§ 9.1 de la
+preuve). La collecte automatique reste une décision séparée : sans elle, les cours vieillissent de nouveau.
+
+**Remise** (réponse écrite d'Elbby du 04/11) : un PDF par rapport, annexes comprises, est accepté ; l'accès du jury au
+dépôt se voit avec Héléna VICENTE.
+
+---
+
 ## 2026-11-03, nuit : quatre tags posés, sans exécution de livraison
 
 **Livrables figés** : `livrable-E2-v2` (E2 v1.0), `livrable-E3-v4` (E3 v2.1), `livrable-E4-v2` (E4 v1.2) et

@@ -1,0 +1,13 @@
+garde : rita_lecture on UTC 
+devise 5 e2f3f01fe65b6ae8d571c99b5e3baea5
+valeur 111 21d1447e2786e358442895d0d33f20c8
+alias_valeur 112 987fb9f37eaf10877214fe2e8b1b0d87
+position 7 4251fd9b180d1fc0e9b6ee0fbd6f7da9
+cotation 280518 f4c9dee753abc6977aa240428937edd1
+taux_change 260 9c7b98a1a365b06460c4eee85a019f6d
+macro_observation 0
+article 2166 ; derniere collecte 2026-10-27 15:46:00.412082+00
+memory_audit 0
+mcp_calls 0
+cellule position VIRI.PA : id 14, quantite 120.0000, pru 1.8500, date_achat 2021-10-14, importe_le 2026-08-20 11:03:00.621572+00, cloture aucune
+cellule valeur VIRI.PA : nom_officiel CGG BS

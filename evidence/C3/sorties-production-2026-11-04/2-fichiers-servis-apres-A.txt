@@ -1,0 +1,66 @@
+/health : 200, commit servi 8ecc5a7, construit le 2026-11-04T20:16:24Z
+OK    /health annonce le commit attendu 8ecc5a7
+OK    index.html : statut 200
+OK    index.html : Cache-Control no-cache
+OK    index.html : page servie identique a celle du commit (efab8e4e20)
+OK    index.html -> style.css?v=d0e888a819 : statut 200, empreinte servie d0e888a819
+OK    index.html -> style.css : identique au fichier du commit 8ecc5a7
+OK    index.html -> theme.js?v=32a0dab24c : statut 200, empreinte servie 32a0dab24c
+OK    index.html -> theme.js : identique au fichier du commit 8ecc5a7
+OK    index.html -> commun.js?v=854b0d315c : statut 200, empreinte servie 854b0d315c
+OK    index.html -> commun.js : identique au fichier du commit 8ecc5a7
+OK    index.html -> graphiques.js?v=c2b8a60636 : statut 200, empreinte servie c2b8a60636
+OK    index.html -> graphiques.js : identique au fichier du commit 8ecc5a7
+OK    index.html -> app.js?v=9234bd32ca : statut 200, empreinte servie 9234bd32ca
+OK    index.html -> app.js : identique au fichier du commit 8ecc5a7
+OK    indicateurs.html : statut 200
+OK    indicateurs.html : Cache-Control no-cache
+OK    indicateurs.html : page servie identique a celle du commit (36d44d8cd1)
+OK    indicateurs.html -> style.css?v=d0e888a819 : statut 200, empreinte servie d0e888a819
+OK    indicateurs.html -> style.css : identique au fichier du commit 8ecc5a7
+OK    indicateurs.html -> theme.js?v=32a0dab24c : statut 200, empreinte servie 32a0dab24c
+OK    indicateurs.html -> theme.js : identique au fichier du commit 8ecc5a7
+OK    indicateurs.html -> commun.js?v=854b0d315c : statut 200, empreinte servie 854b0d315c
+OK    indicateurs.html -> commun.js : identique au fichier du commit 8ecc5a7
+OK    indicateurs.html -> graphiques.js?v=c2b8a60636 : statut 200, empreinte servie c2b8a60636
+OK    indicateurs.html -> graphiques.js : identique au fichier du commit 8ecc5a7
+OK    indicateurs.html -> indicateurs.js?v=77e991cfb3 : statut 200, empreinte servie 77e991cfb3
+OK    indicateurs.html -> indicateurs.js : identique au fichier du commit 8ecc5a7
+OK    indicateurs.html : phrase temoin « Volatilité annualisée (20 séances) »
+OK    briefing.html : statut 200
+OK    briefing.html : Cache-Control no-cache
+OK    briefing.html : page servie identique a celle du commit (d6505997f3)
+OK    briefing.html -> style.css?v=d0e888a819 : statut 200, empreinte servie d0e888a819
+OK    briefing.html -> style.css : identique au fichier du commit 8ecc5a7
+OK    briefing.html -> theme.js?v=32a0dab24c : statut 200, empreinte servie 32a0dab24c
+OK    briefing.html -> theme.js : identique au fichier du commit 8ecc5a7
+OK    briefing.html -> commun.js?v=854b0d315c : statut 200, empreinte servie 854b0d315c
+OK    briefing.html -> commun.js : identique au fichier du commit 8ecc5a7
+OK    briefing.html -> graphiques.js?v=c2b8a60636 : statut 200, empreinte servie c2b8a60636
+OK    briefing.html -> graphiques.js : identique au fichier du commit 8ecc5a7
+OK    briefing.html -> briefing.js?v=3590321af6 : statut 200, empreinte servie 3590321af6
+OK    briefing.html -> briefing.js : identique au fichier du commit 8ecc5a7
+OK    question.html : statut 200
+OK    question.html : Cache-Control no-cache
+OK    question.html : page servie identique a celle du commit (bcb4807369)
+OK    question.html -> style.css?v=d0e888a819 : statut 200, empreinte servie d0e888a819
+OK    question.html -> style.css : identique au fichier du commit 8ecc5a7
+OK    question.html -> theme.js?v=32a0dab24c : statut 200, empreinte servie 32a0dab24c
+OK    question.html -> theme.js : identique au fichier du commit 8ecc5a7
+OK    question.html -> commun.js?v=854b0d315c : statut 200, empreinte servie 854b0d315c
+OK    question.html -> commun.js : identique au fichier du commit 8ecc5a7
+OK    question.html -> question.js?v=14b17a343f : statut 200, empreinte servie 14b17a343f
+OK    question.html -> question.js : identique au fichier du commit 8ecc5a7
+OK    tableau-de-bord.html : statut 200
+OK    tableau-de-bord.html : Cache-Control no-cache
+OK    tableau-de-bord.html : page servie identique a celle du commit (27f62554d7)
+OK    tableau-de-bord.html -> style.css?v=d0e888a819 : statut 200, empreinte servie d0e888a819
+OK    tableau-de-bord.html -> style.css : identique au fichier du commit 8ecc5a7
+OK    tableau-de-bord.html -> theme.js?v=32a0dab24c : statut 200, empreinte servie 32a0dab24c
+OK    tableau-de-bord.html -> theme.js : identique au fichier du commit 8ecc5a7
+OK    tableau-de-bord.html -> commun.js?v=854b0d315c : statut 200, empreinte servie 854b0d315c
+OK    tableau-de-bord.html -> commun.js : identique au fichier du commit 8ecc5a7
+OK    tableau-de-bord.html -> tableau-de-bord.js?v=93632277a5 : statut 200, empreinte servie 93632277a5
+OK    tableau-de-bord.html -> tableau-de-bord.js : identique au fichier du commit 8ecc5a7
+
+0 echec(s)

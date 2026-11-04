@@ -1,0 +1,33 @@
+restauration avant : code 0
+restauration apres : code 0
+alias_valeur : identique (112 lignes)
+article : identique (2166 lignes)
+cotation : 245 cellule(s) changee(s), 648 ligne(s) ajoutee(s) (changements et ajouts permis : non comptes), 0 retiree(s), sur 280518 lignes
+devise : identique (5 lignes)
+macro_observation : identique (0 lignes)
+mcp_calls : identique (3 lignes)
+memory_audit : identique (0 lignes)
+position : identique (7 lignes)
+taux_change : 0 cellule(s) changee(s), 30 ligne(s) ajoutee(s) (changements et ajouts permis : non comptes), 0 retiree(s), sur 260 lignes
+valeur : identique (111 lignes)
+total : 0 difference(s) sur 10 table(s)
+== chiffres de la vue apres (cours en base au moment de la sauvegarde)
+   VIRI.PA : 1.0000 x 185.0000, cours 94.8500 du 2026-11-04, valorisation 94.85 EUR, performance -48.73 %
+   total : 21935.75 EUR sur 7 lignes ; poids VIRI.PA 0.43 %
+== les sept lignes, avant | apres (cours en base, valorisation, performance, poids)
+   avant AI.PA 40.0000 158.2500 175.5000 2026-10-27 7020.00 10.90 % 33.69 %
+   avant BNP.PA 15.0000 57.1500 86.7300 2026-10-27 1300.95 51.76 % 6.24 %
+   avant MC.PA 12.0000 632.4000 387.7500 2026-10-27 4653.00 -38.69 % 22.33 %
+   avant OR.PA 8.0000 415.1000 431.9500 2026-10-27 3455.60 4.06 % 16.59 %
+   avant SAN.PA 25.0000 89.6000 75.2600 2026-10-27 1881.50 -16.00 % 9.03 %
+   avant SU.PA 10.0000 181.9000 242.8000 2026-10-27 2428.00 33.48 % 11.65 %
+   avant VIRI.PA 1.0000 185.0000 96.1500 2026-10-27 96.15 -48.03 % 0.46 %
+   apres AI.PA 40.0000 158.2500 187.3600 2026-11-04 7494.40 18.39 % 34.17 %
+   apres BNP.PA 15.0000 57.1500 91.7000 2026-11-04 1375.50 60.45 % 6.27 %
+   apres MC.PA 12.0000 632.4000 416.2500 2026-11-04 4995.00 -34.18 % 22.77 %
+   apres OR.PA 8.0000 415.1000 444.7500 2026-11-04 3558.00 7.14 % 16.22 %
+   apres SAN.PA 25.0000 89.6000 84.1000 2026-11-04 2102.50 -6.14 % 9.58 %
+   apres SU.PA 10.0000 181.9000 231.5500 2026-11-04 2315.50 27.30 % 10.56 %
+   apres VIRI.PA 1.0000 185.0000 94.8500 2026-11-04 94.85 -48.73 % 0.43 %
+== base jetable supprimee : 0 restante
+== BILAN : OK, 0 difference hors cotation et taux_change (et ajouts permis)

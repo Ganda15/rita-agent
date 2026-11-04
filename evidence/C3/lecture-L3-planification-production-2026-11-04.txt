@@ -1,0 +1,47 @@
+#horloge du serveur (UTC) : 2026-11-04T19:17:12Z ; demarre depuis : 2026-08-19 19:41:12
+#1 minuteries systemd (toutes) : minuterie -> unite lancee
+  apport-autoreport.timer -> apport-autoreport.service
+  apt-daily-upgrade.timer -> apt-daily-upgrade.service
+  apt-daily.timer -> apt-daily.service
+  dpkg-db-backup.timer -> dpkg-db-backup.service
+  e2scrub_all.timer -> e2scrub_all.service
+  fstrim.timer -> fstrim.service
+  logrotate.timer -> logrotate.service
+  man-db.timer -> man-db.service
+  motd-news.timer -> motd-news.service
+  snapd.snap-repair.timer -> snapd.snap-repair.service
+  sysstat-collect.timer -> sysstat-collect.service
+  sysstat-rotate.timer -> sysstat-rotate.service
+  sysstat-summary.timer -> sysstat-summary.service
+  systemd-tmpfiles-clean.timer -> systemd-tmpfiles-clean.service
+  ua-timer.timer -> ua-timer.service
+  update-notifier-download.timer -> update-notifier-download.service
+  update-notifier-motd.timer -> update-notifier-motd.service
+  xfs_scrub_all.timer -> xfs_scrub_all.service
+  unites dont le nom contient rita : 0
+#2 cron : fichiers presents (noms) et ceux qui citent ces mots (pipelines|ingest|cotation|collecte|rattrap|rita), sans leur contenu
+  /etc/cron.d : e2scrub_all 
+  /etc/cron.hourly : 
+  /etc/cron.daily : apport apt-compat dpkg logrotate man-db 
+  /etc/cron.weekly : man-db 
+  /etc/cron.monthly : 
+  /var/spool/cron/crontabs : 
+  citant ces mots : 
+  crontab de root : 0 ligne(s) active(s), dont 0 citant ces mots
+  travaux at en attente : 0
+#3 conteneurs (nom, etat, politique de redemarrage), sans leur configuration
+  rita-api-preprod : running depuis 2026-11-03T21:40:24.6497903Z ; redemarrage unless-stopped
+  kaldera-partenaire : running depuis 2026-10-09T08:05:16.42926716Z ; redemarrage unless-stopped
+  deploy-mcp-developer-1 : exited depuis 2026-09-10T20:16:09.896367136Z ; redemarrage unless-stopped
+  deploy-mcp-support-1 : exited depuis 2026-09-10T20:16:09.911947011Z ; redemarrage unless-stopped
+  deploy-mcp-commercial-1 : exited depuis 2026-09-10T20:16:09.900596813Z ; redemarrage unless-stopped
+  deploy-app-1 : exited depuis 2026-09-10T20:15:52.581228354Z ; redemarrage unless-stopped
+  deploy-postgres-1 : exited depuis 2026-09-10T19:38:29.776153491Z ; redemarrage unless-stopped
+  glossary : running depuis 2026-08-21T22:14:38.966192226Z ; redemarrage unless-stopped
+  gloss-mongo : running depuis 2026-08-21T17:36:39.567536052Z ; redemarrage unless-stopped
+  rita-postgres-preprod : running depuis 2026-08-20T11:01:28.941764041Z ; redemarrage unless-stopped
+#4 periode couverte par les journaux de RITA sur le serveur
+  manifestes : 9, du manifeste-2026-10-16-170439.json au manifeste-2026-10-27-154559.json
+  journal des operations : 47 lignes, du 2026-10-14T22:26:04+02:00 au 2026-11-03T22:40:42+01:00 ; par operation : {'livrer': 39, 'revenir': 2, 'ingerer': 6}
+  dossier des rapports cree le : 2026-10-16 15:45:23.020369055 +0000 (date de modification : 2026-11-03 21:40:21)
+#fin

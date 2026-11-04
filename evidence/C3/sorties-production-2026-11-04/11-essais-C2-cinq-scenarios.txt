@@ -1,0 +1,86 @@
+######## normal (code attendu 0)
+   == garde de date
+      jour UTC 2026-11-04 ; jour a Paris 2026-11-04 ; jour attendu 2026-11-04
+   == donnees concernees identiques a R1 ?
+      cotation >= 2026-10-26 : identique ; taux >= 2026-10-27 : identique ; plus anciennes : identiques
+   == 1. BCE, exigee complete : 4 devises et EUR, 7 jours chacune, rien apres le 2026-11-04
+      essai 1 : taux_change (BCE) lues 28 | ecrites 35 | rejetees 0
+      devises completes : 5 sur 5 ; taux apres le 2026-11-04 : 0
+   == 2. cotations
+       cotations (yfinance) lues 756 | ecrites 756 | rejetees 0
+       - 3 valeur(s) radiee(s) non demandee(s) : ELE.PA, GTO.PA, ZC.PA
+       - seances du 2026-10-26 au 2026-11-04
+       Etapes reussies : 1/1 Duree : 3.9 s
+   == 3. completude, valeur par valeur
+      valeurs demandees 108 (attendu 108) ; 7 seances : 107 ; exceptions : CRI.PA:6 (permises : CRI.PA:6) ; seances apres le 2026-11-04 : 0 ; lignes anciennes inchangees : oui
+   == 4. statistiques du planificateur
+      ANALYZE fait
+      derniere seance 2026-11-04 ; cotations 281166
+      taux : CHF 2026-11-04, EUR 2026-11-04, GBP 2026-11-04, JPY 2026-11-04, USD 2026-11-04
+   == C2 REUSSI
+   -> code 0 : CONFORME
+   comparaison de toutes les tables avec R1 :
+      cotation : 245 cellule(s) changee(s), 648 ligne(s) ajoutee(s) (changements et ajouts permis : non comptes), 0 retiree(s), sur 280518 lignes
+      taux_change : 0 cellule(s) changee(s), 30 ligne(s) ajoutee(s) (changements et ajouts permis : non comptes), 0 retiree(s), sur 260 lignes
+      total : 0 difference(s) sur 10 table(s)
+######## BCE incomplete apres 3 essais (code attendu 20)
+   == garde de date
+      jour UTC 2026-11-04 ; jour a Paris 2026-11-04 ; jour attendu 2026-11-04
+   == donnees concernees identiques a R1 ?
+      cotation >= 2026-10-26 : identique ; taux >= 2026-10-27 : identique ; plus anciennes : identiques
+   == 1. BCE, exigee complete : 4 devises et EUR, 7 jours chacune, rien apres le 2026-11-04
+      essai 1 : (panne simulee : USD et CHF seulement)
+      devises completes : 2 sur 5 ; taux apres le 2026-11-04 : 0
+      essai 2 : (panne simulee : USD et CHF seulement)
+      devises completes : 2 sur 5 ; taux apres le 2026-11-04 : 0
+      essai 3 : (panne simulee : USD et CHF seulement)
+      devises completes : 2 sur 5 ; taux apres le 2026-11-04 : 0
+   ARRET : BCE incomplete apres 3 essais ; retour cible des taux a R1 (les cotations n'ont pas ete touchees)
+      retour verifie : cotation et taux identiques a R1
+   -> code 20 : CONFORME
+   comparaison de toutes les tables avec R1 :
+      total : 0 difference(s) sur 10 table(s)
+######## cotations incompletes apres la BCE (code attendu 30)
+   == garde de date
+      jour UTC 2026-11-04 ; jour a Paris 2026-11-04 ; jour attendu 2026-11-04
+   == donnees concernees identiques a R1 ?
+      cotation >= 2026-10-26 : identique ; taux >= 2026-10-27 : identique ; plus anciennes : identiques
+   == 1. BCE, exigee complete : 4 devises et EUR, 7 jours chacune, rien apres le 2026-11-04
+      essai 1 : taux_change (BCE) lues 21 | ecrites 28 | rejetees 1
+      devises completes : 4 sur 5 ; taux apres le 2026-11-04 : 0
+      essai 2 : taux_change (BCE) lues 14 | ecrites 21 | rejetees 2
+      devises completes : 4 sur 5 ; taux apres le 2026-11-04 : 0
+      essai 3 : taux_change (BCE) lues 28 | ecrites 35 | rejetees 0
+      devises completes : 5 sur 5 ; taux apres le 2026-11-04 : 0
+   == 2. cotations
+       cotations (yfinance) lues 756 | ecrites 756 | rejetees 0
+       - 3 valeur(s) radiee(s) non demandee(s) : ELE.PA, GTO.PA, ZC.PA
+       - seances du 2026-10-26 au 2026-11-04
+       Etapes reussies : 1/1 Duree : 3.8 s
+      (essai : une seance d'AI.PA retiree apres la collecte)
+   == 3. completude, valeur par valeur
+      valeurs demandees 108 (attendu 108) ; 7 seances : 106 ; exceptions : AI.PA:6,CRI.PA:6 (permises : CRI.PA:6) ; seances apres le 2026-11-04 : 0 ; lignes anciennes inchangees : oui
+   ARRET : cotations incompletes ou hors perimetre ; retour cible des deux tables a R1
+      retour verifie : cotation et taux identiques a R1
+   -> code 30 : CONFORME
+   comparaison de toutes les tables avec R1 :
+      total : 0 difference(s) sur 10 table(s)
+######## donnees changees depuis R1 (code attendu 12)
+   == garde de date
+      jour UTC 2026-11-04 ; jour a Paris 2026-11-04 ; jour attendu 2026-11-04
+      (essai : une cotation modifiee avant C2)
+   == donnees concernees identiques a R1 ?
+      cotation >= 2026-10-26 : DIFFERENTE ; taux >= 2026-10-27 : identique ; plus anciennes : identiques
+   ARRET : les donnees ont change depuis R1, rien n'est ecrit
+   -> code 12 : CONFORME
+   comparaison de toutes les tables avec R1 :
+      cotation : 1 cellule(s) changee(s), 0 ligne(s) ajoutee(s), 0 retiree(s), sur 280518 lignes
+      total : 1 difference(s) sur 10 table(s)
+######## mauvais jour (code attendu 10)
+   == garde de date
+      jour UTC 2026-11-04 ; jour a Paris 2026-11-04 ; jour attendu 2026-11-05
+   ARRET : hors du jour prevu, aucune seance de plus ne doit entrer
+   -> code 10 : CONFORME
+   comparaison de toutes les tables avec R1 :
+      total : 0 difference(s) sur 10 table(s)
+######## fin : 0 base jetable restante
