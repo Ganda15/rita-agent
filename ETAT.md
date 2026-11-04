@@ -29,7 +29,9 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 - **Décision d'Era du 04/11** : la refonte de l'interface (`docs/conception/frontend/refonte-2026-10.md`, maquettes du
   04/10) devient la démonstration de l'oral blanc des 12-13/11. Après la remise : spécification remise à jour (cinq écrans,
   bloc `diagnostic` absent de l'API aujourd'hui, 503 au lieu du 500 actuel de `/briefing`, #73 déjà livré), plan, puis
-  construction test d'abord ; version identifiée ; ajustée après les retours. Le mode simulation n'est pas retenu à ce stade.
+  construction test d'abord ; version identifiée ; ajustée après les retours. Précisions d'Era : les trois écrans (Briefing,
+  Indicateurs, Portefeuille), Question et Tableau de bord inchangés avec le nouvel en-tête, démonstration en production,
+  mode simulation clairement indiqué dans le périmètre. Spécification validée : `specs/001-refonte-interface/spec.md`.
 - **Tags du 03/11, nuit** : PR #178 fusionnée (`2310f87`, 21:28 UTC) ; `livrable-E2-v2`, `livrable-E3-v4`,
   `livrable-E4-v2` et `livrable-E5-v2` posés sur `2310f87`. **Aucune exécution de « Livraison » sur ces tags** : ils ont été
   poussés en une seule commande, et GitHub ne crée pas d'événement de push quand plus de trois tags arrivent ensemble ;
