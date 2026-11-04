@@ -180,15 +180,17 @@
     var legende = [["Cours", "trace-cours"]];
     if (avec20) { legende.push(["MM20", "trace-mm20"]); }
     if (avec50) { legende.push(["MM50", "trace-mm50"]); }
+    // Deux sortes d'étiquettes : la légende (toujours lisible, agrandie sur un écran étroit) et les repères de prix et
+    // de dates (cachés sur un écran étroit, où ils deviendraient minuscules : l'alternative les donne en entier).
     legende.forEach(function (entree, k) {
-      var x0 = gauche + k * 90;
+      var x0 = gauche + k * 120;
       svg.appendChild(element("line", { x1: x0, y1: 12, x2: x0 + 22, y2: 12, class: entree[1] }));
-      svg.appendChild(texteSvg(x0 + 28, 16, entree[0], { class: "etiquette" }));
+      svg.appendChild(texteSvg(x0 + 28, 16, entree[0], { class: "etiquette legende" }));
     });
-    svg.appendChild(texteSvg(L - droite + 6, y(plusHaut) + 4, nombre(plusHaut, 2), { class: "etiquette" }));
-    svg.appendChild(texteSvg(L - droite + 6, y(plusBas) + 4, nombre(plusBas, 2), { class: "etiquette" }));
-    svg.appendChild(texteSvg(gauche, H - 8, premiere, { class: "etiquette" }));
-    svg.appendChild(texteSvg(L - droite, H - 8, derniere, { class: "etiquette", "text-anchor": "end" }));
+    svg.appendChild(texteSvg(L - droite + 6, y(plusHaut) + 4, nombre(plusHaut, 2), { class: "etiquette repere" }));
+    svg.appendChild(texteSvg(L - droite + 6, y(plusBas) + 4, nombre(plusBas, 2), { class: "etiquette repere" }));
+    svg.appendChild(texteSvg(gauche, H - 8, premiere, { class: "etiquette repere" }));
+    svg.appendChild(texteSvg(L - droite, H - 8, derniere, { class: "etiquette repere", "text-anchor": "end" }));
 
     var lignes = ["Du " + premiere + " au " + derniere + " : " + visibles.length + " séances affichées"
                   + (valides.length > visibles.length ? " sur " + valides.length + " lues." : "."),

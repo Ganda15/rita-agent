@@ -450,9 +450,10 @@ def test_les_trois_ecrans_se_relient(client):
 
 
 def test_l_ecran_briefing_appelle_le_point_de_terminaison_du_modele_en_post_avec_la_cle():
+    # Refonte 001 (tâche 7) : l'appel passe par RITA.appeler (commun.js, tâche 5), qui pose l'en-tête de la clé.
     assert '"/briefing"' in BRIEFING_JS
-    assert 'method: "POST"' in BRIEFING_JS
-    assert '"X-API-Key"' in BRIEFING_JS
+    assert "RITA.appeler" in BRIEFING_JS and 'methode: "POST"' in BRIEFING_JS
+    assert '"X-API-Key"' in code_sans_commentaires("commun.js")
 
 
 def test_aucune_cle_d_api_dans_le_code_de_l_ecran_briefing():
@@ -490,7 +491,12 @@ def test_le_verdict_du_garde_fou_est_dit_en_texte_pas_seulement_en_couleur():
 def test_un_ticker_inconnu_est_dit_en_clair_et_une_cle_refusee_est_oubliee():
     code = code_sans_commentaires("briefing.js")
     assert "502" in code and "introuvable" in code
-    assert "403" in code and "sessionStorage.removeItem" in code
+    # Refonte 001 (tâche 7) : sur 401 ou 403, RITA.appeler oublie la clé (commun.js) ; l'écran la redemande.
+    assert "403" in code and "demanderCle" in code
+    commun = code_sans_commentaires("commun.js")
+    assert "reponse.status === 403" in commun and "oublierCle()" in commun
+    # Le 502 ne veut plus dire « aucun fournisseur » : c'est le 503 (tâche 3).
+    assert "503" in code and "Aucun fournisseur de modèle n'a répondu" in code
 
 
 def test_le_texte_du_modele_est_rendu_en_paragraphes_sans_html():
