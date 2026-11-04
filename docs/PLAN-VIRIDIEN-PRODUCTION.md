@@ -81,26 +81,32 @@ Rien d'autre, dans aucune table : aucune cotation, aucun taux, aucune autre posi
 (32 277,05 € de l'écran actuel, moins 11 538,00 €, plus 96,15 €). Ils diffèrent du local (21 409,85 €, -50,43 %) parce que
 les cours diffèrent, pas la correction.
 
-### 2.2 S1 : la sauvegarde, avant toute opération (accord S1, une lecture de la production)
+### 2.2 S1 et S2 : les sauvegardes (accords S1 et S2, des lectures de la production)
 
-💻 Sur le poste, dans PowerShell. Le dossier est hors du dépôt, donc hors Git :
+**S1 est faite** (04/11/2026, 18 h 16 UTC, accord d'Era) : résultats dans la preuve, § 4. S2 suit la même procédure, après B2.
 
-```powershell
-New-Item -ItemType Directory -Force D:\KandaWork\RITA_PROJECT\sauvegardes
-```
+💻 Sur le poste, une commande par sauvegarde, `-Etape S1` (avant correction) ou `-Etape S2` (après correction) :
+`sauvegarde_production.ps1`, avec sa partie distante `sauvegarde_distante.sh`, envoyée au serveur par `ssh ... bash -s`.
 
-```powershell
-cmd /c "ssh root@178.104.184.125 docker exec rita-postgres-preprod pg_dump -U rita -d rita --role=rita_lecture -Fc > D:\KandaWork\RITA_PROJECT\sauvegardes\rita-prod-AAAA-MM-JJ-avant-viridien.dump"
-```
-
-- **Aucun fichier écrit sur le serveur** : le dump arrive directement sur le poste. Lecture seulement : `pg_dump` lit dans une
-  transaction en lecture seule, avec le rôle `rita_lecture` (SELECT seul).
-- **Pourquoi `cmd /c`** : mesuré le 04/11 sur une base jetable aux lignes factices. Redirigé par le `>` de PowerShell 5.1, le
-  dump gagne 790 octets (réencodé) et `pg_restore` le refuse (« input file does not appear to be a valid tar archive ») ;
-  redirigé par `cmd`, il se restaure à l'identique, vue de valorisation et droit de lecture compris.
-- Puis : empreinte SHA-256 notée (`Get-FileHash`), fichier mis en lecture seule (`attrib +R`), seconde copie sur un autre
-  disque choisi par Era. Le dump contient des journaux d'usage (`mcp_calls`, `memory_audit`) : il reste sur le poste et sur ce
-  disque, jamais sur un service hors de l'Union européenne (OneDrive compris, tant que sa région n'est pas prouvée).
+- **Deux noms distincts, jamais d'écrasement** : `rita-prod-S1-avant-correction-<date>-<heure à la seconde>.dump` et
+  `rita-prod-S2-apres-correction-<...>.dump`, dans `D:\KandaWork\RITA_PROJECT\sauvegardes\`, hors du dépôt. Refus si un fichier
+  du même nom existe ; le dump arrive dans un fichier `.partiel`, renommé seulement si tous les contrôles passent, sans
+  `-Force` (le renommage refuse aussi une cible existante).
+- **Le compte et ses droits, vérifiés sans être modifiés** : connexion directe avec le compte de lecture `rita_lecture`
+  (`db/roles.sql`, SELECT seul), session en lecture seule ; avant toute lecture de données, le script vérifie sur le serveur
+  que le compte n'est ni superutilisateur, ni créateur de rôles ou de bases, qu'il lit tous les objets du schéma public et
+  qu'il ne peut écrire dans aucune table. Sinon, arrêt sans sauvegarde : aucun droit n'est jamais accordé pour « que ça passe ».
+- **La réussite de l'export et du transfert** : code de sortie de `pg_dump` remonté par `ssh` puis par `cmd` ; fichier non vide
+  et signé `PGDMP` ; table des matières lue par `pg_restore` (version 18, celle de la production) ; empreinte SHA-256 écrite à
+  côté. Contrôles et erreurs dans un journal séparé (`.journal.txt`), jamais dans le dump. Puis **restauration complète** dans
+  une base jetable (§ 2.3), la seule preuve qu'une sauvegarde sert.
+- **Protection** : fichiers en lecture seule, accès limité au compte Windows d'Era (`icacls`, héritage retiré) ; **seconde copie
+  protégée avant toute écriture en production**, sur un disque choisi par Era, jamais sur un service hors de l'Union
+  européenne (OneDrive compris, tant que sa région n'est pas prouvée).
+- **Pourquoi passer par `cmd`** : mesuré le 04/11 sur une base jetable aux lignes factices. Redirigé par le `>` de PowerShell
+  5.1, le dump gagne 790 octets (réencodé) et `pg_restore` le refuse ; redirigé par `cmd`, il se restaure à l'identique.
+- **Essayée sur le poste avant S1**, sans le serveur : cas normal, même nom (refusé), source absente (échec sans fichier
+  final), droit d'écriture ajouté au compte sur le conteneur d'essai (arrêt avant le dump), restauration complète identique.
 
 ### 2.3 La répétition sur la sauvegarde elle-même (sur le poste, sans contact avec le serveur)
 
@@ -165,7 +171,7 @@ unset DATABASE_URL IMAGE RESEAU
 
 | Quoi | Qui | Attendu |
 |---|---|---|
-| Base : sauvegarde S2 (même commande qu'en § 2.2, accord S2), puis S1 et S2 restaurées dans deux bases jetables et comparées cellule par cellule, toutes tables | l'agent, sur le poste | **exactement les 4 cellules du § 2.1** ; `article`, `memory_audit` et `mcp_calls` peuvent seulement gagner des lignes (ingestion, journaux), une ligne modifiée ou retirée y compte. Essayé sur des sauvegardes factices : 4 différences, réussite ; contre-essai avec une autre position modifiée et un article retiré : échec, 6 différences, code 1 |
+| Base : sauvegarde S2 (§ 2.2, `-Etape S2`, accord S2), puis S1 et S2 restaurées dans deux bases jetables et comparées cellule par cellule, toutes tables | l'agent, sur le poste | **exactement les 4 cellules du § 2.1** ; `article`, `memory_audit` et `mcp_calls` peuvent seulement gagner des lignes (ingestion, journaux), une ligne modifiée ou retirée y compte. Essayé sur des sauvegardes factices : 4 différences, réussite ; contre-essai avec une autre position modifiée et un article retiré : échec, 6 différences, code 1 |
 | `/health` et fichiers servis | l'agent, sans clé | le commit de la fusion ; le script du § 1.3 sans échec |
 | API `/donnees/portefeuille` et `/donnees/indicateurs-portefeuille` | Era, avec la clé de production | les chiffres du § 2.1 |
 | Écran public, Portefeuille et Indicateurs | Era, avec la clé | les mêmes chiffres ; plus d'alerte « performance hors du commun » sur Viridien ; deux graphiques lisibles ; rechargement normal, sans Ctrl+F5 |
@@ -183,7 +189,9 @@ Un bloc `DO` exécuté en une transaction, qui lève une erreur, donc annule tou
 remettre `nom_officiel` à `CGG BS`, puis la ligne `VIRI.PA` du 14/10/2021 à 120 × 1,85 avec son `importe_le` d'origine (lu
 dans S1), en ne visant la ligne que par ticker, date, quantité et prix de revient, jamais par id. Répété le 04/11 sur des
 copies : retour à l'empreinte de départ ; rejoué, il refuse (`obtenu 0`). C'est une exception à la règle « écriture en base
-par l'importateur seulement » : elle ne servirait qu'en incident, avec l'accord d'Era. En dernier recours : restauration de S1.
+par l'importateur seulement » : elle ne servirait qu'en incident, avec l'accord d'Era. **Restaurer S1 en entier est exclu** :
+cela effacerait tout ce qui a été écrit depuis S1 (articles d'une ingestion, journaux d'usage). S1 sert à relire la valeur
+exacte d'origine (`importe_le` 2026-08-20 11:03:00.621572 UTC, mesuré sur S1) et à prouver le retour, jamais à écraser la base.
 
 ## 3. Opération 3 : diagnostiquer la fraîcheur des données (lecture seule)
 
@@ -232,9 +240,12 @@ changement de code (test d'abord), noté comme défaut de monitorage (C20), hors
    demande le code d'abord ; la suite a passé 2 180 tests, deux fois, la seconde avec Azure injoignable.
 2. L3 : lancée par l'agent après l'accord, ou par Era lui-même.
 3. Le disque de la seconde copie des sauvegardes.
-4. Un accord explicite pour chaque étape : A, S1, B1, B2, S2.
-5. Les scripts de préparation (vérification des fichiers servis, répétition, comparaison cellule par cellule, lecture L3)
-   sont sur le poste, hors du dépôt : les verser dans `scripts/` avec leurs tests, ou les garder comme outils de cette opération.
+4. Un accord explicite pour chaque étape : A, B1, B2, S2 (S1 accordée et faite le 04/11).
+5. **Avant A, demandé par la revue** : l'examen complet des 93 fichiers livrés et de leurs changements de comportement, avec
+   les contrôles relus sur le commit final ; la fenêtre où la passerelle MCP refuserait la production (entre A et B2) et ce
+   qu'on fait si B échoue ; le retour arrière sans perte des données écrites depuis S1 (§ 2.7).
+6. Les scripts de préparation (sauvegarde S1 et S2, vérification des fichiers servis, répétition, comparaison cellule par
+   cellule, lecture L3) sont sur le poste, hors du dépôt : les verser dans `scripts/` avec leurs tests, ou les garder comme outils de cette opération.
 
 ## 📖 Glossaire
 
