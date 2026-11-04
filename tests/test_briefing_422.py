@@ -11,7 +11,7 @@ from fastapi.testclient import TestClient
 
 from api.main import app
 from indicateurs import socle
-from tests.conftest import CLE_DE_TEST
+from tests.conftest import CLE_DE_TEST, faux_resultat_texte
 from tests.test_trace_chemin import _briefing
 
 CLE = {"X-API-Key": CLE_DE_TEST}
@@ -22,7 +22,8 @@ CLES_DE_LA_REPONSE = {"ticker", "price", "change_pct", "currency", "briefing", "
 @pytest.fixture
 def espion_modele(monkeypatch):
     appels = []
-    monkeypatch.setattr("agents.analyst.generer_texte", lambda *a, **k: appels.append(1) or "texte")
+    monkeypatch.setattr("agents.analyst.generer_texte_detaille",
+                        lambda *a, **k: appels.append(1) or faux_resultat_texte("texte"))
     return appels
 
 

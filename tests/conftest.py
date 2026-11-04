@@ -102,3 +102,15 @@ def limiteur_neuf(monkeypatch):
 
     monkeypatch.setattr(limiteur, "LIMITEUR", limiteur.Limiteur(10_000))
     yield
+
+
+def faux_resultat_texte(texte: str = "x"):
+    """Ce que la cascade rend réellement depuis la refonte 001 (tâche 1) : le texte et qui l'a écrit.
+
+    Les tests qui remplacent le modèle rendent cet objet, jamais une simple chaîne : un faux qui diverge du code
+    donne des tests verts sur du code cassé (défaut du 28/08).
+    """
+    from src.llm import ResultatTexte
+
+    return ResultatTexte(texte=texte, fournisseur="foundry", modele="gpt-5.4-2026-03-05",
+                         tentatives=[{"fournisseur": "foundry", "reussi": True}])
