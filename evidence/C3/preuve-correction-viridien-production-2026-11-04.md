@@ -24,8 +24,16 @@ accès ; une première copie faite par erreur depuis une autre capture, celle du
 
 Le retard des cours et l'archive décalée d'un jour (plan § 7) sont hors de cette correction.
 
-## 2. À venir, dans l'ordre du plan
+## 2. Préparé le 04/11 au soir, sans contact en écriture avec le serveur
 
-Lecture complémentaire approuvée ; copie représentative et répétition ; sauvegarde sur le poste et restauration testée ;
-déploiement du code (accord A) ; passage à blanc puis vrai passage avec compteurs attendus (accords B) ; vérifications base, API,
-écran ; captures après.
+Le plan est réécrit en trois opérations séparées (livraison du code, correction de Viridien, diagnostic de fraîcheur). Fichiers
+servis par la production, lus sans clé : 11 contrôles réussis, 16 en échec (aucun `Cache-Control`, scripts sans `?v=`, phrase
+témoin absente), l'état « avant » de la livraison. Répétition sur une copie représentative de la production (base jetable) :
+0 contrôle en échec, exactement 4 cellules changées, total 20 835,20 € sur 7 lignes, Viridien -48,03 %, poids 0,46 %, rejeu
+refusé, retour arrière à l'identique. La lecture complémentaire `lecture_prod_4.sh` est abandonnée : la sauvegarde S1 la remplace.
+
+## 3. À venir, dans l'ordre du plan
+
+Sauvegarde S1 sur le poste et répétition rejouée sur elle ; livraison du code (accord A) et vérification des fichiers servis ;
+passage à blanc puis vrai passage avec compteurs attendus (accords B1, B2) ; sauvegarde S2 et comparaison cellule par cellule ;
+vérifications API et écran ; captures après.
