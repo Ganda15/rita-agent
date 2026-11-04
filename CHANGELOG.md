@@ -9,6 +9,17 @@
 
 ---
 
+## 2026-11-04, nuit : E4 v1.3 et son annexe relue en entier ; deux défauts de l'écran Briefing livré
+
+**Manque découvert** : la première préparation d'E4 v1.3 avait changé les liens de l'annexe sans relire ses textes ni ceux
+de ses images ; une relecture extérieure l'a vu. L'annexe est maintenant relue en entier : légendes datées pour ce qui
+promettait trop ou avait vieilli, images non retouchées, et une section A7 qui compare les maquettes de la refonte aux
+écrans livrés. Cette comparaison a trouvé deux défauts sur l'écran Briefing en production : l'aide promet qu'une
+recommandation est « retenue, jamais diffusée », ce que le garde-fou ne garantit pas, et les astérisques de mise en forme
+du modèle s'affichent. À corriger à part, test d'abord. Aucun statut de critère changé.
+
+---
+
 ## 2026-11-04, soir : nouvelle interface et Viridien en production, cours rattrapés au 04/11 ; trois manques du script de rattrapage
 
 **Décisions structurantes** (accords d'Era, chacun sur une demande écrite) : la refonte de l'interface est livrée en

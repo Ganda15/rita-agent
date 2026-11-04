@@ -21,11 +21,35 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ---
 
-## ▶️ 04/11, 22 H 35 : RATTRAPAGE DES COURS FAIT ET VÉRIFIÉ EN PRODUCTION ; LE 05/11 : REMISE D'E4, PUIS E2, PUIS E5 SI LE TEMPS RESTE
+## ▶️ 04/11, NUIT : E4 v1.3 PRÊT À RELIRE (PR #185, BROUILLON) ; DEUX DÉFAUTS DE L'ÉCRAN BRIEFING TROUVÉS EN PRODUCTION
 
-**Prochaine action** : Era fusionne la PR des preuves (`preuves-production-2026-11-04` vers `develop`). Puis, le 05/11,
-le rapport E4 : décider entre une v3 courte et datée (la refonte livrée et vérifiée en production le 04/11) et la v2 telle
-quelle ; ensuite E2, et E5 si le temps reste.
+**Prochaine action** : attendre les contrôles verts du dernier commit de #185 ; Era relit le PDF (34 pages : rapport 20,
+annexe 14), passe #185 en prête et la fusionne vers `develop`, puis `develop` vers `main`, un seul tag `livrable-E4-v3` ;
+ensuite les copies OneDrive et le dossier de remise (avec et sans annexes). C17.3 reste ✅ (preuve : 19 tests au clavier
+et 8 cas d'erreur verts en CI sur `8ecc5a7`) ; C17.2 reste « à consolider ».
+
+- **Annexe relue en entier**, texte des images compris : légendes datées du 04/11 (A2 historiques, `autocomplete`,
+  garde-fou, 503 ; A4 périmètre du workflow ; A5 contrôle `base` ; A6 commit `12cc00c`), images non retouchées.
+- **A7 nouvelle** : maquettes de la refonte et écrans livrés, comparés élément par élément sur des captures de production
+  d'Era (`evidence/C17/refonte-ecrans-livres-2026-11-04/`, sept captures, tous les éléments des maquettes compris).
+  Question pour Era : « zone neutre de 30 à 70 » (spécification 001, R2) suggère-t-il que les autres zones sont des signaux ?
+- **Défauts trouvés sur l'écran Briefing livré** : l'aide promet « retenue, jamais diffusée » (`frontend/briefing.html`,
+  ligne 57) ; les astérisques de mise en forme du modèle s'affichent. À corriger à part, test d'abord, avant l'oral blanc.
+- **Sigle** : le MCD garde son intitulé historique (« Trading Assistant ») ; la légende d'A1 donne le nom de
+  l'application livrée, « pour le Tracking et l'Analyse ». Le livret E1, déjà tagué, n'est pas modifié.
+- **Réception confirmée** : Elbby a reçu l'envoi du 03/11 et ouvre tous ses liens (`evidence/C8/reponse-formateur-2026-11-04.md`).
+- **Une seule numérotation** : le PDF complet est numéroté de 1 à 34 en pied de page, et l'annexe renvoie aux pages du PDF
+  complet (A1 p. 22 à A7 p. 31 à 34). Assemblage : `scripts/assembler_pdf_avec_annexe.py` et son test (05/11) ; il garde
+  les 16 liens internes et les 68 signets, qu'une première version, hors dépôt, avait perdus (relecture extérieure).
+- Aucun statut de critère changé.
+
+## ▶️ 04/11, 22 H 35 : RATTRAPAGE DES COURS FAIT ET VÉRIFIÉ EN PRODUCTION ; LE 05/11 : REMISE DES CINQ LIVRABLES, OBLIGATOIRE
+
+**Prochaine action** : la PR des preuves #184 est fusionnée par Era dans `develop` (`a4a6703`). Le 05/11, **la remise des
+cinq livrables (E1 à E5) est due : elle n'est pas facultative.** Seules les améliorations le sont, dans cet ordre :
+révision courte et datée d'E4 (document v1.3, futur tag `livrable-E4-v3`, préparée sur la branche
+`revision-E4-et-formulations`), puis E2, puis E5. Une amélioration qui n'est pas taguée à temps ne retarde pas la remise :
+on envoie alors la version taguée existante (E4 v1.2, `livrable-E4-v2`).
 
 - **Opération C** (accords d'Era : préparation reçue à 21 h 59, C2 à 22 h 08, heure de Paris) : R1, C1 à blanc, répétition
   sur une copie de R1, cinq scénarios d'échec essayés, C2 réussi sous verrou (22 h 17 à 22 h 19), R2. R1 contre R2 :
