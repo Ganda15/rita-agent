@@ -35,17 +35,17 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 > l'application : commit `174b0c1` (02/11/2026) ; interface refaite en production le 04/11 (`8ecc5a7`), maquettes et écrans
 > livrés en A7.
 
-## Les schémas de cette annexe {: .sommaire }
+## Les schémas de cette annexe, aux pages du PDF complet {: .sommaire }
 
 | | Schéma | Critères | Contenu daté du | Version présentée | Page |
 |---|---|---|---|---|---|
-| A1 | Modèle conceptuel des données, formalisme Merise | C14 | 02/11/2026 (revu ; celui du 01/08 gardé) | mise en forme du 03/11, texte inchangé | 2 |
-| A2 | Wireframes historiques, avant la refonte : Portefeuille, Indicateurs, Briefing | C14, C17 | 18/08 et 03/10/2026 | originaux du dépôt, agrandis | 3 à 5 |
-| A3 | Architecture de l'application : deux chemins vers le modèle | C15 | 24/10/2026 | mise en forme du 03/11, texte inchangé | 6 |
-| A4 | Flux de données, des sources à l'écran | C15 | 02/11/2026 (celui du 18/08 gardé) | mise en forme du 03/11, texte inchangé | 7 |
-| A5 | Chaîne d'intégration et de livraison | C18, C19 | 24/10/2026 | mise en forme du 03/11, texte inchangé | 8 |
-| A6 | Parcours des écrans Question et Tableau de bord | C14 | 02/11/2026 | mise en forme du 03/11, texte inchangé | 9 et 10 |
-| A7 | Maquettes de la refonte et écrans livrés, comparés | C14, C17 | maquettes du 04/10, écrans du 04/11 | maquettes recadrées, captures de production | 11 à 14 |
+| A1 | Modèle conceptuel des données, formalisme Merise | C14 | 02/11/2026 (revu ; celui du 01/08 gardé) | mise en forme du 03/11, texte inchangé | 22 |
+| A2 | Wireframes historiques, avant la refonte : Portefeuille, Indicateurs, Briefing | C14, C17 | 18/08 et 03/10/2026 | originaux du dépôt, agrandis | 23 à 25 |
+| A3 | Architecture de l'application : deux chemins vers le modèle | C15 | 24/10/2026 | mise en forme du 03/11, texte inchangé | 26 |
+| A4 | Flux de données, des sources à l'écran | C15 | 02/11/2026 (celui du 18/08 gardé) | mise en forme du 03/11, texte inchangé | 27 |
+| A5 | Chaîne d'intégration et de livraison | C18, C19 | 24/10/2026 | mise en forme du 03/11, texte inchangé | 28 |
+| A6 | Parcours des écrans Question et Tableau de bord | C14 | 02/11/2026 | mise en forme du 03/11, texte inchangé | 29 et 30 |
+| A7 | Maquettes de la refonte et écrans livrés, comparés | C14, C17 | maquettes du 04/10, écrans du 04/11 | maquettes recadrées, captures de production | 31 à 34 |
 
 **Mise en forme du 03/11.** A1, A3, A4, A5 et A6 sont présentés au style des schémas du livret E1 ; leur texte est
 identique mot pour mot aux originaux du dépôt, cités dans chaque légende (A3 et A5 avaient déjà reçu une mise en forme
@@ -62,13 +62,13 @@ comparés à leurs maquettes en A7, sur des captures de production.
 ### Les schémas en miniature
 
 <div class="planche" role="navigation" aria-label="Les schémas en miniature, chacun relié à sa page">
-<a href="#a1"><img src="schemas/E4-A1-MCD-illustre.png" alt="Miniature de A1, le modèle conceptuel des données"><span>A1 · données · p. 2</span></a>
-<a href="#a2"><img src="../../../evidence/C14/WIREFRAMES-C14-ecran-portefeuille.svg" alt="Miniature de A2, le wireframe de l'écran Portefeuille"><span>A2 · wireframes · p. 3</span></a>
-<a href="#a3"><img src="schemas/E4-A3-architecture-illustre.png" alt="Miniature de A3, l'architecture de l'application"><span>A3 · architecture · p. 6</span></a>
-<a href="#a4"><img src="schemas/E4-A4-flux-donnees-illustre.png" alt="Miniature de A4, le diagramme de flux de données"><span>A4 · flux · p. 7</span></a>
-<a href="#a5"><img src="schemas/E4-A5-chaine-livraison-illustre.png" alt="Miniature de A5, la chaîne d'intégration et de livraison"><span>A5 · livraison · p. 8</span></a>
-<a href="#a6"><img src="schemas/E4-A6-parcours-question-illustre.png" alt="Miniature de A6, le parcours de l'écran Question"><span>A6 · parcours · p. 9</span></a>
-<a href="#a7"><img src="schemas/E4-A7-maquette-style-recadree.png" alt="Miniature de A7, les maquettes de la refonte"><span>A7 · maquettes · p. 11</span></a>
+<a href="#a1"><img src="schemas/E4-A1-MCD-illustre.png" alt="Miniature de A1, le modèle conceptuel des données"><span>A1 · données · p. 22</span></a>
+<a href="#a2"><img src="../../../evidence/C14/WIREFRAMES-C14-ecran-portefeuille.svg" alt="Miniature de A2, le wireframe de l'écran Portefeuille"><span>A2 · wireframes · p. 23</span></a>
+<a href="#a3"><img src="schemas/E4-A3-architecture-illustre.png" alt="Miniature de A3, l'architecture de l'application"><span>A3 · architecture · p. 26</span></a>
+<a href="#a4"><img src="schemas/E4-A4-flux-donnees-illustre.png" alt="Miniature de A4, le diagramme de flux de données"><span>A4 · flux · p. 27</span></a>
+<a href="#a5"><img src="schemas/E4-A5-chaine-livraison-illustre.png" alt="Miniature de A5, la chaîne d'intégration et de livraison"><span>A5 · livraison · p. 28</span></a>
+<a href="#a6"><img src="schemas/E4-A6-parcours-question-illustre.png" alt="Miniature de A6, le parcours de l'écran Question"><span>A6 · parcours · p. 29</span></a>
+<a href="#a7"><img src="schemas/E4-A7-maquette-style-recadree.png" alt="Miniature de A7, les maquettes de la refonte"><span>A7 · maquettes · p. 31</span></a>
 </div>
 
 ## A1. Le modèle conceptuel des données (C14) {: #a1 }
@@ -86,14 +86,14 @@ intitulé historique ; dans l'application livrée, RITA signifie « Retrieval In
 ![Wireframe de l'écran Portefeuille](../../../evidence/C14/WIREFRAMES-C14-ecran-portefeuille.svg){: .presque }
 
 **Écran Portefeuille, 18/08/2026** ([`evidence/C14/WIREFRAMES-C14-ecran-portefeuille.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/evidence/C14/WIREFRAMES-C14-ecran-portefeuille.svg)), avant la refonte. **Correctif du 04/11** :
-`autocomplete="off"` demande au navigateur de ne pas mémoriser la clé, sans le garantir ([MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete)). Limites : page 5.
+`autocomplete="off"` demande au navigateur de ne pas mémoriser la clé, sans le garantir ([MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete)). Limites : page 25.
 
 <div class="saut"></div>
 
 ![Wireframe de l'écran Indicateurs](../../../evidence/C14/WIREFRAMES-C14-ecran-indicateurs.svg){: .grand }
 
 **Écran Indicateurs, 03/10/2026** ([`evidence/C14/WIREFRAMES-C14-ecran-indicateurs.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/evidence/C14/WIREFRAMES-C14-ecran-indicateurs.svg)), avant la refonte.
-**Correctif du 04/11** : « sans mémorisation navigateur » appelle la même réserve que `autocomplete="off"` (page 3).
+**Correctif du 04/11** : « sans mémorisation navigateur » appelle la même réserve que `autocomplete="off"` (page 23).
 
 <div class="saut"></div>
 
@@ -102,7 +102,7 @@ intitulé historique ; dans l'application livrée, RITA signifie « Retrieval In
 **Écran Briefing, 03/10/2026** ([`evidence/C14/WIREFRAMES-C14-ecran-briefing.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/evidence/C14/WIREFRAMES-C14-ecran-briefing.svg)), avant la refonte. **Correctifs du 04/11** :
 « une recommandation d'achat ou de vente est retenue, jamais diffusée » promet trop : un texte détecté et refusé par le
 garde-fou n'est pas affiché, mais la détection n'est pas exhaustive ; « sans mémorisation navigateur » : même réserve
-qu'en page 3 ; l'état d (« aucun modèle », 500) n'existe plus : depuis le 04/11, l'API répond 503 `AUCUN_FOURNISSEUR`
+qu'en page 23 ; l'état d (« aucun modèle », 500) n'existe plus : depuis le 04/11, l'API répond 503 `AUCUN_FOURNISSEUR`
 (spécification 001, R4). **Limites des trois wireframes** : chacun a été dessiné après l'écran d'avant la refonte ; il ne
 prouve pas qu'une maquette a guidé cet écran. Les écrans livrés le 04/11 ont été construits d'après les maquettes d'A7.
 Les écrans Question et Tableau de bord n'ont pas de maquette (rapport, § 4.3 et critère C17.2).
@@ -180,7 +180,7 @@ Retenu le 04/10 : A ; changé le 04/11 : B par défaut, A en thème clair.
 **Les trois pages suivantes**, une par écran : la maquette et l'écran livré côte à côte, puis les différences, chacune
 avec son explication. **Limites d'A7** : comparaison visuelle, sur des captures de production du 04/11 ; aucune mesure ;
 Question et Tableau de bord n'ont pas de maquette.
-**Deux défauts de l'écran Briefing livré** sont relevés page 14 : une aide qui promet trop, des astérisques affichés ; ils
+**Deux défauts de l'écran Briefing livré** sont relevés page 34 : une aide qui promet trop, des astérisques affichés ; ils
 sont à corriger à part, test d'abord.
 
 <div class="saut"></div>
@@ -240,4 +240,4 @@ sont à corriger à part, test d'abord.
 | Texte du briefing | présent sous la courbe | conforme ; **défaut constaté** : les astérisques de mise en forme du modèle s'affichent tels quels (« \*La Tribune\* ») |
 | Chaîne de production | « Comment RITA a produit ce texte », cinq étapes en pastilles | « Comprendre ce résultat » : les cinq mêmes étapes en liste numérotée, plus la référence de la requête (R4) |
 | Articles | trois cartes de source | « Sources fournies au modèle » : trois liens, source et date, et la limite « Leur présence ne prouve pas que chaque phrase du texte en vient » |
-| Aide sous le champ | absente de la maquette | **défaut constaté** : « une recommandation d'achat ou de vente est retenue, jamais diffusée », la promesse trop forte corrigée en A2 (page 5), est encore à l'écran ([`frontend/briefing.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/frontend/briefing.html), ligne 57) |
+| Aide sous le champ | absente de la maquette | **défaut constaté** : « une recommandation d'achat ou de vente est retenue, jamais diffusée », la promesse trop forte corrigée en A2 (page 25), est encore à l'écran ([`frontend/briefing.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v3/frontend/briefing.html), ligne 57) |

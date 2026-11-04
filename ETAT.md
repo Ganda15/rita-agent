@@ -38,6 +38,9 @@ et 8 cas d'erreur verts en CI sur `8ecc5a7`) ; C17.2 reste « à consolider ».
 - **Sigle** : le MCD garde son intitulé historique (« Trading Assistant ») ; la légende d'A1 donne le nom de
   l'application livrée, « pour le Tracking et l'Analyse ». Le livret E1, déjà tagué, n'est pas modifié.
 - **Réception confirmée** : Elbby a reçu l'envoi du 03/11 et ouvre tous ses liens (`evidence/C8/reponse-formateur-2026-11-04.md`).
+- **Une seule numérotation** : le PDF complet est numéroté de 1 à 34 en pied de page, et l'annexe renvoie aux pages du PDF
+  complet (A1 p. 22 à A7 p. 31 à 34). **Manque** : l'assemblage (fusion et pieds renumérotés) est fait par un script hors du
+  dépôt ; à verser dans `scripts/` avec son test.
 - Aucun statut de critère changé.
 
 ## ▶️ 04/11, 22 H 35 : RATTRAPAGE DES COURS FAIT ET VÉRIFIÉ EN PRODUCTION ; LE 05/11 : REMISE DES CINQ LIVRABLES, OBLIGATOIRE
