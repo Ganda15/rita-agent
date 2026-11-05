@@ -30,6 +30,9 @@ créer le support). E4 : un seul PDF de 34 pages,
 phrase prête : « Comme convenu, je te transmets le rapport E4 et ses annexes dans un seul PDF de 34 pages : 20 pages de
 rapport et 14 pages d'annexes. » L'accès GitHub du jury reste à voir avec Héléna VICENTE (message prêt).
 
+- **E4 v1.4 (05/11, matin)**, pour le tag `livrable-E4-v4` : quatre corrections de cohérence (tableau de `test.yml`,
+  C16.4, S6 corrigé le 04/11, accès du jury) et langue française déclarée dans le PDF complet ; c'est cette version que
+  la remise envoie, une fois le tag posé et vérifié.
 - **Tag** : `livrable-E4-v3` posé par Era sur `07da897` (fusion de #188), seul dans son push ; `main` en production à
   `07da897` ; les 112 adresses du PDF vers le tag répondent ; copies datées avec et sans annexes dans le dossier de remise et
   sur OneDrive, identiques au tag ; les copies v1.2 rangées dans `remplaces-par-E4-v1.3\`.
