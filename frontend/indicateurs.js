@@ -8,7 +8,7 @@
 //
 // Les règles, chacune testée (tests/test_indicateurs_ui.py) :
 // - la carte des performances se lit sans la couleur : chiffre signé et flèche dans chaque case ;
-// - le RSI s'écrit « RSI 14 : 41, zone neutre de 30 à 70 » (graphiques.js) ; jamais affiché pour une cotation périmée ;
+// - le RSI s'écrit « RSI 14 : 41. Repères : 30 et 70. » (graphiques.js) ; jamais affiché pour une cotation périmée ;
 // - le nombre de valeurs vient des données, jamais d'un chiffre écrit à la main ;
 // - chaque bloc a sa panne : le tableau reste si le risque ou la courbe échouent ;
 // - la courbe d'une valeur choisie avant n'apparaît jamais sous la valeur choisie ensuite.

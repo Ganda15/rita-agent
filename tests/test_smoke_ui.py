@@ -146,17 +146,30 @@ def test_l_ecran_briefing_affiche_le_texte_et_le_verdict(page, serveur):
     assert page.erreurs_js == []
 
 
-def test_l_ecran_briefing_dit_quand_le_ticker_est_introuvable(page, serveur):
+def _statut_apres(page, serveur, statut_http, detail):
     page.route("**/briefing?ticker=*", lambda route: route.fulfill(
-        status=502, content_type="application/json", body='{"detail": "ticker absent de la base : XXX"}'))
+        status=statut_http, content_type="application/json", body='{"detail": "' + detail + '"}'))
     page.goto(serveur + "/briefing.html", wait_until="networkidle")
     page.evaluate("sessionStorage.setItem('rita_api_key', 'cle-de-test-smoke-ui-32-caracteres-x')")
     page.goto(serveur + "/briefing.html", wait_until="networkidle")
     page.fill("#ticker", "XXX")
     page.click("#form-briefing button[type=submit], #form-briefing button")
     page.wait_for_timeout(1500)
-    statut = page.locator("#statut").inner_text().lower()
+    return page.locator("#statut").inner_text().lower()
+
+
+def test_l_ecran_briefing_dit_quand_le_ticker_est_introuvable(page, serveur):
+    # 422 : la valeur n'est pas dans l'univers suivi (api/main.py refuse avant tout appel au modèle).
+    statut = _statut_apres(page, serveur, 422, "Valeur inconnue : aucun briefing n'est possible pour ce code.")
     assert "introuvable" in statut, statut
+    assert page.erreurs_js == []
+
+
+def test_l_ecran_briefing_dit_quand_les_donnees_sont_indisponibles(page, serveur):
+    # 502 : la valeur est suivie mais sans cours en base (agents/scout.py). Revue du 05/11 : ce n'est pas une saisie
+    # fausse, l'écran ne doit donc pas dire « introuvable ».
+    statut = _statut_apres(page, serveur, 502, "ticker absent de la base : XXX")
+    assert "indisponibles" in statut and "introuvable" not in statut, statut
     assert page.erreurs_js == []
 
 

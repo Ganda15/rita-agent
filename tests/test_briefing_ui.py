@@ -202,7 +202,7 @@ def test_texte_refuse_jamais_affiche(ecran):
 
 @pytest.mark.parametrize("statut, corps, attendu", [
     (422, {"detail": "Valeur inconnue : aucun briefing n'est possible pour ce code."}, "Valeur introuvable : « XXX.PA »"),
-    (502, {"detail": "ticker absent de la base : XXX.PA"}, "Valeur introuvable : « XXX.PA »"),
+    (502, {"detail": "ticker absent de la base : XXX.PA"}, "Données indisponibles pour « XXX.PA »"),
     (503, {"detail": {"code": "AUCUN_FOURNISSEUR", "message": "Aucun fournisseur de modèle n'a répondu."}},
      "Aucun fournisseur de modèle n'a répondu"),
     (500, {"detail": "Erreur interne. Identifiant de requete : ref500"}, "Le briefing n'a pas pu être produit"),
