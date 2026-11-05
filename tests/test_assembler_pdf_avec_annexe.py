@@ -64,6 +64,13 @@ def test_les_signets_des_deux_documents_sont_gardes_et_pointent_sur_la_bonne_pag
         (1, "Rapport", 1), (2, "Rapport, deuxième page", 2), (1, "Annexe", 3), (2, "Annexe, deuxième page", 4)]
 
 
+def test_le_pdf_complet_declare_la_langue_francaise(complet):
+    """05/11 : le PDF complet d'E4 v1.3 ne déclarait plus de langue (relecture extérieure) ; un lecteur d'écran lit
+    alors le texte avec une voix qui n'est pas française. L'arbre de structure, lui, n'est pas fusionné : limite écrite."""
+    from pypdf import PdfReader
+    assert PdfReader(complet.name).trailer["/Root"].get("/Lang") == "fr"
+
+
 def test_une_page_sans_pied_fait_echouer_l_assemblage(fitz, tmp_path):
     rapport, annexe = tmp_path / "rapport.pdf", tmp_path / "annexe.pdf"
     _document(fitz, rapport, "Rapport")
