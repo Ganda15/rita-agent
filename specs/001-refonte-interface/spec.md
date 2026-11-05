@@ -55,7 +55,7 @@ valeur, afin de repérer ce qui a bougé, sans qu'on me dise quoi faire.*
 Critères d'acceptation :
 1. une carte des performances (1 jour, 1 semaine, 1 mois, depuis le 1er janvier, 1 an) se lit **sans la couleur** (chiffres
    signés, flèches, légende) ;
-2. le RSI s'écrit comme un fait (« RSI 14 : 41, zone neutre de 30 à 70 »), jamais comme un signal ;
+2. le RSI s'écrit comme un fait (« RSI 14 : 41. Repères : 30 et 70. »), jamais comme un signal ; forme changée le 05/11/2026 (avant : « zone neutre de 30 à 70 », qui laissait entendre que les autres zones sont des signaux) ;
 3. au choix d'une valeur, sa courbe s'affiche ; si l'historique est court, l'écran le dit (seuils de la conception, § 5) ;
 4. le nombre de valeurs suivies vient des données, jamais d'un chiffre écrit à la main ;
 5. (ajouté le 04/11 au soir) chaque chiffre est sous son titre, et chaque titre dit le calcul réel : la volatilité est

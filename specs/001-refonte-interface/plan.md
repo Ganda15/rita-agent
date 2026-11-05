@@ -24,7 +24,7 @@ un `graphiques.js` de fonctions pures qui fabriquent du SVG, et trois écrans r�
   (« achetez », « vendez », « signal d'achat », « survendu », etc.) dans un texte affiché.
 - **Verdict** affiché, mot pour mot : « Aucune recommandation d'achat ou de vente détectée ».
 - **Sources**, titre exact du bloc : « Sources fournies au modèle ».
-- **RSI**, forme exacte : « RSI 14 : {valeur}, zone neutre de 30 à 70 ».
+- **RSI**, forme exacte : « RSI 14 : {valeur}. Repères : 30 et 70. » (changée le 05/11/2026, voir spec.md, R2).
 - **Aucune insertion de HTML** : ni `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `document.write` ; le texte par
   `textContent`, le SVG par `document.createElementNS`.
 - **Clé** : `sessionStorage`, clé de stockage `rita_api_key`, jamais `localStorage`, jamais écrite dans le code ; gardée

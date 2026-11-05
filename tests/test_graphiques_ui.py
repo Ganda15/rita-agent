@@ -203,7 +203,7 @@ def test_barres_une_valeur_extreme_garde_l_echelle_commune_un_zero_visible_et_to
 
 
 @pytest.mark.parametrize("rsi, texte, dessinee", [
-    (41.2, "RSI 14 : 41,2, zone neutre de 30 à 70", True),
+    (41.2, "RSI 14 : 41,2. Repères : 30 et 70.", True),
     (None, "RSI 14 : non disponible", False),
     (150, "RSI 14 : non disponible", False),
 ])

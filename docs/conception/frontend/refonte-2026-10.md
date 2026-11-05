@@ -168,7 +168,7 @@ décrit dans `tentatives`.
 - chaque graphique a une **alternative en données** (tableau ou texte) qui contient les mêmes chiffres que le dessin
   ([W3C, images complexes](https://www.w3.org/WAI/tutorials/images/complex/)) ;
 - clavier : tout s'atteint et s'actionne ; le focus va au résultat, ou au message d'erreur ; zoom à 200 % sans perte ;
-- le RSI est décrit comme un **fait** (« RSI 14 : 41, zone neutre de 30 à 70 »), jamais comme un signal ;
+- le RSI est décrit comme un **fait** (« RSI 14 : 41, zone neutre de 30 à 70 », forme remplacée le 05/11/2026 par « RSI 14 : 41. Repères : 30 et 70. », spécification 001, R2), jamais comme un signal ;
 - le verdict s'écrit « **Aucune recommandation d'achat ou de vente détectée** », pas « vérifié » ni « approuvé » : le
   garde-fou contrôle une forme de texte, pas l'exactitude des faits ;
 - les liens d'articles s'intitulent « **Sources fournies au modèle** » : leur présence ne prouve pas que chaque phrase en

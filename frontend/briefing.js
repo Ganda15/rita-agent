@@ -179,10 +179,17 @@ async function rediger(cle, ticker, numero) {
     demanderCle("Clé d'API refusée. Saisissez-la à nouveau.");
     return;
   }
-  if (reponse.status === 422 || reponse.status === 502) {
-    // 422 : valeur absente du référentiel (avant tout appel au modèle) ; 502 : le graphe n'a pas trouvé la valeur.
+  if (reponse.status === 422) {
+    // 422 : valeur absente du référentiel, refusée avant tout appel au modèle.
     elResultat.hidden = true;
     afficherStatut(`Valeur introuvable : « ${ticker} » n'est pas dans l'univers suivi.`, true);
+    return;
+  }
+  if (reponse.status === 502) {
+    // 502 : la valeur est suivie, mais aucun cours n'a été trouvé pour elle (agents/scout.py) ; le rédacteur n'est pas
+    // appelé. Message distinct du 422 depuis la revue du 05/11 : « introuvable » aurait faussement accusé la saisie.
+    elResultat.hidden = true;
+    afficherStatut(`Données indisponibles pour « ${ticker} » : aucun cours n'a été trouvé, le briefing n'a pas été rédigé.`, true);
     return;
   }
   if (reponse.status === 503) {
