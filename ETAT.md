@@ -24,7 +24,7 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 ## ▶️ 05/11, NUIT : `livrable-E4-v3` POSÉ ; LE 05/11, ERA ENVOIE LA REMISE DES CINQ LIVRABLES
 
 **Prochaine action** : Era envoie la remise des cinq livrables le 05/11 (obligatoire). E4 : un seul PDF de 34 pages,
-`Downloads\Remise-RITA-2026-11-02apport-E4-avec-annexe-2026-11-04-v1.3.pdf` (SHA-256 `790e67b1…`, identique au tag) ;
+`Downloads\Remise-RITA-2026-11-02\rapport-E4-avec-annexe-2026-11-04-v1.3.pdf` (SHA-256 `790e67b1…`, identique au tag) ;
 phrase prête : « Comme convenu, je te transmets le rapport E4 et ses annexes dans un seul PDF de 34 pages : 20 pages de
 rapport et 14 pages d'annexes. » L'accès GitHub du jury reste à voir avec Héléna VICENTE (message prêt).
 
