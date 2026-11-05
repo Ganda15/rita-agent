@@ -10,7 +10,10 @@ Usage, depuis la racine :
 
 Produit `rapport-E3.html` et `rapport-E3.pdf` à côté du `.md`, et affiche le nombre de pages. Avec `--lisible`
 (guide d'exploitation, C8.5) : texte à 12 pt, liens soulignés, titres sans empattement. Les signets du PDF sont toujours
-tirés des titres.
+tirés des titres. Avec `--annexe <annexe.md>` (05/11/2026) : rapport et annexe rendus dans un seul document,
+`<rapport>-avec-annexe.pdf`, en français et balisé pour les lecteurs d'écran, comme le rapport seul :
+
+    C:\\Python314\\python.exe -X utf8 scripts\\rendre_pdf.py docs\\rapports\\E2\\rapport-E2.md --annexe docs\\rapports\\E2\\annexe-schemas-E2.md
 Dépendances : `markdown` (pip), Chrome installé (impression sans fenêtre), `pypdf` pour compter les pages.
 
 Sommaire (27/10/2026, rapport E3 v1.9). Si le `.md` contient un sommaire (`<a href="#ancre">…</a><span>p. N</span>`),
@@ -139,27 +142,109 @@ def rendre(chemin_md: Path, lisible: bool = False) -> tuple[Path, Path, int]:
     return chemin_html, chemin_pdf, pages
 
 
-def _imprimer(chemin_md: Path, texte: str, lisible: bool = False) -> tuple[Path, Path]:
+def _corps(texte: str) -> str:
     import markdown  # ici et pas en tête : les tests du sommaire importent ce module sans `markdown`
 
-    corps = markdown.markdown(delier_les_liens_relatifs(texte), extensions=["tables", "fenced_code", "sane_lists", "attr_list"],
-                              output_format="html5")
-    titre = next((l.lstrip("# ").strip() for l in texte.splitlines() if l.startswith("# ")), chemin_md.stem)
-    html = ("<!DOCTYPE html>\n<html lang=\"fr\">\n<head>\n<meta charset=\"utf-8\">\n"
-            f"<title>{titre}</title>\n<style>{feuille_de_style(lisible)}</style>\n</head>\n<body>\n{corps}\n</body>\n</html>\n")
+    return markdown.markdown(delier_les_liens_relatifs(texte), extensions=["tables", "fenced_code", "sane_lists", "attr_list"],
+                             output_format="html5")
+
+
+def _titre(texte: str, defaut: str) -> str:
+    return next((l.lstrip("# ").strip() for l in texte.splitlines() if l.startswith("# ")), defaut)
+
+
+def _page_html(titre: str, style: str, corps: str) -> str:
+    return ("<!DOCTYPE html>\n<html lang=\"fr\">\n<head>\n<meta charset=\"utf-8\">\n"
+            f"<title>{titre}</title>\n<style>{style}</style>\n</head>\n<body>\n{corps}\n</body>\n</html>\n")
+
+
+def _chrome(chemin_html: Path, chemin_pdf: Path) -> None:
+    profil = Path(tempfile.gettempdir()) / "chrome-rendu-rita"   # Chrome exige un profil, sinon échec silencieux
+    subprocess.run(commande_chrome(chemin_html, chemin_pdf, profil), check=True, capture_output=True)
+
+
+def _imprimer(chemin_md: Path, texte: str, lisible: bool = False) -> tuple[Path, Path]:
+    html = _page_html(_titre(texte, chemin_md.stem), feuille_de_style(lisible), _corps(texte))
     chemin_html = chemin_md.with_suffix(".html")
     chemin_html.write_text(html, encoding="utf-8")
     chemin_pdf = chemin_md.with_suffix(".pdf")
-    profil = Path(tempfile.gettempdir()) / "chrome-rendu-rita"   # Chrome exige un profil, sinon échec silencieux
-    subprocess.run(commande_chrome(chemin_html, chemin_pdf, profil), check=True, capture_output=True)
+    _chrome(chemin_html, chemin_pdf)
     return chemin_html, chemin_pdf
+
+
+# Rapport et annexe dans un seul document (05/11/2026). Le PDF « avec annexe » était fusionné après coup : la fusion garde
+# pages, liens et signets, mais perd la langue déclarée et l'arbre de structure que Chrome écrit (mesure du 05/11 sur E1,
+# E2 et E4). Rendus ensemble, ils les gardent, et les pieds se numérotent de bout en bout. L'annexe porte sa propre
+# feuille (`<style>` en tête du `.md`) : sa règle `@page` devient la page nommée « annexe » (paysage), et ses autres
+# règles sont imbriquées dans `.annexe{ }` (imbrication CSS, Chrome 120 et plus) pour ne pas toucher au rapport.
+BLOC_STYLE = re.compile(r"<style>(.*?)</style>", re.S)
+IDENTIFIANT = re.compile(r'\bid="([^"]+)"')
+
+
+def _fin_du_bloc(css: str, ouvrante: int) -> int:
+    """Position juste après l'accolade qui ferme celle de `ouvrante`."""
+    profondeur = 0
+    for i in range(ouvrante, len(css)):
+        profondeur += {"{": 1, "}": -1}.get(css[i], 0)
+        if profondeur == 0:
+            return i + 1
+    raise ValueError("feuille de l'annexe : accolade non fermée")
+
+
+def feuille_annexe(style: str) -> str:
+    """La feuille de l'annexe pour le document complet : `@page` nommée « annexe », autres règles limitées à sa section."""
+    pages, reste = [], style
+    while (debut := reste.find("@page")) != -1:
+        ouvrante = reste.index("{", debut)
+        if reste[debut + len("@page"):ouvrante].strip():
+            raise ValueError(f"feuille de l'annexe : règle {reste[debut:ouvrante].strip()!r} déjà nommée, à renommer à la main")
+        fin = _fin_du_bloc(reste, ouvrante)
+        pages.append("@page annexe" + reste[ouvrante:fin])
+        reste = reste[:debut] + reste[fin:]
+    return "\n".join(pages) + "\n.annexe{ page:annexe; break-before:page;\n" + reste.strip() + "\n}\n"
+
+
+def document_avec_annexe(titre: str, style: str, corps_rapport: str, style_annexe: str, corps_annexe: str) -> str:
+    """Un seul document HTML : le rapport, puis l'annexe dans `<section class="annexe">`."""
+    doubles = sorted(set(IDENTIFIANT.findall(corps_rapport)) & set(IDENTIFIANT.findall(corps_annexe)))
+    if doubles:
+        raise ValueError(f"identifiant(s) présents dans le rapport et dans l'annexe : {', '.join(doubles)}")
+    corps = f'{corps_rapport}\n<section class="annexe">\n{corps_annexe}\n</section>'
+    return _page_html(titre, style + "\n" + feuille_annexe(style_annexe), corps)
+
+
+def rendre_avec_annexe(chemin_md: Path, chemin_annexe: Path) -> tuple[Path, Path, int]:
+    """Produit `<rapport>-avec-annexe.html` et `.pdf` ; ne réécrit pas la source (le sommaire est celui du rapport seul)."""
+    texte = chemin_md.read_bytes().decode("utf-8")
+    texte_annexe = chemin_annexe.read_bytes().decode("utf-8")
+    style_annexe = "\n".join(BLOC_STYLE.findall(texte_annexe))
+    html = document_avec_annexe(_titre(texte, chemin_md.stem), feuille_de_style(False), _corps(texte),
+                                style_annexe, _corps(BLOC_STYLE.sub("", texte_annexe)))
+    chemin_html = chemin_md.with_name(f"{chemin_md.stem}-avec-annexe.html")
+    chemin_html.write_text(html, encoding="utf-8")
+    chemin_pdf = chemin_html.with_suffix(".pdf")
+    _chrome(chemin_html, chemin_pdf)
+    import pypdf
+    return chemin_html, chemin_pdf, len(pypdf.PdfReader(str(chemin_pdf)).pages)
 
 
 def lire_arguments(argv: list[str]) -> tuple[str, bool] | None:
     """Le chemin du `.md` et l'option `--lisible`, ou None si la ligne de commande ne nomme pas un seul fichier."""
-    lisible = "--lisible" in argv[1:]
-    chemins = [a for a in argv[1:] if a != "--lisible"]
+    args = argv[1:]
+    if "--annexe" in args:
+        i = args.index("--annexe")
+        if i + 1 >= len(args):
+            return None
+        args = args[:i] + args[i + 2:]
+    lisible = "--lisible" in args
+    chemins = [a for a in args if a != "--lisible"]
     return (chemins[0], lisible) if len(chemins) == 1 else None
+
+
+def lire_annexe(argv: list[str]) -> str | None:
+    """Le chemin donné après `--annexe`, ou None."""
+    args = argv[1:]
+    return args[args.index("--annexe") + 1] if "--annexe" in args[:-1] else None
 
 
 def main(argv: list[str]) -> int:
@@ -168,10 +253,15 @@ def main(argv: list[str]) -> int:
         print(__doc__)
         return 2
     chemin_md, lisible = Path(arguments[0]), arguments[1]
-    if not chemin_md.exists():
-        print(f"introuvable : {chemin_md}")
-        return 1
-    html, pdf, pages = rendre(chemin_md, lisible)
+    annexe = lire_annexe(argv)
+    for chemin in (chemin_md, Path(annexe) if annexe else None):
+        if chemin is not None and not chemin.exists():
+            print(f"introuvable : {chemin}")
+            return 1
+    if annexe:
+        html, pdf, pages = rendre_avec_annexe(chemin_md, Path(annexe))
+    else:
+        html, pdf, pages = rendre(chemin_md, lisible)
     print(f"html : {html}\npdf  : {pdf}\npages : {pages}")
     return 0
 
