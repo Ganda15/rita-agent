@@ -97,6 +97,11 @@ rapport et 14 pages d'annexes. » L'accès GitHub du jury reste à voir avec Hé
 - **Toujours séparé** : la collecte planifiée sur le serveur, et le renforcement du script de rattrapage avant toute
   réutilisation (preuve C3, § 9.1).
 
+## ▶️ 05/11, NUIT : TROIS CORRECTIONS D'INTERFACE AVANT LE TOURNAGE E4 (BRANCHE `corrections-interface-e4`, À POUSSER PAR ERA)
+
+- **Faites, test d'abord** : l'aide du Briefing ne promet plus « jamais diffusée » (elle dit ce que le garde-fou détecte) ; le 502 a son propre message, « Données indisponibles », distinct du 422 « Valeur introuvable » ; le RSI s'écrit « RSI 14 : 41. Repères : 30 et 70. » (spécification 001, R2, changée le 05/11 : la question du « zone neutre » est tranchée par Era dans la PR). Restent à part : les astérisques du modèle affichés, la colonne du code figée dans Indicateurs.
+- **Ensuite** : PR vers `develop` puis `main`, déploiement, puis les captures de la vidéo E4 sur la version vérifiée.
+
 ## ▶️ 04/11, NUIT : E4 v1.3 PRÊT À RELIRE (PR #185, BROUILLON) ; DEUX DÉFAUTS DE L'ÉCRAN BRIEFING TROUVÉS EN PRODUCTION
 
 **Prochaine action** : #185 et #186 fusionnées par Era (`main` à `6f8474b`, PDF `790e67b1…`) ; l'entrée du CHANGELOG qui

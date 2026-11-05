@@ -1,7 +1,7 @@
 """Refonte 001, tâche 8 (exigence R2) : l'écran Indicateurs, dans un vrai navigateur, API interceptée.
 
 Comparer les valeurs suivies et lire un indicateur comme un fait. La carte des performances se lit sans la couleur ; le
-RSI s'écrit « RSI 14 : 41, zone neutre de 30 à 70 », jamais comme un signal ; au choix d'une valeur, sa courbe ; le nombre
+RSI s'écrit « RSI 14 : 41. Repères : 30 et 70. », jamais comme un signal ; au choix d'une valeur, sa courbe ; le nombre
 de valeurs vient des données. Chaque bloc a sa panne : le tableau reste si le risque ou la courbe échouent.
 """
 import json
@@ -136,7 +136,7 @@ def test_cotation_perimee_sans_rsi(ecran):
 def test_rsi_ecrit_comme_un_fait(ecran):
     choisir(ecran, "MC.PA")
     detail = ecran.locator("#detail").inner_text()
-    assert "RSI 14 : 44,1, zone neutre de 30 à 70" in detail
+    assert "RSI 14 : 44,1. Repères : 30 et 70." in detail
     for interdit in ("survendu", "suracheté", "signal d'achat", "signal de vente", "achetez", "vendez"):
         assert interdit not in detail.lower(), interdit
 

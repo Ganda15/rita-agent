@@ -293,7 +293,7 @@
     svg.appendChild(element("line", { x1: cx, y1: cy, x2: arrondi(bout[0]), y2: arrondi(bout[1]), class: "jauge-aiguille",
                                       "data-serie": "rsi" }));
     svg.appendChild(texteSvg(cx, cy + 24, nombre(rsi, 1), { class: "valeur-jauge", "text-anchor": "middle" }));
-    return { svg: svg, alternative: alternative(["RSI 14 : " + nombre(rsi, 1) + ", zone neutre de 30 à 70"]) };
+    return { svg: svg, alternative: alternative(["RSI 14 : " + nombre(rsi, 1) + ". Repères : 30 et 70."]) };
   }
 
   window.GRAPHIQUES = { courbe: courbe, anneau: anneau, barres: barres, jauge: jauge, moyenneMobile: moyenneMobile,
