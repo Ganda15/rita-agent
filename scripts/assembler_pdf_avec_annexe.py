@@ -64,6 +64,9 @@ def assembler(rapport: Path, annexe: Path, sortie: Path) -> int:
     total = len(document)
     for page in document:
         _renumeroter(page, page.number + 1, total)
+    # 05/11 : la fusion perd la langue déclarée par Chrome ; on la remet. Limite connue : l'arbre de structure (balisage
+    # d'accessibilité) des deux documents n'est pas fusionné ; le rapport seul, rendu par Chrome, reste balisé.
+    document.set_language("fr")
     document.save(str(sortie), deflate=True)
     return total
 
