@@ -38,7 +38,7 @@ accepte ce remplacement après la remise (seuls l'export et deux faits datés du
   et E4 ne l'étaient pas, la fusion pypdf perdant l'arbre de structure. `scripts/rendre_pdf.py --annexe` rend le rapport
   et l'annexe dans un seul document Chrome (10 tests écrits d'abord). Ce balisage ne vaut pas un audit d'accessibilité.
 - **E2 v1.1** : PDF avec annexe en un seul document (20 pages, langue fr, arbre de structure, pieds de 1 à 20 ; texte des
-  20 pages comparé à la v1.0) ; cinq passages mis à jour avec leur preuve (réception confirmée par le formateur le 04/11 ;
+  20 pages comparé à la v1.0) ; six passages du rapport et la légende d'A1 mis à jour avec leur preuve, après une relecture extérieure (réception confirmée par le formateur le 04/11 ;
   503 `AUCUN_FOURNISSEUR` corrigé le 04/11), ligne de version et historique ; aucun statut changé. `livrable-E2-v1` et
   `livrable-E2-v2` restent, figés.
 - **Restent** : les deux classeurs citent E2 v1.0 (à mettre à jour après le tag) ; message à Héléna VICENTE pour l'accès

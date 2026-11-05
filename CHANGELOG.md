@@ -19,7 +19,8 @@ depuis le 04/11 : l'accusé de réception du formateur « demandé », la répon
 **Décision** : le rapport et son annexe se rendent dans un seul document Chrome (`scripts/rendre_pdf.py --annexe`, tests
 d'abord) ; l'annexe garde sa page en paysage et ses règles ne touchent qu'elle. **Livrable** : E2 v1.1,
 `docs/rapports/E2/rapport-E2-avec-annexe.pdf` (20 pages, langue fr, arbre de structure, pieds de 1 à 20) ; texte des
-20 pages comparé à la v1.0 : seuls changent les cinq passages mis à jour avec leur preuve, la ligne de version et
+20 pages comparé à la v1.0 : seuls changent six passages du rapport et la légende d'A1, mis à jour avec leur preuve (la
+relecture extérieure du 05/11 a relevé les deux derniers, § 2.7 et A1), la ligne de version et
 l'historique. Aucun statut de critère changé. Le tag `livrable-E2-v3` se pose sur le commit de fusion qui porte cette
 entrée, seul dans son push ; `livrable-E2-v1` et `livrable-E2-v2` restent. **Limite** : ce balisage n'est pas un audit
 d'accessibilité complet ; E4 et E1 restent à refaire de la même façon.
