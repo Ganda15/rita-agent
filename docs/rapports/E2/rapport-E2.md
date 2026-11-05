@@ -16,7 +16,7 @@ h2#criteres, h2#criteres + p{ break-after:avoid; }
 
 # Rapport E2 : veille, choix d'un service de modèle, et son paramétrage
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 1.0, 3 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 1.1, 5 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
 {: .identite }
 
 > **En une minute.** RITA rédige en français un court briefing sur une valeur boursière, avec un modèle de langage
@@ -170,7 +170,7 @@ réussir le test sur lequel il a été entraîné et rater presque tout sur un a
 |---|---|---|---|---|
 | 16/08 | la promotion | Discord, canal général | S33 | partage consigné dans le journal ; capture absente ; aucun retour documenté |
 | 11/10 | la promotion | Discord, canal #veille, 20 h 04 | S41, avec une question ouverte | partage prouvé par capture (`evidence/C6/envoi-2026-10-11-promo-discord-veille.png`) ; aucune réponse au 31/10 |
-| 03/11 | le formateur | mail, 14 h 42, PDF joint | synthèse S33 à S36 | envoi prouvé (`evidence/C8/envoi-documents-formateur-2026-11-03.md`) ; accusé de réception demandé |
+| 03/11 | le formateur | mail, 14 h 42, PDF joint | synthèse S33 à S36 | envoi prouvé (`evidence/C8/envoi-documents-formateur-2026-11-03.md`) ; réception confirmée par le formateur le 04/11 (`evidence/C8/reponse-formateur-2026-11-04.md`) |
 
 Une synthèse des quatre premières notes existe en PDF (`docs/veille/Veille-C6-synthese-S33-a-S36.pdf`) ; elle a été
 envoyée au formateur le 03/11. Le registre des envois (`docs/veille/_JOURNAL-DES-ENVOIS.md`) le dit lui-même : un message sans
@@ -191,8 +191,8 @@ GitHub ; la synthèse existe aussi en PDF.
 
 - **Le rythme hebdomadaire n'a pas été maintenu** : sept relevés et cinq notes entre S33 et S44, dont trois notes en
   rattrapage ; rien de conservé dans le dépôt depuis le 11/10.
-- **Aucun échange collectif documenté** : deux partages à la promotion sans réponse documentée ; la synthèse
-  envoyée au formateur le 03/11 attend sa réponse.
+- **Aucun échange collectif documenté** : deux partages à la promotion sans réponse documentée ; la réception de la
+  synthèse et l'accès aux liens ont été confirmés par le formateur le 04/11 (`evidence/C8/reponse-formateur-2026-11-04.md`).
 - **Le partage du 16/08 n'a pas de capture.**
 - **La vérification d'accessibilité des notes n'est pas consignée.**
 
@@ -546,9 +546,10 @@ remplace pas cet ordre par le sien (`tests/test_docker_compose.py`, ligne 144).
 
 - **Aucun secours.** Mistral Large 4 a été choisi le 10/10 comme futur second fournisseur, sous conditions, mais il
   n'est ni validé ni actif : il n'existe que sur la branche
-  `mistral-ue` (PR #88, ouverte depuis le 10/10, en conflit avec `develop`), et son contrat n'est pas lu. Si Azure
-  tombe, `/briefing` répond 500 avec un identifiant de requête ; la réponse 503 « aucun fournisseur » prévue (#75)
-  n'est pas faite.
+  `mistral-ue` (PR #88, ouverte depuis le 10/10, en conflit avec `develop`), et son contrat n'est pas lu. À la version
+  de référence `d3a4198`, si Azure tombe, `/briefing` répond 500 avec un identifiant de requête. **Corrigé le 04/11** :
+  il répond 503 avec le code `AUCUN_FOURNISSEUR` (commit `bbd623f`, test `tests/test_briefing_diagnostic.py`, en
+  production depuis `8ecc5a7`) ; il n'y a toujours pas de second fournisseur.
 - **Le prompt corrigé n'est pas en place.** L'option B, décidée le 11/10 et prévue pour le 16/10 (afficher la date de
   la séance, remplacer « point à surveiller pour la séance suivante » par un élément observable tiré des données),
   n'est pas appliquée : `agents/analyst.py`, ligne 17, dit toujours « Signale un point à surveiller pour la séance
@@ -628,7 +629,7 @@ nouveau le 31/10 depuis le guide à jour (35 pages). **Reste** : l'ancien chemin
 
 Le référentiel demande que la documentation soit « communiquée aux parties prenantes dans un format qui respecte les
 recommandations d'accessibilité ». **C'est prouvé depuis le 03/11** : le guide a été envoyé au formateur ce jour-là
-à 14 h 42, en PDF joint (`evidence/C8/envoi-documents-formateur-2026-11-03.md`) ; l'issue #43 reste ouverte, l'accusé de réception est demandé.
+à 14 h 42, en PDF joint (`evidence/C8/envoi-documents-formateur-2026-11-03.md`) ; le formateur en a confirmé la réception le 04/11, liens ouverts compris (`evidence/C8/reponse-formateur-2026-11-04.md`). L'issue #43, qui suit aussi la surveillance du service, reste ouverte.
 
 **Le format, lui, est prêt depuis le 31/10** (`evidence/C8/controle-accessibilite-guide-2026-10-31.md`). Le PDF est
 rendu avec une option de lecture facilitée, écrite test d'abord : texte et tableaux à 12 pt, code à 11 pt, titres sans
@@ -669,7 +670,7 @@ Auto-évaluation du 31 octobre 2026, revue le 1er novembre, complétée le 2 nov
 
 **Décompte** : 16 ✅ · 4 🟡 · 0 ❌ sur 20. Historique : version 0.3 du 03/10, 6 · 13 · 1 ; version 0.4 du 31/10, 6 · 13 · 1 (C6.6 et C7.2 baissent, C6.7 et C8.3 montent) ; depuis la version 0.5 du 31/10, C7.2 repasse à ✅, une fois l'inventaire des services écrit (3.2). Version 0.7 du 01/11 : C6.3, C7.1, C7.3, C7.5 et C7.7 passent à ✅ après relecture contre le texte du
 règlement (pages 22 à 24), sans preuve nouvelle : les preuves existaient, la grille leur demandait plus que le critère ;
-C7.6 passe à ✅ une fois les prérequis d'Azure et d'OpenRouter présentés côte à côte (3.5). Version 1.0 du 03/11 : C6.4 et C8.5 passent à ✅ après l'envoi au formateur du 03/11 ; C6.2 passe à ✅, le critère demandant la planification ; les lignes incomplètes s'écrivent « à consolider » (🟡), comme dans la grille. Chaque ligne garde sa
+C7.6 passe à ✅ une fois les prérequis d'Azure et d'OpenRouter présentés côte à côte (3.5). Version 1.0 du 03/11 : C6.4 et C8.5 passent à ✅ après l'envoi au formateur du 03/11 ; C6.2 passe à ✅, le critère demandant la planification ; les lignes incomplètes s'écrivent « à consolider » (🟡), comme dans la grille. Version 1.1 du 05/11 : aucun statut ne change. Le PDF avec annexe est rendu en un seul document : la langue et le balisage de structure du rapport seul sont gardés, les pieds sont numérotés de 1 à 20 (ce balisage ne vaut pas un audit d'accessibilité complet). Deux faits du 04/11 sont repris, chacun avec sa preuve : la réception confirmée par le formateur (2.5, 2.7, 4.6, 6, annexe A1) et la réponse 503 (4.2, 6). Chaque ligne garde sa
 limite. Décision d'Era.
 
 ---
@@ -679,14 +680,15 @@ limite. Décision d'Era.
 **Avant la remise du 05/11.**
 
 1. **Remettre le guide d'exploitation** (C8.5) : fait le 03/11, par mail, PDF joint, preuve datée dans `evidence/C8/` ;
-   reste l'accusé de réception du formateur (#43).
-2. **Le rapport** : relecture, PDF, tag `livrable-E2-v2` (cette version 1.0 ; la 0.9 reste sous `livrable-E2-v1`).
+   réception confirmée par le formateur le 04/11 (`evidence/C8/reponse-formateur-2026-11-04.md`).
+2. **Le rapport** : relecture, PDF, tag `livrable-E2-v3` (cette version 1.1 ; la 1.0 reste sous `livrable-E2-v2`, la
+   0.9 sous `livrable-E2-v1`).
 
 **Ensuite.**
 
 3. **Reprendre la veille** (C6) : relevés et notes des semaines suivantes, un échange collectif documenté.
-4. **La configuration** (C8.2) : appliquer le prompt corrigé (option B), la réponse 503 « aucun fournisseur » (#75),
-   relire le contrat de Microsoft, décider pour Langfuse.
+4. **La configuration** (C8.2) : appliquer le prompt corrigé (option B), relire le contrat de Microsoft, décider pour
+   Langfuse. La réponse 503 « aucun fournisseur » est faite depuis le 04/11 (4.2).
 
 **Évolution envisagée.**
 

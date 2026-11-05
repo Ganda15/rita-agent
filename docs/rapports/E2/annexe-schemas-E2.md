@@ -20,6 +20,8 @@ le contrôle central. **D'où viennent ses textes** : `docs/veille/README.md` (�
 S33 à S41, et les sections 2.2 à 2.7 du rapport. **Limites** : le rythme n'est pas tenu (7 relevés et 5 notes de S33 à
 S44, rien depuis le 11/10) ; aucun échange collectif n'est documenté ; l'accessibilité des notes n'est pas consignée.
 
+**Actualisation du 04/11** : réception et accès aux liens confirmés par le formateur ; aucun échange collectif documenté.
+
 ## A2. Le choix du service : le banc du 03/10, puis les décisions datées (C7) {: #a2 }
 
 ![Le banc du 3 octobre, puis les décisions du 5 au 31 octobre](schemas/E2-banc-decision-illustre.png)

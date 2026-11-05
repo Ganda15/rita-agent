@@ -9,6 +9,24 @@
 
 ---
 
+## 2026-11-05, après-midi : E2 v1.1, export accessible et deux faits du 04/11, pour le tag `livrable-E2-v3`
+
+**Manque découvert** (mesure du 05/11 sur les fichiers remis) : chaque rapport seul est en français et balisé pour les
+lecteurs d'écran, mais les PDF « avec annexe » d'E1, E2 et E4 ne l'étaient pas : la fusion après coup (pypdf) garde
+pages, liens et signets, et perd la langue déclarée et l'arbre de structure. E2 v1.0 disait aussi deux faits dépassés
+depuis le 04/11 : l'accusé de réception du formateur « demandé », la réponse 503 « pas faite ».
+
+**Décision** : le rapport et son annexe se rendent dans un seul document Chrome (`scripts/rendre_pdf.py --annexe`, tests
+d'abord) ; l'annexe garde sa page en paysage et ses règles ne touchent qu'elle. **Livrable** : E2 v1.1,
+`docs/rapports/E2/rapport-E2-avec-annexe.pdf` (20 pages, langue fr, arbre de structure, pieds de 1 à 20) ; texte des
+20 pages comparé à la v1.0 : seuls changent six passages du rapport et la légende d'A1, mis à jour avec leur preuve (la
+relecture extérieure du 05/11 a relevé les deux derniers, § 2.7 et A1), la ligne de version et
+l'historique. Aucun statut de critère changé. Le tag `livrable-E2-v3` se pose sur le commit de fusion qui porte cette
+entrée, seul dans son push ; `livrable-E2-v1` et `livrable-E2-v2` restent. **Limite** : ce balisage n'est pas un audit
+d'accessibilité complet ; E4 et E1 restent à refaire de la même façon.
+
+---
+
 ## 2026-11-05, matin : E4 v1.4, quatre corrections de cohérence, pour le tag `livrable-E4-v4`
 
 **Manque découvert** (relecture extérieure du 05/11) : E4 v1.3 gardait quatre incohérences. Le tableau des
