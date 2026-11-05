@@ -9,6 +9,19 @@
 
 ---
 
+## 2026-11-05, fin d'après-midi : E4 v1.5, export accessible, pour le tag `livrable-E4-v5`
+
+**Livrable** : E4 v1.5, `docs/rapports/E4/rapport-E4-avec-annexe.pdf`, rendu comme E2 v1.1 dans un seul document Chrome
+(`scripts/rendre_pdf.py --annexe`) : 34 pages (20 en portrait, 14 en paysage), langue fr, arbre de structure, pieds de 1
+à 34. La v1.4, assemblée par `scripts/assembler_pdf_avec_annexe.py`, déclarait sa langue mais n'avait pas d'arbre de
+structure. Comparé à la v1.4 : texte identique hors les deux lignes de version et une phrase de l'historique ; liens
+externes aux mêmes cibles, passés du tag `livrable-E4-v4` au tag `livrable-E4-v5` ; 16 liens internes et 68 signets
+gardés. **Manque découvert** : les pages que l'annexe annonce dans le PDF complet n'étaient tenues par aucun test ; un
+test les compare désormais aux signets. Aucun statut de critère changé. Le tag `livrable-E4-v5` se pose sur le commit de
+fusion qui porte cette entrée, seul dans son push ; `livrable-E4-v1` à `livrable-E4-v4` restent.
+
+---
+
 ## 2026-11-05, après-midi : E2 v1.1, export accessible et deux faits du 04/11, pour le tag `livrable-E2-v3`
 
 **Manque découvert** (mesure du 05/11 sur les fichiers remis) : chaque rapport seul est en français et balisé pour les

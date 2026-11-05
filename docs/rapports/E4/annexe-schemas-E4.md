@@ -27,7 +27,7 @@ img.zoom{ display:block; max-height:12mm; margin:1mm 0 0; }
 
 # Annexe du rapport E4 : les schémas
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · compétences C14 à C19 · annexe du rapport E4, version 1.4, 5 novembre 2026
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · compétences C14 à C19 · annexe du rapport E4, version 1.5, 5 novembre 2026
 {: .identite }
 
 > Cette annexe montre les schémas que le rapport cite, chacun sur sa page,
@@ -75,9 +75,9 @@ comparés à leurs maquettes en A7, sur des captures de production.
 
 ![Modèle conceptuel des données de RITA, au formalisme Merise, revu le 2 novembre 2026](schemas/E4-A1-MCD-illustre.png)
 
-**MCD au formalisme Merise**, revu le 02/11/2026, mise en forme du 03/11, texte inchangé (original : [`evidence/C4/MCD-MERISE-RITA-2026-11-02.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/evidence/C4/MCD-MERISE-RITA-2026-11-02.png)) : 6 entités et 6
+**MCD au formalisme Merise**, revu le 02/11/2026, mise en forme du 03/11, texte inchangé (original : [`evidence/C4/MCD-MERISE-RITA-2026-11-02.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C4/MCD-MERISE-RITA-2026-11-02.png)) : 6 entités et 6
 associations, le même modèle que dans le livret E1 v6. Une valeur peut exister sans cotation (`VALEUR 0,n`), comme
-dans la base ; un test le vérifie ([`tests/test_mcd_c4.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/tests/test_mcd_c4.py)). Celui du 01/08 est gardé ([`evidence/C4/MCD-MERISE-RITA.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/evidence/C4/MCD-MERISE-RITA.png)). **Limite** : la table `article`, qui porte les
+dans la base ; un test le vérifie ([`tests/test_mcd_c4.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/tests/test_mcd_c4.py)). Celui du 01/08 est gardé ([`evidence/C4/MCD-MERISE-RITA.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C4/MCD-MERISE-RITA.png)). **Limite** : la table `article`, qui porte les
 données de l'écran Question, n'y figure pas (choix du 11/08 ; rapport, § 1.4 et critère C14.1). Le schéma conserve son
 intitulé historique ; dans l'application livrée, RITA signifie « Retrieval Intelligence pour le Tracking et l'Analyse ».
 
@@ -85,21 +85,21 @@ intitulé historique ; dans l'application livrée, RITA signifie « Retrieval In
 
 ![Wireframe de l'écran Portefeuille](../../../evidence/C14/WIREFRAMES-C14-ecran-portefeuille.svg){: .presque }
 
-**Écran Portefeuille, 18/08/2026** ([`evidence/C14/WIREFRAMES-C14-ecran-portefeuille.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/evidence/C14/WIREFRAMES-C14-ecran-portefeuille.svg)), avant la refonte. **Correctif du 04/11** :
+**Écran Portefeuille, 18/08/2026** ([`evidence/C14/WIREFRAMES-C14-ecran-portefeuille.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C14/WIREFRAMES-C14-ecran-portefeuille.svg)), avant la refonte. **Correctif du 04/11** :
 `autocomplete="off"` demande au navigateur de ne pas mémoriser la clé, sans le garantir ([MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete)). Limites : page 25.
 
 <div class="saut"></div>
 
 ![Wireframe de l'écran Indicateurs](../../../evidence/C14/WIREFRAMES-C14-ecran-indicateurs.svg){: .grand }
 
-**Écran Indicateurs, 03/10/2026** ([`evidence/C14/WIREFRAMES-C14-ecran-indicateurs.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/evidence/C14/WIREFRAMES-C14-ecran-indicateurs.svg)), avant la refonte.
+**Écran Indicateurs, 03/10/2026** ([`evidence/C14/WIREFRAMES-C14-ecran-indicateurs.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C14/WIREFRAMES-C14-ecran-indicateurs.svg)), avant la refonte.
 **Correctif du 04/11** : « sans mémorisation navigateur » appelle la même réserve que `autocomplete="off"` (page 23).
 
 <div class="saut"></div>
 
 ![Wireframe de l'écran Briefing](../../../evidence/C14/WIREFRAMES-C14-ecran-briefing.svg){: .moyen }
 
-**Écran Briefing, 03/10/2026** ([`evidence/C14/WIREFRAMES-C14-ecran-briefing.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/evidence/C14/WIREFRAMES-C14-ecran-briefing.svg)), avant la refonte. **Correctifs du 04/11** :
+**Écran Briefing, 03/10/2026** ([`evidence/C14/WIREFRAMES-C14-ecran-briefing.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C14/WIREFRAMES-C14-ecran-briefing.svg)), avant la refonte. **Correctifs du 04/11** :
 « une recommandation d'achat ou de vente est retenue, jamais diffusée » promet trop : un texte détecté et refusé par le
 garde-fou n'est pas affiché, mais la détection n'est pas exhaustive ; « sans mémorisation navigateur » : même réserve
 qu'en page 23 ; l'état d (« aucun modèle », 500) n'existe plus : depuis le 04/11, l'API répond 503 `AUCUN_FOURNISSEUR`
@@ -112,7 +112,7 @@ Les écrans Question et Tableau de bord n'ont pas de maquette (rapport, § 4.3 e
 ![Architecture de RITA : le chemin d'un briefing et le chemin d'une question](schemas/E4-A3-architecture-illustre.png)
 
 **Architecture de l'application, état du code au 24/10/2026** (commit `9683f04`), mise en forme du 03/11, texte inchangé
-(original : [`docs/rapports/E3/schemas/E3-architecture.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/docs/rapports/E3/schemas/E3-architecture.svg)). **Ce qu'il montre pour E4** : les clients, dont les cinq
+(original : [`docs/rapports/E3/schemas/E3-architecture.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/rapports/E3/schemas/E3-architecture.svg)). **Ce qu'il montre pour E4** : les clients, dont les cinq
 écrans de l'interface ; l'API et ses refus (403, 422, 429) ; les deux chemins vers le modèle, le briefing (scout,
 recherche documentaire, rédacteur) et la question (recherche, puis réponse JSON stricte) ; les garde-fous avant et après
 le modèle ; les données lues (PostgreSQL, index des articles) ; la surveillance (traces, alertes, `/sante`).
@@ -123,13 +123,13 @@ cascade, Azure d'abord » ; depuis le 31/10, et donc dans la version de référe
 
 ![Diagramme de flux de données de RITA, relevé sur le code le 2 novembre 2026 : des sources aux cinq écrans, avec le chemin des questions, la passerelle MCP, les traces et la vigie](schemas/E4-A4-flux-donnees-illustre.png)
 
-**Diagramme de flux de données, relevé sur le code flux par flux le 02/11/2026**, mise en forme du 03/11, texte inchangé (original : [`evidence/C15/flux/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v4/evidence/C15/flux), généré par
-[`generer_flux.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/evidence/C15/flux/generer_flux.py) ; preuve : [`evidence/C15/preuve-flux-donnees-2026-11-02.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/evidence/C15/preuve-flux-donnees-2026-11-02.md)). Il se lit dans le sens de la donnée ;
+**Diagramme de flux de données, relevé sur le code flux par flux le 02/11/2026**, mise en forme du 03/11, texte inchangé (original : [`evidence/C15/flux/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C15/flux), généré par
+[`generer_flux.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C15/flux/generer_flux.py) ; preuve : [`evidence/C15/preuve-flux-donnees-2026-11-02.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C15/preuve-flux-donnees-2026-11-02.md)). Il se lit dans le sens de la donnée ;
 seules les positions (T1) y sont marquées comme données personnelles, pas le texte des questions (T8) ; la purge
-RGPD n'y figure pas. Celui du 18/08 est gardé ([`evidence/C15/FLUX-DONNEES-C15-application-RITA.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/evidence/C15/FLUX-DONNEES-C15-application-RITA.png)).
+RGPD n'y figure pas. Celui du 18/08 est gardé ([`evidence/C15/FLUX-DONNEES-C15-application-RITA.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C15/FLUX-DONNEES-C15-application-RITA.png)).
 **Limite** : relevé après le code, il décrit l'existant ; il n'a pas guidé la construction. **Correctif du 04/11** :
 « production : à la demande (workflow) » ne vaut que pour les articles : l'ordre `ingerer` lance les étapes `rss` et
-`indexation` ([`deploy/deployer.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/deploy/deployer.py)). Les cotations et les taux de production ont été rattrapés à
+`indexation` ([`deploy/deployer.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/deploy/deployer.py)). Les cotations et les taux de production ont été rattrapés à
 la main, le 27/10 puis le 04/11 ; aucune collecte n'est planifiée sur le serveur.
 
 ## A5. La chaîne d'intégration et de livraison (C18, C19) {: #a5 }
@@ -137,12 +137,12 @@ la main, le 27/10 puis le 04/11 ; aucune collecte n'est planifiée sur le serveu
 ![Chaîne d'intégration et de livraison de RITA](schemas/E4-A5-chaine-livraison-illustre.png)
 
 **Chaîne d'intégration et de livraison, état au 24/10/2026** (commit `9683f04`), mise en forme du 03/11, texte inchangé
-(original : [`docs/rapports/E3/schemas/E3-chaine-livraison.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/docs/rapports/E3/schemas/E3-chaine-livraison.svg) ; cette mise en forme n'existe qu'en image, pas en
+(original : [`docs/rapports/E3/schemas/E3-chaine-livraison.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/rapports/E3/schemas/E3-chaine-livraison.svg) ; cette mise en forme n'existe qu'en image, pas en
 vectoriel). **Ce qu'il montre pour E4** : du poste à la production, les contrôles de chaque étape, la protection de
 `main`, la livraison au serveur avec pré-test et retour arrière (rapport, sections 5 et 6). **Limite** : l'installation
 à la main d'un fichier Compose modifié, qui conditionne une livraison, n'y figure pas (§ 6.1). Le créneau « 8 h à 9 h » est celui où
 le serveur refuse toute bascule ; GitHub commence à attendre 30 minutes plus tôt, pour qu'une livraison ne démarre pas
-son pré-test juste avant 8 h, d'où les « 7 h 30 à 9 h » du rapport ([`deploy/deployer.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/deploy/deployer.py), `secondes_avant_livraison`).
+son pré-test juste avant 8 h, d'où les « 7 h 30 à 9 h » du rapport ([`deploy/deployer.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/deploy/deployer.py), `secondes_avant_livraison`).
 **Correctif du 04/11** : le schéma montre six contrôles exigés pour `main` ; depuis le 01/11, il y en a sept, avec `base`,
 les tests sur une base PostgreSQL jetable (rapport, § 5.3 et 6.3). L'original du 24/10 n'est pas retouché.
 
@@ -150,14 +150,14 @@ les tests sur une base PostgreSQL jetable (rapport, § 5.3 et 6.3). L'original d
 
 ![Schéma du parcours de l'écran Question : entrer, demander, répondre ou refuser, remonter à la source](schemas/E4-A6-parcours-question-illustre.png)
 
-**Écran Question, relevé le 02/11/2026**, mise en forme du 03/11, texte inchangé (original : [`evidence/C14/parcours/PARCOURS-C14-ecran-question.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/evidence/C14/parcours/PARCOURS-C14-ecran-question.svg)) : chaque étape,
-chaque refus et chaque panne des scénarios de la spécification ([`evidence/C14/preuve-specifications-ecrans-4-et-5.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/evidence/C14/preuve-specifications-ecrans-4-et-5.md)).
+**Écran Question, relevé le 02/11/2026**, mise en forme du 03/11, texte inchangé (original : [`evidence/C14/parcours/PARCOURS-C14-ecran-question.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C14/parcours/PARCOURS-C14-ecran-question.svg)) : chaque étape,
+chaque refus et chaque panne des scénarios de la spécification ([`evidence/C14/preuve-specifications-ecrans-4-et-5.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C14/preuve-specifications-ecrans-4-et-5.md)).
 
 <div class="saut"></div>
 
 ![Schéma du parcours de l'écran Tableau de bord : entrer, lire, montrer, laisser lire, dont la suspension de l'actualisation](schemas/E4-A6-parcours-tableau-de-bord-illustre.png)
 
-**Écran Tableau de bord, relevé le 02/11/2026**, mise en forme du 03/11, texte inchangé (original : [`evidence/C14/parcours/PARCOURS-C14-ecran-tableau-de-bord.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/evidence/C14/parcours/PARCOURS-C14-ecran-tableau-de-bord.svg)).
+**Écran Tableau de bord, relevé le 02/11/2026**, mise en forme du 03/11, texte inchangé (original : [`evidence/C14/parcours/PARCOURS-C14-ecran-tableau-de-bord.svg`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C14/parcours/PARCOURS-C14-ecran-tableau-de-bord.svg)).
 **Limite des deux schémas** : relevés le 02/11 sur le commit `12cc00c`, avant la refonte (« version actuelle », dans leur
 sous-titre, veut dire celle du 02/11) ; ce sont des parcours fonctionnels relevés après le développement, pas des
 maquettes de la nouvelle interface.
@@ -165,8 +165,8 @@ maquettes de la nouvelle interface.
 ## A7. Les maquettes de la refonte et les écrans livrés (C14, C17) {: #a7 }
 
 Ces maquettes, à la différence des wireframes d'A2, ont précédé le code : conçues et validées le 04/10
-([`docs/conception/frontend/refonte-2026-10.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/docs/conception/frontend/refonte-2026-10.md), § 12), reprises par la
-spécification 001, validée le 04/11 ([`specs/001-refonte-interface/spec.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/specs/001-refonte-interface/spec.md)), puis
+([`docs/conception/frontend/refonte-2026-10.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/conception/frontend/refonte-2026-10.md), § 12), reprises par la
+spécification 001, validée le 04/11 ([`specs/001-refonte-interface/spec.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/specs/001-refonte-interface/spec.md)), puis
 codées et livrées le 04/11 (`8ecc5a7`). **Chronologie du style** : le 04/10, le style A, clair, est retenu ; le 04/11, je
 choisis le style B, sombre, par défaut, et je garde le A comme thème clair au choix (spécification 001, § 7). Les écrans
 livrés sont donc sombres, les maquettes claires. **Méthode** : maquette, écran livré, différences expliquées, sur la seule
@@ -174,7 +174,7 @@ partie capturée. Une capture ne prouve pas à elle seule la conformité ; le cr
 
 ![Maquette 1 : le même écran dans trois styles, A clair, B sombre, C éditorial](schemas/E4-A7-maquette-style-recadree.png)
 
-**Maquette 1, les trois styles comparés le 04/10**, recadrée (original : [`maquette-1-style-visuel.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/docs/conception/frontend/maquettes/maquette-1-style-visuel.png)).
+**Maquette 1, les trois styles comparés le 04/10**, recadrée (original : [`maquette-1-style-visuel.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/conception/frontend/maquettes/maquette-1-style-visuel.png)).
 Retenu le 04/10 : A ; changé le 04/11 : B par défaut, A en thème clair.
 
 **Les trois pages suivantes**, une par écran : la maquette et l'écran livré côte à côte, puis les différences, chacune
@@ -189,7 +189,7 @@ sont à corriger à part, test d'abord.
 
 <div class="duo">
 <figure><img src="schemas/E4-A7-maquette-portefeuille-recadree.png" alt="Maquette de l'écran Portefeuille, style clair, valeurs illustratives"><figcaption>Maquette du 04/10, recadrée de la maquette 3</figcaption></figure>
-<figure><img src="../../../evidence/C3/captures-viridien-production/5-portefeuille-apres-rattrapage-2026-11-04.webp" alt="Écran Portefeuille livré, thème sombre, en production le 4 novembre 2026"><figcaption>Écran livré, en production, capture d'Era du 04/11 au soir ; page entière et aide dépliée : captures 4 et 5 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v4/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a></figcaption></figure>
+<figure><img src="../../../evidence/C3/captures-viridien-production/5-portefeuille-apres-rattrapage-2026-11-04.webp" alt="Écran Portefeuille livré, thème sombre, en production le 4 novembre 2026"><figcaption>Écran livré, en production, capture d'Era du 04/11 au soir ; page entière et aide dépliée : captures 4 et 5 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a></figcaption></figure>
 </div>
 
 | Élément | Constat | Explication |
@@ -208,7 +208,7 @@ sont à corriger à part, test d'abord.
 
 <div class="duo bas">
 <figure><img src="schemas/E4-A7-maquette-indicateurs-recadree.png" alt="Maquette de l'écran Indicateurs, style clair, valeurs illustratives"><figcaption>Maquette du 04/10, recadrée de la maquette 3</figcaption></figure>
-<figure><img src="../../../evidence/C3/captures-viridien-production/6-indicateurs-apres-rattrapage-2026-11-04.webp" alt="Écran Indicateurs livré, thème sombre, en production le 4 novembre 2026"><figcaption>Écran livré, en production, capture d'Era du 04/11 au soir ; carte, colonnes de droite, aide et détail : captures 2, 3, 6 et 7 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v4/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a></figcaption></figure>
+<figure><img src="../../../evidence/C3/captures-viridien-production/6-indicateurs-apres-rattrapage-2026-11-04.webp" alt="Écran Indicateurs livré, thème sombre, en production le 4 novembre 2026"><figcaption>Écran livré, en production, capture d'Era du 04/11 au soir ; carte, colonnes de droite, aide et détail : captures 2, 3, 6 et 7 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a></figcaption></figure>
 </div>
 
 | Élément | Constat | Explication |
@@ -227,17 +227,17 @@ sont à corriger à part, test d'abord.
 ### L'écran Briefing
 
 <div class="duo">
-<figure><img src="schemas/E4-A7-maquette-briefing-flux-vertical.png" alt="Maquette de l'écran Briefing, flux vertical retenu, style clair"><figcaption>Maquette du 04/10, mise en page retenue (flux vertical), recadrée de la <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/docs/conception/frontend/maquettes/maquette-2-ecran-briefing.png">maquette 2</a></figcaption></figure>
-<figure><img src="../../../evidence/C17/refonte-ecrans-livres-2026-11-04/1-briefing-AIR-PA-production-2026-11-04.png" alt="Écran Briefing livré, thème sombre, briefing AIR.PA en production le 4 novembre 2026"><figcaption>Écran livré, en production, briefing AIR.PA, capture d'Era du 04/11 au soir (capture 1 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v4/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a>)</figcaption></figure>
+<figure><img src="schemas/E4-A7-maquette-briefing-flux-vertical.png" alt="Maquette de l'écran Briefing, flux vertical retenu, style clair"><figcaption>Maquette du 04/10, mise en page retenue (flux vertical), recadrée de la <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/conception/frontend/maquettes/maquette-2-ecran-briefing.png">maquette 2</a></figcaption></figure>
+<figure><img src="../../../evidence/C17/refonte-ecrans-livres-2026-11-04/1-briefing-AIR-PA-production-2026-11-04.png" alt="Écran Briefing livré, thème sombre, briefing AIR.PA en production le 4 novembre 2026"><figcaption>Écran livré, en production, briefing AIR.PA, capture d'Era du 04/11 au soir (capture 1 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a>)</figcaption></figure>
 </div>
 
 | Élément | Constat | Explication |
 |---|---|---|
 | Thème | maquette claire, écran sombre | choix du 04/11 |
-| Demande | liste « AIR.PA ▾ » et « Rédiger » sur la maquette ; à l'écran, un champ avec les suggestions de l'univers suivi et « Rédiger le briefing » | même geste ; le champ accepte aussi un code tapé ([`frontend/briefing.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/frontend/briefing.html), ligne 51) |
+| Demande | liste « AIR.PA ▾ » et « Rédiger » sur la maquette ; à l'écran, un champ avec les suggestions de l'univers suivi et « Rédiger le briefing » | même geste ; le champ accepte aussi un code tapé ([`frontend/briefing.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/frontend/briefing.html), ligne 51) |
 | Quatre chiffres | cours, séance, 1 mois, garde-fou, dans le même ordre, signe écrit | conforme sur la capture |
 | Courbe | cours, MM20 et MM50 sur 130 séances, dates réelles sous la courbe | conforme ; l'écran écrit en plus la période, le plus bas, le plus haut et les deux moyennes |
 | Texte du briefing | présent sous la courbe | conforme ; **défaut constaté** : les astérisques de mise en forme du modèle s'affichent tels quels (« \*La Tribune\* ») |
 | Chaîne de production | « Comment RITA a produit ce texte », cinq étapes en pastilles | « Comprendre ce résultat » : les cinq mêmes étapes en liste numérotée, plus la référence de la requête (R4) |
 | Articles | trois cartes de source | « Sources fournies au modèle » : trois liens, source et date, et la limite « Leur présence ne prouve pas que chaque phrase du texte en vient » |
-| Aide sous le champ | absente de la maquette | **défaut constaté** : « une recommandation d'achat ou de vente est retenue, jamais diffusée », la promesse trop forte corrigée en A2 (page 25), est encore à l'écran ([`frontend/briefing.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v4/frontend/briefing.html), ligne 57) |
+| Aide sous le champ | absente de la maquette | **défaut constaté** : « une recommandation d'achat ou de vente est retenue, jamais diffusée », la promesse trop forte corrigée en A2 (page 25), est encore à l'écran ([`frontend/briefing.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/frontend/briefing.html), ligne 57) |
