@@ -9,6 +9,18 @@
 
 ---
 
+## 2026-11-05, matin : E4 v1.4, quatre corrections de cohérence, pour le tag `livrable-E4-v4`
+
+**Manque découvert** (relecture extérieure du 05/11) : E4 v1.3 gardait quatre incohérences. Le tableau des
+workflows coupait la ligne de `test.yml` ; C16.4 disait l'accès au Kanban « non revérifié », alors que le formateur
+l'a confirmé le 03/11 ; S6 restait ouvert, alors que `/briefing` répond 503 `AUCUN_FOURNISSEUR` depuis le 04/11,
+testé ; l'accès du jury était annoncé « au moment de l'évaluation », au lieu d'avant la consultation des livrables.
+Le PDF complet ne déclarait pas non plus sa langue : `scripts/assembler_pdf_avec_annexe.py` la remet, test d'abord.
+**Limite** : le balisage d'accessibilité (arbre de structure) des deux documents n'est pas fusionné ; le rapport
+seul, rendu par Chrome, reste balisé. Aucun statut de critère changé. `livrable-E4-v3` reste, figé.
+
+---
+
 ## 2026-11-05, nuit : E4 v1.3 sur `main`, prête pour le tag `livrable-E4-v3`
 
 **Livrable** : E4 v1.3, `docs/rapports/E4/rapport-E4-avec-annexe.pdf` (34 pages : rapport 20, annexe 14 ; SHA-256
