@@ -9,6 +9,18 @@
 
 ---
 
+## 2026-11-05, 22 h : E2 v1.1 annonce un test « vu en échec » dont le journal n'est pas conservé
+
+**Manque découvert** (relecture des affirmations d'E2 pendant la préparation de l'oral) : le rapport E2 v1.1 (§ 4.2, tag
+`livrable-E2-v3`) écrit que le test de l'ordre par défaut des fournisseurs a été « écrit d'abord et vu en échec »
+(`d1cbb7b`). Le commit contient le test et le correctif ensemble, et son message dit « test d abord » ; mais ni
+`evidence/` ni le rapport ne gardent la sortie de l'exécution en échec. Cela ne prouve pas que l'essai n'a pas eu lieu :
+cela empêche seulement de le montrer. Le rapport, figé, n'est pas modifié. À l'oral : « le journal de l'échec initial
+n'est pas conservé ; je peux montrer le test, la correction et leur historique ». Leçon : quand un rapport cite un test
+rouge, la sortie de `pytest` avant le correctif va dans `evidence/`, comme pour INC-009 (`pytest-avant.txt`).
+
+---
+
 ## 2026-11-05, soir : E5 v0.8, faits revérifiés au 05/11, pour le tag `livrable-E5-v3`
 
 **Livrable** : E5 v0.8, `docs/rapports/E5/rapport-E5.pdf` (5 pages, langue fr, balisé). Chaque fait daté de la v0.7 a
