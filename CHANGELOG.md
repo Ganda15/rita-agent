@@ -18,7 +18,9 @@ structure. Comparé à la v1.4 : texte identique hors les deux lignes de version
 externes aux mêmes cibles, passés du tag `livrable-E4-v4` au tag `livrable-E4-v5` ; 16 liens internes et 68 signets
 gardés. **Manque découvert** : les pages que l'annexe annonce dans le PDF complet n'étaient tenues par aucun test ; un
 test les compare désormais aux signets. Aucun statut de critère changé. Le tag `livrable-E4-v5` se pose sur le commit de
-fusion qui porte cette entrée, seul dans son push ; `livrable-E4-v1` à `livrable-E4-v4` restent.
+fusion qui porte cette entrée, seul dans son push ; `livrable-E4-v1` à `livrable-E4-v4` restent. **Décision d'Era** :
+E1 n'est pas refait. Son livret de 5 pages est balisé, mais sa couverture et ses quatre annexes sont des pages mises en
+forme hors du dépôt, sans source que Chrome puisse rendre ; la limite est écrite dans le README.
 
 ---
 

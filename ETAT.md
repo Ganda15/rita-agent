@@ -38,6 +38,10 @@ formateur se demande avant tout envoi (message prêt pour E2).
   l'historique ; 237 liens externes, mêmes cibles, passés de `livrable-E4-v4` à `livrable-E4-v5` ; 16 liens internes et
   68 signets ; images identiques. Un test tient désormais les pages annoncées par l'annexe (A1 p. 22 à A7 p. 31 à 34).
   Aucun statut changé. `livrable-E4-v1` à `livrable-E4-v4` restent, figés ; la v1.4 envoyée le 05/11 reste valable.
+- **E1 reste tel quel** (décision d'Era du 05/11) : le livret de 5 pages (`rapport-E1.pdf`) est en français et balisé ;
+  le PDF avec annexes de 10 pages ne l'est pas, sa couverture et ses quatre annexes étant des pages mises en forme hors
+  du dépôt (copie OneDrive d'Era du 28/10), assemblées après coup ; sans source HTML, Chrome ne peut pas les rendre en un
+  seul document. Limite écrite dans le README ; pas de nouveau tag pour E1.
 
 **Prochaine action** : la PR `export-accessible-E2` vers `develop`, puis `develop` vers `main` ; le tag `livrable-E2-v3`
 se pose sur le commit de fusion qui porte cette entrée, seul dans son push, après les exécutions vertes de `main`. Ensuite,
