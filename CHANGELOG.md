@@ -9,6 +9,17 @@
 
 ---
 
+## 2026-11-05, soir : E5 v0.8, faits revérifiés au 05/11, pour le tag `livrable-E5-v3`
+
+**Livrable** : E5 v0.8, `docs/rapports/E5/rapport-E5.pdf` (5 pages, langue fr, balisé). Chaque fait daté de la v0.7 a
+été revérifié le 05/11 : la réception du guide est confirmée par le formateur depuis le 04/11 (C20.7, preuve dans
+`evidence/C8/`) ; le tableau de bord de production répond (HTTP 200) ; #77 et #132 sont encore ouvertes ; la dernière
+exécution du workflow d'alerte date toujours du 24/10. Le reste est inchangé et toujours vrai. Liens vers le tag
+`livrable-E5-v3`, aux mêmes cibles. Aucun statut de critère changé. Le tag se pose sur le commit de fusion qui porte
+cette entrée, seul dans son push ; `livrable-E5-v1` et `livrable-E5-v2` restent.
+
+---
+
 ## 2026-11-05, fin d'après-midi : E4 v1.5, export accessible, pour le tag `livrable-E4-v5`
 
 **Livrable** : E4 v1.5, `docs/rapports/E4/rapport-E4-avec-annexe.pdf`, rendu comme E2 v1.1 dans un seul document Chrome
