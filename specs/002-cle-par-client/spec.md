@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Statut** | **validée par Era le 05/11/2026** : les sept réponses du § 7 confirmées, avec trois précisions (audit différé ou direct, `/audit/mcp` réservé à la passerelle, secours compatible dès la première bascule) ; deux relectures du 05/11 intégrées ; le plan et les tâches viennent ensuite, aucune ligne de code avant leur validation |
+| **Statut** | **Implémentation reportée après l'oral blanc des 12-13/11, réévaluation le 14/11** (décision d'Era du 06/11) ; d'ici là, la clé partagée est présentée comme une limite, avec cette solution et son estimation. **Validée par Era le 05/11/2026** : les sept réponses du § 7 confirmées, avec trois précisions (audit différé ou direct, `/audit/mcp` réservé à la passerelle, secours compatible dès la première bascule) ; deux relectures du 05/11 intégrées ; le plan et les tâches viennent ensuite, aucune ligne de code avant leur validation |
 | **Décision d'origine** | retour écrit d'Elbby du 03/11 : « faire une clé par client avant le jury » (C5) ; ordre retenu le 05/11 : clé par client, puis collecte sur le serveur, puis briefing du matin |
 | **Ce qui fait foi** | `docs/BUDGET.md`, « L'évolution prévue avant le jury : une clé par client (C5) » : test d'acceptation et estimation |
 | **Ce que ce document dit** | **quoi** et **pourquoi** ; le **comment** (où vivent les empreintes, comment la révocation se propage) ira dans `plan.md`, après validation |

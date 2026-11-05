@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Statut** | **v2 du 06/11/2026, à valider par Era** ; la revue du 06/11 (`REVUE-PLAN-002`, hors dépôt) est intégrée ; aucune ligne de code avant la validation |
+| **Statut** | **Implémentation reportée après l'oral blanc des 12-13/11, réévaluation le 14/11** (décision d'Era du 06/11) ; d'ici là, la clé partagée est présentée comme une limite, avec cette solution et son estimation. **v2 du 06/11/2026**, à valider par Era avant toute reprise ; la revue du 06/11 (`REVUE-PLAN-002`, hors dépôt) est intégrée ; aucune ligne de code avant la validation |
 | **Spécification** | `specs/002-cle-par-client/spec.md`, validée par Era le 05/11 (à lire avec ce plan) |
 | **But** | chaque accès utile a sa clé, retirable seule, et chaque appel protégé est rattaché à la clé qui l'a ouvert |
 | **Architecture** | un registre d'empreintes dans un fichier, hors des versions livrées, relu à chaque authentification ; l'identité de la clé acceptée remplace `X-Client-Id` sur les deux chemins d'audit ; le déployeur valide le registre **avec l'image candidate elle-même** et protège les retours par un plancher ; la bascule se fait en phases, chacune avec un secours réellement exécutable |
@@ -247,6 +247,9 @@ Environ quatre journées de travail : **difficile avant l'oral blanc des 12-13/1
 l'application (vers le 24/11, à fixer par Era) si le code commence vite. Le retour du formateur autorise aussi « une
 limite expliquée, avec sa solution et son coût » : la spécification et ce plan validés en sont la preuve. **Era décide**
 entre livrer avant le jury ou présenter la limite avec ce plan, sans crédit sur le non-fait.
+
+**Décidé le 06/11 par Era** : présenter la limite avec ce plan d'ici l'oral blanc ; implémentation reportée,
+réévaluée le 14/11.
 
 ## 📖 Glossaire
 

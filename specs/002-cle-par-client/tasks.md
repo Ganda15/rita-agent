@@ -1,5 +1,7 @@
 # Tâches 002 : index (v2 du 06/11/2026)
 
+**Implémentation reportée après l'oral blanc des 12-13/11, réévaluation le 14/11** (décision d'Era du 06/11) ; d'ici là, la clé partagée est présentée comme une limite, avec cette solution et son estimation.
+
 Le détail de chaque tâche (fichiers, interfaces, tests) est dans `plan.md`. Une tâche = un commit et une chaîne verte.
 Chaque test est vu rouge avant le code ; un test cité n'est une preuve qu'avec sa sortie datée.
 

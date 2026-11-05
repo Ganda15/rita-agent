@@ -115,6 +115,13 @@ Révoquer la clé coupe tout le monde.
 client A, A reçoit **403** et le client B garde son accès (**200**). Estimation : **1 à 2 journées**, soit **400 à
 800 € HT** au TJM de 400 € HT. Ce coût n'entre dans aucun des trois montants : c'est un travail à venir.
 
+**Mise à jour du 06/11/2026** : l'évolution est spécifiée et planifiée (`specs/002-cle-par-client/`, spécification
+validée le 05/11, plan v2 du 06/11). Le plan mesure **32,5 h, environ 4 journées, soit environ 1 700 € HT** au même
+TJM : la révocation sans redémarrage, la migration des consommateurs et la protection du retour arrière n'étaient pas
+comptées le 03/11. L'estimation du 03/11 reste ci-dessus, datée. **Implémentation reportée après l'oral blanc des
+12-13/11, réévaluée le 14/11** (décision d'Era). C'est toujours une estimation de travail à venir, ni une facture ni
+du temps passé.
+
 ## 📖 Glossaire
 
 | Terme | En clair |
