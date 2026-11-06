@@ -151,7 +151,12 @@ dans `evidence/C8/captures-2026-11-06/`.
 **Capture 6** : la connexion en production, clé masquée.
 {: .legende }
 
-⟦CAPTURES 7 ET 8 APRES DEPLOIEMENT⟧
+![Capture 7 : écran Briefing en production le 06/11 à 20 h 15 : OR.PA à 444,75 EUR, courbe du 06/05 au 04/11/2026, texte daté du 04/11/2026 avec « Parmi les éléments observables à suivre », aucune recommandation détectée, référence de la requête, trois sources fournies au modèle, datées du 14 au 17/09/2026](../../../evidence/C8/captures-2026-11-06/rita-briefing-orpa-apres-correction-2026-11-06.png){: .demi } ![Capture 8 : trace Langfuse du même briefing : étapes scout, rag avec les garde-fous de détournement et d'entrée, rédacteur, appel au modèle Azure en 2,18 s, garde-fou de sortie ; métadonnées request_id 921b261e38ae4ad3845959830433034f, conforme_amf true, ticker OR.PA ; clé publique de Langfuse et identifiant d'instance masqués](../../../evidence/C8/captures-2026-11-06/langfuse-trace-38da15f1-apres-correction-2026-11-06-masque.png){: .demi }
+
+**Captures 7 et 8** : le briefing d'OR.PA en production après la correction du prompt (version `097b201`), puis sa
+trace, retrouvée par le `request_id` affiché à l'écran. Les trois articles fournis au modèle datent du 14 au 17/09 :
+l'écran affiche leurs dates, et ils ne sont pas récents.
+{: .legende }
 
 ![Capture 9 : portail Azure, détails du déploiement gpt-5.4-dzs-eu : type DataZoneStandard, approvisionnement réussi, créé le 9 octobre 2026, limites de 150 000 jetons et 150 requêtes par minute, modèle gpt-5.4 version 2026-03-05 ; e-mail masqué](../../../evidence/C8/captures-2026-11-06/extraits/azure-details-deploiement.png){: .cadre }
 

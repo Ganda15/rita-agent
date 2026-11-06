@@ -48,6 +48,6 @@ def test_les_pages_de_l_annexe_annoncees_sont_celles_du_pdf_avec_annexe():
     annonces = ANNEXE.findall(RAPPORT.read_text(encoding="utf-8"))
     assert [a for a, _ in annonces] == ["A1", "A2", "A3", "A4", "A5", "A6"]   # E2 v1.3 (06/11) : preuves et détail du banc en A4 à A6
     with fitz.open(RAPPORT.with_name("rapport-E2-avec-annexe.pdf")) as pdf:
-        assert len(pdf) == len(fitz.open(RAPPORT.with_suffix(".pdf"))) + 13
+        assert len(pdf) == len(fitz.open(RAPPORT.with_suffix(".pdf"))) + 14   # 06/11 soir : captures 7 et 8 (briefing et trace en production) en A6
         for schema, page in annonces:
             assert f"{schema}. " in pdf[int(page) - 1].get_text(), f"{schema} n'est pas en page {page}"

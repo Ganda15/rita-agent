@@ -110,7 +110,7 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 <li><a href="#c8">4. C8 : le service retenu, paramétré et suivi</a><span>p. 11</span></li>
 <li><a href="#criteres">5. Les 20 critères, un par un</a><span>p. 15</span></li>
 <li><a href="#reste">6. Ce qui n'est pas fait</a><span>p. 16</span></li>
-<li><a href="#glossaire">Glossaire</a><span>p. 16</span></li>
+<li><a href="#glossaire">Glossaire</a><span>p. 17</span></li>
 <li><a class="vers-annexe" href="#a1">Annexe A1 : la veille (PDF avec annexe)</a><span>p. 18</span></li>
 <li><a class="vers-annexe" href="#a2">Annexe A2 : le choix du service</a><span>p. 19</span></li>
 <li><a class="vers-annexe" href="#a3">Annexe A3 : le service aujourd'hui</a><span>p. 20</span></li>
@@ -459,10 +459,14 @@ exception contractuelle (4.2).
 *Extraits du portail Azure du 06/11 : le déploiement (à gauche) et l'emplacement de la ressource (à droite). Captures
 complètes en annexe A6 (captures 9 et 10), identifiants masqués.*
 
-**Le parcours complet, en production** ⟦DATE VERSION PARCOURS⟧ : un briefing obtenu avec sa référence, puis la trace de
+**Le parcours complet, en production** (06/11, 20 h 15, version `097b201`) : un briefing obtenu avec sa référence, puis la trace de
 ce même briefing, retrouvée par cette référence (4.4).
 
-⟦PAIRE BRIEFING TRACE⟧
+![Extrait de l'écran Briefing en production le 06/11 : texte d'OR.PA daté du 04/11/2026, « Parmi les éléments observables à suivre », modèle Azure AI Foundry gpt-5.4-2026-03-05, aucune recommandation détectée, référence de la requête 921b261e38ae4ad3845959830433034f](../../../evidence/C8/captures-2026-11-06/extraits/rita-briefing-texte-reference.png){: .demi } ![Extrait de la trace Langfuse du même briefing : request_id 921b261e38ae4ad3845959830433034f, motifs_amf vide, conforme_amf true, ticker OR.PA](../../../evidence/C8/captures-2026-11-06/extraits/langfuse-request-id.png){: .demi }
+
+*Le briefing d'OR.PA (à gauche) et sa trace dans Langfuse (à droite) portent la même référence,
+`921b261e38ae4ad3845959830433034f`. L'API mesure 5,8 s pour toute la requête, la trace 5,06 s pour les étapes qu'elle
+suit. Captures entières en annexe A6 (captures 7 et 8).*
 
 ### 4.2 La configuration {: #s4-2 }
 
@@ -492,7 +496,7 @@ n'appelle qu'Azure, sans repli (registre RGPD, T8).
 <div class="encadre preuve">
 <p class="encadre-titre">La correction du prompt (option B)</p>
 <p>Décidée le 11/10, prévue pour le 16/10, appliquée le 06/11 avec trois semaines de retard.</p>
-<ul><li><i>avant</i> : « un point à surveiller pour la séance suivante » poussait au pronostic ; un briefing d'OR.PA du 06/11 écrivait encore « À surveiller lors de la prochaine séance » (<code>evidence/C8/captures-2026-11-06/</code>) ;</li><li><i>après</i> : « un élément observable à suivre, tiré des seules données fournies, sans présenter un cours comme un seuil » ; la séance porte sa date, lue dans les données ;</li><li><i>preuve</i> : cinq tests écrits avant le code (<code>tests/test_analyst.py</code>), PR #203 (<code>548f1f5</code>) ; ⟦DEPLOIEMENT PROMPT⟧.</li></ul>
+<ul><li><i>avant</i> : « un point à surveiller pour la séance suivante » poussait au pronostic ; un briefing d'OR.PA du 06/11 écrivait encore « À surveiller lors de la prochaine séance » (<code>evidence/C8/captures-2026-11-06/</code>) ;</li><li><i>après</i> : « un élément observable à suivre, tiré des seules données fournies, sans présenter un cours comme un seuil » ; la séance porte sa date, lue dans les données ;</li><li><i>preuve</i> : cinq tests écrits avant le code (<code>tests/test_analyst.py</code>), PR #203 (<code>548f1f5</code>) ; en production depuis le 06/11 (<code>/health</code> annonce <code>097b201</code>) : le briefing d'OR.PA de 20 h 15 date sa séance (« Le 04/11/2026 ») et écrit « Parmi les éléments observables à suivre » (4.1, annexe A6, capture 7).</li></ul>
 <p>Le banc du 03/10 reste celui de l'ancien prompt.</p>
 </div>
 
@@ -500,7 +504,7 @@ n'appelle qu'Azure, sans repli (registre RGPD, T8).
 <p class="encadre-titre">La contrainte UE, au regard des conditions de Microsoft relues le 06/11 (<code>evidence/C8/verification-conditions-microsoft-2026-11-06.md</code>)</p>
 <p class="ligne prouve"><b>Ce qui est prouvé</b> : zone de données UE, ressource en Suède, aucun repli hors de l'Union (4.1) ; les requêtes ne servent pas à entraîner les modèles ; l'échantillon gardé pour la surveillance des abus reste dans la géographie de la ressource, relu par des employés situés dans l'Espace économique européen.</p>
 <p class="ligne ecart"><b>L'écart documenté</b> : Microsoft décrit des sorties rares de sa frontière européenne : l'accès à distance de son personnel, qu'il qualifie lui-même de transfert, les opérations de sécurité, l'acheminement réseau.</p>
-<p class="ligne choix"><b>La décision de risque</b> : ⟦DECISION C8.2⟧</p>
+<p class="ligne choix"><b>La décision de risque</b> : pas encore prise. Deux voies : accepter par écrit ces sorties rares, en datant la décision et en la reportant au registre RGPD, ou préciser dans le registre (§ 0) ce que la règle compte comme un transfert. Le choix revient à Era, après l'oral blanc des 12 et 13/11.</p>
 <p class="ligne evaluation"><b>L'évaluation</b> : la règle UE seule, appliquée à la lettre, n'est pas démontrée pour ce fournisseur ; C8.2 reste à consolider (5).</p>
 </div>
 
@@ -601,7 +605,7 @@ preuve · 🟡 à consolider : le point qui manque est écrit · ❌ aucune preu
 <tr><td>C7.6 contraintes techniques et prérequis</td><td class="etat ok">✅</td><td>prérequis d'Azure et d'OpenRouter côte à côte (3.5)</td></tr>
 <tr><td>C7.7 conclusions</td><td class="etat ok">✅</td><td>service retenu et services écartés, avec avantages et limites (3.6)</td></tr>
 <tr class="groupe c8"><th colspan="3" scope="colgroup">C8 · le service retenu, paramétré, surveillé, documenté</th></tr>
-<tr><td>C8.1 service accessible, avec authentification</td><td class="etat ok">✅</td><td>accès par clé, adresse cliquable, connexion à clé masquée ; briefing et trace ⟦DATE PARCOURS COURTE⟧ (4.1, annexe A6)</td></tr>
+<tr><td>C8.1 service accessible, avec authentification</td><td class="etat ok">✅</td><td>accès par clé, adresse cliquable, connexion à clé masquée ; briefing et trace du 06/11, reliés par la même référence (4.1, annexe A6)</td></tr>
 <tr><td>C8.2 configuré selon les besoins et les contraintes</td><td class="etat alerte">🟡</td><td><b>fait</b> : prompt corrigé, Azure seul, zone UE, ressource en Suède (4.2) ; <b>à consolider</b> : la règle UE seule n'est pas démontrée pour ce fournisseur, dont les conditions prévoient des sorties rares de sa frontière européenne (4.2)</td></tr>
 <tr><td>C8.3 monitorage opérationnel</td><td class="etat ok">✅</td><td>traces reliées au briefing, alertes, vigie, supervision d'Azure (4.4)</td></tr>
 <tr><td>C8.4 documentation complète</td><td class="etat ok">✅</td><td>guide d'exploitation, testé contre le code (4.5)</td></tr>
@@ -622,7 +626,7 @@ formateur (exemple de veille complet, preuves visibles, repères des critères, 
 **Ensuite.**
 
 1. **Reprendre la veille** (C6) : relevés et notes des semaines suivantes, un échange collectif documenté.
-2. **La contrainte UE** (C8.2) : ⟦RESTE C8.2⟧ ; lire le DPA en entier ; décider pour Langfuse.
+2. **La contrainte UE** (C8.2) : prendre la décision de risque écrite en 4.2 ; lire le DPA en entier ; décider pour Langfuse.
 3. **Mistral** (C7, C8) : lire son contrat et mesurer Azure contre Mistral Large 4 sur le banc ; alors seulement,
    reprendre la PR #88 et passer à `LLM_ORDRE=foundry,mistral`.
 
