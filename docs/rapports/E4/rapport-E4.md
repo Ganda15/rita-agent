@@ -506,7 +506,7 @@ outil personnel, défendu avec son modèle de menace ([`evidence/C17/preuve-droi
 
 **Ce qui n'est pas conforme** : la matrice des droits validée donne à l'API une lecture limitée des données et une
 écriture limitée au journal d'audit ; or l'API se connecte avec le rôle propriétaire (carte #76, ouverte). La
-documentation interactive `/docs` est publique (constat S2).
+documentation `/docs` reste publique, par décision motivée du 06/11 (D7).
 
 ### 4.6 La sécurité : la revue OWASP Top 10 (critère 8, à consolider)
 
@@ -521,12 +521,12 @@ applications web. Dix constats, S1 à S10 ([`evidence/C17/revue-owasp-top10-2025
 | S7 : chaîne d'approvisionnement | en partie : recherche de secrets sur tout l'historique (`gitleaks`), machine de CI fixée ; dépendances de développement libres |
 | S10 : certificat proche de l'expiration | renouvelé seul le 19/10, valable jusqu'au 17/01/2027 ([`ETAT.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/ETAT.md)) |
 | S1 : aucun en-tête de sécurité | constaté en production le 03/10 ; aucun ajout dans le dépôt depuis ; la configuration actuelle du proxy n'a pas été revérifiée |
-| S2 : `/docs` public | ouvert : décision qui me revient (D7), ces pages servent à la démonstration |
+| S2 : `/docs` public | décidé le 06/11 (D7) : public, motivé ; ni secret ni donnée dans le contrat |
 | S6 : panne de tous les fournisseurs | ouvert pour `/briefing` ; **corrigé le 04/11** : 503 `AUCUN_FOURNISSEUR`, [testé](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/tests/test_briefing_diagnostic.py) ; `/question` renvoie déjà 503 ([`api/question.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/api/question.py)) |
 | S8 : mots de passe par défaut | ouvert : le fichier Compose concerné est aussi utilisé en production ([`deploy/deployer.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/deploy/deployer.py)), ce qui ne prouve pas que ces valeurs y servent |
 | S9 : garde-fous sous le seuil de 85 % | ouvert : déclaré en échec attendu dans les tests, le seuil n'est pas baissé |
 
-Les suivis sont séparés : la carte #75 pour le durcissement, #23 pour l'épinglage, une décision à prendre pour S2, et la
+Les suivis sont séparés : la carte #75 pour le durcissement, #23 pour l'épinglage, la décision D7 pour S2, et la
 porte des évaluations pour S9.
 
 ### 4.7 L'éco-conception (critère 7)
@@ -581,7 +581,7 @@ format contrôlé ([`evidence/C17/controle-accessibilite-readme-2026-11-02.md`](
   l'écran Briefing livré, une aide qui promet trop et des astérisques affichés (annexe A7).
   #73, #78 et #79 sont corrigés et déployés le 02/11 ; leurs cartes restent ouvertes sur GitHub jusqu'à une
   vérification manuelle en production.
-- **Sécurité** : en-têtes absents en production au 03/10 et non revérifiés depuis (S1), `/docs` public (S2), mots
+- **Sécurité** : en-têtes absents en production au 03/10 et non revérifiés depuis (S1), `/docs` public décidé (S2), mots
   de passe par défaut (S8), garde-fous sous leur seuil (S9) ; S6 corrigé le 04/11.
 - **Les tests** : 22 ignorés en CI faute d'un élément absent de la CI ; une couverture qui exclut l'interface, la
   recherche documentaire, la surveillance et la passerelle MCP.
@@ -760,7 +760,7 @@ Le détail est dans les limites de chaque section.
 | Besoin (C14) | spécification de l'écran 5 et compléments de l'écran 4 rétrospectifs (02/11) ; table `article` hors du modèle ; aucun test avec un lecteur d'écran ni un utilisateur extérieur | § 1.7, § 1.8 |
 | Cadre technique (C15) | schéma d'architecture sans la vigie ; hébergeur non choisi sur un critère environnemental | § 2.7 |
 | Organisation (C16) | tableau non mis à jour après le 14/10 ; revues du lundi sans compte rendu ; pas de rétrospective | § 3.6 |
-| Développement (C17) | environnement non entièrement reproductible ; refonte comparée en partie à ses maquettes (A7) ; défaut ouvert #76, un écart d'affichage (« +0,00 % ») et deux défauts de Briefing (A7) ; constats OWASP S1, S2, S8, S9 ; pas de mesure d'éco-conception « après » | § 4.10 |
+| Développement (C17) | environnement non entièrement reproductible ; écrans comparés à leurs maquettes ou au système de conception (A7) ; défaut ouvert #76, un écart d'affichage (« +0,00 % ») et deux défauts de Briefing (A7) ; constats OWASP S1, S8, S9 ; #74 mesurée, non déployée | § 4.10 |
 | Tests (C18) | 22 tests ignorés en CI ; couverture sans l'interface, la recherche, la surveillance ni la passerelle MCP ; trois paquets de CI sans version | § 5.6 |
 | Livraison (C19) | un tag reconstruit l'image ; retour arrière sans la base ; aucune sauvegarde automatique ; collecte non planifiée ; script de rattrapage à renforcer | § 6.4, 6.5 |
 
@@ -789,10 +789,10 @@ mais une partie du critère manque, écrite dans la colonne « Limite restante �
 | **C17.2** Interfaces intégrées et conformes aux maquettes | ✅ | trois écrans comparés à leurs maquettes, deux au système de conception (A7, test) | système écrit après le code ; comparaison à l'œil | 4.3 |
 | **C17.3** Comportements des composants et navigation conformes | ✅ | recette initiale du 02/11 (54 tests en navigateur) ; sur `8ecc5a7` (04/11), 19 tests au clavier et 8 cas d'erreur verts en CI ; #73 déployé | API simulée ; 375 px, pas 320 ; pas de recette des cinq écrans en production | 4.3 |
 | **C17.4** Composants métier conformes aux spécifications | ✅ | composants testés ; #78 et #79 déployés ; 111 valeurs vérifiées | « +0,00 % » affiché pour un zéro ; valeurs vérifiées en local | 4.4 |
-| **C17.5** Gestion des droits d'accès développée et conforme | 🟡 | clé sur les routeurs, journal des refus, quota partagé | rôle propriétaire (#76) ; `/docs` public | 4.5 |
+| **C17.5** Gestion des droits d'accès développée et conforme | 🟡 | clé sur les routeurs, journal des refus, quota partagé | rôle propriétaire (#76) | 4.5 |
 | **C17.6** Flux de données intégrés | ✅ | briefing ([`evidence/C10/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C10), 03/10) ; Question : évaluation en production du 16/10 sur `72dba4d` ([`evidence/sprint-3/evaluation-production-2026-10-16-relecture.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/sprint-3/evaluation-production-2026-10-16-relecture.md)) et tests | preuves antérieures à la version de référence | 4.4 |
 | **C17.7** Éco-conception | 🟡 | pratiques documentées ; mesure avant et après #74, cinq écrans (06/11) | #74 non déployée ; Indicateurs en D | 4.7 |
-| **C17.8** Préconisations OWASP Top 10 implémentées | 🟡 | revue S1 à S10 ; S4, S5 et S6 corrigés (S6 le 04/11), S3 et S7 en partie | S1, S2, S8, S9 ouverts | 4.6 |
+| **C17.8** Préconisations OWASP Top 10 implémentées | 🟡 | revue S1 à S10 ; S4, S5 et S6 corrigés (S6 le 04/11), S3 et S7 en partie | S1, S8, S9 ouverts ; S2 décidé (D7) | 4.6 |
 | **C17.9** Tests couvrant composants métier et gestion des accès | ✅ | les tests des composants métier et des accès API ont été exécutés avec succès (1 925 réussis, couverture 96,32 %, 02/11) ; les 4 tests du rôle en lecture seule passent dans le job `base` | 22 tests ignorés ; couverture sans interface, `rag/`, `monitorage/`, MCP | 4.8 |
 | **C17.10** Sources versionnées et accessibles sur un dépôt distant | ✅ | dépôt GitHub privé, 21 tags `livrable-*` protégés | jury pas encore invité | 4.9 |
 | **C17.11** Documentation technique : installation, architecture, dépendances, tests, accessible | ✅ | [`docs/ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/ARCHITECTURE.md), [`README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/README.md), [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md), [`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/exploitation.md) ; format contrôlé pour le guide (31/10), [`ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/ARCHITECTURE.md) et [`CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md) (01/11), [`README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/README.md) (02/11, [`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17)) ; envoyée au formateur le 03/11 | réception et liens confirmés par Elbby, 04/11 | 4.9 |
