@@ -23,9 +23,18 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ## ▶️ 06/11 : CLÉ PAR CLIENT REPORTÉE APRÈS L'ORAL BLANC ; PRÉPARATION À FINIR LE 07/11, PUIS RÉPÉTITIONS
 
-**Prochaine action** : finir la préparation le 07/11 : la procédure de rafraîchissement des données, vérifiée sur une
-copie, **sans relancer le script de rattrapage connu comme incomplet** ; puis les répétitions, dans cet ordre : E1, puis
-E3 et E4 avec leurs démonstrations, puis E2 et E5. Oral blanc les 12 et 13/11.
+**Prochaine action, le 07/11** : 1) les répétitions, sans attendre le reste : E1, puis E3 et E4 avec leurs
+démonstrations, puis E2 et E5 ; 2) Era choisit l'option du rafraîchissement des données (A : le transfert vérifié
+devient une étape de `pipelines/ingest.py`, recommandée ; B : `ingest` relancé en production, sans contrôle avant
+`COMMIT` ; C : aucune écriture, données du 04/11 avec le signal « attention ») ; 3) Era pousse cette branche (PR #201,
+vers `develop`, sans déploiement). Oral blanc les 12 et 13/11.
+
+- **Rafraîchissement des données, sur copie** (en parallèle des répétitions, rien en production) : conception v2 après
+  la revue du 06/11, hors dépôt ; partie calcul codée sur la branche `rafraichissement-sur-copie` (commit `879bf9a`, non
+  poussée) : calendrier Euronext 2026 officiel, dernière séance close, complétude exacte par valeur, taux BCE ; 18 tests
+  verts, sortie rouge gardée. Premier lot : Euronext (105 valeurs) et taux BCE ; Londres et les États-Unis hors du lot.
+  Les trois réserves du 04/11 **restent à lever** : tests en base, transfert gardé et répétition sur copie à faire
+  (environ 3 h 45 estimées), après le choix d'Era. Le script du 04/11 n'est pas relancé.
 
 - **Clé par client** (décision d'Era du 06/11) : implémentation **reportée après l'oral blanc, réévaluée le 14/11**. La
   spécification 002 est validée (05/11) et son plan relu deux fois (v2 du 06/11) : 32,5 h, environ 4 journées et
