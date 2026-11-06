@@ -38,7 +38,7 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 <p class="sommaire-titre">Sommaire</p>
 <ol>
 <li><a href="#lire">Lire ce rapport</a><span>p. 1</span></li>
-<li><a href="#contexte">1. Le contexte, une seule fois</a><span>p. 2</span></li>
+<li><a href="#contexte">1. Le contexte, une seule fois</a><span>p. 1</span></li>
 <li><a href="#c6">2. C6 : la veille technique et réglementaire</a><span>p. 2</span></li>
 <li><a href="#c7">3. C7 : le choix du service de modèle</a><span>p. 5</span></li>
 <li><a href="#c8">4. C8 : le service retenu, paramétré et suivi</a><span>p. 11</span></li>
