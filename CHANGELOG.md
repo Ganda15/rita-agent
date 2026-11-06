@@ -9,6 +9,48 @@
 
 ---
 
+## 2026-11-06 : E5 v0.9, mise en forme seule, pour `livrable-E5-v4`
+
+**Livrable.** E5 prend le style de titres d'E2 et d'E4 ; le texte, les 5 pages, les 29 liens et les 11 signets ne
+changent pas. La version remise reste sous `livrable-E5-v3`.
+
+---
+
+## 2026-11-06 : E2 v1.2 et E4 v1.6, corrigés après double contrôle, pour `livrable-E2-v4` et `livrable-E4-v6`
+
+**Livrables et décision.** Après la remise du 05/11, Era fait relire E2 et E4 par un autre agent, et décide qu'aucun tag
+ne sera plus posé sans ce double contrôle. E2 v1.2 corrige trois formulations : le secours (« aucun fournisseur de
+secours n'est activé pour le briefing dans la version présentée »), le test de l'ordre des fournisseurs (« test présent ;
+journal non conservé », qui règle le manque du 05/11 ci-dessous) et le nombre de sujets du guide (C8.4). E4 v1.6 date
+une phrase du § 2.7 (« Au 02/11 »), qui contredisait le § 6.5. Aucun résultat, statut ni montant ne change. Les deux
+rapports prennent le style de titres choisi par Era, rendu depuis la source par `scripts/rendre_pdf.py`. Les versions
+remises restent sous `livrable-E2-v3` et `livrable-E4-v5`.
+
+---
+
+## 2026-11-06 : la clé par client est reportée après l'oral blanc, présentée comme une limite
+
+**Décision structurante** (Era) : le retour écrit du formateur du 03/11 demandait une clé par client avant le jury, ou
+une limite expliquée avec sa solution et son coût. La spécification 002 est validée le 05/11 et son plan relu deux fois
+(v2 du 06/11) : 32,5 h, environ 4 journées et 1 700 € HT, contre 1 à 2 journées estimées le 03/11 (`docs/BUDGET.md`).
+L'implémentation est **reportée après l'oral blanc des 12-13/11 et réévaluée le 14/11** ; priorité à la fin de la
+préparation le 07/11, puis aux répétitions. D'ici là, la clé partagée est présentée comme une limite, avec sa solution
+(`specs/002-cle-par-client/`) et son estimation. Aucun rapport figé n'est modifié.
+
+---
+
+## 2026-11-05, 22 h : E2 v1.1 annonce un test « vu en échec » dont le journal n'est pas conservé
+
+**Manque découvert** (relecture des affirmations d'E2 pendant la préparation de l'oral) : le rapport E2 v1.1 (§ 4.2, tag
+`livrable-E2-v3`) écrit que le test de l'ordre par défaut des fournisseurs a été « écrit d'abord et vu en échec »
+(`d1cbb7b`). Le commit contient le test et le correctif ensemble, et son message dit « test d abord » ; mais ni
+`evidence/` ni le rapport ne gardent la sortie de l'exécution en échec. Cela ne prouve pas que l'essai n'a pas eu lieu :
+cela empêche seulement de le montrer. Le rapport, figé, n'est pas modifié. À l'oral : « le journal de l'échec initial
+n'est pas conservé ; je peux montrer le test, la correction et leur historique ». Leçon : quand un rapport cite un test
+rouge, la sortie de `pytest` avant le correctif va dans `evidence/`, comme pour INC-009 (`pytest-avant.txt`).
+
+---
+
 ## 2026-11-05, soir : E5 v0.8, faits revérifiés au 05/11, pour le tag `livrable-E5-v3`
 
 **Livrable** : E5 v0.8, `docs/rapports/E5/rapport-E5.pdf` (5 pages, langue fr, balisé). Chaque fait daté de la v0.7 a
