@@ -7,3 +7,6 @@ deploy/* text eol=lf
 # docker-compose.yml est compare octet par octet a sa copie installee sur le serveur, et l image est construite
 # sous Linux en LF : une copie en CRLF depuis Windows bloquerait toutes les livraisons (relecture du 14/10/2026)
 docker-compose.yml text eol=lf
+
+# Script lance par PostgreSQL au premier demarrage d une base neuve (carte #76) : un CRLF casserait #!/bin/sh (06/11/2026)
+db/*.sh text eol=lf
