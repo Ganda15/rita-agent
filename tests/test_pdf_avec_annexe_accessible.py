@@ -5,12 +5,13 @@ structure ni (pour E2) langue déclarée, alors que le rapport seul a les deux. 
 `scripts/rendre_pdf.py --annexe` rend le rapport et l'annexe dans un seul document Chrome. Ces tests relisent les fichiers
 livrés : ils tournent sur le poste, la CI ne rend pas de PDF. Le balisage ne vaut pas un audit d'accessibilité complet.
 """
+import re
 from pathlib import Path
 
 import pytest
 
 RACINE = Path(__file__).resolve().parent.parent
-RAPPORTS = {"E2": 3, "E4": 15}   # pages d'annexe, en paysage ; E4 v1.7 (06/11) : A7 compare Question et Tableau de bord au système de conception
+RAPPORTS = {"E2": 14, "E4": 15}   # pages d'annexe, en paysage ; E2 v1.3 (06/11) : A4 veille, A5 banc, A6 service ; E4 v1.7 (06/11) : A7 compare Question et Tableau de bord au système de conception
 
 
 def _chemins(epreuve: str) -> tuple[Path, Path]:
@@ -63,4 +64,10 @@ def test_le_sommaire_mene_aux_memes_pages_que_dans_le_rapport_seul(lecteurs, epr
             return {lien["nameddest"].lstrip("/"): lien["page"] for lien in pdf[0].get_links() if lien.get("nameddest")}
 
     complet, seul = _chemins(epreuve)
-    assert cibles(complet) == cibles(seul) and cibles(seul), "le rapport ne se met pas en page de la même façon"
+    tout, rapport = cibles(complet), cibles(seul)
+    # E2 v1.3 (06/11) : les entrées d'annexe du sommaire sont cliquables ; leurs ancres (a1, a2...) n'existent que dans le
+    # PDF complet. Les liens du rapport doivent mener aux mêmes pages ; ceux des annexes, au-delà du rapport.
+    annexes = {nom for nom in tout if re.fullmatch(r"a\d+", nom)}
+    assert {nom: page for nom, page in tout.items() if nom not in annexes} == rapport and rapport,         "le rapport ne se met pas en page de la même façon"
+    with fitz.open(seul) as pdf_seul:
+        assert all(tout[nom] >= len(pdf_seul) for nom in annexes), "une entrée d'annexe mène dans le rapport"
