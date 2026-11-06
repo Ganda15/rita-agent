@@ -179,7 +179,11 @@ def test_quitter_la_simulation_rend_le_mode_reel(onglet, serveur):  # noqa: F811
     onglet.goto(serveur + "/question.html")
     onglet.evaluate("sessionStorage.setItem('rita_simulation', 'oui')")
     onglet.goto(serveur + "/question.html")
-    onglet.locator("#quitter-simulation").click()
+    # Le bouton recharge la page (`basculerSimulation`, frontend/commun.js) : sans attendre ce rechargement, `#suspension`
+    # disparaît dès le déchargement et `RITA` n'existe pas encore (« RITA is not defined », hook du 06/11, reproduit
+    # avec le processeur du navigateur ralenti). Même attente que `_basculer`.
+    with onglet.expect_navigation():
+        onglet.locator("#quitter-simulation").click()
     onglet.wait_for_selector("#suspension", state="detached")
     assert onglet.evaluate("RITA.estSimulation()") is False
     assert onglet.locator("#mention-simulation").count() == 0
@@ -200,7 +204,8 @@ def test_bascule_efface_les_resultats(onglet, serveur):  # noqa: F811
     onglet.locator("#bascule-simulation").click()              # réel vers simulation
     onglet.wait_for_selector("#suspension")
     assert not onglet.locator("#resultat").is_visible()
-    onglet.locator("#quitter-simulation").click()              # simulation vers réel
+    with onglet.expect_navigation():                           # simulation vers réel : la page se recharge
+        onglet.locator("#quitter-simulation").click()
     onglet.wait_for_selector("#suspension", state="detached")
     assert not onglet.locator("#resultat").is_visible(), "l'ancien résultat ne revient pas"
 
