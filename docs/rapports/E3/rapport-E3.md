@@ -204,7 +204,7 @@ Le monitorage d'un modèle fourni par API consiste à voir chaque appel : combie
 |---|---|---|---|
 | LangSmith | éditeur sans entité juridique en UE, auto-hébergement réservé au plan Enterprise | oui | non |
 | Langfuse auto-hébergé | aucun | non | non : six composants (web, worker, PostgreSQL, ClickHouse, Redis, S3) sur un serveur de 4 Go déjà occupé |
-| **Langfuse Cloud, région UE** | Langfuse GmbH (Allemagne), groupe ClickHouse | hébergement UE ; le contrat permet un traitement hors de la région choisie si le service l'exige, avec des clauses types ; **vérification propre à RITA incomplète** (registre RGPD, T3) | **oui** |
+| **Langfuse Cloud, région UE** | Langfuse GmbH (Allemagne), groupe ClickHouse | hébergement UE ; contrat vérifié le 06/11 : clauses types, ClickHouse, Inc. au Data Privacy Framework (`evidence/C8/regle-ue-2026-11-06/`) | **oui** |
 
 Deux contraintes techniques ont pesé : le SDK Langfuse exporte en OpenTelemetry sur HTTP sans gRPC, or gRPC est refusé par la sécurité du poste de développement (Smart App Control) ; et un auto-hébergement était impossible sur le serveur.
 
@@ -464,7 +464,7 @@ Velmo (juillet) : les trois emplacements de garde-fou et les deux chiffres toujo
 
 ## 9. Reproduire {: #s9 }
 
-**Cette version** : 2.3, 6 novembre 2026, soir : l'intégration des points de terminaison et les adaptations d'interface redeviennent tenues (#152 prouvé par le job `base` de `main`, #73 vérifié à la main en production), et l'accessibilité du choix de Langfuse est réévaluée. La 2.2, du même jour : statuts de #73 et #152 et sept contrôles de fusion harmonisés, titres au nouveau style ; mesures et auto-évaluation historiques conservées. Code et preuves : `livrable-E3-v4`. La version 2.1 du 3 novembre (lignes incomplètes en « à consolider », accès des examinateurs en en-tête, clé d'exercice en 3.2 et 3.3) est figée à ce tag ; la version 2.0 au tag `livrable-E3-v3` (2 novembre, après le retour écrit du formateur sur l'oral blanc du 30 octobre).
+**Cette version** : 2.3, 6 novembre 2026, soir : l'intégration des points de terminaison et les adaptations d'interface redeviennent tenues (#152 prouvé par le job `base` de `main`, #73 vérifié à la main en production), et le choix de Langfuse est réévalué (accessibilité, règle UE précisée). La 2.2, du même jour : statuts de #73 et #152 et sept contrôles de fusion harmonisés, titres au nouveau style ; mesures et auto-évaluation historiques conservées. Code et preuves : `livrable-E3-v4`. La version 2.1 du 3 novembre (lignes incomplètes en « à consolider », accès des examinateurs en en-tête, clé d'exercice en 3.2 et 3.3) est figée à ce tag ; la version 2.0 au tag `livrable-E3-v3` (2 novembre, après le retour écrit du formateur sur l'oral blanc du 30 octobre).
 
 **Traçabilité des mesures** : du 2 au 24 octobre 2026, chacune avec sa date, sa commande, et pour la CI sa branche, son commit et son passage ; la production servait alors `b547cbf`.
 
@@ -520,7 +520,7 @@ Auto-évaluation du 24/10, revue le 27/10 ; preuves actualisées. ✅ tenu avec 
 | Critère | État | Preuve |
 |---|---|---|
 | Les métriques sont expliquées sans erreur d'interprétation | ✅ | section 5.3, sur deux traces réelles, y compris le coût d'une trace à l'autre |
-| Les outils sont adaptés au contexte et aux contraintes | 🟡 | section 5.1 : Langfuse en région UE, traces sans texte ; mais son contrat permet un traitement hors de la région, et sa vérification au regard de la règle « UE seule » est incomplète (registre RGPD, T3) |
+| Les outils sont adaptés au contexte et aux contraintes | ✅ | section 5.1 : région UE, métadonnées seules ; règle UE précisée le 06/11, contrat et certification vérifiés |
 | Un vecteur de restitution en temps réel est proposé | ✅ | tableau Langfuse « RITA C11 » ; tableau de bord de RITA sur `/sante`, en production depuis le 23 octobre |
 | Accessibilité prise en compte dans le choix de l'outil | ✅ | section 5.6 : choix réévalué le 06/11 (Langfuse 94/100, zoom interdit sur mobile) ; restitution accessible par le tableau de RITA, marqueurs RGAA testés |
 | La chaîne est d'abord testée dans un bac à sable | ✅ | suite sans traçage, doubles de client (INC-006) ; projet Langfuse propre à la copie (#130) |
@@ -553,7 +553,7 @@ Auto-évaluation du 24/10, revue le 27/10 ; preuves actualisées. ✅ tenu avec 
 | Sources de la chaîne versionnées | ✅ | [`.github/workflows/`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4/.github/workflows), [`.github/actions/`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4/.github/actions), [`.githooks/`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4/.githooks), [`deploy/`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4/deploy), [`scripts/verifier_livrable.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/scripts/verifier_livrable.py) |
 | Documentation d'installation, configuration, test de la chaîne, accessible | ✅ | [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/CI-CD.md) §4 à §7 : secrets dont ceux de l'environnement `production`, permissions, installation, tests de la chaîne ; Markdown à titres, PDF balisé (en tête de cette section) |
 
-**Décompte** : 37 ✅ · 2 🟡 · 0 ❌ sur 39 lignes couvrant 44 critères. Deux lignes repassent à consolider à la relecture du 27 octobre, sans changement du code : l'intégration de tous les points de terminaison (#152) et l'adaptation de l'outil de monitorage aux contraintes (règle « UE seule »). La première redevient tenue le 06/11 (4.3), comme les adaptations d'interface (#73 vérifié à la main) et l'accessibilité du choix de l'outil (réévaluation datée, 5.6). Les deux lignes à consolider : l'OWASP et l'adaptation de l'outil de monitorage à la règle « UE seule ».
+**Décompte** : 38 ✅ · 1 🟡 · 0 ❌ sur 39 lignes couvrant 44 critères. Deux lignes repassent à consolider à la relecture du 27 octobre, sans changement du code : l'intégration de tous les points de terminaison (#152) et l'adaptation de l'outil de monitorage aux contraintes (règle « UE seule »). La première redevient tenue le 06/11 (4.3), comme les adaptations d'interface (#73 vérifié à la main) l'accessibilité du choix de l'outil (réévaluation datée, 5.6) et l'adaptation de l'outil à la règle UE, précisée et vérifiée (5.1). La ligne à consolider : l'OWASP.
 
 ---
 
