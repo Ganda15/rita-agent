@@ -9,6 +9,18 @@
 
 ---
 
+## 2026-11-06 : E2 v1.2 et E4 v1.6, corrigés après double contrôle, pour `livrable-E2-v4` et `livrable-E4-v6`
+
+**Livrables et décision.** Après la remise du 05/11, Era fait relire E2 et E4 par un autre agent, et décide qu'aucun tag
+ne sera plus posé sans ce double contrôle. E2 v1.2 corrige trois formulations : le secours (« aucun fournisseur de
+secours n'est activé pour le briefing dans la version présentée »), le test de l'ordre des fournisseurs (« test présent ;
+journal non conservé », qui règle le manque du 05/11 ci-dessous) et le nombre de sujets du guide (C8.4). E4 v1.6 date
+une phrase du § 2.7 (« Au 02/11 »), qui contredisait le § 6.5. Aucun résultat, statut ni montant ne change. Les deux
+rapports prennent le style de titres choisi par Era, rendu depuis la source par `scripts/rendre_pdf.py`. Les versions
+remises restent sous `livrable-E2-v3` et `livrable-E4-v5`.
+
+---
+
 ## 2026-11-06 : la clé par client est reportée après l'oral blanc, présentée comme une limite
 
 **Décision structurante** (Era) : le retour écrit du formateur du 03/11 demandait une clé par client avant le jury, ou
