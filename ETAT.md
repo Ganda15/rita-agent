@@ -24,10 +24,10 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 ## ▶️ 06/11 : CLÉ PAR CLIENT REPORTÉE APRÈS L'ORAL BLANC ; PRÉPARATION À FINIR LE 07/11, PUIS RÉPÉTITIONS
 
 **Prochaine action, le 07/11** : 1) les répétitions, sans attendre le reste : E1, puis E3 et E4 avec leurs
-démonstrations, puis E2 et E5 ; 2) Era choisit l'option du rafraîchissement des données (A : le transfert vérifié
-devient une étape de `pipelines/ingest.py`, recommandée ; B : `ingest` relancé en production, sans contrôle avant
-`COMMIT` ; C : aucune écriture, données du 04/11 avec le signal « attention ») ; 3) Era pousse cette branche (PR #201,
-vers `develop`, sans déploiement). Oral blanc les 12 et 13/11.
+démonstrations, puis E2 et E5 ; 2) rafraîchissement des données : **C décidé le 06/11 jusqu'à l'oral blanc** (aucune écriture
+en production ; la démonstration montre les cours du 04/11 avec le signal « attention », dit comme une limite) ; A (le
+transfert vérifié comme étape de `pipelines/ingest.py`) réévalué le 14/11 avec la clé par client ; 3) fusionner la PR
+#201 vers `develop` (verte le 06/11, sans déploiement). Oral blanc les 12 et 13/11.
 
 - **Rafraîchissement des données, sur copie** (en parallèle des répétitions, rien en production) : conception v2 après
   la revue du 06/11, hors dépôt ; partie calcul codée sur la branche `rafraichissement-sur-copie` (commit `879bf9a`, non
