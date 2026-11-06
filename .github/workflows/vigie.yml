@@ -1,0 +1,58 @@
+# =============================================================================
+# VIGIE PLANIFIÉE : C20.5 (alertes en état de marche), C21 (incidents) ; 06/11/2026
+#
+# `monitorage/vigie.py` sonde `/health`, lit `/sante` avec la clé et ouvre UNE issue `incident` par signal en problème
+# (titre stable « Incident : vigie (production) … »), la commente au retour du service et la ferme quand la résolution
+# écrite est atteinte. Jusqu'ici, elle était lancée à la main (rapport E5, § 6). Ce workflow la lance seule.
+#
+# Cadence : toutes les trois heures, à la 17e minute (pas à l'heure pile, où GitHub retarde les tâches planifiées).
+# Choix de coût : le dépôt est privé, chaque passage consomme environ une minute d'Actions, soit environ 240 minutes
+# par mois. Une panne est donc vue en trois heures au plus ; l'alerte Langfuse (`alerte-incident.yml`) couvre les
+# erreurs du modèle entre deux passages. Une tâche planifiée ne tourne que sur la branche par défaut (`main`).
+#
+# Secret : `RITA_API_KEY_VIGIE`, la clé de l'API de production, créé par Era dans les réglages du dépôt
+# (Settings > Secrets and variables > Actions). Jamais affichée : la vigie ne l'écrit nulle part.
+# Jeton : celui du dépôt, droit `issues: write` seulement.
+# =============================================================================
+name: Vigie de la production
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  passage:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    concurrency:
+      group: vigie
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Vérifier que le secret RITA_API_KEY_VIGIE existe
+        env:
+          RITA_API_KEY: ${{ secrets.RITA_API_KEY_VIGIE }}
+        run: |
+          if [ -z "$RITA_API_KEY" ]; then
+            echo "::error::Secret RITA_API_KEY_VIGIE absent : la vigie ne peut pas lire /sante. A creer dans Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Installer ce dont la vigie a besoin
+        run: pip install httpx python-dotenv
+
+      - name: Un passage de la vigie contre la production
+        env:
+          RITA_API_KEY: ${{ secrets.RITA_API_KEY_VIGIE }}
+          GH_TOKEN: ${{ github.token }}
+        run: python -m monitorage.vigie --adresse https://178-104-184-125.sslip.io --github

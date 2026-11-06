@@ -1,16 +1,16 @@
 # La chaîne d'intégration et de livraison continues de RITA, en un seul endroit
 
-> Écrit le 03/10/2026 (carte #27), remis à jour le 24/10/2026. Depuis le sprint 2, la chaîne ne s'arrête plus à une
+> Écrit le 03/10/2026 (carte #27), remis à jour le 24/10/2026, puis le 06/11/2026 (vigie planifiée). Depuis le sprint 2, la chaîne ne s'arrête plus à une
 > image vérifiée : elle livre la production après chaque fusion dans `main`. Cette page dit **tout ce qui tourne sans
 > intervention humaine quand le code bouge**, et les deux opérations de production qui se lancent d'un bouton : les
-> outils, les sept workflows, chaque déclencheur, chaque étape, les secrets et les permissions, comment installer la
+> outils, les huit workflows, chaque déclencheur, chaque étape, les secrets et les permissions, comment installer la
 > chaîne, comment la tester, quoi faire quand elle est rouge. Les preuves d'exécution sont dans `../evidence/C18/`
 > (tests), `../evidence/C13/` (livraison) et `../evidence/sprint-2/` (premières livraisons et retours arrière).
 
 ## 1. Vue d'ensemble
 
 L'outil est **GitHub Actions** : le dépôt est sur GitHub, aucun autre serveur n'est à entretenir, et les fichiers de la
-chaîne sont versionnés avec le code dans `.github/workflows/`. Sept workflows, plus une action partagée
+chaîne sont versionnés avec le code dans `.github/workflows/`. Huit workflows, plus une action partagée
 (`.github/actions/ordre-serveur`) qui envoie un ordre au serveur de production :
 
 | Fichier | Nom affiché | Se déclenche sur | Travaux | Durée mesurée | Requis pour fusionner dans `main` |
@@ -20,6 +20,7 @@ chaîne sont versionnés avec le code dans `.github/workflows/`. Sept workflows,
 | `revue-pr.yml` | Revue PR | pull request vers `main` (ouverte, mise à jour, rouverte, prête) | `revue` | 42 s le 24/10 ; jusqu'à 20 min déjà vu | **oui** |
 | `scan-giskard.yml` | Scan Giskard | bouton manuel (`workflow_dispatch`), avec un plafond de scénarios saisi | scan des deux frontières | 10 à 30 min, coût du juge | non |
 | `alerte-incident.yml` | Alerte Langfuse vers issue incident | envoi de Langfuse (`repository_dispatch`, type `alerte-langfuse`) ou bouton manuel | `ouvrir-ou-commenter` | moins de 1 min | non |
+| `vigie.yml` | Vigie de la production | toutes les trois heures (`schedule`, à la 17e minute) et bouton manuel | `passage` | environ 1 min (estimation, avant la première exécution) | non |
 | `retour-arriere.yml` | Retour arrière | bouton manuel, avec son nom et le motif | `revenir` | 28 s le 14/10, 35 s le 15/10 | non |
 | `ingestion.yml` | Ingestion | bouton manuel, avec son nom et le motif | `ingerer` | selon la collecte et le rejeu | non |
 
@@ -43,6 +44,7 @@ Si le hook n'est pas activé, GitHub refuse quand même.
 | `push` d'un tag | `livrable-*` | Livraison avec publication de l'image `:<nom du tag>` ; pas de déploiement |
 | `workflow_dispatch` | la branche choisie (le bouton n'existe que pour un fichier présent sur `main`) | Scan Giskard (entrées : `max_scenarios`, `langues`) ; Alerte (titre et charge utile de test) ; Retour arrière et Ingestion (entrées : `acteur`, `motif`) |
 | `repository_dispatch` type `alerte-langfuse` | sans objet | Alerte : issue `incident` ouverte, ou commentée si déjà ouverte |
+| `schedule` (`17 */3 * * *`, heure UTC) | `main` seulement (règle de GitHub) | Vigie : un passage contre la production ; une issue `incident` par signal en problème |
 
 Le workflow de revue annule une exécution en cours quand un nouveau commit arrive sur la même pull request
 (`concurrency`, `cancel-in-progress`) : une annulation dans l'historique n'est pas un échec. Les travaux qui touchent la
@@ -140,6 +142,14 @@ Ouvre une issue avec le label `incident` (titre stable par alerte, charge utile 
 à cocher) ou commente l'issue déjà ouverte pour la même alerte. Première exécution réelle le 03/10/2026 (bouton manuel,
 issue #71, fermée comme démonstration).
 
+### `vigie.yml`, Vigie de la production (C20, C21)
+
+Un travail `passage`, depuis le 06/11/2026. Il vérifie que le secret `RITA_API_KEY_VIGIE` existe (sinon il s'arrête en
+le disant), puis lance `python -m monitorage.vigie --adresse https://178-104-184-125.sslip.io --github` : sonde de
+`/health`, lecture de `/sante`, une issue `incident` par signal en problème, fermée au retour à la normale
+([La vigie](exploitation.md#vigie-et-exercices)). Toutes les trois heures : environ 240 minutes d'Actions par mois sur un
+dépôt privé, et une panne vue en trois heures au plus. Deux passages ne se chevauchent pas (`concurrency`).
+
 ### `retour-arriere.yml`, Retour arrière (C13, sprint 2)
 
 Un travail `revenir`, environnement `production`. Il écrit dans le résumé du passage qui demande le retour et pourquoi,
@@ -155,7 +165,7 @@ index ; sinon l'index servi ne change pas. Procédure : [exploitation.md](exploi
 
 ## 4. Secrets et permissions
 
-Aucun secret n'est écrit dans un fichier du dépôt : les workflows les lisent dans les réglages de GitHub. Six secrets,
+Aucun secret n'est écrit dans un fichier du dépôt : les workflows les lisent dans les réglages de GitHub. Sept secrets,
 dont un fourni par la plateforme. Trois sont rangés dans l'environnement `production` (*Settings → Environments*) :
 seuls les travaux qui déclarent cet environnement peuvent les lire.
 
@@ -166,7 +176,8 @@ seuls les travaux qui déclarent cet environnement peuvent les lire.
 | `DEPLOY_SSH_KEY` | l'environnement `production` | `deployer`, `deployer-reprise`, `revenir`, `ingerer` | la clé privée SSH dédiée ; sur le serveur, sa clé publique ne peut lancer qu'un script (commande forcée) | Era, une fois (`sprint-2/PLAN-TRAVAIL.md`, tâche 10) |
 | `DEPLOY_HOST` | l'environnement `production` | les mêmes | l'adresse du serveur | Era |
 | `DEPLOY_KNOWN_HOSTS` | l'environnement `production` | les mêmes | l'empreinte du serveur : un serveur qui ne la présente pas est refusé (`StrictHostKeyChecking=yes`) | Era |
-| `GITHUB_TOKEN` | fourni par GitHub | Livraison (publier l'image), Alerte (ouvrir une issue) | jeton éphémère fourni à chaque exécution, expire à la fin du travail | personne : rien à poser, rien à faire tourner |
+| `RITA_API_KEY_VIGIE` | le dépôt | Vigie | la clé de l'API de production, pour lire `/sante` ; jamais affichée | Era, une fois |
+| `GITHUB_TOKEN` | fourni par GitHub | Livraison (publier l'image), Alerte et Vigie (ouvrir une issue) | jeton éphémère fourni à chaque exécution, expire à la fin du travail | personne : rien à poser, rien à faire tourner |
 
 L'environnement `production` n'a aucune règle de protection (lu le 24/10) : aucune approbation n'est demandée avant un
 déploiement. La décision humaine, c'est la fusion de la pull request relue.
@@ -179,6 +190,7 @@ Chaque workflow déclare le minimum de permissions dont il a besoin :
 | Livraison | `read`, dans chaque travail | `packages: write` dans `construire-et-publier` seulement (pousser l'image) |
 | Revue PR | `read` | `pull-requests: read`, `issues: read`, `id-token: write` (exigé par l'action) |
 | Alerte | `read` | `issues: write` |
+| Vigie | `read` | `issues: write` |
 | Scan Giskard | lecture (défaut) | aucune ; la clé OpenRouter passe en variable d'environnement de l'étape |
 | Retour arrière, Ingestion | `read` | aucune ; les secrets `DEPLOY_*` arrivent par l'environnement `production` |
 
