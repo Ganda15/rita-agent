@@ -38,7 +38,7 @@ def test_le_rapport_tient_entre_quinze_et_vingt_pages():
     assert 15 <= len(pypdf.PdfReader(str(RAPPORT.with_suffix(".pdf"))).pages) <= 20
 
 
-ANNEXE = re.compile(r"<li>Annexe (A\d)[^<]*<span>p\. (\d+)</span></li>")
+ANNEXE = re.compile(r'<li><a class="vers-annexe" href="#a\d">Annexe (A\d)[^<]*</a><span>p\. (\d+)</span></li>')   # E2 v1.3 (06/11) : entrées cliquables
 
 
 def test_les_pages_de_l_annexe_annoncees_sont_celles_du_pdf_avec_annexe():
@@ -46,8 +46,8 @@ def test_les_pages_de_l_annexe_annoncees_sont_celles_du_pdf_avec_annexe():
     # PDF avec annexe. Ces numéros ne sont pas calculés par `scripts/rendre_pdf.py` : ce test les tient.
     fitz = pytest.importorskip("fitz", reason="PyMuPDF absent : le PDF se relit sur le poste, la CI ne rend pas de PDF")
     annonces = ANNEXE.findall(RAPPORT.read_text(encoding="utf-8"))
-    assert [a for a, _ in annonces] == ["A1", "A2", "A3"]
+    assert [a for a, _ in annonces] == ["A1", "A2", "A3", "A4", "A5", "A6"]   # E2 v1.3 (06/11) : preuves et détail du banc en A4 à A6
     with fitz.open(RAPPORT.with_name("rapport-E2-avec-annexe.pdf")) as pdf:
-        assert len(pdf) == len(fitz.open(RAPPORT.with_suffix(".pdf"))) + 3
+        assert len(pdf) == len(fitz.open(RAPPORT.with_suffix(".pdf"))) + 13
         for schema, page in annonces:
             assert f"{schema}. " in pdf[int(page) - 1].get_text(), f"{schema} n'est pas en page {page}"
