@@ -46,9 +46,15 @@
       <form id="form-question">
         <label for="question">Votre question sur l'actualité collectée</label>
         <textarea id="question" name="question" rows="3" cols="60" required minlength="3" maxlength="500"
+                  aria-describedby="consigne-donnees"
                   placeholder="Combien de postes Netflix va-t-il supprimer ?"></textarea>
         <button type="submit">Poser la question</button>
       </form>
+      <!-- Règle UE précisée du 06/11/2026 (registre RGPD, § 5, point 13) : le texte part tel quel vers Azure. -->
+      <p class="precision" id="consigne-donnees">
+        N'écrivez aucune donnée personnelle (nom, adresse, numéro) : le texte de la question est envoyé au modèle
+        d'Azure, en zone de données de l'Union européenne, et RITA ne le conserve pas.
+      </p>
       <p class="precision">
         La réponse est rédigée uniquement à partir des articles collectés par RITA, et chaque affirmation renvoie à
         sa source. Si aucun article ne permet de répondre, RITA refuse plutôt que d'inventer.

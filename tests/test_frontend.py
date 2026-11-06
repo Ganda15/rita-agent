@@ -629,3 +629,17 @@ def test_les_marqueurs_d_accessibilite_de_l_ecran_question(marqueur, regle):
 
 def test_l_avertissement_amf_est_sur_l_ecran_question():
     assert "Aucune recommandation d'achat ou de vente" in _question_html()
+
+
+# --- Règle UE précisée du 06/11/2026 (registre RGPD, § 5, point 13) -------------------------------------------------------
+# Le texte d'une question part tel quel vers Azure (T8). La règle demande de limiter les données envoyées au nécessaire :
+# l'écran dit, sous le champ, de ne pas y écrire de donnée personnelle. Le texte est relié au champ (aria-describedby), pour
+# qu'un lecteur d'écran le lise en même temps que l'étiquette.
+def test_l_ecran_question_demande_de_ne_pas_ecrire_de_donnee_personnelle():
+    html = _question_html()
+    champ = re.search(r"<textarea\b[^>]*\bid=\"question\"[^>]*>", html)
+    assert champ and 'aria-describedby="consigne-donnees"' in champ.group(0)
+    consigne = re.search(r'<p\b[^>]*\bid="consigne-donnees"[^>]*>(.*?)</p>', html, flags=re.S)
+    assert consigne
+    texte = " ".join(consigne.group(1).split())
+    assert "donnée personnelle" in texte and "Azure" in texte
