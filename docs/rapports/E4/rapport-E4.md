@@ -16,7 +16,7 @@ h2#matrice + p + table td:first-child{ width:27%; }
 
 # Rapport E4 : réaliser une application intégrant un service d'IA (C14 à C19)
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.6, 6 novembre 2026 · version de référence de l'application : commit `174b0c1` de `main` (tags `livrable-E1-v5`, `livrable-E2-v1` et `livrable-E3-v3`), en production le 02/11/2026 ; interface refaite en production depuis le 04/11 (`8ecc5a7`, § 6.5) ; les exécutions citées en section 6 vont du 21/10 au 02/11 · code et preuves : dépôt GitHub privé [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5)
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.7, 6 novembre 2026 · version de référence de l'application : commit `174b0c1` de `main` (tags `livrable-E1-v5`, `livrable-E2-v1` et `livrable-E3-v3`), en production le 02/11/2026 ; interface refaite en production depuis le 04/11 (`8ecc5a7`, § 6.5) ; les exécutions citées en section 6 vont du 21/10 au 02/11 · code et preuves : dépôt GitHub privé [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5)
 {: .identite }
 
 > **En une minute.** RITA aide un investisseur particulier à suivre son portefeuille et à lire l'actualité d'une
@@ -278,7 +278,8 @@ pour le briefing ne lit que des données de marché publiques ([`docs/ARCHITECTU
 Ces choix sont éco-responsables **par effet** : aucun n'a été fait d'abord pour l'environnement. L'hébergeur, Hetzner
 (serveur CX23, 7,19 € par mois), a été choisi le 19/08 pour une raison de continuité : un serveur payé ne s'éteint pas
 avant le jury, contrairement aux offres gratuites qui expiraient avant le 05/11 ([`CONTINUITE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/CONTINUITE.md), décisions). Son
-impact environnemental n'a pas été un critère du choix.
+impact environnemental n'a pas été un critère du choix. Réévalué le 06/11 avec ce critère, Hetzner (électricité
+renouvelable, PUE de 1,13) est gardé ; à coût égal, le prestataire qui publie son énergie est désormais préféré (`evidence/C15/`).
 
 ### 2.6 La preuve de concept et la pré-production
 
@@ -530,20 +531,14 @@ porte des évaluations pour S9.
 
 ### 4.7 L'éco-conception (critère 7)
 
-Les pratiques sont documentées en section 2.5 (interface sans outil de construction, pagination plafonnée ; en
-fonctionnement nominal, un appel au modèle suffit pour un briefing). Mesures historiques du 03/10, en local, sur trois écrans
-([`evidence/C17/preuve-eco-conception-et-accessibilite-2026-10-03.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C17/preuve-eco-conception-et-accessibilite-2026-10-03.md)) :
+**Mesure du 06/11, avant et après la carte #74** (compression, `favicon.ico`), en local (`evidence/C17/mesures-2026-11-06/`) :
 
-| Écran et état mesuré | EcoIndex |
-|---|---|
-| Portefeuille, avec ses données | A (90) |
-| Briefing, mesuré avant l'arrivée du texte, avec une réponse du modèle enregistrée | A (90) |
-| Indicateurs, avec ses 111 lignes | D (51) |
+| Première visite | Portefeuille | Indicateurs | Briefing | Question | Tableau de bord |
+|---|---:|---:|---:|---:|---:|
+| Poids sans, avec #74 (Ko) | 87,3 ; 36,2 | 147,5 ; 44,9 | 77,2 ; 27,0 | 44,0 ; 20,1 | 67,7 ; 29,5 |
+| EcoIndex sans, avec | A 86 ; A 86 | D 52 ; D 53 | A 88 ; A 88 | A 92 ; A 92 | A 91 ; A 92 |
 
-Un écran vide pèse 20 à 25 Ko, en 3 ou 4 requêtes, sans ressource externe. Ces mesures caractérisent des états de
-pages précis : elles ne mesurent ni la consommation du modèle, ni celle du service complet. Les corrections relevées le
-même jour ne sont pas faites (carte #74 : compression des réponses, `favicon.ico` en 404) ; il n'y a donc pas de mesure
-« après », et les écrans Question et Tableau de bord n'ont pas été mesurés.
+La note bouge à peine : la méthode compte surtout les éléments de la page (Indicateurs : 1 625). **#74 non déployée au 06/11.**
 
 ### 4.8 Les tests (critère 9)
 
@@ -782,7 +777,7 @@ mais une partie du critère manque, écrite dans la colonne « Limite restante �
 | **C14.4** Accessibilité intégrée aux critères d'acceptation | ✅ | critères RGAA et WCAG des cinq écrans, reliés à des tests | restitution par un lecteur d'écran non testée | 1.6 |
 | **C14.5** Accessibilité formulée selon un standard (RGAA…) | ✅ | objectifs des cinq écrans formulés avec des règles RGAA ou WCAG numérotées, chacun relié à un test ou à une lecture du code ([`evidence/C14/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C14)) | aucun test avec un lecteur d'écran | 1.6 |
 | **C15.1** Spécifications techniques : architecture, dépendances, environnement | ✅ | [`docs/ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/ARCHITECTURE.md), [`requirements-api.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/requirements-api.txt) | schéma d'architecture du 24/10, sans la vigie | 2.1 à 2.3 |
-| **C15.2** Services éco-responsables favorisés | 🟡 | choix d'architecture, éco-responsables par effet | hébergeur choisi pour la continuité, impact non mesuré | 2.5 |
+| **C15.2** Services éco-responsables favorisés | ✅ | choix par effet ; prestataires réévalués le 06/11, règle écrite | choix du 19/08 pour la continuité | 2.5 |
 | **C15.3** Diagramme de flux de données | ✅ | [`evidence/C15/flux/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C15/flux), relevé sur le code le 02/11 ; celui du 18/08 gardé | relevé après le code ; questions (T8) non marquées personnelles ; purge RGPD absente | 2.4 |
 | **C15.4** Preuve de concept accessible et fonctionnelle en pré-production | ✅ | preuve du 18/08 ; pré-test sur le serveur depuis le 14/10 | | 2.6 |
 | **C15.5** Conclusion de la preuve de concept donnant un avis précis | ✅ | « Poursuivre », [`evidence/C15/preuve-preproduction-docker.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C15/preuve-preproduction-docker.md) | avis antérieur à la mise en production | 2.6 |
@@ -796,7 +791,7 @@ mais une partie du critère manque, écrite dans la colonne « Limite restante �
 | **C17.4** Composants métier conformes aux spécifications | ✅ | composants testés ; #78 et #79 déployés ; 111 valeurs vérifiées | « +0,00 % » affiché pour un zéro ; valeurs vérifiées en local | 4.4 |
 | **C17.5** Gestion des droits d'accès développée et conforme | 🟡 | clé sur les routeurs, journal des refus, quota partagé | rôle propriétaire (#76) ; `/docs` public | 4.5 |
 | **C17.6** Flux de données intégrés | ✅ | briefing ([`evidence/C10/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C10), 03/10) ; Question : évaluation en production du 16/10 sur `72dba4d` ([`evidence/sprint-3/evaluation-production-2026-10-16-relecture.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/sprint-3/evaluation-production-2026-10-16-relecture.md)) et tests | preuves antérieures à la version de référence | 4.4 |
-| **C17.7** Éco-conception | 🟡 | pratiques documentées ; mesures historiques sur trois écrans | pas de mesure « après » ; deux écrans non mesurés | 4.7 |
+| **C17.7** Éco-conception | 🟡 | pratiques documentées ; mesure avant et après #74, cinq écrans (06/11) | #74 non déployée ; Indicateurs en D | 4.7 |
 | **C17.8** Préconisations OWASP Top 10 implémentées | 🟡 | revue S1 à S10 ; S4, S5 et S6 corrigés (S6 le 04/11), S3 et S7 en partie | S1, S2, S8, S9 ouverts | 4.6 |
 | **C17.9** Tests couvrant composants métier et gestion des accès | ✅ | les tests des composants métier et des accès API ont été exécutés avec succès (1 925 réussis, couverture 96,32 %, 02/11) ; les 4 tests du rôle en lecture seule passent dans le job `base` | 22 tests ignorés ; couverture sans interface, `rag/`, `monitorage/`, MCP | 4.8 |
 | **C17.10** Sources versionnées et accessibles sur un dépôt distant | ✅ | dépôt GitHub privé, 21 tags `livrable-*` protégés | jury pas encore invité | 4.9 |
@@ -815,12 +810,12 @@ mais une partie du critère manque, écrite dans la colonne « Limite restante �
 | **C19.6** Documentation : installation, configuration et test de la chaîne de livraison | ✅ | [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md), § 5 (installation) et § 6 (huit vérifications, dont la publication d'un tag) | vérification d'un tag écrite le 01/11, sur l'exécution du 27/10 de `livrable-E3-v2` (40490834495) | 6.1 |
 | **C19.7** Documentation communiquée, format accessible | ✅ | format de [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md) contrôlé le 01/11 ([`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17)) ; lien envoyé au formateur le 03/11 | réception et liens confirmés par Elbby, 04/11 | 6.1 |
 
-**Total : 31 ✅, 7 🟡, 0 ❌.**
+**Total : 32 ✅, 6 🟡, 0 ❌.**
 
 | Compétence | ✅ | 🟡 |
 |---|---|---|
 | C14 | 5 | 0 |
-| C15 | 4 | 1 |
+| C15 | 5 | 0 |
 | C16 | 2 | 2 |
 | C17 | 7 | 4 |
 | C18 | 6 | 0 |
@@ -831,9 +826,8 @@ référentiel ; deux lignes C19 ajoutées pour la documentation de la chaîne, d
 C14.3, C14.4, C15.3, C17.3 et C17.4 passent à ✅ avec les preuves du 02/11 ; chaque limite, comparée aux mots du
 critère, ne le contredit pas et reste écrite dans sa colonne. 1.2 (03/11) : C16.3, C17.11, C18.6 et C19.7 passent à ✅
 après l'envoi au formateur du 03/11 ; les lignes incomplètes s'écrivent « à consolider » (🟡), comme dans la grille des compétences.
-1.3 (04/11) et 1.4 (05/11) : mise à jour datée (§ 6.5), passages devenus faux et quatre incohérences corrigés ; aucun statut
-ne change. 1.5 (05/11) : PDF complet rendu en un seul document balisé ; texte inchangé. 1.6 (06/11) : une date précisée
-(§ 2.7, « au 02/11 ») et des titres en bleu, comme E2 ; aucun statut ne change.
+1.3 à 1.6 (04 au 06/11) : mises à jour datées, incohérences corrigées, un seul PDF balisé, titres au style d'E2 ; aucun
+statut ne change. 1.7 (06/11, soir) : après le retour du formateur, C15.2 passe à ✅ (prestataires réévalués, § 2.5).
 
 **Pourquoi ce total diffère du recomptage du 30/10 (30 ✅, 6 🟡).** Le recomptage comptait un ✅ dès qu'une preuve
 existait, ateliers des sprints compris ; ici, un ✅ exige tout le critère, sur les cinq écrans de la version présentée.
