@@ -75,6 +75,8 @@ Ce que ce chapitre apporte aux épreuves : E1 (C1 cartographie, C4 Merise et RGP
 ## 📖 Glossaire
 
 - **Matrice d'accès** : tableau acteur × ressource ; une case absente vaut refus.
+  Décision D7 du 06/11/2026 : la documentation de l'API (`/docs`, `/redoc`, `/openapi.json`) y est ajoutée comme
+  ressource publique (`evidence/C17/decision-D7-documentation-publique-2026-11-06.md`).
 - **MCD / MPD** : modèle conceptuel (entités, relations) et modèle physique (tables, contraintes, index).
 - **Upsert** : insérer ou mettre à jour, sans jamais supprimer.
 - **Zone sous garde** : fichier du dépôt qu'on ne modifie qu'après un plan écrit et validé (`AGENTS.md`).

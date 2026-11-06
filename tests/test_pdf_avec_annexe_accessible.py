@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 
 RACINE = Path(__file__).resolve().parent.parent
-RAPPORTS = {"E2": 14, "E4": 14}   # pages d'annexe, en paysage ; E2 v1.3 (06/11) : A4 veille, A5 banc, A6 service (captures 7 et 8 le soir)
+RAPPORTS = {"E2": 14, "E4": 15}   # pages d'annexe, en paysage ; E2 v1.3 (06/11) : A4 veille, A5 banc, A6 service ; E4 v1.7 (06/11) : A7 compare Question et Tableau de bord au système de conception
 
 
 def _chemins(epreuve: str) -> tuple[Path, Path]:
