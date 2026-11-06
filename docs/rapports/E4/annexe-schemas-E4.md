@@ -45,7 +45,7 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 | A4 | Flux de données, des sources à l'écran | C15 | 02/11/2026 (celui du 18/08 gardé) | mise en forme du 03/11, texte inchangé | 27 |
 | A5 | Chaîne d'intégration et de livraison | C18, C19 | 24/10/2026 | mise en forme du 03/11, texte inchangé | 28 |
 | A6 | Parcours des écrans Question et Tableau de bord | C14 | 02/11/2026 | mise en forme du 03/11, texte inchangé | 29 et 30 |
-| A7 | Maquettes de la refonte et écrans livrés, comparés | C14, C17 | maquettes du 04/10, écrans du 04/11 | maquettes recadrées, captures de production | 31 à 34 |
+| A7 | Maquettes de la refonte et écrans livrés, comparés | C14, C17 | maquettes du 04/10, écrans du 04/11 | maquettes recadrées, captures de production | 31 à 35 |
 
 **Mise en forme du 03/11.** A1, A3, A4, A5 et A6 sont présentés au style des schémas du livret E1 ; leur texte est
 identique mot pour mot aux originaux du dépôt, cités dans chaque légende (A3 et A5 avaient déjà reçu une mise en forme
@@ -241,3 +241,32 @@ sont à corriger à part, test d'abord.
 | Chaîne de production | « Comment RITA a produit ce texte », cinq étapes en pastilles | « Comprendre ce résultat » : les cinq mêmes étapes en liste numérotée, plus la référence de la requête (R4) |
 | Articles | trois cartes de source | « Sources fournies au modèle » : trois liens, source et date, et la limite « Leur présence ne prouve pas que chaque phrase du texte en vient » |
 | Aide sous le champ | absente de la maquette | **défaut constaté** : « une recommandation d'achat ou de vente est retenue, jamais diffusée », la promesse trop forte corrigée en A2 (page 25), est encore à l'écran ([`frontend/briefing.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/frontend/briefing.html), ligne 57) |
+
+<div class="saut"></div>
+
+### Question et Tableau de bord : le système de conception comme référence
+
+Ces deux écrans n'ont pas de maquette. Leur référence est le système de conception, écrit le 06/11 après le code
+(`docs/conception/frontend/systeme-de-conception.md`) : jetons et composants de `frontend/style.css`, partagés par les cinq
+écrans. Un test le tient à jour et vérifie qu'aucune couleur n'est écrite hors des jetons et que ces deux écrans
+n'utilisent que des composants du système (`tests/test_systeme_de_conception.py`).
+
+<div class="duo">
+<figure><img src="schemas/E4-A7-systeme-de-conception.png" alt="Planche du système de conception de RITA, construite avec la vraie feuille de style : les quatre couleurs d'écran, l'avertissement, un champ, le bouton principal, la précision, la fraîcheur et le statut, thème sombre"><figcaption>Le système, rendu par la feuille de style réelle</figcaption></figure>
+<figure><img src="schemas/E4-A7-question-livre.png" alt="Écran Question livré, thème sombre : en-tête commun, onglet Question en bleu service, avertissement, champ de la question et bouton Poser la question"><figcaption>Question, servi en local le 06/11</figcaption></figure>
+<figure><img src="schemas/E4-A7-tableau-de-bord-livre.png" alt="Écran Tableau de bord livré, thème sombre : en-tête commun, onglet en bleu service, sept cartes de signaux avec leur verdict écrit, Sain ou Inconnu"><figcaption>Tableau de bord, servi en local le 06/11</figcaption></figure>
+</div>
+
+| Élément du système | Question | Tableau de bord |
+|---|---|---|
+| En-tête, navigation, avertissement | présents, identiques aux trois autres écrans | présents, identiques |
+| Couleur d'écran (`--couleur-service`) | onglet courant et bouton en bleu « service » | onglet courant et boutons en bleu « service » |
+| Connexion, statut | clé masquée ; `#statut` annoncé au lecteur d'écran | clé masquée ; état d'actualisation écrit |
+| L'état en mots | refus et erreurs écrits | verdict de chaque carte écrit (« SAIN », « INCONNU »), pas seulement une couleur |
+| Couleurs et composants | aucune couleur hors jetons, aucune classe hors du système (test) | idem (test) |
+| Écart constaté | le titre « Poser une question » est écrit deux fois (titre de page et titre du formulaire) | aucun relevé |
+
+Captures servies en local avec une clé jetable, sans question posée ni appel au modèle ; les données du tableau de bord
+sont celles d'un serveur qui vient de démarrer, d'où les signaux « INCONNU ». Une comparaison à l'œil, appuyée par le
+test ; pas de mesure de conformité au pixel.
+{: .legende }

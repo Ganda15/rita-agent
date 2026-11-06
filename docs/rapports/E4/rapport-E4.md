@@ -402,10 +402,10 @@ Le même travail a fait découvrir un autre manque, écrit le jour même : la sa
 
 ### 4.1 Vue d'ensemble
 
-Je distingue « j'ai une preuve » et « tout le critère est satisfait ». Sur les onze critères de C17, sept sont
-satisfaits : l'environnement (§ 4.2), les comportements (§ 4.3), les composants métier et les flux (§ 4.4), les tests
-(§ 4.8), les sources et la documentation, envoyée au formateur le 03/11 (§ 4.9). Quatre restent à consolider : les
-maquettes (§ 4.3), les droits d'accès (§ 4.5), la sécurité OWASP (§ 4.6) et l'éco-conception (§ 4.7). La preuve et la limite de
+Je distingue « j'ai une preuve » et « tout le critère est satisfait ». Sur les onze critères de C17, huit sont
+satisfaits : l'environnement (§ 4.2), les maquettes et les comportements (§ 4.3), les composants métier et les flux
+(§ 4.4), les tests (§ 4.8), les sources et la documentation, envoyée au formateur le 03/11 (§ 4.9). Trois restent à
+consolider : les droits d'accès (§ 4.5), la sécurité OWASP (§ 4.6) et l'éco-conception (§ 4.7). La preuve et la limite de
 chacun sont dans la matrice (section 8).
 
 ### 4.2 L'environnement de développement (critère 1)
@@ -422,11 +422,11 @@ suit l'épinglage.
 L'interface est en **HTML, CSS et JavaScript sans outil de construction** : cinq pages ([`frontend/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/frontend)), aucune clé
 écrite dans le code, la clé saisie par l'utilisateur et gardée le temps de l'onglet.
 
-**Conformité aux maquettes (critère 2, à consolider).** Les wireframes des trois premiers écrans ont été dessinés après
-les écrans d'avant la refonte ; Question et Tableau de bord n'ont pas de maquette, leurs schémas de parcours du 02/11
-décrivent l'existant. La refonte des trois premiers écrans a eu ses maquettes d'abord ([`refonte-2026-10.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/conception/frontend/refonte-2026-10.md),
-validées le 04/10), puis sa spécification ([`spec.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/specs/001-refonte-interface/spec.md), validée le 04/11), puis le code, livré le 04/11 (§ 6.5). Une
-première comparaison, maquette contre écran livré, est en annexe A7 (tâche 11 du plan).
+**Conformité aux maquettes (critère 2).** La refonte des trois premiers écrans a eu ses maquettes d'abord
+([`refonte-2026-10.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/conception/frontend/refonte-2026-10.md), validées le 04/10), puis sa spécification ([`spec.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/specs/001-refonte-interface/spec.md), validée le 04/11), puis le
+code, livré le 04/11 (§ 6.5). Question et Tableau de bord, sans maquette, ont pour référence le système de conception,
+écrit le 06/11 après le code (`docs/conception/frontend/systeme-de-conception.md`) ; un test vérifie qu'ils n'en sortent
+pas. Les cinq écrans sont comparés à leur référence en annexe A7.
 
 **Comportements et navigation (critère 3).** Le 02/11, une recette a joué les cinq écrans dans quatre
 situations chacun (normal, refus, erreur, clavier) : 54 tests dans un vrai navigateur, l'API simulée
@@ -786,7 +786,7 @@ mais une partie du critère manque, écrite dans la colonne « Limite restante �
 | **C16.3** Objectifs et modalités des rituels partagés aux parties prenantes | ✅ | méthode dans le dépôt, file de validation ; section des rituels envoyée au formateur le 03/11 ([preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C8/envoi-documents-formateur-2026-11-03.md)) | partage surtout documentaire ; réception et liens confirmés par Elbby, 04/11 | 3.4 |
 | **C16.4** Éléments de pilotage accessibles à toutes les parties tout au long du projet | 🟡 | dépôt en lecture pour le formateur (vérifié le 30/10) ; Kanban confirmé par Elbby le 03/11 ([preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C16/preuve-acces-kanban-formateur-2026-11-03.md)) | accès du jury à organiser | 3.4 |
 | **C17.1** Environnement de développement conforme aux spécifications | ✅ | environnement prévu ([`evidence/C15/preuve-specifications-techniques.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C15/preuve-specifications-techniques.md)) et installé, rapprochés le 01/11 : Windows 11, Python 3.14.6, PostgreSQL 18.4 sur le port 5433 ; Python 3.13 en CI ([`test.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/.github/workflows/test.yml)) | [`requirements.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/requirements.txt) et trois paquets de CI sans version : limite de reproductibilité | 4.2 |
-| **C17.2** Interfaces intégrées et conformes aux maquettes | 🟡 | cinq écrans intégrés ; refonte d'après maquettes (04/11) | comparaison visuelle partielle (A7) ; deux écrans sans maquette | 4.3 |
+| **C17.2** Interfaces intégrées et conformes aux maquettes | ✅ | trois écrans comparés à leurs maquettes, deux au système de conception (A7, test) | système écrit après le code ; comparaison à l'œil | 4.3 |
 | **C17.3** Comportements des composants et navigation conformes | ✅ | recette initiale du 02/11 (54 tests en navigateur) ; sur `8ecc5a7` (04/11), 19 tests au clavier et 8 cas d'erreur verts en CI ; #73 déployé | API simulée ; 375 px, pas 320 ; pas de recette des cinq écrans en production | 4.3 |
 | **C17.4** Composants métier conformes aux spécifications | ✅ | composants testés ; #78 et #79 déployés ; 111 valeurs vérifiées | « +0,00 % » affiché pour un zéro ; valeurs vérifiées en local | 4.4 |
 | **C17.5** Gestion des droits d'accès développée et conforme | 🟡 | clé sur les routeurs, journal des refus, quota partagé | rôle propriétaire (#76) ; `/docs` public | 4.5 |
@@ -810,14 +810,14 @@ mais une partie du critère manque, écrite dans la colonne « Limite restante �
 | **C19.6** Documentation : installation, configuration et test de la chaîne de livraison | ✅ | [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md), § 5 (installation) et § 6 (huit vérifications, dont la publication d'un tag) | vérification d'un tag écrite le 01/11, sur l'exécution du 27/10 de `livrable-E3-v2` (40490834495) | 6.1 |
 | **C19.7** Documentation communiquée, format accessible | ✅ | format de [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md) contrôlé le 01/11 ([`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17)) ; lien envoyé au formateur le 03/11 | réception et liens confirmés par Elbby, 04/11 | 6.1 |
 
-**Total : 32 ✅, 6 🟡, 0 ❌.**
+**Total : 33 ✅, 5 🟡, 0 ❌.**
 
 | Compétence | ✅ | 🟡 |
 |---|---|---|
 | C14 | 5 | 0 |
 | C15 | 5 | 0 |
 | C16 | 2 | 2 |
-| C17 | 7 | 4 |
+| C17 | 8 | 3 |
 | C18 | 6 | 0 |
 | C19 | 7 | 0 |
 
@@ -827,7 +827,8 @@ C14.3, C14.4, C15.3, C17.3 et C17.4 passent à ✅ avec les preuves du 02/11 ; c
 critère, ne le contredit pas et reste écrite dans sa colonne. 1.2 (03/11) : C16.3, C17.11, C18.6 et C19.7 passent à ✅
 après l'envoi au formateur du 03/11 ; les lignes incomplètes s'écrivent « à consolider » (🟡), comme dans la grille des compétences.
 1.3 à 1.6 (04 au 06/11) : mises à jour datées, incohérences corrigées, un seul PDF balisé, titres au style d'E2 ; aucun
-statut ne change. 1.7 (06/11, soir) : après le retour du formateur, C15.2 passe à ✅ (prestataires réévalués, § 2.5).
+statut ne change. 1.7 (06/11, soir) : après le retour du formateur, C15.2 passe à ✅ (prestataires réévalués, § 2.5), C17.2 aussi
+(système de conception écrit, Question et Tableau de bord comparés en A7).
 
 **Pourquoi ce total diffère du recomptage du 30/10 (30 ✅, 6 🟡).** Le recomptage comptait un ✅ dès qu'une preuve
 existait, ateliers des sprints compris ; ici, un ✅ exige tout le critère, sur les cinq écrans de la version présentée.

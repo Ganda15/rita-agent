@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 
 RACINE = Path(__file__).resolve().parent.parent
-RAPPORTS = {"E2": 3, "E4": 14}   # pages d'annexe, en paysage
+RAPPORTS = {"E2": 3, "E4": 15}   # pages d'annexe, en paysage ; E4 v1.7 (06/11) : A7 compare Question et Tableau de bord au système de conception
 
 
 def _chemins(epreuve: str) -> tuple[Path, Path]:
