@@ -215,3 +215,40 @@ def test_generate_briefing_detaille_rend_qui_a_repondu():
     assert generer.call_count == 2
     assert generer.call_args.args[0] == construire_prompt(**arguments)
     assert generer.call_args.kwargs.get("max_tokens") == 500
+
+
+# --- Option B (décision du 11/10, CONTINUITE.md ; appliquée le 06/11) ------------------------------------------
+#
+# Briefing réel de LVMH du 11/10, puis d'OR.PA le 06/11 : la consigne n° 3 (« un point à surveiller pour la séance
+# suivante ») poussait le modèle vers un pronostic (« à surveiller lors de la prochaine séance : la capacité du titre à
+# se maintenir près de son plus haut ») et la séance décrite n'avait pas de date. La date vient des données
+# (`indicateurs["date_cours"]`, la dernière séance en base), jamais de l'horloge : un cours de deux jours ne doit pas
+# devenir « la séance du jour ».
+
+def test_le_prompt_donne_la_date_reelle_de_la_seance():
+    prompt = _prompt_avec({**INDICATEURS, "date_cours": "2026-11-04"})
+    assert "- Date de la séance : 04/11/2026" in prompt
+
+
+def test_la_date_de_la_seance_vient_des_donnees_meme_en_objet_date():
+    from datetime import date
+    prompt = _prompt_avec({**INDICATEURS, "date_cours": date(2026, 10, 30)})
+    assert "- Date de la séance : 30/10/2026" in prompt
+
+
+def test_sans_date_le_prompt_le_dit_et_interdit_d_en_ecrire_une():
+    for indicateurs in (None, {**INDICATEURS}, {**INDICATEURS, "date_cours": "pas une date"}):
+        prompt = _prompt_avec(indicateurs)
+        assert "- Date de la séance : non fournie" in prompt, indicateurs
+        assert "N'écris aucune date de séance si elle n'est pas fournie" in prompt
+
+
+def test_la_consigne_trois_ne_demande_plus_un_pronostic_pour_la_seance_suivante():
+    prompt = _prompt_avec(INDICATEURS)
+    assert "séance suivante" not in prompt and "prochaine séance" not in prompt
+    assert "un élément observable à suivre, tiré des seules données fournies, sans présenter un cours comme un seuil" in prompt
+
+
+def test_le_prompt_interdit_une_duree_ou_une_tendance_que_les_donnees_ne_montrent_pas():
+    prompt = _prompt_avec(INDICATEURS)
+    assert "Ne décris pas une durée ou une tendance que les performances fournies ne montrent pas" in prompt

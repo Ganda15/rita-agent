@@ -9,6 +9,20 @@
 
 ---
 
+## 2026-11-06, soir : E2 v1.3, le retour du formateur appliqué, pour `livrable-E2-v4`
+
+**Livrable et manque.** Le formateur demande le 06/11 un exemple de veille complet, des preuves visibles du service et
+un texte plus lisible. E2 v1.3 y répond : la source S36 vérifiée critère par critère avec captures (annexe A4),
+l'accessibilité des sources relevée par un script, les conditions de Microsoft relues, le service montré en production
+(adresse, connexion à clé masquée, portail Azure, puis un briefing d'OR.PA et sa trace Langfuse reliés par la même
+référence, annexe A6), des repères pour retrouver chaque critère. La correction du prompt (option B, décidée le 11/10)
+est en production depuis le 06/11 (`097b201`). E2 v1.2 n'est pas taguée : `livrable-E2-v4` portera la v1.3, après le
+double contrôle par un autre agent. **Manque** : C8.2 reste à consolider, la règle UE seule n'étant pas démontrée pour
+Azure ; la décision de risque est écrite comme ouverte, à prendre par Era après l'oral blanc. Les articles fournis au
+briefing de démonstration datent du 14 au 17/09.
+
+---
+
 ## 2026-11-06 : E3 v2.2, statuts de #73 et #152 et contrôles de fusion harmonisés, pour `livrable-E3-v5`
 
 **Livrable.** Le double contrôle du 06/11 a montré que la v2.1 du dépôt gardait des formulations anciennes, corrigées
