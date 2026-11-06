@@ -1,5 +1,6 @@
 """Rédacteur — génère le briefing en français via src/llm.py (C8, C9, C10)."""
 import logging
+from datetime import date
 
 from guardrails.injection import neutraliser
 from src.llm import ResultatTexte, generer_texte_detaille
@@ -11,14 +12,18 @@ logger = logging.getLogger(__name__)
 # caractère du prompt d'avant.
 ROLE_REDACTEUR = ("Tu es un analyste financier français qui rédige des briefings courts pour des investisseurs "
                   "particuliers.")
+# Option B (décision du 11/10, CONTINUITE.md ; appliquée le 06/11) : la consigne n° 3 ne demande plus un « point à
+# surveiller pour la séance suivante », qui poussait au pronostic ; la séance porte sa date, lue dans les données.
 CONSIGNES_REDACTION = """Rédige un briefing de 3 à 5 phrases en français qui :
-1. Résume la performance du jour avec un ton factuel
+1. Résume la performance de la séance, en citant sa date si elle est fournie, avec un ton factuel
 2. Indique le niveau de variation (faible / modérée / forte)
-3. Signale un point à surveiller pour la séance suivante
+3. Relève un élément observable à suivre, tiré des seules données fournies, sans présenter un cours comme un seuil
 
 Règles strictes :
 - AUCUNE recommandation d'achat ou de vente
 - Pas d'invention de chiffres ou d'événements non fournis
+- Ne décris pas une durée ou une tendance que les performances fournies ne montrent pas
+- N'écris aucune date de séance si elle n'est pas fournie
 - Ne présente JAMAIS ces capitaux moyens ni comme un volume du jour, ni comme un nombre de titres
 - Ton neutre, professionnel, accessible"""
 
@@ -99,6 +104,23 @@ def _valeur_indicateur(valeur, unite: str, currency: str) -> str:
     return f"{valeur:.1f}"
 
 
+def _date_seance(indicateurs: dict | None) -> str | None:
+    """La date de la dernière séance collectée, au format JJ/MM/AAAA, ou None si les données ne la donnent pas.
+
+    Option B (décision du 11/10, CONTINUITE.md) : la date vient des données (`indicateurs["date_cours"]`, chaîne ISO
+    rendue par le scout, ou objet `date`), jamais de l'horloge. Absente ou illisible, elle n'est pas devinée.
+    """
+    valeur = (indicateurs or {}).get("date_cours")
+    if isinstance(valeur, date):
+        return valeur.strftime("%d/%m/%Y")
+    if isinstance(valeur, str):
+        try:
+            return date.fromisoformat(valeur[:10]).strftime("%d/%m/%Y")
+        except ValueError:
+            return None
+    return None
+
+
 def _bloc_indicateurs(indicateurs: dict | None, currency: str) -> str:
     """Les indicateurs calculés, comme des faits. Vide quand l'appelant n'en fournit pas (compatibilité)."""
     if not indicateurs:
@@ -152,11 +174,13 @@ def construire_prompt(ticker: str, price: float, change_pct: float,
 
     articles = _bloc_articles(passages)
     bloc_indicateurs = _bloc_indicateurs(indicateurs, currency)
+    date_seance = _date_seance(indicateurs) or "non fournie"
 
     prompt = f"""{ROLE_REDACTEUR}
 
 Données de la dernière séance collectée :
 - Action : {ticker}
+- Date de la séance : {date_seance}
 - Cours de clôture : {price} {currency}
 - Variation sur 1 jour : {change_pct}% ({direction})
 - Capitaux échangés en moyenne par séance sur 20 séances : {capitaux_moyens}{avertissement}{bloc_indicateurs}{articles}
