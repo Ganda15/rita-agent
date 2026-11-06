@@ -35,16 +35,21 @@ SOMMAIRE = re.compile(r'(<a href="#([\w-]+)">[^<]*</a><span>)p\. \d+(</span>)')
 CHROME = Path(r"C:\Program Files\Google\Chrome\Application\chrome.exe")
 
 STYLE = """
-:root{ --ink:#16202B; --ink-soft:#4A5766; --rule:#D5DCE4; --rule-strong:#9DAAB8; --accent:#14607F; --wash:#ECF3F7; --flag:#9E4318; }
+:root{ --ink:#16202B; --ink-soft:#4A5766; --rule:#D5DCE4; --rule-strong:#9DAAB8; --accent:#14607F; --wash:#ECF3F7; --flag:#9E4318;
+       --marine:#12395E; --bandeau-titre:#BFD7F2; --bandeau-sous-titre:#D6E6F7; }
 @page{ size:A4; margin:14mm 14mm 14mm 14mm;
   @bottom-right{ content:counter(page) " / " counter(pages); font-family:"Segoe UI",sans-serif; font-size:8pt; color:#5b6472; } }
 *{ box-sizing:border-box; }
 body{ margin:0; color:var(--ink); font-family:"Segoe UI","Calibri",system-ui,sans-serif; font-size:10pt; line-height:1.4;
       font-variant-numeric:tabular-nums; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
 h1,h2,h3,h4{ font-family:Georgia,"Times New Roman",serif; font-weight:600; margin:0; color:var(--ink); break-after:avoid; }
-h1{ font-size:20pt; line-height:1.2; border-top:2.5pt solid var(--accent); padding-top:8pt; margin-bottom:8pt; }
-h2{ font-size:14pt; margin:18pt 0 6pt; padding-bottom:3pt; border-bottom:.75pt solid var(--rule-strong); }
-h3{ font-size:11.5pt; margin:12pt 0 4pt; color:var(--accent); }
+/* Titres (06/11/2026, décision d'Era) : le style « bandeaux bleus » de sa copie E2 v1.1, sans ses deux filets.
+   Titres (h1, h2) en noir sur #BFD7F2, sous-titres (h3) en bleu sur #D6E6F7, une bande bleu marine à gauche ;
+   la bande est dans le fond (dégradé net), pas une bordure ; marges intérieures du modèle (1 à 2 pt), pour ne pas
+   allonger les rapports ; h1 évite le logo flottant. */
+h1{ font-size:20pt; line-height:1.2; background:linear-gradient(to right, var(--marine) 5pt, var(--bandeau-titre) 5pt); color:var(--ink); padding:2pt 8pt 2pt 12pt; margin-bottom:8pt; display:flow-root; }
+h2{ font-size:14pt; margin:16pt 0 5pt; padding:1pt 8pt 1pt 12pt; background:linear-gradient(to right, var(--marine) 5pt, var(--bandeau-titre) 5pt); color:var(--ink); }
+h3{ font-size:11.5pt; margin:10pt 0 3pt; padding:1pt 8pt 1pt 11pt; background:linear-gradient(to right, var(--marine) 4pt, var(--bandeau-sous-titre) 4pt); color:var(--accent); }
 h4{ font-size:10.5pt; margin:10pt 0 3pt; color:var(--accent); font-family:"Segoe UI",sans-serif; }
 p{ margin:0 0 6pt; }
 ul,ol{ margin:0 0 6pt; padding-left:16pt; }

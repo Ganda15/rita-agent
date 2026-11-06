@@ -16,7 +16,7 @@ h2#matrice + p + table td:first-child{ width:27%; }
 
 # Rapport E4 : réaliser une application intégrant un service d'IA (C14 à C19)
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.5, 5 novembre 2026 · version de référence de l'application : commit `174b0c1` de `main` (tags `livrable-E1-v5`, `livrable-E2-v1` et `livrable-E3-v3`), en production le 02/11/2026 ; interface refaite en production depuis le 04/11 (`8ecc5a7`, § 6.5) ; les exécutions citées en section 6 vont du 21/10 au 02/11 · code et preuves : dépôt GitHub privé [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5)
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.6, 6 novembre 2026 · version de référence de l'application : commit `174b0c1` de `main` (tags `livrable-E1-v5`, `livrable-E2-v1` et `livrable-E3-v3`), en production le 02/11/2026 ; interface refaite en production depuis le 04/11 (`8ecc5a7`, § 6.5) ; les exécutions citées en section 6 vont du 21/10 au 02/11 · code et preuves : dépôt GitHub privé [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5)
 {: .identite }
 
 > **En une minute.** RITA aide un investisseur particulier à suivre son portefeuille et à lire l'actualité d'une
@@ -303,8 +303,8 @@ toujours à côté. La conclusion « Poursuivre » reste valable, mais elle date
 - **L'hébergeur n'a pas été choisi sur un critère environnemental**, et l'impact du serveur n'est pas mesuré.
 - **[`requirements.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/requirements.txt) n'est pas épinglé** (12 lignes sans version, une borne basse) ; seule l'image l'est.
 - **La taille de l'image (595 Mo) date du 18/08** et n'a pas été remesurée.
-- **La production n'est vérifiée que par la page servie** : après la livraison du 02/11 (exécution 41488421204,
-  déploiement réussi à 17 h 22 UTC), le tableau de bord contient le nouveau bouton ; aucun parcours complet rejoué.
+- **Au 02/11, la production n'était vérifiée que par la page servie** : après la livraison (exécution 41488421204,
+  déploiement réussi à 17 h 22 UTC), le tableau de bord contenait le nouveau bouton ; aucun parcours complet n'était rejoué.
 - **Le dossier [`evidence/C15/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C15) n'a reçu, depuis le 04/10, que le diagramme de flux du 02/11** : la pré-production réelle est prouvée ailleurs
   ([`deploy/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/deploy), [`evidence/sprint-2/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/sprint-2)).
 
@@ -832,7 +832,8 @@ C14.3, C14.4, C15.3, C17.3 et C17.4 passent à ✅ avec les preuves du 02/11 ; c
 critère, ne le contredit pas et reste écrite dans sa colonne. 1.2 (03/11) : C16.3, C17.11, C18.6 et C19.7 passent à ✅
 après l'envoi au formateur du 03/11 ; les lignes incomplètes s'écrivent « à consolider » (🟡), comme dans la grille des compétences.
 1.3 (04/11) et 1.4 (05/11) : mise à jour datée (§ 6.5), passages devenus faux et quatre incohérences corrigés ; aucun statut
-ne change. 1.5 (05/11) : PDF complet rendu en un seul document balisé ; texte inchangé.
+ne change. 1.5 (05/11) : PDF complet rendu en un seul document balisé ; texte inchangé. 1.6 (06/11) : une date précisée
+(§ 2.7, « au 02/11 ») et des titres en bleu, comme E2 ; aucun statut ne change.
 
 **Pourquoi ce total diffère du recomptage du 30/10 (30 ✅, 6 🟡).** Le recomptage comptait un ✅ dès qu'une preuve
 existait, ateliers des sprints compris ; ici, un ✅ exige tout le critère, sur les cinq écrans de la version présentée.
