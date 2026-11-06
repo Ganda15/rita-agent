@@ -14,6 +14,7 @@ import pytest
 
 from tests.test_frontend import code_sans_commentaires
 from tests.test_smoke_ui import serveur  # noqa: F401  (fixture : l'API servie en local)
+from tests.attente import attendre_que  # noqa: E402  (06/11 : la politique de contenu refuse wait_for_function)
 
 sync_playwright = pytest.importorskip("playwright.sync_api").sync_playwright
 
@@ -354,7 +355,7 @@ def _attendre_la_page(page):
     """Une page rendue par le cache n'émet pas `load` : `wait_for_load_state` l'attendrait sans fin (constaté le 04/11).
     On laisse le temps d'un éventuel rechargement, puis on attend que le document affiché soit complet."""
     page.wait_for_timeout(1500)
-    page.wait_for_function("document.readyState === 'complete'")
+    attendre_que(page, "document.readyState === 'complete'")
 
 
 def _revenir(page, sens):

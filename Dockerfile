@@ -112,4 +112,5 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
 # Pas de `--reload` : c'est un outil de développement. Il surveille le système de
 # fichiers en permanence et redémarre le serveur — dans une image livrée, c'est du
 # gaspillage et un risque.
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# `--no-server-header` (carte #75, constat S1, 06/11/2026) : la réponse n'annonce plus `Server: uvicorn`.
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--no-server-header"]
