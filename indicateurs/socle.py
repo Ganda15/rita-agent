@@ -133,7 +133,8 @@ def _executer(sql: str, parametres: tuple | None = None) -> list[dict[str, Any]]
     conversion et les règles métier, **pas** le SQL lui-même. Le SQL est vérifié
     par exécution réelle, tracée dans `evidence/`.
     """
-    url = os.environ.get("DATABASE_URL")
+    # Carte #76 : la même adresse que le reste de l'API (`POSTGRES_DSN_API`, le rôle `rita_api`, sinon `DATABASE_URL`).
+    url = os.environ.get("POSTGRES_DSN_API") or os.environ.get("DATABASE_URL")
     if not url:
         raise RuntimeError(
             "DATABASE_URL absente. Voir .env.example — le serveur écoute sur le port 5433."

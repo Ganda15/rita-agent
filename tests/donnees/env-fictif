@@ -2,3 +2,4 @@
 # dans les tests, sans jamais toucher au vrai .env. La cle est une des fausses cles tolerees par .gitleaks.toml.
 RITA_API_KEY=cle-de-reconstruction-ci-32-caracteres
 RITA_DEMO_ID=essai
+POSTGRES_PASSWORD_API=fictif

@@ -213,3 +213,36 @@ def test_la_surcharge_ne_publie_que_le_port_de_demonstration():
     assert sortie.returncode == 0, sortie.stderr[-400:]
     ports = _json.loads(sortie.stdout)["services"]["api"]["ports"]
     assert len(ports) == 1 and str(ports[0]["published"]) == "8011" and ports[0]["target"] == 8000
+
+
+# --- Carte #76, tâche T3 (plan validé le 06/11/2026) : l'API ne reçoit plus le mot de passe du propriétaire ------------
+# Elle lit la base avec `rita_api` (lecture, plus l'ajout au journal d'audit) ; les services qui écrivent (indexation,
+# initialisation, collecte) gardent `DATABASE_URL`. Une base neuve (démonstration, copie du poste) crée le rôle et son mot
+# de passe au démarrage ; en production, la base existe déjà : c'est l'étape du serveur, faite par Era (plan, § 4).
+def test_l_api_lit_la_base_avec_le_role_rita_api_et_sans_le_mot_de_passe_du_proprietaire(compose):
+    env = compose["services"]["api"]["environment"]
+    assert "DATABASE_URL" not in env
+    dsn = env["POSTGRES_DSN_API"]
+    assert dsn.startswith("postgresql://rita_api:${POSTGRES_PASSWORD_API:?") and dsn.endswith("@postgres:5432/rita")
+
+
+@pytest.mark.parametrize("service", ["indexation", "initialisation"])
+def test_les_services_qui_ecrivent_gardent_le_proprietaire(compose, service):
+    assert compose["services"][service]["environment"]["DATABASE_URL"].startswith("postgresql://rita:")
+
+
+def test_une_base_neuve_cree_le_role_rita_api_et_son_mot_de_passe_au_demarrage(compose):
+    postgres = compose["services"]["postgres"]
+    volumes = postgres["volumes"]
+    assert "./db/roles.sql:/docker-entrypoint-initdb.d/02-roles.sql:ro" in volumes
+    assert "./db/mot-de-passe-api.sh:/docker-entrypoint-initdb.d/03-mot-de-passe-api.sh:ro" in volumes
+    assert postgres["environment"]["POSTGRES_PASSWORD_API"].startswith("${POSTGRES_PASSWORD_API:?")
+
+
+def test_le_script_du_mot_de_passe_passe_par_une_variable_psql_et_garde_des_fins_de_ligne_unix():
+    script = (RACINE / "db" / "mot-de-passe-api.sh").read_bytes()
+    assert b"\r" not in script                       # un CRLF casserait `#!/bin/sh` dans le conteneur
+    texte = script.decode("utf-8")
+    assert texte.startswith("#!/bin/sh")
+    assert "ALTER ROLE rita_api PASSWORD :'mdp'" in texte   # le mot de passe n'est jamais collé dans le SQL
+    assert "$POSTGRES_PASSWORD_API" in texte

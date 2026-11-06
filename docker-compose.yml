@@ -35,6 +35,9 @@ services:
       # Mot de passe de pré-production locale. En production réelle il viendrait du
       # gestionnaire de secrets de l'hébergeur, jamais d'un fichier versionné.
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rita_preprod_local}
+      # Carte #76 (06/11/2026) : le mot de passe du rôle de l'API, posé au premier démarrage d'une base neuve par
+      # 03-mot-de-passe-api.sh. Obligatoire, sans valeur par défaut : un mot de passe connu de tous ne protège rien (S8).
+      POSTGRES_PASSWORD_API: ${POSTGRES_PASSWORD_API:?POSTGRES_PASSWORD_API absente - la definir dans le fichier d environnement}
       LANG: fr_FR.utf8
     volumes:
       # ⚠️ `/var/lib/postgresql` — SANS `/data`, et c'est imposé par PostgreSQL 18.
@@ -45,6 +48,9 @@ services:
       #    Constaté le 20/08/2026 en passant de 17 à 18, en local avant le serveur.
       - rita_pgdata_preprod:/var/lib/postgresql
       - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      # Carte #76 : les rôles (dont rita_api), puis le mot de passe de rita_api ; une base neuve seulement.
+      - ./db/roles.sql:/docker-entrypoint-initdb.d/02-roles.sql:ro
+      - ./db/mot-de-passe-api.sh:/docker-entrypoint-initdb.d/03-mot-de-passe-api.sh:ro
     # ⚠️ AUCUN port publié vers l'hôte, et c'est délibéré :
     #   1. la base n'a pas à être joignable depuis l'extérieur — seule l'API lui parle,
     #      par le réseau interne de Compose ;
@@ -75,7 +81,10 @@ services:
       # Le nom d'hôte `postgres` est celui du service ci-dessus : Compose le résout
       # sur son réseau interne. Le port est 5432 — celui du conteneur, pas le 5433
       # de l'installation native.
-      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:-rita_preprod_local}@postgres:5432/rita
+      # Carte #76 (06/11/2026) : l'API lit la base avec rita_api (lecture, plus l'ajout au journal d'audit), jamais avec
+      # le propriétaire : son mot de passe n'entre plus dans ce conteneur. Le préfixe POSTGRES_ est voulu : le pré-test
+      # de la livraison l'écarte déjà (deploy/deployer.py, env_du_pretest), sans modifier le script du serveur.
+      POSTGRES_DSN_API: postgresql://rita_api:${POSTGRES_PASSWORD_API:?POSTGRES_PASSWORD_API absente - la definir dans le fichier d environnement}@postgres:5432/rita
       # ⚠️ OBLIGATOIRE. Compose refuse de lancer le conteneur sans elle, et l'API ne peut
       # autoriser aucun accès protégé sans elle (OWASP API2). Elle est
       # lue depuis le `.env` de la machine, JAMAIS écrite ici.

@@ -55,7 +55,8 @@ l'ancienne version reste servie.
 ## 5. Après la livraison : ce qui prouve que c'est fait
 
 - `/health` répond ; les cinq écrans s'ouvrent ; un briefing passe.
-- `docker exec rita-api-preprod printenv DATABASE_URL` ne renvoie rien.
+- `docker exec rita-api-preprod sh -c 'test -z "$DATABASE_URL" && echo absente || echo PRESENTE'` répond `absente`
+  (jamais `printenv`, qui afficherait le mot de passe s'il était encore là).
 - Dans la base : `SELECT usename, count(*) FROM pg_stat_activity WHERE datname = 'rita' GROUP BY usename;` montre
   `rita_api` pour les connexions de l'API ; `rita` n'y apparaît que pendant un import ou une collecte.
 - Un appel de la passerelle MCP laisse sa ligne dans `mcp_calls` (l'écriture permise marche).
