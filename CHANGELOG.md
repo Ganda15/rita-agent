@@ -9,6 +9,13 @@
 
 ---
 
+## 2026-11-06 : E5 v0.9, mise en forme seule, pour `livrable-E5-v4`
+
+**Livrable.** E5 prend le style de titres d'E2 et d'E4 ; le texte, les 5 pages, les 29 liens et les 11 signets ne
+changent pas. La version remise reste sous `livrable-E5-v3`.
+
+---
+
 ## 2026-11-06 : E2 v1.2 et E4 v1.6, corrigés après double contrôle, pour `livrable-E2-v4` et `livrable-E4-v6`
 
 **Livrables et décision.** Après la remise du 05/11, Era fait relire E2 et E4 par un autre agent, et décide qu'aucun tag

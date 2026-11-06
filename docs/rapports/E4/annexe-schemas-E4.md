@@ -27,7 +27,7 @@ img.zoom{ display:block; max-height:12mm; margin:1mm 0 0; }
 
 # Annexe du rapport E4 : les schémas
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · compétences C14 à C19 · annexe du rapport E4, version 1.5, 5 novembre 2026
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · compétences C14 à C19 · annexe du rapport E4, version 1.6, 6 novembre 2026
 {: .identite }
 
 > Cette annexe montre les schémas que le rapport cite, chacun sur sa page,

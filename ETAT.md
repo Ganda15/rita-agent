@@ -21,10 +21,10 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ---
 
-## ▶️ 06/11, MIDI : E2 v1.2 ET E4 v1.6 POUR `livrable-E2-v4` ET `livrable-E4-v6`, APRÈS DOUBLE CONTRÔLE
+## ▶️ 06/11, MIDI : E2 v1.2, E4 v1.6 ET E5 v0.9 POUR `livrable-E2-v4`, `livrable-E4-v6` ET `livrable-E5-v4`, APRÈS DOUBLE CONTRÔLE
 
-**Prochaine action** : fusionner `rapports-style-bleu` dans `develop` puis dans `main`, et poser `livrable-E2-v4` puis
-`livrable-E4-v6`, un tag par push ; ensuite les répétitions (E1, puis E3 et E4, puis E2 et E5).
+**Prochaine action** : fusionner `rapports-style-bleu` dans `develop` puis dans `main`, et poser `livrable-E2-v4`,
+`livrable-E4-v6` puis `livrable-E5-v4`, un tag par push ; ensuite les répétitions (E1, puis E3 et E4, puis E2 et E5).
 
 - **E2 v1.2** (06/11) : trois précisions demandées par la relecture d'un autre agent. « En une minute » : aucun
   fournisseur de secours n'est activé pour le briefing dans la version présentée. § 4.2 : test présent, journal non
@@ -32,13 +32,16 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
   résultat, statut ni montant changé ; double contrôle favorable le 06/11 ; 20 pages avec l'annexe, 17 sans.
 - **E4 v1.6** (06/11) : une date précisée au § 2.7 (« Au 02/11, la production n'était vérifiée que par la page
   servie »), qui ne contredit plus le § 6.5 du 04/11. Double contrôle du 06/11 : une correction demandée, appliquée.
-  34 pages, 115 liens, 16 renvois et 68 signets inchangés ; aucun statut changé.
+  34 pages, 115 liens, 16 renvois et 68 signets inchangés ; aucun statut changé. L'annexe annonce aussi la version 1.6
+  (relecture du 06/11).
+- **E5 v0.9** (06/11) : mise en forme seule, les titres au même style ; texte, 5 pages, 29 liens et 11 signets
+  inchangés. Double contrôle demandé le 06/11.
 - **Le style des titres** (`scripts/rendre_pdf.py`, testé par `tests/test_rendre_pdf_titres.py`) : titres noirs sur
   bandeau #BFD7F2, sous-titres bleus sur #D6E6F7, bande bleu marine à gauche, sans filet ; rendu depuis la source, pas
   par retouche du PDF. E1, E3 et E5 le prendront à leur prochain rendu, sur demande d'Era seulement.
 - **Règle d'Era du 06/11** : avant tout tag, et avant un push ou une fusion qui le demande, un double contrôle par un
   autre agent.
-- **Les versions remises restent** sous `livrable-E2-v3` et `livrable-E4-v5`.
+- **Les versions remises restent** sous `livrable-E2-v3`, `livrable-E4-v5` et `livrable-E5-v3`.
 
 ## ▶️ 06/11 : CLÉ PAR CLIENT REPORTÉE APRÈS L'ORAL BLANC ; PRÉPARATION À FINIR LE 07/11, PUIS RÉPÉTITIONS
 
