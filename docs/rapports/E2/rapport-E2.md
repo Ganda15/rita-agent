@@ -16,7 +16,7 @@ h2#criteres, h2#criteres + p{ break-after:avoid; }
 
 # Rapport E2 : veille, choix d'un service de modèle, et son paramétrage
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 1.1, 5 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 1.2, 6 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
 {: .identite }
 
 > **En une minute.** RITA rédige en français un court briefing sur une valeur boursière, avec un modèle de langage
@@ -507,7 +507,7 @@ aurait donc appelé Claude, hors de la règle. La version de référence `d3a419
 et l'état du 14/10 n'est plus vérifiable.
 
 **Corrigé le 31/10.** Valeur par défaut `foundry` dans `src/llm.py`, `docker-compose.yml` et `.env.example`, test
-écrit d'abord et vu en échec (`d1cbb7b`) ; un second test vérifie que Compose et le code donnent le même ordre. Fusion
+présent ; journal non conservé (`d1cbb7b`) ; un second test vérifie que Compose et le code donnent le même ordre. Fusion
 dans `main` par la PR #170 (`97b329e`). La livraison a d'abord été **refusée deux fois par le serveur** : le fichier
 Compose de l'image différait de la copie installée à la main le 14/10, et le script de déploiement, qui tourne en
 `root`, refuse un fichier Compose non relu (`deploy/deployer.py`, `ComposeNonInstalle`). J'ai relu la différence et
@@ -526,7 +526,7 @@ def _ordre_fournisseurs() -> list[str]:
     return [nom.strip() for nom in ordre.split(",") if nom.strip()]
 ```
 
-Et son test (`tests/test_llm.py`, lignes 13 à 18), qui échouait avant la correction :
+Et son test (`tests/test_llm.py`, lignes 13 à 18), avec l'attente corrigée :
 
 ```python
 def test_ordre_fournisseurs_defaut(monkeypatch):
@@ -665,7 +665,7 @@ Auto-évaluation du 31 octobre 2026, revue le 1er novembre, complétée le 2 nov
 | C8.1 service accessible, avec authentification | ✅ | appels réels du 09/10, briefing en production du 21/10, clés hors du code (4.1) |
 | C8.2 configuré selon les besoins et les contraintes | 🟡 | configuration des replis corrigée le 31/10, après la version de référence ; vérifications contractuelles encore ouvertes (Microsoft, Mistral) ; aucun secours ; prompt corrigé non appliqué (4.2) |
 | C8.3 monitorage disponible opérationnel | ✅ | Langfuse et alertes en production, chaîne d'alerte prouvée le 23/10, vigie ; limites écrites (4.4) |
-| C8.4 documentation : accès, installation, tests, dépendances, données | ✅ | les quatre sujets couverts et testés contre le code ; PDF rendu de nouveau le 31/10 (4.5) |
+| C8.4 documentation : accès, installation, tests, dépendances, données | ✅ | les sujets couverts et testés contre le code ; PDF rendu de nouveau le 31/10 (4.5) |
 | C8.5 documentation communiquée, format accessible | ✅ | format préparé et contrôlé le 31/10, sans audit PDF/UA complet ; guide envoyé au formateur le 03/11, PDF joint (4.6) |
 
 **Décompte** : 16 ✅ · 4 🟡 · 0 ❌ sur 20. Historique : version 0.3 du 03/10, 6 · 13 · 1 ; version 0.4 du 31/10, 6 · 13 · 1 (C6.6 et C7.2 baissent, C6.7 et C8.3 montent) ; depuis la version 0.5 du 31/10, C7.2 repasse à ✅, une fois l'inventaire des services écrit (3.2). Version 0.7 du 01/11 : C6.3, C7.1, C7.3, C7.5 et C7.7 passent à ✅ après relecture contre le texte du
@@ -681,8 +681,9 @@ limite. Décision d'Era.
 
 1. **Remettre le guide d'exploitation** (C8.5) : fait le 03/11, par mail, PDF joint, preuve datée dans `evidence/C8/` ;
    réception confirmée par le formateur le 04/11 (`evidence/C8/reponse-formateur-2026-11-04.md`).
-2. **Le rapport** : relecture, PDF, tag `livrable-E2-v3` (cette version 1.1 ; la 1.0 reste sous `livrable-E2-v2`, la
-   0.9 sous `livrable-E2-v1`).
+2. **Le rapport** : relecture, PDF, tag `livrable-E2-v3` pour la version 1.1 remise le 05/11. Puis la version 1.2 du
+   06/11, tag `livrable-E2-v4` : deux précisions, en 4.2 et en section 5 (C8.4), et des titres en bleu marine, sans
+   changement de résultat, de statut ni de montant. La 1.0 reste sous `livrable-E2-v2`, la 0.9 sous `livrable-E2-v1`.
 
 **Ensuite.**
 
