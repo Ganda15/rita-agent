@@ -29,7 +29,8 @@ par un autre agent ; puis `develop` vers `main` (redéploie la production : acco
 
 - **E2 v1.3** (branche `e2-v1.3`) : retour du formateur du 06/11 appliqué ; briefing d'OR.PA et trace Langfuse du 06/11
   à 20 h 15, même référence `921b261e…`, en annexe A6 ; option B constatée en production (`097b201`). Grille :
-  19 ✅ · 1 🟡 (C8.2, décision de risque d'Era après l'oral blanc). E2 v1.2 n'est pas taguée.
+  19 ✅ · 1 🟡 (C8.2 : règle UE précisée par Era le 06/11 au soir et vérifiée, PR #214 ; reste la consigne de
+  l'écran Question à déployer). E2 v1.2 n'est pas taguée.
 - **Carte #74** (branche `eco-74-compression`, `dea68de` puis `33a3f10`) : compression et `favicon.ico`, mesurées avant et
   après sur les cinq écrans (`evidence/C17/mesures-2026-11-06/README.md`) : poids d'une première visite divisé par 2,2
   à 3,3 ; note EcoIndex presque inchangée, Indicateurs reste D (décision D6 ouverte). Non déployée.

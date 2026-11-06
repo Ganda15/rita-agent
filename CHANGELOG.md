@@ -9,6 +9,19 @@
 
 ---
 
+## 2026-11-06, nuit : la règle « UE seule » précisée par Era, et vérifiée service par service
+
+**Décision.** Aucun des deux sous-traitants (Microsoft pour Azure, ClickHouse pour Langfuse) ne garantit la lettre de la
+règle du 05/10 : leurs contrats prévoient des sorties de la région. Era précise la règle : services configurés dans
+leurs régions de l'UE, plus de promesse d'absence absolue de transfert, exceptions identifiées, garanties vérifiées,
+données limitées. Vérifié le soir même : DPA de Microsoft du 01/11/2026 et DPA de ClickHouse du 10/04/2026 relus ;
+Microsoft Corporation et ClickHouse, Inc. actives au Data Privacy Framework sur la liste officielle. Registre RGPD mis à
+jour par ajouts datés (PR #214). **Manque** : l'écran Question n'invitait pas à taire les données personnelles ; la
+consigne est écrite, pas encore en production. La décision ne rend aucun critère vert : E2 v1.3 garde C8.2 à
+consolider jusqu'à ce déploiement ; l'entrée ci-dessous, écrite plus tôt le même soir, disait la décision ouverte.
+
+---
+
 ## 2026-11-06, soir : E2 v1.3, le retour du formateur appliqué, pour `livrable-E2-v4`
 
 **Livrable et manque.** Le formateur demande le 06/11 un exemple de veille complet, des preuves visibles du service et
