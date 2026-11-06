@@ -34,6 +34,10 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
   servie »), qui ne contredit plus le § 6.5 du 04/11. Double contrôle du 06/11 : une correction demandée, appliquée.
   34 pages, 115 liens, 16 renvois et 68 signets inchangés ; aucun statut changé. L'annexe annonce aussi la version 1.6
   (relecture du 06/11).
+- **E3 v2.2** (06/11) : après double contrôle, les statuts de #73 (corrigé le 01/11, déployé le 02/11, vérification
+  manuelle à faire) et de #152 (intégré à `main` le 02/11, passerelle hors de l'image) et les sept contrôles de fusion
+  (dont `base`, depuis le 01/11) sont harmonisés, comme dans la copie relue du 04/11 ; titres au même style ; 20 pages,
+  106 liens, 47 signets ; aucun statut changé. Tag prévu : `livrable-E3-v5`.
 - **E5 v0.9** (06/11) : mise en forme seule, les titres au même style ; texte, 5 pages, 29 liens et 11 signets
   inchangés. Double contrôle demandé le 06/11.
 - **Le style des titres** (`scripts/rendre_pdf.py`, testé par `tests/test_rendre_pdf_titres.py`) : titres noirs sur

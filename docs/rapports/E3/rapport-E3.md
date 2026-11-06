@@ -10,7 +10,8 @@
 td{ padding-top:1.5pt; padding-bottom:1.5pt; }
 hr{ display:none; }
 h2#s8, h2#s9, h2#s10, h2#s11, h2#glossaire{ margin-top:10pt; }
-h2#s10 ~ h3{ margin-top:3pt; }
+h2{ margin:12pt 0 4pt; } h3{ margin:7pt 0 2pt; }
+h2#s10 ~ h3{ margin-top:2pt; padding-top:0; padding-bottom:0; }
 h2#s10 ~ table{ margin-bottom:4pt; }
 h2#glossaire + table, h2#glossaire + table tbody{ display:block; }
 h2#glossaire + table thead{ display:none; }
@@ -24,7 +25,7 @@ h2#glossaire + table td:first-child::after{ content:" : "; }
 
 # Rapport E3 : l'API du modèle, son intégration, son monitorage, ses tests et sa chaîne de livraison
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C9 à C13 · version 2.1, 3 novembre 2026 ; état décrit : 24 octobre 2026, changements datés jusqu'au 3 novembre · code : [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4), [tag du livrable](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/jury/README.md) (dépôt privé : le formateur y a accès ; l'accès des examinateurs est demandé au formateur)
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C9 à C13 · version 2.2, 6 novembre 2026 ; état décrit : 24 octobre 2026, évolutions datées · code : [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4), [code et preuves figés](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/jury/README.md) (dépôt privé : le formateur y a accès ; l'accès des examinateurs est demandé au formateur)
 {: .identite }
 
 > **En une minute.** RITA aide un investisseur particulier à comprendre les informations disponibles sur une action : il demande un briefing pour une valeur, ou il pose une question sur les articles collectés. Les deux textes sont rédigés par un modèle de langage fourni, que je n'entraîne pas. Ce rapport montre ce qui entoure ce modèle : l'API qui l'expose (C9), l'application qui l'utilise (C10), sa surveillance (C11), ses tests (C12) et sa livraison continue (C13).
@@ -164,9 +165,9 @@ L'API a deux clients dans le dépôt, et tous deux passent par HTTP avec la clé
 
 ![Une demande de briefing, de l'écran au modèle et retour](schemas/E3-integration-briefing.png){: style="width:85%" }
 
-*Figure 2. Une demande de briefing depuis l'écran, en cinq temps, et ce que l'écran fait de chaque réponse qui n'est pas un briefing (aucune réponse, 403, 422, 429, 502 et 500). En pointillé, les écarts connus : le message générique d'une panne totale (#75) et la clé gardée trop tôt (#73). Source éditable : [`schemas/E3-integration-briefing.drawio`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/rapports/E3/schemas/E3-integration-briefing.drawio).*
+*Figure 2. Une demande de briefing depuis l'écran, en cinq temps, et ce que l'écran fait de chaque réponse qui n'est pas un briefing (aucune réponse, 403, 422, 429, 502 et 500). Écarts au 24/10 : le message générique d'une panne totale (#75), la clé gardée trop tôt (#73, corrigée depuis ; § 4.3). Source éditable : [`schemas/E3-integration-briefing.drawio`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/rapports/E3/schemas/E3-integration-briefing.drawio).*
 
-**La passerelle MCP** ([`passerelle_mcp/serveur.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/passerelle_mcp/serveur.py)) : MCP (*Model Context Protocol*) est le protocole qui décrit des outils à un modèle de langage. La passerelle expose trois outils en lecture seule (`rita_fraicheur`, `rita_portefeuille`, `rita_indicateurs`), avec l'annotation `read_only_hint`, et appelle l'API REST par HTTP avec `X-API-Key`. Passer par HTTP plutôt que par les modules fait de la passerelle un vrai client, soumis au refus 403, et évite deux chemins d'accès aux données qui divergeraient. Le formateur a rendu le MCP obligatoire le 28 août 2026. Preuve : [`evidence/C10/preuve-passerelle-mcp.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/evidence/C10/preuve-passerelle-mcp.md). `rita_portefeuille` exige le mode démonstration et compare les couples (ticker, quantité) servis à ceux du jeu d'exemple ; sinon il refuse (`NOT_AUTHORIZED`) sans exposer les données. **Défaut connu (#152, ouvert)** : l'import écarte les valeurs hors de l'univers suivi, si bien que 7 positions arrivent en base contre 10 lignes gardées dans le fichier d'exemple ; le verrou refuse donc aussi le jeu de démonstration importé. Il échoue fermé : aucune donnée ne sort, mais l'outil ne rend pas ce portefeuille. Les tests passaient parce qu'ils simulent la réponse de l'API. Chaque appel d'outil déclaré est journalisé dans la table `mcp_calls` (statut, code d'erreur, durée, jamais le contenu) ; si la base ne répond pas, l'appel n'est pas bloqué et l'échec d'écriture est compté ([`db/audit_mcp.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/db/audit_mcp.py)). Les refus pris dans la passerelle sont déposés par `POST /audit/mcp`.
+**La passerelle MCP** ([`passerelle_mcp/serveur.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/passerelle_mcp/serveur.py)) : MCP (*Model Context Protocol*) est le protocole qui décrit des outils à un modèle de langage. La passerelle expose trois outils en lecture seule (`rita_fraicheur`, `rita_portefeuille`, `rita_indicateurs`), avec l'annotation `read_only_hint`, et appelle l'API REST par HTTP avec `X-API-Key`. Passer par HTTP plutôt que par les modules fait de la passerelle un vrai client, soumis au refus 403, et évite deux chemins d'accès aux données qui divergeraient. Le formateur a rendu le MCP obligatoire le 28 août 2026. Preuve : [`evidence/C10/preuve-passerelle-mcp.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/evidence/C10/preuve-passerelle-mcp.md). `rita_portefeuille` exige le mode démonstration et compare les couples (ticker, quantité) servis à ceux du jeu d'exemple ; sinon il refuse (`NOT_AUTHORIZED`) sans exposer les données. **Défaut constaté au 24 octobre (#152)** : l'import ne gardait que 7 des 10 positions du fichier d'exemple ; le verrou refusait donc le portefeuille de démonstration, sans exposer de données. Les tests simulaient la réponse de l'API. Corrigé le 1er novembre avec un test d'import réel, intégré à `main` le 2 ; la passerelle reste hors de l'image de production de l'API. Chaque appel d'outil déclaré est journalisé dans la table `mcp_calls` (statut, code d'erreur, durée, jamais le contenu) ; si la base ne répond pas, l'appel n'est pas bloqué et l'échec d'écriture est compté ([`db/audit_mcp.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/db/audit_mcp.py)). Les refus pris dans la passerelle sont déposés par `POST /audit/mcp`.
 
 ### 4.2 Les tests d'intégration
 
@@ -184,8 +185,8 @@ Deux hooks de l'assistant de développement ([`.claude/hooks/`](https://github.c
 
 ### 4.3 Ce qui manque, C10
 
-- **La clé gardée avant d'avoir servi (#73)** : non corrigé au 24 octobre ; corrigé le 1er novembre sur `develop`, tests d'abord, CI verte, pas encore en production.
-- **Le verrou de `rita_portefeuille` refusait aussi le jeu de démonstration importé (#152)** : corrigé le 1er novembre sur `develop`, avec un test qui rejoue l'import réel ; pas encore en production.
+- **La clé gardée avant d'avoir servi (#73)** : défaut corrigé le 1er novembre, tests d'abord, CI verte ; déployé le 2 novembre. Vérification manuelle en production à effectuer.
+- **Le verrou de `rita_portefeuille` (#152)** : corrigé le 1er novembre, avec un test d'import réel ; intégré à `main` le 2. Passerelle hors de l'image de production de l'API.
 - Les trois premiers écrans ont leurs spécifications et maquettes ([`evidence/C14/preuve-specifications-ecrans-2-et-3.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/evidence/C14/preuve-specifications-ecrans-2-et-3.md)) ; l'écran des questions suit les critères de [`docs/sprint-3/SPEC.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/sprint-3/SPEC.md) ; le tableau de bord a la sienne depuis le 2 novembre, écrite après le code ([`evidence/C14/preuve-specifications-ecrans-4-et-5.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/evidence/C14/preuve-specifications-ecrans-4-et-5.md)).
 - La passerelle MCP n'offre pas d'outil de briefing, par choix (un outil qui déclenche un appel payant demande une politique de coût d'abord) ; le quatrième outil du chapitre « Données », `search_articles`, n'existe pas.
 
@@ -417,7 +418,7 @@ Le modèle étant fourni par une API, la chaîne n'a pas d'étape d'entraînemen
 
 | Fichier | Déclencheur | Rôle |
 |---|---|---|
-| `test.yml` | chaque poussée et pull request sur `main` et `develop` | `pytest` : d'abord l'étape « Tester les données (collecte, nettoyage, import, RGPD) », 19 fichiers, puis la suite avec couverture ; `evals` : les garde-fous mesurés et les portes non compensables |
+| `test.yml` | chaque poussée et pull request sur `main` et `develop` | `pytest` : d'abord l'étape « Tester les données (collecte, nettoyage, import, RGPD) », 19 fichiers, puis la suite avec couverture ; `evals` : garde-fous et portes non compensables ; depuis le 01/11, `base` : PostgreSQL réel |
 | `livraison.yml` | poussée, pull request, tag `livrable-*` | lint, recherche de secrets, construction et vérification de l'image ; publication après une fusion dans `main` ou sur un tag ; après une fusion seulement, livraison au serveur |
 | `revue-pr.yml` | chaque pull request vers `main` | relecture adversariale automatisée, avec [`AGENTS.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/AGENTS.md) et [`CLAUDE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/CLAUDE.md) comme grille |
 | `retour-arriere.yml`, `ingestion.yml` | bouton manuel, avec son nom et le motif | remettre la version précédente ; rafraîchir les articles et l'index de la production |
@@ -434,11 +435,11 @@ Le modèle étant fourni par une API, la chaîne n'a pas d'étape d'entraînemen
 
 ![La chaîne de livraison continue, du poste à la production](schemas/E3-chaine-livraison.png){: style="width:85%" }
 
-*Figure 5. Les sept workflows, la règle de `main`, le serveur, et ce qui n'est pas construit. Source éditable : [`schemas/E3-chaine-livraison.drawio`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/rapports/E3/schemas/E3-chaine-livraison.drawio) ; détail : [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/CI-CD.md).*
+*Figure 5. État au 24/10 : sept workflows, règle de `main` et serveur. Depuis le 01/11 : sept contrôles exigés, dont `base`. Source éditable : [`schemas/E3-chaine-livraison.drawio`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/rapports/E3/schemas/E3-chaine-livraison.drawio) ; détail : [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/CI-CD.md).*
 
 **Mesuré** : le 24 octobre, la version N18 (`b547cbf`) est allée de la fusion au service en 9 minutes 2 secondes, sans intervention (passage `40083432816`). Le **retour arrière** est un bouton : répété le 14 octobre (28 s de bout en bout) et le 15 octobre (35 s), il remet la version précédente avec sa configuration et son index ; pendant la bascule du 14, la production a répondu 502 pendant environ 7 s ([`evidence/sprint-2/N1-retour-arriere-2026-10-14.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/evidence/sprint-2/N1-retour-arriere-2026-10-14.md)). La procédure, ses résultats et ses limites sont écrits dans [`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/exploitation.md).
 
-`main` ne bouge que par une pull request depuis `develop`. Sur le poste, un hook `pre-push` refuse la poussée directe. Sur GitHub, le ruleset « main protegee » exige une pull request et **six** checks verts (`lint`, `secrets`, `pytest`, `evals`, `construire-et-publier`, `revue`), interdit suppression et force-push, sans contournement ; un second ruleset interdit de déplacer ou supprimer un tag `livrable-*` ([`evidence/C19/ruleset-main-2026-10-14.json`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/evidence/C19/ruleset-main-2026-10-14.json)). La chaîne a déjà refusé à bon droit : la PR #93, cassée exprès le 15 octobre, n'a jamais pu être fusionnée ([`evidence/sprint-2/journaux/pr-93-commit-casse.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/evidence/sprint-2/journaux/pr-93-commit-casse.txt)) ; le tag `livrable-sprint-4-v1`, absent du `CHANGELOG`, a été refusé par la porte de livraison le 21 octobre.
+`main` ne bouge que par une pull request depuis `develop`. Sur le poste, un hook `pre-push` refuse la poussée directe. Sur GitHub, le ruleset « main protegee » exige une pull request et **sept** checks verts depuis le 01/11 (`lint`, `secrets`, `pytest`, `evals`, `base`, `construire-et-publier`, `revue` ; six au 14/10), interdit suppression et force-push, sans contournement ; un second ruleset interdit de déplacer ou supprimer un tag `livrable-*` ([`evidence/C19/ruleset-main-2026-10-14.json`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/evidence/C19/ruleset-main-2026-10-14.json)). La chaîne a déjà refusé à bon droit : la PR #93, cassée exprès le 15 octobre, n'a jamais pu être fusionnée ([`evidence/sprint-2/journaux/pr-93-commit-casse.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/evidence/sprint-2/journaux/pr-93-commit-casse.txt)) ; le tag `livrable-sprint-4-v1`, absent du `CHANGELOG`, a été refusé par la porte de livraison le 21 octobre.
 
 ### 7.3 L'image
 
@@ -463,7 +464,7 @@ Velmo (juillet) : les trois emplacements de garde-fou et les deux chiffres toujo
 
 ## 9. Reproduire {: #s9 }
 
-**Cette version** : 2.1, 3 novembre 2026 : les lignes incomplètes s'écrivent « à consolider » (🟡), comme dans la grille des compétences, et deux phrases sont corrigées (l'accès des examinateurs en en-tête, la clé d'exercice en 3.2 et 3.3). La précédente est le tag `livrable-E3-v3` (version 2.0, 2 novembre, après le retour écrit du formateur sur l'oral blanc du 30 octobre).
+**Cette version** : 2.2, 6 novembre 2026 : statuts de #73 et #152 et sept contrôles de fusion harmonisés, titres au nouveau style ; mesures et auto-évaluation historiques conservées. Code et preuves : `livrable-E3-v4`. La version 2.1 du 3 novembre (lignes incomplètes en « à consolider », accès des examinateurs en en-tête, clé d'exercice en 3.2 et 3.3) est figée à ce tag ; la version 2.0 au tag `livrable-E3-v3` (2 novembre, après le retour écrit du formateur sur l'oral blanc du 30 octobre).
 
 **Traçabilité des mesures** : du 2 au 24 octobre 2026, chacune avec sa date, sa commande, et pour la CI sa branche, son commit et son passage ; la production servait alors `b547cbf`.
 
@@ -484,7 +485,7 @@ Les garde-fous se mesurent sans base ; la suite complète et la mesure de recher
 
 ## 10. Les 44 critères, regroupés en 39 lignes {: #s10 }
 
-État au 24 octobre 2026. ✅ tenu avec preuve · 🟡 à consolider · ❌ absent. Une auto-évaluation, pas une validation : seul le jury valide.
+Auto-évaluation du 24/10, revue le 27/10 ; preuves actualisées. ✅ tenu avec preuve · 🟡 à consolider · ❌ absent. Une auto-évaluation, pas une validation : seul le jury valide.
 
 **Accessibilité de la documentation** (une ligne de C9, C11, C12 et C13) : documents en Markdown à titres hiérarchisés ; ce rapport est un PDF balisé pour un lecteur d'écran, en français déclaré, figures avec texte alternatif, tableaux en texte. Limites : aucun essai avec un lecteur d'écran ; la page `/docs` de FastAPI n'est pas auditée.
 
@@ -508,8 +509,8 @@ Les garde-fous se mesurent sans base ; la suite complète et la mesure de recher
 | L'application de départ est installée et fonctionnelle en développement | ✅ | [`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/exploitation.md), voies courte et longue ; copie du poste du sprint 5 |
 | La communication avec l'API fonctionne | ✅ | `test_frontend.py`, `test_smoke_ui.py`, `test_passerelle_mcp.py` ; production |
 | Authentification et renouvellement intégrés selon la documentation | ✅ | clé saisie, `sessionStorage`, 403 traité ; pas de jeton expirant dans le contrat, donc pas de renouvellement |
-| Tous les points de terminaison concernés sont intégrés | 🟡 | onze chemins appelés par les écrans, dont `/briefing` et `/question` : l'intégration du modèle est vérifiée ; la passerelle MCP appelle trois routes de données ; son parcours portefeuille ne fonctionnait pas sur le jeu de démonstration importé (#152), corrigé le 1er novembre sur `develop`, pas encore en production |
-| Adaptations d'interface conformes aux spécifications | 🟡 | écrans spécifiés ([`evidence/C14/`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4/evidence/C14), [`docs/sprint-3/SPEC.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/sprint-3/SPEC.md)) ; la clé gardée trop tôt sur trois écrans (#73), non corrigé |
+| Tous les points de terminaison concernés sont intégrés | 🟡 | onze chemins appelés par les écrans, dont `/briefing` et `/question` ; la passerelle MCP appelle trois routes de données. #152 corrigé le 01/11 avec un test d'import réel, intégré à `main` le 02/11 ; passerelle hors de l'image de production de l'API |
+| Adaptations d'interface conformes aux spécifications | 🟡 | écrans spécifiés ([`evidence/C14/`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4/evidence/C14), [`docs/sprint-3/SPEC.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/sprint-3/SPEC.md)) ; #73 corrigé le 01/11, déployé le 02/11 ; vérification manuelle en production à effectuer |
 | Tests d'intégration sur tous les points de terminaison exploités | ✅ | 92 + 13 + 32 + 19 tests, plus 26 sur le journal des appels |
 | Les tests s'exécutent en totalité, résultats interprétés | ✅ | suite verte |
 | Sources versionnées sur le dépôt de l'application | ✅ | même dépôt |

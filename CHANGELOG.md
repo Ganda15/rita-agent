@@ -9,6 +9,17 @@
 
 ---
 
+## 2026-11-06 : E3 v2.2, statuts de #73 et #152 et contrôles de fusion harmonisés, pour `livrable-E3-v5`
+
+**Livrable.** Le double contrôle du 06/11 a montré que la v2.1 du dépôt gardait des formulations anciennes, corrigées
+seulement dans une copie PDF du 04/11 : #73 « non corrigé », #152 « pas encore en production », six contrôles de fusion au
+lieu de sept. La v2.2 reporte ces corrections dans la source (#73 corrigé le 01/11 et déployé le 02/11, vérification manuelle
+à faire ; #152 intégré à `main` le 02/11, la passerelle restant hors de l'image de production ; sept contrôles depuis le
+01/11, dont `base`) et prend le style des titres. Aucun statut ne change ; code et preuves restent sous `livrable-E3-v4`.
+**Leçon** : une correction faite dans une copie PDF doit être reportée dans la source le jour même.
+
+---
+
 ## 2026-11-06 : E5 v0.9, mise en forme seule, pour `livrable-E5-v4`
 
 **Livrable.** E5 prend le style de titres d'E2 et d'E4 ; le texte, les 5 pages, les 29 liens et les 11 signets ne
