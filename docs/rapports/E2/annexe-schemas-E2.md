@@ -142,8 +142,10 @@ forte baisse entre un sommet et le creux qui le suit, sur un an.
 ## A6. Les preuves du service : accès, briefing, trace, portail Azure (C8) {: #a6 }
 
 Le service s'essaie à <https://178-104-184-125.sslip.io/briefing.html> ; la clé est transmise à part au jury. Captures du
-06/11 ; nom de la ressource Azure, adresse, identifiants, e-mail et clé publique de Langfuse masqués ; captures entières
-dans `evidence/C8/captures-2026-11-06/`.
+06/11 ; nom de la ressource Azure, adresse, identifiants, e-mail et clé publique de Langfuse masqués : aucun ne sert à
+la preuve, un tag `livrable-*` ne s'efface plus, et la clé publique suffit à envoyer des scores dans le projet Langfuse.
+Tout ce qui prouve le critère reste lisible ; les originaux se montrent en direct à l'oral. Captures entières dans
+`evidence/C8/captures-2026-11-06/`.
 {: .legende }
 
 ![Capture 6 : écran de connexion du Briefing en production, la clé d'API est masquée par des points](../../../evidence/C8/captures-2026-11-06/extraits/rita-connexion-cle-masquee.png){: .cadre }
