@@ -22,7 +22,8 @@ from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, Security
-from fastapi.responses import JSONResponse
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 from starlette.background import BackgroundTask, BackgroundTasks
 from typing import Literal
@@ -108,6 +109,12 @@ app = FastAPI(
 )
 
 API_KEY_HEADER = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+
+# Éco-conception, carte #74 (F1) : la compression est déclarée AVANT le middleware ci-dessous, pour être la plus proche
+# de l'application : elle voit la réponse entière et respecte son seuil de 1 000 octets. Déclarée après, elle recevait
+# la réponse en morceaux et compressait tout, même les 388 octets de `/health` (mesuré le 06/11).
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 
 @app.middleware("http")
@@ -501,6 +508,16 @@ def briefing(ticker: str = Query(min_length=1, max_length=20), api_key: str = Se
         # Refonte 001 (R4) : qui a rédigé, d'après quel cours et quelles sources (construire_diagnostic).
         "diagnostic": construire_diagnostic(resultat, duree_ms, aujourd_hui_a_paris()),
     }
+
+
+# --- Éco-conception, carte #74 (mesure Lighthouse et EcoIndex du 03/10, constats F1 et F3) ---------------------------
+# F1 : compresser les réponses quand le navigateur l'accepte ; gain mesuré le 03/10 en gzip : statique -62 %, JSON des
+# indicateurs -84 %. Sous 1 000 octets, la compression coûterait plus qu'elle ne fait gagner (`/health` reste brut).
+# F3 : `favicon.ico` répondait 404 (une erreur dans la console à chaque page) ; le logo de RITA sert d'icône.
+# La compression elle-même est déclarée plus haut, avant `attribuer_un_identifiant_de_requete` (voir là-bas).
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon() -> FileResponse:
+    return FileResponse(Path(__file__).parent.parent / "frontend" / "logo-rita-clair.png", media_type="image/png")
 
 
 # --- L'interface (C10, C17) --------------------------------------------------
