@@ -46,7 +46,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:-rita_preprod_local}@postgres:5432/rita
+      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD absente - la definir dans le fichier d environnement}@postgres:5432/rita
     command: ["python", "-m", "pipelines.ingest", "--etapes", "cotations", "--strict"]
     read_only: true
     tmpfs:

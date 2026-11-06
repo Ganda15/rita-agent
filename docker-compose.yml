@@ -32,9 +32,10 @@ services:
     environment:
       POSTGRES_DB: rita
       POSTGRES_USER: rita
-      # Mot de passe de pré-production locale. En production réelle il viendrait du
-      # gestionnaire de secrets de l'hébergeur, jamais d'un fichier versionné.
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rita_preprod_local}
+      # Constat S8 (corrigé le 06/11/2026) : plus de valeur de secours publique (une valeur fixe, lisible dans le
+      # dépôt). Le mot de passe vient du fichier d'environnement de la machine ; sans lui, Compose refuse de démarrer.
+      # Le serveur a sa propre ligne POSTGRES_PASSWORD (vérifié par Era le 06/11, sans afficher la valeur).
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD absente - la definir dans le fichier d environnement}
       # Carte #76 (06/11/2026) : le mot de passe du rôle de l'API, posé au premier démarrage d'une base neuve par
       # 03-mot-de-passe-api.sh. Obligatoire, sans valeur par défaut : un mot de passe connu de tous ne protège rien (S8).
       POSTGRES_PASSWORD_API: ${POSTGRES_PASSWORD_API:?POSTGRES_PASSWORD_API absente - la definir dans le fichier d environnement}
@@ -148,7 +149,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:-rita_preprod_local}@postgres:5432/rita
+      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD absente - la definir dans le fichier d environnement}@postgres:5432/rita
     volumes:
       - rita_chroma_preprod:/app/data/chroma
       # Revues Codex + Claude, PR #13 : ChromaDB télécharge son modèle d'embedding (all-MiniLM-L6-v2,
@@ -176,7 +177,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:-rita_preprod_local}@postgres:5432/rita
+      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD absente - la definir dans le fichier d environnement}@postgres:5432/rita
     volumes:
       - ./data/demo:/app/data/demo:ro
       - rita_chroma_preprod:/app/data/chroma
