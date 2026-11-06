@@ -106,6 +106,39 @@ Un **scénario** : ce que coûterait un mois d'exploitation de 30 jours, à un v
 Sur la ressource Azure du projet, le modèle est déclaré à 0 € (ligne Azure du tableau) : les 2,31 $ sont le prix public
 de ces appels, que le projet ne paie pas aujourd'hui.
 
+### Consommation Azure : estimation indicative (complément du 06/11/2026)
+
+Relevé le 06/11/2026 dans Microsoft Foundry, onglet Surveillance du déploiement `gpt-5.4-dzs-eu` (zone de données UE,
+créé le 09/10), sur la plage affichée du 06/10 au 06/11/2026. Ce déploiement ne sert qu'à RITA, tests et
+démonstrations compris (déclaration d'Era du 06/11).
+
+| Mesure affichée par le portail | Valeur |
+|---|---|
+| Requêtes | 735 |
+| Jetons d'entrée | environ 2,25 millions, 3 056 en moyenne par requête |
+| Jetons de sortie | environ 304 240, 414 en moyenne par requête |
+| Coût estimé par Azure | « Non disponible » |
+
+**Le calcul**, au prix public relevé le 03/10 pour le déploiement mondial (2,50 USD par million de jetons d'entrée,
+15,00 en sortie, `evidence/C7/prix-et-environnement-2026-10-03.md`) : 2,25 × 2,50 + 0,304 × 15,00, soit **environ
+10 USD**. C'est une estimation indicative, pas une facture :
+
+- le portail signale des données partielles et n'affiche aucun coût ; la facturation reste à vérifier, et le montant
+  « 0 € déclaré » ne devient pas « 0 € vérifié » ;
+- le prix exact de la zone de données UE n'est pas confirmé, et la remise sur les jetons déjà mis en cache n'est pas
+  déduite ;
+- l'ancien déploiement mondial, supprimé, est exclu de ces 10 USD ; les 30 appels qu'il a servis pour le banc du
+  03/10 (0,14 USD) sont documentés séparément (`docs/rapports/E2/rapport-E2.md:233`).
+
+Ces 10 USD ne s'ajoutent pas aux dépenses payées du premier montant. Ils ne remplacent pas non plus les 0,0047 USD
+par briefing du banc du 03/10 : la période et le périmètre diffèrent.
+
+**Ce que le relevé ne dit pas sur le scénario mensuel.** Le relevé Azure comprend le développement, les sprints, les
+tests et les démonstrations. Sa consommation moyenne par requête (3 056 jetons d'entrée et 414 de sortie) n'est donc pas
+directement comparable à celle d'un briefing du banc du 03/10 (644 et 204, `evidence/C7/resultats-2026-10-03.jsonl`).
+Le scénario mensuel reste estimé à 2,31 USD pour 300 briefings et 150 questions, selon les hypothèses du tableau ; ce
+relevé ne permet pas encore de le confirmer.
+
 ## L'évolution prévue avant le jury : une clé par client (C5)
 
 **Au 03/11/2026** : une seule clé d'API partagée (`X-API-Key`, variable `RITA_API_KEY`), 403 sans elle (`api/main.py:208`).
@@ -114,6 +147,13 @@ Révoquer la clé coupe tout le monde.
 **Prévu avant le jury** : une clé par client, révocable seule. Test d'acceptation : après la révocation de la clé du
 client A, A reçoit **403** et le client B garde son accès (**200**). Estimation : **1 à 2 journées**, soit **400 à
 800 € HT** au TJM de 400 € HT. Ce coût n'entre dans aucun des trois montants : c'est un travail à venir.
+
+**Mise à jour du 06/11/2026** : l'évolution est spécifiée et planifiée (`specs/002-cle-par-client/`, spécification
+validée le 05/11, plan v2 du 06/11). Le plan estime **32,5 h, environ 4 journées, soit environ 1 700 € HT** au même
+TJM : la révocation sans redémarrage, la migration des consommateurs et la protection du retour arrière n'étaient pas
+comptées le 03/11. L'estimation du 03/11 reste ci-dessus, datée. **Implémentation reportée après l'oral blanc des
+12-13/11, réévaluée le 14/11** (décision d'Era). C'est toujours une estimation de travail à venir, ni une facture ni
+du temps passé.
 
 ## 📖 Glossaire
 
@@ -129,3 +169,6 @@ client A, A reçoit **403** et le client B garde son accès (**200**). Estimatio
 | **Plafond de dépense** | limite fixée par l'utilisateur ; ce n'est pas une somme payée |
 | **Prix public** | tarif affiché par le fournisseur ; sert à estimer, pas à prouver une dépense |
 | **Affectation** | part d'une dépense attribuée à RITA, selon une règle déclarée |
+| **Jeton** | morceau de texte, souvent une partie de mot, que le modèle lit (entrée) ou écrit (sortie) ; le prix se compte par million de jetons |
+| **Mise en cache** | réutilisation par le fournisseur d'un début de prompt déjà reçu ; ces jetons d'entrée sont facturés moins cher |
+| **Zone de données UE** | type de déploiement Azure qui garde le traitement dans l'Union européenne ; son prix peut différer du déploiement mondial |

@@ -9,6 +9,17 @@
 
 ---
 
+## 2026-11-06 : la clé par client est reportée après l'oral blanc, présentée comme une limite
+
+**Décision structurante** (Era) : le retour écrit du formateur du 03/11 demandait une clé par client avant le jury, ou
+une limite expliquée avec sa solution et son coût. La spécification 002 est validée le 05/11 et son plan relu deux fois
+(v2 du 06/11) : 32,5 h, environ 4 journées et 1 700 € HT, contre 1 à 2 journées estimées le 03/11 (`docs/BUDGET.md`).
+L'implémentation est **reportée après l'oral blanc des 12-13/11 et réévaluée le 14/11** ; priorité à la fin de la
+préparation le 07/11, puis aux répétitions. D'ici là, la clé partagée est présentée comme une limite, avec sa solution
+(`specs/002-cle-par-client/`) et son estimation. Aucun rapport figé n'est modifié.
+
+---
+
 ## 2026-11-05, 22 h : E2 v1.1 annonce un test « vu en échec » dont le journal n'est pas conservé
 
 **Manque découvert** (relecture des affirmations d'E2 pendant la préparation de l'oral) : le rapport E2 v1.1 (§ 4.2, tag
