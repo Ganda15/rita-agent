@@ -1,6 +1,6 @@
 # Plan de la carte #76 : l'API lit la base avec son propre rôle, plus avec le propriétaire
 
-> Écrit le 06/11/2026, **à valider par Era avant tout code** (carte #76 ; décision d'Era du 06/11 : avant l'oral blanc).
+> Écrit le 06/11/2026, **validé par Era le 06/11 (« ok plan »)**, avec l'essai sur une copie ajouté (T5) (carte #76 ; décision d'Era du 06/11 : avant l'oral blanc).
 > Source de l'écart : `evidence/C17/preuve-droits-acces-2026-10-03.md`, § 4.2 et § 6 ; matrice d'accès du chapitre
 > « Données », § 3.5, validée par le formateur le 03/10 : l'API et le graphe **lisent** les tables nécessaires et
 > **écrivent** le seul journal d'audit `mcp_calls`.
@@ -39,8 +39,9 @@
 | T2 | `tests/test_dsn_api.py` : sans `POSTGRES_DSN_API`, l'adresse est `DATABASE_URL` ; avec, c'est elle ; `indicateurs/socle.py` donne la même | `sources/database.py`, `indicateurs/socle.py` | suite complète verte |
 | T3 | `tests/test_docker_compose.py` : le service `api` a `POSTGRES_DSN_API` avec `rita_api@` et n'a plus `DATABASE_URL` ; les services d'ingestion gardent `DATABASE_URL` | `docker-compose.yml` | suite complète verte |
 | T4 | `docs/exploitation.md` : la procédure du serveur ci-dessous, testée comme le reste du guide | guide | `tests/test_exploitation_doc.py` |
+| T5 | **Essai sur une copie, avant la production** (demande d'Era du 06/11) : une base PostgreSQL jetable, liée à `127.0.0.1` seulement, avec le schéma, les rôles et le jeu de démonstration ; l'API lancée avec `POSTGRES_DSN_API` sur `rita_api` | aucun | les cinq écrans, un briefing, une question et un appel de la passerelle MCP fonctionnent ; un `UPDATE` sur `cotation` est refusé ; la ligne de `mcp_calls` est écrite ; résultat noté dans `evidence/C17/` |
 
-## 4. Ce qu'Era fait sur le serveur, AVANT la fusion dans `main`
+## 4. Ce qu'Era fait sur le serveur, AVANT la fusion dans `main`, et seulement si T1 à T5 sont verts
 
 🖧 **LE SERVEUR** (après `ssh`), dans cet ordre :
 
