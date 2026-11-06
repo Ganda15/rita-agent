@@ -28,8 +28,8 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 > fois plus courte, aucun frais n'est déclaré par le candidat, et son déploiement est configuré en *Data Zone Standard
 > EU*, comme la règle du projet le demande ; trois appels du 09/10 ont indiqué Sweden Central. Cela documente notre
 > configuration, pas l'ensemble des traitements contractuels. Limites : le banc a été mesuré sur le déploiement
-> mondial, pas sur celui de la zone UE ; la note de français ne départage pas les services ; aucun secours n'existe si
-> Azure tombe. Le rapport décrit aussi la veille qui nourrit ces choix (C6) et le paramétrage du service retenu (C8).
+> mondial, pas sur celui de la zone UE ; la note de français ne départage pas les services ; aucun fournisseur de secours n'est
+> activé pour le briefing dans la version présentée. Le rapport décrit aussi la veille qui nourrit ces choix (C6) et le paramétrage du service retenu (C8).
 > Périmètre décidé le 31/10 : la version présentée au jury et ses cinq écrans ; les ateliers et copies d'exercice des
 > sprints restent hors du rapport ; ce qui a été vérifié ou corrigé après est cité avec sa vraie date, et ce qui est
 > seulement prévu est écrit comme tel.
@@ -682,7 +682,7 @@ limite. Décision d'Era.
 1. **Remettre le guide d'exploitation** (C8.5) : fait le 03/11, par mail, PDF joint, preuve datée dans `evidence/C8/` ;
    réception confirmée par le formateur le 04/11 (`evidence/C8/reponse-formateur-2026-11-04.md`).
 2. **Le rapport** : relecture, PDF, tag `livrable-E2-v3` pour la version 1.1 remise le 05/11. Puis la version 1.2 du
-   06/11, tag `livrable-E2-v4` : deux précisions, en 4.2 et en section 5 (C8.4), et des titres en bleu marine, sans
+   06/11, tag `livrable-E2-v4` : trois précisions (« En une minute », 4.2, section 5 pour C8.4) et des titres en bleu, sans
    changement de résultat, de statut ni de montant. La 1.0 reste sous `livrable-E2-v2`, la 0.9 sous `livrable-E2-v1`.
 
 **Ensuite.**
