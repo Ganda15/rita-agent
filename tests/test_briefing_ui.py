@@ -11,6 +11,7 @@ from datetime import date, timedelta
 import pytest
 
 from tests.test_smoke_ui import serveur  # noqa: F401  (fixture : l'API servie en local)
+from tests.attente import attendre_que  # noqa: E402  (06/11 : la politique de contenu refuse wait_for_function)
 
 sync_playwright = pytest.importorskip("playwright.sync_api").sync_playwright
 
@@ -88,7 +89,7 @@ def attendre_resultat(page):
 def attendre_la_fin_de_la_demande(page):
     """Le message de fin, pas le message d'attente : « Rédaction en cours » s'écrit dans `#statut` dès l'envoi (04/11/2026,
     course trouvée dans la CI ; attendre un `#statut` non vide lisait parfois ce message-là)."""
-    page.wait_for_function("(() => { const t = document.getElementById('statut').textContent;"
+    attendre_que(page, "(() => { const t = document.getElementById('statut').textContent;"
                            " return t.length > 0 && !t.startsWith('Rédaction en cours'); })()")
 
 
@@ -243,7 +244,7 @@ def test_cle_refusee_redemandee_et_oubliee(ecran):
 def test_serveur_muet(ecran):
     ecran.route("**/briefing?*", lambda route: route.abort())
     demander(ecran)
-    ecran.wait_for_function("document.getElementById('statut').textContent.includes('Le serveur ne répond pas')")
+    attendre_que(ecran, "document.getElementById('statut').textContent.includes('Le serveur ne répond pas')")
     assert not ecran.locator("#form-briefing button[type=submit]").is_disabled(), "le bouton redevient actif"
 
 
@@ -291,7 +292,7 @@ def test_focus_va_au_resultat_ou_a_l_erreur(ecran):
     assert ecran.evaluate("document.activeElement.id") == "resultat"
     servir(ecran, "**/briefing?ticker=XXX.PA", 422, {"detail": "Valeur inconnue"})
     demander(ecran, "XXX.PA")
-    ecran.wait_for_function("document.getElementById('statut').textContent.includes('introuvable')")
+    attendre_que(ecran, "document.getElementById('statut').textContent.includes('introuvable')")
     assert ecran.evaluate("document.activeElement.id") == "statut"
 
 

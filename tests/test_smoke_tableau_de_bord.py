@@ -12,6 +12,7 @@ import pytest
 
 from tests.test_smoke_ui import page, serveur  # noqa: F401, ce sont des fixtures
 from tests.test_vigie import ATTAQUE, SAIN, _sante
+from tests.attente import attendre_que  # noqa: E402  (06/11 : la politique de contenu refuse wait_for_function)
 
 CLE = "cle-de-test-smoke-ui-32-caracteres-x"
 CARTES = ["service", "erreurs_techniques", "refus_securite", "latence_p95_ms", "cout_24h", "fraicheur",
@@ -29,7 +30,7 @@ def _tableau(page, serveur, sante, statut_sante=200, statut_health=200, cle=CLE)
         page.goto(serveur + "/tableau-de-bord.html", wait_until="networkidle")
         page.evaluate(f"sessionStorage.setItem('rita_api_key', '{cle}')")
         page.goto(serveur + "/tableau-de-bord.html", wait_until="networkidle")
-        page.wait_for_function("document.body.dataset.etat === 'pret'", timeout=10_000)
+        attendre_que(page, "document.body.dataset.etat === 'pret'", timeout=10_000)
         cartes = {}
         for signal in CARTES:
             carte = page.locator(f'[data-signal="{signal}"]')
@@ -133,13 +134,13 @@ def test_pendant_le_chargement_le_bouton_est_bloque_et_un_seul_appel_part(page, 
     try:
         bouton = page.locator("#actualiser")
         bouton.click()
-        page.wait_for_function("document.body.dataset.etat === 'chargement'")
+        attendre_que(page, "document.body.dataset.etat === 'chargement'")
         assert bouton.is_disabled() and bouton.inner_text() == "Actualisation…"
         page.evaluate("actualiser()")
         assert len(requetes) == 1
         for route in retenues:
             route.fulfill(status=200, content_type="application/json", body=corps)
-        page.wait_for_function("document.body.dataset.etat === 'pret'")
+        attendre_que(page, "document.body.dataset.etat === 'pret'")
         assert bouton.is_enabled() and bouton.inner_text() == "Actualiser"
         assert len(requetes) == 1
     finally:

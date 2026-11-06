@@ -109,6 +109,27 @@ app = FastAPI(
 
 API_KEY_HEADER = APIKeyHeader(name="X-API-Key", auto_error=False)
 
+# Carte #75, constat S1 de la revue OWASP du 03/10 (06/11/2026) : aucune réponse ne portait d'en-tête de sécurité.
+# L'interface n'a ni script ni style en ligne, ni ressource externe : `default-src 'self'` tient sur les cinq écrans
+# (`tests/test_entetes_securite.py`, en navigateur). Les pages de documentation de FastAPI chargent leur script depuis un
+# CDN avec un script en ligne : elles gardent les autres en-têtes, sans politique de contenu (décision D7, constat S2).
+POLITIQUE_DE_CONTENU = "default-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+ENTETES_DE_SECURITE = {
+    "Strict-Transport-Security": "max-age=31536000",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "no-referrer",
+}
+# Les pages exactes, pas un préfixe (relecture de sécurité du 06/11) : `/docs-x` garde la politique.
+PAGES_DE_DOCUMENTATION = frozenset({"/docs", "/docs/oauth2-redirect", "/redoc"})
+
+
+def poser_les_entetes_de_securite(reponse, chemin: str) -> None:
+    for nom, valeur in ENTETES_DE_SECURITE.items():
+        reponse.headers[nom] = valeur
+    if chemin not in PAGES_DE_DOCUMENTATION:
+        reponse.headers["Content-Security-Policy"] = POLITIQUE_DE_CONTENU
+
 
 @app.middleware("http")
 async def attribuer_un_identifiant_de_requete(request: Request, call_next):
@@ -136,6 +157,7 @@ async def attribuer_un_identifiant_de_requete(request: Request, call_next):
     finally:
         _request_id_courant.reset(jeton)
     reponse.headers["X-Request-ID"] = identifiant
+    poser_les_entetes_de_securite(reponse, request.url.path)
     # Sprint 5 (étape 1) : les appels qui n'entrent jamais dans la route (403 de la clé, 422 de la saisie, 429 du
     # débit) et les erreurs qui s'en échappent sont comptés ICI ; tout le reste l'est par la route elle-même, qui connaît
     # le résultat métier (monitorage/compteurs.py). Un 422 levé dans `/briefing` (valeur inconnue) n'y est pas compté.
