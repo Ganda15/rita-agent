@@ -3,6 +3,7 @@ import logging
 from datetime import date
 
 from guardrails.injection import neutraliser
+from guardrails.normalisation import sans_invisibles
 from src.llm import ResultatTexte, generer_texte_detaille
 
 logger = logging.getLogger(__name__)
@@ -67,7 +68,10 @@ def _bloc_articles(passages: list[dict] | None) -> str:
             "\n- Rédige uniquement à partir des chiffres ci-dessus."
         )
 
-    lignes = [f"{i}. [{p['source']}, {p['publie_le']}] {p['texte']}"
+    # Le modèle reçoit le texte de l'article sans ses caractères invisibles (catégorie Unicode Cf,
+    # `guardrails/normalisation.py`) ; le passage conservé, lui, reste celui d'origine (revue de sécurité du 07/11).
+    lignes = [f"{i}. [{sans_invisibles(p['source'])}, {sans_invisibles(str(p['publie_le']))}] "
+              f"{sans_invisibles(p['texte'])}"
               for i, p in enumerate(passages, 1)]
     return (f"\n\nArticles retrouvés ({len(passages)}) — classés par PERTINENCE, pas par date : vérifie leur date avant de t'en servir, et ne présente jamais une dépêche ancienne comme une actualité du jour. Quand tu t'appuies sur l'un d'eux, "
             f"cite la source et la date. Chaque affirmation tirée des articles doit être soutenue par l'un des articles "

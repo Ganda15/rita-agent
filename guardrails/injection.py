@@ -14,6 +14,8 @@ Point 7 : la liste n'est jamais finie, d'où MOTIFS en configuration et non en d
 """
 import re
 
+from guardrails.normalisation import sans_invisibles, textes_de_controle
+
 # Motifs d'injection connus — FR et EN. À enrichir à chaque incident (point 7).
 MOTIFS = [
     (r"ignore[sz]?\s+(les\s+)?(instructions?|consignes?)\s+(pr[ée]c[ée]dentes?|ci-dessus)",
@@ -80,14 +82,15 @@ def neutraliser(texte: str, source: str) -> dict:
     Returns:
         {texte_sur, motifs_detectes, bloque}. Si bloque=True, ne PAS envoyer au LLM.
     """
-    motifs = [nom for regex, nom in _COMPILES if regex.search(texte)]
-    # Espaces ramenés à un seul avant la règle de famille (revue de sécurité du 07/11) : la fenêtre de 200 caractères
-    # ne se franchit pas avec du remplissage.
-    if _CONSIGNE_DEGUISEE.search(re.sub(r"\s+", " ", texte)):
+    # Les règles lisent le texte d'origine et ses copies normalisées (`guardrails/normalisation.py`, revue de sécurité
+    # du 07/11) : ni les espaces de remplissage, ni les caractères invisibles, ni la pleine chasse ne les contournent.
+    controles = textes_de_controle(texte)
+    motifs = [nom for regex, nom in _COMPILES if any(regex.search(t) for t in controles)]
+    if any(_CONSIGNE_DEGUISEE.search(t) for t in controles):
         motifs.append("consigne_deguisee")
 
-    # Neutralisation des tentatives d'évasion de balise, même quand on ne bloque pas.
-    propre = re.sub(r"</?\s*donnees_externes[^>]*>", "[balise retiree]", texte,
+    # Neutralisation des tentatives d'évasion de balise, même quand on ne bloque pas ; sans caractère invisible.
+    propre = re.sub(r"</?\s*donnees_externes[^>]*>", "[balise retiree]", sans_invisibles(texte),
                     flags=re.IGNORECASE)
 
     encadre = f"{EN_TETE.format(source=source)}\n{propre}\n{PIED}"

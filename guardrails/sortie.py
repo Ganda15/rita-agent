@@ -22,6 +22,8 @@ l'appel au modèle qui précède (plusieurs centaines de millisecondes).
 """
 import re
 
+from guardrails.normalisation import textes_de_controle
+
 # Sorties interdites — l'interdit AMF (conseil en investissement non agréé).
 # Chaque motif exige une POSTURE de recommandation, pas le simple mot « achat » :
 # « volume d'achat » ou « rachat d'actions » sont des faits, pas des conseils.
@@ -90,7 +92,9 @@ def verifier_sortie(texte: str) -> dict:
         Le texte d'origine reste disponible dans `texte_brut` pour l'audit, jamais pour
         l'utilisateur.
     """
-    motifs = [nom for regex, nom in _COMPILES if regex.search(texte)]
+    # Le texte d'origine et ses copies normalisées (`guardrails/normalisation.py`, revue de sécurité du 07/11).
+    controles = textes_de_controle(texte)
+    motifs = [nom for regex, nom in _COMPILES if any(regex.search(t) for t in controles)]
     conforme = not motifs
     return {
         "conforme": conforme,
@@ -169,13 +173,13 @@ def verifier_fuite(texte: str, consignes: tuple[str, ...] = ()) -> dict:
         {conforme, motifs_detectes, texte_diffusable}. Si conforme=False, `texte_diffusable` porte le message de
         refus : le texte d'origine n'est jamais diffusé, ni écrit au journal. Les noms des motifs, eux, y vont.
     """
-    # Les règles par famille cherchent dans le texte aux espaces ramenés à un seul (revue de sécurité du 07/11) : leurs
-    # séparateurs sont bornés contre le retour arrière, et une suite d'espaces ou de sauts de ligne ne les contourne plus.
-    resserre = re.sub(r"\s+", " ", texte)
+    # Les règles lisent le texte d'origine et ses copies normalisées : espaces ramenés à un seul, caractères invisibles
+    # retirés, pleine chasse ramenée aux lettres ordinaires (`guardrails/normalisation.py`, revue de sécurité du 07/11).
+    # Les séparateurs des règles par famille restent bornés contre le retour arrière.
+    controles = textes_de_controle(texte)
     motifs = list(dict.fromkeys(
-        [nom for regex, nom in _COMPILES_FUITE if regex.search(texte)]
-        + [nom for regex, nom in _COMPILES_FAMILLES_FUITE if regex.search(resserre)]))
-    fenetres = _fenetres(texte)
+        nom for regex, nom in _COMPILES_FUITE + _COMPILES_FAMILLES_FUITE if any(regex.search(t) for t in controles)))
+    fenetres = set().union(*(_fenetres(t) for t in controles))
     if any(fenetres & _fenetres(consigne) for consigne in consignes):
         motifs.append("fragment_consignes")
     conforme = not motifs
