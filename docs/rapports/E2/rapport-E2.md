@@ -80,6 +80,7 @@ code{ background:#E3F0F3; color:#0D4C5E; border-radius:2pt; }
 .encadre .ligne.ecart{ background:#FFF4D9; } .encadre .ligne.ecart b{ color:#7A4E00; }
 .encadre .ligne.choix{ background:#ECEBFB; } .encadre .ligne.choix b{ color:#3B3FA8; }
 .encadre .ligne.evaluation{ background:#E9ECF0; } .encadre .ligne.evaluation b{ color:#4E5763; }
+p.glossaire-suite{ break-before:page; font-family:Georgia,"Times New Roman",serif; font-weight:600; font-size:12pt; color:var(--marine); margin:0 0 6pt; }
 h2#glossaire ~ table td{ padding:3pt 6pt 3pt 0; line-height:1.45; font-size:9.8pt; }  /* 07/11 : plus lisible, quitte à prendre une page de plus (20 au plus) */
 </style>
 
@@ -388,14 +389,15 @@ comparaison à 500 jetons (choix d'Era). Ce banc ne mesure pas la route Question
 
 | Mesure | Azure `gpt-5.4`, zone UE | Mistral Large 3, UE |
 |---|---|---|
-| Disponibles, acceptés par le garde-fou AMF, fidèles | 30, 30 et 30 sur 30 | 30, 30 et 30 sur 30 |
+| Disponibles, acceptés par le garde-fou AMF, réussissant le contrôle minimal de fidélité | 30, 30 et 30 sur 30 | 30, 30 et 30 sur 30 |
 | Latence, médiane et 95e centile | **2,19 s et 2,55 s** | 2,80 s et 3,68 s |
 | Markdown (`**`) dans le texte | 0 sur 30 | 30 sur 30 |
-| Coût d'un briefing au prix public | 0,0044 USD | **0,00072 USD** (0,02 € facturés) |
+| Coût d'un briefing au prix public | 0,0044 USD | **0,00072 USD** |
 | Français, de 0 à 2, moyenne | 1,10 (3 textes à 2) | **1,37** (11 textes à 2) |
 
 Les notes de français sont des notes proposées par une IA à l'aveugle, acceptées par Era sans modification ; la forme
-trahit en partie l'auteur (Mistral ouvre par un titre).
+trahit en partie l'auteur (Mistral ouvre par un titre). Console Mistral : coût total estimé de 0,02 € pour 35 requêtes,
+ni une facture ni le coût des seuls 30 appels du banc.
 
 ### 3.5 L'environnement et les prérequis techniques {: #s3-5 }
 **L'environnement** (`evidence/C7/prix-et-environnement-2026-10-03.md`, relevé du 03/10). Microsoft publie des chiffres
@@ -421,7 +423,7 @@ dans le code.
 
 <div class="encadre decision">
 <p class="encadre-titre">Le choix : Azure AI Foundry, <code>gpt-5.4</code>, pour le briefing, choix maintenu</p>
-<ul><li>le banc du 03/10 le comparait à Claude via OpenRouter : mêmes contrôles réussis, même français, une médiane deux fois plus courte ;</li><li>le banc du 07/11 le mesure en zone UE, avec le prompt corrigé, face à Mistral Large 3 : médiane de 2,19 s contre 2,80 s, texte sans Markdown ; Mistral écrit un meilleur français et coûte moins ;</li><li>ses frais ne sont pas facturés au candidat (déclaration du 31/10) ; les appels ont néanmoins un coût (0,0044 USD par briefing au prix public) ;</li><li>il reste le seul fournisseur actif en production, en zone de données UE.</li></ul>
+<ul><li>le banc du 03/10 le comparait à Claude via OpenRouter : mêmes contrôles réussis, même français, une médiane deux fois plus courte ;</li><li>le banc du 07/11 le mesure en zone UE, avec le prompt corrigé, face à Mistral Large 3 : médiane de 2,19 s contre 2,80 s, texte sans Markdown ; Mistral obtient une meilleure note moyenne dans cette évaluation (1,37 contre 1,10) et coûte moins ;</li><li>ses frais ne sont pas facturés au candidat (déclaration du 31/10) ; les appels ont néanmoins un coût (0,0044 USD par briefing au prix public) ;</li><li>il reste le seul fournisseur actif en production, en zone de données UE.</li></ul>
 <p>Le même service sert les questions : usage observé avec Azure, non comparé (3.3).</p>
 </div>
 
@@ -430,7 +432,7 @@ dans le code.
 | Azure AI Foundry, `gpt-5.4` (mesuré le 03/10 en Global Standard ; en zone UE depuis le 09/10) | **retenu** | 30 textes sur 30 acceptés par le garde-fou de sortie et fidèles au contrôle minimal ; 0 € déclaré pour le candidat ; médiane 3,21 s, puis 2,19 s en zone UE le 07/11 ; déploiement configuré en zone UE depuis le 09/10 | le 03/10, 2 appels sur 30 au-dessus de 10 s (aucun le 07/11) ; prise en charge des frais qui peut cesser ; DPA de Microsoft lu pour ses sections utiles (06/11), conditions des produits non vérifiées (4.2) |
 | Claude par OpenRouter | **écarté** | 30 textes sur 30 acceptés par le garde-fou de sortie et fidèles au contrôle minimal ; latence régulière (95e centile 7,20 s) | payant ; traitement dans l'UE non garanti, contraire à la règle du 05/10 |
 | Claude par l'API d'Anthropic | **écarté, non mesuré** | même famille Claude, version configurée différente (`claude-sonnet-5` en accès direct, `claude-sonnet-4.5` mesuré par OpenRouter) | API directe non mesurée, faute de clé ; société établie aux États-Unis, traitement dans l'UE non garanti |
-| Mistral, adresse européenne | **futur second fournisseur, sous conditions ; non actif** | hébergé dans l'UE ; Large 3 au banc du 07/11 : 30 sur 30, meilleur français (1,37 contre 1,10), six fois moins cher | Large 4 sans texte à 500 jetons (07/11) ; Large 3 écrit du Markdown ; contrat non lu ; hors de la cascade |
+| Mistral, adresse européenne | **futur second fournisseur, sous conditions ; non actif** | hébergé dans l'UE ; Large 3 au banc du 07/11 : 30 sur 30, meilleure note de français dans cette évaluation (1,37 contre 1,10), six fois moins cher | Large 4 sans texte à 500 jetons (07/11) ; Large 3 écrit du Markdown ; contrat non lu ; hors de la cascade |
 
 Depuis le 31/10, la production n'appelle qu'Azure (4.2) : il n'y a pas de fournisseur de secours. Ce qui ferait changer
 la décision : la fin de la prise en charge des frais d'Azure, ou Mistral une fois son contrat lu et son Markdown réglé.
@@ -668,9 +670,14 @@ sous `livrable-E2-v2`, 0.9 sous `livrable-E2-v1` ; 1.2 à 1.4 non taguées.
 | **Trace, métadonnées** | le relevé d'un appel (étapes, durée, modèle, jetons) ; les métadonnées décrivent l'appel sans son contenu |
 | **Vigie** | le programme `monitorage/vigie.py`, qui interroge le service de dehors et peut ouvrir ou mettre à jour une alerte (une issue GitHub) ; les mesures et leurs verdicts viennent de la route `/sante` |
 | **Remise (handover)** | donner la documentation à quelqu'un qui peut faire tourner le service sans vous, et en garder la preuve |
+
+<p class="glossaire-suite">Glossaire (suite)</p>
+
+| Terme | En clair |
+|---|---|
 | **Red team** | équipe qui attaque un système comme le ferait un adversaire, pour en trouver les failles avant lui |
 | **Relais** | site qui rapporte l'information d'une autre source et y renvoie, sans la reproduire lui-même |
 | **Sorties structurées (schéma JSON)** | réponse du modèle contrainte à un format décrit à l'avance |
-| **Transfert (au sens du RGPD)** | toute mise à disposition de données hors de l'Union, y compris un accès à distance depuis un pays tiers |
+| **Transfert (au sens du RGPD)** | mise à disposition de données personnelles à une autre entité située hors de l'Espace économique européen, notamment par accès à distance |
 | **DPA** | l'avenant de protection des données du contrat de Microsoft |
 | **RGAA, WCAG** | les référentiels d'accessibilité numérique, français et international |
