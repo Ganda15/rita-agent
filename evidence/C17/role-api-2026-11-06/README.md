@@ -40,6 +40,25 @@ demandent PostgreSQL passent ; suite complète du dépôt : 2247 réussis, 0 en 
 - Le pré-test de la livraison (compte en lecture seule) n'a pas été rejoué ici : il ne reçoit ni `DATABASE_URL` de
   production ni `POSTGRES_*`, ce que le code de `deploy/deployer.py` garantit déjà.
 
+## L'étape du serveur, faite par Era (06/11 au soir, 23 h 48 UTC, puis le 07/11 vers 0 h UTC)
+
+Ajouté le 07/11/2026, sur la sortie du terminal collée par Era. Aucune valeur de mot de passe n'est recopiée ici.
+
+| Commande, sur le serveur | Sortie |
+|---|---|
+| Le bloc `rita_api` de `db/roles.sql`, en propriétaire | `DO`, `GRANT`, `REVOKE`, `GRANT`, `GRANT`, `GRANT`, `ALTER DEFAULT PRIVILEGES`, `GRANT ROLE` |
+| `SELECT rolname, rolcanlogin FROM pg_roles WHERE rolname = 'rita_api'` | `rita_api\|t` |
+| Mot de passe tiré dans une variable du shell, posé par `ALTER ROLE rita_api PASSWORD :'mdp'` | `ALTER ROLE` |
+| Connexion en `rita_api` par le réseau du conteneur (règle de mot de passe, pas la confiance locale), `SELECT current_user` | `rita_api` |
+| `grep -c '^POSTGRES_PASSWORD_API=' .env` après l'ajout par `printf` | `1` |
+
+**Manque écrit.** Le premier mot de passe, tiré par `openssl rand -hex 16`, s'est affiché dans le terminal et s'est
+retrouvé dans la conversation avec l'assistant ; la ligne de `.env` n'avait pas été enregistrée (`grep -c` : `0`).
+Le mot de passe a été remplacé par un autre, tiré dans une variable et jamais affiché ; le premier ne sert plus.
+
+Reste, **juste avant la fusion dans `main`** : installer le nouveau `docker-compose.yml` dans `/root/rita-deploy/bin/`
+(étape 4 de `docs/exploitation.md`, section du rôle de l'API), puis les vérifications après la livraison.
+
 ## 📖 Glossaire
 
 - **Rôle** (PostgreSQL) : un compte de la base, avec ses droits.
