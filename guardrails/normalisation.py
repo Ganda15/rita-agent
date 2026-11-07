@@ -33,13 +33,21 @@ def sans_invisibles(texte: str) -> str:
 
 
 def textes_de_controle(texte: str) -> tuple[str, ...]:
-    """Les versions du texte que les règles lisent, sans doublon : l'original (les règles qui dépendent des sauts de
-    ligne le lisent tel quel), puis deux copies normalisées (NFKC, espaces ramenés à un seul).
+    """Les versions du texte que les règles lisent, sans doublon :
 
-    Deux copies parce qu'un caractère invisible sert à deux choses : couper un mot (« ign·ore », il faut le retirer)
-    ou séparer deux mots (« ignore·previous », il faut une espace à sa place).
+    1. l'original (les règles qui dépendent des sauts de ligne le lisent tel quel) ;
+    2. le texte sans caractères invisibles, tel que le modèle le reçoit (`sans_invisibles`), puis ramené à une espace ;
+    3. les caractères invisibles remplacés par une espace, ramené à une espace ;
+    4. les copies 2 et 3 en forme NFKC (pleine chasse, ligatures).
+
+    Deux traitements des invisibles parce qu'un caractère invisible sert à deux choses : couper un mot (« ign·ore »,
+    il faut le retirer) ou séparer deux mots (« ignore·previous », il faut une espace à sa place). Les copies AVANT
+    la forme NFKC sont gardées (double contrôle du 07/11) : NFKC change aussi « ™ » en « TM » ou « ℀ » en « a/c », ce
+    qui efface une frontière de mot (« instructions™ » devient « instructionsTM ») ; le texte envoyé au modèle, lui,
+    garde « ™ ». Un texte bloqué une fois nettoyé pour le modèle doit donc être bloqué tel quel.
     """
-    retire = "".join(c for c in texte if not _est_invisible(c))
+    retire = sans_invisibles(texte)
     espace = "".join(" " if _est_invisible(c) else c for c in texte)
-    copies = (texte,) + tuple(_ESPACES.sub(" ", unicodedata.normalize("NFKC", t)) for t in (retire, espace))
-    return tuple(dict.fromkeys(copies))
+    avant_nfkc = (retire, _ESPACES.sub(" ", retire), _ESPACES.sub(" ", espace))
+    apres_nfkc = tuple(_ESPACES.sub(" ", unicodedata.normalize("NFKC", t)) for t in (retire, espace))
+    return tuple(dict.fromkeys((texte,) + avant_nfkc + apres_nfkc))
