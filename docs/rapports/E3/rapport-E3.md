@@ -19,13 +19,31 @@ h2#glossaire + table tbody{ columns:2; column-gap:18pt; }
 h2#glossaire + table tr{ display:block; break-inside:avoid; margin:0 0 .5pt; }
 h2#glossaire + table td{ display:inline; border:0; padding:0; }
 h2#glossaire + table td:first-child::after{ content:" : "; }
+/* 08/11, demande d'Era : les couleurs du rapport E2 (choix du 06/11 sur le nuancier) : tableaux d'information en
+   style A (en-tête marine, lignes zébrées, première colonne marine), titres en dégradé marine vers sarcelle, code
+   coloré. L'espacement d'E3 est gardé ; le glossaire, rendu en deux colonnes, n'est pas zébré. */
+:root{ --zebre:#F2F6FA; }
+table thead th{ background:var(--marine); color:#fff; padding:2.5pt 5pt; }
+table tbody tr:nth-child(even) td{ background:var(--zebre); }
+table tbody td:first-child{ font-weight:600; color:var(--marine); }
+td{ padding-left:5pt; }
+table thead th code{ color:#fff; background:rgba(255,255,255,.16); border:none; }
+h2#glossaire + table tbody tr:nth-child(even) td{ background:none; }
+h2#glossaire + table td{ padding-left:0; }
+body h1, body h2{ background:linear-gradient(90deg, #12395E, #14607F); color:#fff; }
+body h1{ padding:2pt 10pt; }
+body h2{ padding:1pt 10pt; }
+body h3{ background:linear-gradient(90deg, #D6E6F7, #EEF5FC); color:#12395E; padding:1pt 9pt; }
+pre{ background:#0F2A44; color:#E8EEF5; border:none; border-radius:4pt; padding:6pt 9pt; }
+pre code{ color:inherit; background:none; }
+code{ background:#E3F0F3; color:#0D4C5E; border-radius:2pt; }
 </style>
 
 <div><img class="logo" src="logo/rita-logo-marque.png" alt="Logo de RITA"></div>
 
 # Rapport E3 : l'API du modèle, son intégration, son monitorage, ses tests et sa chaîne de livraison
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C9 à C13 · version 2.4, 7 novembre 2026 ; état décrit : 24 octobre 2026, évolutions datées · code : [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v5), tag de cette version ; [code et preuves figés](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v5/docs/jury/README.md) ; preuves du 7 novembre : [`verification-production-2026-11-07`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v5/evidence/C17/verification-production-2026-11-07) ; un lien daté du corps garde le tag de sa mesure (dépôt privé : le formateur y a accès ; l'accès des examinateurs est demandé au formateur)
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C9 à C13 · version 2.5, 8 novembre 2026 ; état décrit : 24 octobre 2026, évolutions datées · code : [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v6), tag de cette version ; [code et preuves figés](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v6/docs/jury/README.md) ; preuves du 7 novembre : [`verification-production-2026-11-07`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v6/evidence/C17/verification-production-2026-11-07) ; un lien daté du corps garde le tag de sa mesure (dépôt privé : le formateur y a accès ; l'accès des examinateurs aux preuves reste à organiser après l'oral blanc)
 {: .identite }
 
 > **En une minute.** RITA aide un investisseur particulier à comprendre les informations disponibles sur une action : il demande un briefing pour une valeur, ou il pose une question sur les articles collectés. Les deux textes sont rédigés par un modèle de langage fourni, que je n'entraîne pas. Ce rapport montre ce qui entoure ce modèle : l'API qui l'expose (C9), l'application qui l'utilise (C10), sa surveillance (C11), ses tests (C12) et sa livraison continue (C13).
@@ -149,7 +167,7 @@ Les sources sont sur GitHub, `Ganda15/rita-agent` : `develop` pour le travail, `
 - Un briefing dont le graphe échoue répond 502 ; une panne de tous les fournisseurs répond 503 (`AUCUN_FOURNISSEUR`) depuis le 4 novembre, au lieu d'un 500 générique (carte #75).
 - Le format des erreurs n'est pas celui de la RFC 9457 (format JSON normalisé des erreurs).
 - En-têtes de sécurité et frein des essais de clé en production depuis le 7 novembre ; restent `Via` (Caddy) et une limite d'appel au modèle commune, pas par client.
-- Le dépôt est privé : le jury doit y être invité avant l'envoi.
+- Le dépôt est privé : l'accès du jury aux preuves reste à organiser après l'oral blanc.
 
 ---
 
@@ -464,7 +482,8 @@ Velmo (juillet) : les trois emplacements de garde-fou et les deux chiffres toujo
 
 ## 9. Reproduire {: #s9 }
 
-**Cette version** : 2.4, 7 novembre 2026 : la ligne OWASP devient tenue, sur les mesures du site réel après la livraison (3.3). La 2.3, 6 novembre 2026, soir : l'intégration des points de terminaison et les adaptations d'interface redeviennent tenues (#152 prouvé par le job `base` de `main`, #73 vérifié à la main en production), et le choix de Langfuse est réévalué (accessibilité, règle UE précisée). La 2.2, du même jour : statuts de #73 et #152 et sept contrôles de fusion harmonisés, titres au nouveau style ; mesures et auto-évaluation historiques conservées. Code et preuves de la 2.4 : `livrable-E3-v5` ; les liens datés du corps gardent le tag de leur mesure, souvent `livrable-E3-v4`. La version 2.1 du 3 novembre (lignes incomplètes en « à consolider », accès des examinateurs en en-tête, clé d'exercice en 3.2 et 3.3) est figée à ce tag ; la version 2.0 au tag `livrable-E3-v3` (2 novembre, après le retour écrit du formateur sur l'oral blanc du 30 octobre).
+**Cette version** : 2.5, 8 novembre 2026 : couleurs du rapport E2 (tableaux, titres, code), contenu inchangé hors
+l'accès des examinateurs, à organiser après l'oral blanc. La 2.4, 7 novembre 2026 : la ligne OWASP devient tenue, sur les mesures du site réel après la livraison (3.3). La 2.3, 6 novembre 2026, soir : l'intégration des points de terminaison et les adaptations d'interface redeviennent tenues (#152 prouvé par le job `base` de `main`, #73 vérifié à la main en production), et le choix de Langfuse est réévalué (accessibilité, règle UE précisée). La 2.2, du même jour : statuts de #73 et #152 et sept contrôles de fusion harmonisés, titres au nouveau style ; mesures et auto-évaluation historiques conservées. Code et preuves de la 2.4 : `livrable-E3-v6` ; les liens datés du corps gardent le tag de leur mesure, souvent `livrable-E3-v4`. La version 2.1 du 3 novembre (lignes incomplètes en « à consolider », accès des examinateurs en en-tête, clé d'exercice en 3.2 et 3.3) est figée à ce tag ; la version 2.0 au tag `livrable-E3-v3` (2 novembre, après le retour écrit du formateur sur l'oral blanc du 30 octobre).
 
 **Traçabilité des mesures** : du 2 au 24 octobre 2026, chacune avec sa date, sa commande, et pour la CI sa branche, son commit et son passage ; la production servait alors `b547cbf`.
 
