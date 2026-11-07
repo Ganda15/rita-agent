@@ -1,0 +1,13 @@
+{
+  "runtime": "C:\\Users\\kanda\\AppData\\Local\\Temp\\rita-c20-20261107-xir2dqsg",
+  "project": "rita-c20-20261107",
+  "commit": "6f428d61511019d7b6013fb007e290c133d48c2e",
+  "image": "rita-api:c20-6f428d615110",
+  "url": "http://localhost:8011",
+  "api_container": "rita-api-c20-20261107",
+  "langfuse_enabled": false,
+  "separate_database": true,
+  "separate_keys": true,
+  "cloud_credentials_copied": false,
+  "scenario": "service_unavailable_then_recovered"
+}

@@ -1,0 +1,8 @@
+# Releve du 2026-11-07T19:47:50Z (UTC), commande : curl -sS https://178-104-184-125.sslip.io/indicateurs.html | grep -oE 'indicateurs.js?v=...|id="pagination"|id="annonce-pages"'
+id="annonce-pages"
+id="pagination"
+indicateurs.js?v=1cc58c780c
+# Attendu (frontend/indicateurs.html sur main 6f428d6) :
+indicateurs.js?v=1cc58c780c
+# Avant la livraison (main c73e3ba) :
+indicateurs.js?v=6fcaef099f

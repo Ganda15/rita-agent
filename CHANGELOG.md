@@ -9,6 +9,30 @@
 
 ---
 
+## 2026-11-07, nuit : C20.5 constaté en production, proposé ✅ ; E4 v1.9 et E5 v1.0 pour `livrable-E4-v6` et `livrable-E5-v4`
+
+- **Constaté** : premier passage planifié réussi de la vigie de production, le 07/11 à 21 h 52 UTC ([42417908976](https://github.com/Ganda15/rita-agent/actions/runs/42417908976),
+  `schedule`, `6f428d6`, code 0, aucune issue). Secret `RITA_API_KEY_VIGIE` créé à 20 h 19, corrigé à 20 h 33 ; alerte
+  et retour à la normale sur copie de l'image de production (#230). Preuve : `evidence/C20/vigie-2026-11-07/README.md`.
+- **Proposé à Era** : C20.5 ✅ avec limites dans E5 v1.0 (règle 4 du registre : validation d'Era à la relecture).
+- **Manque découvert** : GitHub n'a lancé que 3 passages planifiés pour 7 créneaux le 07/11 ; une panne peut attendre
+  plus de trois heures son alerte. Écrit en limite dans E5 (§ 8) et dans la preuve.
+- **Contrôle final d'E4 v1.9** par un autre agent : six incohérences corrigées sans nouveau code (résumé, compte C17,
+  C17.2, tests ignorés, aide du Briefing, version de l'annexe). Les tags `livrable-E4-v6` et `livrable-E5-v4` restent à
+  poser par Era après la fusion dans `main`, un par push.
+
+## 2026-11-07, soir : S9, C17.7 et les corrections de #226 livrés et vérifiés en production ; C16.1 gardé à consolider
+
+- **Livré** : PR #228 (`develop` vers `main`, `6f428d6`), fusionnée par Era à 19 h 32 UTC ; `/health` du site réel dit
+  ce commit, l'écran Indicateurs servi est paginé (`evidence/C17/verification-production-2026-11-07-soir/`).
+- **Décision d'Era (S9)** : dans les tournures de conseil, la sortie AMF passe en liste fermée, choix « fail-closed » ;
+  coût accepté et testé : 4 faits refusés par choix. Trois réécritures en liste ouverte avaient chacune été contournées.
+- **Décision d'Era (C16.1)** : le critère reste à consolider ; la revue du lundi reprend le 09/11, consignée ; aucun
+  document passé reconstitué. Règle retenue : un vert avec limites exige que chaque élément du critère soit prouvé.
+- **Manque découvert** : le calcul EcoIndex des 03/10 au 06/11 classait des fichiers de l'interface comme des routes de
+  l'API ; corrigé le 07/11, notes inchangées, poids de Briefing et Question publiés dans E4 (§ 4.7) sous-estimés.
+- **Manque découvert** : aucune revue du lundi n'a jamais été consignée depuis la mise en place de la méthode (28/09).
+
 ## 2026-11-07, après-midi : second regard d'un autre agent sur la branche du banc ; E2 v1.5 harmonisée
 
 **Corrigé.** Six phrases d'E2 encore au passé du banc : l'introduction, § 3.7, la latence (une prise ne garantit pas les
