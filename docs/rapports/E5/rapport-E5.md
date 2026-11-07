@@ -135,7 +135,8 @@ chaque issue, doivent exister dans le dépôt.
 
 Sans `--github`, la vigie affiche ce qu'elle ferait et n'envoie rien. Ses codes de sortie : 0 aucun signal en
 problème, 1 au moins un problème, 2 `/sante` illisible. En production, la vigie est également programmée toutes les
-trois heures par GitHub Actions. Le secret `RITA_API_KEY_VIGIE` fournit la clé au workflow. En production, le tableau de bord répond à l'adresse
+trois heures par GitHub Actions. Le secret `RITA_API_KEY_VIGIE` fournit la clé au workflow. Premier passage planifié réussi le 07/11 à 21 h 52 UTC
+([42417908976](https://github.com/Ganda15/rita-agent/actions/runs/42417908976)), code 0. En production, le tableau de bord répond à l'adresse
 `https://178-104-184-125.sslip.io/tableau-de-bord.html` (vérifiée le 05/11 : HTTP 200).
 
 ## 6. Les alertes ont fonctionné {: #preuves }
@@ -216,7 +217,8 @@ Huit autres incidents ont leur fiche dans [`evidence/C21/`](https://github.com/G
 ## 8. Les limites {: #limites }
 
 - **Seuils provisoires**, jamais relus sur du trafic réel ; **compteurs remis à zéro** à chaque redémarrage de l'API.
-- **La vigie est planifiée depuis le 07/11** ; GitHub peut retarder un passage ; la vigie de production n'a encore rien signalé.
+- **La vigie planifiée dépend de GitHub** : le 07/11, trois passages pour sept créneaux, le dernier avec 35 min de
+  retard ; la vigie de production n'a encore émis aucune alerte.
 - **Deux règles de fermeture coexistent** : la vigie ferme son issue quand la résolution écrite est atteinte (#131 l'a
   été faute de requêtes), la chaîne Langfuse ne ferme jamais. L'écart est à trancher.
 - **Exercice et production** ont partagé le même projet Langfuse (INC-006, #130) ; le 23/10, la copie testée est isolée
@@ -228,7 +230,7 @@ Huit autres incidents ont leur fiche dans [`evidence/C21/`](https://github.com/G
 
 ## 9. Les douze critères {: #criteres }
 
-Auto-évaluation d'Era au 03/11/2026 ; 🟡 : à consolider, le point qui manque est dans la ligne.
+Auto-évaluation d'Era au 07/11/2026 ; les limites sont dites dans les lignes et au § 8.
 
 | Critère | Statut | Preuve |
 |---|---|---|
@@ -236,7 +238,7 @@ Auto-évaluation d'Era au 03/11/2026 ; 🟡 : à consolider, le point qui manque
 | C20.2 Arguments des choix d'outillage | ✅ | § 3 : un argument écrit pour chaque outil |
 | C20.3 Outils installés, opérationnels en local a minima | ✅ | § 5 et 6 ; exercices locaux, production |
 | C20.4 Journalisation intégrée aux sources | ✅ | § 4 ; `compteurs.py`, [`api/main.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/api/main.py) |
-| C20.5 Alertes configurées et en état de marche | 🟡 | § 6 : alertes Langfuse automatiques ; vigie lancée à la main |
+| C20.5 Alertes configurées et en état de marche | ✅ | § 5 et 6 : vigie planifiée (07/11), #230 ; limites § 8 |
 | C20.6 Installation et configuration documentées | ✅ | § 5, dont GitHub CLI |
 | C20.7 Documentation communiquée dans un format accessible | ✅ | guide d'exploitation, format contrôlé le 31/10, envoyé le 03/11, réception confirmée le 04/11 ([`evidence/C8/`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v4/evidence/C8)) |
 | C21.1 Causes identifiées | ✅ | § 7, post-mortem INC-009 |

@@ -1,0 +1,231 @@
+passage	Set up job	﻿2026-11-07T21:52:25.0932364Z Current runner version: '2.338.2'
+passage	Set up job	2026-11-07T21:52:25.0955922Z ##[group]Runner Image Provisioner
+passage	Set up job	2026-11-07T21:52:25.0956806Z Hosted Compute Agent
+passage	Set up job	2026-11-07T21:52:25.0957477Z Version: 20261028.624
+passage	Set up job	2026-11-07T21:52:25.0958029Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+passage	Set up job	2026-11-07T21:52:25.0958713Z Build Date: 2026-10-28T21:51:42Z
+passage	Set up job	2026-11-07T21:52:25.0959329Z Worker ID: {0860208e-aae6-4c7a-8733-4902955e295b}
+passage	Set up job	2026-11-07T21:52:25.0959942Z Region: centralus
+passage	Set up job	2026-11-07T21:52:25.0960542Z Cloud: Azure
+passage	Set up job	2026-11-07T21:52:25.0961053Z ##[endgroup]
+passage	Set up job	2026-11-07T21:52:25.0962706Z ##[group]Operating System
+passage	Set up job	2026-11-07T21:52:25.0963273Z Ubuntu
+passage	Set up job	2026-11-07T21:52:25.0963775Z 24.04.5
+passage	Set up job	2026-11-07T21:52:25.0964294Z LTS
+passage	Set up job	2026-11-07T21:52:25.0964742Z ##[endgroup]
+passage	Set up job	2026-11-07T21:52:25.0965324Z ##[group]Runner Image
+passage	Set up job	2026-11-07T21:52:25.0965881Z Image: ubuntu-24.04
+passage	Set up job	2026-11-07T21:52:25.0966863Z Version: 20261101.360.1
+passage	Set up job	2026-11-07T21:52:25.0967867Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261101.360/images/ubuntu/Ubuntu2404-Readme.md
+passage	Set up job	2026-11-07T21:52:25.0969501Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261101.360
+passage	Set up job	2026-11-07T21:52:25.0970380Z ##[endgroup]
+passage	Set up job	2026-11-07T21:52:25.0971532Z ##[group]GITHUB_TOKEN Permissions
+passage	Set up job	2026-11-07T21:52:25.0973320Z Contents: read
+passage	Set up job	2026-11-07T21:52:25.0973854Z Issues: write
+passage	Set up job	2026-11-07T21:52:25.0974473Z Metadata: read
+passage	Set up job	2026-11-07T21:52:25.0974992Z ##[endgroup]
+passage	Set up job	2026-11-07T21:52:25.0977549Z Secret source: Actions
+passage	Set up job	2026-11-07T21:52:25.0978461Z Cache mode: write
+passage	Set up job	2026-11-07T21:52:25.0979264Z Prepare workflow directory
+passage	Set up job	2026-11-07T21:52:25.1388922Z Prepare all required actions
+passage	Set up job	2026-11-07T21:52:25.1430710Z Getting action download info
+passage	Set up job	2026-11-07T21:52:25.3597713Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+passage	Set up job	2026-11-07T21:52:25.4819737Z Download action repository 'actions/setup-python@v7' (SHA:6d4fd22b20465ccc0f7354476588e8df7c9ca0e0)
+passage	Set up job	2026-11-07T21:52:26.0461397Z Complete job name: passage
+passage	Run actions/checkout@v7	﻿2026-11-07T21:52:26.0974153Z ##[group]Run actions/checkout@v7
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.0974636Z with:
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.0974910Z   repository: Ganda15/rita-agent
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.0977366Z   token: ***
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.0977625Z   ssh-strict: true
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.0977896Z   ssh-user: git
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.0978170Z   persist-credentials: true
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.0978465Z   clean: true
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.0978740Z   sparse-checkout-cone-mode: true
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.0979056Z   fetch-depth: 1
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.0979318Z   fetch-tags: false
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.0979591Z   show-progress: true
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.0979864Z   lfs: false
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.0980116Z   submodules: false
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.0980408Z   set-safe-directory: true
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.0980720Z   allow-unsafe-pr-checkout: false
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.0981118Z ##[endgroup]
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3217334Z Syncing repository: Ganda15/rita-agent
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3220032Z ##[group]Getting Git version info
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3220997Z Working directory is '/home/runner/work/rita-agent/rita-agent'
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3261232Z [command]/usr/bin/git version
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3417025Z git version 2.56.0
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3420690Z ##[endgroup]
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3447707Z Temporarily overriding HOME='/home/runner/work/_temp/b11cbfc5-769f-4102-858e-0d27cdafa5c6' before making global git config changes
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3449284Z Adding repository directory to the temporary git global config as a safe directory
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3450750Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/rita-agent/rita-agent
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3521431Z Deleting the contents of '/home/runner/work/rita-agent/rita-agent'
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3522957Z ##[group]Determining repository object format
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3557384Z ##[endgroup]
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3558232Z ##[group]Initializing the repository
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3558810Z [command]/usr/bin/git init /home/runner/work/rita-agent/rita-agent
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3658307Z hint: Using 'master' as the name for the initial branch. This default branch name
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3659941Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3661221Z hint: to use in all of your new repositories, which will suppress this warning,
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3662177Z hint: call:
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3663027Z hint:
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3665259Z hint: 	git config --global init.defaultBranch <name>
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3665839Z hint:
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3666525Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3667385Z hint: 'development'. The just-created branch can be renamed via this command:
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3668070Z hint:
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3668458Z hint: 	git branch -m <name>
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3668894Z hint:
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3669469Z hint: Disable this message with "git config set advice.defaultBranchName false"
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3757433Z Initialized empty Git repository in /home/runner/work/rita-agent/rita-agent/.git/
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3760896Z [command]/usr/bin/git remote add origin https://github.com/Ganda15/rita-agent
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3771970Z ##[endgroup]
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3773271Z ##[group]Disabling automatic garbage collection
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3835344Z [command]/usr/bin/git config --local gc.auto 0
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3837885Z ##[endgroup]
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3839371Z ##[group]Setting up auth
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3866734Z Removing SSH command configuration
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3886933Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.3927555Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.4212057Z Removing HTTP extra header
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.4213040Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.4249882Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.4439684Z Removing includeIf entries pointing to credentials config files
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.4442591Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.4483325Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.4672291Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-a1783373-2b01-4bfc-83e2-11cbf65e21da.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.4714178Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/rita-agent/rita-agent/.git.path /home/runner/work/_temp/git-credentials-a1783373-2b01-4bfc-83e2-11cbf65e21da.config
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.4757507Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/rita-agent/rita-agent/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-a1783373-2b01-4bfc-83e2-11cbf65e21da.config
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.4791447Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-a1783373-2b01-4bfc-83e2-11cbf65e21da.config
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.4828871Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-a1783373-2b01-4bfc-83e2-11cbf65e21da.config
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.4866340Z ##[endgroup]
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.4867077Z ##[group]Fetching the repository
+passage	Run actions/checkout@v7	2026-11-07T21:52:26.4869861Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +6f428d61511019d7b6013fb007e290c133d48c2e:refs/remotes/origin/main
+passage	Run actions/checkout@v7	2026-11-07T21:52:32.7107136Z From https://github.com/Ganda15/rita-agent
+passage	Run actions/checkout@v7	2026-11-07T21:52:32.7116663Z  * [new ref]         6f428d61511019d7b6013fb007e290c133d48c2e -> origin/main
+passage	Run actions/checkout@v7	2026-11-07T21:52:32.7128260Z [command]/usr/bin/git branch --list --remote origin/main
+passage	Run actions/checkout@v7	2026-11-07T21:52:32.7152526Z   origin/main
+passage	Run actions/checkout@v7	2026-11-07T21:52:32.7158753Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+passage	Run actions/checkout@v7	2026-11-07T21:52:32.7189453Z 6f428d61511019d7b6013fb007e290c133d48c2e
+passage	Run actions/checkout@v7	2026-11-07T21:52:32.7197576Z ##[endgroup]
+passage	Run actions/checkout@v7	2026-11-07T21:52:32.7198212Z ##[group]Determining the checkout info
+passage	Run actions/checkout@v7	2026-11-07T21:52:32.7198794Z ##[endgroup]
+passage	Run actions/checkout@v7	2026-11-07T21:52:32.7199488Z [command]/usr/bin/git sparse-checkout disable
+passage	Run actions/checkout@v7	2026-11-07T21:52:32.7251375Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+passage	Run actions/checkout@v7	2026-11-07T21:52:32.7288861Z ##[group]Checking out the ref
+passage	Run actions/checkout@v7	2026-11-07T21:52:32.7291562Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+passage	Run actions/checkout@v7	2026-11-07T21:52:33.0705011Z Switched to a new branch 'main'
+passage	Run actions/checkout@v7	2026-11-07T21:52:33.0723127Z branch 'main' set up to track 'origin/main'.
+passage	Run actions/checkout@v7	2026-11-07T21:52:33.0757828Z ##[endgroup]
+passage	Run actions/checkout@v7	2026-11-07T21:52:33.0837301Z [command]/usr/bin/git log -1 --format=%H
+passage	Run actions/checkout@v7	2026-11-07T21:52:33.0866468Z 6f428d61511019d7b6013fb007e290c133d48c2e
+passage	Vérifier que le secret RITA_API_KEY_VIGIE existe	﻿2026-11-07T21:52:33.1055031Z ##[group]Run if [ -z "$RITA_API_KEY" ]; then
+passage	Vérifier que le secret RITA_API_KEY_VIGIE existe	2026-11-07T21:52:33.1055257Z ^[[36;1mif [ -z "$RITA_API_KEY" ]; then^[[0m
+passage	Vérifier que le secret RITA_API_KEY_VIGIE existe	2026-11-07T21:52:33.1055621Z ^[[36;1m  echo "::error::Secret RITA_API_KEY_VIGIE absent : la vigie ne peut pas lire /sante. A creer dans Settings > Secrets and variables > Actions."^[[0m
+passage	Vérifier que le secret RITA_API_KEY_VIGIE existe	2026-11-07T21:52:33.1055951Z ^[[36;1m  exit 1^[[0m
+passage	Vérifier que le secret RITA_API_KEY_VIGIE existe	2026-11-07T21:52:33.1056318Z ^[[36;1mfi^[[0m
+passage	Vérifier que le secret RITA_API_KEY_VIGIE existe	2026-11-07T21:52:33.1074228Z shell: /usr/bin/bash -e {0}
+passage	Vérifier que le secret RITA_API_KEY_VIGIE existe	2026-11-07T21:52:33.1074373Z env:
+passage	Vérifier que le secret RITA_API_KEY_VIGIE existe	2026-11-07T21:52:33.1074724Z   RITA_API_KEY: ***
+passage	Vérifier que le secret RITA_API_KEY_VIGIE existe	2026-11-07T21:52:33.1074849Z ##[endgroup]
+passage	Run actions/setup-python@v7	﻿2026-11-07T21:52:33.1174522Z ##[group]Run actions/setup-python@v7
+passage	Run actions/setup-python@v7	2026-11-07T21:52:33.1174683Z with:
+passage	Run actions/setup-python@v7	2026-11-07T21:52:33.1174815Z   python-version: 3.13
+passage	Run actions/setup-python@v7	2026-11-07T21:52:33.1174972Z   check-latest: false
+passage	Run actions/setup-python@v7	2026-11-07T21:52:33.1176733Z   token: ***
+passage	Run actions/setup-python@v7	2026-11-07T21:52:33.1176909Z   mirror: https://raw.githubusercontent.com/actions/python-versions/main
+passage	Run actions/setup-python@v7	2026-11-07T21:52:33.1177137Z   update-environment: true
+passage	Run actions/setup-python@v7	2026-11-07T21:52:33.1231942Z   allow-prereleases: false
+passage	Run actions/setup-python@v7	2026-11-07T21:52:33.1232191Z   freethreaded: false
+passage	Run actions/setup-python@v7	2026-11-07T21:52:33.1232368Z ##[endgroup]
+passage	Run actions/setup-python@v7	2026-11-07T21:52:33.1979516Z ##[group]Installed versions
+passage	Run actions/setup-python@v7	2026-11-07T21:52:33.2040666Z Successfully set up CPython (3.13.18)
+passage	Run actions/setup-python@v7	2026-11-07T21:52:33.2041087Z ##[endgroup]
+passage	Installer ce dont la vigie a besoin	﻿2026-11-07T21:52:33.2189538Z ##[group]Run pip install httpx python-dotenv
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:33.2189854Z ^[[36;1mpip install httpx python-dotenv^[[0m
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:33.2220208Z shell: /usr/bin/bash -e {0}
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:33.2220438Z env:
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:33.2220668Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.18/x64
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:33.2221073Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.18/x64/lib/pkgconfig
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:33.2221434Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.18/x64
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:33.2221756Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.18/x64
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:33.2222098Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.18/x64
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:33.2222428Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.18/x64/lib
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:33.2222704Z ##[endgroup]
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:33.9398109Z Collecting httpx
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.0057917Z   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.0249934Z Collecting python-dotenv
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.0379331Z   Downloading python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.0697082Z Collecting anyio (from httpx)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.0805616Z   Downloading anyio-4.16.0-py3-none-any.whl.metadata (4.7 kB)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.1027187Z Collecting certifi (from httpx)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.1153106Z   Downloading certifi-2026.10.23-py3-none-any.whl.metadata (2.5 kB)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.1364792Z Collecting httpcore==1.* (from httpx)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.1491580Z   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.1713277Z Collecting idna (from httpx)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.1834164Z   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.2087932Z Collecting h11>=0.16 (from httpcore==1.*->httpx)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.2208704Z   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.2508091Z Collecting typing_extensions>=4.16.0 (from anyio->httpx)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.2580462Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.2744290Z Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.3013329Z Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.3184377Z Downloading python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.3320332Z Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.3464404Z Downloading anyio-4.16.0-py3-none-any.whl (134 kB)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.3642036Z Downloading idna-3.20-py3-none-any.whl (69 kB)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.3846686Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.3984068Z Downloading certifi-2026.10.23-py3-none-any.whl (135 kB)
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.4386145Z Installing collected packages: typing_extensions, python-dotenv, idna, h11, certifi, httpcore, anyio, httpx
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.6550267Z 
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.6550903Z Successfully installed anyio-4.16.0 certifi-2026.10.23 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.20 python-dotenv-1.2.4 typing_extensions-4.16.0
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.6554582Z 
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.6554915Z [notice] A new release of pip is available: 26.2.2 -> 26.3
+passage	Installer ce dont la vigie a besoin	2026-11-07T21:52:34.6556842Z [notice] To update, run: pip install --upgrade pip
+passage	Un passage de la vigie contre la production	﻿2026-11-07T21:52:34.6976634Z ##[group]Run python -m monitorage.vigie --adresse https://178-104-184-125.sslip.io --github
+passage	Un passage de la vigie contre la production	2026-11-07T21:52:34.6977002Z ^[[36;1mpython -m monitorage.vigie --adresse https://178-104-184-125.sslip.io --github^[[0m
+passage	Un passage de la vigie contre la production	2026-11-07T21:52:34.6992969Z shell: /usr/bin/bash -e {0}
+passage	Un passage de la vigie contre la production	2026-11-07T21:52:34.6993103Z env:
+passage	Un passage de la vigie contre la production	2026-11-07T21:52:34.6993250Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.18/x64
+passage	Un passage de la vigie contre la production	2026-11-07T21:52:34.6993492Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.18/x64/lib/pkgconfig
+passage	Un passage de la vigie contre la production	2026-11-07T21:52:34.6993721Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.18/x64
+passage	Un passage de la vigie contre la production	2026-11-07T21:52:34.6993924Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.18/x64
+passage	Un passage de la vigie contre la production	2026-11-07T21:52:34.6994127Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.18/x64
+passage	Un passage de la vigie contre la production	2026-11-07T21:52:34.6994334Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.18/x64/lib
+passage	Un passage de la vigie contre la production	2026-11-07T21:52:34.6994682Z   RITA_API_KEY: ***
+passage	Un passage de la vigie contre la production	2026-11-07T21:52:34.6996335Z   GH_TOKEN: ***
+passage	Un passage de la vigie contre la production	2026-11-07T21:52:34.6996449Z ##[endgroup]
+passage	Un passage de la vigie contre la production	2026-11-07T21:52:36.9061983Z vigie : passage terminé, code 0 (0 sain, 1 problème, 2 /sante illisible)
+passage	Post Run actions/setup-python@v7	﻿2026-11-07T21:52:36.9283671Z Post job cleanup.
+passage	Post Run actions/checkout@v7	﻿2026-11-07T21:52:37.0177736Z Post job cleanup.
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.0862327Z [command]/usr/bin/git version
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.0944022Z git version 2.56.0
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.0966662Z Temporarily overriding HOME='/home/runner/work/_temp/4333c4ef-7fc2-447a-82e4-9743fb1aaade' before making global git config changes
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.0985278Z Adding repository directory to the temporary git global config as a safe directory
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.0986368Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/rita-agent/rita-agent
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.1041590Z Removing SSH command configuration
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.1042118Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.1085858Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.1375337Z Removing HTTP extra header
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.1408073Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.1536314Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.1907479Z Removing includeIf entries pointing to credentials config files
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.1908252Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.1956662Z includeif.gitdir:/home/runner/work/rita-agent/rita-agent/.git.path
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.1966801Z includeif.gitdir:/home/runner/work/rita-agent/rita-agent/.git/worktrees/*.path
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.1979761Z includeif.gitdir:/github/workspace/.git.path
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.1986751Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.1988081Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/rita-agent/rita-agent/.git.path
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.2016733Z /home/runner/work/_temp/git-credentials-a1783373-2b01-4bfc-83e2-11cbf65e21da.config
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.2049847Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/rita-agent/rita-agent/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-a1783373\-2b01\-4bfc\-83e2\-11cbf65e21da\.config
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.2130360Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/rita-agent/rita-agent/.git/worktrees/*.path
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.2139395Z /home/runner/work/_temp/git-credentials-a1783373-2b01-4bfc-83e2-11cbf65e21da.config
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.2157906Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/rita-agent/rita-agent/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-a1783373\-2b01\-4bfc\-83e2\-11cbf65e21da\.config
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.2236800Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.2258449Z /github/runner_temp/git-credentials-a1783373-2b01-4bfc-83e2-11cbf65e21da.config
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.2287974Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-a1783373\-2b01\-4bfc\-83e2\-11cbf65e21da\.config
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.2336738Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.2356678Z /github/runner_temp/git-credentials-a1783373-2b01-4bfc-83e2-11cbf65e21da.config
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.2381038Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-a1783373\-2b01\-4bfc\-83e2\-11cbf65e21da\.config
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.2427224Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+passage	Post Run actions/checkout@v7	2026-11-07T21:52:37.2730530Z Removing credentials config '/home/runner/work/_temp/git-credentials-a1783373-2b01-4bfc-83e2-11cbf65e21da.config'
+passage	Complete job	﻿2026-11-07T21:52:37.2893678Z Cleaning up orphan processes

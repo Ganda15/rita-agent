@@ -7,7 +7,8 @@ Paris.
 
 Les fichiers de ce dossier sont les sorties originales des opérations du 07/11, copiées sans modification depuis le
 dossier de travail de l'autre agent qui les a menées avec Era, sauf ce README. Aucun ne contient de clé ; la
-configuration privée de la copie est restée hors du dépôt.
+configuration privée de la copie est restée hors du dépôt. Les trois fichiers du passage planifié (section 4) ont été relevés
+par `gh` le 07/11 à 21 h 55, sans modification.
 
 ## 1. Les seuils, définis à l'avance
 
@@ -67,16 +68,51 @@ l'a préparée pour la production.
 
 ## 4. Le passage automatique en production
 
-À constater : le passage `schedule` prévu à 21 h 17 (22 h 17 à Paris), avec son adresse, son commit, son résultat et
-sa ligne de sortie. Une relance manuelle ne le remplace pas.
+**Constaté le 07/11 à 21 h 52** : passage [42417908976](https://github.com/Ganda15/rita-agent/actions/runs/42417908976), événement `schedule` (déclenché par GitHub, pas à
+la main), branche `main`, commit `6f428d6` (celui de la production), conclusion `success`. Il était prévu à 21 h 17 :
+GitHub l'a lancé avec 35 minutes de retard. Sortie de la vigie, contre `https://178-104-184-125.sslip.io` avec
+`--github` :
 
-## 5. Les limites
+```
+vigie : passage terminé, code 0 (0 sain, 1 problème, 2 /sante illisible)
+```
+
+Le code 0 veut dire que `/sante` a été lu avec la clé (sinon : code 2) et qu'aucun signal n'était en « problème ».
+Aucune issue n'a été ouverte ni fermée : la liste des issues `incident` relevée à 21 h 55 ne contient aucun titre
+« vigie (production) », et #77 et #132 restent ouvertes, inchangées.
+
+Fichiers : [`passage-planifie-42417908976.json`](passage-planifie-42417908976.json) (métadonnées du passage),
+[`passage-planifie-42417908976.txt`](passage-planifie-42417908976.txt) (journal complet, secrets masqués par
+GitHub), [`issues-incident-2026-11-07-2155.json`](issues-incident-2026-11-07-2155.json).
+
+Les passages planifiés de la journée, depuis l'arrivée du workflow sur `main` (#221, `a68f2cf`, 1 h 49) : sept
+créneaux, trois passages `schedule`. 10 h 13 (42363054393) et 17 h 44 (42397820857) ont échoué, « Secret
+RITA_API_KEY_VIGIE absent » ; 21 h 52 a réussi. Les autres créneaux n'ont donné aucun passage.
+
+Le calcul des verdicts n'a pas changé depuis les essais des 22-23/10 : `git diff --stat 699e479 6f428d6` ne touche ni
+`api/sante.py`, ni `monitorage/seuils.py`, `signaux.py` ou `compteurs.py`. Dans `monitorage/vigie.py`, les
+changements portent sur le titre des issues (« production » ou « prototype local » selon l'adresse), la branche des
+liens, l'heure dite dans le corps et le filtre de la liste des issues.
+
+## 5. La réévaluation de C20.5
+
+Élément par élément, sur les preuves de ce dossier :
+
+| Élément du critère | Preuve |
+|---|---|
+| alertes configurées | `vigie.yml` sur `main` depuis le 07/11 (planification, secret) ; passage `schedule` 42417908976 ; alertes Langfuse (`alerte-incident.yml`) depuis le 03/10 |
+| en état de marche | passage planifié réussi en production (section 4) ; ouverture et fermeture d'une alerte par la vigie, code de production, sur copie (#230) ; signaux en taux les 22-23/10 (#127 à #131), même calcul des verdicts ; chaîne Langfuse : #130, #137 |
+| selon des seuils définis à l'avance | `monitorage/seuils.json`, valeurs inchangées depuis le 22/10 (section 1) |
+
+Proposition : ✅ avec les limites ci-dessous, à valider par Era (règle 4 du registre des partiels).
+
+## 6. Les limites
 
 - L'essai sur copie couvre le signal `service` (la disponibilité) ; il ne refait pas aujourd'hui le scénario des
   signaux en taux (par exemple cinq erreurs du fournisseur en quinze minutes), documenté le 22-23/10 sur une version
   antérieure de la vigie.
 - Aucune alerte n'a encore été émise par la vigie **de production** elle-même : la production était saine.
-- Le déclenchement planifié dépend de GitHub, qui peut retarder ou sauter un passage (le passage prévu à 18 h 17 n'a
-  pas eu lieu le 07/11).
+- Le déclenchement planifié dépend de GitHub, qui peut retarder ou sauter un passage : le 07/11, trois passages pour
+  sept créneaux, le dernier avec 35 minutes de retard. Une panne peut donc attendre plus de trois heures son alerte.
 - Deux incidents anciens restent ouverts (#77, alerte Langfuse du 04/10 ; #132, prototype local du 23/10) : ils ne
   sont fermés que si leur résolution est prouvée.
