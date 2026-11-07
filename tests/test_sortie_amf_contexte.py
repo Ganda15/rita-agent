@@ -96,3 +96,42 @@ def test_un_conseil_sur_une_societe_nommee_est_refuse(texte):
 def test_un_fait_sur_une_societe_nommee_n_est_pas_refuse(texte):
     verdict = verifier_sortie(texte)
     assert verdict["conforme"], verdict["motifs_detectes"]
+
+
+# --- Revue de sécurité automatique du commit a3ac7f4 : bloquer par défaut dans les tournures de conseil ---------------
+# Exiger une majuscule laissait passer « lvmh » et « Éramet », et la grammaire oubliait « d'acheter » et « le moment
+# est venu de ». Les tournures de conseil (« c'est le moment de vendre X », « mieux vaut vendre X », « il est temps de
+# sortir de X ») sont bloquées par défaut ; elles passent seulement si l'objet est un nom commun introduit par un
+# déterminant, hors vocabulaire d'investissement (« la coopération », « sa dette », « de la dépendance »).
+CONSEILS_SANS_MAJUSCULE_OU_AUTREMENT_DITS = [
+    "C'est le moment d'acheter Kering.",
+    "Le moment est venu de vendre LVMH.",
+    "C'est le moment de renforcer lvmh.",
+    "Mieux vaut vendre Éramet.",
+    "Éramet reste à renforcer.",
+    "Il est temps de vendre la ligne.",
+    "Il est temps de sortir du dossier.",
+    "Il est temps de sortir de l'action.",
+    "C'est le moment de renforcer franchement les positions sur LVMH.",
+    "Mieux vaut vendre maintenant.",
+    "Il est temps d'acheter des actions.",
+]
+
+FAITS_DANS_UNE_TOURNURE_DE_CONSEIL = [
+    "Le groupe estime que le moment est venu de vendre sa filiale américaine.",
+    "La BCE juge qu'il est temps d'alléger sa politique monétaire.",
+    "Selon l'économiste, il est temps de sortir du nucléaire.",
+    "Pour l'État actionnaire, c'est le moment de renforcer la gouvernance.",
+    "Le temps de vendre un bien immobilier s'allonge, selon les notaires.",
+]
+
+
+@pytest.mark.parametrize("texte", CONSEILS_SANS_MAJUSCULE_OU_AUTREMENT_DITS)
+def test_un_conseil_sans_majuscule_ou_autrement_dit_est_refuse(texte):
+    assert not verifier_sortie(texte)["conforme"]
+
+
+@pytest.mark.parametrize("texte", FAITS_DANS_UNE_TOURNURE_DE_CONSEIL)
+def test_un_fait_dans_une_tournure_de_conseil_n_est_pas_refuse(texte):
+    verdict = verifier_sortie(texte)
+    assert verdict["conforme"], verdict["motifs_detectes"]
