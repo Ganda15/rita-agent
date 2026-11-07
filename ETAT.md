@@ -39,6 +39,10 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
   couverture remplacée (texte seul, image intacte), 11 liens de la couverture recréés ; les 30 liens du livret vont vers
   `livrable-E1-v7` (22 chemins, tous présents). Le script d'assemblage du 28/10, hors du dépôt, n'est pas repris.
 - **README** : tableau des livrables à l'état du 08/11 (versions, pages, auto-évaluations, tags).
+- **Contrôle final d'un autre agent (08/11), appliqué** : E1 : Viridien présenté comme défaut corrigé le 04/11 (preuve
+  C3), règle UE du 06/11 avec ses réserves, neuf fiches de traitement dont T9, clé par client à 32,5 h (environ 1 700 €
+  HT, réévaluée le 14/11), trois renvois au code recalés (`db/importer.py` 152 et 339, `api/main.py` 312) ; E3 § 9 : la
+  2.4 est figée sous `livrable-E3-v5`, la 2.5 le sera sous `livrable-E3-v6`. E1 reste à 5 pages, sections aux mêmes pages.
 
 ## ▶️ 07/11, 23 H UTC : `livrable-E4-v6` ET `livrable-E5-v4` POSÉS ET VÉRIFIÉS ; C20.5 VALIDÉ ✅
 
