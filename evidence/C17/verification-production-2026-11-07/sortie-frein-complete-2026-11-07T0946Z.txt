@@ -1,0 +1,34 @@
+# Frein des essais de cle, prise complete du 2026-11-07T09:46:30Z (heure UTC du poste), URL HTTPS publique
+09:46:31 appel 01 : 403
+09:46:31 appel 02 : 403
+09:46:31 appel 03 : 403
+09:46:31 appel 04 : 403
+09:46:31 appel 05 : 403
+09:46:32 appel 06 : 403
+09:46:32 appel 07 : 403
+09:46:32 appel 08 : 403
+09:46:32 appel 09 : 403
+09:46:32 appel 10 : 403
+09:46:33 appel 11 : 429
+## 12e appel, en-tetes et corps complets (09:46:33)
+HTTP/1.1 429 Too Many Requests
+Alt-Svc: h3=":443"; ma=2592000
+Content-Length: 143
+Content-Security-Policy: default-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+Content-Type: application/json
+Date: Sat, 07 Nov 2026 09:46:32 GMT
+Referrer-Policy: no-referrer
+Retry-After: 898
+Strict-Transport-Security: max-age=31536000
+Via: 1.1 Caddy
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+X-Request-Id: 7441ac04315648ed980a3330c894e33f
+
+{"detail":{"statut":"refus","motif":"TROP_D_ESSAIS","texte":"Trop de clés refusées depuis cette adresse. Réessayez dans quelques minutes."}}
+## fin 09:46:33
+## controle du poste au moment du message d'Era (telephone : 403) : 09:53:53 UTC
+HTTP/1.1 429 Too Many Requests
+Date: Sat, 07 Nov 2026 09:53:52 GMT
+Retry-After: 458
+{"detail":{"statut":"refus","motif":"TROP_D_ESSAIS","texte":"Trop de clés refusées depuis cette adresse. Réessayez dans quelques minutes."}}

@@ -25,7 +25,7 @@ h2#glossaire + table td:first-child::after{ content:" : "; }
 
 # Rapport E3 : l'API du modèle, son intégration, son monitorage, ses tests et sa chaîne de livraison
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C9 à C13 · version 2.3, 6 novembre 2026 ; état décrit : 24 octobre 2026, évolutions datées · code : [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4), [code et preuves figés](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/jury/README.md) (dépôt privé : le formateur y a accès ; l'accès des examinateurs est demandé au formateur)
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C9 à C13 · version 2.4, 7 novembre 2026 ; état décrit : 24 octobre 2026, évolutions datées · code : [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v5), tag de cette version ; [code et preuves figés](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v5/docs/jury/README.md) ; preuves du 7 novembre : [`verification-production-2026-11-07`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v5/evidence/C17/verification-production-2026-11-07) ; un lien daté du corps garde le tag de sa mesure (dépôt privé : le formateur y a accès ; l'accès des examinateurs est demandé au formateur)
 {: .identite }
 
 > **En une minute.** RITA aide un investisseur particulier à comprendre les informations disponibles sur une action : il demande un briefing pour une valeur, ou il pose une question sur les articles collectés. Les deux textes sont rédigés par un modèle de langage fourni, que je n'entraîne pas. Ce rapport montre ce qui entoure ce modèle : l'API qui l'expose (C9), l'application qui l'utilise (C10), sa surveillance (C11), ses tests (C12) et sa livraison continue (C13).
@@ -126,18 +126,18 @@ Le top 10 OWASP des API (2023) et celui des applications de modèles de langage 
 | API1, accès à l'objet d'un autre utilisateur | une seule clé sert un seul utilisateur : aucune donnée n'appartient à un autre ; à reprendre avec une clé par client | sans objet, avec sa raison |
 | API2, authentification défaillante | clé obligatoire, longueur minimale, temps constant, aucune valeur par défaut, refus journalisés | appliqué |
 | API3, propriétés d'un objet exposées ou modifiables | entrées fermées : `DemandeQuestion` de 3 à 500 caractères, `EvenementMcp` en `extra="forbid"` ; aucune route ne modifie une donnée métier | appliqué |
-| API4, consommation de ressources non limitée | 10 appels par minute (`RITA_QUOTA_PAR_MINUTE`), partagés par les deux routes du modèle, 429 et `Retry-After` au-delà ([`api/limiteur.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/api/limiteur.py), depuis le 20 octobre) ; compteur en mémoire d'un seul processus, remis à zéro au redémarrage ; pas un plafond de dépense | **à consolider** |
+| API4, consommation de ressources non limitée | 10 appels par minute (`RITA_QUOTA_PAR_MINUTE`), partagés par les deux routes du modèle, 429 et `Retry-After` au-delà ([`api/limiteur.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/api/limiteur.py), depuis le 20 octobre) ; compteur en mémoire d'un seul processus, remis à zéro au redémarrage. Essais de clé freinés par adresse (7 novembre, vérifié en production). Alertes de dépense sur la ressource Azure depuis le 7 novembre (10 € par mois, à 50, 90 et 100 %) : elles alertent, n'arrêtent pas | mesures appliquées ; risque financier résiduel, alerté |
 | API5, fonction réservée accessible | les routes d'exercice exigent une clé distincte, `X-Cle-Exercice`, et répondent 403 sans elle ou avec une mauvaise clé (503 si le serveur n'en a pas) | appliqué |
-| API6, flux métier sensible sans limite | l'appel au modèle coûte : la limite de 10 appels par minute (API4) couvre les deux routes du modèle | à consolider, comme API4 |
+| API6, flux métier sensible sans limite | l'appel au modèle coûte : la limite de 10 appels par minute (API4) couvre les deux routes du modèle | appliqué, même limite qu'API4 |
 | API7, requête vers une adresse fournie (SSRF) | aucune route ne télécharge une adresse reçue ; les sources sont fixées dans le code de collecte | sans objet, avec sa raison |
-| API8, mauvaise configuration | conteneur non-root (UID 10001), système de fichiers en lecture seule, `no-new-privileges`, aucun port de base publié ; **mais aucun en-tête de sécurité en production**, et `Server` et `Via` annoncés (mesuré le 24 octobre, 14 h 54 UTC) | **à consolider** |
-| API9, inventaire des routes | contrat OpenAPI 3.1 généré depuis le code ; mais sa version déclarée n'a pas suivi les routes ajoutées (3.5) | à consolider |
+| API8, mauvaise configuration | conteneur non-root (UID 10001), système de fichiers en lecture seule, `no-new-privileges`, aucun port de base publié ; depuis le 7 novembre, en-têtes de sécurité en production, `Server` retiré, port de l'API fermé à Internet, mesurés sur les cinq écrans (`evidence/C17/verification-production-2026-11-07/`) ; reste `Via`, ajouté par Caddy | appliqué, `Via` à retirer |
+| API9, inventaire des routes | contrat OpenAPI 3.1 généré depuis le code ; version 1.2.0 depuis le 7 novembre, et un test qui échoue si une route servie n'est pas décrite (`tests/test_contrat_version.py`) | appliqué |
 | API10, consommation non sûre d'API tierces | réponse du modèle vérifiée : JSON imposé et validé pour `/question`, garde-fou de sortie pour le briefing ; articles collectés neutralisés contre l'injection | appliqué, limites mesurées (section 6) |
 | A05:2025 (OWASP web), injection | l'interface n'utilise jamais `innerHTML` ; tout texte passe par `textContent` | appliqué |
 | LLM01:2025, injection de prompt | garde-fous de la question et des articles, mesurés ; scan Giskard du 20 septembre | appliqué, limites mesurées (section 6) |
 | LLM02 et LLM07:2025, divulgation, fuite des consignes | contrôle de fuite après le modèle, sur les deux parcours | appliqué, 71,4 % mesuré (section 6) |
 
-La revue entrée par entrée, sur l'édition **OWASP Top 10:2025**, date du 3 octobre : [`evidence/C17/revue-owasp-top10-2025-2026-10-03.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/evidence/C17/revue-owasp-top10-2025-2026-10-03.md). Ses corrections suivent la carte #75 : la longueur du ticker est bornée, les refus de clé sont journalisés, la limite de débit existe ; restent les en-têtes de sécurité et le message d'une panne totale des fournisseurs. Le certificat de production, dont la carte #75 notait l'échéance du 18 novembre, avant le jury, a été renouvelé seul le 19 octobre (valable jusqu'au 17 janvier 2027, lu le 24 octobre).
+La revue entrée par entrée, sur l'édition **OWASP Top 10:2025**, date du 3 octobre : [`evidence/C17/revue-owasp-top10-2025-2026-10-03.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/evidence/C17/revue-owasp-top10-2025-2026-10-03.md). Ses corrections suivent la carte #75 : la longueur du ticker est bornée, les refus de clé sont journalisés, la limite de débit existe ; le message d'une panne totale des fournisseurs (4 novembre), les en-têtes de sécurité et le frein des essais de clé (7 novembre) sont faits depuis. Le certificat de production, dont la carte #75 notait l'échéance du 18 novembre, avant le jury, a été renouvelé seul le 19 octobre (valable jusqu'au 17 janvier 2027, lu le 24 octobre).
 
 ### 3.4 Versionnage et tests
 
@@ -145,10 +145,10 @@ Les sources sont sur GitHub, `Ganda15/rita-agent` : `develop` pour le travail, `
 
 ### 3.5 Ce qui manque, C9
 
-- Le contrat n'est pas versionné dans l'adresse (`/v1`), et sa version déclarée (`1.1.0`, du 1er août) n'a pas suivi l'ajout de `/question`, `/sante` et `/exercice`.
-- Un briefing dont le graphe échoue répond 502 ; une panne de tous les fournisseurs, 500 générique, sans fuite (carte #75).
+- Le contrat n'est pas versionné dans l'adresse (`/v1`). Sa version déclarée (`1.1.0`, du 1er août) n'avait pas suivi l'ajout de `/question`, `/sante` et `/exercice` : 1.2.0 depuis le 7 novembre (3.3).
+- Un briefing dont le graphe échoue répond 502 ; une panne de tous les fournisseurs répond 503 (`AUCUN_FOURNISSEUR`) depuis le 4 novembre, au lieu d'un 500 générique (carte #75).
 - Le format des erreurs n'est pas celui de la RFC 9457 (format JSON normalisé des erreurs).
-- Aucun en-tête de sécurité en production ; la limite de débit n'est ni par adresse ni par clé.
+- En-têtes de sécurité et frein des essais de clé en production depuis le 7 novembre ; restent `Via` (Caddy) et une limite d'appel au modèle commune, pas par client.
 - Le dépôt est privé : le jury doit y être invité avant l'envoi.
 
 ---
@@ -464,7 +464,7 @@ Velmo (juillet) : les trois emplacements de garde-fou et les deux chiffres toujo
 
 ## 9. Reproduire {: #s9 }
 
-**Cette version** : 2.3, 6 novembre 2026, soir : l'intégration des points de terminaison et les adaptations d'interface redeviennent tenues (#152 prouvé par le job `base` de `main`, #73 vérifié à la main en production), et le choix de Langfuse est réévalué (accessibilité, règle UE précisée). La 2.2, du même jour : statuts de #73 et #152 et sept contrôles de fusion harmonisés, titres au nouveau style ; mesures et auto-évaluation historiques conservées. Code et preuves : `livrable-E3-v4`. La version 2.1 du 3 novembre (lignes incomplètes en « à consolider », accès des examinateurs en en-tête, clé d'exercice en 3.2 et 3.3) est figée à ce tag ; la version 2.0 au tag `livrable-E3-v3` (2 novembre, après le retour écrit du formateur sur l'oral blanc du 30 octobre).
+**Cette version** : 2.4, 7 novembre 2026 : la ligne OWASP devient tenue, sur les mesures du site réel après la livraison (3.3). La 2.3, 6 novembre 2026, soir : l'intégration des points de terminaison et les adaptations d'interface redeviennent tenues (#152 prouvé par le job `base` de `main`, #73 vérifié à la main en production), et le choix de Langfuse est réévalué (accessibilité, règle UE précisée). La 2.2, du même jour : statuts de #73 et #152 et sept contrôles de fusion harmonisés, titres au nouveau style ; mesures et auto-évaluation historiques conservées. Code et preuves de la 2.4 : `livrable-E3-v5` ; les liens datés du corps gardent le tag de leur mesure, souvent `livrable-E3-v4`. La version 2.1 du 3 novembre (lignes incomplètes en « à consolider », accès des examinateurs en en-tête, clé d'exercice en 3.2 et 3.3) est figée à ce tag ; la version 2.0 au tag `livrable-E3-v3` (2 novembre, après le retour écrit du formateur sur l'oral blanc du 30 octobre).
 
 **Traçabilité des mesures** : du 2 au 24 octobre 2026, chacune avec sa date, sa commande, et pour la CI sa branche, son commit et son passage ; la production servait alors `b547cbf`.
 
@@ -495,7 +495,7 @@ Auto-évaluation du 24/10, revue le 27/10 ; preuves actualisées. ✅ tenu avec 
 |---|---|---|
 | L'API restreint l'accès au modèle par une authentification | ✅ | `X-API-Key`, 403, aucune clé par défaut, refus journalisés ; [`tests/test_health.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/tests/test_health.py), [`tests/test_refus_cle_journal.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/tests/test_refus_cle_journal.py) |
 | L'API donne accès aux fonctions du modèle selon les spécifications | ✅ | `POST /briefing` et `POST /question` ; valeur inconnue en 422 avant le modèle |
-| Recommandations OWASP intégrées quand nécessaire | 🟡 | section 3.3 : les dix risques des API, 4 appliqués, 4 à consolider (dont aucun en-tête de sécurité en production, mesuré le 24 octobre), 2 sans objet avec leur raison ; injection, LLM01, LLM02 appliqués |
+| Recommandations OWASP intégrées quand nécessaire | ✅ | section 3.3 : 8 appliqués, 2 sans objet ; en-têtes, port, contrat, frein des essais vérifiés en production le 7 novembre, le reste par ses tests datés ; alertes de dépense (API4) |
 | Sources versionnées sur un dépôt distant | ✅ | `Ganda15/rita-agent` |
 | Les tests couvrent tous les points de terminaison | ✅ | section 3.4, 149 tests sur l'API |
 | Les tests s'exécutent sans bug, résultats interprétés | ✅ | CI du 24 octobre : 1 719 réussis, 30 sautés expliqués, 2 `xfailed` : deux objectifs de blocage non atteints, déclarés, qui n'empêchent pas la livraison (section 6.1) |
@@ -553,7 +553,7 @@ Auto-évaluation du 24/10, revue le 27/10 ; preuves actualisées. ✅ tenu avec 
 | Sources de la chaîne versionnées | ✅ | [`.github/workflows/`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4/.github/workflows), [`.github/actions/`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4/.github/actions), [`.githooks/`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4/.githooks), [`deploy/`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4/deploy), [`scripts/verifier_livrable.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/scripts/verifier_livrable.py) |
 | Documentation d'installation, configuration, test de la chaîne, accessible | ✅ | [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/CI-CD.md) §4 à §7 : secrets dont ceux de l'environnement `production`, permissions, installation, tests de la chaîne ; Markdown à titres, PDF balisé (en tête de cette section) |
 
-**Décompte** : 38 ✅ · 1 🟡 · 0 ❌ sur 39 lignes couvrant 44 critères. Deux lignes repassent à consolider à la relecture du 27 octobre, sans changement du code : l'intégration de tous les points de terminaison (#152) et l'adaptation de l'outil de monitorage aux contraintes (règle « UE seule »). La première redevient tenue le 06/11 (4.3), comme les adaptations d'interface (#73 vérifié à la main) l'accessibilité du choix de l'outil (réévaluation datée, 5.6) et l'adaptation de l'outil à la règle UE, précisée et vérifiée (5.1). La ligne à consolider : l'OWASP.
+**Décompte** : 39 ✅ · 0 🟡 · 0 ❌ sur 39 lignes couvrant 44 critères. Deux lignes repassent à consolider à la relecture du 27 octobre, sans changement du code : l'intégration de tous les points de terminaison (#152) et l'adaptation de l'outil de monitorage aux contraintes (règle « UE seule »). La première redevient tenue le 06/11 (4.3), comme les adaptations d'interface (#73 vérifié à la main) l'accessibilité du choix de l'outil (réévaluation datée, 5.6) et l'adaptation de l'outil à la règle UE, précisée et vérifiée (5.1). L'OWASP est tenue le 7 novembre (3.3).
 
 ---
 
@@ -563,7 +563,7 @@ Auto-évaluation du 24/10, revue le 27/10 ; preuves actualisées. ✅ tenu avec 
 
 **La règle « UE seule »** (posée le 5 octobre : aucune donnée personnelle hors de l'Union européenne) : au 24 octobre, les replis Anthropic et OpenRouter restaient dans l'ordre par défaut du code, sans garantie de traitement dans l'Union européenne (registre RGPD, T6). Depuis le 31 octobre, le code par défaut et la production n'appellent qu'Azure (rapport E2, 4.2). Reste le contrat de Langfuse, qui permet un traitement hors de sa région (section 5.1).
 
-**Risques pour la démonstration** : si Azure est indisponible, `/question` répond 503 et, depuis le 31 octobre, `/briefing` s'arrête aussi (500 générique, sans fuite), en production comme sur le poste. La production et le poste n'ont pas les mêmes données (index de 2 140 articles en production le 24 octobre) : à l'oral, dire laquelle on montre. Le budget de GitHub Actions a bloqué la CI le 23 octobre et une livraison le 26 octobre (7.4) : pas de livraison en direct sans marge.
+**Risques pour la démonstration** : si Azure est indisponible, les deux parcours répondent 503 ; pour le briefing, le motif est `AUCUN_FOURNISSEUR` depuis le 4 novembre (au 24 octobre, un 500 générique, sans fuite). Aucun fournisseur de secours n'est activé. La production et le poste n'ont pas les mêmes données (index de 2 140 articles en production le 24 octobre) : à l'oral, dire laquelle on montre. Le budget de GitHub Actions a bloqué la CI le 23 octobre et une livraison le 26 octobre (7.4) : pas de livraison en direct sans marge.
 
 **Ce que ce rapport ne prétend pas** : qu'un garde-fou à motifs lexicaux arrête une intention habile (70 %) ; qu'une mesure de recherche sur un jeu annoté par un modèle vaut une mesure humaine ; que la chaîne d'alerte a attrapé une vraie panne (elle a attrapé une dégradation réelle et deux fausses alertes, expliquées).
 

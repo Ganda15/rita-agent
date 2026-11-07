@@ -9,6 +9,73 @@
 
 ---
 
+## 2026-11-07, après-midi : second regard d'un autre agent sur la branche du banc ; E2 v1.5 harmonisée
+
+**Corrigé.** Six phrases d'E2 encore au passé du banc : l'introduction, § 3.7, la latence (une prise ne garantit pas les
+suivantes), la décision Langfuse du 06/11, la provenance des notes dans la preuve Azure, les annexes A2 et A3 datées
+comme état du 03/11.
+
+**Manque découvert.** `_texte_mistral` acceptait une chaîne vide comme réponse : un appel sans texte aurait été compté
+comme disponible au banc. Aucune des 60 réponses n'est concernée ; corrigé avec son test.
+
+---
+
+## 2026-11-07, midi : banc C7 refait (Azure en zone UE, Mistral Large 3) ; corrections du double contrôle de #222 ; E2 v1.5
+
+**Livrables.** E2 v1.5 remplace la v1.4 pour `livrable-E2-v4`. E3 v2.4 et E4 v1.8 corrigées sans changer de numéro de
+version (aucune n'est taguée).
+
+**Décisions d'Era.**
+- Refaire le banc sur Azure tel qu'il tourne aujourd'hui, puis mesurer Mistral.
+- Large 3 au même budget qu'Azure, après le refus de Large 4 par Mistral.
+- Les notes de français : notes proposées par une IA à l'aveugle, acceptées par Era sans modification.
+- Un budget Azure avec alertes et un plafond Mistral.
+- Sur la capture du budget, masquer seulement l'identifiant et les adresses.
+
+**Manques découverts.**
+- Mistral a retiré `reasoning_effort: "none"` depuis le 10/10 ; Large 4 ne rend plus de texte dans le budget du rédacteur.
+- Le plafond du script du banc ne protège ni Azure ni Mistral : il ne connaît que le prix d'OpenRouter. Une première
+  note disait le contraire, corrigée après la relecture d'un autre agent.
+- La première prise du frein (08:51) ne conservait pas les en-têtes et ne prouvait pas l'indépendance de deux
+  visiteurs HTTPS. Seconde prise complète à 09:46.
+- L'heure de livraison écrite au matin (01:54) était celle de la construction de l'image ; la bascule s'est faite à
+  02:00:39 (fin du job `deployer`).
+
+---
+
+## 2026-11-07, matin : vérifications en production terminées ; E2 v1.4, E3 v2.4, E4 v1.8 pour leurs tags
+
+**Livrables.**
+- E2 v1.4 (C8.2 tenu, 20 ✅) pour `livrable-E2-v4`.
+- E3 v2.4 (ligne OWASP tenue, 39 ✅) pour `livrable-E3-v5`.
+- E4 v1.8 (C17.5 tenu, 34 ✅ · 4 🟡) pour `livrable-E4-v6`.
+- Ces versions remplacent E2 v1.3, E3 v2.3 et E4 v1.7, jamais taguées.
+- Chaque changement de statut repose sur une mesure du site réel du 07/11 (`evidence/C17/verification-production-2026-11-07/`).
+
+**Manque.** E4 disait encore « #74 non déployée » et « rôle propriétaire (#76) » à trois endroits ; corrigés.
+
+---
+
+## 2026-11-07, 3 h UTC : livraison en production de `develop` (#221) ; port en clair et collecte non planifiée découverts
+
+**Livré.** `main` à `a68f2cf` le 07/11 à 1 h 54 UTC : en-têtes de sécurité, compression, rôle `rita_api`, mots de passe
+sans valeur de secours, port de l'API lié à la machine, contrat 1.2.0, frein des essais de clé, consigne de l'écran
+Question. Vérifié sur le site réel à 2 h UTC (`evidence/C17/verification-production-2026-11-07/`).
+
+**Décisions.**
+- S3, option A (par adresse), validée par Era.
+- La fusion de `develop` dans `main` a été faite sans le double contrôle par un autre agent prévu le 06/11. Choix
+  d'Era, après la revue automatique de Claude, sans problème trouvé ; Codex était en échec, limite d'usage.
+
+**Manques découverts.**
+- Le port 8001 répondait en clair depuis Internet (corrigé par #218, vérifié après la livraison).
+- L'étape du serveur de #76 n'avait pas la réinstallation du fichier Compose, sans laquelle la livraison aurait été
+  refusée (ajoutée au guide).
+- Le premier mot de passe de `rita_api` s'est affiché dans le terminal (remplacé).
+- Aucune collecte planifiée en production : les données s'arrêtaient au 04/11.
+
+---
+
 ## 2026-11-07, nuit : E3 v2.3 et E4 v1.7, pour `livrable-E3-v5` et `livrable-E4-v6` ; quatre corrections de sécurité dans `develop`
 
 **Livrables.** E3 v2.3 (38 ✅ · 1 🟡) : #152 prouvé par le job `base` de `main`, #73 vérifié à la main en production avec

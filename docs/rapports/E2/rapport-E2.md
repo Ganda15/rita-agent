@@ -80,14 +80,15 @@ code{ background:#E3F0F3; color:#0D4C5E; border-radius:2pt; }
 .encadre .ligne.ecart{ background:#FFF4D9; } .encadre .ligne.ecart b{ color:#7A4E00; }
 .encadre .ligne.choix{ background:#ECEBFB; } .encadre .ligne.choix b{ color:#3B3FA8; }
 .encadre .ligne.evaluation{ background:#E9ECF0; } .encadre .ligne.evaluation b{ color:#4E5763; }
-h2#glossaire ~ table td{ padding:2pt 6pt 2pt 0; line-height:1.3; font-size:9pt; }  /* le glossaire seul reste serré : 20 pages au plus */
+p.glossaire-suite{ break-before:page; font-family:Georgia,"Times New Roman",serif; font-weight:600; font-size:12pt; color:var(--marine); margin:0 0 6pt; }
+h2#glossaire ~ table td{ padding:3pt 6pt 3pt 0; line-height:1.45; font-size:9.8pt; }  /* 07/11 : plus lisible, quitte à prendre une page de plus (20 au plus) */
 </style>
 
 <div><img class="logo" src="../E3/logo/rita-logo-marque.png" alt="Logo de RITA"></div>
 
 # Rapport E2 : veille, choix d'un service de modèle, et son paramétrage
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 1.3, 6 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 1.5, 7 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
 {: .identite }
 
 > **En une minute.** RITA rédige des briefings boursiers et répond à des questions sur les articles collectés. Elle
@@ -95,7 +96,8 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 >
 > Le service retenu est **Azure AI Foundry, modèle GPT-5.4, configuré en zone de données UE**. Le banc du 03/10 compare
 > Azure à Claude via OpenRouter : Azure est plus rapide en médiane, avec les mêmes résultats aux contrôles minimaux. Ce
-> banc utilisait le déploiement Global Standard ; ses performances ne sont pas remesurées en zone UE.
+> premier banc utilisait Global Standard. Le 07/11, un nouveau banc compare Azure en zone UE à Mistral Large 3, avec le
+> prompt corrigé (3.4).
 >
 > Ce rapport présente la veille (C6), le choix du service (C7) et sa configuration avec ses preuves (C8). Azure reste le
 > seul fournisseur actif ; Mistral est une alternative expérimentée, non intégrée.
@@ -109,14 +111,14 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 <li><a href="#c7">3. C7 : le choix du service de modèle</a><span>p. 6</span></li>
 <li><a href="#c8">4. C8 : le service retenu, paramétré et suivi</a><span>p. 11</span></li>
 <li><a href="#criteres">5. Les 20 critères, un par un</a><span>p. 15</span></li>
-<li><a href="#reste">6. Ce qui n'est pas fait</a><span>p. 16</span></li>
+<li><a href="#reste">6. Ce qui n'est pas fait</a><span>p. 17</span></li>
 <li><a href="#glossaire">Glossaire</a><span>p. 17</span></li>
-<li><a class="vers-annexe" href="#a1">Annexe A1 : la veille (PDF avec annexe)</a><span>p. 18</span></li>
-<li><a class="vers-annexe" href="#a2">Annexe A2 : le choix du service</a><span>p. 19</span></li>
-<li><a class="vers-annexe" href="#a3">Annexe A3 : le service aujourd'hui</a><span>p. 20</span></li>
-<li><a class="vers-annexe" href="#a4">Annexe A4 : les preuves de la veille</a><span>p. 21</span></li>
-<li><a class="vers-annexe" href="#a5">Annexe A5 : le détail du banc</a><span>p. 25</span></li>
-<li><a class="vers-annexe" href="#a6">Annexe A6 : les preuves du service</a><span>p. 27</span></li>
+<li><a class="vers-annexe" href="#a1">Annexe A1 : la veille (PDF avec annexe)</a><span>p. 19</span></li>
+<li><a class="vers-annexe" href="#a2">Annexe A2 : le choix du service</a><span>p. 20</span></li>
+<li><a class="vers-annexe" href="#a3">Annexe A3 : le service au 03/11</a><span>p. 21</span></li>
+<li><a class="vers-annexe" href="#a4">Annexe A4 : les preuves de la veille</a><span>p. 22</span></li>
+<li><a class="vers-annexe" href="#a5">Annexe A5 : le détail du banc</a><span>p. 26</span></li>
+<li><a class="vers-annexe" href="#a6">Annexe A6 : les preuves du service</a><span>p. 28</span></li>
 </ol>
 </div>
 
@@ -141,7 +143,8 @@ séries macroéconomiques, articles de presse) et d'un modèle de langage fourni
 
 - jamais de recommandation d'achat ou de vente (AMF) ;
 - aucune position ni aucun prix de revient envoyé au modèle ;
-- aucune donnée personnelle hors de l'Union européenne (règle du projet, 05/10).
+- services configurés dans leurs régions de l'UE, transferts contractuels identifiés et encadrés, données limitées au
+  nécessaire (règle du projet du 05/10, précisée le 06/11 ; 4.2).
 
 Le rapport E1 décrit les données, le rapport E3 l'API, les tests, le monitorage et la livraison. Celui-ci décrit **ce qui
 vient de l'extérieur** : l'état de l'art que je suis, le service que je choisis, et la façon dont je le paramètre.
@@ -309,7 +312,7 @@ scores d'exemple, jamais mesurés : rien n'en est repris.
 | Azure AI Foundry, `gpt-5.4` (OpenAI) | comparé sur le banc, 30 appels | branché dans `src/llm.py` ; seul service appelé aujourd'hui |
 | Claude par OpenRouter | comparé sur le banc, 30 appels | branché dans `src/llm.py` le 03/10 ; plus appelé aujourd'hui (4.2) |
 | Claude par l'API d'Anthropic | inclus, non mesuré | aucune clé sur le poste le 03/10 ; plus appelé aujourd'hui (4.2) |
-| Mistral Large 3 et 4 | hors banc : essai ponctuel du 10/10, un briefing par modèle (3.4) | ajouté après le banc, sur la branche `mistral-ue` |
+| Mistral Large 3 et 4 | essai du 10/10 ; Large 3 au banc du 07/11 (3.4) | Large 4 sans texte à 500 jetons le 07/11 |
 | Gemini | non étudié | hors du périmètre fixé par la décision D1 : il n'était pas branché dans le code |
 | Un modèle local (Llama) | exclu | aucune machine du projet n'a la mémoire pour un modèle de qualité suffisante ; « local » ne veut dire ni gratuit ni plus sobre sans mesure |
 | Services à carte bancaire ou nouvel abonnement | exclus | aucune nouvelle dépense hors modèle |
@@ -320,7 +323,7 @@ scores d'exemple, jamais mesurés : rien n'en est repris.
 <div class="encadre methode">
 <p class="encadre-titre">Le protocole du 03/10</p>
 <ul><li>10 cas figés avant la mesure, construits par le code réel : les sept valeurs du portefeuille de démonstration, la plus forte hausse, la plus forte baisse, une valeur cotée à Londres ;</li><li>trois répétitions par cas, soit 60 appels, avec le même prompt que le rédacteur ;</li><li>Azure en déploiement <i>Global Standard</i> ; l'API directe d'Anthropic non mesurée, faute de clé.</li></ul>
-<p>Ce banc ne mesure ni le déploiement UE actuel, ni le prompt corrigé le 06/11.</p>
+<p>Ce banc ne mesure ni le déploiement UE actuel, ni le prompt corrigé le 06/11 : mesurés au banc du 07/11 (3.4).</p>
 </div>
 
 <table class="grille-c banc">
@@ -350,9 +353,9 @@ Source : `evidence/C7/preuve-benchmark-2026-10-03.md`, § 9, et les 60 résultat
 
 <div class="encadre limite">
 <p class="encadre-titre">La limite de fidélité</p>
-<p>Le contrôle automatique vérifie seulement la présence du cours et l'absence d'un signal uniquement contraire à la variation (<code>evals/benchmark_fournisseurs.py</code>, lignes 101 à 113). La relecture des 60 textes, le 31/10, a trouvé trois erreurs qu'il a laissé passer :</p>
+<p>Le contrôle automatique vérifie seulement la présence du cours et l'absence d'un signal uniquement contraire à la variation (<code>evals/benchmark_fournisseurs.py</code>, lignes 101 à 113). Pour le banc du 03/10, la relecture des 60 textes, le 31/10, a trouvé trois erreurs qu'il a laissé passer :</p>
 <ul><li>une période inventée (texte 26) ;</li><li>le sens d'une variation (texte 32) ;</li><li>une date erronée (texte 35).</li></ul>
-<p>Le 30 sur 30 ne prouve donc pas une fidélité complète. La relecture est assistée par IA, puis validée par moi, fournisseur masqué jusqu'à la fin de la notation (<code>evidence/C7/notes-francais-2026-10-03-notation-2026-10-31.csv</code>) ; elle relève aussi des séances sans date et des « seuils » qui ne sont qu'une moyenne arrondie, que vise la correction du prompt (4.2).</p>
+<p>Le 30 sur 30 ne prouve donc pas une fidélité complète. Cette relecture est assistée par IA, puis validée par moi, fournisseur masqué jusqu'à la fin de la notation (<code>evidence/C7/notes-francais-2026-10-03-notation-2026-10-31.csv</code>) ; elle relève aussi des séances sans date et des « seuils » qui ne sont qu'une moyenne arrondie, que vise la correction du prompt (4.2).</p>
 </div>
 
 **L'adéquation au besoin, service par service et usage par usage.** RITA demande au modèle de rédiger le briefing et,
@@ -364,10 +367,10 @@ des réponses de RITA avec ce service.
 <table class="grille-c matrice">
 <thead><tr><th scope="col">Service</th><th scope="col">Briefing (<code>/briefing</code>)</th><th scope="col">Question sur les articles (<code>/question</code>)</th></tr></thead>
 <tbody>
-<tr><td>GPT-5.4 par Azure</td><td><span class="chip mesure">mesuré</span><b>retenu</b> : le 03/10, 30 textes sur 30 passent le garde-fou de sortie et le contrôle minimal de fidélité ; médiane de 3,21 s ; français noté 1 sur 2 ; banc fait sur le déploiement <i>Global Standard</i>, pas sur le déploiement UE actuel</td><td><span class="chip observe">observé</span><b>retenu</b> : le 16/10, sur le poste puis en production, les 8 scénarios connus donnent le résultat attendu : 4 réponses jugées fidèles aux passages cités, 1 abstention après appel au modèle, 3 refus avant tout appel</td></tr>
+<tr><td>GPT-5.4 par Azure</td><td><span class="chip mesure">mesuré</span><b>retenu</b> : le 03/10, 30 textes sur 30 passent le garde-fou de sortie et le contrôle minimal de fidélité ; médiane de 3,21 s ; français noté 1 sur 2 ; mesuré le 07/11 en zone UE : 30 appels, médiane de 2,19 s, 95e centile de 2,55 s (3.4)</td><td><span class="chip observe">observé</span><b>retenu</b> : le 16/10, sur le poste puis en production, les 8 scénarios connus donnent le résultat attendu : 4 réponses jugées fidèles aux passages cités, 1 abstention après appel au modèle, 3 refus avant tout appel</td></tr>
 <tr><td>Claude par OpenRouter</td><td><span class="chip mesure">mesuré</span><b>non retenu</b> : sur le même banc, 30 sur 30 aux mêmes contrôles ; médiane de 6,33 s ; français noté 1 sur 2 ; traitement dans l'UE non garanti (3.6)</td><td><span class="chip doc">documentation</span> le format imposé par un schéma n'est pris en charge que par certains points d'accès, et son respect strict n'est pas garanti partout (<a href="https://openrouter.ai/docs/features/structured-outputs">OpenRouter</a>) ; <span class="chip na">non évalué</span> dans RITA</td></tr>
 <tr><td>Claude par l'API directe d'Anthropic</td><td><span class="chip na">non mesuré</span> aucune clé sur le poste le 03/10 ; les résultats d'OpenRouter ne sont pas ceux de l'API directe</td><td><span class="chip doc">documentation</span> sorties structurées par schéma déclarées stables pour <code>claude-sonnet-4-5</code> et <code>claude-sonnet-5</code> (<a href="https://platform.claude.com/docs/en/build-with-claude/structured-outputs">Anthropic</a>) ; <span class="chip na">non évalué</span> dans RITA</td></tr>
-<tr><td>Mistral Large 3 et 4</td><td><span class="chip essai">essai</span>exploratoire, du 10/10 : un briefing par modèle : Large 3 a inventé une date de séance, Large 4 non sur cet exemple ; trop peu pour conclure (3.4)</td><td><span class="chip doc">documentation</span> sorties structurées par schéma pour tous les modèles actuels sauf un (<a href="https://docs.mistral.ai/capabilities/structured-output/custom_structured_output/">Mistral</a>) ; <span class="chip na">non évalué</span> dans RITA</td></tr>
+<tr><td>Mistral Large 3 et 4</td><td><span class="chip mesure">mesuré</span>le 07/11, Large 3 : mêmes dix cas, trois répétitions, 30 sur 30 au garde-fou ; médiane de 2,80 s, 95e centile de 3,68 s ; Markdown dans les 30 textes ; absent de la production (3.4)</td><td><span class="chip doc">documentation</span> sorties structurées par schéma pour tous les modèles actuels sauf un (<a href="https://docs.mistral.ai/capabilities/structured-output/custom_structured_output/">Mistral</a>) ; <span class="chip na">non évalué</span> dans RITA</td></tr>
 </tbody>
 </table>
 
@@ -375,12 +378,27 @@ Les trois refus de Question sans appel au modèle montrent un comportement de RI
 verdicts sur Question sont les miens, sur un seul passage en production, avec des questions connues à l'avance
 (`evidence/sprint-3/evaluation-production-2026-10-16-relecture.md`).
 
-### 3.4 L'essai de Mistral du 10/10 {: #s3-4 }
-Un vrai briefing (MC.PA, même prompt qu'Azure) a été servi par Mistral Large 3, puis par Mistral Large 4 sans
-réflexion. Large 3 a inventé une date de séance ; Large 4 non ; le coût est voisin (0,10 contre 0,08 centime). C'est
-**un seul briefing par modèle**, pas un banc. Cette mesure vit sur la branche `mistral-ue`
-(`evidence/C8/preuve-briefing-mistral-2026-10-10.md`), dont la pull request (#88) n'est pas fusionnée : Mistral n'est
-pas dans la version présentée.
+### 3.4 Mistral : l'essai du 10/10, le banc du 07/11 {: #s3-4 }
+Le 10/10, **un briefing par modèle** (MC.PA) : Large 3 a inventé une date de séance, Large 4 non, pour un coût voisin
+(0,10 contre 0,08 centime) ; preuve sur la branche `mistral-ue`, PR #88 non fusionnée : Mistral n'est pas dans la
+version présentée.
+
+**Le banc du 07/11** (`evidence/C7/banc-2026-11-07-comparaison/`) : le jeu du 03/10, le prompt du 06/11, 500 jetons,
+Azure en zone UE. Lors des essais du 07/11, le réglage `none` a été refusé ; avec `low` et 500 jetons, aucun texte n'a
+été obtenu ; avec 2 000 jetons, un texte a été obtenu. Large 3 (`mistral-large-2512`) a donc été retenu pour la
+comparaison à 500 jetons (choix d'Era). Ce banc ne mesure pas la route Question.
+
+| Mesure | Azure `gpt-5.4`, zone UE | Mistral Large 3, UE |
+|---|---|---|
+| Disponibles, acceptés par le garde-fou AMF, réussissant le contrôle minimal de fidélité | 30, 30 et 30 sur 30 | 30, 30 et 30 sur 30 |
+| Latence, médiane et 95e centile | **2,19 s et 2,55 s** | 2,80 s et 3,68 s |
+| Markdown (`**`) dans le texte | 0 sur 30 | 30 sur 30 |
+| Coût d'un briefing au prix public | 0,0044 USD | **0,00072 USD** |
+| Français, de 0 à 2, moyenne | 1,10 (3 textes à 2) | **1,37** (11 textes à 2) |
+
+Les notes de français sont des notes proposées par une IA à l'aveugle, acceptées par Era sans modification ; la forme
+trahit en partie l'auteur (Mistral ouvre par un titre). Console Mistral : coût total estimé de 0,02 € pour 35 requêtes,
+ni une facture ni le coût des seuls 30 appels du banc.
 
 ### 3.5 L'environnement et les prérequis techniques {: #s3-5 }
 **L'environnement** (`evidence/C7/prix-et-environnement-2026-10-03.md`, relevé du 03/10). Microsoft publie des chiffres
@@ -389,7 +407,7 @@ PUE 1,17). Aucun des deux éditeurs ne publie de chiffre par modèle : OpenAI do
 sans méthode ; Anthropic, rien. L'ordre de grandeur, de 0,3 à 18 Wh par briefing selon la source, reste une hypothèse,
 pas une mesure.
 
-**Les prérequis des deux services comparés**, lus dans le code (`src/llm.py`) et dans les réponses des services
+**Les prérequis des deux services du banc du 03/10**, lus dans le code (`src/llm.py`) et dans les réponses des services
 (`evidence/C7/prix-et-environnement-2026-10-03.md`). Pour les deux, la clé vit dans une variable d'environnement, jamais
 dans le code.
 
@@ -405,30 +423,30 @@ dans le code.
 ### 3.6 La recommandation {: #s3-6 }
 
 <div class="encadre decision">
-<p class="encadre-titre">Le choix : Azure AI Foundry, <code>gpt-5.4</code>, pour le briefing, sur la base du banc du 03/10</p>
-<ul><li>ses textes passent les contrôles aussi souvent que ceux de Claude, avec le même niveau de français ;</li><li>sa médiane est deux fois plus courte ;</li><li>aucun frais n'est déclaré pour le candidat ;</li><li>son déploiement est configuré en zone de données UE, comme la règle du projet le demande.</li></ul>
-<p>Le même service sert les questions, usage observé mais non comparé (3.3).</p>
+<p class="encadre-titre">Le choix : Azure AI Foundry, <code>gpt-5.4</code>, pour le briefing, choix maintenu</p>
+<ul><li>le banc du 03/10 le comparait à Claude via OpenRouter : mêmes contrôles réussis, même français, une médiane deux fois plus courte ;</li><li>le banc du 07/11 le mesure en zone UE, avec le prompt corrigé, face à Mistral Large 3 : médiane de 2,19 s contre 2,80 s, texte sans Markdown ; Mistral obtient une meilleure note moyenne dans cette évaluation (1,37 contre 1,10) et coûte moins ;</li><li>ses frais ne sont pas facturés au candidat (déclaration du 31/10) ; les appels ont néanmoins un coût (0,0044 USD par briefing au prix public) ;</li><li>il reste le seul fournisseur actif en production, en zone de données UE.</li></ul>
+<p>Le même service sert les questions : usage observé avec Azure, non comparé (3.3).</p>
 </div>
 
 | Service | Verdict | Pour | Contre |
 |---|---|---|---|
-| Azure AI Foundry, `gpt-5.4` (mesuré le 03/10 en Global Standard ; en zone UE depuis le 09/10) | **retenu** | 30 textes sur 30 acceptés par le garde-fou de sortie et fidèles au contrôle minimal ; 0 € déclaré pour le candidat ; médiane 3,21 s ; déploiement configuré en zone UE depuis le 09/10 | 2 appels sur 30 au-dessus de 10 s ; prise en charge des frais qui peut cesser ; banc non rejoué en zone UE ; contrat de Microsoft non relu en entier |
+| Azure AI Foundry, `gpt-5.4` (mesuré le 03/10 en Global Standard ; en zone UE depuis le 09/10) | **retenu** | 30 textes sur 30 acceptés par le garde-fou de sortie et fidèles au contrôle minimal ; 0 € déclaré pour le candidat ; médiane 3,21 s, puis 2,19 s en zone UE le 07/11 ; déploiement configuré en zone UE depuis le 09/10 | le 03/10, 2 appels sur 30 au-dessus de 10 s (aucun le 07/11) ; prise en charge des frais qui peut cesser ; DPA de Microsoft lu pour ses sections utiles (06/11), conditions des produits non vérifiées (4.2) |
 | Claude par OpenRouter | **écarté** | 30 textes sur 30 acceptés par le garde-fou de sortie et fidèles au contrôle minimal ; latence régulière (95e centile 7,20 s) | payant ; traitement dans l'UE non garanti, contraire à la règle du 05/10 |
 | Claude par l'API d'Anthropic | **écarté, non mesuré** | même famille Claude, version configurée différente (`claude-sonnet-5` en accès direct, `claude-sonnet-4.5` mesuré par OpenRouter) | API directe non mesurée, faute de clé ; société établie aux États-Unis, traitement dans l'UE non garanti |
-| Mistral Large 4, adresse européenne | **choisi le 10/10 comme futur second fournisseur, sous conditions ; non validé, non actif** | hébergé dans l'UE ; sur un briefing, n'a pas inventé la date que Large 3 inventait | un seul briefing mesuré ; contrat non lu ; absent du code livré (PR #88) |
+| Mistral, adresse européenne | **futur second fournisseur, sous conditions ; non actif** | hébergé dans l'UE ; Large 3 au banc du 07/11 : 30 sur 30, meilleure note de français dans cette évaluation (1,37 contre 1,10), six fois moins cher | Large 4 sans texte à 500 jetons (07/11) ; Large 3 écrit du Markdown ; contrat non lu ; hors de la cascade |
 
 Depuis le 31/10, la production n'appelle qu'Azure (4.2) : il n'y a pas de fournisseur de secours. Ce qui ferait changer
-la décision : la queue de latence pendant une démonstration, la fin de la prise en charge des frais d'Azure, ou un banc
-où Mistral ferait nettement mieux.
+la décision : la fin de la prise en charge des frais d'Azure, ou Mistral une fois son contrat lu et son Markdown réglé.
+Sur les 30 appels Azure du 07/11, le 95e centile est de 2,55 s ; ce résultat ne garantit pas le délai des prochains appels.
 
 ### 3.7 Ce qui n'est pas fait {: #s3-7 }
 
-- **La notation du français** est assistée par IA, puis validée par moi : ce n'est pas un jugement humain indépendant,
-  et son barème à trois niveaux ne départage pas les services.
-- **Le banc Azure contre Mistral**, prévu le 11/10, n'est pas fait : un briefing par modèle seulement. Ce report protège
-  le temps des autres livrables ; rien ne l'empêche techniquement.
-- **L'usage Question** n'est pas comparé entre fournisseurs ; **l'API directe d'Anthropic** et **la variation d'un jour à
-  l'autre** ne sont pas mesurées.
+- **La notation du français** : notes proposées par une IA à l'aveugle, puis acceptées par Era sans modification. Les
+  moyennes diffèrent sur ce jeu ; cela ne prouve pas une supériorité générale, et ce n'est pas une notation humaine
+  indépendante.
+- **Le banc du 07/11** compare Azure UE à Mistral Large 3 sur dix cas, avec trois répétitions ; il ne mesure ni l'usage
+  Question ni la variation d'un jour à l'autre. Large 4 n'a pas fait l'objet de cette comparaison complète.
+- **L'API directe d'Anthropic** n'est pas mesurée.
 - **Le contrat de Mistral** (sous-traitants, conservation, entraînement) n'est pas lu.
 
 ---
@@ -476,8 +494,10 @@ fournis, sans jamais recommander d'acheter ou de vendre (contrainte AMF). Le pro
 GPT-5 refusent `max_tokens` : RITA envoie `max_completion_tokens` (`src/llm.py`, lignes 71 à 73).
 
 **Le réglage qui décide du fournisseur.** `LLM_ORDRE` liste les fournisseurs essayés dans l'ordre ; le code en connaît
-trois : Azure (`foundry`), Anthropic et OpenRouter. La règle du projet, aucune donnée personnelle hors de l'Union
-(registre RGPD, § 0), impose Azure seul : Anthropic et OpenRouter ne la garantissent pas. C'est la valeur par défaut
+trois : Azure (`foundry`), Anthropic et OpenRouter ; Mistral, ajouté le 07/11 pour le banc, n'en fait pas partie (3.4).
+La règle initiale du projet (05/10, registre RGPD, § 0) a conduit à retenir Azure seul : Anthropic et OpenRouter ne la
+garantissaient pas. Ce choix reste en place après la précision du 06/11 (4.2) ; les conditions d'un autre fournisseur
+sont à vérifier avant son activation. C'est la valeur par défaut
 depuis le 31/10 (fonction complète : `src/llm.py`, lignes 31 à 36, à `922349d`) :
 
 ```python
@@ -505,7 +525,7 @@ n'appelle qu'Azure, sans repli (registre RGPD, T8).
 <p class="ligne prouve"><b>Ce qui est prouvé</b> : zone de données UE, ressource en Suède, aucun repli hors de l'Union (4.1) ; les requêtes ne servent pas à entraîner les modèles ; l'échantillon gardé pour la surveillance des abus reste dans la géographie de la ressource, relu par des employés situés dans l'Espace économique européen.</p>
 <p class="ligne ecart"><b>L'écart documenté</b> : Microsoft décrit des sorties rares de sa frontière européenne : l'accès à distance de son personnel, qu'il qualifie lui-même de transfert, les opérations de sécurité, l'acheminement réseau.</p>
 <p class="ligne choix"><b>La décision</b> (06/11, registre § 0) : la règle est précisée. Services configurés dans leurs régions de l'UE ; plus de promesse d'absence absolue de transfert ; pour chaque sous-traitant, exceptions identifiées, garanties vérifiées, données limitées. Vérifié : DPA de Microsoft du 01/11/2026 (clauses types de 2021), Microsoft Corporation active au Data Privacy Framework sur la liste officielle (<code>evidence/C8/regle-ue-2026-11-06/README.md</code>).</p>
-<p class="ligne evaluation"><b>L'évaluation</b> : la décision ne rend pas le critère vert ; C8.2 reste à consolider tant que la consigne de l'écran Question (n'y écrire aucune donnée personnelle) n'est pas en production (5).</p>
+<p class="ligne evaluation"><b>L'évaluation</b> : la décision ne rendait pas le critère vert ; C8.2 restait à consolider tant que la consigne de l'écran Question (n'y écrire aucune donnée personnelle) n'était pas en production. Elle l'est depuis la livraison du 07/11, reliée au champ de la question, vérifiée sur le site réel (<code>evidence/C17/verification-production-2026-11-07/</code>) : C8.2 est tenu (5).</p>
 </div>
 
 <div class="encadre limite">
@@ -545,7 +565,7 @@ relevé n'est pas une facture (`docs/BUDGET.md`).
 
 <div class="encadre limite">
 <p class="encadre-titre">Limites</p>
-<ul><li>l'issue #77, ouverte par la première alerte du 04/10, est toujours ouverte ;</li><li>le contrat de Langfuse permet un traitement hors de la région choisie : la décision de le garder ou de le remplacer n'est pas écrite (registre, § 5).</li></ul>
+<ul><li>l'issue #77, ouverte par la première alerte du 04/10, est toujours ouverte ;</li><li>le maintien de Langfuse comme outil de l'exploitant est consigné le 06/11, avec la règle UE précisée et ses garanties vérifiées ; ses exceptions contractuelles et les limites d'accessibilité restent documentées (<code>evidence/C11/</code>, <code>evidence/C8/regle-ue-2026-11-06/</code>).</li></ul>
 </div>
 
 ### 4.5 La documentation {: #s4-5 }
@@ -600,36 +620,33 @@ preuve · 🟡 à consolider : le point qui manque est écrit · ❌ aucune preu
 <tr><td>C7.1 besoin reformulé, objectifs, contraintes</td><td class="etat ok">✅</td><td>contraintes mesurables, plafond fixé avant la mesure (3.1)</td></tr>
 <tr><td>C7.2 services étudiés et non étudiés</td><td class="etat ok">✅</td><td>inventaire, chacun avec sa place dans l'étude (3.2)</td></tr>
 <tr><td>C7.3 raisons d'écartement</td><td class="etat ok">✅</td><td>une raison par service écarté (3.2, 3.6)</td></tr>
-<tr><td>C7.4 adéquation par ensemble fonctionnel</td><td class="etat ok">✅</td><td><b>fait</b> : briefing comparé sur 60 appels, question observée avec Azure, matrice par service et par usage avec la provenance de chaque information (3.3) ; <b>limites</b> : question non comparée entre fournisseurs, API directe d'Anthropic non mesurée, Mistral limité à un essai par modèle, fidélité contrôlée en partie (3.7)</td></tr>
+<tr><td>C7.4 adéquation par ensemble fonctionnel</td><td class="etat ok">✅</td><td><b>fait</b> : briefing comparé sur 60 appels, question observée avec Azure, matrice par service et par usage avec la provenance de chaque information (3.3) ; <b>limites</b> : question non comparée entre fournisseurs, API directe d'Anthropic non mesurée, Mistral mesuré en Large 3 seulement (07/11), fidélité contrôlée en partie (3.7)</td></tr>
 <tr><td>C7.5 démarche éco-responsable</td><td class="etat ok">✅</td><td>chiffres d'entreprise et inconnues par modèle séparés (3.5)</td></tr>
 <tr><td>C7.6 contraintes techniques et prérequis</td><td class="etat ok">✅</td><td>prérequis d'Azure et d'OpenRouter côte à côte (3.5)</td></tr>
 <tr><td>C7.7 conclusions</td><td class="etat ok">✅</td><td>service retenu et services écartés, avec avantages et limites (3.6)</td></tr>
 <tr class="groupe c8"><th colspan="3" scope="colgroup">C8 · le service retenu, paramétré, surveillé, documenté</th></tr>
 <tr><td>C8.1 service accessible, avec authentification</td><td class="etat ok">✅</td><td>accès par clé, adresse cliquable, connexion à clé masquée ; briefing et trace du 06/11, reliés par la même référence (4.1, annexe A6)</td></tr>
-<tr><td>C8.2 configuré selon les besoins et les contraintes</td><td class="etat alerte">🟡</td><td><b>fait</b> : prompt corrigé, Azure seul, zone UE, ressource en Suède (4.2) ; <b>à consolider</b> : règle UE précisée et vérifiée le 06/11 ; la consigne de l'écran Question, écrite, n'est pas encore en production (4.2)</td></tr>
+<tr><td>C8.2 configuré selon les besoins et les contraintes</td><td class="etat ok">✅</td><td><b>fait</b> : prompt corrigé, Azure seul, zone UE, ressource en Suède (4.2) ; règle UE précisée et vérifiée le 06/11 ; consigne de l'écran Question en production depuis le 07/11, vérifiée sur le site réel (4.2)</td></tr>
 <tr><td>C8.3 monitorage opérationnel</td><td class="etat ok">✅</td><td>traces reliées au briefing, alertes, vigie, supervision d'Azure (4.4)</td></tr>
 <tr><td>C8.4 documentation complète</td><td class="etat ok">✅</td><td>guide d'exploitation, testé contre le code (4.5)</td></tr>
 <tr><td>C8.5 documentation communiquée, format accessible</td><td class="etat ok">✅</td><td>guide envoyé au formateur le 03/11, format contrôlé (4.6)</td></tr>
 </tbody>
 </table>
 
-**Décompte** : 19 ✅ · 1 🟡 · 0 ❌ sur 20. Décision d'Era.
+**Décompte** : 20 ✅ · 0 🟡 · 0 ❌ sur 20. Décision d'Era.
 
 ---
 
 ## 6. Ce qui n'est pas fait, et dans quel ordre le faire {: #reste }
 
-**Les versions.** 1.1 remise le 05/11 (`livrable-E2-v3`) ; 1.2 du 06/11, non taguée ; 1.3 du 06/11, après le retour du
-formateur (exemple de veille complet, preuves visibles, repères des critères, correction du prompt), tag prévu :
-`livrable-E2-v4`. La 1.0 reste sous `livrable-E2-v2`, la 0.9 sous `livrable-E2-v1`.
+**Les versions.** 1.5 du 07/11 (C8.2 tenu, banc du 07/11), tag prévu : `livrable-E2-v4` ; 1.1 sous `livrable-E2-v3`, 1.0
+sous `livrable-E2-v2`, 0.9 sous `livrable-E2-v1` ; 1.2 à 1.4 non taguées.
 
 **Ensuite.**
 
 1. **Reprendre la veille** (C6) : relevés et notes des semaines suivantes, un échange collectif documenté.
-2. **La contrainte UE** (C8.2) : déployer la consigne de l'écran Question, puis réévaluer C8.2 ; connaître la durée
-   de conservation de l'échantillon des abus.
-3. **Mistral** (C7, C8) : lire son contrat et mesurer Azure contre Mistral Large 4 sur le banc ; alors seulement,
-   reprendre la PR #88 et passer à `LLM_ORDRE=foundry,mistral`.
+2. **La contrainte UE** (C8.2) : connaître la durée de conservation de l'échantillon des abus (registre, point 12).
+3. **Mistral** (C7, C8) : lire son contrat et régler le Markdown de Large 3 (3.4), avant la PR #88.
 
 ## 📖 Glossaire {: #glossaire }
 
@@ -648,15 +665,20 @@ formateur (exemple de veille complet, preuves visibles, repères des critères, 
 | **Jeton** | unité de texte comptée et facturée par le fournisseur du modèle |
 | **Zone de données UE (Data Zone Standard EU)** | déploiement Azure configuré pour traiter les appels dans la zone de données de l'Union européenne |
 | **PUE** | indicateur d'efficacité énergétique d'un centre de données (1 serait parfait) |
-| **Évaluation assistée par IA** | un outil d'IA propose les notes et les remarques ; une personne les relit, les corrige si nécessaire et les valide |
+| **Évaluation assistée par IA** | un outil d'IA propose les notes et les remarques ; une personne les relit, les corrige si nécessaire et les valide. Au banc du 07/11 : 60 notes de français proposées par une IA à l'aveugle, acceptées par Era sans modification |
 | **Déploiement** | l'instance d'un modèle réservée à un projet chez le fournisseur, avec son nom et sa zone |
 | **Hook** | contrôle automatique lancé par l'outil de développement avant une action, qui peut la refuser |
 | **Trace, métadonnées** | le relevé d'un appel (étapes, durée, modèle, jetons) ; les métadonnées décrivent l'appel sans son contenu |
 | **Vigie** | le programme `monitorage/vigie.py`, qui interroge le service de dehors et peut ouvrir ou mettre à jour une alerte (une issue GitHub) ; les mesures et leurs verdicts viennent de la route `/sante` |
 | **Remise (handover)** | donner la documentation à quelqu'un qui peut faire tourner le service sans vous, et en garder la preuve |
+
+<p class="glossaire-suite">Glossaire (suite)</p>
+
+| Terme | En clair |
+|---|---|
 | **Red team** | équipe qui attaque un système comme le ferait un adversaire, pour en trouver les failles avant lui |
 | **Relais** | site qui rapporte l'information d'une autre source et y renvoie, sans la reproduire lui-même |
 | **Sorties structurées (schéma JSON)** | réponse du modèle contrainte à un format décrit à l'avance |
-| **Transfert (au sens du RGPD)** | toute mise à disposition de données hors de l'Union, y compris un accès à distance depuis un pays tiers |
+| **Transfert (au sens du RGPD)** | mise à disposition de données personnelles à une autre entité située hors de l'Espace économique européen, notamment par accès à distance |
 | **DPA** | l'avenant de protection des données du contrat de Microsoft |
 | **RGAA, WCAG** | les référentiels d'accessibilité numérique, français et international |

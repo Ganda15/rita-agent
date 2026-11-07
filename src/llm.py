@@ -27,6 +27,10 @@ from src.traces import Reponse
 logger = logging.getLogger(__name__)
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+# Mistral, pour le banc C7 seulement (07/11/2026, repris de la PR #88) : hors de la cascade tant que son contrat n'est
+# pas lu. L'adresse européenne est écrite ici, pas dans un réglage : une variable mal posée ne peut pas sortir de l'UE.
+MISTRAL_HOTE = "api.eu.mistral.ai"
+MISTRAL_URL = f"https://{MISTRAL_HOTE}/v1/chat/completions"
 
 
 def _ordre_fournisseurs() -> list[str]:
@@ -47,6 +51,8 @@ def _modele_prevu(nom: str) -> str:
         "foundry": os.getenv("AZURE_FOUNDRY_DEPLOYMENT", "gpt-5.4"),
         "anthropic": os.getenv("ANTHROPIC_MODEL", "claude-sonnet-5"),
         "openrouter": os.getenv("OPENROUTER_MODEL", "anthropic/claude-sonnet-4.5"),
+        # Large 3 et non Large 4 (07/11) : Large 4 réfléchit sur tout le budget du rédacteur, sans texte (test_llm_mistral).
+        "mistral": os.getenv("MISTRAL_MODEL", "mistral-large-2512"),
     }[nom]
 
 
@@ -88,6 +94,47 @@ def _appel_foundry(prompt: str, max_tokens: int) -> Reponse:
         # la région est le résultat de l'appel, pas une propriété de la ressource.
         origine=(getattr(reponse, "headers", None) or {}).get("x-ms-region"),
     )
+
+
+def _appel_mistral(prompt: str, max_tokens: int) -> Reponse:
+    """Mistral par son adresse européenne (chat completions, même forme que Foundry), sans SDK. Banc C7 seulement.
+
+    `MISTRAL_API_KEY` absente lève `KeyError` : c'est « indisponible ». Le réglage de réflexion n'est envoyé que si
+    `MISTRAL_REASONING_EFFORT` le demande (low, medium, high, pour Large 4) : Large 3 le refuse (400), et `none` n'est
+    plus accepté par Mistral depuis le 10/10 (mesuré le 07/11)."""
+    corps = {"model": _modele_prevu("mistral"), "max_tokens": max_tokens,
+             "messages": [{"role": "user", "content": prompt}]}
+    if os.getenv("MISTRAL_REASONING_EFFORT"):
+        corps["reasoning_effort"] = os.environ["MISTRAL_REASONING_EFFORT"]
+    reponse = httpx.post(
+        MISTRAL_URL,
+        headers={"Authorization": f"Bearer {os.environ['MISTRAL_API_KEY']}"},
+        json=corps,
+        timeout=60.0,
+    )
+    reponse.raise_for_status()
+    corps = reponse.json()
+    usage = corps.get("usage") or {}
+    return Reponse(
+        texte=_texte_mistral(corps["choices"][0]["message"]["content"]),
+        modele=corps.get("model"),
+        usage={"input": usage.get("prompt_tokens", 0), "output": usage.get("completion_tokens", 0)}
+        if usage else None,
+        origine=MISTRAL_HOTE,
+    )
+
+
+def _texte_mistral(contenu) -> str:
+    """Une chaîne telle quelle ; une liste de blocs (modèle à raisonnement), ses seuls blocs `text`, jamais la
+    réflexion. Sans aucun texte, `ValueError` : une panne du fournisseur, pas une réponse."""
+    if isinstance(contenu, str):
+        texte = contenu
+    else:
+        texte = "".join(b.get("text", "") for b in contenu or [] if isinstance(b, dict) and b.get("type") == "text")
+    # Les deux formes passent par le même contrôle (double contrôle du 07/11 : une chaîne vide passait).
+    if not texte.strip():
+        raise ValueError("Réponse Mistral sans texte (réflexion seule ou vide).")
+    return texte
 
 
 def _appel_anthropic(prompt: str, max_tokens: int) -> Reponse:
