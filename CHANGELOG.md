@@ -9,6 +9,29 @@
 
 ---
 
+## 2026-11-07, midi : banc C7 refait (Azure en zone UE, Mistral Large 3) ; corrections du double contrôle de #222 ; E2 v1.5
+
+**Livrables.** E2 v1.5 remplace la v1.4 pour `livrable-E2-v4`. E3 v2.4 et E4 v1.8 corrigées sans changer de numéro de
+version (aucune n'est taguée).
+
+**Décisions d'Era.**
+- Refaire le banc sur Azure tel qu'il tourne aujourd'hui, puis mesurer Mistral.
+- Large 3 au même budget qu'Azure, après le refus de Large 4 par Mistral.
+- Les notes de français : notes proposées par une IA à l'aveugle, acceptées par Era sans modification.
+- Un budget Azure avec alertes et un plafond Mistral.
+- Sur la capture du budget, masquer seulement l'identifiant et les adresses.
+
+**Manques découverts.**
+- Mistral a retiré `reasoning_effort: "none"` depuis le 10/10 ; Large 4 ne rend plus de texte dans le budget du rédacteur.
+- Le plafond du script du banc ne protège ni Azure ni Mistral : il ne connaît que le prix d'OpenRouter. Une première
+  note disait le contraire, corrigée après la relecture d'un autre agent.
+- La première prise du frein (08:51) ne conservait pas les en-têtes et ne prouvait pas l'indépendance de deux
+  visiteurs HTTPS. Seconde prise complète à 09:46.
+- L'heure de livraison écrite au matin (01:54) était celle de la construction de l'image ; la bascule s'est faite à
+  02:00:39 (fin du job `deployer`).
+
+---
+
 ## 2026-11-07, matin : vérifications en production terminées ; E2 v1.4, E3 v2.4, E4 v1.8 pour leurs tags
 
 **Livrables.**

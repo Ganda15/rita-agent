@@ -48,7 +48,7 @@ Résumés : [`../banc-2026-11-07/resume-2026-11-07.json`](../banc-2026-11-07/res
 | Textes contenant du Markdown (`**`) | 0 sur 30 | **30 sur 30** |
 | Jetons pour 30 briefings, entrée et sortie | 21 534 et 5 243 | 23 334 et 6 579 |
 | Coût d'un briefing au prix public | 0,0044 USD (2,50 et 15,00 USD par million, prix du 03/10) | **0,00072 USD** (0,5 et 1,5 USD par million, prix Mistral lu le 10/10) |
-| Français, noté par Era à l'aveugle (0, 1 ou 2) | à compléter | à compléter |
+| Français, de 0 à 2 (notes proposées par une IA à l'aveugle, acceptées par Era sans modification) | moyenne **1,10** : 3 textes à 2, 27 à 1, 0 à 0 | moyenne **1,37** : 11 textes à 2, 19 à 1, 0 à 0 |
 
 **Le coût réel chez Mistral** : la console de Mistral, onglet « Usage », relevée par Era le 07/11 à 11:13 heure de Paris
 ([`mistral-usage-2026-11-07.png`](mistral-usage-2026-11-07.png)), affiche pour `mistral-large-2512` 32 requêtes et
@@ -67,7 +67,14 @@ fournisseur, `**` retirés pour ne pas désigner Mistral. La clé est à part :
 [`notes-francais-2026-11-07-cle.csv`](notes-francais-2026-11-07-cle.csv). Script :
 [`preparer_notation_aveugle.py`](preparer_notation_aveugle.py).
 
-**Limite écrite** : la forme trahit en partie l'auteur (Mistral ouvre par une ligne de titre, Azure par la date).
+**Provenance des notes, à garder telle quelle** : notes proposées par une IA à l'aveugle, acceptées par Era sans
+modification. Une autre session d'IA a lu les 60 textes sans la clé, en deux lectures ; elles concordaient sur 36 notes,
+et 23 désaccords venaient du sigle RSI écrit sans explication (retenu à 1 pour la lisibilité). Era a reporté les 60
+propositions dans [`notes-francais-2026-11-07.csv`](notes-francais-2026-11-07.csv) le 07/11 : 60 sur 60 identiques aux
+propositions, textes inchangés (contrôle du 07/11).
+
+**Limites écrites** : la forme trahit en partie l'auteur (Mistral ouvre par une ligne de titre, Azure par la date) ; ce
+n'est pas une notation humaine indépendante.
 
 ## Ce que ce banc ne prouve pas
 

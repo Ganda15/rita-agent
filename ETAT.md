@@ -21,6 +21,30 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ---
 
+## ▶️ 07/11, MIDI : CORRECTIONS DU DOUBLE CONTRÔLE FAITES, BANC C7 REFAIT ; E2 v1.5, E3 v2.4, E4 v1.8 POUR UN SECOND REGARD PUIS LES TAGS
+
+**Prochaine action** :
+1. Era pousse la branche `banc-c7-2026-11-07`, puis PR vers `develop`.
+2. Second regard de l'autre agent : les corrections de son rapport `DOUBLE-CONTROLE-PR-222.md` et le banc.
+3. Fusions : #222, puis cette PR, puis `develop` vers `main`.
+4. Les tags, un par push : `livrable-E2-v4` (E2 v1.5), `livrable-E3-v5` (E3 v2.4), `livrable-E4-v6` (E4 v1.8),
+   `livrable-E5-v4`. Les liens des en-têtes d'E3 et d'E4, qui visent ces tags, sont à vérifier une fois les tags posés.
+
+- **Banc C7 du 07/11** (`evidence/C7/banc-2026-11-07-comparaison/`), demande d'Era (« A + B ») :
+  - Azure en zone UE, prompt corrigé : 30 sur 30, 95e centile 2,55 s (10,69 s le 03/10) ;
+  - Mistral Large 3, même budget : 30 sur 30, français 1,37 contre 1,10, six fois moins cher, Markdown dans les 30 ;
+  - Large 4 : Mistral a retiré le réglage « sans réflexion », plus de texte dans les 500 jetons.
+  - Notes de français : notes proposées par une IA à l'aveugle, acceptées par Era sans modification.
+  - Appel Mistral ajouté pour le banc seulement ; la cascade l'ignore (`_NOMS_VALIDES`, testé).
+- **Corrections du double contrôle de #222** :
+  - E2 : règle UE au présent corrigée.
+  - E3 : OWASP borné à ce qui est vérifié ; API4 avec les alertes de dépense ; panne en 503.
+  - E4 : 9 et 2 en C17, mesures #74, en-têtes au tag de la version.
+  - Frein prouvé entre deux visiteurs HTTPS (téléphone en 5G : 403 pendant le blocage du poste).
+- **Dépenses** : budget Azure de 10 € par mois, alertes à 50, 90 et 100 %, sans arrêt automatique ; plafond Mistral de
+  5 € par mois. Le plafond du script du banc ne protège ni Azure ni Mistral (prix inconnus du script), écrit.
+- **Grilles** : E2 20 ✅ · 0 🟡 ; E3 39 ✅ · 0 🟡 ; E4 34 ✅ · 4 🟡 (C16.1, C16.4, C17.7, C17.8) ; E5 : C20.5 en dernier.
+
 ## ▶️ 07/11, MATIN : PRODUCTION VÉRIFIÉE ; E2 v1.4, E3 v2.4, E4 v1.8 RENDUES, PRÊTES POUR LE DOUBLE CONTRÔLE PUIS LES TAGS
 
 **Prochaine action** : Era pousse la branche `verifications-production-07-11`, puis PR vers `develop`. Ensuite, le
