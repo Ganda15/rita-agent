@@ -1,0 +1,11 @@
+Chronométrage des entrées hostiles, 07/11/2026 14:54
+Code mesuré : 9525bbc (guardrails/ identique au commit)
+Python 3.14.6 sur Windows ; un sous-processus par appel, échéance 20 s ; temps mesuré dans l'enfant, sans le démarrage de Python
+
+entrée                                                verifier_fuite        verifier_sortie            neutraliser
+password + 5000 espaces                                      0.45 ms                2.01 ms                0.47 ms
+mot de passe + 5000 espaces + x                              0.48 ms                1.45 ms                0.54 ms
+clé + 3000 « a »                                             2.22 ms                2.92 ms                2.04 ms
+clé + 3000 « a , »                                           2.79 ms                3.87 ms                3.02 ms
+note de la rédaction + 5000 espaces + achat                  0.54 ms                1.42 ms                0.51 ms
+consignes de rédaction + 3000 « x »                          2.44 ms                2.99 ms                2.43 ms
