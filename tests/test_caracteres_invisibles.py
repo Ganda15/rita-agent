@@ -148,3 +148,42 @@ def test_une_injection_cachee_en_caracteres_d_etiquette_n_atteint_pas_le_modele(
     bloc = _bloc_articles([{"article_id": 2, "source": "Blog", "publie_le": "2026-11-06",
                             "texte": "Résultats en ligne avec le consensus." + cachee}])
     assert _invisibles(bloc) == []
+
+
+# --- 4. Garde-fous d'ENTRÉE, sur la question du visiteur : constat ouvert, hors du périmètre validé le 07/11 ------------
+# Revue de sécurité automatique du commit bf425b5 et sonde du même jour : `verifier_intention` (intention AMF) et
+# `verifier_detournement` lisent la question telle quelle, le modèle la reçoit sans ses caractères invisibles. Tests
+# écrits AVANT toute correction de guardrails/ (zone sous garde) ; xfail strict là où ils échouent le 07/11, jusqu'à la
+# décision d'Era. Chaque test exige que le masque ne change pas le verdict d'une attaque bloquée telle quelle.
+from guardrails.detournement import verifier_detournement  # noqa: E402
+from guardrails.entree import verifier_intention  # noqa: E402
+from evals.cas import INTENTIONS_INTERDITES, INTENTIONS_LEGITIMES  # noqa: E402
+
+_EN_ATTENTE = pytest.mark.xfail(strict=True, reason="garde-fous d'entrée non normalisés : correction soumise à Era")
+_DETOURNEMENT_DEJA_NORMALISE = {"pleine-chasse"}  # NFKC déjà appliqué par guardrails/detournement.py
+
+
+def _attaques_h1_a_h6() -> list[str]:
+    from rag.controle_questions import charger_jeu
+    jeu = {q["id"]: q for q in charger_jeu()["questions"]}
+    return [jeu[f"H{n}"]["question"] for n in range(1, 7)]
+
+
+@pytest.mark.parametrize("nom", [pytest.param(nom, marks=_EN_ATTENTE) for nom in MASQUES])
+def test_une_intention_interdite_masquee_reste_bloquee(nom):
+    assert all(verifier_intention(t)["bloque"] for t in INTENTIONS_INTERDITES)
+    assert [t for t in INTENTIONS_INTERDITES if not verifier_intention(MASQUES[nom](t))["bloque"]] == []
+
+
+@pytest.mark.parametrize("nom", [pytest.param(nom, marks=() if nom in _DETOURNEMENT_DEJA_NORMALISE else _EN_ATTENTE)
+                                 for nom in MASQUES])
+def test_une_attaque_de_detournement_masquee_reste_bloquee(nom):
+    attaques = _attaques_h1_a_h6()
+    assert all(verifier_detournement(t)["bloque"] for t in attaques)
+    assert [t for t in attaques if not verifier_detournement(MASQUES[nom](t))["bloque"]] == []
+
+
+@pytest.mark.parametrize("nom", list(MASQUES))
+def test_une_question_legitime_masquee_n_est_pas_bloquee_a_l_entree(nom):
+    assert not any(verifier_intention(MASQUES[nom](t))["bloque"] or verifier_detournement(MASQUES[nom](t))["bloque"]
+                   for t in INTENTIONS_LEGITIMES)
