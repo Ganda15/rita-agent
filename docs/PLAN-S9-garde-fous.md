@@ -49,3 +49,21 @@ quelques dizaines de cas ne prouve pas la robustesse face à un attaquant qui s'
 - **Jeu tenu à l'écart** (*held-out*) : des cas qu'on ne regarde pas en écrivant la correction, pour mesurer sans biais.
 - **Circularité** : écrire les cas de test d'après la règle à tester ; le score devient parfait sans rien prouver.
 - **`xfail(strict=True)`** : un test déclaré en échec attendu ; s'il se met à passer, pytest le signale pour qu'on le revoie.
+
+## 5. Ajout du 07/11, validé par Era (« Yes, extend (go) ») : le garde-fou de sortie AMF
+
+**L'oubli de ce plan.** La revue OWASP du 03/10 définit S9 comme « garde-fous d'injection **et de sortie** à 70 % ». La
+sortie y désigne l'interdit AMF (`verifier_sortie`). Ce plan, écrit le 06/11, a pris à sa place le contrôle de fuite
+(`verifier_fuite`, venu plus tard). Corriger l'injection et les fuites ne ferme donc pas S9.
+
+**T5, même méthode, plus stricte** (relecture d'un autre agent, 07/11) :
+1. 12 sorties interdites et 12 sorties légitimes, par famille, écrites et commitées avant toute modification de
+   `verifier_sortie` (`evals/cas_s9_reserves_sortie.py`).
+2. Mesure avant correction : seulement les nombres, sans regarder quels textes passent.
+3. Correction par famille, conçue à partir des trois contournements de l'ancien jeu (une place dans un portefeuille, un
+   point d'entrée attractif, une occasion à saisir) et des familles écrites ici : la vente présentée comme une évidence,
+   les formulations douces en anglais, un potentiel présenté comme une incitation.
+4. Mesure : sorties interdites bloquées et sorties légitimes refusées à tort, séparément, avec le nombre de cas, la date
+   et le commit. Seuil 85 % : sur 12 cas, il faut 11 bloqués (10 font 83,3 %). Les anciens tests sont rejoués.
+
+**Limite** : le même agent écrit les cas et la correction ; ce n'est pas une validation indépendante.

@@ -1,0 +1,4 @@
+# Mesure avant correction du garde-fou de sortie AMF (T5), 2026-11-07T12:54:38Z, base ee64757
+interdites bloquees : 0 sur 12 (0.0 %) ; legitimes refusees a tort : 0 sur 12 (0.0 %)
+(nombres seuls : les textes qui passent ne sont pas lus avant la correction)
+empreinte du jeu : 0b3001c0691526429d84ffeaee09c3f3cf2c231b882847dae0a142e32c68dad7
