@@ -82,6 +82,14 @@ de facturation quand un plafond n'est pas possible.
 | Fournisseur | Ce qui est posé | Preuve |
 |---|---|---|
 | Azure (le seul fournisseur de la production) | budget `RITA-Foundry-10EUR-mensuel`, créé par Era le 07/11 : 10 € par mois sur la ressource Foundry de RITA, alertes par courriel à 50 %, 90 % et 100 % du coût réel, jusqu'au 31/12/2026 (la date de début affichée, 01/11, est le début du mois) | [`azure-budget-alerte-2026-11-07-masque.png`](azure-budget-alerte-2026-11-07-masque.png), masquée à la demande d'Era : seuls l'identifiant de l'abonnement et les deux adresses sont retirés ; le groupe de ressources et le chemin de la ressource Foundry (`microsoft.cognitiveservices`) restent lisibles, pour prouver le périmètre |
-| Mistral (le banc seulement, hors de la production) | la console ne propose que des limites de débit (jetons par minute, requêtes par seconde), aucun plafond de dépense ; le banc a son propre plafond (`--plafond 5`, en dollars, il s'arrête seul) | vu par Era dans la console le 07/11 ; plafond du banc : `evals/benchmark_fournisseurs.py` |
+| Mistral (le banc seulement, hors de la production) | plafond de dépenses mensuel de **5 €** enregistré par Era le 07/11 pour l'API et Vibe Code de l'espace « Default Workspace » (onglet « Limites ») ; la console annonce une suspension de l'accès à l'atteinte du plafond, non déclenchée pour ce contrôle. Utilisation affichée : 0,02 € | [`mistral-plafond-5-euros-2026-11-07.png`](mistral-plafond-5-euros-2026-11-07.png) (aucune clé ni adresse) |
 
-**Limite écrite** : un budget Azure alerte, il n'arrête pas les appels. Un dépassement serait signalé, pas empêché.
+**Limites écrites.**
+- Un budget Azure alerte, il n'arrête pas les appels : un dépassement serait signalé, pas empêché. L'évaluation est
+  quotidienne et différée ; la réception d'un courriel d'alerte n'a pas été testée.
+- La page des limites de débit de Mistral (jetons par minute, requêtes par seconde) est distincte du plafond financier
+  ci-dessus.
+- Le plafond du banc (`--plafond 5`, `evals/benchmark_fournisseurs.py`) ne protège ni Azure ni Mistral : le script ne
+  charge que le prix d'OpenRouter, le coût compté pour les deux autres reste à 0 (affiché « 0.0000 USD » dans les
+  passages du 07/11). Corrigé le 07/11 après la relecture d'un autre agent : une première version de cette note disait
+  le contraire.

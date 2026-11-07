@@ -7,7 +7,8 @@ Azure (*Global Standard*, ancien prompt) à Claude par OpenRouter ; Mistral n'av
 ## Les deux passages
 
 Le même jeu figé (`evidence/C7/jeu-d-essai-2026-10-03.json`, 10 cas, 3 répétitions), le même prompt que le rédacteur
-(celui du 06/11), le même budget de 500 jetons, le même plafond de 5 USD :
+(celui du 06/11), le même budget de 500 jetons. Le plafond du script (`--plafond 5`) est inopérant ici : le script ne connaît pas les
+prix d'Azure ni de Mistral, le coût compté reste 0. La dépense réelle est relevée à part (ci-dessous) :
 
 | | Azure | Mistral |
 |---|---|---|

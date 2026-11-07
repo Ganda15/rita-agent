@@ -29,7 +29,8 @@ C:\Python314\python.exe -X utf8 -m evals.benchmark_fournisseurs --jeu evidence/C
 | Jetons par briefing, entrée et sortie (moyenne) | 644 et 204 | 718 et 175 |
 | Coût d'un briefing au prix public *Global Standard* (2,50 et 15,00 USD par million) | 0,0047 USD | 0,0044 USD (calcul : 21 534 jetons d'entrée et 5 243 de sortie pour 30 appels) |
 
-Le script affiche un coût de 0 USD : il ne connaît que le prix d'OpenRouter. Le coût ci-dessus est calculé à la main,
+Le script affiche un coût de 0 USD : il ne connaît que le prix d'OpenRouter ; son plafond (`--plafond 5`) n'a donc
+pas pu jouer pour Azure. Le coût ci-dessus est calculé à la main,
 au prix public du 03/10 (`prix-et-environnement-2026-10-03.md`). Le prix de la zone de données UE n'est pas relevé dans
 les preuves : le chiffre exact pour ce déploiement n'est pas établi.
 
