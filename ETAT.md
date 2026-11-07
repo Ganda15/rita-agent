@@ -57,7 +57,7 @@ double contrôle par un autre agent (brief : `Documents\RITA PRO\output\double-c
 2. Lancer le workflow « Ingestion » : les données s'arrêtent au 04/11.
 3. Rendre les PDF de E2 v1.4, E3 v2.4 et E4 v1.8, puis le double contrôle et les tags, un par push.
 
-- **En production depuis le 07/11, 1 h 54 UTC** (PR #221, fusionnée par Era sans le double contrôle par un autre
+- **En production depuis le 07/11, 02:00:39 UTC** (fin du job `deployer` ; image construite à 01:54:37) (PR #221, fusionnée par Era sans le double contrôle par un autre
   agent, décision prise après la revue automatique de Claude, sans problème trouvé ; Codex en échec, limite d'usage) :
   - en-têtes S1 ; compression #74 ; rôle `rita_api` #76 ; S8 ;
   - port de l'API lié à `127.0.0.1` (#218, constat du 07/11 : il répondait en clair depuis Internet) ;

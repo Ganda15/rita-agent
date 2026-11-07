@@ -16,7 +16,7 @@ h2#matrice + p + table td:first-child{ width:27%; }
 
 # Rapport E4 : réaliser une application intégrant un service d'IA (C14 à C19)
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.8, 7 novembre 2026 · version de référence de l'application : commit `174b0c1` de `main` (tags `livrable-E1-v5`, `livrable-E2-v1` et `livrable-E3-v3`), en production le 02/11/2026 ; interface refaite en production depuis le 04/11 (`8ecc5a7`, § 6.5) ; les exécutions citées en section 6 vont du 21/10 au 02/11 · code et preuves : dépôt GitHub privé [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5)
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.8, 7 novembre 2026 · version de référence de l'application : commit `174b0c1` de `main` (tags `livrable-E1-v5`, `livrable-E2-v1` et `livrable-E3-v3`), en production le 02/11/2026 ; interface refaite en production depuis le 04/11 (`8ecc5a7`, § 6.5) ; les exécutions citées en section 6 vont du 21/10 au 02/11 · code et preuves : dépôt GitHub privé [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v6), tag de cette version ; preuves du 07/11 : [`verification-production-2026-11-07`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v6/evidence/C17/verification-production-2026-11-07) ; un lien daté du corps garde le tag de sa mesure (souvent `livrable-E4-v5`)
 {: .identite }
 
 > **En une minute.** RITA aide un investisseur particulier à suivre son portefeuille et à lire l'actualité d'une
@@ -402,10 +402,10 @@ Le même travail a fait découvrir un autre manque, écrit le jour même : la sa
 
 ### 4.1 Vue d'ensemble
 
-Je distingue « j'ai une preuve » et « tout le critère est satisfait ». Sur les onze critères de C17, huit sont
+Je distingue « j'ai une preuve » et « tout le critère est satisfait ». Sur les onze critères de C17, neuf sont
 satisfaits : l'environnement (§ 4.2), les maquettes et les comportements (§ 4.3), les composants métier et les flux
-(§ 4.4), les tests (§ 4.8), les sources et la documentation, envoyée au formateur le 03/11 (§ 4.9). Trois restent à
-consolider : les droits d'accès (§ 4.5), la sécurité OWASP (§ 4.6) et l'éco-conception (§ 4.7). La preuve et la limite de
+(§ 4.4), les droits d'accès (§ 4.5, depuis le 07/11), les tests (§ 4.8), les sources et la documentation, envoyée au
+formateur le 03/11 (§ 4.9). Deux restent à consolider : la sécurité OWASP (§ 4.6) et l'éco-conception (§ 4.7). La preuve et la limite de
 chacun sont dans la matrice (section 8).
 
 ### 4.2 L'environnement de développement (critère 1)
@@ -523,7 +523,7 @@ applications web. Dix constats, S1 à S10 ([`evidence/C17/revue-owasp-top10-2025
 | S10 : certificat proche de l'expiration | renouvelé seul le 19/10, valable jusqu'au 17/01/2027 ([`ETAT.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/ETAT.md)) |
 | S1 : aucun en-tête de sécurité | **corrigé** (#210) et mesuré en production le 07/11 sur les cinq écrans : politique de contenu, HSTS, `nosniff`, `X-Frame-Options`, `Referrer-Policy`, `Server` retiré ; reste `Via`, ajouté par Caddy |
 | S2 : `/docs` public | décidé le 06/11 (D7) : public, motivé ; ni secret ni donnée dans le contrat |
-| S6 : panne de tous les fournisseurs | ouvert pour `/briefing` ; **corrigé le 04/11** : 503 `AUCUN_FOURNISSEUR`, [testé](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/tests/test_briefing_diagnostic.py) ; `/question` renvoie déjà 503 ([`api/question.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/api/question.py)) |
+| S6 : panne de tous les fournisseurs | initialement ouvert pour `/briefing` ; **corrigé le 04/11** : 503 `AUCUN_FOURNISSEUR`, [testé](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/tests/test_briefing_diagnostic.py) ; `/question` renvoie déjà 503 ([`api/question.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/api/question.py)) |
 | S8 : mots de passe par défaut | **corrigé** (#215) : plus de valeur de secours ; le serveur a sa propre valeur (vérifié par Era sans l'afficher) ; base de développement sur `127.0.0.1` |
 | Constat du 07/11 : le port de l'API répondait en clair depuis Internet | **corrigé** (#218) : port lié à `127.0.0.1` ; plus de réponse depuis l'extérieur, mesuré après la livraison du 07/11 |
 | S9 : garde-fous sous le seuil de 85 % | ouvert : déclaré en échec attendu dans les tests, le seuil n'est pas baissé |
@@ -589,7 +589,8 @@ format contrôlé ([`evidence/C17/controle-accessibilite-readme-2026-11-02.md`](
   production le 07/11.
 - **Les tests** : 22 ignorés en CI faute d'un élément absent de la CI ; une couverture qui exclut l'interface, la
   recherche documentaire, la surveillance et la passerelle MCP.
-- **L'éco-conception** n'a que des mesures historiques, sans mesure « après », sur trois écrans sur cinq.
+- **L'éco-conception** : les cinq écrans mesurés avant et après #74, en local, le 06/11 ; la compression vérifiée en
+  production le 07/11 ; l'écran Indicateurs reste en D.
 - **La documentation** : le format du guide d'exploitation (31/10, PDF de 12 pt et 66 signets), d'[`ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/ARCHITECTURE.md)
   et de [`CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md) (01/11) et du `README` (02/11) est contrôlé avec des outils ([`evidence/C8/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C8), [`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17)) ; ce
   n'est pas un audit complet. Envoyés au formateur le 03/11 ; réception et liens confirmés par Elbby le 04/11 ([preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C8/reponse-formateur-2026-11-04.md)).

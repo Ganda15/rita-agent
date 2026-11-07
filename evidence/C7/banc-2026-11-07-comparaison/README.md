@@ -49,6 +49,12 @@ Résumés : [`../banc-2026-11-07/resume-2026-11-07.json`](../banc-2026-11-07/res
 | Coût d'un briefing au prix public | 0,0044 USD (2,50 et 15,00 USD par million, prix du 03/10) | **0,00072 USD** (0,5 et 1,5 USD par million, prix Mistral lu le 10/10) |
 | Français, noté par Era à l'aveugle (0, 1 ou 2) | à compléter | à compléter |
 
+**Le coût réel chez Mistral** : la console de Mistral, onglet « Usage », relevée par Era le 07/11 à 11:13 heure de Paris
+([`mistral-usage-2026-11-07.png`](mistral-usage-2026-11-07.png)), affiche pour `mistral-large-2512` 32 requêtes et
+**0,02 €** depuis le 01/11 : les 30 appels du banc et 2 appels de diagnostic. Le calcul au prix public (0,0215 USD pour
+les 30) concorde. `mistral-large-4-0` : 3 requêtes, les trois essais de diagnostic ; les appels refusés (400) ne sont pas
+facturés.
+
 Le Markdown compte : l'interface affiche le texte tel quel (`textContent`), donc des astérisques visibles, le défaut
 déjà relevé sur l'écran Briefing (rapport E4, annexe A7). Avec Mistral en production, il faudrait le retirer ou le
 demander autrement.

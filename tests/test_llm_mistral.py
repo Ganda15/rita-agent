@@ -133,3 +133,9 @@ def test_la_production_reste_sur_azure_seul(monkeypatch):
     from src import llm
     monkeypatch.delenv("LLM_ORDRE", raising=False)
     assert llm._ordre_fournisseurs() == ["foundry"]
+
+
+def test_la_cascade_ignore_mistral_meme_si_le_reglage_le_nomme():
+    """Mistral n'entre dans la cascade qu'après la lecture de son contrat : son nom n'est pas parmi les noms valides."""
+    from src import llm
+    assert "mistral" not in llm._NOMS_VALIDES
