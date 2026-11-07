@@ -47,6 +47,12 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
   Grille : 35 ✅ · 3 🟡 (C16.1, C16.4, C17.8).
 - **E5 v1.0** : vigie programmée (§ 5), #230 (§ 6), passage planifié avec son lien, limite de GitHub (§ 8) ; douze ✅
   si Era valide C20.5.
+- **Couleurs d'E2 reportées dans E4 et E5** (demande d'Era, 07/11, nuit) : tableaux à en-tête marine et lignes zébrées,
+  titres en dégradé, code coloré ; l'espacement de chaque rapport est gardé (E4 : 20 pages, 35 avec l'annexe ; E5 :
+  5 pages), relus page par page. E5 : trois formulations de la relecture appliquées (Langfuse examiné le 06/11,
+  périmètre de ce qui n'est jamais enregistré, fermeture manuelle dans la chaîne Langfuse). **Pas encore fait** :
+  E3 (`livrable-E3-v5`, sans ces couleurs) demanderait une nouvelle version et un nouveau tag ; E1 (`livrable-E1-v6`)
+  n'a pas de source Markdown dans le dépôt. Décision d'Era.
 - **Encore ouverts** : astérisques affichés dans le texte du Briefing ; « +0,00 % » ; S7 en partie ; #77 et #132
   ouvertes, résolution non prouvée ; contrôle des nombres (zone sous garde, plan à écrire).
 - **Tests** (commit `7c18688`) : 3131 réussis, 82 ignorés, 0 en échec, en local (`evidence/C20/vigie-2026-11-07/pytest-complet-7c18688.txt`).
