@@ -21,6 +21,26 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ---
 
+## ▶️ 07/11, NUIT : NEUF PR FUSIONNÉES DANS `develop` ; RESTENT L'ÉTAPE DU SERVEUR (#76), `main`, LES VÉRIFICATIONS ET LES TAGS
+
+**Prochaine action** : Era fait l'étape du serveur de #76 (rôle `rita_api`, mot de passe, `POSTGRES_PASSWORD_API` dans
+le fichier d'environnement du serveur ; `docs/exploitation.md`, « Le rôle de l'API en production ») ; crée le secret
+`RITA_API_KEY_VIGIE` dans les réglages du dépôt ; puis `develop` vers `main` (redéploie la production), les vérifications
+sur le site réel (en-têtes, compression, `rita_api`, consigne de l'écran Question, cinq écrans), un premier passage de
+la vigie, et les tags, un par push : `livrable-E2-v4` (E2 v1.3), `livrable-E3-v5` (E3 v2.3), `livrable-E4-v6`
+(E4 v1.7), `livrable-E5-v4` (E5 v0.9).
+
+- **Dans `develop` le 06/11 au soir** : E2 v1.3 et la décision UE (#207, #216) ; E3 v2.3 (#209) ; E4 v1.7 (#211) ; règle
+  UE précisée et vérifiée (#214) ; compression #74 (#208) ; en-têtes S1 (#210) ; rôle `rita_api` #76 (#213) ; S8 (#215) ;
+  vigie planifiée (#212). Double contrôle par un autre agent : non fait avant ces fusions (la revue automatique de
+  Codex a échoué, limite d'usage atteinte).
+- **Grilles des rapports** : E2 19 ✅ · 1 🟡 (C8.2, jusqu'au déploiement de la consigne de l'écran Question) ; E3 38 ✅ ·
+  1 🟡 (OWASP) ; E4 33 ✅ · 5 🟡 (C16.1, C16.4, C17.5, C17.7, C17.8 : les trois derniers à réévaluer après déploiement) ;
+  E5 : C20.5 à réévaluer après le premier passage de la vigie.
+- **S9** (garde-fous à 70 et 71,4 %, seuil 85 %) : plan écrit (`docs/PLAN-S9-garde-fous.md`, branche `plan-s9`), attend
+  « ok plan S9 ».
+- **Classeur des compétences** (v3 du 06/11, 123 ✅ · 14 🟡) : à mettre à jour après les vérifications en production.
+
 ## ▶️ 06/11, SOIR : E2 v1.3 PRÊTE POUR `livrable-E2-v4` APRÈS DOUBLE CONTRÔLE ; #74 MESURÉE
 
 **Prochaine action** : Era pousse `e2-v1.3` et `eco-74-compression`, ouvre les deux PR vers `develop` et les fait relire
