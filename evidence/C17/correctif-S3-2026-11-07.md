@@ -32,6 +32,6 @@ Une mauvaise clé recevait 403 et laissait une ligne de journal ; rien ne freina
 
 ## En production
 
-- **En production depuis le 07/11** (livraison #221) et vérifié le 07/11 à 08:51 UTC : dix 403 puis 429 ; un
-  `X-Forwarded-For` inventé ne contourne pas le frein ; une fausse clé venue d'une autre adresse (le serveur) reçoit
-  403 pendant le blocage du poste (`evidence/C17/verification-production-2026-11-07/`, § 4).
+- **En production depuis le 07/11** (livraison #221), vérifié en deux prises (`evidence/C17/verification-production-2026-11-07/`,
+  § 4) : dix 403 puis 429 ; un `X-Forwarded-For` inventé ne contourne pas le blocage ; à 09:53 UTC, pendant le blocage
+  du poste, le téléphone d'Era passant aussi par l'URL HTTPS reçoit 403 : le compteur est par adresse.
