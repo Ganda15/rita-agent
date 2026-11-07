@@ -1,0 +1,5 @@
+mesure du 2026-11-07T08:51:02Z
+== frein : 11 fausses clés (attendu : dix 403 puis 429) ==
+403 403 403 403 403 403 403 403 403 403 429 
+== même chose avec un X-Forwarded-For inventé à chaque appel (attendu : 429, Caddy remplace l'en-tête) ==
+429 429 429 

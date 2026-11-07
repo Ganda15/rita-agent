@@ -21,6 +21,75 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ---
 
+## ▶️ 07/11, MATIN : PRODUCTION VÉRIFIÉE ; E2 v1.4, E3 v2.4, E4 v1.8 RENDUES, PRÊTES POUR LE DOUBLE CONTRÔLE PUIS LES TAGS
+
+**Prochaine action** : Era pousse la branche `verifications-production-07-11`, puis PR vers `develop`. Ensuite, le
+double contrôle par un autre agent (brief : `Documents\RITA PRO\output\double-controle-2026-11-06.md`). Puis
+`develop` vers `main` et les tags, un par push : `livrable-E2-v4` (E2 v1.4), `livrable-E3-v5` (E3 v2.4),
+`livrable-E4-v6` (E4 v1.8), `livrable-E5-v4` (E5 v0.9). Porte `tag_cite` verte pour les quatre.
+
+- **Vérifié en production le 07/11** (`evidence/C17/verification-production-2026-11-07/`) :
+  - à 2 h UTC : en-têtes et gzip sur les cinq écrans, port 8001 muet, contrat 1.2.0, consigne de l'écran Question ;
+  - le matin :
+    - #76 : `rita_api` par le code de l'API, `DATABASE_URL` absente ;
+    - frein des essais de clé à 08:51 UTC : dix 403 puis 429 ; `X-Forwarded-For` inventé sans effet ; 403 depuis une
+      autre adresse pendant le blocage, donc compteur par adresse.
+- **Ingestion** relancée par Era le 07/11 (run 42356863532, réussie ; index de 2166 à 2196 articles). Date des
+  cotations affichée après l'ingestion : à relire sur l'écran Portefeuille.
+- **Grilles** :
+  - E2 20 ✅ · 0 🟡 ;
+  - E3 39 ✅ · 0 🟡 ;
+  - E4 34 ✅ · 4 🟡 : C16.1, C16.4, C17.7 (Indicateurs en D, décision d'Era), C17.8 (S9) ;
+  - E5 : C20.5 attend le secret `RITA_API_KEY_VIGIE`, en dernier.
+- **Restent ouverts** :
+  - l'en-tête `Via` (commande Caddy proposée) ;
+  - la règle `ufw` du port 8001, devenue inutile ;
+  - aucune collecte planifiée en production ;
+  - la capture de la consigne de l'écran Question, preuve visible, pas encore faite ;
+  - l'accès du jury au dépôt.
+
+## ▶️ 07/11, 3 H UTC : LIVRÉ EN PRODUCTION (`main` à `a68f2cf`) ; RESTENT DES VÉRIFICATIONS, LES RAPPORTS ET LES TAGS
+
+**Prochaine action** :
+1. Era finit les vérifications du site réel : les deux sorties de #76 (`DATABASE_URL` absente, connexions en
+   `rita_api`), la capture de l'écran Question avec sa consigne, puis le test du frein des essais de clé (il bloque
+   l'adresse du poste 15 minutes).
+2. Lancer le workflow « Ingestion » : les données s'arrêtent au 04/11.
+3. Rendre les PDF de E2 v1.4, E3 v2.4 et E4 v1.8, puis le double contrôle et les tags, un par push.
+
+- **En production depuis le 07/11, 1 h 54 UTC** (PR #221, fusionnée par Era sans le double contrôle par un autre
+  agent, décision prise après la revue automatique de Claude, sans problème trouvé ; Codex en échec, limite d'usage) :
+  - en-têtes S1 ; compression #74 ; rôle `rita_api` #76 ; S8 ;
+  - port de l'API lié à `127.0.0.1` (#218, constat du 07/11 : il répondait en clair depuis Internet) ;
+  - contrat 1.2.0 (#219) ;
+  - frein des essais de clé S3, option A validée par Era (#220) ;
+  - consigne de l'écran Question.
+- **Mesuré sur le site réel à 2 h UTC** (`evidence/C17/verification-production-2026-11-07/`) :
+  - en-têtes et gzip sur les cinq écrans ;
+  - port 8001 muet depuis l'extérieur ;
+  - `/openapi.json` en 1.2.0 ;
+  - consigne présente.
+  Reste `Via: 1.1 Caddy`, ajouté par Caddy (commande proposée à Era, non appliquée).
+- **Étape du serveur faite par Era** : rôle `rita_api`, mot de passe tiré sans affichage (le premier s'était affiché
+  et a été remplacé), ligne dans le fichier d'environnement ; `docker-compose.yml` final installé dans
+  `/root/rita-deploy/bin/`, empreinte vérifiée.
+- **Rapports en cours, sur la branche `verifications-production-07-11`, non rendus** :
+  - E2 v1.4 : C8.2 ✅, 20 ✅ · 0 🟡 ;
+  - E3 : API8 et API9 appliqués, API4 attend le test du frein ;
+  - E4 : § 4.6 et § 4.7 à jour.
+- **Restent 🟡** :
+  - C16.1 : le suivi interrompu après le 14/10 ne se rattrape pas ;
+  - C16.4 : message à Héléna VICENTE, en dernier ;
+  - C17.5 : attend les sorties de #76 et le frein ;
+  - C17.7 : Indicateurs en D, réduire l'écran ou l'assumer, décision d'Era ;
+  - C17.8 : S9 attend « ok plan S9 » ;
+  - E3 OWASP : attend le frein ;
+  - E5 C20.5 : le secret `RITA_API_KEY_VIGIE`, en dernier.
+- **Manque découvert** : aucune collecte planifiée en production (`docs/exploitation.md`, note du 27/10) ; sans
+  ingestion lancée à la main, les données du jury du 01/12 seraient anciennes. Décision d'Era à prendre.
+- **Accès du jury au dépôt** : privé avec invitation, ou public la veille ; audit de l'historique (données
+  personnelles, branche `mistral-ue`) avant toute ouverture. Reporté par Era (« not today »).
+
 ## ▶️ 07/11, NUIT : NEUF PR FUSIONNÉES DANS `develop` ; RESTENT L'ÉTAPE DU SERVEUR (#76), `main`, LES VÉRIFICATIONS ET LES TAGS
 
 **Prochaine action** : Era fait l'étape du serveur de #76 (rôle `rita_api`, mot de passe, `POSTGRES_PASSWORD_API` dans
