@@ -30,10 +30,8 @@ Une mauvaise clé recevait 403 et laissait une ligne de journal ; rien ne freina
 - Le schéma de collecte du rapport E1 lit le registre : régénéré (« T1 à T9 »), illustration reportée, PNG rendu et
   regardé le 07/11.
 
-## Ce qui reste
+## En production
 
-- **Pas encore en production.** La preuve viendra après la livraison, depuis le poste :
-  - 11 appels avec une fausse clé : 10 fois 403, puis 429 ;
-  - les mêmes appels avec un `X-Forwarded-For` inventé, différent à chaque fois : la 11e reçoit quand même 429 (Caddy
-    remplace l'en-tête envoyé par le visiteur) ; sinon, l'option A ne tient pas ;
-  - la vraie clé depuis une autre connexion répond 200.
+- **En production depuis le 07/11** (livraison #221) et vérifié le 07/11 à 08:51 UTC : dix 403 puis 429 ; un
+  `X-Forwarded-For` inventé ne contourne pas le frein ; une fausse clé venue d'une autre adresse (le serveur) reçoit
+  403 pendant le blocage du poste (`evidence/C17/verification-production-2026-11-07/`, § 4).

@@ -41,8 +41,11 @@ Le 07/11/2026 vers 0 h UTC, sur le serveur, par Era : `grep -n "8001" /etc/caddy
 
 Sur le poste : `tests/test_port_api_local.py` vert, suite complète du dépôt 2339 réussis, 0 en échec.
 
+## En production
+
+Livré le 07/11 (#221). Mesuré à 02:00:54 UTC depuis le poste : `http://178.104.184.125:8001/health` donne `000` (aucune
+réponse), l'adresse HTTPS répond toujours `200` (`evidence/C17/verification-production-2026-11-07/`).
+
 ## Ce qui reste
 
-- Le correctif n'est pas en production. La preuve viendra après la livraison : `http://178.104.184.125:8001/health`
-  doit donner `000` (aucune réponse) pendant que l'adresse HTTPS donne toujours `200`.
-- La règle `ufw` qui ouvre 8001 peut être retirée ensuite par Era ; elle ne sert plus.
+- La règle `ufw` qui ouvre 8001 peut être retirée par Era ; elle ne sert plus.

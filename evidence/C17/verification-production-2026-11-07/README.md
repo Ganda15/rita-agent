@@ -24,8 +24,16 @@ Script : [`verifier_production.sh`](verifier_production.sh). Sortie brute :
 
 ## 2. Sur le serveur, par Era (carte #76)
 
-À compléter avec la sortie collée par Era : `DATABASE_URL` absente du conteneur de l'API ; connexions de l'API sous
-`rita_api`.
+Sorties collées par Era le 07/11 au matin (aucune n'affiche de mot de passe) :
+
+| Commande | Sortie |
+|---|---|
+| `docker exec rita-api-preprod sh -c 'test -z "$DATABASE_URL" && echo absente \|\| echo PRESENTE'` | `absente` ✅ : le mot de passe du propriétaire n'est plus dans le conteneur de l'API |
+| `SELECT usename, count(*) FROM pg_stat_activity WHERE datname = 'rita' GROUP BY usename` | `rita\|2` : la requête d'Era elle-même et l'ingestion lancée au même moment, toutes deux en propriétaire. L'API ouvre une connexion par requête et la ferme : au repos, elle n'apparaît pas. Cette sortie ne prouve donc ni pour ni contre |
+| `docker exec rita-api-preprod python -c "from sources.database import _connexion; …; cur.execute('SELECT current_user'); …"` | `rita_api` ✅ : la connexion ouverte par le code de l'API (`sources/database.py`, `_connexion`, qui lit `POSTGRES_DSN_API`) travaille sous le rôle `rita_api` |
+
+Carte #76 vérifiée en production : l'API lit la base avec son propre rôle, et le mot de passe du propriétaire n'entre
+plus dans son conteneur.
 
 ## 3. Dans le navigateur, par Era
 
@@ -38,5 +46,17 @@ tous deux à la main.
 
 ## 4. Le frein des essais de clé (S3)
 
-À compléter : 11 fausses clés, puis la même série avec un `X-Forwarded-For` inventé. Lancé en dernier : il bloque
-l'adresse du poste 15 minutes.
+Lancé en dernier, le 07/11 à 08:51 UTC, après l'ingestion (elle redémarre l'API, donc vide le compteur), avec l'accord
+d'Era (« ok frein ») : il bloque l'adresse du poste 15 minutes. Sortie brute :
+[`sortie-frein-2026-11-07T0851Z.txt`](sortie-frein-2026-11-07T0851Z.txt).
+
+| Vérification | Attendu | Mesuré |
+|---|---|---|
+| 11 fausses clés depuis le poste | dix fois 403, puis 429 | `403` × 10, puis `429` ✅ |
+| Réponse du blocage | `Retry-After`, motif `TROP_D_ESSAIS` | `Retry-After: 898`, `TROP_D_ESSAIS` ✅ |
+| 3 appels de plus avec un `X-Forwarded-For` inventé (`203.0.113.1` à `.3`) | 429 : l'en-tête du visiteur ne contourne pas le frein | `429` × 3 ✅ |
+| Une fausse clé envoyée depuis le serveur (`http://127.0.0.1:8001`, autre adresse), par Era, pendant le blocage du poste | 403, pas 429 : le compteur est par adresse, pas commun à tous | `403` ✅ |
+
+Les deux dernières lignes ensemble prouvent l'option A : `uvicorn` lit bien l'adresse écrite par Caddy (sinon tout le
+monde aurait la même adresse, et l'appel du serveur aurait reçu 429), et un visiteur ne peut pas la remplacer par la
+sienne.
