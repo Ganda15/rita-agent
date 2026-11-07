@@ -1,0 +1,47 @@
+{
+ "fige_le": "2026-10-03",
+ "prix_par_million_usd": {
+  "openrouter": [
+   3.0,
+   15.0
+  ]
+ },
+ "sources_prix": {
+  "openrouter": "https://openrouter.ai/api/v1/models"
+ },
+ "etat": {
+  "foundry": {
+   "statut": "mesure",
+   "motif": ""
+  }
+ },
+ "resume": {
+  "foundry": {
+   "appels": 30,
+   "reussis": 30,
+   "intervalle_disponibilite": [
+    0.8864829086095221,
+    1.0
+   ],
+   "conformes_amf": 30,
+   "intervalle_conformes": [
+    0.8864829086095221,
+    1.0
+   ],
+   "fideles": 30,
+   "intervalle_fideles": [
+    0.8864829086095221,
+    1.0
+   ],
+   "latence_p50_s": 2.1879999999999997,
+   "latence_p95_s": 2.547,
+   "jetons_entree_moyen": 717.8,
+   "jetons_sortie_moyen": 174.76666666666668,
+   "origines": {
+    "Sweden Central": 30
+   },
+   "cout_total_usd": 0.0,
+   "cout_moyen_usd": 0.0
+  }
+ }
+}
