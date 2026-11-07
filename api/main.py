@@ -99,11 +99,21 @@ par défaut), la réponse est **429** avec `Retry-After`. Chaque réponse, erreu
 
 ### ⚠️ Données personnelles
 `/donnees/portefeuille` expose des données financières personnelles (RGPD, traitement T1).
+
+### Versions du contrat
+Une route ajoutée sans rien retirer fait monter le chiffre du milieu.
+
+| Version | Ce qu'elle ajoute |
+|---|---|
+| 1.1.0 (01/08/2026) | `/donnees/*`, `/briefing`, `/health` |
+| 1.2.0 (07/11/2026) | `/audit/mcp` (03/10), `/question` (16/10), `/sante` et `/exercice/*` (22/10) ; 503 quand aucun fournisseur du modèle ne répond |
 """
 
 app = FastAPI(
     title="RITA API",
-    version="1.1.0",
+    # 1.2.0 le 07/11/2026 : la version déclarée n'avait pas suivi les routes ajoutées depuis le 1er août (OWASP API9,
+    # rapport E3 § 3.5). Test : tests/test_contrat_version.py.
+    version="1.2.0",
     description=DESCRIPTION,
     contact={"name": "RITA — projet fil rouge RNCP 37827"},
 )
