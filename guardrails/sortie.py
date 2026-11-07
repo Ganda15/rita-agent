@@ -44,6 +44,33 @@ MOTIFS_AMF = [
 
 _COMPILES = [(re.compile(m, re.IGNORECASE), nom) for m, nom in MOTIFS_AMF]
 
+# --- Constat S9, tâche T5 (07/11/2026, plan § 5, validé par Era) : la recommandation qui ne dit pas son nom ----------
+# Les motifs ci-dessus exigent un verbe de recommandation ; les contournements de l'ancien jeu n'en avaient aucun (« une
+# place dans un portefeuille », « le point d'entrée paraît attractif », « une occasion à saisir »). Une règle par
+# FAMILLE de posture, jamais un mot seul : « le portefeuille de commandes », « des prises de bénéfices font reculer le
+# titre », « le groupe a profité de la baisse » restent des faits. Jeu tenu à l'écart : `evals/cas_s9_reserves_sortie.py`,
+# commité avant ces règles et mesuré sans en lire les textes.
+FAMILLES_AMF = [
+    # une place dans un portefeuille
+    (r"\b(place|int[ée]grer|figurer|ajouter)\s+(dans\s+)?(un|votre|le|tout|chaque)\s+portefeuille"
+     r"|\bdeserves?\s+a\s+place\s+in", "place_en_portefeuille"),
+    # un point d'entrée, un moment pour se positionner
+    (r"\b(bon|meilleur|excellent|attracti\w*|int[ée]ressant|id[ée]al|offre)\s+(un\s+)?point\s+d['’]entr[ée]e"
+     r"|point\s+d['’]entr[ée]e\s+(para[iî]t|semble|est)\s+(attracti\w*|int[ée]ressant|id[ée]al)"
+     r"|\b(c['’]est|est\s+venu)\s+le\s+moment\s+de\s+(se\s+positionner|se\s+placer|entrer|renforcer|acheter|vendre)"
+     r"|\b(attractive|good|ideal)\s+entry\s+point|\b(time|moment)\s+to\s+(buy|sell|get\s+in|take\s+profits)", "point_d_entree"),
+    # une occasion à ne pas manquer
+    (r"\boccasion\s+[àa]\s+saisir|[àa]\s+ne\s+pas\s+(manquer|laisser\s+passer|rater)|\bauraient\s+tort\s+de\s+ne\s+pas"
+     r"|\bne\s+pas\s+en\s+profiter\b|\b(worth|time\s+for)\s+(adding|buying|owning)", "occasion_a_saisir"),
+    # la vente ou l'abstention présentées comme une évidence
+    (r"\b(temps|moment)\s+de\s+(prendre\s+ses\s+b[ée]n[ée]fices|vendre|all[ée]ger|sortir)"
+     r"|\bmieux\s+vaut\s+(se\s+tenir\s+[àa]\s+l['’][ée]cart|[ée]viter|vendre|sortir)"
+     r"|\b(rester|se\s+tenir)\s+[àa]\s+l['’][ée]cart\s+(du|de\s+ce|de\s+la)\s+(titre|valeur|dossier|action)", "sortie_evidente"),
+    # une consigne de marché, ou un potentiel présenté comme une incitation
+    (r"\b[àa]\s+(accumuler|alléger|renforcer)\b|\bdifficile\s+de\s+rester\s+[àa]\s+l['’][ée]cart", "incitation_douce"),
+]
+_COMPILES += [(re.compile(m, re.IGNORECASE), nom) for m, nom in FAMILLES_AMF]
+
 MESSAGE_REFUS = (
     "Briefing non diffusé : le texte produit contenait une formulation assimilable "
     "à une recommandation d'investissement, ce que RITA s'interdit (AMF)."
@@ -100,12 +127,16 @@ _COMPILES_FUITE = [(re.compile(motif), nom) for motif, nom in MOTIFS_FUITE]
 _MOT_DE_SECRET = r"\b(cl[ée]|key|jeton|token|secret|mot\s+de\s+passe|password)\b"
 FAMILLES_FUITE = [
     # un secret épelé lettre par lettre, en morceaux, ou décrit par son début
-    (_MOT_DE_SECRET + r"[^.\n]{0,60}?((\b\w\b[\s,]+){5,}|en\s+morceaux|par\s+morceaux|s['’][ée]crit|lettre\s+par\s+lettre"
-     r"|caract[èe]re\s+par\s+caract[èe]re|(commence|se\s+termine)\s+par\s+(\b\w\b|[\"«]))", "secret_epele_ou_morcele"),
+    # Revue de sécurité du 07/11 : chaque suite d'espaces est bornée, pour qu'aucune entrée ne provoque un retour arrière
+    # catastrophique (tests/test_evals.py, entrées hostiles).
+    (_MOT_DE_SECRET + r"[^.\n]{0,60}?((?:\b\w\b[\s,]{1,3}){5,40}|en\s{1,3}morceaux|par\s{1,3}morceaux|s['’][ée]crit"
+     r"|lettre\s{1,3}par\s{1,3}lettre|caract[èe]re\s{1,3}par\s{1,3}caract[èe]re|(commence|se\s{1,3}termine)\s{1,3}par\s{1,3}(\b\w\b|[\"«]))",
+     "secret_epele_ou_morcele"),
     # un mot de passe ou un secret dit en clair après son libellé : la valeur a la forme d'un secret (chiffre, tiret,
     # tiret bas ou trois majuscules), pas celle d'un mot (« le mot de passe unique devient obligatoire » passe)
-    (r"\b(mot\s+de\s+passe|password|passwd|secret|code\s+d['’]acc[èe]s)(\s+(de|du|des|d['’])\s*[^\s,.:]{1,25}(\s+[^\s,.:]{1,25})?)?"
-     r"\s*(est|vaut|=|:)?\s*:?\s+(?=\S*[\d_\-]|\S*(?-i:[A-Z]{3}))\S{8,}", "secret_en_clair"),
+    (r"\b(mot\s{1,3}de\s{1,3}passe|password|passwd|secret|code\s{1,3}d['’]acc[èe]s)"
+     r"(?:\s{1,3}(?:de|du|des|d['’])\s{0,2}[^\s,.:]{1,25}(?:\s{1,2}[^\s,.:]{1,25})?)?"
+     r"[\s:=]{0,6}(?:(?:est|vaut)[\s:]{1,4})?(?=[^\s]{0,40}[\d_\-]|[^\s]{0,40}(?-i:[A-Z]{3}))[^\s]{8,80}", "secret_en_clair"),
     # un nom de variable de configuration en minuscules, ou écrit avec des espaces
     (r"\b[a-z][a-z0-9]*_(api_key|secret_key|access_key|password|token|secret|dsn)\b|\b(api|secret|access)\s+key\s*[=:]",
      "variable_deguisee"),
