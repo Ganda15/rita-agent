@@ -526,7 +526,7 @@ applications web. Dix constats, S1 à S10 ([`evidence/C17/revue-owasp-top10-2025
 | S6 : panne de tous les fournisseurs | initialement ouvert pour `/briefing` ; **corrigé le 04/11** : 503 `AUCUN_FOURNISSEUR`, [testé](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/tests/test_briefing_diagnostic.py) ; `/question` renvoie déjà 503 ([`api/question.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/api/question.py)) |
 | S8 : mots de passe par défaut | **corrigé** (#215) : plus de valeur de secours ; le serveur a sa propre valeur (vérifié par Era sans l'afficher) ; base de développement sur `127.0.0.1` |
 | Constat du 07/11 : le port de l'API répondait en clair depuis Internet | **corrigé** (#218) : port lié à `127.0.0.1` ; plus de réponse depuis l'extérieur, mesuré après la livraison du 07/11 |
-| S9 : garde-fous sous le seuil de 85 % | **corrigé** (#225), en production le 07/11 : 12 sur 12 sur les jeux tenus à l'écart, seuil inchangé ; sortie AMF en liste fermée (décision d'Era) ([preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v6/evidence/C17/s9-2026-11-07/README.md)) |
+| S9 : garde-fous sous le seuil de 85 % | **corrigé** (#225), livré le 07/11 : 12 cas interdits sur 12 bloqués pour chacun des trois contrôles, sur les jeux documentés. Seuil inchangé ; évaluation non indépendante, limites détaillées dans la [preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v6/evidence/C17/s9-2026-11-07/README.md) |
 
 Les suivis sont séparés : la carte #75 pour le durcissement, #23 pour l'épinglage (S7), la décision D7 pour S2 ; S9
 est corrigé par la PR #225.
@@ -564,8 +564,9 @@ toutes les tables, ne peut ni écrire ni créer de table.
 ### 4.9 Les sources et la documentation (critères 10 et 11)
 
 **Les sources** sont versionnées sur GitHub, dans le dépôt privé [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5). Le formateur y a un accès en
-lecture. Chaque livrable est un tag `livrable-*` qu'on ne peut ni déplacer ni supprimer ; il y en a 21 le 02/11. Le
-jury sera invité avant la consultation des livrables par les examinateurs.
+lecture. Chaque livrable est un tag `livrable-*` qu'on ne peut ni déplacer ni supprimer ; il y en a 21 le 02/11.
+L'accès du formateur est vérifié. L'accès aux preuves pour le jury reste à organiser après l'oral blanc ; sa modalité
+sera finalisée avec l'équipe pédagogique.
 
 **La documentation technique** est rassemblée : [`docs/ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/ARCHITECTURE.md) (architecture, briques, points de terminaison,
 règles d'accès, état du 24/10), [`README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/README.md) (« Lancer le projet », « Lancer les tests »), [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md) et
