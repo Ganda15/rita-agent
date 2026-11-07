@@ -132,3 +132,11 @@ def test_le_seuil_se_regle_par_l_environnement(monkeypatch):
     assert limiteur.frein_depuis_l_environnement().seuil == 25
     monkeypatch.delenv("RITA_ESSAIS_DE_CLE_MAX")
     assert limiteur.frein_depuis_l_environnement().seuil == 10
+
+
+def test_le_contrat_annonce_le_frein():
+    """Le client lit dans le contrat qu'une adresse trop insistante reçoit 429 (OWASP API9, inventaire)."""
+    from api.main import DESCRIPTION
+
+    authentification = DESCRIPTION.split("### Authentification", 1)[1].split("###", 1)[0]
+    assert "TROP_D_ESSAIS" in authentification and "15 minutes" in authentification

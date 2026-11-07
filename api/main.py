@@ -86,6 +86,9 @@ Deux clés, chacune dans son en-tête, jamais l'une pour l'autre.
 `/briefing` et `/question` appellent le modèle : au-delà du quota (`RITA_QUOTA_PAR_MINUTE`, 10 appels par minute
 par défaut), la réponse est **429** avec `Retry-After`. Chaque réponse, erreur comprise, porte un `X-Request-ID`.
 
+Après 10 clés refusées en 15 minutes depuis une même adresse, toute route protégée répond **429** à cette adresse,
+quelle que soit la clé, avec `Retry-After` et le motif `TROP_D_ESSAIS`. Une clé absente ne compte pas.
+
 ### Les familles de routes
 | Préfixe | Contenu |
 |---|---|
