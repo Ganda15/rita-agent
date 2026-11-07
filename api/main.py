@@ -22,7 +22,8 @@ from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, Security
-from fastapi.responses import JSONResponse
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 from starlette.background import BackgroundTask, BackgroundTasks
 from typing import Literal
@@ -32,7 +33,7 @@ from fastapi.staticfiles import StaticFiles
 from agents.analyst import CONSIGNES_REDACTION, ROLE_REDACTEUR, articles_surs
 from api.donnees import routeur as routeur_donnees
 from api.exercice import routeur as routeur_exercice, verifier_cle_exercice
-from api.limiteur import limiter_debit
+from api.limiteur import limiter_debit, noter_mauvaise_cle, refuser_si_bloquee
 from api.question import routeur as routeur_question
 from api.sante import routeur as routeur_sante
 from db import audit_mcp
@@ -85,6 +86,9 @@ Deux clés, chacune dans son en-tête, jamais l'une pour l'autre.
 `/briefing` et `/question` appellent le modèle : au-delà du quota (`RITA_QUOTA_PAR_MINUTE`, 10 appels par minute
 par défaut), la réponse est **429** avec `Retry-After`. Chaque réponse, erreur comprise, porte un `X-Request-ID`.
 
+Après 10 clés refusées en 15 minutes depuis une même adresse, toute route protégée répond **429** à cette adresse,
+quelle que soit la clé, avec `Retry-After` et le motif `TROP_D_ESSAIS`. Une clé absente ne compte pas.
+
 ### Les familles de routes
 | Préfixe | Contenu |
 |---|---|
@@ -98,16 +102,53 @@ par défaut), la réponse est **429** avec `Retry-After`. Chaque réponse, erreu
 
 ### ⚠️ Données personnelles
 `/donnees/portefeuille` expose des données financières personnelles (RGPD, traitement T1).
+
+### Versions du contrat
+Une route ajoutée sans rien retirer fait monter le chiffre du milieu.
+
+| Version | Ce qu'elle ajoute |
+|---|---|
+| 1.1.0 (01/08/2026) | `/donnees/*`, `/briefing`, `/health` |
+| 1.2.0 (07/11/2026) | `/audit/mcp` (03/10), `/question` (16/10), `/sante` et `/exercice/*` (22/10) ; 503 quand aucun fournisseur du modèle ne répond |
 """
 
 app = FastAPI(
     title="RITA API",
-    version="1.1.0",
+    # 1.2.0 le 07/11/2026 : la version déclarée n'avait pas suivi les routes ajoutées depuis le 1er août (OWASP API9,
+    # rapport E3 § 3.5). Test : tests/test_contrat_version.py.
+    version="1.2.0",
     description=DESCRIPTION,
     contact={"name": "RITA — projet fil rouge RNCP 37827"},
 )
 
 API_KEY_HEADER = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+# Carte #75, constat S1 de la revue OWASP du 03/10 (06/11/2026) : aucune réponse ne portait d'en-tête de sécurité.
+# L'interface n'a ni script ni style en ligne, ni ressource externe : `default-src 'self'` tient sur les cinq écrans
+# (`tests/test_entetes_securite.py`, en navigateur). Les pages de documentation de FastAPI chargent leur script depuis un
+# CDN avec un script en ligne : elles gardent les autres en-têtes, sans politique de contenu (décision D7, constat S2).
+POLITIQUE_DE_CONTENU = "default-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+ENTETES_DE_SECURITE = {
+    "Strict-Transport-Security": "max-age=31536000",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "no-referrer",
+}
+# Les pages exactes, pas un préfixe (relecture de sécurité du 06/11) : `/docs-x` garde la politique.
+PAGES_DE_DOCUMENTATION = frozenset({"/docs", "/docs/oauth2-redirect", "/redoc"})
+
+
+def poser_les_entetes_de_securite(reponse, chemin: str) -> None:
+    for nom, valeur in ENTETES_DE_SECURITE.items():
+        reponse.headers[nom] = valeur
+    if chemin not in PAGES_DE_DOCUMENTATION:
+        reponse.headers["Content-Security-Policy"] = POLITIQUE_DE_CONTENU
+
+
+# Éco-conception, carte #74 (F1) : la compression est déclarée AVANT le middleware ci-dessous, pour être la plus proche
+# de l'application : elle voit la réponse entière et respecte son seuil de 1 000 octets. Déclarée après, elle recevait
+# la réponse en morceaux et compressait tout, même les 388 octets de `/health` (mesuré le 06/11).
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 
 @app.middleware("http")
@@ -136,6 +177,7 @@ async def attribuer_un_identifiant_de_requete(request: Request, call_next):
     finally:
         _request_id_courant.reset(jeton)
     reponse.headers["X-Request-ID"] = identifiant
+    poser_les_entetes_de_securite(reponse, request.url.path)
     # Sprint 5 (étape 1) : les appels qui n'entrent jamais dans la route (403 de la clé, 422 de la saisie, 429 du
     # débit) et les erreurs qui s'en échappent sont comptés ICI ; tout le reste l'est par la route elle-même, qui connaît
     # le résultat métier (monitorage/compteurs.py). Un 422 levé dans `/briefing` (valeur inconnue) n'y est pas compté.
@@ -204,6 +246,8 @@ def verify_api_key(request: Request, api_key: str = Security(API_KEY_HEADER)):
     # `compare_digest` et non `!=` : une comparaison de chaînes ordinaire s'arrête au
     # premier caractère différent, et son temps d'exécution renseigne donc un attaquant
     # sur le nombre de caractères devinés. La différence est infime, la parade gratuite.
+    # Constat S3 (07/11/2026) : une adresse qui a envoyé trop de mauvaises clés reçoit 429 avant toute comparaison.
+    refuser_si_bloquee(request)
     if not api_key or not secrets.compare_digest(api_key, cle_attendue()):
         # Sprint 4 (C2) : critère 4 du contrat du sprint 1. Un refus laisse UNE ligne de journal : l'identifiant de
         # requête (le même que l'en-tête X-Request-ID), la route et le motif. Jamais la clé, ni un morceau, ni sa
@@ -211,6 +255,8 @@ def verify_api_key(request: Request, api_key: str = Security(API_KEY_HEADER)):
         motif = "absente" if not api_key else "invalide"
         logger.warning("cle d'API refusee : request_id=%s route=%s motif=%s",
                        request_id_courant(), request.url.path, motif)
+        if api_key:   # une clé absente n'est pas un essai : l'interface n'envoie jamais de clé vide
+            noter_mauvaise_cle(request)
         raise HTTPException(status_code=403, detail="Cle d'API invalide ou absente")
     return api_key
 
@@ -501,6 +547,16 @@ def briefing(ticker: str = Query(min_length=1, max_length=20), api_key: str = Se
         # Refonte 001 (R4) : qui a rédigé, d'après quel cours et quelles sources (construire_diagnostic).
         "diagnostic": construire_diagnostic(resultat, duree_ms, aujourd_hui_a_paris()),
     }
+
+
+# --- Éco-conception, carte #74 (mesure Lighthouse et EcoIndex du 03/10, constats F1 et F3) ---------------------------
+# F1 : compresser les réponses quand le navigateur l'accepte ; gain mesuré le 03/10 en gzip : statique -62 %, JSON des
+# indicateurs -84 %. Sous 1 000 octets, la compression coûterait plus qu'elle ne fait gagner (`/health` reste brut).
+# F3 : `favicon.ico` répondait 404 (une erreur dans la console à chaque page) ; le logo de RITA sert d'icône.
+# La compression elle-même est déclarée plus haut, avant `attribuer_un_identifiant_de_requete` (voir là-bas).
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon() -> FileResponse:
+    return FileResponse(Path(__file__).parent.parent / "frontend" / "logo-rita-clair.png", media_type="image/png")
 
 
 # --- L'interface (C10, C17) --------------------------------------------------

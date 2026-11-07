@@ -12,6 +12,7 @@ import pytest
 
 from tests.test_recette_clavier import CLE, onglet  # noqa: F401, onglet est une fixture
 from tests.test_smoke_ui import page, serveur  # noqa: F401, ce sont des fixtures
+from tests.attente import attendre_que  # noqa: E402  (06/11 : la politique de contenu refuse wait_for_function)
 
 # Écran : (fichier, route de l'appel principal de l'écran)
 ECRANS = {
@@ -28,7 +29,7 @@ def _ouvrir_avec_cle(onglet, serveur, fichier):  # noqa: F811
 
 
 def _attendre_statut(onglet, texte):
-    onglet.wait_for_function(f"document.getElementById('statut').textContent.includes({json.dumps(texte)})",
+    attendre_que(onglet, f"document.getElementById('statut').textContent.includes({json.dumps(texte)})",
                              timeout=5_000)
 
 

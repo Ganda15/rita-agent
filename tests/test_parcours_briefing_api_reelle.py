@@ -20,6 +20,7 @@ from api.main import app
 from src.traces import Reponse
 from tests.conftest import CLE_DE_TEST
 from tests.test_briefing_diagnostic import passage, resultat_rag, scout
+from tests.attente import attendre_que  # noqa: E402  (06/11 : la politique de contenu refuse wait_for_function)
 
 sync_playwright = pytest.importorskip("playwright.sync_api").sync_playwright
 
@@ -82,7 +83,7 @@ def _rediger(page, fournisseur):
         with page.expect_response(lambda r: "/briefing?ticker=" in r.url and r.request.method == "POST") as attente:
             page.click("#form-briefing button[type=submit]")
         reponse = attente.value
-        page.wait_for_function("document.getElementById('statut').textContent.length > 0"
+        attendre_que(page, "document.getElementById('statut').textContent.length > 0"
                                " || !document.getElementById('resultat').hidden")
     return reponse
 

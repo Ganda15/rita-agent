@@ -14,6 +14,7 @@ import pytest
 
 from tests.test_frontend import code_sans_commentaires
 from tests.test_smoke_ui import serveur  # noqa: F401  (fixture : l'API servie en local)
+from tests.attente import attendre_que  # noqa: E402  (06/11 : la politique de contenu refuse wait_for_function)
 
 sync_playwright = pytest.importorskip("playwright.sync_api").sync_playwright
 
@@ -179,7 +180,11 @@ def test_quitter_la_simulation_rend_le_mode_reel(onglet, serveur):  # noqa: F811
     onglet.goto(serveur + "/question.html")
     onglet.evaluate("sessionStorage.setItem('rita_simulation', 'oui')")
     onglet.goto(serveur + "/question.html")
-    onglet.locator("#quitter-simulation").click()
+    # Le bouton recharge la page (`basculerSimulation`, frontend/commun.js) : sans attendre ce rechargement, `#suspension`
+    # disparaît dès le déchargement et `RITA` n'existe pas encore (« RITA is not defined », hook du 06/11, reproduit
+    # avec le processeur du navigateur ralenti). Même attente que `_basculer`.
+    with onglet.expect_navigation():
+        onglet.locator("#quitter-simulation").click()
     onglet.wait_for_selector("#suspension", state="detached")
     assert onglet.evaluate("RITA.estSimulation()") is False
     assert onglet.locator("#mention-simulation").count() == 0
@@ -200,7 +205,8 @@ def test_bascule_efface_les_resultats(onglet, serveur):  # noqa: F811
     onglet.locator("#bascule-simulation").click()              # réel vers simulation
     onglet.wait_for_selector("#suspension")
     assert not onglet.locator("#resultat").is_visible()
-    onglet.locator("#quitter-simulation").click()              # simulation vers réel
+    with onglet.expect_navigation():                           # simulation vers réel : la page se recharge
+        onglet.locator("#quitter-simulation").click()
     onglet.wait_for_selector("#suspension", state="detached")
     assert not onglet.locator("#resultat").is_visible(), "l'ancien résultat ne revient pas"
 
@@ -354,7 +360,7 @@ def _attendre_la_page(page):
     """Une page rendue par le cache n'émet pas `load` : `wait_for_load_state` l'attendrait sans fin (constaté le 04/11).
     On laisse le temps d'un éventuel rechargement, puis on attend que le document affiché soit complet."""
     page.wait_for_timeout(1500)
-    page.wait_for_function("document.readyState === 'complete'")
+    attendre_que(page, "document.readyState === 'complete'")
 
 
 def _revenir(page, sens):

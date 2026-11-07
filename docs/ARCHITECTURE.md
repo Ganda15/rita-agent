@@ -121,7 +121,7 @@ Détail : rapport E3, section 5, le schéma `E3-monitorage`, et `exploitation.md
 | Poste de développement | API (port 8000), PostgreSQL (5433), collecte planifiée | `uvicorn`, tâche planifiée Windows |
 | Copie du sprint 5 | API et PostgreSQL en conteneurs, projet `rita-s5` (port 8011) : déploiement, retour arrière, exercices | `scripts/copie_sprint5.py` (`exploitation.md`) |
 | Pré-production locale | API et PostgreSQL en conteneurs | `docker compose up -d --build` (port 8001) |
-| Intégration continue | lint, secrets, tests, test des données, garde-fous, construction et vérification de l'image | GitHub Actions, sept workflows (`docs/CI-CD.md`) |
+| Intégration continue | lint, secrets, tests, test des données, garde-fous, construction et vérification de l'image | GitHub Actions, huit workflows (`docs/CI-CD.md`) |
 | Production | API en conteneur derrière Caddy (HTTPS), serveur Hetzner | **livrée automatiquement** après chaque fusion dans `main` depuis le 14/10 ; retour arrière et ingestion d'un bouton |
 
 `main` ne change que par une pull request relue, avec sept checks verts (règles GitHub). Une fusion publie l'image

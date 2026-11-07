@@ -9,6 +9,63 @@
 
 ---
 
+## 2026-11-07, nuit : E3 v2.3 et E4 v1.7, pour `livrable-E3-v5` et `livrable-E4-v6` ; quatre corrections de sécurité dans `develop`
+
+**Livrables.** E3 v2.3 (38 ✅ · 1 🟡) : #152 prouvé par le job `base` de `main`, #73 vérifié à la main en production avec
+deux captures, choix de Langfuse réévalué (accessibilité, règle UE). E4 v1.7 (33 ✅ · 5 🟡) : prestataires réévalués
+(C15.2), système de conception écrit et tenu par un test, Question et Tableau de bord comparés (C17.2), mesure de #74
+(§ 4.7). Ces deux versions remplacent E3 v2.2 et E4 v1.6 pour leurs tags, qui ne sont pas encore posés.
+
+**Décisions.** D7 : la documentation de l'API reste publique, motivée et vérifiée (47 tests). #76 : l'API lit la base avec
+un rôle `rita_api` (lecture, plus l'ajout au journal d'audit), plan validé par Era, essayé sur une copie neuve avant la
+production. S1 : en-têtes de sécurité, politique de contenu stricte sur les cinq écrans. S8 : plus de mot de passe par
+défaut, base de développement sur `127.0.0.1`. Vigie planifiée toutes les trois heures.
+
+**Manques.** L'API lisait la base avec le propriétaire depuis le début (écart à la matrice d'accès validée le 03/10,
+corrigé par #76, pas encore en production). Neuf PR fusionnées sans le double contrôle par un autre agent prévu par la
+règle d'Era du 06/11 ; la revue automatique de Codex a échoué (limite d'usage). #207 a été fusionnée sans son dernier
+commit, rattrapé par #216 : une PR ne se fusionne qu'avec la vérification que la branche distante porte le dernier commit.
+
+---
+
+## 2026-11-06, nuit : la règle « UE seule » précisée par Era, et vérifiée service par service
+
+**Décision.** Aucun des deux sous-traitants (Microsoft pour Azure, ClickHouse pour Langfuse) ne garantit la lettre de la
+règle du 05/10 : leurs contrats prévoient des sorties de la région. Era précise la règle : services configurés dans
+leurs régions de l'UE, plus de promesse d'absence absolue de transfert, exceptions identifiées, garanties vérifiées,
+données limitées. Vérifié le soir même : DPA de Microsoft du 01/11/2026 et DPA de ClickHouse du 10/04/2026 relus ;
+Microsoft Corporation et ClickHouse, Inc. actives au Data Privacy Framework sur la liste officielle. Registre RGPD mis à
+jour par ajouts datés (PR #214). **Manque** : l'écran Question n'invitait pas à taire les données personnelles ; la
+consigne est écrite, pas encore en production. La décision ne rend aucun critère vert : E2 v1.3 garde C8.2 à
+consolider jusqu'à ce déploiement ; l'entrée ci-dessous, écrite plus tôt le même soir, disait la décision ouverte.
+
+---
+
+## 2026-11-06, soir : E2 v1.3, le retour du formateur appliqué, pour `livrable-E2-v4`
+
+**Livrable et manque.** Le formateur demande le 06/11 un exemple de veille complet, des preuves visibles du service et
+un texte plus lisible. E2 v1.3 y répond : la source S36 vérifiée critère par critère avec captures (annexe A4),
+l'accessibilité des sources relevée par un script, les conditions de Microsoft relues, le service montré en production
+(adresse, connexion à clé masquée, portail Azure, puis un briefing d'OR.PA et sa trace Langfuse reliés par la même
+référence, annexe A6), des repères pour retrouver chaque critère. La correction du prompt (option B, décidée le 11/10)
+est en production depuis le 06/11 (`097b201`). E2 v1.2 n'est pas taguée : `livrable-E2-v4` portera la v1.3, après le
+double contrôle par un autre agent. **Manque** : C8.2 reste à consolider, la règle UE seule n'étant pas démontrée pour
+Azure ; la décision de risque est écrite comme ouverte, à prendre par Era après l'oral blanc. Les articles fournis au
+briefing de démonstration datent du 14 au 17/09.
+
+---
+
+## 2026-11-06 : E3 v2.2, statuts de #73 et #152 et contrôles de fusion harmonisés, pour `livrable-E3-v5`
+
+**Livrable.** Le double contrôle du 06/11 a montré que la v2.1 du dépôt gardait des formulations anciennes, corrigées
+seulement dans une copie PDF du 04/11 : #73 « non corrigé », #152 « pas encore en production », six contrôles de fusion au
+lieu de sept. La v2.2 reporte ces corrections dans la source (#73 corrigé le 01/11 et déployé le 02/11, vérification manuelle
+à faire ; #152 intégré à `main` le 02/11, la passerelle restant hors de l'image de production ; sept contrôles depuis le
+01/11, dont `base`) et prend le style des titres. Aucun statut ne change ; code et preuves restent sous `livrable-E3-v4`.
+**Leçon** : une correction faite dans une copie PDF doit être reportée dans la source le jour même.
+
+---
+
 ## 2026-11-06 : E5 v0.9, mise en forme seule, pour `livrable-E5-v4`
 
 **Livrable.** E5 prend le style de titres d'E2 et d'E4 ; le texte, les 5 pages, les 29 liens et les 11 signets ne

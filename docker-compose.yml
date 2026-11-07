@@ -32,9 +32,13 @@ services:
     environment:
       POSTGRES_DB: rita
       POSTGRES_USER: rita
-      # Mot de passe de pré-production locale. En production réelle il viendrait du
-      # gestionnaire de secrets de l'hébergeur, jamais d'un fichier versionné.
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rita_preprod_local}
+      # Constat S8 (corrigé le 06/11/2026) : plus de valeur de secours publique (une valeur fixe, lisible dans le
+      # dépôt). Le mot de passe vient du fichier d'environnement de la machine ; sans lui, Compose refuse de démarrer.
+      # Le serveur a sa propre ligne POSTGRES_PASSWORD (vérifié par Era le 06/11, sans afficher la valeur).
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD absente - la definir dans le fichier d environnement}
+      # Carte #76 (06/11/2026) : le mot de passe du rôle de l'API, posé au premier démarrage d'une base neuve par
+      # 03-mot-de-passe-api.sh. Obligatoire, sans valeur par défaut : un mot de passe connu de tous ne protège rien (S8).
+      POSTGRES_PASSWORD_API: ${POSTGRES_PASSWORD_API:?POSTGRES_PASSWORD_API absente - la definir dans le fichier d environnement}
       LANG: fr_FR.utf8
     volumes:
       # ⚠️ `/var/lib/postgresql` — SANS `/data`, et c'est imposé par PostgreSQL 18.
@@ -45,6 +49,9 @@ services:
       #    Constaté le 20/08/2026 en passant de 17 à 18, en local avant le serveur.
       - rita_pgdata_preprod:/var/lib/postgresql
       - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      # Carte #76 : les rôles (dont rita_api), puis le mot de passe de rita_api ; une base neuve seulement.
+      - ./db/roles.sql:/docker-entrypoint-initdb.d/02-roles.sql:ro
+      - ./db/mot-de-passe-api.sh:/docker-entrypoint-initdb.d/03-mot-de-passe-api.sh:ro
     # ⚠️ AUCUN port publié vers l'hôte, et c'est délibéré :
     #   1. la base n'a pas à être joignable depuis l'extérieur — seule l'API lui parle,
     #      par le réseau interne de Compose ;
@@ -75,7 +82,10 @@ services:
       # Le nom d'hôte `postgres` est celui du service ci-dessus : Compose le résout
       # sur son réseau interne. Le port est 5432 — celui du conteneur, pas le 5433
       # de l'installation native.
-      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:-rita_preprod_local}@postgres:5432/rita
+      # Carte #76 (06/11/2026) : l'API lit la base avec rita_api (lecture, plus l'ajout au journal d'audit), jamais avec
+      # le propriétaire : son mot de passe n'entre plus dans ce conteneur. Le préfixe POSTGRES_ est voulu : le pré-test
+      # de la livraison l'écarte déjà (deploy/deployer.py, env_du_pretest), sans modifier le script du serveur.
+      POSTGRES_DSN_API: postgresql://rita_api:${POSTGRES_PASSWORD_API:?POSTGRES_PASSWORD_API absente - la definir dans le fichier d environnement}@postgres:5432/rita
       # ⚠️ OBLIGATOIRE. Compose refuse de lancer le conteneur sans elle, et l'API ne peut
       # autoriser aucun accès protégé sans elle (OWASP API2). Elle est
       # lue depuis le `.env` de la machine, JAMAIS écrite ici.
@@ -90,6 +100,12 @@ services:
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
       # Azure seul par défaut, comme `src/llm.py` (règle UE seule, décision du 11/10 ; production lue le 31/10).
       LLM_ORDRE: ${LLM_ORDRE:-foundry}
+      # --- Frein des essais de clé (constat S3, 07/11/2026, plan validé par Era) ---------------
+      # `uvicorn` lit l'adresse du visiteur dans `X-Forwarded-For`, écrit par Caddy. Faire confiance à tout appelant
+      # n'est sûr que parce que le port n'écoute que la machine (`127.0.0.1:8001` plus bas). Seuil réglable sur le
+      # serveur : 10 mauvaises clés en 15 minutes par adresse, puis 429 (api/limiteur.py).
+      FORWARDED_ALLOW_IPS: "*"
+      RITA_ESSAIS_DE_CLE_MAX: ${RITA_ESSAIS_DE_CLE_MAX:-10}
       # --- Traçage Langfuse (C11), facultatif ---------------------------------------
       # Audit du 02/10/2026 : rien n'était transmis ici, donc l'API en conteneur (pré-production
       # et serveur) servait des briefings que Langfuse ne voyait jamais. Les clés se lisent
@@ -101,9 +117,12 @@ services:
       LANGFUSE_HOST: ${LANGFUSE_HOST:-https://cloud.langfuse.com}
       LANGFUSE_TRACING_ENABLED: ${LANGFUSE_TRACING_ENABLED:-true}
     ports:
-      - "8001:8000"
+      - "127.0.0.1:8001:8000"
     # ⚠️ 8001 côté hôte, pas 8000 : le serveur de développement occupe déjà 8000.
     #    Les deux peuvent donc tourner en même temps, et on compare.
+    # `127.0.0.1` (07/11/2026) : publié sur toutes les interfaces, le port répondait depuis Internet, en clair, sans le
+    #    chiffrement de Caddy (mesuré : 200 sur http://<serveur>:8001/health). Caddy, le script de livraison et le
+    #    navigateur du poste passent par la machine elle-même. Test : tests/test_port_api_local.py.
 
     # --- Durcissement -------------------------------------------------------
     # L'application n'écrit nulle part : le système de fichiers peut être en lecture
@@ -139,7 +158,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:-rita_preprod_local}@postgres:5432/rita
+      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD absente - la definir dans le fichier d environnement}@postgres:5432/rita
     volumes:
       - rita_chroma_preprod:/app/data/chroma
       # Revues Codex + Claude, PR #13 : ChromaDB télécharge son modèle d'embedding (all-MiniLM-L6-v2,
@@ -167,7 +186,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:-rita_preprod_local}@postgres:5432/rita
+      DATABASE_URL: postgresql://rita:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD absente - la definir dans le fichier d environnement}@postgres:5432/rita
     volumes:
       - ./data/demo:/app/data/demo:ro
       - rita_chroma_preprod:/app/data/chroma

@@ -1,0 +1,924 @@
+[
+ {
+  "ecran": "portefeuille",
+  "etape": "portefeuille : etat 1, aucune cle",
+  "mode": "bureau",
+  "mode_lighthouse": "navigation",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 1,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.9
+  },
+  "poids_octets": 85433,
+  "requetes": 8,
+  "requetes_detail": [
+   {
+    "url": "/index.html",
+    "type": "Document",
+    "octets": 8074,
+    "statut": 200
+   },
+   {
+    "url": "/style.css?v=d0e888a819",
+    "type": "Stylesheet",
+    "octets": 26460,
+    "statut": 200
+   },
+   {
+    "url": "/theme.js?v=32a0dab24c",
+    "type": "Script",
+    "octets": 2793,
+    "statut": 200
+   },
+   {
+    "url": "/commun.js?v=854b0d315c",
+    "type": "Script",
+    "octets": 8347,
+    "statut": 200
+   },
+   {
+    "url": "/graphiques.js?v=864f0a6e64",
+    "type": "Script",
+    "octets": 15684,
+    "statut": 200
+   },
+   {
+    "url": "/app.js?v=9234bd32ca",
+    "type": "Script",
+    "octets": 17053,
+    "statut": 200
+   },
+   {
+    "url": "/logo-rita-sombre.png",
+    "type": "Image",
+    "octets": 3250,
+    "statut": 200
+   },
+   {
+    "url": "/logo-rita-clair.png",
+    "type": "Other",
+    "octets": 3772,
+    "statut": 200
+   }
+  ],
+  "noeuds_dom": 97,
+  "fcp_ms": 296.3551,
+  "lcp_ms": 375.53265,
+  "cls": 0.007555197826372472,
+  "tbt_ms": 0,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 22,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "portefeuille",
+  "etape": "portefeuille : avec cle, donnees chargees",
+  "mode": "bureau",
+  "mode_lighthouse": "navigation",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 1,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.9
+  },
+  "poids_octets": 5395,
+  "requetes": 10,
+  "requetes_detail": [
+   {
+    "url": "/index.html",
+    "type": "Document",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/style.css?v=d0e888a819",
+    "type": "Stylesheet",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/theme.js?v=32a0dab24c",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/commun.js?v=854b0d315c",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/graphiques.js?v=864f0a6e64",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/app.js?v=9234bd32ca",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/donnees/portefeuille",
+    "type": "Fetch",
+    "octets": 2282,
+    "statut": 200
+   },
+   {
+    "url": "/donnees/indicateurs-portefeuille",
+    "type": "Fetch",
+    "octets": 1188,
+    "statut": 200
+   },
+   {
+    "url": "/donnees/fraicheur",
+    "type": "Fetch",
+    "octets": 539,
+    "statut": 200
+   },
+   {
+    "url": "/logo-rita-sombre.png",
+    "type": "Image",
+    "octets": 198,
+    "statut": 200
+   }
+  ],
+  "noeuds_dom": 232,
+  "fcp_ms": 253.05579999999998,
+  "lcp_ms": 253.05579999999998,
+  "cls": 0.0384563956199107,
+  "tbt_ms": 0,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 26,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "portefeuille",
+  "etape": "portefeuille : instantane apres chargement",
+  "mode": "bureau",
+  "mode_lighthouse": "snapshot",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 0,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.75
+  },
+  "poids_octets": null,
+  "requetes": null,
+  "requetes_detail": [],
+  "noeuds_dom": null,
+  "fcp_ms": null,
+  "lcp_ms": null,
+  "cls": null,
+  "tbt_ms": null,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 26,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "indicateurs",
+  "etape": "indicateurs : etat 1, aucune cle",
+  "mode": "bureau",
+  "mode_lighthouse": "navigation",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 1,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.9
+  },
+  "poids_octets": 85547,
+  "requetes": 8,
+  "requetes_detail": [
+   {
+    "url": "/indicateurs.html",
+    "type": "Document",
+    "octets": 8920,
+    "statut": 200
+   },
+   {
+    "url": "/style.css?v=d0e888a819",
+    "type": "Stylesheet",
+    "octets": 26460,
+    "statut": 200
+   },
+   {
+    "url": "/theme.js?v=32a0dab24c",
+    "type": "Script",
+    "octets": 2793,
+    "statut": 200
+   },
+   {
+    "url": "/commun.js?v=854b0d315c",
+    "type": "Script",
+    "octets": 8347,
+    "statut": 200
+   },
+   {
+    "url": "/graphiques.js?v=864f0a6e64",
+    "type": "Script",
+    "octets": 15684,
+    "statut": 200
+   },
+   {
+    "url": "/indicateurs.js?v=6fcaef099f",
+    "type": "Script",
+    "octets": 16321,
+    "statut": 200
+   },
+   {
+    "url": "/logo-rita-sombre.png",
+    "type": "Image",
+    "octets": 3250,
+    "statut": 200
+   },
+   {
+    "url": "/logo-rita-clair.png",
+    "type": "Other",
+    "octets": 3772,
+    "statut": 200
+   }
+  ],
+  "noeuds_dom": 110,
+  "fcp_ms": 286.818,
+  "lcp_ms": 370.227,
+  "cls": 0.02238943240521846,
+  "tbt_ms": 0,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 22,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "indicateurs",
+  "etape": "indicateurs : avec cle, donnees chargees",
+  "mode": "bureau",
+  "mode_lighthouse": "navigation",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 1,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.9
+  },
+  "poids_octets": 66840,
+  "requetes": 9,
+  "requetes_detail": [
+   {
+    "url": "/indicateurs.html",
+    "type": "Document",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/style.css?v=d0e888a819",
+    "type": "Stylesheet",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/theme.js?v=32a0dab24c",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/commun.js?v=854b0d315c",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/graphiques.js?v=864f0a6e64",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/indicateurs.js?v=6fcaef099f",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/donnees/indicateurs",
+    "type": "Fetch",
+    "octets": 39371,
+    "statut": 200
+   },
+   {
+    "url": "/donnees/indicateurs-risque",
+    "type": "Fetch",
+    "octets": 26083,
+    "statut": 200
+   },
+   {
+    "url": "/logo-rita-sombre.png",
+    "type": "Image",
+    "octets": 198,
+    "statut": 200
+   }
+  ],
+  "noeuds_dom": 1625,
+  "fcp_ms": 250.0127,
+  "lcp_ms": 290.51905,
+  "cls": 0.03498202127659575,
+  "tbt_ms": 0,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [
+   {
+    "id": "label-content-name-mismatch",
+    "titre": "Elements with visible text labels do not have matching accessible names.",
+    "elements": 108,
+    "exemples": [
+     "tbody#lignes > tr > th > button.choisir-valeur",
+     "tbody#lignes > tr > th > button.choisir-valeur",
+     "tbody#lignes > tr > th > button.choisir-valeur"
+    ]
+   }
+  ],
+  "a11y_reussis": 27,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "indicateurs",
+  "etape": "indicateurs : instantane apres chargement",
+  "mode": "bureau",
+  "mode_lighthouse": "snapshot",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 0,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.75
+  },
+  "poids_octets": null,
+  "requetes": null,
+  "requetes_detail": [],
+  "noeuds_dom": null,
+  "fcp_ms": null,
+  "lcp_ms": null,
+  "cls": null,
+  "tbt_ms": null,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [
+   {
+    "id": "label-content-name-mismatch",
+    "titre": "Elements with visible text labels do not have matching accessible names.",
+    "elements": 108,
+    "exemples": [
+     "tbody#lignes > tr > th > button.choisir-valeur",
+     "tbody#lignes > tr > th > button.choisir-valeur",
+     "tbody#lignes > tr > th > button.choisir-valeur"
+    ]
+   }
+  ],
+  "a11y_reussis": 27,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "briefing",
+  "etape": "briefing : etat 1, aucune cle",
+  "mode": "bureau",
+  "mode_lighthouse": "navigation",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 1,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.9
+  },
+  "poids_octets": 84194,
+  "requetes": 8,
+  "requetes_detail": [
+   {
+    "url": "/briefing.html",
+    "type": "Document",
+    "octets": 6130,
+    "statut": 200
+   },
+   {
+    "url": "/style.css?v=d0e888a819",
+    "type": "Stylesheet",
+    "octets": 26460,
+    "statut": 200
+   },
+   {
+    "url": "/theme.js?v=32a0dab24c",
+    "type": "Script",
+    "octets": 2793,
+    "statut": 200
+   },
+   {
+    "url": "/commun.js?v=854b0d315c",
+    "type": "Script",
+    "octets": 8347,
+    "statut": 200
+   },
+   {
+    "url": "/graphiques.js?v=864f0a6e64",
+    "type": "Script",
+    "octets": 15684,
+    "statut": 200
+   },
+   {
+    "url": "/briefing.js?v=2aca087f3f",
+    "type": "Script",
+    "octets": 17758,
+    "statut": 200
+   },
+   {
+    "url": "/logo-rita-sombre.png",
+    "type": "Image",
+    "octets": 3250,
+    "statut": 200
+   },
+   {
+    "url": "/logo-rita-clair.png",
+    "type": "Other",
+    "octets": 3772,
+    "statut": 200
+   }
+  ],
+  "noeuds_dom": 68,
+  "fcp_ms": 295.7025,
+  "lcp_ms": 335.7025,
+  "cls": 0.02238943240521846,
+  "tbt_ms": 0,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 23,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "briefing",
+  "etape": "briefing : avec cle, donnees chargees",
+  "mode": "bureau",
+  "mode_lighthouse": "navigation",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 0.99,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.9
+  },
+  "poids_octets": 19782,
+  "requetes": 8,
+  "requetes_detail": [
+   {
+    "url": "/briefing.html",
+    "type": "Document",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/style.css?v=d0e888a819",
+    "type": "Stylesheet",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/theme.js?v=32a0dab24c",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/commun.js?v=854b0d315c",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/graphiques.js?v=864f0a6e64",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/briefing.js?v=2aca087f3f",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/logo-rita-sombre.png",
+    "type": "Image",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/donnees/valeurs?limite=200",
+    "type": "Fetch",
+    "octets": 18396,
+    "statut": 200
+   }
+  ],
+  "noeuds_dom": 179,
+  "fcp_ms": 249.666,
+  "lcp_ms": 294.499,
+  "cls": 0.07185195938402941,
+  "tbt_ms": 0,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 23,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "briefing",
+  "etape": "briefing : instantane apres chargement",
+  "mode": "bureau",
+  "mode_lighthouse": "snapshot",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 0,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.75
+  },
+  "poids_octets": null,
+  "requetes": null,
+  "requetes_detail": [],
+  "noeuds_dom": null,
+  "fcp_ms": null,
+  "lcp_ms": null,
+  "cls": null,
+  "tbt_ms": null,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 23,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "briefing",
+  "etape": "briefing : etat 4, texte affiche (reponse enregistree)",
+  "mode": "bureau",
+  "mode_lighthouse": "snapshot",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 0,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.75
+  },
+  "poids_octets": null,
+  "requetes": null,
+  "requetes_detail": [],
+  "noeuds_dom": null,
+  "fcp_ms": null,
+  "lcp_ms": null,
+  "cls": null,
+  "tbt_ms": null,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 26,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "question",
+  "etape": "question : etat 1, aucune cle",
+  "mode": "bureau",
+  "mode_lighthouse": "navigation",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 1,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.9
+  },
+  "poids_octets": 64957,
+  "requetes": 7,
+  "requetes_detail": [
+   {
+    "url": "/question.html",
+    "type": "Document",
+    "octets": 6290,
+    "statut": 200
+   },
+   {
+    "url": "/style.css?v=d0e888a819",
+    "type": "Stylesheet",
+    "octets": 26460,
+    "statut": 200
+   },
+   {
+    "url": "/theme.js?v=32a0dab24c",
+    "type": "Script",
+    "octets": 2793,
+    "statut": 200
+   },
+   {
+    "url": "/commun.js?v=854b0d315c",
+    "type": "Script",
+    "octets": 8347,
+    "statut": 200
+   },
+   {
+    "url": "/question.js?v=14b17a343f",
+    "type": "Script",
+    "octets": 14045,
+    "statut": 200
+   },
+   {
+    "url": "/logo-rita-sombre.png",
+    "type": "Image",
+    "octets": 3250,
+    "statut": 200
+   },
+   {
+    "url": "/logo-rita-clair.png",
+    "type": "Other",
+    "octets": 3772,
+    "statut": 200
+   }
+  ],
+  "noeuds_dom": 69,
+  "fcp_ms": 284.964,
+  "lcp_ms": 367.446,
+  "cls": 0.010005780178326474,
+  "tbt_ms": 0,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 22,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "question",
+  "etape": "question : avec cle, donnees chargees",
+  "mode": "bureau",
+  "mode_lighthouse": "navigation",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 1,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.9
+  },
+  "poids_octets": 1188,
+  "requetes": 6,
+  "requetes_detail": [
+   {
+    "url": "/question.html",
+    "type": "Document",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/style.css?v=d0e888a819",
+    "type": "Stylesheet",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/theme.js?v=32a0dab24c",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/commun.js?v=854b0d315c",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/question.js?v=14b17a343f",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/logo-rita-sombre.png",
+    "type": "Image",
+    "octets": 198,
+    "statut": 200
+   }
+  ],
+  "noeuds_dom": 69,
+  "fcp_ms": 254.84179999999998,
+  "lcp_ms": 294.7627,
+  "cls": 0.001168151595744681,
+  "tbt_ms": 0,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 21,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "question",
+  "etape": "question : instantane apres chargement",
+  "mode": "bureau",
+  "mode_lighthouse": "snapshot",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 0,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.75
+  },
+  "poids_octets": null,
+  "requetes": null,
+  "requetes_detail": [],
+  "noeuds_dom": null,
+  "fcp_ms": null,
+  "lcp_ms": null,
+  "cls": null,
+  "tbt_ms": null,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 21,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "tableau-de-bord",
+  "etape": "tableau-de-bord : etat 1, aucune cle",
+  "mode": "bureau",
+  "mode_lighthouse": "navigation",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 1,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.9
+  },
+  "poids_octets": 63571,
+  "requetes": 7,
+  "requetes_detail": [
+   {
+    "url": "/tableau-de-bord.html",
+    "type": "Document",
+    "octets": 3988,
+    "statut": 200
+   },
+   {
+    "url": "/style.css?v=d0e888a819",
+    "type": "Stylesheet",
+    "octets": 26460,
+    "statut": 200
+   },
+   {
+    "url": "/theme.js?v=32a0dab24c",
+    "type": "Script",
+    "octets": 2793,
+    "statut": 200
+   },
+   {
+    "url": "/commun.js?v=854b0d315c",
+    "type": "Script",
+    "octets": 8347,
+    "statut": 200
+   },
+   {
+    "url": "/tableau-de-bord.js?v=93632277a5",
+    "type": "Script",
+    "octets": 14961,
+    "statut": 200
+   },
+   {
+    "url": "/logo-rita-sombre.png",
+    "type": "Image",
+    "octets": 3250,
+    "statut": 200
+   },
+   {
+    "url": "/logo-rita-clair.png",
+    "type": "Other",
+    "octets": 3772,
+    "statut": 200
+   }
+  ],
+  "noeuds_dom": 43,
+  "fcp_ms": 349.306,
+  "lcp_ms": 373.95899999999995,
+  "cls": 0.0009626196808510638,
+  "tbt_ms": 0,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 22,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "tableau-de-bord",
+  "etape": "tableau-de-bord : avec cle, donnees chargees",
+  "mode": "bureau",
+  "mode_lighthouse": "navigation",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 1,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.9
+  },
+  "poids_octets": 6899,
+  "requetes": 8,
+  "requetes_detail": [
+   {
+    "url": "/tableau-de-bord.html",
+    "type": "Document",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/style.css?v=d0e888a819",
+    "type": "Stylesheet",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/theme.js?v=32a0dab24c",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/commun.js?v=854b0d315c",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/tableau-de-bord.js?v=93632277a5",
+    "type": "Script",
+    "octets": 198,
+    "statut": 200
+   },
+   {
+    "url": "/health",
+    "type": "Fetch",
+    "octets": 562,
+    "statut": 200
+   },
+   {
+    "url": "/sante",
+    "type": "Fetch",
+    "octets": 5149,
+    "statut": 200
+   },
+   {
+    "url": "/logo-rita-sombre.png",
+    "type": "Image",
+    "octets": 198,
+    "statut": 200
+   }
+  ],
+  "noeuds_dom": 74,
+  "fcp_ms": 253.0238,
+  "lcp_ms": 338.5357,
+  "cls": 0.02545906964144996,
+  "tbt_ms": 0,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 20,
+  "a11y_a_verifier_a_la_main": 10
+ },
+ {
+  "ecran": "tableau-de-bord",
+  "etape": "tableau-de-bord : instantane apres chargement",
+  "mode": "bureau",
+  "mode_lighthouse": "snapshot",
+  "version": "13.5.0",
+  "scores": {
+   "performance": 0,
+   "accessibilite": 1,
+   "bonnes_pratiques": 1,
+   "seo": 0.75
+  },
+  "poids_octets": null,
+  "requetes": null,
+  "requetes_detail": [],
+  "noeuds_dom": null,
+  "fcp_ms": null,
+  "lcp_ms": null,
+  "cls": null,
+  "tbt_ms": null,
+  "compression_texte": null,
+  "cache_long": null,
+  "a11y_echecs": [],
+  "a11y_reussis": 20,
+  "a11y_a_verifier_a_la_main": 10
+ }
+]

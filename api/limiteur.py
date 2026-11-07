@@ -20,7 +20,7 @@ import math
 import os
 import threading
 import time
-from collections import deque
+from collections import OrderedDict, deque
 from collections.abc import Callable
 from pathlib import Path
 
@@ -74,3 +74,97 @@ def limiter_debit(request: Request) -> None:
                    request.url.path, LIMITEUR.quota)
     raise HTTPException(status_code=429, headers={"Retry-After": str(attente)},
                         detail={"statut": "refus", "motif": "LIMITE_DE_DEBIT", "texte": TEXTE_REFUS})
+
+
+# --- Le frein des essais de clé (constat S3, carte #75 point 4 ; plan validé par Era le 07/11/2026) -------------------
+# Rien ne freinait les essais de clé. La clé de production est longue : la deviner n'est pas réaliste ; le risque réel
+# est un flot d'essais qui remplit le journal et occupe le service (OWASP API4:2023). Par adresse, pas un compteur pour
+# tous : un compteur unique laisserait n'importe qui bloquer Era en envoyant de fausses clés.
+#
+# L'adresse est celle que voit l'API. Derrière Caddy, `uvicorn` la lit dans `X-Forwarded-For` parce que le service
+# `api` reçoit `FORWARDED_ALLOW_IPS` (docker-compose.yml) ; c'est sûr seulement parce que le port n'écoute que la
+# machine (`127.0.0.1:8001`, tests/test_port_api_local.py). Donnée personnelle : gardée en mémoire 15 minutes au plus,
+# jamais écrite dans le journal (registre RGPD, T9).
+
+TEXTE_TROP_D_ESSAIS = "Trop de clés refusées depuis cette adresse. Réessayez dans quelques minutes."
+
+
+class FreinDesEssais:
+    """Au-delà de `seuil` mauvaises clés depuis une adresse, sur une fenêtre glissante de `fenetre_s` secondes, l'adresse
+    est bloquée jusqu'à ce que le plus ancien échec sorte de la fenêtre. Au plus `max_adresses` adresses suivies : au-delà,
+    la plus anciennement vue est oubliée (un flot d'adresses ne fait pas grossir la mémoire sans fin)."""
+
+    def __init__(self, seuil: int = 10, fenetre_s: float = 900.0, max_adresses: int = 10_000,
+                 horloge: Callable[[], float] = time.monotonic):
+        if seuil < 1:
+            raise ValueError(f"seuil invalide : {seuil!r}, au moins 1")
+        self.seuil, self.fenetre_s, self.max_adresses, self._horloge = seuil, fenetre_s, max_adresses, horloge
+        self._echecs: OrderedDict[str, deque[float]] = OrderedDict()
+        self._verrou = threading.Lock()
+
+    def __len__(self) -> int:
+        return len(self._echecs)
+
+    def _recents(self, adresse: str, maintenant: float) -> deque[float] | None:
+        """Les échecs encore dans la fenêtre ; l'adresse est oubliée quand il n'en reste aucun."""
+        echecs = self._echecs.get(adresse)
+        if echecs is None:
+            return None
+        while echecs and echecs[0] <= maintenant - self.fenetre_s:
+            echecs.popleft()
+        if not echecs:
+            del self._echecs[adresse]
+            return None
+        return echecs
+
+    def bloquee(self, adresse: str) -> tuple[bool, int]:
+        """(bloquée, secondes avant que l'adresse repasse)."""
+        with self._verrou:
+            maintenant = self._horloge()
+            echecs = self._recents(adresse, maintenant)
+            if echecs is None or len(echecs) < self.seuil:
+                return False, 0
+            return True, max(1, math.ceil(echecs[-self.seuil] + self.fenetre_s - maintenant))
+
+    def noter_echec(self, adresse: str) -> bool:
+        """Compte une mauvaise clé. Vrai seulement pour l'échec qui fait franchir le seuil : une ligne par blocage."""
+        with self._verrou:
+            maintenant = self._horloge()
+            echecs = self._recents(adresse, maintenant)
+            if echecs is None:
+                echecs = self._echecs[adresse] = deque()
+            echecs.append(maintenant)
+            self._echecs.move_to_end(adresse)
+            while len(self._echecs) > self.max_adresses:
+                self._echecs.popitem(last=False)
+            return len(echecs) == self.seuil
+
+
+def frein_depuis_l_environnement() -> FreinDesEssais:
+    """Le seuil se règle par `RITA_ESSAIS_DE_CLE_MAX` (10 par défaut), transmise au conteneur par docker-compose.yml :
+    sur l'écran Portefeuille, une clé mal tapée part dans trois appels à la fois et compte donc trois fois."""
+    return FreinDesEssais(seuil=int(os.environ.get("RITA_ESSAIS_DE_CLE_MAX", "10")))
+
+
+FREIN = frein_depuis_l_environnement()
+
+
+def adresse_du_client(request: Request) -> str:
+    return request.client.host if request.client else "inconnue"
+
+
+def refuser_si_bloquee(request: Request) -> None:
+    """Appelé AVANT la comparaison de la clé : une adresse bloquée reçoit 429, quelle que soit la clé envoyée."""
+    bloquee, attente = FREIN.bloquee(adresse_du_client(request))
+    if bloquee:
+        raise HTTPException(status_code=429, headers={"Retry-After": str(attente)},
+                            detail={"statut": "refus", "motif": "TROP_D_ESSAIS", "texte": TEXTE_TROP_D_ESSAIS})
+
+
+def noter_mauvaise_cle(request: Request) -> None:
+    """Appelé quand une clé PRÉSENTE est fausse. Une seule ligne de journal par blocage, sans clé ni adresse."""
+    if FREIN.noter_echec(adresse_du_client(request)):
+        from api.main import request_id_courant   # même raison que dans `limiter_debit`
+
+        logger.warning("essais de cle bloques : request_id=%s route=%s seuil=%d fenetre=%ds", request_id_courant(),
+                       request.url.path, FREIN.seuil, int(FREIN.fenetre_s))

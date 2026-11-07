@@ -25,8 +25,10 @@ services:
       # Collation FR pour que les tris alphabétiques traitent correctement les accents
       # (« Société Générale » doit se trier comme « Societe Generale »).
       LANG: fr_FR.utf8
+    # Constat S8 de la revue OWASP (corrigé le 06/11/2026) : liée à 127.0.0.1, la base n'écoute que le poste ; avant,
+    # `5432:5432` la publiait sur toutes les interfaces, mot de passe compris, à toute machine du même réseau.
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       # ⚠️ `/var/lib/postgresql` SANS `/data` — imposé par PostgreSQL 18, qui range les
       #    données dans un sous-dossier portant la version majeure (pour `pg_upgrade`).

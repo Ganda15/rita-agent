@@ -101,6 +101,9 @@ def limiteur_neuf(monkeypatch):
     from api import limiteur
 
     monkeypatch.setattr(limiteur, "LIMITEUR", limiteur.Limiteur(10_000))
+    # Même raison pour le frein des essais de clé (constat S3, 07/11) : beaucoup de tests envoient une mauvaise clé.
+    # Ses propres tests (`tests/test_essais_de_cle.py`) posent le seuil du plan, 10.
+    monkeypatch.setattr(limiteur, "FREIN", limiteur.FreinDesEssais(seuil=10_000))
     yield
 
 

@@ -168,8 +168,15 @@ class Extraction:
         return self.nb
 
 
+def dsn_api() -> str:
+    """L'adresse de la base pour l'API (carte #76, 06/11/2026) : `POSTGRES_DSN_API`, le rôle `rita_api` (lecture, plus
+    l'ajout au journal d'audit), sinon `DATABASE_URL`, le poste de développement. Le préfixe `POSTGRES_` est voulu : le
+    pré-test de la livraison l'écarte déjà (`deploy/deployer.py`, `env_du_pretest`)."""
+    return os.getenv("POSTGRES_DSN_API") or os.getenv("DATABASE_URL", DSN_DEFAUT)
+
+
 def _connexion(dsn: str | None = None):
-    return psycopg2.connect(dsn or os.getenv("DATABASE_URL", DSN_DEFAUT))
+    return psycopg2.connect(dsn or dsn_api())
 
 
 def _executer(sql: str, nom: str, dsn: str | None = None, **params) -> Extraction:

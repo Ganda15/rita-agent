@@ -12,6 +12,7 @@ import pytest
 
 from tests.test_smoke_ui import page, serveur  # noqa: F401, ce sont des fixtures
 from tests.test_vigie import SAIN, _sante
+from tests.attente import attendre_que  # noqa: E402  (06/11 : la politique de contenu refuse wait_for_function)
 
 CLE = "cle-de-test-smoke-ui-32-caracteres-x"
 ECRANS = ["index.html", "indicateurs.html", "briefing.html", "question.html", "tableau-de-bord.html"]
@@ -126,7 +127,7 @@ def test_au_clavier_entree_envoie_la_cle_et_ouvre_l_ecran(onglet, serveur, ecran
     selecteur, focus_attendu = APRES_LA_CLE[ecran]
     onglet.wait_for_selector(selecteur, state="visible", timeout=10_000)
     if focus_attendu:
-        onglet.wait_for_function(f"document.activeElement && document.activeElement.id === '{focus_attendu}'")
+        attendre_que(onglet, f"document.activeElement && document.activeElement.id === '{focus_attendu}'")
 
 
 def test_au_clavier_un_briefing_se_demande_et_le_resultat_recoit_le_focus(onglet, serveur):  # noqa: F811
@@ -134,11 +135,11 @@ def test_au_clavier_un_briefing_se_demande_et_le_resultat_recoit_le_focus(onglet
     onglet.focus("#cle")
     onglet.keyboard.type(CLE)
     onglet.keyboard.press("Enter")
-    onglet.wait_for_function("document.activeElement && document.activeElement.id === 'ticker'")
+    attendre_que(onglet, "document.activeElement && document.activeElement.id === 'ticker'")
     onglet.keyboard.type("MC.PA")
     onglet.keyboard.press("Enter")
     onglet.wait_for_selector("#texte p", timeout=10_000)
-    onglet.wait_for_function("document.activeElement && document.activeElement.id === 'resultat'")
+    attendre_que(onglet, "document.activeElement && document.activeElement.id === 'resultat'")
 
 
 def test_au_clavier_une_question_se_pose_et_la_fiche_s_ouvre(onglet, serveur):  # noqa: F811
@@ -146,7 +147,7 @@ def test_au_clavier_une_question_se_pose_et_la_fiche_s_ouvre(onglet, serveur):  
     onglet.focus("#cle")
     onglet.keyboard.type(CLE)
     onglet.keyboard.press("Enter")
-    onglet.wait_for_function("document.activeElement && document.activeElement.id === 'question'")
+    attendre_que(onglet, "document.activeElement && document.activeElement.id === 'question'")
     onglet.keyboard.type("Combien de postes Netflix va-t-il supprimer ?")
     assert _tabuler_jusqu_a(onglet, "el.textContent.trim() === 'Poser la question'", maximum=3)
     onglet.keyboard.press("Enter")
@@ -154,18 +155,18 @@ def test_au_clavier_une_question_se_pose_et_la_fiche_s_ouvre(onglet, serveur):  
     assert _tabuler_jusqu_a(onglet, "el.textContent.startsWith('Voir la fiche de la source 1')")
     onglet.keyboard.press("Enter")
     onglet.wait_for_selector("#fiche", state="visible", timeout=10_000)
-    onglet.wait_for_function("document.activeElement && document.activeElement.id === 'fiche'")
+    attendre_que(onglet, "document.activeElement && document.activeElement.id === 'fiche'")
 
 
 def test_au_clavier_le_tableau_de_bord_s_actualise_et_se_suspend(onglet, serveur):  # noqa: F811
     onglet.goto(f"{serveur}/tableau-de-bord.html")
     onglet.evaluate(f"sessionStorage.setItem('rita_api_key', '{CLE}')")
     onglet.goto(f"{serveur}/tableau-de-bord.html")
-    onglet.wait_for_function("document.body.dataset.etat === 'pret'")
+    attendre_que(onglet, "document.body.dataset.etat === 'pret'")
     avant = len(onglet.appels_sante)
     assert _tabuler_jusqu_a(onglet, "el.id === 'actualiser'")
     onglet.keyboard.press("Enter")
-    onglet.wait_for_function("document.body.dataset.etat === 'pret'")
+    attendre_que(onglet, "document.body.dataset.etat === 'pret'")
     for _ in range(40):
         if len(onglet.appels_sante) > avant:
             break
