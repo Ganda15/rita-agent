@@ -620,8 +620,8 @@ preuve · 🟡 à consolider : le point qui manque est écrit · ❌ aucune preu
 ## 6. Ce qui n'est pas fait, et dans quel ordre le faire {: #reste }
 
 **Les versions.** 1.1 remise le 05/11 (`livrable-E2-v3`) ; 1.2 du 06/11, non taguée ; 1.3 du 06/11, après le retour du
-formateur (exemple de veille complet, preuves visibles, repères des critères, correction du prompt), tag prévu :
-`livrable-E2-v4`. La 1.0 reste sous `livrable-E2-v2`, la 0.9 sous `livrable-E2-v1`.
+formateur (exemple de veille, preuves visibles, prompt corrigé) ; 1.4 du 07/11, C8.2 tenu après la livraison, tag
+prévu : `livrable-E2-v4`. La 1.0 reste sous `livrable-E2-v2`, la 0.9 sous `livrable-E2-v1`.
 
 **Ensuite.**
 
