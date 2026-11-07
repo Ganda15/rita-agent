@@ -24,7 +24,9 @@ vus rouges). Cette note compare le même jour, avec les mêmes outils, le code *
 Pour mesurer « avant », le dépôt a été placé sur `e6f227a` le temps de la mesure (17 h 00 à 17 h 03 UTC), puis remis
 sur `fin-c16-c17`. Effet de bord constaté et écrit : une exécution de `pytest` lancée pendant ce changement a vu le
 test de pagination sur une interface sans pagination (45 lignes au lieu de 20). Relancés sur la branche rétablie, les
-tests de l'écran donnent 42 réussis, 0 en échec.
+tests de l'écran donnent 42 réussis, 0 en échec. Suite complète sur `795e571` : 2 378 réussis, 82 ignorés, 2 en échec
+attendu, 0 en échec ([`pytest-complet-795e571.txt`](pytest-complet-795e571.txt), écrit par la commande elle-même) ; les
+deux échecs attendus sont ceux des garde-fous d'avant S9, la branche partant de `main` où S9 n'est pas encore fusionné.
 
 ## 2. Résultats
 
