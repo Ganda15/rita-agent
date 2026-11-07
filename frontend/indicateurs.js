@@ -35,6 +35,10 @@ let risqueParTicker = new Map();   // lot 3 ; reste vide si ce point de terminai
 let cleUtilisee = null;
 let choixCourant = 0;              // chaque choix de valeur porte un numéro ; une réponse périmée est ignorée
 let valeurChoisie = null;          // le code de la valeur dont le détail est ouvert
+// R2, critère 11 (éco-conception, décision d'Era du 07/11/2026) : l'écran était seul en D, 1 625 éléments de page pour
+// 111 lignes. Le tableau montre TAILLE_PAGE valeurs à la fois ; `debutPage` est l'indice de la première.
+const TAILLE_PAGE = 20;
+let debutPage = 0;
 
 // --- Mise en forme : null n'est pas 0 -------------------------------------------
 function nb(valeur) {
@@ -117,6 +121,7 @@ async function chargerIndicateurs(cle) {
   document.getElementById("note-risque").textContent = risque
     ? "" : "Volatilité, pire baisse et RSI indisponibles pour le moment ; les performances restent à jour.";
   remplirListeDesValeurs();
+  debutPage = 0;   // de nouvelles données repartent de la première page (revue Claude Code de #226)
   afficher();
 }
 
@@ -163,7 +168,11 @@ function afficher() {
 
   const corps = document.getElementById("lignes");
   corps.replaceChildren();   // vide le tableau sans passer par innerHTML
-  for (const i of lignes) corps.appendChild(ligneDuTableau(i));
+  // Le découpage vient APRÈS la recherche, le tri et la case : il porte sur toutes les valeurs retenues.
+  if (debutPage >= lignes.length) debutPage = 0;
+  for (const i of lignes.slice(debutPage, debutPage + TAILLE_PAGE)) corps.appendChild(ligneDuTableau(i));
+  afficherPagination(lignes.length);
+  // « Dans les résultats » veut dire dans toutes les valeurs retenues, pas seulement dans la page affichée.
   if (valeurChoisie !== null && !lignes.some((i) => String(i.ticker) === valeurChoisie)) fermerDetail();
 
   const date = donneesChargees.indicateurs.find((i) => !i.cotation_perimee)?.date_cours;
@@ -171,6 +180,17 @@ function afficher() {
     ? `Carte des performances : cours du ${dateFr(date)}` : "Carte des performances";
   afficherStatut(lignes.length === 0 ? messageSansResultat() : "");
   elResultat.hidden = false;
+}
+
+// Les boutons de page : masqués sous TAILLE_PAGE + 1 valeurs ; désactivés (pas seulement grisés) quand ils sont sans effet.
+function afficherPagination(total) {
+  const pagination = document.getElementById("pagination");
+  pagination.hidden = total <= TAILLE_PAGE;
+  if (pagination.hidden) return;
+  const fin = Math.min(debutPage + TAILLE_PAGE, total);
+  document.getElementById("position-pages").textContent = `Valeurs ${debutPage + 1} à ${fin} sur ${total}`;
+  document.getElementById("pages-precedentes").disabled = debutPage === 0;
+  document.getElementById("pages-suivantes").disabled = fin >= total;
 }
 
 // Une recherche sans résultat le dit. Si des valeurs correspondent mais que leur cotation périmée est masquée, il le dit
@@ -299,10 +319,32 @@ document.getElementById("form-cle").addEventListener("submit", (evenement) => {
   chargerIndicateurs(cleEnEssai);
 });
 
+// Une nouvelle recherche, un nouveau tri ou la case ramènent à la première page (R2, critère 11).
 for (const reglage of [elMasquer, elTri]) {
-  reglage.addEventListener("change", () => { if (donneesChargees) afficher(); });
+  reglage.addEventListener("change", () => { if (donneesChargees) { debutPage = 0; afficher(); } });
 }
-elRecherche.addEventListener("input", () => { if (donneesChargees) afficher(); });
+elRecherche.addEventListener("input", () => { if (donneesChargees) { debutPage = 0; afficher(); } });
+// Une nouvelle page s'affiche depuis son début (relecture du 07/11) : la zone du tableau revient en haut, la colonne
+// consultée reste visible (le défilement horizontal ne bouge pas) et le focus reste sur le bouton. À la première ou à
+// la dernière page, ce bouton devient désactivé et perdrait le focus (il tomberait sur le corps de la page) : le focus
+// passe alors à l'autre bouton de page.
+function changerDePage(nouveauDebut, bouton) {
+  const avaitLeFocus = document.activeElement === bouton;
+  debutPage = nouveauDebut;
+  afficher();
+  document.querySelector(".tableau-large").scrollTop = 0;
+  // Seul le changement de page s'annonce aux lecteurs d'écran : la position visible change aussi à chaque touche de la
+  // recherche, et l'annoncer alors serait du bruit (revue Claude Code de #226).
+  document.getElementById("annonce-pages").textContent = document.getElementById("position-pages").textContent;
+  if (avaitLeFocus && bouton.disabled) {
+    const autre = document.getElementById(bouton.id === "pages-suivantes" ? "pages-precedentes" : "pages-suivantes");
+    if (!autre.disabled) autre.focus();
+  }
+}
+const elPrecedentes = document.getElementById("pages-precedentes");
+const elSuivantes = document.getElementById("pages-suivantes");
+elPrecedentes.addEventListener("click", () => changerDePage(Math.max(0, debutPage - TAILLE_PAGE), elPrecedentes));
+elSuivantes.addEventListener("click", () => changerDePage(debutPage + TAILLE_PAGE, elSuivantes));
 
 const cleMemorisee = RITA.lireCle();
 // Refonte 001 (R7, décision D1) : en simulation, cet écran n'a pas encore de données d'exemple. Il ne démarre pas :

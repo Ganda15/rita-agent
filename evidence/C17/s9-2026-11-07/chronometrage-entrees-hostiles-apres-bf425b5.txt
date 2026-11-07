@@ -1,0 +1,11 @@
+Chronométrage des entrées hostiles, 07/11/2026 15:22
+Code mesuré : bf425b5 (guardrails/ identique au commit)
+Python 3.14.6 sur Windows ; un sous-processus par appel, échéance 20 s ; temps mesuré dans l'enfant, sans le démarrage de Python
+
+entrée                                                verifier_fuite        verifier_sortie            neutraliser
+password + 5000 espaces                                      1.44 ms                2.24 ms                2.42 ms
+mot de passe + 5000 espaces + x                              1.60 ms                2.05 ms                2.60 ms
+clé + 3000 « a »                                             2.76 ms                3.81 ms                3.57 ms
+clé + 3000 « a , »                                           3.77 ms                5.40 ms                5.02 ms
+note de la rédaction + 5000 espaces + achat                  2.17 ms                1.99 ms                2.54 ms
+consignes de rédaction + 3000 « x »                          3.23 ms                3.73 ms                3.11 ms

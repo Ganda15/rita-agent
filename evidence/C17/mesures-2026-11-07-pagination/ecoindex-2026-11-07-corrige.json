@@ -1,0 +1,127 @@
+{
+ "avant": {
+  "portefeuille": {
+   "dom": 232,
+   "requetes": 11,
+   "ko": 39.9,
+   "statique_ko": 37.2,
+   "api_ko": 2.7,
+   "ecoindex": 86,
+   "note": "A",
+   "gco2e": 1.28,
+   "eau_cl": 1.92,
+   "bonnes_pratiques": 1
+  },
+  "indicateurs": {
+   "dom": 1625,
+   "requetes": 10,
+   "ko": 48.5,
+   "statique_ko": 36.9,
+   "api_ko": 11.6,
+   "ecoindex": 52,
+   "note": "D",
+   "gco2e": 1.96,
+   "eau_cl": 2.94,
+   "bonnes_pratiques": 1
+  },
+  "briefing": {
+   "dom": 179,
+   "requetes": 9,
+   "ko": 38.5,
+   "statique_ko": 36.3,
+   "api_ko": 2.1,
+   "ecoindex": 88,
+   "note": "A",
+   "gco2e": 1.24,
+   "eau_cl": 1.86,
+   "bonnes_pratiques": 1
+  },
+  "question": {
+   "dom": 70,
+   "requetes": 7,
+   "ko": 30.0,
+   "statique_ko": 30.0,
+   "api_ko": 0.0,
+   "ecoindex": 92,
+   "note": "A",
+   "gco2e": 1.16,
+   "eau_cl": 1.74,
+   "bonnes_pratiques": 1
+  },
+  "tableau-de-bord": {
+   "dom": 74,
+   "requetes": 9,
+   "ko": 32.5,
+   "statique_ko": 29.3,
+   "api_ko": 3.2,
+   "ecoindex": 92,
+   "note": "A",
+   "gco2e": 1.16,
+   "eau_cl": 1.74,
+   "bonnes_pratiques": 1
+  }
+ },
+ "apres": {
+  "portefeuille": {
+   "dom": 232,
+   "requetes": 11,
+   "ko": 40.1,
+   "statique_ko": 37.4,
+   "api_ko": 2.7,
+   "ecoindex": 86,
+   "note": "A",
+   "gco2e": 1.28,
+   "eau_cl": 1.92,
+   "bonnes_pratiques": 1
+  },
+  "indicateurs": {
+   "dom": 485,
+   "requetes": 10,
+   "ko": 49.4,
+   "statique_ko": 37.8,
+   "api_ko": 11.6,
+   "ecoindex": 76,
+   "note": "B",
+   "gco2e": 1.48,
+   "eau_cl": 2.22,
+   "bonnes_pratiques": 1
+  },
+  "briefing": {
+   "dom": 179,
+   "requetes": 9,
+   "ko": 38.6,
+   "statique_ko": 36.5,
+   "api_ko": 2.1,
+   "ecoindex": 88,
+   "note": "A",
+   "gco2e": 1.24,
+   "eau_cl": 1.86,
+   "bonnes_pratiques": 1
+  },
+  "question": {
+   "dom": 70,
+   "requetes": 7,
+   "ko": 30.2,
+   "statique_ko": 30.2,
+   "api_ko": 0.0,
+   "ecoindex": 92,
+   "note": "A",
+   "gco2e": 1.16,
+   "eau_cl": 1.74,
+   "bonnes_pratiques": 1
+  },
+  "tableau-de-bord": {
+   "dom": 74,
+   "requetes": 9,
+   "ko": 32.7,
+   "statique_ko": 29.5,
+   "api_ko": 3.2,
+   "ecoindex": 92,
+   "note": "A",
+   "gco2e": 1.16,
+   "eau_cl": 1.74,
+   "bonnes_pratiques": 1
+  }
+ },
+ "calcul": "script corrigé du 07/11 au soir (routes, ko décimaux, périmètre des requêtes)"
+}

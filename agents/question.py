@@ -25,6 +25,7 @@ from guardrails.detournement import MESSAGE_REFUS as MESSAGE_TENTATIVE_DETOURNEM
 from guardrails.entree import MESSAGE_REFUS as MESSAGE_INTENTION_INTERDITE
 from guardrails.injection import neutraliser
 from guardrails.nombres import MESSAGE_REFUS_NOMBRE, espaces_simples, nombres_absents
+from guardrails.normalisation import sans_invisibles
 from guardrails.sortie import MESSAGE_REFUS_FUITE, verifier_fuite, verifier_sortie
 from rag.recherche import Passage, rechercher
 from src.llm import FournisseurIndisponible, ReponseTronquee, generer_json
@@ -99,8 +100,11 @@ def _neutraliser(texte: str) -> str:
       du 20/10/2026 : Q4 a rendu « 1 00 postes » pour « 1 000 » écrit avec une espace insécable. La cause n'est pas
       prouvée (le défaut est revenu une fois en production après la correction) : le contrôle des nombres
       (`guardrails/nombres.py`) vérifie la réponse avant qu'elle soit servie.
+    - Les caractères invisibles (catégorie Unicode Cf : largeur nulle, trait d'union conditionnel, contrôles
+      bidirectionnels, caractères d'étiquette) sont retirés : le modèle les lit, les règles non (revue de sécurité
+      du 07/11, `guardrails/normalisation.py`).
     """
-    return espaces_simples(texte.translate(_REMPLACEMENTS))
+    return espaces_simples(sans_invisibles(texte).translate(_REMPLACEMENTS))
 
 
 def construire_prompt(question: str, passages: list[Passage]) -> str:

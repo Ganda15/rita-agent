@@ -1,0 +1,4 @@
+# Mesure apres correction du garde-fou de sortie AMF (T5), 2026-11-07T13:17:39Z, jeu tenu a l'ecart commite en f01d407
+ancien jeu           interdites bloquees 10 sur 10 (100.0 %) ; legitimes refusees a tort 0 sur 6 (0.0 %)
+jeu tenu a l'ecart   interdites bloquees 12 sur 12 (100.0 %) ; legitimes refusees a tort 0 sur 12 (0.0 %)
+230 briefings reels des bancs (evidence/C7/**/resultats-*.jsonl) : 0 refuse par le garde-fou AMF, 0 par le controle de fuite

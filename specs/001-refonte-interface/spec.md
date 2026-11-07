@@ -73,6 +73,12 @@ Critères d'acceptation :
 10. le tableau défile dans sa zone, en-têtes fixes, barre de défilement horizontale visible sans descendre au bas des 111
     lignes ; l'aide dit ce que fait vraiment l'écran (il permet de comparer, le tri et les repères du RSI ne donnent aucune
     consigne) et ne décrit plus la volatilité et la pire baisse comme un « détail ».
+11. (décision d'Era du 07/11/2026, éco-conception C17.7 : l'écran était seul en D, 1 625 éléments de page pour 111
+    lignes) le tableau montre **20 valeurs à la fois**, avec « Valeurs précédentes », « Valeurs suivantes » et la
+    position (« Valeurs 1 à 20 sur 111 ») ; la recherche, le tri et la case des cotations périmées portent sur toutes les
+    valeurs avant le découpage, et chacun ramène à la première page ; le nombre total reste écrit au-dessus du tableau ;
+    un bouton sans effet est désactivé, pas seulement grisé ; sous 21 valeurs, les boutons n'apparaissent pas ; changer
+    de page ne ferme pas le détail ouvert.
 
 ### R3. Briefing : lire le briefing et comprendre comment il a été produit (priorité 1)
 

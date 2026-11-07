@@ -1,0 +1,11 @@
+Chronométrage des entrées hostiles, 07/11/2026 14:47
+Code mesuré : 3c024f3 (guardrails/ identique au commit)
+Python 3.14.6 sur Windows ; un sous-processus par appel, échéance 20 s ; temps mesuré dans l'enfant, sans le démarrage de Python
+
+entrée                                                verifier_fuite        verifier_sortie            neutraliser
+password + 5000 espaces                        interrompu après 20 s                0.81 ms                1.44 ms
+mot de passe + 5000 espaces + x                interrompu après 20 s                0.59 ms                2.87 ms
+clé + 3000 « a »                                             2.70 ms                1.06 ms                1.97 ms
+clé + 3000 « a , »                                           3.70 ms                1.48 ms                5.39 ms
+note de la rédaction + 5000 espaces + achat                  0.80 ms                0.59 ms                1.65 ms
+consignes de rédaction + 3000 « x »                          2.78 ms                1.36 ms                1.69 ms

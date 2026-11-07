@@ -75,7 +75,10 @@ def test_le_schema_de_collecte_affiche_les_chiffres_du_code(gen, faits):
     assert f"{faits['tables']} tables" in texte
     assert f"{faits['motifs_injection']} motifs" in texte
     assert f"{faits['blocage_injection']} % de blocage" in texte
-    assert "100 % blocage" not in texte and "100 % de blocage" not in texte
+    # 04/10 : le schéma du 11/08 affichait un 100 % dessiné à la main quand la mesure donnait 70 % ; ce test interdisait
+    # donc « 100 % ». Depuis le 07/11 (constat S9), 100 % est la mesure réelle : l'intention reste la même, le chiffre
+    # affiché ET son décompte viennent de la mesure, jamais d'une saisie.
+    assert f"({faits['injections_bloquees']}/{faits['injections']})" in texte
     t, p = faits["traitements_rgpd"], faits["procedures_rgpd"]
     assert f"traitements {t[0]} à {t[-1]}" in texte, "les traitements du registre RGPD ne sont pas ceux du schéma"
     assert f"procédures de tri {p[0]} à {p[-1]}" in texte, "les procédures du registre RGPD ne sont pas celles du schéma"

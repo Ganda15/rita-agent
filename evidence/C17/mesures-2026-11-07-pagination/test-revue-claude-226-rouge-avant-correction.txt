@@ -1,0 +1,49 @@
+# Tests ecrits pour la revue Claude Code de #226, AVANT les corrections, branche correctifs-226 (develop 8052ea8 + tests), 07/11/2026 a 19:40 (heure de Paris)
+# Commande : python -m pytest -q -p no:cacheprovider tests/test_indicateurs_pages_ui.py tests/test_calcul_ecoindex_outil.py --tb=line
+......F...F.FF.                                                          [100%]
+================================== FAILURES ===================================
+E   playwright._impl._errors.TimeoutError: Locator.get_attribute: Timeout 30000ms exceeded.
+    Call log:
+      - waiting for locator("#annonce-pages")
+C:\Users\kanda\AppData\Roaming\Python\Python314\site-packages\playwright\_impl\_connection.py:632: playwright._impl._errors.TimeoutError: Locator.get_attribute: Timeout 30000ms exceeded.
+E   playwright._impl._errors.Error: Page.wait_for_function: EvalError: Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: default-src 'self'".
+    
+        at eval (<anonymous>)
+        at predicate (eval at evaluate (:311:30), <anonymous>:4:60)
+        at next (eval at evaluate (:311:30), <anonymous>:29:33)
+C:\Users\kanda\AppData\Roaming\Python\Python314\site-packages\playwright\_impl\_connection.py:632: playwright._impl._errors.Error: Page.wait_for_function: EvalError: Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: default-src 'self'".
+E   AssertionError: assert 'polite' is None
+     +  where 'polite' = get_attribute('aria-live')
+     +    where get_attribute = <Locator frame=<Frame name= url='http://127.0.0.1:53307/indicateurs.html'> selector='#position-pages'>.get_attribute
+     +      where <Locator frame=<Frame name= url='http://127.0.0.1:53307/indicateurs.html'> selector='#position-pages'> = locator('#position-pages')
+     +        where locator = <Page url='http://127.0.0.1:53307/indicateurs.html'>.locator
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_indicateurs_pages_ui.py:192: AssertionError: assert 'polite' is None
+E   AssertionError: assert 0 != 0
+     +  where 0 = CompletedProcess(args=['C:\\Python314\\python.exe', 'D:\\KandaWork\\RITA_PROJECT\\rita-agent\\evidence\\C17\\mesures-2...l\\Temp\\pytest-of-kanda\\pytest-2157\\test_sans_fichier_de_sortie_le0\\ecoindex-2026-11-07-corrige.json\n', stderr='').returncode
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_calcul_ecoindex_outil.py:25: AssertionError: assert 0 != 0
+tests/test_indicateurs_pages_ui.py::test_le_tableau_montre_vingt_valeurs_a_la_fois
+=========================== short test summary info ===========================
+FAILED tests/test_indicateurs_pages_ui.py::test_les_boutons_de_page_sont_des_boutons_qui_pilotent_le_tableau
+FAILED tests/test_indicateurs_pages_ui.py::test_recharger_les_donnees_ramene_a_la_premiere_page
+FAILED tests/test_indicateurs_pages_ui.py::test_la_position_n_est_annoncee_qu_au_changement_de_page
+FAILED tests/test_calcul_ecoindex_outil.py::test_sans_fichier_de_sortie_le_script_refuse_et_n_ecrit_rien
+4 failed, 11 passed, 1 warning in 46.28s
+
+# Le test du rechargement echouait d'abord pour une autre raison (CSP : wait_for_function interdit). Test corrige, puis relance SANS le correctif du rechargement, 07/11/2026 a 19:43 :
+F                                                                        [100%]
+================================== FAILURES ===================================
+E   AssertionError: Locator expected to have text 'Valeurs 1 à 20 sur 45'
+    Actual value: Valeurs 21 à 40 sur 45 
+    Call log:
+      - Expect "to_have_text" locator("#position-pages") with timeout 3000ms
+      - waiting for locator("#position-pages")
+        10 × locator resolved to <p id="position-pages">Valeurs 21 à 40 sur 45</p>
+           - unexpected value "Valeurs 21 à 40 sur 45"
+    
+    Aria snapshot:
+    - paragraph: Valeurs 21 à 40 sur 45
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_indicateurs_pages_ui.py:178: AssertionError: Locator expected to have text 'Valeurs 1 à 20 sur 45'
+tests/test_indicateurs_pages_ui.py::test_recharger_les_donnees_ramene_a_la_premiere_page
+=========================== short test summary info ===========================
+FAILED tests/test_indicateurs_pages_ui.py::test_recharger_les_donnees_ramene_a_la_premiere_page
+1 failed, 12 deselected, 1 warning in 11.63s

@@ -25,10 +25,10 @@ d'où les motifs en tête de module et les reformulations réservées (`evals/ca
 utilisées pour les écrire, qui mesurent ce qui passe encore.
 """
 import re
-import unicodedata
+from guardrails.normalisation import textes_de_controle
 
-# (motif, nom, famille). Le texte est normalisé avant la recherche (`_normaliser`) : apostrophes typographiques en «'»,
-# espaces et retours à la ligne réduits à un seul espace ; la casse est ignorée.
+# (motif, nom, famille). Chaque règle lit les copies de `_normaliser` : apostrophes en «'», NFKC, caractères invisibles
+# retirés ou remplacés, espaces réduits (`guardrails/normalisation.py`, 07/11) ; la casse est ignorée.
 MOTIFS_DETOURNEMENT = [
     # --- injection --------------------------------------------------------------------------------------------------
     (r"\b(ignore[sz]?|oublie[sz]?|outrepasse[sz]?|contourne[sz]?)\b[^.?!]{0,40}\b(tes|vos)\s+"
@@ -60,10 +60,10 @@ MESSAGE_REFUS = ("Je ne peux pas traiter cette demande : elle cherche à changer
                  "informations internes. Je réponds seulement aux questions sur l'actualité économique de mes articles.")
 
 
-def _normaliser(texte: str) -> str:
-    """Une même attaque écrite autrement reste la même : formes Unicode compatibles (NFKC), apostrophes simples,
-    espaces et retours à la ligne réduits."""
-    return re.sub(r"\s+", " ", unicodedata.normalize("NFKC", texte).translate(_APOSTROPHES))
+def _normaliser(texte: str) -> tuple[str, ...]:
+    """Une même attaque écrite autrement reste la même : apostrophes simples, puis les copies de `textes_de_controle`
+    (NFKC, caractères invisibles retirés ou remplacés par une espace, espaces et retours à la ligne réduits)."""
+    return textes_de_controle(texte.translate(_APOSTROPHES))
 
 
 def verifier_detournement(question: str) -> dict:
@@ -74,8 +74,8 @@ def verifier_detournement(question: str) -> dict:
         être appelée : la question est refusée avec le motif TENTATIVE_DETOURNEMENT. Les noms des motifs vont au
         journal et à la trace ; ils ne sont jamais montrés à l'écran.
     """
-    texte = _normaliser(question)
-    trouves = [(nom, famille) for regex, nom, famille in _COMPILES if regex.search(texte)]
+    controles = _normaliser(question)
+    trouves = [(nom, famille) for regex, nom, famille in _COMPILES if any(regex.search(t) for t in controles)]
     return {
         "bloque": bool(trouves),
         "motifs_detectes": [nom for nom, _ in trouves],
