@@ -111,9 +111,12 @@ services:
       LANGFUSE_HOST: ${LANGFUSE_HOST:-https://cloud.langfuse.com}
       LANGFUSE_TRACING_ENABLED: ${LANGFUSE_TRACING_ENABLED:-true}
     ports:
-      - "8001:8000"
+      - "127.0.0.1:8001:8000"
     # ⚠️ 8001 côté hôte, pas 8000 : le serveur de développement occupe déjà 8000.
     #    Les deux peuvent donc tourner en même temps, et on compare.
+    # `127.0.0.1` (07/11/2026) : publié sur toutes les interfaces, le port répondait depuis Internet, en clair, sans le
+    #    chiffrement de Caddy (mesuré : 200 sur http://<serveur>:8001/health). Caddy, le script de livraison et le
+    #    navigateur du poste passent par la machine elle-même. Test : tests/test_port_api_local.py.
 
     # --- Durcissement -------------------------------------------------------
     # L'application n'écrit nulle part : le système de fichiers peut être en lecture
