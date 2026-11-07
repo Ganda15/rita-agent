@@ -55,3 +55,44 @@ def test_un_fait_financier_n_est_pas_refuse_comme_un_conseil(texte):
 def test_chaque_conseil_des_jeux_figes_reste_refuse(texte):
     """Garder les vrais conseils bloqués : aucun cas des deux jeux figés ne doit passer après la contextualisation."""
     assert not verifier_sortie(texte)["conforme"]
+
+
+# --- Revue de sécurité automatique du commit 4b11a4e : la contextualisation ne doit pas ouvrir de contournement ------
+# Exiger « le titre » laissait passer un conseil sur une société nommée (« C'est le moment de renforcer LVMH ») :
+# 12 conseils sur 13 passaient. Un nom propre ou un code de valeur compte comme un titre ; les exemptions restent
+# étroites (une entreprise sujet, un verbe d'entreprise : « pour s'implanter », jamais « pour s'exposer »).
+CONSEILS_SUR_UNE_SOCIETE = [
+    "C'est le moment de renforcer LVMH.",
+    "Est venu le moment de vendre Sanofi.",
+    "Mieux vaut vendre Kering avant les résultats.",
+    "Mieux vaut éviter Atos pour le moment.",
+    "Il est temps de sortir de Casino.",
+    "Air Liquide : à accumuler.",
+    "LVMH reste à renforcer.",
+    "Le titre mérite de figurer dans votre portefeuille.",
+    "Une occasion à saisir pour s'exposer au titre.",
+    "Une occasion à saisir pour se positionner sur LVMH.",
+    "Le titre est à ne pas manquer avant la publication.",
+    "C'est le moment de vendre MC.PA.",
+    "Il est temps d'alléger votre position sur TotalEnergies.",
+]
+
+FAITS_SUR_UNE_SOCIETE = [
+    "LVMH cherche à renforcer sa position en Asie.",
+    "Sanofi a décidé de vendre sa filiale de santé grand public.",
+    "Kering veut sortir de sa dépendance au marché chinois.",
+    "Pour Air Liquide, c'est le moment de renforcer la coopération avec ses fournisseurs.",
+    "Selon TotalEnergies, il est temps d'alléger sa dette.",
+    "Renault reste à la recherche d'un partenaire.",
+]
+
+
+@pytest.mark.parametrize("texte", CONSEILS_SUR_UNE_SOCIETE)
+def test_un_conseil_sur_une_societe_nommee_est_refuse(texte):
+    assert not verifier_sortie(texte)["conforme"]
+
+
+@pytest.mark.parametrize("texte", FAITS_SUR_UNE_SOCIETE)
+def test_un_fait_sur_une_societe_nommee_n_est_pas_refuse(texte):
+    verdict = verifier_sortie(texte)
+    assert verdict["conforme"], verdict["motifs_detectes"]

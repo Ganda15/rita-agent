@@ -53,39 +53,52 @@ _COMPILES = [(re.compile(m, re.IGNORECASE), nom) for m, nom in MOTIFS_AMF]
 # titre », « le groupe a profité de la baisse » restent des faits. Jeu tenu à l'écart : `evals/cas_s9_reserves_sortie.py`,
 # commité avant ces règles et mesuré sans en lire les textes.
 # Double contrôle du 07/11 (autre agent) : des faits étaient refusés (« la banque cherche à renforcer ses fonds propres »,
-# « un rendez-vous à ne pas manquer »). Chaque règle exige désormais le CONTEXTE d'une recommandation : un lecteur ou un
-# investisseur à qui l'on parle, ou un titre, une valeur, une position ; une entreprise, un État ou un calendrier
-# sujets de la phrase passent. Contre-exemples : `tests/test_sortie_amf_contexte.py`, écrits avant cette réécriture.
+# « un rendez-vous à ne pas manquer »). Chaque règle exige le CONTEXTE d'une recommandation : un lecteur ou un
+# investisseur à qui l'on parle, ou un titre. Revue de sécurité du commit 4b11a4e : exiger « le titre » laissait passer
+# « C'est le moment de renforcer LVMH » ; un nom propre ou un code de valeur (`_SOCIETE`, lu en respectant la casse)
+# compte donc comme un titre, et les exemptions restent étroites. Une entreprise ou un État sujets, un objet en minuscules
+# (« sa dette », « la coopération ») passent. Cas : `tests/test_sortie_amf_contexte.py`, écrits avant chaque réécriture.
 _TITRE = r"(le|la|ce|cette|l['’])\s*(titre|valeur|action|dossier)"
+_SOCIETE = r"(?-i:[A-Z][\w&'’.-]*)"
+_OBJET = rf"({_TITRE}|{_SOCIETE}|(sa|ses|votre|vos)\s+(positions?|lignes?|expositions?))"
+_FIN = r"\s*([.!;]|$)"
+_VERBE_D_ENTREPRISE = (r"s['’](implanter|[ée]tendre|agrandir)|se\s+(d[ée]velopper|diversifier|d[ée]sendetter|redresser|"
+                       r"restructurer)|le\s+groupe|la\s+soci[ée]t[ée]|l['’]entreprise|la\s+direction")
 FAMILLES_AMF = [
     # une place dans un portefeuille de lecteur, jamais le portefeuille d'un indice ou d'activités
     (r"\b(une|sa|toute\s+sa)\s+place\s+dans\s+(un|votre|tout|chaque)\s+portefeuille"
-     r"|\bint[ée]grer\s+(un|votre|tout|chaque)\s+portefeuille|\b(ajouter|placer)\s+[^.;]{0,30}?\b(dans|[àa])\s+(un|votre|tout|chaque)\s+portefeuille"
+     r"|\b(int[ée]grer|figurer\s+dans)\s+(un|votre|vos|tout|chaque)\s+portefeuilles?"
+     r"|\b(ajouter|placer)\s+[^.;]{0,30}?\b(dans|[àa])\s+(un|votre|tout|chaque)\s+portefeuille"
      r"|\bdeserves?\s+a\s+place\s+in", "place_en_portefeuille"),
     # un point d'entrée qualifié, ou le moment de se positionner sur un titre (ou dit seul, en fin de phrase)
     (r"\b(bon|meilleur|excellent|attracti\w*|int[ée]ressant|id[ée]al|offre)\s+(un\s+)?point\s+d['’]entr[ée]e"
      r"|point\s+d['’]entr[ée]e\s+(para[iî]t|semble|est)\s+(attracti\w*|int[ée]ressant|id[ée]al)"
-     rf"|\b(c['’]est|est\s+venu)\s+le\s+moment\s+de\s+(se\s+positionner|se\s+placer|entrer|renforcer|acheter|vendre)\s*([.!;]|$)"
-     rf"|\b(c['’]est|est\s+venu)\s+le\s+moment\s+de\s+(se\s+positionner\s+sur|entrer\s+sur|renforcer|acheter|vendre)\s+{_TITRE}"
+     rf"|\b(c['’]est|est\s+venu)\s+le\s+moment\s+de\s+(se\s+positionner|se\s+placer|entrer|renforcer|acheter|vendre)"
+     rf"({_FIN}|\s+((sur|dans)\s+)?{_OBJET})"
      r"|\b(attractive|good|ideal)\s+entry\s+point|\b(time|moment)\s+to\s+(buy|sell|get\s+in|take\s+profits)", "point_d_entree"),
-    # une occasion à ne pas manquer, quand elle n'est pas celle d'une entreprise ; le tort de l'investisseur
-    (r"\b(opportunit[ée]|occasion)s?\s+[àa]\s+(saisir|ne\s+pas\s+(manquer|laisser\s+passer|rater))"
-     r"(?!\s+pour\s+(s['’]|se\s|le\s+groupe|la\s+soci[ée]t[ée]|l['’]entreprise|la\s+direction))"
+    # une occasion à ne pas manquer, sauf celle d'une entreprise ; un titre à ne pas manquer ; le tort de l'investisseur
+    (rf"\b(opportunit[ée]|occasion)s?\s+[àa]\s+(saisir|ne\s+pas\s+(manquer|laisser\s+passer|rater))"
+     rf"(?!\s+pour\s+({_VERBE_D_ENTREPRISE}))"
+     r"|\b(titre|valeur)s?\b[^.;]{0,40}?\b[àa]\s+ne\s+pas\s+(manquer|laisser\s+passer|rater)"
      r"|\b(investisseurs?|actionnaires?|[ée]pargnants?|lecteurs?|vous)\s+(aurai(en)?t|auriez)\s+tort\s+de\s+ne\s+pas"
      r"|\b(worth|time\s+for)\s+(adding|buying|owning)", "occasion_a_saisir"),
-    # la vente ou l'abstention présentées comme une évidence, sur un titre ou une position
+    # la vente ou l'abstention présentées comme une évidence, sur un titre, une société nommée ou une position
     (r"\b(temps|moment)\s+de\s+prendre\s+(ses|vos|des)\s+b[ée]n[ée]fices"
-     r"|\b(temps|moment)\s+de\s+(vendre|all[ée]ger|sortir)\s*([.!;]|$)"
-     rf"|\b(temps|moment)\s+de\s+(vendre|all[ée]ger|sortir\s+(du|de\s+ce|de\s+la|de\s+l['’]))\s*({_TITRE}|titre|valeur|dossier|(sa|ses|votre|vos)\s+positions?|(sa|la|votre)\s+ligne)"
-     rf"|\bmieux\s+vaut\s+(se\s+tenir\s+[àa]\s+l['’][ée]cart\s+(du|de\s+ce|de\s+la|de\s+l['’])|[ée]viter|vendre|sortir\s+(du|de\s+ce|de\s+la|de\s+l['’]))\s*({_TITRE}|titre|valeur|dossier|action)"
-     r"|\bmieux\s+vaut\s+(vendre|sortir|[ée]viter)\s*([.!;]|$)"
+     rf"|\b(temps|moment)\s+(de\s+|d['’])(vendre|all[ée]ger|sortir)({_FIN}|\s+{_OBJET}"
+     rf"|\s+(de|du|d['’])\s*({_TITRE}|{_SOCIETE}|titre|valeur))"
+     rf"|\bmieux\s+vaut\s+(se\s+tenir\s+[àa]\s+l['’][ée]cart\s+(du|de\s+ce|de\s+la|de\s+l['’]|de)|[ée]viter|vendre"
+     rf"|sortir\s+(du|de\s+ce|de\s+la|de\s+l['’]|de))\s*({_TITRE}|{_SOCIETE}|titre|valeur|dossier|action)"
+     rf"|\bmieux\s+vaut\s+(vendre|sortir|[ée]viter){_FIN}"
      r"|\b(rester|se\s+tenir)\s+[àa]\s+l['’][ée]cart\s+(du|de\s+ce|de\s+la)\s+(titre|valeur|dossier|action)", "sortie_evidente"),
-    # une consigne de marché sur un titre, ou l'abstention présentée comme intenable
+    # une consigne de marché sur un titre ou une société nommée, ou l'abstention présentée comme intenable
     (r"\b(titre|valeur)s?\b[^.;]{0,40}?\b[àa]\s+(accumuler|all[ée]ger|renforcer)\b"
+     rf"|{_SOCIETE}\s*(:|\s+(reste|est|demeure|serait|semble|para[iî]t))\s+(un\s+titre\s+|une\s+valeur\s+)?"
+     r"[àa]\s+(accumuler|all[ée]ger|renforcer)\b"
+     r"|:\s*[àa]\s+(accumuler|all[ée]ger|renforcer)\b"
      r"|\b[àa]\s+(accumuler|all[ée]ger|renforcer)\s+(sur|en|au|apr[èe]s|avant)\s+(repli|baisse|faiblesse|rebond|hausse|creux|cours|niveaux?)"
      r"|\b(renforcer|all[ée]ger|accumuler)\s+(votre|vos)\s+(positions?|lignes?|expositions?|participations?)"
-     r"|\bdifficile\s+de\s+rester\s+[àa]\s+l['’][ée]cart\s*([.!;]|$)"
-     r"|\bdifficile\s+de\s+rester\s+[àa]\s+l['’][ée]cart\s+(du|de\s+ce|de\s+la|de\s+l['’])\s*(titre|valeur|dossier|action)", "incitation_douce"),
+     rf"|\bdifficile\s+de\s+rester\s+[àa]\s+l['’][ée]cart({_FIN}|\s+(du|de\s+ce|de\s+la|de\s+l['’]|de)\s*({_TITRE}|{_SOCIETE}|titre|valeur|dossier|action))",
+     "incitation_douce"),
 ]
 _COMPILES += [(re.compile(m, re.IGNORECASE), nom) for m, nom in FAMILLES_AMF]
 
