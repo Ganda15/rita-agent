@@ -9,7 +9,25 @@
 .sommaire li span{ color:var(--accent); font-weight:600; }
 p, li{ orphans:3; widows:3; }
 h2#glossaire + ul{ columns:2; column-gap:18pt; }
-h2#criteres + p + table td:first-child{ width:44%; }
+h2#criteres + p + table td:first-child{ width:53%; }
+h2#preuves + table th:nth-child(1){ width:15%; } h2#preuves + table th:nth-child(2){ width:10%; }
+h2#preuves + table th:nth-child(3){ width:25%; }
+/* 07/11, demande d'Era : les couleurs du rapport E2 (choix du 06/11 sur le nuancier) : tableaux d'information en
+   style A (en-tête marine, lignes zébrées, première colonne marine), titres en dégradé marine vers sarcelle, code
+   coloré. L'espacement d'E2 n'est pas repris, pour garder le nombre de pages. */
+:root{ --zebre:#F2F6FA; }
+table thead th{ background:var(--marine); color:#fff; padding:2.5pt 5pt; }
+table tbody tr:nth-child(even) td{ background:var(--zebre); }
+table tbody td:first-child{ font-weight:600; color:var(--marine); }
+td{ padding-top:2.5pt; padding-bottom:2.5pt; padding-left:5pt; }
+table thead th code{ color:#fff; background:rgba(255,255,255,.16); border:none; }
+body h1, body h2{ background:linear-gradient(90deg, #12395E, #14607F); color:#fff; }
+body h1{ padding:2pt 10pt; }
+body h2{ padding:1pt 10pt; }
+body h3{ background:linear-gradient(90deg, #D6E6F7, #EEF5FC); color:#12395E; padding:1pt 9pt; }
+pre{ background:#0F2A44; color:#E8EEF5; border:none; border-radius:4pt; padding:6pt 9pt; }
+pre code{ color:inherit; background:none; }
+code{ background:#E3F0F3; color:#0D4C5E; border-radius:2pt; }
 </style>
 
 <div><img class="logo" src="../E3/logo/rita-logo-marque.png" alt="Logo de RITA"></div>
@@ -45,7 +63,7 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 
 Le monitorage, c'est la surveillance continue d'une application en service : on mesure, on compare à des seuils
 écrits à l'avance, et on prévient quelqu'un quand un seuil est franchi. Celui de RITA a cinq parties, toutes dans la
-version de référence `174b0c1`.
+version de production `6f428d6`.
 
 | Partie | Où | Ce qu'elle fait |
 |---|---|---|
@@ -59,8 +77,8 @@ version de référence `174b0c1`.
 
 Les seuils sont écrits dans [`monitorage/seuils.json`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/monitorage/seuils.json) (version du 22/10/2026), chacun avec sa raison, l'action à mener
 et la condition de résolution. Ils sont **provisoires** : écrits avant toute mesure du trafic réel, à relire sur des
-données réelles. Pour les taux et le temps de réponse, sous le minimum de requêtes ou sans donnée, le verdict est « inconnu », jamais
-« sain » ; la fraîcheur est « inconnue » quand la base ne répond pas.
+données réelles. Pour les taux et le temps de réponse, sous le minimum de requêtes ou sans donnée, le verdict est « inconnu », jamais
+« sain » ; la fraîcheur est « inconnue » quand la base ne répond pas.
 
 | Signal | Mesure, fenêtre | Attention | Problème | Minimum |
 |---|---|---|---|---|
@@ -91,8 +109,9 @@ faire et quand l'alerte est résolue ([`docs/exploitation.md`](https://github.co
   base ni service de plus. Un verrou protège les appels simultanés, et les rejets ont leur propre file : 20 000 appels
   sans clé ne peuvent pas effacer les refus de sécurité déjà comptés (revue de sécurité du 22/10, commit `d8232b4`).
 - **Langfuse Cloud, région UE, palier gratuit**, pour les traces du modèle (rapport E3) : Langfuse est configuré en
-  région UE, conformément au choix d'hébergement des traces de RITA (registre RGPD, T3) ; les conditions de traitement
-  du fournisseur restent à vérifier. L'auto-hébergement a été écarté par la mesure (six composants, dont ClickHouse, sur un serveur
+  région UE, conformément au choix d'hébergement des traces de RITA (registre RGPD, T3). Les conditions et garanties ont
+  été examinées le 06/11 ; les exceptions contractuelles et les limites restantes sont documentées dans le registre.
+  L'auto-hébergement a été écarté par la mesure (six composants, dont ClickHouse, sur un serveur
   de 4 Go déjà occupé). Le palier gratuit offre deux alertes, et ses canaux sont Slack, un webhook signé ou GitHub
   Actions, sans courriel.
 - **Les issues GitHub comme outil de suivi** : les incidents vivent déjà dans le dépôt (fiches, PR, tests) ; une
@@ -108,9 +127,10 @@ ajouté à ses métadonnées pour retrouver l'exécution correspondante. Format 
 de sécurité, refus de corpus, refus de qualité, erreur technique, rejet d'accès) : un motif inconnu compte comme
 erreur technique, avec une ligne de journal, parce qu'une mesure inconnue n'est jamais verte.
 
-**Ce qui n'est jamais enregistré** : le texte d'une question ou d'une réponse, la consigne envoyée au modèle, la clé
-d'API. Depuis le 20/10, les traces conservent des métadonnées techniques : identifiant de requête, ticker, verdicts du
-garde-fou, modèle, fournisseur, consommation et durées, sans enregistrer le contenu des questions et des réponses. Ces traitements sont
+**Ce qui n'est jamais enregistré** : les journaux applicatifs et les traces Langfuse de RITA n'enregistrent ni le
+contenu des questions et réponses, ni les consignes envoyées au modèle (prompts), ni la clé API. Depuis le 20/10, les
+traces conservent des métadonnées techniques : identifiant de requête, ticker, verdicts du garde-fou, modèle,
+fournisseur, consommation et durées. Ces traitements sont
 inscrits au registre RGPD ([`db/RGPD-registre-des-traitements.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/db/RGPD-registre-des-traitements.md)) : T3 pour les traces (Langfuse, région UE, actives
 en production depuis le 21/10), T5 pour le journal des appels MCP (huit colonnes, purge à 90 jours), T8 pour les
 questions (texte jamais conservé, vérifié par des tests).
@@ -125,7 +145,7 @@ La procédure complète est dans [`docs/exploitation.md`](https://github.com/Gan
 | Compteurs, `/sante`, tableau de bord | livrés avec l'API, rien à installer ; la clé `RITA_API_KEY` | ouvrir `/tableau-de-bord.html` et saisir la clé |
 | Vigie | Python ; la clé `RITA_API_KEY` (environnement ou `.env` du dépôt) ; GitHub CLI, ci-dessous | `python -m monitorage.vigie --adresse <url>` (à blanc), puis `--github` |
 | Traces | `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, `LANGFUSE_HOST` dans `.env` | actives dès que les clés sont présentes |
-| Alertes Langfuse | dans l'interface Langfuse : adresse de déclenchement du dépôt, type `alerte-langfuse`, jeton gardé dans Langfuse | automatique ; essai par « Run workflow » |
+| Alertes Langfuse | dans l'interface Langfuse : adresse de déclenchement du dépôt, type `alerte-langfuse`, jeton gardé dans Langfuse | automatique ; essai par « Run workflow » |
 
 **GitHub CLI pour la vigie** (le guide d'exploitation ne le décrit pas encore) : 1. installer, `winget install --id
 GitHub.cli` ; 2. s'authentifier avec un compte collaborateur du dépôt, qui a le droit d'écrire des issues :
@@ -136,7 +156,7 @@ chaque issue, doivent exister dans le dépôt.
 Sans `--github`, la vigie affiche ce qu'elle ferait et n'envoie rien. Ses codes de sortie : 0 aucun signal en
 problème, 1 au moins un problème, 2 `/sante` illisible. En production, la vigie est également programmée toutes les
 trois heures par GitHub Actions. Le secret `RITA_API_KEY_VIGIE` fournit la clé au workflow. Premier passage planifié réussi le 07/11 à 21 h 52 UTC
-([42417908976](https://github.com/Ganda15/rita-agent/actions/runs/42417908976)), code 0. En production, le tableau de bord répond à l'adresse
+([42417908976](https://github.com/Ganda15/rita-agent/actions/runs/42417908976)), code 0. Le tableau de bord de production répond à l'adresse
 `https://178-104-184-125.sslip.io/tableau-de-bord.html` (vérifiée le 05/11 : HTTP 200).
 
 ## 6. Les alertes ont fonctionné {: #preuves }
@@ -188,8 +208,8 @@ fi
 ```
 
 Une issue ouverte est commentée, comme avant ; sans issue ouverte, un retour à OK ne crée plus rien et l'écrit dans le
-journal de l'exécution ; une alerte crée l'issue, comme avant. Rien n'est fermé automatiquement : la fermeture reste
-une décision humaine, justifiée.
+journal de l'exécution ; une alerte crée l'issue, comme avant. Dans cette chaîne d'alerte Langfuse, la fermeture reste
+manuelle : une décision humaine, justifiée.
 
 **Tests en succès.** Le test qui empêche le défaut de revenir ([`tests/test_alerte_incident.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/tests/test_alerte_incident.py), lignes 225 à 228) :
 
@@ -223,9 +243,9 @@ Huit autres incidents ont leur fiche dans [`evidence/C21/`](https://github.com/G
   été faute de requêtes), la chaîne Langfuse ne ferme jamais. L'écart est à trancher.
 - **Exercice et production** ont partagé le même projet Langfuse (INC-006, #130) ; le 23/10, la copie testée est isolée
   sur `rita-copie-sprint5`, vérifié par l'API ([preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/evidence/sprint-5/test-doc-et-repetitions-2026-10-23.md), l. 48). Vaut pour cette copie, pas pour tous les postes.
-- **Aucune routine ne relit les issues `incident`** : le 05/11, #77 (depuis le 04/10) et #132 (vigie, copie locale,
+- **Aucune routine ne relit les issues `incident`** : le 07/11, #77 (depuis le 04/10) et #132 (vigie, copie locale,
   depuis le 23/10) sont encore ouvertes ; #137 l'est restée sept jours.
-- **Le correctif d'INC-009 est sur `main` depuis le 01/11** (`922349d`), tests de non-régression verts. Au 05/11, le
+- **Le correctif d'INC-009 est sur `main` depuis le 01/11** (`922349d`), tests de non-régression verts. Au 07/11, le
   workflow GitHub d'alerte n'a pas tourné depuis le 24/10 : aucun retour à la normale réel observé depuis.
 
 ## 9. Les douze critères {: #criteres }
@@ -238,7 +258,7 @@ Auto-évaluation d'Era au 07/11/2026 ; les limites sont dites dans les lignes et
 | C20.2 Arguments des choix d'outillage | ✅ | § 3 : un argument écrit pour chaque outil |
 | C20.3 Outils installés, opérationnels en local a minima | ✅ | § 5 et 6 ; exercices locaux, production |
 | C20.4 Journalisation intégrée aux sources | ✅ | § 4 ; `compteurs.py`, [`api/main.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/api/main.py) |
-| C20.5 Alertes configurées et en état de marche | ✅ | § 5 et 6 : vigie planifiée (07/11), #230 ; limites § 8 |
+| C20.5 Alertes configurées et en état de marche | ✅ | § 5 et 6 : vigie planifiée, #230 ; limites § 8 |
 | C20.6 Installation et configuration documentées | ✅ | § 5, dont GitHub CLI |
 | C20.7 Documentation communiquée dans un format accessible | ✅ | guide d'exploitation, format contrôlé le 31/10, envoyé le 03/11, réception confirmée le 04/11 ([`evidence/C8/`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v4/evidence/C8)) |
 | C21.1 Causes identifiées | ✅ | § 7, post-mortem INC-009 |
