@@ -135,3 +135,37 @@ def test_un_conseil_sans_majuscule_ou_autrement_dit_est_refuse(texte):
 def test_un_fait_dans_une_tournure_de_conseil_n_est_pas_refuse(texte):
     verdict = verifier_sortie(texte)
     assert verdict["conforme"], verdict["motifs_detectes"]
+
+
+# --- Revue de sécurité automatique du commit 757c3bb : décision d'Era, LISTE FERMÉE (07/11) ----------------------------
+# Après trois réécritures, chaque revue trouvait de nouvelles tournures qui passaient (« le meilleur moment de vendre
+# LVMH », « renforcer un peu LVMH », « acheter de l'or ») : une liste ouverte d'objets de fait a toujours des trous.
+# Décision d'Era : dans une tournure de conseil, TOUJOURS refuser, sauf une liste fermée d'objets de fait, tirée des
+# faits de ces tests. C'est le choix « fail-closed » déjà écrit dans guardrails/sortie.py.
+CONSEILS_TOURNURES_OUVERTES = [
+    "C'est le meilleur moment de vendre LVMH.",
+    "Le moment de céder Kering approche.",
+    "C'est le bon moment d'acheter Kering.",
+    "C'est le moment de renforcer un peu LVMH.",
+    "Il est temps de vendre une partie de vos LVMH.",
+    "Mieux vaut éviter le secteur du luxe.",
+    "C'est le moment d'acheter de l'or.",
+    "Il est temps d'alléger davantage le groupe.",
+    "C'est le moment de renforcer la coopération, puis d'acheter LVMH.",
+]
+
+# Le coût du choix, écrit en test pour rester visible : un fait dont l'objet n'est pas dans la liste est refusé.
+FAITS_HORS_LISTE_REFUSES_PAR_CHOIX = [
+    "Au moment de céder ses parts, le fonds a publié un communiqué.",
+    "Pour la direction, c'est le moment de renforcer la sécurité informatique.",
+]
+
+
+@pytest.mark.parametrize("texte", CONSEILS_TOURNURES_OUVERTES)
+def test_une_tournure_de_conseil_hors_liste_fermee_est_refusee(texte):
+    assert not verifier_sortie(texte)["conforme"]
+
+
+@pytest.mark.parametrize("texte", FAITS_HORS_LISTE_REFUSES_PAR_CHOIX)
+def test_un_fait_hors_liste_fermee_est_refuse_par_choix(texte):
+    assert not verifier_sortie(texte)["conforme"]

@@ -53,27 +53,32 @@ _COMPILES = [(re.compile(m, re.IGNORECASE), nom) for m, nom in MOTIFS_AMF]
 # titre », « le groupe a profité de la baisse » restent des faits. Jeu tenu à l'écart : `evals/cas_s9_reserves_sortie.py`,
 # commité avant ces règles et mesuré sans en lire les textes.
 # Double contrôle du 07/11 (autre agent) : des faits étaient refusés (« la banque cherche à renforcer ses fonds propres »,
-# « un rendez-vous à ne pas manquer »). Deux revues de sécurité automatiques ont ensuite trouvé l'excès inverse : exiger
-# « le titre », puis une majuscule, laissait passer « C'est le moment de renforcer LVMH », « lvmh », « Éramet ».
-# D'où deux régimes :
-# - les TOURNURES DE CONSEIL (« c'est le moment de vendre X », « il est temps de sortir de X », « mieux vaut éviter X »)
-#   sont bloquées par défaut ; elles passent seulement si l'objet est un nom commun introduit par un déterminant, hors
-#   vocabulaire d'investissement (`_OBJET_DE_FAIT` : « la coopération », « sa dette », « de la dépendance ») ;
+# « un rendez-vous à ne pas manquer »). Les revues de sécurité automatiques des trois réécritures suivantes ont chaque
+# fois trouvé l'excès inverse : « C'est le moment de renforcer LVMH », puis « lvmh », « Éramet », puis « le meilleur
+# moment de vendre LVMH », « acheter de l'or ». Une liste OUVERTE d'objets de fait a toujours des trous. Décision d'Era
+# (07/11), qui suit le choix « fail-closed » de ce module :
+# - dans une TOURNURE DE CONSEIL (« moment de / temps de » + acheter, vendre, renforcer, alléger, sortir, céder... ;
+#   « mieux vaut » + éviter, vendre... ; « difficile de rester à l'écart »), le texte est TOUJOURS refusé, sauf si
+#   l'objet est dans la liste FERMÉE `_OBJETS_DE_FAIT` et qu'aucun verbe ni nom d'investissement ne le suit dans la
+#   phrase. Coût, accepté et testé : un fait dont l'objet n'est pas dans la liste est refusé ;
 # - les autres familles exigent un contexte d'investissement (un lecteur, un investisseur, un titre, une société nommée).
 # Cas : `tests/test_sortie_amf_contexte.py`, écrits avant chaque réécriture.
-_TITRE = r"(le|la|ce|cette|l['’])\s*(titre|valeur|action|dossier)"
 _SOCIETE = r"(?-i:[A-ZÀ-ÖØ-Þ][\w&'’.-]*)"  # une majuscule, accentuée comprise, lue en respectant la casse
 _NOMS_D_INVESTISSEMENT = (r"(titres?|valeurs?|actions?|dossiers?|positions?|lignes?|expositions?|b[ée]n[ée]fices|"
-                          r"participations?|parts?|portefeuilles?)")
-_MINUSCULE = r"(?-i:[a-zàâäçéèêëîïôöùûüÿœæ])"
-# Un déterminant entier suivi d'une espace (« sa dette ») ou élidé (« l'euro ») : jamais collé au mot, sinon « Sanofi »
-# se lirait « sa » + « nofi », et « les positions » « le » + « s positions ».
-_OBJET_DE_FAIT = (r"(\w+ment\s+)?((sur|dans|de|[àa]|en)\s+)?((la|le|les|du|des|sa|ses|son|leur|leurs|un|une|ce|cet|"
-                  rf"cette|ces)\s+|[ld]['’]\s*)(?!{_NOMS_D_INVESTISSEMENT}\b){_MINUSCULE}")
-_SAUF_FAIT = rf"(?!\s+{_OBJET_DE_FAIT})"
-_LE_MOMENT = r"(\b(c['’]est|est\s+venu|voici)\s+le\s+moment|\ble\s+moment\s+est\s+venu|\b(il\s+est\s+)?(grand\s+)?temps)"
+                          r"participations?|parts?|portefeuilles?|secteurs?)")
 _VERBES_D_ACHAT = r"(se\s+positionner|se\s+placer|entrer|renforcer|acheter|accumuler)"
 _VERBES_DE_VENTE = r"(vendre|all[ée]ger|sortir|c[ée]der)"
+# La liste fermée : chaque objet vient d'un fait des tests ; en ajouter un se fait par un test d'abord.
+_OBJETS_DE_FAIT = (
+    r"(la|sa|leur)\s+coop[ée]ration|la\s+gouvernance|(la|sa|leur)\s+dette(\s+publique)?"
+    r"|(la|sa|leur)\s+politique(\s+mon[ée]taire)?|(sa|ses|leur|leurs)\s+filiales?(\s+am[ée]ricaines?)?"
+    r"|(ses|leurs)\s+actifs(\s+non\s+strat[ée]giques)?|de\s+(la|sa|leur)\s+d[ée]pendance|du\s+nucl[ée]aire"
+    r"|de\s+la\s+(crise|r[ée]cession)|un\s+bien(\s+immobilier)?|les\s+g[ée]n[ée]ralisations"
+    r"|des\s+tensions(\s+commerciales)?|sur\s+le\s+march[ée]\s+(chinois|europ[ée]en|am[ée]ricain|asiatique|int[ée]rieur)"
+)
+_SUITE_DE_CONSEIL = rf"[^.;!?]{{0,80}}?\b({_VERBES_D_ACHAT}|{_VERBES_DE_VENTE}|{_NOMS_D_INVESTISSEMENT})\b"
+_SAUF_FAIT = rf"(?!\s+({_OBJETS_DE_FAIT})\b(?!{_SUITE_DE_CONSEIL}))"
+_LE_MOMENT = r"(\ble\s+moment\s+est\s+venu|\bmoment|\btemps)"
 _ECART = r"(se\s+tenir|rester)\s+[àa]\s+l['’][ée]cart"
 _VERBE_D_ENTREPRISE = (r"s['’](implanter|[ée]tendre|agrandir)|se\s+(d[ée]velopper|diversifier|d[ée]sendetter|redresser|"
                        r"restructurer)|le\s+groupe|la\s+soci[ée]t[ée]|l['’]entreprise|la\s+direction")
@@ -83,7 +88,7 @@ FAMILLES_AMF = [
      r"|\b(int[ée]grer|figurer\s+dans)\s+(un|votre|vos|tout|chaque)\s+portefeuilles?"
      r"|\b(ajouter|placer)\s+[^.;]{0,30}?\b(dans|[àa])\s+(un|votre|tout|chaque)\s+portefeuille"
      r"|\bdeserves?\s+a\s+place\s+in", "place_en_portefeuille"),
-    # un point d'entrée qualifié, ou le moment d'acheter (tournure de conseil, bloquée par défaut)
+    # un point d'entrée qualifié, ou le moment d'acheter (tournure de conseil, liste fermée)
     (r"\b(bon|meilleur|excellent|attracti\w*|int[ée]ressant|id[ée]al|offre)\s+(un\s+)?point\s+d['’]entr[ée]e"
      r"|point\s+d['’]entr[ée]e\s+(para[iî]t|semble|est)\s+(attracti\w*|int[ée]ressant|id[ée]al)"
      rf"|{_LE_MOMENT}\s+(de\s+|d['’]){_VERBES_D_ACHAT}\b{_SAUF_FAIT}"
@@ -94,10 +99,10 @@ FAMILLES_AMF = [
      r"|\b(titre|valeur)s?\b[^.;]{0,40}?\b[àa]\s+ne\s+pas\s+(manquer|laisser\s+passer|rater)"
      r"|\b(investisseurs?|actionnaires?|[ée]pargnants?|lecteurs?|vous)\s+(aurai(en)?t|auriez)\s+tort\s+de\s+ne\s+pas"
      r"|\b(worth|time\s+for)\s+(adding|buying|owning)", "occasion_a_saisir"),
-    # la vente ou l'abstention présentées comme une évidence (tournures de conseil, bloquées par défaut)
+    # la vente ou l'abstention présentées comme une évidence (tournures de conseil, liste fermée)
     (r"\b(temps|moment)\s+de\s+prendre\s+(ses|vos|des)\s+b[ée]n[ée]fices"
      rf"|{_LE_MOMENT}\s+(de\s+|d['’]){_VERBES_DE_VENTE}\b{_SAUF_FAIT}"
-     rf"|\bmieux\s+vaut\s+({_ECART}|[ée]viter|vendre|sortir|acheter|all[ée]ger|c[ée]der)\b{_SAUF_FAIT}"
+     rf"|\bmieux\s+vaut\s+({_ECART}|[ée]viter|vendre|sortir|acheter|all[ée]ger|c[ée]der|renforcer)\b{_SAUF_FAIT}"
      r"|\b(rester|se\s+tenir)\s+[àa]\s+l['’][ée]cart\s+(du|de\s+ce|de\s+la)\s+(titre|valeur|dossier|action)", "sortie_evidente"),
     # une consigne de marché sur un titre ou une société nommée, ou l'abstention présentée comme intenable
     (r"\b(titre|valeur)s?\b[^.;]{0,40}?\b[àa]\s+(accumuler|all[ée]ger|renforcer)\b"
