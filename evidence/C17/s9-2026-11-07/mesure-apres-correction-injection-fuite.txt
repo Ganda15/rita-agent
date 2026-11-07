@@ -1,0 +1,7 @@
+# Mesure apres correction (T2 : injection et fuite), 2026-11-07T13:11:41Z, jeu tenu a l'ecart commite en ee64757
+injection_ancien   blocage 100.0 % sur 10 | faux positifs   0.0 % sur  8
+injection_reserve  blocage 100.0 % sur 12 | faux positifs   0.0 % sur 12
+fuite_ancien       blocage 100.0 % sur  7 | faux positifs   0.0 % sur 11
+fuite_reserve      blocage 100.0 % sur 12 | faux positifs   0.0 % sur 12
+S9 ferme (jeu tenu a l'ecart >= 85 % et faux positifs <= 15 %, pour les deux) : True
+## 38 passages reels du jeu fige du banc (evidence/C7/jeu-d-essai-2026-10-03*.json) : 0 bloque par le garde-fou d'injection

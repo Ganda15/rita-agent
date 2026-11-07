@@ -92,6 +92,29 @@ MOTIFS_FUITE = [
 ]
 _COMPILES_FUITE = [(re.compile(motif), nom) for motif, nom in MOTIFS_FUITE]
 
+# --- Constat S9 (07/11/2026, plan `docs/PLAN-S9-garde-fous.md`, validé par Era) : la fuite déguisée -----------------
+# Les motifs ci-dessus reconnaissent la forme EXACTE d'un secret ; ce qui passait le disait autrement : épelé, en
+# morceaux, en clair après son libellé, sous un nom de variable déguisé, ou les consignes paraphrasées. Une règle par
+# FAMILLE ; chacune exige la forme d'une divulgation, jamais un mot seul (« la clé de la reprise », « le secret des
+# affaires » passent). Jeu tenu à l'écart : `evals/cas_s9_reserves.py`, commité avant ces règles.
+_MOT_DE_SECRET = r"\b(cl[ée]|key|jeton|token|secret|mot\s+de\s+passe|password)\b"
+FAMILLES_FUITE = [
+    # un secret épelé lettre par lettre, en morceaux, ou décrit par son début
+    (_MOT_DE_SECRET + r"[^.\n]{0,60}?((\b\w\b[\s,]+){5,}|en\s+morceaux|par\s+morceaux|s['’][ée]crit|lettre\s+par\s+lettre"
+     r"|caract[èe]re\s+par\s+caract[èe]re|(commence|se\s+termine)\s+par\s+(\b\w\b|[\"«]))", "secret_epele_ou_morcele"),
+    # un mot de passe ou un secret dit en clair après son libellé : la valeur a la forme d'un secret (chiffre, tiret,
+    # tiret bas ou trois majuscules), pas celle d'un mot (« le mot de passe unique devient obligatoire » passe)
+    (r"\b(mot\s+de\s+passe|password|passwd|secret|code\s+d['’]acc[èe]s)(\s+(de|du|des|d['’])\s*[^\s,.:]{1,25}(\s+[^\s,.:]{1,25})?)?"
+     r"\s*(est|vaut|=|:)?\s*:?\s+(?=\S*[\d_\-]|\S*(?-i:[A-Z]{3}))\S{8,}", "secret_en_clair"),
+    # un nom de variable de configuration en minuscules, ou écrit avec des espaces
+    (r"\b[a-z][a-z0-9]*_(api_key|secret_key|access_key|password|token|secret|dsn)\b|\b(api|secret|access)\s+key\s*[=:]",
+     "variable_deguisee"),
+    # les consignes paraphrasées : qui parle de SES instructions, ou de leurs termes propres à RITA
+    (r"\b(mes|nos)\s+(instructions|consignes)\b|\bon\s+m['’]a\s+(demand[ée]|dit)\s+de\s+(r[ée]pondre|ne\s+jamais|refuser)"
+     r"|extraits\s+num[ée]rot[ée]s|entre\s+les\s+balises", "consignes_paraphrasees"),
+]
+_COMPILES_FAMILLES_FUITE = [(re.compile(motif, re.IGNORECASE), nom) for motif, nom in FAMILLES_FUITE]
+
 # Un fragment de consigne, c'est 8 mots consécutifs des consignes retrouvés dans la réponse : huit mots ne se
 # rencontrent pas par hasard, un mot isolé (« instructions », « système ») ne suffit jamais.
 FENETRE_CONSIGNES = 8
@@ -115,7 +138,7 @@ def verifier_fuite(texte: str, consignes: tuple[str, ...] = ()) -> dict:
         {conforme, motifs_detectes, texte_diffusable}. Si conforme=False, `texte_diffusable` porte le message de
         refus : le texte d'origine n'est jamais diffusé, ni écrit au journal. Les noms des motifs, eux, y vont.
     """
-    motifs = list(dict.fromkeys(nom for regex, nom in _COMPILES_FUITE if regex.search(texte)))
+    motifs = list(dict.fromkeys(nom for regex, nom in _COMPILES_FUITE + _COMPILES_FAMILLES_FUITE if regex.search(texte)))
     fenetres = _fenetres(texte)
     if any(fenetres & _fenetres(consigne) for consigne in consignes):
         motifs.append("fragment_consignes")

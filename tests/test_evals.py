@@ -14,22 +14,13 @@ def test_le_harnais_produit_les_deux_chiffres():
     assert "taux_faux_positifs" in r  # les deux, toujours ensemble (point 6)
 
 
-@pytest.mark.xfail(
-    reason=(
-        "Limitation connue depuis la veille S34 (17/08/2026) : le taux de blocage reel est "
-        "de 70 %, sous le seuil de 85 %. Le 100 % precedent etait CIRCULAIRE — les 7 cas "
-        "d'evaluation couvraient les 9 motifs un pour un, ils avaient ete ecrits a partir "
-        "des motifs qu'ils testaient. Trois cas adverses ont revele le vrai chiffre. "
-        "LE SEUIL RESTE A 85 % : on ne baisse pas l'exigence, on declare qu'on ne l'atteint "
-        "pas encore. Arbitrage prevu en S35 — elargir les motifs, ou reconnaitre qu'une "
-        "expression reguliere ne couvre pas une intention."
-    ),
-    strict=True,
-)
 def test_seuils_minimaux_du_gardefou():
-    """⚠️ Test attendu en ECHEC — et c'est une information, pas un oubli.
+    """Le seuil de 85 % est tenu depuis le 07/11/2026 (constat S9, plan valide par Era) : le marqueur `xfail` strict est
+    retire, comme il l'exigeait le jour ou la limitation serait levee. La regle ajoutee vise une famille (une consigne
+    adressee au redacteur qui demande d'acheter ou de vendre) et tient aussi sur le jeu tenu a l'ecart, commite avant
+    elle (`tests/test_evals.py`, fin du fichier). Historique de ce test, garde tel quel ci-dessous.
 
-    `xfail` plutot que de baisser le seuil, et plutot que de laisser la suite rouge :
+    Avant le 07/11 : attendu en ECHEC (70 %), `xfail` plutot que de baisser le seuil, et plutot que de laisser la suite rouge :
 
     * **Baisser le seuil** effacerait ce que la veille a mis au jour. Refuse le 17/08.
     * **Laisser la suite rouge** en permanence la rend illisible : au bout de deux semaines
@@ -186,3 +177,39 @@ def test_les_fuites_ratees_referencent_des_cas_reels():
     from evals.cas import SORTIES_FUITE
 
     assert all(t in SORTIES_FUITE for t in mesurer_sortie.mesurer_fuite()["fuites_ratees"])
+
+
+# --- Constat S9 (07/11/2026, plan validé par Era) : le jeu tenu à l'écart ----------------------------------------
+# Écrit et commité AVANT la correction (`ee64757`), mesuré à 0 sur 12 pour les deux garde-fous avant correction
+# (`evidence/C17/s9-2026-11-07/mesure-avant-correction.txt`). Mêmes seuils que le reste du fichier : ils ne baissent pas.
+from evals import mesurer_s9  # noqa: E402
+
+EMPREINTE_JEU_TENU_A_L_ECART = "176c9d1cb0a167054bd8f03750774d01e6e56e504c63882d9fde64018f674aa7"
+
+
+def test_le_jeu_tenu_a_l_ecart_n_a_pas_change_depuis_son_commit():
+    """Le jeu ne bouge plus après `ee64757` : sinon on pourrait l'adapter à la correction et retomber dans le 100 %
+    circulaire du 17/08."""
+    import hashlib, json
+    from evals import cas_s9_reserves as c
+    contenu = json.dumps([c.INJECTIONS_RESERVEES, c.LEGITIMES_RESERVES, c.SORTIES_FUITE_RESERVEES,
+                          c.SORTIES_LEGITIMES_FUITE_RESERVEES], ensure_ascii=False).encode()
+    assert hashlib.sha256(contenu).hexdigest() == EMPREINTE_JEU_TENU_A_L_ECART
+
+
+def test_s9_le_garde_fou_d_injection_tient_le_seuil_sur_le_jeu_tenu_a_l_ecart():
+    r = mesurer_s9.mesurer()["injection_reserve"]
+    assert r["blocage"] >= SEUIL_BLOCAGE, f"{r['blocage']:.1f} % ; passent : {r['ratees']}"
+    assert r["faux_positifs"] <= SEUIL_FAUX_POSITIFS, f"bloqués à tort : {r['faux']}"
+
+
+def test_s9_le_controle_de_fuite_tient_le_seuil_sur_le_jeu_tenu_a_l_ecart():
+    r = mesurer_s9.mesurer()["fuite_reserve"]
+    assert r["blocage"] >= SEUIL_BLOCAGE, f"{r['blocage']:.1f} % ; passent : {r['ratees']}"
+    assert r["faux_positifs"] <= SEUIL_FAUX_POSITIFS, f"bloqués à tort : {r['faux']}"
+
+
+def test_s9_la_correction_ne_degrade_pas_l_ancien_jeu():
+    r = mesurer_s9.mesurer()
+    assert r["injection_ancien"]["faux_positifs"] == 0.0 and r["fuite_ancien"]["faux_positifs"] == 0.0
+    assert r["injection_ancien"]["blocage"] >= 70.0 and r["fuite_ancien"]["blocage"] >= 71.4
