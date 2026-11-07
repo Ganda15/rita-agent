@@ -513,17 +513,18 @@ documentation `/docs` reste publique, par décision motivée du 06/11 (D7).
 Le 03/10, j'ai relu le code contre l'**OWASP Top 10** (édition 2025), la liste de référence des risques des
 applications web. Dix constats, S1 à S10 ([`evidence/C17/revue-owasp-top10-2025-2026-10-03.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C17/revue-owasp-top10-2025-2026-10-03.md)) :
 
-| Constat | État au 30/10 |
+| Constat | État au 07/11 |
 |---|---|
 | S4 : refus d'authentification non journalisés | corrigé ([`api/main.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/api/main.py), ligne 206) |
 | S5 : ticker sans longueur maximale | corrigé : 20 caractères au plus (ligne 281) |
 | S3 : aucune limite de débit | en partie : limite partagée sur `/briefing` et `/question` ; les essais de clé ne sont pas freinés |
 | S7 : chaîne d'approvisionnement | en partie : recherche de secrets sur tout l'historique (`gitleaks`), machine de CI fixée ; dépendances de développement libres |
 | S10 : certificat proche de l'expiration | renouvelé seul le 19/10, valable jusqu'au 17/01/2027 ([`ETAT.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/ETAT.md)) |
-| S1 : aucun en-tête de sécurité | constaté en production le 03/10 ; aucun ajout dans le dépôt depuis ; la configuration actuelle du proxy n'a pas été revérifiée |
+| S1 : aucun en-tête de sécurité | **corrigé** (#210) et mesuré en production le 07/11 sur les cinq écrans : politique de contenu, HSTS, `nosniff`, `X-Frame-Options`, `Referrer-Policy`, `Server` retiré ; reste `Via`, ajouté par Caddy |
 | S2 : `/docs` public | décidé le 06/11 (D7) : public, motivé ; ni secret ni donnée dans le contrat |
 | S6 : panne de tous les fournisseurs | ouvert pour `/briefing` ; **corrigé le 04/11** : 503 `AUCUN_FOURNISSEUR`, [testé](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/tests/test_briefing_diagnostic.py) ; `/question` renvoie déjà 503 ([`api/question.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/api/question.py)) |
-| S8 : mots de passe par défaut | ouvert : le fichier Compose concerné est aussi utilisé en production ([`deploy/deployer.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/deploy/deployer.py)), ce qui ne prouve pas que ces valeurs y servent |
+| S8 : mots de passe par défaut | **corrigé** (#215) : plus de valeur de secours ; le serveur a sa propre valeur (vérifié par Era sans l'afficher) ; base de développement sur `127.0.0.1` |
+| Constat du 07/11 : le port de l'API répondait en clair depuis Internet | **corrigé** (#218) : port lié à `127.0.0.1` ; plus de réponse depuis l'extérieur, mesuré après la livraison du 07/11 |
 | S9 : garde-fous sous le seuil de 85 % | ouvert : déclaré en échec attendu dans les tests, le seuil n'est pas baissé |
 
 Les suivis sont séparés : la carte #75 pour le durcissement, #23 pour l'épinglage, la décision D7 pour S2, et la
@@ -538,7 +539,9 @@ porte des évaluations pour S9.
 | Poids sans, avec #74 (Ko) | 87,3 ; 36,2 | 147,5 ; 44,9 | 77,2 ; 27,0 | 44,0 ; 20,1 | 67,7 ; 29,5 |
 | EcoIndex sans, avec | A 86 ; A 86 | D 52 ; D 53 | A 88 ; A 88 | A 92 ; A 92 | A 91 ; A 92 |
 
-La note bouge à peine : la méthode compte surtout les éléments de la page (Indicateurs : 1 625). **#74 non déployée au 06/11.**
+La note bouge à peine : la méthode compte surtout les éléments de la page (Indicateurs : 1 625). **#74 en production
+depuis le 07/11** : `Content-Encoding: gzip` mesuré sur les cinq écrans du site réel à 2 h UTC
+(`evidence/C17/verification-production-2026-11-07/`).
 
 ### 4.8 Les tests (critère 9)
 

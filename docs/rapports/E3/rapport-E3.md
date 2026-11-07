@@ -130,8 +130,8 @@ Le top 10 OWASP des API (2023) et celui des applications de modèles de langage 
 | API5, fonction réservée accessible | les routes d'exercice exigent une clé distincte, `X-Cle-Exercice`, et répondent 403 sans elle ou avec une mauvaise clé (503 si le serveur n'en a pas) | appliqué |
 | API6, flux métier sensible sans limite | l'appel au modèle coûte : la limite de 10 appels par minute (API4) couvre les deux routes du modèle | à consolider, comme API4 |
 | API7, requête vers une adresse fournie (SSRF) | aucune route ne télécharge une adresse reçue ; les sources sont fixées dans le code de collecte | sans objet, avec sa raison |
-| API8, mauvaise configuration | conteneur non-root (UID 10001), système de fichiers en lecture seule, `no-new-privileges`, aucun port de base publié ; **mais aucun en-tête de sécurité en production**, et `Server` et `Via` annoncés (mesuré le 24 octobre, 14 h 54 UTC) | **à consolider** |
-| API9, inventaire des routes | contrat OpenAPI 3.1 généré depuis le code ; mais sa version déclarée n'a pas suivi les routes ajoutées (3.5) | à consolider |
+| API8, mauvaise configuration | conteneur non-root (UID 10001), système de fichiers en lecture seule, `no-new-privileges`, aucun port de base publié ; le 24 octobre, aucun en-tête de sécurité en production. Depuis le 7 novembre, mesuré à 2 h UTC sur les cinq écrans : politique de contenu, HSTS, `nosniff`, `X-Frame-Options`, `Referrer-Policy`, `Server` retiré ; le port de l'API, qui répondait en clair depuis Internet, n'écoute plus que la machine (`evidence/C17/verification-production-2026-11-07/`). Reste `Via`, ajouté par Caddy | appliqué, `Via` à retirer |
+| API9, inventaire des routes | contrat OpenAPI 3.1 généré depuis le code ; version déclarée 1.2.0 depuis le 7 novembre, avec ce que chaque version ajoute, et un test qui échoue si une route servie n'est pas décrite (`tests/test_contrat_version.py`) ; vérifié en production (`/openapi.json`) | appliqué |
 | API10, consommation non sûre d'API tierces | réponse du modèle vérifiée : JSON imposé et validé pour `/question`, garde-fou de sortie pour le briefing ; articles collectés neutralisés contre l'injection | appliqué, limites mesurées (section 6) |
 | A05:2025 (OWASP web), injection | l'interface n'utilise jamais `innerHTML` ; tout texte passe par `textContent` | appliqué |
 | LLM01:2025, injection de prompt | garde-fous de la question et des articles, mesurés ; scan Giskard du 20 septembre | appliqué, limites mesurées (section 6) |
@@ -145,7 +145,7 @@ Les sources sont sur GitHub, `Ganda15/rita-agent` : `develop` pour le travail, `
 
 ### 3.5 Ce qui manque, C9
 
-- Le contrat n'est pas versionné dans l'adresse (`/v1`), et sa version déclarée (`1.1.0`, du 1er août) n'a pas suivi l'ajout de `/question`, `/sante` et `/exercice`.
+- Le contrat n'est pas versionné dans l'adresse (`/v1`). Sa version déclarée (`1.1.0`, du 1er août) n'avait pas suivi l'ajout de `/question`, `/sante` et `/exercice` : 1.2.0 depuis le 7 novembre (3.3).
 - Un briefing dont le graphe échoue répond 502 ; une panne de tous les fournisseurs, 500 générique, sans fuite (carte #75).
 - Le format des erreurs n'est pas celui de la RFC 9457 (format JSON normalisé des erreurs).
 - Aucun en-tête de sécurité en production ; la limite de débit n'est ni par adresse ni par clé.

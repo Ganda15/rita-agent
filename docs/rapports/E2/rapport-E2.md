@@ -87,7 +87,7 @@ h2#glossaire ~ table td{ padding:2pt 6pt 2pt 0; line-height:1.3; font-size:9pt; 
 
 # Rapport E2 : veille, choix d'un service de modèle, et son paramétrage
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 1.3, 6 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 1.4, 7 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
 {: .identite }
 
 > **En une minute.** RITA rédige des briefings boursiers et répond à des questions sur les articles collectés. Elle
@@ -505,7 +505,7 @@ n'appelle qu'Azure, sans repli (registre RGPD, T8).
 <p class="ligne prouve"><b>Ce qui est prouvé</b> : zone de données UE, ressource en Suède, aucun repli hors de l'Union (4.1) ; les requêtes ne servent pas à entraîner les modèles ; l'échantillon gardé pour la surveillance des abus reste dans la géographie de la ressource, relu par des employés situés dans l'Espace économique européen.</p>
 <p class="ligne ecart"><b>L'écart documenté</b> : Microsoft décrit des sorties rares de sa frontière européenne : l'accès à distance de son personnel, qu'il qualifie lui-même de transfert, les opérations de sécurité, l'acheminement réseau.</p>
 <p class="ligne choix"><b>La décision</b> (06/11, registre § 0) : la règle est précisée. Services configurés dans leurs régions de l'UE ; plus de promesse d'absence absolue de transfert ; pour chaque sous-traitant, exceptions identifiées, garanties vérifiées, données limitées. Vérifié : DPA de Microsoft du 01/11/2026 (clauses types de 2021), Microsoft Corporation active au Data Privacy Framework sur la liste officielle (<code>evidence/C8/regle-ue-2026-11-06/README.md</code>).</p>
-<p class="ligne evaluation"><b>L'évaluation</b> : la décision ne rend pas le critère vert ; C8.2 reste à consolider tant que la consigne de l'écran Question (n'y écrire aucune donnée personnelle) n'est pas en production (5).</p>
+<p class="ligne evaluation"><b>L'évaluation</b> : la décision ne rendait pas le critère vert ; C8.2 restait à consolider tant que la consigne de l'écran Question (n'y écrire aucune donnée personnelle) n'était pas en production. Elle l'est depuis la livraison du 07/11, reliée au champ de la question, vérifiée sur le site réel (<code>evidence/C17/verification-production-2026-11-07/</code>) : C8.2 est tenu (5).</p>
 </div>
 
 <div class="encadre limite">
@@ -606,14 +606,14 @@ preuve · 🟡 à consolider : le point qui manque est écrit · ❌ aucune preu
 <tr><td>C7.7 conclusions</td><td class="etat ok">✅</td><td>service retenu et services écartés, avec avantages et limites (3.6)</td></tr>
 <tr class="groupe c8"><th colspan="3" scope="colgroup">C8 · le service retenu, paramétré, surveillé, documenté</th></tr>
 <tr><td>C8.1 service accessible, avec authentification</td><td class="etat ok">✅</td><td>accès par clé, adresse cliquable, connexion à clé masquée ; briefing et trace du 06/11, reliés par la même référence (4.1, annexe A6)</td></tr>
-<tr><td>C8.2 configuré selon les besoins et les contraintes</td><td class="etat alerte">🟡</td><td><b>fait</b> : prompt corrigé, Azure seul, zone UE, ressource en Suède (4.2) ; <b>à consolider</b> : règle UE précisée et vérifiée le 06/11 ; la consigne de l'écran Question, écrite, n'est pas encore en production (4.2)</td></tr>
+<tr><td>C8.2 configuré selon les besoins et les contraintes</td><td class="etat ok">✅</td><td><b>fait</b> : prompt corrigé, Azure seul, zone UE, ressource en Suède (4.2) ; règle UE précisée et vérifiée le 06/11 ; consigne de l'écran Question en production depuis le 07/11, vérifiée sur le site réel (4.2)</td></tr>
 <tr><td>C8.3 monitorage opérationnel</td><td class="etat ok">✅</td><td>traces reliées au briefing, alertes, vigie, supervision d'Azure (4.4)</td></tr>
 <tr><td>C8.4 documentation complète</td><td class="etat ok">✅</td><td>guide d'exploitation, testé contre le code (4.5)</td></tr>
 <tr><td>C8.5 documentation communiquée, format accessible</td><td class="etat ok">✅</td><td>guide envoyé au formateur le 03/11, format contrôlé (4.6)</td></tr>
 </tbody>
 </table>
 
-**Décompte** : 19 ✅ · 1 🟡 · 0 ❌ sur 20. Décision d'Era.
+**Décompte** : 20 ✅ · 0 🟡 · 0 ❌ sur 20. Décision d'Era.
 
 ---
 
@@ -626,8 +626,7 @@ formateur (exemple de veille complet, preuves visibles, repères des critères, 
 **Ensuite.**
 
 1. **Reprendre la veille** (C6) : relevés et notes des semaines suivantes, un échange collectif documenté.
-2. **La contrainte UE** (C8.2) : déployer la consigne de l'écran Question, puis réévaluer C8.2 ; connaître la durée
-   de conservation de l'échantillon des abus.
+2. **La contrainte UE** (C8.2) : connaître la durée de conservation de l'échantillon des abus (registre, point 12).
 3. **Mistral** (C7, C8) : lire son contrat et mesurer Azure contre Mistral Large 4 sur le banc ; alors seulement,
    reprendre la PR #88 et passer à `LLM_ORDRE=foundry,mistral`.
 

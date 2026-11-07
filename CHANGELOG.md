@@ -9,6 +9,26 @@
 
 ---
 
+## 2026-11-07, 3 h UTC : livraison en production de `develop` (#221) ; port en clair et collecte non planifiée découverts
+
+**Livré.** `main` à `a68f2cf` le 07/11 à 1 h 54 UTC : en-têtes de sécurité, compression, rôle `rita_api`, mots de passe
+sans valeur de secours, port de l'API lié à la machine, contrat 1.2.0, frein des essais de clé, consigne de l'écran
+Question. Vérifié sur le site réel à 2 h UTC (`evidence/C17/verification-production-2026-11-07/`).
+
+**Décisions.**
+- S3, option A (par adresse), validée par Era.
+- La fusion de `develop` dans `main` a été faite sans le double contrôle par un autre agent prévu le 06/11. Choix
+  d'Era, après la revue automatique de Claude, sans problème trouvé ; Codex était en échec, limite d'usage.
+
+**Manques découverts.**
+- Le port 8001 répondait en clair depuis Internet (corrigé par #218, vérifié après la livraison).
+- L'étape du serveur de #76 n'avait pas la réinstallation du fichier Compose, sans laquelle la livraison aurait été
+  refusée (ajoutée au guide).
+- Le premier mot de passe de `rita_api` s'est affiché dans le terminal (remplacé).
+- Aucune collecte planifiée en production : les données s'arrêtaient au 04/11.
+
+---
+
 ## 2026-11-07, nuit : E3 v2.3 et E4 v1.7, pour `livrable-E3-v5` et `livrable-E4-v6` ; quatre corrections de sécurité dans `develop`
 
 **Livrables.** E3 v2.3 (38 ✅ · 1 🟡) : #152 prouvé par le job `base` de `main`, #73 vérifié à la main en production avec

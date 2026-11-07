@@ -1,0 +1,63 @@
+mesure du 2026-11-07T02:00:54Z
+== /health ==
+{"status":"ok","project":"RITA","commit":"a68f2cf82fc43344d8e06e75e96595d70e0e6501","construit_le":"2026-11-07T01:54:37Z","index":{"nb_articles":2166,"id_max":2924,"empreinte":"3cc3e8753e220f7dd992e6441ecba607e064a847ad134e5f8785b4bbd8242236","identifiant":"d052e7b6078b428898d95fc1ca50849f","configuration":{"modele":"all-MiniLM-L6-v2","texte":"texte_indexable(titre, resume)","format":1},"construit_le":"2026-11-07T01:59:33+00:00"}}
+== en-têtes des cinq écrans et de la documentation ==
+--- /
+HTTP/1.1 200 OK
+Content-Encoding: gzip
+Content-Security-Policy: default-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+Referrer-Policy: no-referrer
+Strict-Transport-Security: max-age=31536000
+Via: 1.1 Caddy
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+--- /indicateurs.html
+HTTP/1.1 200 OK
+Content-Encoding: gzip
+Content-Security-Policy: default-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+Referrer-Policy: no-referrer
+Strict-Transport-Security: max-age=31536000
+Via: 1.1 Caddy
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+--- /briefing.html
+HTTP/1.1 200 OK
+Content-Encoding: gzip
+Content-Security-Policy: default-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+Referrer-Policy: no-referrer
+Strict-Transport-Security: max-age=31536000
+Via: 1.1 Caddy
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+--- /question.html
+HTTP/1.1 200 OK
+Content-Encoding: gzip
+Content-Security-Policy: default-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+Referrer-Policy: no-referrer
+Strict-Transport-Security: max-age=31536000
+Via: 1.1 Caddy
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+--- /tableau-de-bord.html
+HTTP/1.1 200 OK
+Content-Encoding: gzip
+Content-Security-Policy: default-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+Referrer-Policy: no-referrer
+Strict-Transport-Security: max-age=31536000
+Via: 1.1 Caddy
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+--- /docs
+HTTP/1.1 200 OK
+Content-Encoding: gzip
+Referrer-Policy: no-referrer
+Strict-Transport-Security: max-age=31536000
+Via: 1.1 Caddy
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+== port 8001 de l'extérieur (attendu : 000) ==
+000
+== version du contrat (attendu : 1.2.0) ==
+1.2.0
+== consigne de l'écran Question ==
+1
