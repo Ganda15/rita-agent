@@ -32,7 +32,6 @@ FAITS_FINANCIERS = [
     # point_d_entree
     "Pour la direction, c'est le moment de renforcer la coopération avec ses fournisseurs.",
     "Le point d'entrée du réseau logistique reste le port du Havre.",
-    "Selon le PDG, c'est le moment de se positionner sur le marché chinois.",
     # sortie_evidente
     "Pour le groupe, est venu le moment de vendre ses actifs non stratégiques.",
     "Selon le ministre, il est temps de sortir de la dépendance au gaz russe.",
@@ -122,7 +121,6 @@ FAITS_DANS_UNE_TOURNURE_DE_CONSEIL = [
     "La BCE juge qu'il est temps d'alléger sa politique monétaire.",
     "Selon l'économiste, il est temps de sortir du nucléaire.",
     "Pour l'État actionnaire, c'est le moment de renforcer la gouvernance.",
-    "Le temps de vendre un bien immobilier s'allonge, selon les notaires.",
 ]
 
 
@@ -158,11 +156,34 @@ CONSEILS_TOURNURES_OUVERTES = [
 FAITS_HORS_LISTE_REFUSES_PAR_CHOIX = [
     "Au moment de céder ses parts, le fonds a publié un communiqué.",
     "Pour la direction, c'est le moment de renforcer la sécurité informatique.",
+    # Revue du commit 69b6d29 : un objet admis dépend du verbe, et aucun après un verbe d'achat. Ces deux faits, admis
+    # jusque-là, sont refusés par choix : « se positionner sur un marché » et « vendre un bien » sont des conseils
+    # possibles.
+    "Selon le PDG, c'est le moment de se positionner sur le marché chinois.",
+    "Le temps de vendre un bien immobilier s'allonge, selon les notaires.",
+]
+
+# Revue de sécurité automatique du commit 69b6d29 : l'objet admis dépend du verbe, et la phrase doit s'arrêter après
+# lui (ou finir sur une attribution : « , prévient l'économiste »).
+CONSEILS_DANS_LA_LISTE_FERMEE = [
+    "C'est le moment d'acheter de la dette publique.",
+    "Il est temps de vendre sa dette.",
+    "C'est le moment d'acheter du nucléaire.",
+    "C'est le moment d'acheter un bien immobilier.",
+    "C'est le moment de se positionner sur le marché américain.",
+    "Il est temps de sortir du nucléaire et de miser sur Engie.",
+    "Il est temps d'alléger sa dette, selon nous : achetez.",
+    "C'est le moment de renforcer la gouvernance de LVMH, donc ses positions.",
 ]
 
 
 @pytest.mark.parametrize("texte", CONSEILS_TOURNURES_OUVERTES)
 def test_une_tournure_de_conseil_hors_liste_fermee_est_refusee(texte):
+    assert not verifier_sortie(texte)["conforme"]
+
+
+@pytest.mark.parametrize("texte", CONSEILS_DANS_LA_LISTE_FERMEE)
+def test_un_conseil_avec_un_objet_de_la_liste_fermee_est_refuse(texte):
     assert not verifier_sortie(texte)["conforme"]
 
 

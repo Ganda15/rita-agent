@@ -53,32 +53,46 @@ _COMPILES = [(re.compile(m, re.IGNORECASE), nom) for m, nom in MOTIFS_AMF]
 # titre », « le groupe a profité de la baisse » restent des faits. Jeu tenu à l'écart : `evals/cas_s9_reserves_sortie.py`,
 # commité avant ces règles et mesuré sans en lire les textes.
 # Double contrôle du 07/11 (autre agent) : des faits étaient refusés (« la banque cherche à renforcer ses fonds propres »,
-# « un rendez-vous à ne pas manquer »). Les revues de sécurité automatiques des trois réécritures suivantes ont chaque
-# fois trouvé l'excès inverse : « C'est le moment de renforcer LVMH », puis « lvmh », « Éramet », puis « le meilleur
-# moment de vendre LVMH », « acheter de l'or ». Une liste OUVERTE d'objets de fait a toujours des trous. Décision d'Era
-# (07/11), qui suit le choix « fail-closed » de ce module :
-# - dans une TOURNURE DE CONSEIL (« moment de / temps de » + acheter, vendre, renforcer, alléger, sortir, céder... ;
-#   « mieux vaut » + éviter, vendre... ; « difficile de rester à l'écart »), le texte est TOUJOURS refusé, sauf si
-#   l'objet est dans la liste FERMÉE `_OBJETS_DE_FAIT` et qu'aucun verbe ni nom d'investissement ne le suit dans la
-#   phrase. Coût, accepté et testé : un fait dont l'objet n'est pas dans la liste est refusé ;
+# « un rendez-vous à ne pas manquer »). Les revues de sécurité automatiques des réécritures suivantes ont chaque fois
+# trouvé l'excès inverse : « C'est le moment de renforcer LVMH », puis « lvmh », « Éramet », puis « le meilleur moment
+# de vendre LVMH », « acheter de l'or », puis « acheter de la dette publique ». Une liste OUVERTE d'objets de fait a
+# toujours des trous. Décision d'Era (07/11), qui suit le choix « fail-closed » de ce module :
+# - dans une TOURNURE DE CONSEIL (« moment de / temps de » + un verbe d'achat ou de vente ; « mieux vaut » + éviter,
+#   vendre... ; « difficile de rester à l'écart »), le texte est TOUJOURS refusé, sauf un objet de fait admis POUR CE
+#   VERBE (`_FAITS_APRES_*`), jamais après acheter, accumuler, se positionner, se placer ou entrer, et seulement si la
+#   phrase s'arrête après lui ou finit sur une attribution (« , prévient l'économiste ») sans mot de conseil.
+#   Coût, accepté et testé : un fait hors de ces listes est refusé ;
 # - les autres familles exigent un contexte d'investissement (un lecteur, un investisseur, un titre, une société nommée).
 # Cas : `tests/test_sortie_amf_contexte.py`, écrits avant chaque réécriture.
 _SOCIETE = r"(?-i:[A-ZÀ-ÖØ-Þ][\w&'’.-]*)"  # une majuscule, accentuée comprise, lue en respectant la casse
 _NOMS_D_INVESTISSEMENT = (r"(titres?|valeurs?|actions?|dossiers?|positions?|lignes?|expositions?|b[ée]n[ée]fices|"
                           r"participations?|parts?|portefeuilles?|secteurs?)")
-_VERBES_D_ACHAT = r"(se\s+positionner|se\s+placer|entrer|renforcer|acheter|accumuler)"
-_VERBES_DE_VENTE = r"(vendre|all[ée]ger|sortir|c[ée]der)"
-# La liste fermée : chaque objet vient d'un fait des tests ; en ajouter un se fait par un test d'abord.
-_OBJETS_DE_FAIT = (
-    r"(la|sa|leur)\s+coop[ée]ration|la\s+gouvernance|(la|sa|leur)\s+dette(\s+publique)?"
-    r"|(la|sa|leur)\s+politique(\s+mon[ée]taire)?|(sa|ses|leur|leurs)\s+filiales?(\s+am[ée]ricaines?)?"
-    r"|(ses|leurs)\s+actifs(\s+non\s+strat[ée]giques)?|de\s+(la|sa|leur)\s+d[ée]pendance|du\s+nucl[ée]aire"
-    r"|de\s+la\s+(crise|r[ée]cession)|un\s+bien(\s+immobilier)?|les\s+g[ée]n[ée]ralisations"
-    r"|des\s+tensions(\s+commerciales)?|sur\s+le\s+march[ée]\s+(chinois|europ[ée]en|am[ée]ricain|asiatique|int[ée]rieur)"
-)
-_SUITE_DE_CONSEIL = rf"[^.;!?]{{0,80}}?\b({_VERBES_D_ACHAT}|{_VERBES_DE_VENTE}|{_NOMS_D_INVESTISSEMENT})\b"
-_SAUF_FAIT = rf"(?!\s+({_OBJETS_DE_FAIT})\b(?!{_SUITE_DE_CONSEIL}))"
-_LE_MOMENT = r"(\ble\s+moment\s+est\s+venu|\bmoment|\btemps)"
+_MOTS_DE_CONSEIL = (r"(acheter|achetez|achat|vendre|vendez|vente|renforcer|renforcez|all[ée]ger|all[ée]gez|c[ée]der|"
+                    r"accumuler|accumulez|investir|investissez|miser|misez|se\s+positionner|positionnez|"
+                    rf"{_NOMS_D_INVESTISSEMENT})")
+# Après l'objet admis : la fin de la phrase, ou une attribution qui ne contient aucun mot de conseil.
+_FIN_DE_PHRASE = r"\s*([.;!?]|$)"
+_ATTRIBUTION = (r",\s*(selon|estime|pr[ée]vient|admet|juge|indique|explique|affirme|souligne)\b"
+                rf"(?![^.;!?]{{0,80}}?\b{_MOTS_DE_CONSEIL}\b)[^.;!?]{{0,80}}([.;!?]|$)")
+_APRES_LE_FAIT = rf"({_FIN_DE_PHRASE}|{_ATTRIBUTION})"
+# Les objets de fait, par verbe. Liste fermée : chaque objet vient d'un fait des tests ; en ajouter un passe par un
+# test d'abord. Aucun objet admis après un verbe d'achat.
+_FAITS_APRES_RENFORCER = r"la\s+gouvernance|(la|sa|leur)\s+coop[ée]ration(\s+avec\s+(ses|leurs)\s+(fournisseurs|partenaires))?"
+_FAITS_APRES_SORTIR = (r"du\s+nucl[ée]aire|de\s+la\s+(crise|r[ée]cession)"
+                       r"|de\s+(la|sa|leur)\s+d[ée]pendance(\s+au\s+gaz(\s+russe)?)?")
+_FAITS_APRES_ALLEGER = r"(la|sa|leur)\s+dette(\s+publique)?|(la|sa|leur)\s+politique(\s+mon[ée]taire)?"
+_FAITS_APRES_VENDRE = (r"(sa|ses|leur|leurs)\s+filiales?(\s+am[ée]ricaines?)?"
+                       r"|(ses|leurs)\s+actifs(\s+non\s+strat[ée]giques)?")
+_FAITS_APRES_EVITER = r"les\s+g[ée]n[ée]ralisations"
+_FAITS_APRES_ECART = r"des\s+tensions(\s+commerciales)?"
+
+
+def _sauf(faits: str) -> str:
+    """Le verbe passe seulement suivi d'un de ces objets, puis de la fin de la phrase ou d'une attribution."""
+    return rf"(?!\s+({faits}){_APRES_LE_FAIT})"
+
+
+_LE_MOMENT = r"(\ble\s+moment\s+est\s+venu|\bmoment|\btemps)\s+(de\s+|d['’])"
 _ECART = r"(se\s+tenir|rester)\s+[àa]\s+l['’][ée]cart"
 _VERBE_D_ENTREPRISE = (r"s['’](implanter|[ée]tendre|agrandir)|se\s+(d[ée]velopper|diversifier|d[ée]sendetter|redresser|"
                        r"restructurer)|le\s+groupe|la\s+soci[ée]t[ée]|l['’]entreprise|la\s+direction")
@@ -88,10 +102,11 @@ FAMILLES_AMF = [
      r"|\b(int[ée]grer|figurer\s+dans)\s+(un|votre|vos|tout|chaque)\s+portefeuilles?"
      r"|\b(ajouter|placer)\s+[^.;]{0,30}?\b(dans|[àa])\s+(un|votre|tout|chaque)\s+portefeuille"
      r"|\bdeserves?\s+a\s+place\s+in", "place_en_portefeuille"),
-    # un point d'entrée qualifié, ou le moment d'acheter (tournure de conseil, liste fermée)
+    # un point d'entrée qualifié, ou le moment d'acheter (tournure de conseil : jamais d'objet admis après un achat)
     (r"\b(bon|meilleur|excellent|attracti\w*|int[ée]ressant|id[ée]al|offre)\s+(un\s+)?point\s+d['’]entr[ée]e"
      r"|point\s+d['’]entr[ée]e\s+(para[iî]t|semble|est)\s+(attracti\w*|int[ée]ressant|id[ée]al)"
-     rf"|{_LE_MOMENT}\s+(de\s+|d['’]){_VERBES_D_ACHAT}\b{_SAUF_FAIT}"
+     rf"|{_LE_MOMENT}(se\s+positionner|se\s+placer|entrer|acheter|accumuler)\b"
+     rf"|{_LE_MOMENT}renforcer\b{_sauf(_FAITS_APRES_RENFORCER)}"
      r"|\b(attractive|good|ideal)\s+entry\s+point|\b(time|moment)\s+to\s+(buy|sell|get\s+in|take\s+profits)", "point_d_entree"),
     # une occasion à ne pas manquer, sauf celle d'une entreprise ; un titre à ne pas manquer ; le tort de l'investisseur
     (rf"\b(opportunit[ée]|occasion)s?\s+[àa]\s+(saisir|ne\s+pas\s+(manquer|laisser\s+passer|rater))"
@@ -99,10 +114,13 @@ FAMILLES_AMF = [
      r"|\b(titre|valeur)s?\b[^.;]{0,40}?\b[àa]\s+ne\s+pas\s+(manquer|laisser\s+passer|rater)"
      r"|\b(investisseurs?|actionnaires?|[ée]pargnants?|lecteurs?|vous)\s+(aurai(en)?t|auriez)\s+tort\s+de\s+ne\s+pas"
      r"|\b(worth|time\s+for)\s+(adding|buying|owning)", "occasion_a_saisir"),
-    # la vente ou l'abstention présentées comme une évidence (tournures de conseil, liste fermée)
+    # la vente ou l'abstention présentées comme une évidence (tournures de conseil, objets admis par verbe)
     (r"\b(temps|moment)\s+de\s+prendre\s+(ses|vos|des)\s+b[ée]n[ée]fices"
-     rf"|{_LE_MOMENT}\s+(de\s+|d['’]){_VERBES_DE_VENTE}\b{_SAUF_FAIT}"
-     rf"|\bmieux\s+vaut\s+({_ECART}|[ée]viter|vendre|sortir|acheter|all[ée]ger|c[ée]der|renforcer)\b{_SAUF_FAIT}"
+     rf"|{_LE_MOMENT}sortir\b{_sauf(_FAITS_APRES_SORTIR)}"
+     rf"|{_LE_MOMENT}all[ée]ger\b{_sauf(_FAITS_APRES_ALLEGER)}"
+     rf"|{_LE_MOMENT}(vendre|c[ée]der)\b{_sauf(_FAITS_APRES_VENDRE)}"
+     rf"|\bmieux\s+vaut\s+[ée]viter\b{_sauf(_FAITS_APRES_EVITER)}"
+     rf"|\bmieux\s+vaut\s+({_ECART}|vendre|sortir|acheter|all[ée]ger|c[ée]der|renforcer)\b"
      r"|\b(rester|se\s+tenir)\s+[àa]\s+l['’][ée]cart\s+(du|de\s+ce|de\s+la)\s+(titre|valeur|dossier|action)", "sortie_evidente"),
     # une consigne de marché sur un titre ou une société nommée, ou l'abstention présentée comme intenable
     (r"\b(titre|valeur)s?\b[^.;]{0,40}?\b[àa]\s+(accumuler|all[ée]ger|renforcer)\b"
@@ -111,7 +129,7 @@ FAMILLES_AMF = [
      r"|:\s*[àa]\s+(accumuler|all[ée]ger|renforcer)\b"
      r"|\b[àa]\s+(accumuler|all[ée]ger|renforcer)\s+(sur|en|au|apr[èe]s|avant)\s+(repli|baisse|faiblesse|rebond|hausse|creux|cours|niveaux?)"
      r"|\b(renforcer|all[ée]ger|accumuler)\s+(votre|vos)\s+(positions?|lignes?|expositions?|participations?)"
-     rf"|\bdifficile\s+de\s+rester\s+[àa]\s+l['’][ée]cart{_SAUF_FAIT}", "incitation_douce"),
+     rf"|\bdifficile\s+de\s+rester\s+[àa]\s+l['’][ée]cart{_sauf(_FAITS_APRES_ECART)}", "incitation_douce"),
 ]
 _COMPILES += [(re.compile(m, re.IGNORECASE), nom) for m, nom in FAMILLES_AMF]
 
