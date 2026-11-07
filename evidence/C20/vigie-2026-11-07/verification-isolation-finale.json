@@ -1,0 +1,16 @@
+{
+  "container": "/rita-api-c20-20261107",
+  "running": true,
+  "health": "healthy",
+  "image_id": "sha256:1b262b59308ac70f18a06c195f2c4e5ce2e63571285496adff15870e77064f6a",
+  "langfuse_enabled": "false",
+  "cloud_keys_present": false,
+  "ports": {
+    "8000/tcp": [
+      {
+        "HostIp": "127.0.0.1",
+        "HostPort": "8011"
+      }
+    ]
+  }
+}
