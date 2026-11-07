@@ -109,7 +109,7 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 <li><a href="#c7">3. C7 : le choix du service de modèle</a><span>p. 6</span></li>
 <li><a href="#c8">4. C8 : le service retenu, paramétré et suivi</a><span>p. 11</span></li>
 <li><a href="#criteres">5. Les 20 critères, un par un</a><span>p. 15</span></li>
-<li><a href="#reste">6. Ce qui n'est pas fait</a><span>p. 16</span></li>
+<li><a href="#reste">6. Ce qui n'est pas fait</a><span>p. 17</span></li>
 <li><a href="#glossaire">Glossaire</a><span>p. 17</span></li>
 <li><a class="vers-annexe" href="#a1">Annexe A1 : la veille (PDF avec annexe)</a><span>p. 18</span></li>
 <li><a class="vers-annexe" href="#a2">Annexe A2 : le choix du service</a><span>p. 19</span></li>
