@@ -1,0 +1,20 @@
+Test du 07/11/2026 (14:54) : tests/test_evals.py de la branche, copié dans un arbre de travail Git séparé au commit 3c024f3 (code d'avant la correction ReDoS).
+Commande : python -X utf8 -m pytest -q -p no:cacheprovider tests/test_evals.py -k budget_sur_des_entrees_hostiles --tb=line
+
+FF....                                                                   [100%]
+================================== FAILURES ===================================
+E   subprocess.TimeoutExpired: Command '['C:\\Python314\\python.exe', '-c', "import sys, time\nsys.path.insert(0, sys.argv[1])\nfrom guardrails.injection import neutraliser\nfrom guardrails.sortie import verifier_fuite, verifier_sortie\ntexte = sys.stdin.buffer.read().decode('utf-8')\ndebut = time.perf_counter()\nverifier_fuite(texte)\nverifier_sortie(texte)\nneutraliser(texte, 'eval')\nprint(time.perf_counter() - debut)\n", 'C:\\Users\\kanda\\AppData\\Local\\Temp\\claude\\89f877c678431dc8\\1f20be7f-74c2-4e1a-b08c-0cdf8a02374d\\scratchpad\\s9-avant-3c024f3']' timed out after 20.0 seconds
+
+During handling of the above exception, another exception occurred:
+E   Failed: garde-fous toujours en cours après 20 s : sous-processus arrêté
+C:\Users\kanda\AppData\Local\Temp\claude\89f877c678431dc8\1f20be7f-74c2-4e1a-b08c-0cdf8a02374d\scratchpad\s9-avant-3c024f3\tests\test_evals.py:275: Failed: garde-fous toujours en cours après 20 s : sous-processus arrêté
+E   subprocess.TimeoutExpired: Command '['C:\\Python314\\python.exe', '-c', "import sys, time\nsys.path.insert(0, sys.argv[1])\nfrom guardrails.injection import neutraliser\nfrom guardrails.sortie import verifier_fuite, verifier_sortie\ntexte = sys.stdin.buffer.read().decode('utf-8')\ndebut = time.perf_counter()\nverifier_fuite(texte)\nverifier_sortie(texte)\nneutraliser(texte, 'eval')\nprint(time.perf_counter() - debut)\n", 'C:\\Users\\kanda\\AppData\\Local\\Temp\\claude\\89f877c678431dc8\\1f20be7f-74c2-4e1a-b08c-0cdf8a02374d\\scratchpad\\s9-avant-3c024f3']' timed out after 20.0 seconds
+
+During handling of the above exception, another exception occurred:
+E   Failed: garde-fous toujours en cours après 20 s : sous-processus arrêté
+C:\Users\kanda\AppData\Local\Temp\claude\89f877c678431dc8\1f20be7f-74c2-4e1a-b08c-0cdf8a02374d\scratchpad\s9-avant-3c024f3\tests\test_evals.py:275: Failed: garde-fous toujours en cours après 20 s : sous-processus arrêté
+
+=========================== short test summary info ===========================
+FAILED tests/test_evals.py::test_les_garde_fous_respectent_le_budget_sur_des_entrees_hostiles[0]
+FAILED tests/test_evals.py::test_les_garde_fous_respectent_le_budget_sur_des_entrees_hostiles[1]
+2 failed, 4 passed, 29 deselected, 1 warning in 44.98s

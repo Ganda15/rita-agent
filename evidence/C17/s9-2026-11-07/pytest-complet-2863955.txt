@@ -1,0 +1,43 @@
+# Suite complete, commit 2863955, lancee le 07/11/2026 a 17:22 (heure de Paris)
+# Commande : C:\Python314\python.exe -m pytest -q -p no:cacheprovider (depuis la racine du depot)
+# Sortie : les 40 dernieres lignes, ecrites par la commande elle-meme
+........................................................................ [ 63%]
+..........sss........................................................... [ 65%]
+.............................................s.......................... [ 67%]
+........................................................................ [ 69%]
+........................................................................ [ 72%]
+........................................................................ [ 74%]
+........................................................................ [ 76%]
+........................................................................ [ 78%]
+....................................................ssssssssssssssssssss [ 81%]
+ssssss.................................................................. [ 83%]
+........................................................................ [ 85%]
+........................................................................ [ 87%]
+........................................................................ [ 90%]
+........................................................................ [ 92%]
+........................................................................ [ 94%]
+........................................................................ [ 96%]
+......................................................sss............... [ 99%]
+.....................sssssssss                                           [100%]
+============================== warnings summary ===============================
+C:\Users\kanda\AppData\Roaming\Python\Python314\site-packages\chromadb\telemetry\opentelemetry\__init__.py:128
+  C:\Users\kanda\AppData\Roaming\Python\Python314\site-packages\chromadb\telemetry\opentelemetry\__init__.py:128: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(f):
+
+tests/test_scan_giskard.py::test_le_juge_openrouter_est_declare_comme_fournisseur_compatible_openai
+tests/test_scan_giskard.py::test_le_juge_openrouter_est_declare_comme_fournisseur_compatible_openai
+  C:\Users\kanda\AppData\Roaming\Python\Python314\site-packages\giskard\core\telemetry\telemetry.py:199: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
+
+tests/test_spark.py::test_spark_lit_le_parquet_nativement
+  C:\Users\kanda\AppData\Roaming\Python\Python314\site-packages\pyspark\testing\utils.py:127: FutureWarning: PySpark does not yet fully support pandas >= 3.0.0. Some features may not work correctly. It is recommended to use pandas < 3.0.0 for now.
+    require_minimum_pandas_version()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+3116 passed, 82 skipped, 4 warnings in 368.85s (0:06:08)
+Opération réussie : le processus de PID 68712 (processus enfant de PID 45172) a été
+arrêté.
+Opération réussie : le processus de PID 45172 (processus enfant de PID 11132) a été
+arrêté.
+Opération réussie : le processus de PID 11132 (processus enfant de PID 15244) a été
+arrêté.
