@@ -22,9 +22,10 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 > **En une minute.** RITA aide un investisseur particulier à suivre son portefeuille et à lire l'actualité d'une
 > action, sans recommandation d'achat ou de vente. Ce rapport montre comment j'ai conçu et réalisé l'application autour
 > d'un modèle de langage fourni : le besoin et les spécifications (C14), le cadre technique (C15), la coordination agile
-> (C16), le développement (C17), les tests automatisés (C18) et la livraison continue (C19). Ses mesures décrivent la
-> version du 02/11 et ses cinq écrans (portefeuille, indicateurs, briefing, question, tableau de bord) ; l'interface
-> refaite, livrée et vérifiée en production le 04/11, est datée au § 6.5. Les ateliers
+> (C16), le développement (C17), les tests automatisés (C18) et la livraison continue (C19), sur cinq écrans
+> (portefeuille, indicateurs, briefing, question, tableau de bord) ; l'interface refaite, livrée le 04/11, est datée au
+> § 6.5. Le rapport distingue les preuves historiques du 02/11 et les vérifications des 06 et 07/11. La version de
+> production de référence est `6f428d6` ; chaque mesure garde sa date, son périmètre et son commit. Les ateliers
 > des sprints restent hors du rapport (périmètre décidé le 30/10/2026). Pour chaque écran, je distingue ce qui est
 > réalisé, la spécification conservée et ce qui n'est pas vérifié.
 
@@ -367,7 +368,8 @@ que Kanban n'a pas.
 **L'accès des parties prenantes.** Au dépôt : le formateur y a un accès en lecture (compte `bybysker`), vérifié le
 30/10 et le 03/11. Au tableau : un accès en lecture lui a été donné le 26/09 ([`docs/PILOTAGE-AGILE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/PILOTAGE-AGILE.md)), et il a confirmé par écrit le 03/11 qu'il l'ouvre ([preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C16/preuve-acces-kanban-formateur-2026-11-03.md)).
 La méthode est écrite dans le dépôt ; un fichier présent dans le dépôt ne prouve pas, à lui seul, que ses règles ont été
-partagées et comprises. Le jury recevra un accès en lecture avant la consultation des livrables par les examinateurs.
+partagées et comprises. L'accès aux preuves pour le jury reste à organiser après l'oral blanc ; sa modalité sera
+finalisée avec l'équipe pédagogique.
 
 ### 3.5 Un exemple de coordination, de bout en bout
 
@@ -402,10 +404,11 @@ Le même travail a fait découvrir un autre manque, écrit le jour même : la sa
 
 ### 4.1 Vue d'ensemble
 
-Je distingue « j'ai une preuve » et « tout le critère est satisfait ». Sur les onze critères de C17, neuf sont
+Je distingue « j'ai une preuve » et « tout le critère est satisfait ». Sur les onze critères de C17, dix sont
 satisfaits : l'environnement (§ 4.2), les maquettes et les comportements (§ 4.3), les composants métier et les flux
 (§ 4.4), les droits d'accès (§ 4.5, depuis le 07/11), les tests (§ 4.8), les sources et la documentation, envoyée au
-formateur le 03/11 (§ 4.9). Deux restent à consolider : la sécurité OWASP (§ 4.6) et l'éco-conception (§ 4.7). La preuve et la limite de
+formateur le 03/11 (§ 4.9), et l'éco-conception après les mesures des 06 et 07/11 (§ 4.7). La sécurité OWASP reste à
+consolider : S7, relatif à la chaîne d'approvisionnement, est encore partiel (§ 4.6). La preuve et la limite de
 chacun sont dans la matrice (section 8).
 
 ### 4.2 L'environnement de développement (critère 1)
@@ -579,16 +582,18 @@ format contrôlé ([`evidence/C17/controle-accessibilite-readme-2026-11-02.md`](
 
 - **L'environnement n'est pas entièrement reproductible** : [`requirements.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/requirements.txt) libre, trois paquets de CI sans
   version, dépendances indirectes non verrouillées.
-- **La conformité aux maquettes n'est vérifiée qu'en partie** : la refonte, construite d'après les maquettes du 04/10 et
-  livrée le 04/11, n'est comparée que sur la partie capturée des écrans (annexe A7) ; Question et Tableau de bord n'ont qu'un schéma
-  de parcours relevé sur l'existant.
-- **Des défauts ouverts** : l'affichage « +0,00 % » d'une pire baisse nulle ; sur
-  l'écran Briefing livré, une aide qui promet trop et des astérisques affichés (annexe A7).
+- **La conformité est vérifiée à l'œil** : les trois premiers écrans sont comparés à leurs maquettes sur les parties
+  capturées. Question et Tableau de bord sont comparés au système de conception écrit le 06/11 après le code (annexe
+  A7). La comparaison reste visuelle, appuyée par un test, sans mesure de conformité au pixel.
+- **Des défauts ouverts** : l'affichage « +0,00 % » d'une pire baisse nulle ; les astérisques affichés dans le texte
+  du Briefing (annexe A7). La capture du Briefing du 04/11 montre aussi une aide trop absolue : elle est corrigée dans
+  la version de production de référence, et la capture est conservée avec sa date.
   #73, #78 et #79 sont corrigés et déployés le 02/11 ; leurs cartes restent ouvertes sur GitHub jusqu'à une
   vérification manuelle en production.
 - **Sécurité** : `/docs` public (S2, décidé) ; S7 en partie ; S1, S3, S6, S8 et S9 corrigés, en production le 07/11,
   sans appel authentifié aux garde-fous sur le site réel.
-- **Les tests** : 97 ignorés en CI le 07/11 (ceux de la base, joués à part) ; une couverture qui exclut l'interface, la
+- **Les tests** : 97 ignorés dans le job `pytest` le 07/11, pas tous liés à PostgreSQL (les tests de la base sont joués
+  à part par le job `base`, 59 réussis) ; une couverture qui exclut l'interface, la
   recherche documentaire, la surveillance et la passerelle MCP.
 - **L'éco-conception** : mesures locales, pas en production ; la liste de recherche d'Indicateurs garde ses 111 options.
 - **La documentation** : le format du guide d'exploitation (31/10, PDF de 12 pt et 66 signets), d'[`ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/ARCHITECTURE.md)
@@ -605,7 +610,7 @@ peuvent exiger ses résultats.
 
 | Workflow | Déclencheur | Ce qu'il fait |
 |---|---|---|
-| [`test.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/.github/workflows/test.yml), Tests | chaque envoi et chaque pull request sur `main` et `develop` | trois travaux : `pytest` (la suite et la couverture), `evals` (les portes des garde-fous) et `base` (les 25 tests PostgreSQL sur une base jetable) |
+| [`test.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/.github/workflows/test.yml), Tests | chaque envoi et chaque pull request sur `main` et `develop` | trois travaux : `pytest` (la suite et la couverture), `evals` (les portes des garde-fous) et `base` (les tests PostgreSQL sur une base jetable : 59 réussis le 07/11) |
 | [`livraison.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/.github/workflows/livraison.yml), Livraison | chaque envoi et chaque pull request sur `main` et `develop`, chaque tag `livrable-*` | `lint` (`ruff`), `secrets` (`gitleaks` sur tout l'historique), puis la construction et la vérification de l'image (section 6) |
 | [`revue-pr.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/.github/workflows/revue-pr.yml), Revue PR | chaque pull request vers `main` | une revue automatisée commentée sur la pull request |
 
@@ -648,8 +653,8 @@ format a été contrôlé avec des outils le 01/11, puis le 02/11 ([`evidence/C1
 
 - Trois paquets installés par la CI n'ont pas de version fixée (`playwright`, `giskard-llm`, `giskard-checks`), et
   [`requirements.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/requirements.txt) non plus (section 4.2).
-- 22 tests sont ignorés en CI faute d'un élément absent de la CI ; les tests PostgreSQL, eux, tournent depuis le
-  01/11 dans le job `base`, exigé pour `main`.
+- Au 07/11, le job `pytest` compte 3 116 tests réussis et 97 ignorés, dont des tests des hooks, des PDF et de Spark.
+  Le job `base`, exigé pour `main`, exécute séparément les tests PostgreSQL depuis le 01/11 : 59 réussis le 07/11.
 - La couverture ne mesure pas l'interface, la recherche documentaire, la surveillance ni la passerelle MCP.
 
 ## 6. La livraison continue (C19) {: #c19 }
@@ -764,8 +769,8 @@ Le détail est dans les limites de chaque section.
 | Besoin (C14) | spécification de l'écran 5 et compléments de l'écran 4 rétrospectifs (02/11) ; table `article` hors du modèle ; aucun test avec un lecteur d'écran ni un utilisateur extérieur | § 1.7, § 1.8 |
 | Cadre technique (C15) | schéma d'architecture sans la vigie ; hébergeur non choisi sur un critère environnemental | § 2.7 |
 | Organisation (C16) | Kanban non maintenu du 14/10 au 07/11, repris le 07/11 ; revues du lundi sans compte rendu ; pas de rétrospective | § 3.6 |
-| Développement (C17) | environnement non entièrement reproductible ; écrans comparés à leurs maquettes ou au système de conception (A7) ; un écart d'affichage (« +0,00 % ») et deux défauts de Briefing (A7) ; S7 en partie ; mesures d'éco-conception locales | § 4.10 |
-| Tests (C18) | 22 tests ignorés en CI ; couverture sans l'interface, la recherche, la surveillance ni la passerelle MCP ; trois paquets de CI sans version | § 5.6 |
+| Développement (C17) | environnement non entièrement reproductible ; écrans comparés à leurs maquettes ou au système de conception (A7) ; un écart d'affichage (« +0,00 % ») et les astérisques du Briefing (A7) ; S7 en partie ; mesures d'éco-conception locales | § 4.10 |
+| Tests (C18) | 97 tests ignorés dans `pytest` (07/11), pas tous liés à la base ; couverture sans l'interface, la recherche, la surveillance ni la passerelle MCP ; trois paquets de CI sans version | § 5.6 |
 | Livraison (C19) | un tag reconstruit l'image ; retour arrière sans la base ; aucune sauvegarde automatique ; collecte non planifiée ; script de rattrapage à renforcer | § 6.4, 6.5 |
 
 ## 8. Matrice de preuves {: #matrice }
@@ -797,8 +802,8 @@ mais une partie du critère manque, écrite dans la colonne « Limite restante �
 | **C17.6** Flux de données intégrés | ✅ | briefing ([`evidence/C10/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C10), 03/10) ; Question : évaluation en production du 16/10 sur `72dba4d` ([`evidence/sprint-3/evaluation-production-2026-10-16-relecture.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/sprint-3/evaluation-production-2026-10-16-relecture.md)) et tests | preuves antérieures à la version de référence | 4.4 |
 | **C17.7** Éco-conception | ✅ | pratiques documentées ; cinq écrans mesurés (06/11, 07/11) ; #74 et la pagination d'Indicateurs (D puis B) en production le 07/11 | mesures locales, pas en production | 4.7 |
 | **C17.8** Préconisations OWASP Top 10 implémentées | 🟡 | revue S1 à S10 ; S1, S3 à S6, S8 et S9 corrigés, en production (07/11) ; S2 décidé (D7) | S7 en partie | 4.6 |
-| **C17.9** Tests couvrant composants métier et gestion des accès | ✅ | les tests des composants métier et des accès API ont été exécutés avec succès (3 116 réussis, couverture 96,11 %, 07/11) ; les 4 tests du rôle en lecture seule passent dans le job `base` | 22 tests ignorés ; couverture sans interface, `rag/`, `monitorage/`, MCP | 4.8 |
-| **C17.10** Sources versionnées et accessibles sur un dépôt distant | ✅ | dépôt GitHub privé, 21 tags `livrable-*` protégés | jury pas encore invité | 4.9 |
+| **C17.9** Tests couvrant composants métier et gestion des accès | ✅ | les tests des composants métier et des accès API ont été exécutés avec succès (3 116 réussis, couverture 96,11 %, 07/11) ; les 4 tests du rôle en lecture seule passent dans le job `base` | 97 ignorés dans `pytest`, pas tous liés à la base ; couverture sans interface, `rag/`, `monitorage/`, MCP | 4.8 |
+| **C17.10** Sources versionnées et accessibles sur un dépôt distant | ✅ | dépôt GitHub privé, 21 tags `livrable-*` protégés | accès aux preuves du jury encore à organiser | 4.9 |
 | **C17.11** Documentation technique : installation, architecture, dépendances, tests, accessible | ✅ | [`docs/ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/ARCHITECTURE.md), [`README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/README.md), [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md), [`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/exploitation.md) ; format contrôlé pour le guide (31/10), [`ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/ARCHITECTURE.md) et [`CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md) (01/11), [`README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/README.md) (02/11, [`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17)) ; envoyée au formateur le 03/11 | réception et liens confirmés par Elbby, 04/11 | 4.9 |
 | **C18.1** Documentation de la chaîne : outils, étapes, tâches, déclencheurs | ✅ | [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md), § 2 et § 3 | | 5.5 |
 | **C18.2** Outil d'intégration continue cohérent avec l'environnement | ✅ | GitHub Actions, machine et Python fixés | | 5.1, 5.2 |

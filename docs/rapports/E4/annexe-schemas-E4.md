@@ -27,13 +27,12 @@ img.zoom{ display:block; max-height:12mm; margin:1mm 0 0; }
 
 # Annexe du rapport E4 : les schémas
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · compétences C14 à C19 · annexe du rapport E4, version 1.6, 6 novembre 2026
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · compétences C14 à C19 · annexe du rapport E4, version 1.9, 7 novembre 2026
 {: .identite }
 
-> Cette annexe montre les schémas que le rapport cite, chacun sur sa page,
-> suivi de sa légende : ce qu'il montre pour E4, la date de son contenu et sa limite, reprise du rapport. Version de référence de
-> l'application : commit `174b0c1` (02/11/2026) ; interface refaite en production le 04/11 (`8ecc5a7`), maquettes et écrans
-> livrés en A7.
+> Annexes du rapport E4 v1.9 du 07/11/2026 : chaque schéma cité, sur sa page, avec sa légende. Les schémas historiques
+> conservent leur date et leur contenu (commit `174b0c1`, 02/11/2026) ; leurs limites sont dans les légendes. A7 compare
+> les maquettes aux écrans livrés le 04/11, et Question et Tableau de bord au système de conception (captures locales du 06/11).
 
 ## Les schémas de cette annexe, aux pages du PDF complet {: .sommaire }
 
@@ -45,18 +44,17 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 | A4 | Flux de données, des sources à l'écran | C15 | 02/11/2026 (celui du 18/08 gardé) | mise en forme du 03/11, texte inchangé | 27 |
 | A5 | Chaîne d'intégration et de livraison | C18, C19 | 24/10/2026 | mise en forme du 03/11, texte inchangé | 28 |
 | A6 | Parcours des écrans Question et Tableau de bord | C14 | 02/11/2026 | mise en forme du 03/11, texte inchangé | 29 et 30 |
-| A7 | Maquettes de la refonte et écrans livrés, comparés | C14, C17 | maquettes du 04/10, écrans du 04/11 | maquettes recadrées, captures de production | 31 à 35 |
+| A7 | Maquettes et système de conception, comparés aux écrans livrés | C14, C17 | maquettes 04/10 ; écrans 04/11 et 06/11 | maquettes recadrées, captures d'écran | 31 à 35 |
 
 **Mise en forme du 03/11.** A1, A3, A4, A5 et A6 sont présentés au style des schémas du livret E1 ; leur texte est
 identique mot pour mot aux originaux du dépôt, cités dans chaque légende (A3 et A5 avaient déjà reçu une mise en forme
-le 31/10, avec l'aide d'une IA). Aucun contenu n'a été modifié ou mis à
-jour pour cette annexe. Le 04/11, des légendes datées corrigent ce qui promettait trop ou a vieilli, sans retoucher les
+le 31/10, avec l'aide d'une IA). Le contenu de ces schémas historiques n'a été ni modifié
+ni mis à jour pour cette annexe. Le 04/11, des légendes datées corrigent ce qui promettait trop ou a vieilli, sans retoucher les
 images ; les maquettes d'A7 sont recadrées pour la page.
 
 **Ce que l'annexe ne contient pas, et pourquoi.** Les écrans Question et Tableau de bord n'ont pas de maquette
 préalable (rapport, critère C17.2) : leurs parcours (A6) et le diagramme de flux (A4) sont relevés sur l'existant le
-02/11, et le disent. Ils décrivent l'application ; ils n'ont pas guidé sa construction. Les écrans livrés le 04/11 sont
-comparés à leurs maquettes en A7, sur des captures de production.
+02/11, et le disent. Ils décrivent l'application ; ils n'ont pas guidé sa construction.
 
 
 ### Les schémas en miniature
@@ -170,7 +168,9 @@ spécification 001, validée le 04/11 ([`specs/001-refonte-interface/spec.md`](h
 codées et livrées le 04/11 (`8ecc5a7`). **Chronologie du style** : le 04/10, le style A, clair, est retenu ; le 04/11, je
 choisis le style B, sombre, par défaut, et je garde le A comme thème clair au choix (spécification 001, § 7). Les écrans
 livrés sont donc sombres, les maquettes claires. **Méthode** : maquette, écran livré, différences expliquées, sur la seule
-partie capturée. Une capture ne prouve pas à elle seule la conformité ; le critère C17.2 reste à consolider (rapport, § 4.3).
+partie capturée. Une capture ne prouve pas à elle seule la conformité. L'annexe compare trois écrans aux maquettes et
+les deux autres au système de conception (p. 35). C17.2 est retenu comme satisfait, avec les limites de la comparaison
+visuelle et du système écrit après le code.
 
 ![Maquette 1 : le même écran dans trois styles, A clair, B sombre, C éditorial](schemas/E4-A7-maquette-style-recadree.png)
 
@@ -180,8 +180,9 @@ Retenu le 04/10 : A ; changé le 04/11 : B par défaut, A en thème clair.
 **Les trois pages suivantes**, une par écran : la maquette et l'écran livré côte à côte, puis les différences, chacune
 avec son explication. **Limites d'A7** : comparaison visuelle, sur des captures de production du 04/11 ; aucune mesure ;
 Question et Tableau de bord n'ont pas de maquette.
-**Deux défauts de l'écran Briefing livré** sont relevés page 34 : une aide qui promet trop, des astérisques affichés ; ils
-sont à corriger à part, test d'abord.
+**La capture du Briefing du 04/11 montre deux défauts historiques** (page 34) : l'aide trop absolue et des astérisques
+affichés. L'aide est corrigée dans la version de production de référence (`6f428d6`) ; la capture est conservée avec
+sa date. Le statut des astérisques est traité séparément.
 
 <div class="saut"></div>
 
@@ -240,7 +241,7 @@ sont à corriger à part, test d'abord.
 | Texte du briefing | présent sous la courbe | conforme ; **défaut constaté** : les astérisques de mise en forme du modèle s'affichent tels quels (« \*La Tribune\* ») |
 | Chaîne de production | « Comment RITA a produit ce texte », cinq étapes en pastilles | « Comprendre ce résultat » : les cinq mêmes étapes en liste numérotée, plus la référence de la requête (R4) |
 | Articles | trois cartes de source | « Sources fournies au modèle » : trois liens, source et date, et la limite « Leur présence ne prouve pas que chaque phrase du texte en vient » |
-| Aide sous le champ | absente de la maquette | **défaut constaté** : « une recommandation d'achat ou de vente est retenue, jamais diffusée », la promesse trop forte corrigée en A2 (page 25), est encore à l'écran ([`frontend/briefing.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/frontend/briefing.html), ligne 57) |
+| Aide sous le champ | absente de la maquette | **défaut de la capture du 04/11** : « une recommandation d'achat ou de vente est retenue, jamais diffusée », la promesse trop forte corrigée en A2 (page 25) ; corrigée à l'écran le 05/11 (`cadc641`), en production dans `6f428d6` (état du 04/11 : [`frontend/briefing.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/frontend/briefing.html), ligne 57) |
 
 <div class="saut"></div>
 

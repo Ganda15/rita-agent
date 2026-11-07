@@ -21,7 +21,8 @@ de requêtes, les seuils orange et rouge, et pour le signal `service` le nombre 
 ## 2. La configuration
 
 - La vigie (`.github/workflows/vigie.yml`) tourne toutes les trois heures (`17 */3 * * *`) contre la production, avec le
-  secret `RITA_API_KEY_VIGIE`. Le secret manquait jusqu'au 07/11 : la vigie échouait à chaque passage.
+  secret `RITA_API_KEY_VIGIE`. Le secret manquait jusqu'au 07/11 : la vigie échouait à chaque passage. La PR #221 a livré
+  la planification sur `main` à 1 h 49 sans le secret ; il a été créé à part à 20 h 19 16 s (date lue par l'API GitHub).
 - Le 07/11, le secret a d'abord reçu une clé refusée (HTTP 403, passages 42410636772 et 42411132337 première tentative).
   Era a fait lire la seule clé de l'API active sur le serveur, l'a vérifiée (`/sante` 200), puis l'a transmise au secret
   par l'entrée standard, sans affichage ([`RESULTAT-VIGIE-2026-11-07.md`](RESULTAT-VIGIE-2026-11-07.md),
@@ -87,7 +88,7 @@ GitHub), [`issues-incident-2026-11-07-2155.json`](issues-incident-2026-11-07-215
 
 Les passages planifiés de la journée, depuis l'arrivée du workflow sur `main` (#221, `a68f2cf`, 1 h 49) : sept
 créneaux, trois passages `schedule`. 10 h 13 (42363054393) et 17 h 44 (42397820857) ont échoué, « Secret
-RITA_API_KEY_VIGIE absent » ; 21 h 52 a réussi. Les autres créneaux n'ont donné aucun passage.
+RITA_API_KEY_VIGIE absent », avant toute interrogation de la production ; 21 h 52 a réussi. Les autres créneaux n'ont donné aucun passage.
 
 Le calcul des verdicts n'a pas changé depuis les essais des 22-23/10 : `git diff --stat 699e479 6f428d6` ne touche ni
 `api/sante.py`, ni `monitorage/seuils.py`, `signaux.py` ou `compteurs.py`. Dans `monitorage/vigie.py`, les
