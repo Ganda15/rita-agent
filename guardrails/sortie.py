@@ -169,7 +169,12 @@ def verifier_fuite(texte: str, consignes: tuple[str, ...] = ()) -> dict:
         {conforme, motifs_detectes, texte_diffusable}. Si conforme=False, `texte_diffusable` porte le message de
         refus : le texte d'origine n'est jamais diffusé, ni écrit au journal. Les noms des motifs, eux, y vont.
     """
-    motifs = list(dict.fromkeys(nom for regex, nom in _COMPILES_FUITE + _COMPILES_FAMILLES_FUITE if regex.search(texte)))
+    # Les règles par famille cherchent dans le texte aux espaces ramenés à un seul (revue de sécurité du 07/11) : leurs
+    # séparateurs sont bornés contre le retour arrière, et une suite d'espaces ou de sauts de ligne ne les contourne plus.
+    resserre = re.sub(r"\s+", " ", texte)
+    motifs = list(dict.fromkeys(
+        [nom for regex, nom in _COMPILES_FUITE if regex.search(texte)]
+        + [nom for regex, nom in _COMPILES_FAMILLES_FUITE if regex.search(resserre)]))
     fenetres = _fenetres(texte)
     if any(fenetres & _fenetres(consigne) for consigne in consignes):
         motifs.append("fragment_consignes")

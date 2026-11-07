@@ -81,7 +81,9 @@ def neutraliser(texte: str, source: str) -> dict:
         {texte_sur, motifs_detectes, bloque}. Si bloque=True, ne PAS envoyer au LLM.
     """
     motifs = [nom for regex, nom in _COMPILES if regex.search(texte)]
-    if _CONSIGNE_DEGUISEE.search(texte):
+    # Espaces ramenés à un seul avant la règle de famille (revue de sécurité du 07/11) : la fenêtre de 200 caractères
+    # ne se franchit pas avec du remplissage.
+    if _CONSIGNE_DEGUISEE.search(re.sub(r"\s+", " ", texte)):
         motifs.append("consigne_deguisee")
 
     # Neutralisation des tentatives d'évasion de balise, même quand on ne bloque pas.
