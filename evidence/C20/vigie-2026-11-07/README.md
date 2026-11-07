@@ -87,7 +87,7 @@ Fichiers : [`passage-planifie-42417908976.json`](passage-planifie-42417908976.js
 GitHub), [`issues-incident-2026-11-07-2155.json`](issues-incident-2026-11-07-2155.json).
 
 Les passages planifiés de la journée, depuis l'arrivée du workflow sur `main` (#221, `a68f2cf`, 1 h 49) : sept
-créneaux, trois passages `schedule`. 10 h 13 (42363054393) et 17 h 44 (42397820857) ont échoué, « Secret
+créneaux, trois déclenchements `schedule` du workflow. 10 h 13 (42363054393) et 17 h 44 (42397820857) ont échoué, « Secret
 RITA_API_KEY_VIGIE absent », avant toute interrogation de la production ; 21 h 52 a réussi. Les autres créneaux n'ont donné aucun passage.
 
 Le calcul des verdicts n'a pas changé depuis les essais des 22-23/10 : `git diff --stat 699e479 6f428d6` ne touche ni
@@ -113,7 +113,7 @@ Proposition : ✅ avec les limites ci-dessous, à valider par Era (règle 4 du r
   signaux en taux (par exemple cinq erreurs du fournisseur en quinze minutes), documenté le 22-23/10 sur une version
   antérieure de la vigie.
 - Aucune alerte n'a encore été émise par la vigie **de production** elle-même : la production était saine.
-- Le déclenchement planifié dépend de GitHub, qui peut retarder ou sauter un passage : le 07/11, trois passages pour
-  sept créneaux, le dernier avec 35 minutes de retard. Une panne peut donc attendre plus de trois heures son alerte.
+- Le déclenchement planifié dépend de GitHub, qui peut retarder ou sauter un passage : le 07/11, trois déclenchements
+  pour sept créneaux (deux arrêtés faute de secret, avant la vigie), le dernier avec 35 minutes de retard. Une panne peut donc attendre plus de trois heures son alerte.
 - Deux incidents anciens restent ouverts (#77, alerte Langfuse du 04/10 ; #132, prototype local du 23/10) : ils ne
   sont fermés que si leur résolution est prouvée.

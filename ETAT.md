@@ -38,8 +38,8 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
   à 20 h 33 07 s ; relance manuelle à code 0 ; essai sur copie de l'image de production : #230 ouverte puis fermée par
   la vigie, #77 et #132 intacts. **Passage `schedule` constaté le 07/11 à 21 h 52 UTC**
   ([42417908976](https://github.com/Ganda15/rita-agent/actions/runs/42417908976), `main`, `6f428d6`, succès, « vigie : passage terminé, code 0 », aucune issue). Seuils
-  inchangés en valeur depuis le 22/10, calcul des verdicts inchangé. Limite : 3 passages pour 7 créneaux le 07/11 (10 h 13
-  et 17 h 44 en échec, secret absent). ✅ proposé dans E5 v1.0, à valider par Era.
+  inchangés en valeur depuis le 22/10, calcul des verdicts inchangé. Limite : 3 déclenchements pour 7 créneaux le 07/11 (10 h 13
+  et 17 h 44 arrêtés faute de secret, avant la vigie). ✅ proposé dans E5 v1.0, à valider par Era.
   Preuve : `evidence/C20/vigie-2026-11-07/README.md`.
 - **E4 v1.9** : contrôle final d'un autre agent appliqué (résumé p. 1, C17 dix sur onze, C17.2 cohérent, tests : 97
   ignorés dans `pytest` et 59 réussis dans `base`, aide du Briefing en défaut historique, annexe en v1.9, accès du jury

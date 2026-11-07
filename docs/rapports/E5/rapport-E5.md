@@ -237,8 +237,9 @@ Huit autres incidents ont leur fiche dans [`evidence/C21/`](https://github.com/G
 ## 8. Les limites {: #limites }
 
 - **Seuils provisoires**, jamais relus sur du trafic réel ; **compteurs remis à zéro** à chaque redémarrage de l'API.
-- **La vigie planifiée dépend de GitHub** : le 07/11, trois passages pour sept créneaux, le dernier avec 35 min de
-  retard ; la vigie de production n'a encore émis aucune alerte.
+- **La vigie planifiée dépend de GitHub** : le 07/11, trois déclenchements du workflow ont été observés pour sept
+  créneaux prévus : deux arrêtés faute de secret, puis un passage planifié réussi à 21 h 52 UTC, 35 minutes après le
+  créneau prévu ; la vigie de production n'a encore émis aucune alerte.
 - **Deux règles de fermeture coexistent** : la vigie ferme son issue quand la résolution écrite est atteinte (#131 l'a
   été faute de requêtes), la chaîne Langfuse ne ferme jamais. L'écart est à trancher.
 - **Exercice et production** ont partagé le même projet Langfuse (INC-006, #130) ; le 23/10, la copie testée est isolée
@@ -280,4 +281,4 @@ Auto-évaluation d'Era au 07/11/2026 ; les limites sont dites dans les lignes et
 - **Post-mortem** : fiche écrite après un incident : ce qui s'est passé, pourquoi, comment c'est corrigé, la suite.
 - **Retour à la normale (OK)** : message qui dit que la condition d'une alerte n'est plus remplie au moment du calcul.
 - **Conteneur jetable** : environnement isolé, créé pour une exécution puis supprimé.
-- **`jq`** : outil en ligne de commande qui lit et filtre du JSON.
+- **`jq`** : outil en ligne de commande qui filtre du JSON.
