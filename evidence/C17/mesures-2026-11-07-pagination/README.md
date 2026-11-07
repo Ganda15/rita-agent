@@ -97,8 +97,12 @@ constat est antérieur à la pagination et n'est pas traité ici. Rapports compl
 - Trouvé par le test écrit pour ce défaut : revenu en première page, « Valeurs précédentes » se désactive et perdait le
   focus, qui tombait sur le corps de la page. Le focus passe désormais à l'autre bouton de page.
 
-Sorties rouges des quatre tests avant ces corrections :
-[`test-defilement-rouge-avant-correction.txt`](test-defilement-rouge-avant-correction.txt).
+Sorties rouges avant ces corrections (deux exécutions, quatre échecs sur trois tests distincts) :
+[`test-defilement-rouge-avant-correction.txt`](test-defilement-rouge-avant-correction.txt). Ces corrections ne sont pas
+remesurées par Lighthouse : la mesure ci-dessus porte sur `02900ea`. Elles ne changent que le comportement au changement
+de page (défilement, focus) et n'ajoutent aucun élément à la page. Suite complète sur `1ba3289` : 2 381 réussis,
+82 ignorés, 2 en échec attendu, 0 en échec ([`pytest-complet-1ba3289.txt`](pytest-complet-1ba3289.txt), écrit par la
+commande elle-même).
 
 ## 3. Ce que ça prouve, et ce que ça ne prouve pas
 
