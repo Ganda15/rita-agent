@@ -31,9 +31,11 @@ Sorties brutes : [`mesure-avant-correction.txt`](mesure-avant-correction.txt),
 [`mesure-apres-correction-sortie-amf.txt`](mesure-apres-correction-sortie-amf.txt).
 
 **Sur des textes réels, sans aucun refus** :
-- 38 passages d'articles du jeu figé du banc (`evidence/C7/jeu-d-essai-2026-10-03*.json`) : 0 bloqué par l'injection ;
-- 230 briefings écrits par les modèles lors des bancs (`evidence/C7/**/resultats-*.jsonl`) : 0 refusé par la sortie
-  AMF, 0 par le contrôle de fuite.
+- 38 occurrences de passages d'articles du jeu figé du banc (`evidence/C7/jeu-d-essai-2026-10-03*.json`), soit
+  **19 textes distincts** présents dans les deux versions du jeu (seconde relecture du 07/11) : 0 bloqué par
+  l'injection ;
+- 230 briefings écrits par les modèles lors des bancs (`evidence/C7/**/resultats-*.jsonl`), 230 textes distincts :
+  0 refusé par la sortie AMF, 0 par le contrôle de fuite.
 
 Les deux marqueurs `xfail` stricts des tests (injection et sortie AMF), posés le 17/08 parce que le seuil n'était pas
 atteint, sont retirés : `pytest` les signalait comme réussis par surprise, ce qu'ils exigeaient le jour de la levée.
@@ -101,7 +103,8 @@ nombres, unités, exposants et citations ; le contenu réel des deux prompts. Av
   vérifie sur le prompt réellement construit, caractères d'étiquette Unicode compris (une phrase entière invisible).
 
 **Après** : 461 réussis, 0 en échec ; les quatre `xfail` stricts retirés. Remesure sur `bf425b5`, nombres identiques
-(12 sur 12 pour les trois garde-fous, 0 faux positif, 0 sur 38 passages réels bloqué, 0 sur 230 briefings refusé) :
+(12 sur 12 pour les trois garde-fous, 0 faux positif sur ces jeux, 0 sur 38 occurrences de passages réels bloqué,
+19 textes distincts, 0 sur 230 briefings refusé) :
 [`remesure-2026-11-07-bf425b5.txt`](remesure-2026-11-07-bf425b5.txt). Budget : sur la mesure de 15 h 22, le plus
 long appel prend 5,40 ms sur les six entrées hostiles ([`chronometrage-entrees-hostiles-apres-bf425b5.txt`](chronometrage-entrees-hostiles-apres-bf425b5.txt)).
 Le double contrôle a mesuré jusqu'à 10,47 ms sur son propre rejeu : ces millisecondes dépendent du poste et du
@@ -191,19 +194,44 @@ Le libellé « S9 fermé » de `evals/mesurer_s9.py` (injection et fuite seules)
 jeu tenu à l'écart ; ce n'est pas la clôture de S9 » (commit `8bd51a1`). Remesures sur le code final : voir la
 section suivante.
 
-## Remesure sur le code final (commit `0921906`, 07/11/2026)
+## Seconde relecture du commit 6c47f6f (autre agent)
 
-Chaque nombre est calculé par les scripts de ce dossier, sur le commit `0921906`, `guardrails/` identique au commit.
+La seconde relecture a reproduit les mesures (865 tests ciblés réussis ; budget : 9,32 ms au plus dans son exécution)
+et trouvé trois détections que la première version de S9 (`376489f`) obtenait et que la contextualisation avait
+perdues. Ce sont des pertes dans la correction en cours, pas des régressions déployées : l'état d'avant S9
+(`c73e3ba`) ne les détectait pas non plus. Corrigées au commit `2863955`, tests d'abord (6 vus rouges) :
+
+| Conseil qui passait | Cause | Correction |
+|---|---|---|
+| « LVMH est une occasion à saisir pour se diversifier. » | l'exception d'entreprise couvrait aussi la diversification d'un investisseur | l'exception ne vaut que si une entreprise voit l'occasion (« le groupe y voit une occasion ») pour sa propre activité, sans mot de conseil ensuite |
+| « LVMH à renforcer. », « LVMH, à renforcer. » | la règle exigeait « : » ou un verbe de liaison | une société nommée suivie de la consigne et de la fin de phrase est refusée |
+| « Cette action est à ne pas manquer. », « LVMH est à ne pas manquer. » | seuls « titre » et « valeur » étaient reconnus | « action », « dossier » et une société nommée sujets de « est à ne pas manquer » sont refusés |
+
+Contre-tests factuels gardés : « Le groupe y voit une occasion à saisir pour se diversifier dans l'énergie », « Le
+Parlement invite Bruxelles à renforcer les contrôles », « L'action de sensibilisation de la mairie est un rendez-vous
+à ne pas manquer », plus les quatre faits de la première relecture. Les choix de casse et la limite de la négation
+sont écrits dans « Les limites ». La remesure compte désormais les textes distincts : 38 occurrences de passages,
+19 textes distincts ; 230 briefings, 230 textes distincts.
+
+La relecture rejette aussi une proposition de ce compte rendu : « tout nouveau constat automatique sera une limite
+sauf régression » n'est pas une règle suffisante. Chaque constat se classe selon son effet, sa gravité, son
+périmètre et sa preuve ; les pertes dans les familles modifiées se corrigent dans la correction en cours.
+
+## Remesure sur le code final (commit `2863955`, 07/11/2026)
+
+Chaque nombre est calculé par les scripts de ce dossier, sur le commit `2863955`, `guardrails/` identique au commit.
+Les mesures du commit `0921906` (fichiers `*-0921906.txt`) restent dans ce dossier comme étape datée ; elles précèdent
+la seconde relecture.
 
 | Mesure | Résultat | Sortie brute |
 |---|---|---|
-| Injection : ancien jeu, jeu tenu à l'écart | 10 sur 10, 12 sur 12 ; 0 faux positif (0 sur 8, 0 sur 12) | [`remesure-2026-11-07-0921906.txt`](remesure-2026-11-07-0921906.txt) |
-| Fuite : ancien jeu, jeu tenu à l'écart | 7 sur 7, 12 sur 12 ; 0 faux positif (0 sur 11, 0 sur 12) | idem |
-| Sortie AMF : ancien jeu, jeu tenu à l'écart | 10 sur 10, 12 sur 12 ; 0 refusée à tort (0 sur 6, 0 sur 12) | idem |
-| Textes réels | 0 sur 38 passages bloqué ; 0 sur 230 briefings refusé (AMF et fuite) | idem |
-| Entrée : intention, détournement, telles quelles et sous cinq masques | 5 sur 5 et 6 sur 6 partout ; 0 faux positif sur les 17 questions légitimes | [`entree-masquee-apres-0921906.txt`](entree-masquee-apres-0921906.txt) |
-| Budget sur les six entrées hostiles | le plus long appel : 7,58 ms (budget : une seconde) | [`chronometrage-entrees-hostiles-apres-0921906.txt`](chronometrage-entrees-hostiles-apres-0921906.txt) |
-| Suite complète | 3107 réussis, 82 ignorés, 0 en échec | sortie de `pytest -q` du 07/11, 17 h |
+| Injection : ancien jeu, jeu tenu à l'écart | 10 sur 10, 12 sur 12 ; 0 faux positif sur ces jeux (0 sur 8, 0 sur 12) | [`remesure-2026-11-07-2863955.txt`](remesure-2026-11-07-2863955.txt) |
+| Fuite : ancien jeu, jeu tenu à l'écart | 7 sur 7, 12 sur 12 ; 0 faux positif sur ces jeux (0 sur 11, 0 sur 12) | idem |
+| Sortie AMF : ancien jeu, jeu tenu à l'écart | 10 sur 10, 12 sur 12 ; 0 refusée à tort sur ces jeux (0 sur 6, 0 sur 12) ; hors de ces jeux, 4 faits refusés par choix | idem |
+| Textes réels | 0 sur 38 occurrences de passages bloquée (19 textes distincts) ; 0 sur 230 briefings refusé (230 textes distincts, AMF et fuite) | idem |
+| Entrée : intention, détournement, telles quelles et sous cinq masques | 5 sur 5 et 6 sur 6 partout ; 0 faux positif sur les 17 questions légitimes | [`entree-masquee-apres-2863955.txt`](entree-masquee-apres-2863955.txt) |
+| Budget sur les six entrées hostiles | le plus long appel : 9,14 ms dans cette exécution (budget : une seconde ; un chiffre daté, pas un plafond) | [`chronometrage-entrees-hostiles-apres-2863955.txt`](chronometrage-entrees-hostiles-apres-2863955.txt) |
+| Suite complète | 3116 réussis, 82 ignorés, 0 en échec | [`pytest-complet-2863955.txt`](pytest-complet-2863955.txt), écrit par la commande elle-même |
 
 ## Les limites, écrites
 
@@ -216,10 +244,20 @@ Chaque nombre est calculé par les scripts de ce dossier, sur le commit `0921906
   de lecture `rita_lecture`.
 - Les 12 sur 12 mesurent ces jeux ; les 230 briefings sans refus sont un résultat de rejeu sur des textes déjà
   écrits, pas une garantie pour les textes à venir.
-- Les règles AMF par famille reposent sur des listes (objets d'investissement, verbes d'entreprise, nom propre en
-  majuscule) : un fait tourné autrement peut encore être refusé, un conseil tourné autrement peut passer. Les 25 faits
-  et les 13 conseils des tests mesurent ces formulations-là. Pour contextualiser les règles, les cas des jeux figés
-  qu'elles attrapent ont été lus : ces jeux ne sont plus « tenus à l'écart » de ces règles.
+- Les règles AMF par famille reposent sur des listes (objets d'investissement, verbes d'entreprise, objets de fait
+  par verbe, nom propre en majuscule) : un fait tourné autrement peut encore être refusé, un conseil tourné autrement
+  peut passer. Les 31 faits acceptés, les 47 conseils refusés et les 4 faits refusés par choix de
+  `tests/test_sortie_amf_contexte.py` mesurent ces formulations-là. « 0 faux positif » vaut **pour les jeux figés**
+  (0 sur 6, 0 sur 12) ; les 4 faits refusés par choix sont de vrais faux positifs, acceptés par la décision de liste
+  fermée. Pour contextualiser les règles, les cas des jeux figés qu'elles attrapent ont été lus : ces jeux ne sont
+  plus « tenus à l'écart » de ces règles, et ne valent plus une validation indépendante.
+- **Casse, choix écrit** : une société n'est reconnue comme sujet ou objet que par sa majuscule (accentuée comprise).
+  « lvmh reste à renforcer » passe. La reconnaître sans majuscule refuserait « la sécurité reste à renforcer » ; la
+  liste des valeurs (`data/univers-155.csv`) n'entre pas dans l'image Docker, la règle ne peut donc pas s'y appuyer en
+  production. Le modèle écrit les noms de sociétés avec leur majuscule : une minuscule suppose une manipulation.
+- **Négation** : « Mieux vaut ne pas vendre LVMH » passe, dans les trois versions comparées par la seconde relecture
+  (avant S9, `376489f`, `6c47f6f`) ; à l'inverse, « Rien ne permet de dire qu'il est temps de renforcer la sécurité
+  informatique » est refusé. Une expression régulière ne comprend pas la négation.
 - **Correction testée localement, pas déployée** : au 07/11, elle vit sur la branche `s9-garde-fous`, ni fusionnée
   dans `main` ni déployée. La production tourne encore avec les garde-fous d'avant S9. La clôture de S9 devra
   distinguer les deux : correction testée localement, puis version effectivement déployée et vérifiée.
