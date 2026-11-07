@@ -1,0 +1,2 @@
+# Releve du 2026-11-07T19:47:33Z (UTC), commande : curl -sS https://178-104-184-125.sslip.io/health
+{"status":"ok","project":"RITA","commit":"6f428d61511019d7b6013fb007e290c133d48c2e","construit_le":"2026-11-07T19:40:46Z","index":{"nb_articles":2196,"id_max":2954,"empreinte":"437768d0eb89fd22bd2be2ce070a4df7f78cc52bfcbe5a71f9ef8cbc3fcfb7d6","identifiant":"00606af3671049c18d41c5846a01098d","configuration":{"modele":"all-MiniLM-L6-v2","texte":"texte_indexable(titre, resume)","format":1},"construit_le":"2026-11-07T19:45:29+00:00"}}
