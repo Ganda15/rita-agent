@@ -190,3 +190,34 @@ def test_un_conseil_avec_un_objet_de_la_liste_fermee_est_refuse(texte):
 @pytest.mark.parametrize("texte", FAITS_HORS_LISTE_REFUSES_PAR_CHOIX)
 def test_un_fait_hors_liste_fermee_est_refuse_par_choix(texte):
     assert not verifier_sortie(texte)["conforme"]
+
+
+# --- Seconde relecture du 07/11 (autre agent, commit 6c47f6f) : trois détections de 376489f perdues -------------------
+# « LVMH est une occasion à saisir pour se diversifier » (l'exception d'entreprise couvrait un investisseur), « LVMH à
+# renforcer » (forme nominale), « Cette action est à ne pas manquer » (« action » oublié). L'exception d'une occasion
+# ne vaut plus que si une entreprise la voit (« le groupe y voit une occasion ») pour sa propre activité.
+CONSEILS_PERDUS_DEPUIS_376489F = [
+    "LVMH est une occasion à saisir pour se diversifier.",
+    "Une occasion à saisir pour se diversifier sur les actions américaines.",
+    "LVMH à renforcer.",
+    "LVMH, à renforcer.",
+    "Cette action est à ne pas manquer.",
+    "LVMH est à ne pas manquer.",
+]
+
+FAITS_PROCHES_DES_CONSEILS_PERDUS = [
+    "Le groupe y voit une occasion à saisir pour se diversifier dans l'énergie.",
+    "Le Parlement invite Bruxelles à renforcer les contrôles.",
+    "L'action de sensibilisation de la mairie est un rendez-vous à ne pas manquer.",
+]
+
+
+@pytest.mark.parametrize("texte", CONSEILS_PERDUS_DEPUIS_376489F)
+def test_un_conseil_perdu_depuis_la_premiere_version_de_s9_est_refuse(texte):
+    assert not verifier_sortie(texte)["conforme"]
+
+
+@pytest.mark.parametrize("texte", FAITS_PROCHES_DES_CONSEILS_PERDUS)
+def test_un_fait_proche_d_un_conseil_perdu_n_est_pas_refuse(texte):
+    verdict = verifier_sortie(texte)
+    assert verdict["conforme"], verdict["motifs_detectes"]

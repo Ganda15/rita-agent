@@ -52,16 +52,22 @@ def main() -> None:
               f"légitimes refusées à tort {a_tort} sur {len(legitimes)}")
 
     print("## Textes réels")
+    # Seconde relecture du 07/11 : compter aussi les textes DISTINCTS, les deux versions du jeu portant les mêmes passages.
     n = bloques = 0
+    distincts_passages: set[str] = set()
     for f in ("evidence/C7/jeu-d-essai-2026-10-03.json", "evidence/C7/jeu-d-essai-2026-10-03-v1-sans-indicateurs.json"):
         for cas in json.loads((DEPOT / f).read_text(encoding="utf-8"))["cas"]:
             for p in cas.get("passages") or []:
                 n += 1
-                bloques += neutraliser(p.get("texte") or json.dumps(p, ensure_ascii=False), "eval")["bloque"]
-    print(f"passages d'articles du jeu figé du banc : {bloques} bloqués par l'injection sur {n}")
+                texte = p.get("texte") or json.dumps(p, ensure_ascii=False)
+                distincts_passages.add(texte)
+                bloques += neutraliser(texte, "eval")["bloque"]
+    print(f"passages d'articles du jeu figé du banc : {bloques} bloqués par l'injection sur {n} occurrences "
+          f"({len(distincts_passages)} textes distincts)")
 
     fichiers = sorted(set(glob.glob(str(DEPOT / "evidence/C7/**/resultats-*.jsonl"), recursive=True)))
     lignes = textes = amf = fuite = 0
+    distincts_briefings: set[str] = set()
     for f in fichiers:
         for ligne in Path(f).read_text(encoding="utf-8").splitlines():
             if not ligne.strip():
@@ -71,9 +77,11 @@ def main() -> None:
             if not texte.strip():
                 continue
             textes += 1
+            distincts_briefings.add(texte)
             amf += not verifier_sortie(texte)["conforme"]
             fuite += not verifier_fuite(texte, CONSIGNES_DES_PARCOURS)["conforme"]
-    print(f"briefings des bancs ({len(fichiers)} fichiers resultats-*.jsonl, {lignes} lignes, {textes} avec un texte) : "
+    print(f"briefings des bancs ({len(fichiers)} fichiers resultats-*.jsonl, {lignes} lignes, {textes} avec un texte, "
+          f"{len(distincts_briefings)} textes distincts) : "
           f"{amf} refusés par la sortie AMF, {fuite} par le contrôle de fuite (consignes des parcours comprises)")
 
 

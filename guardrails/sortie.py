@@ -109,9 +109,16 @@ FAMILLES_AMF = [
      rf"|{_LE_MOMENT}renforcer\b{_sauf(_FAITS_APRES_RENFORCER)}"
      r"|\b(attractive|good|ideal)\s+entry\s+point|\b(time|moment)\s+to\s+(buy|sell|get\s+in|take\s+profits)", "point_d_entree"),
     # une occasion à ne pas manquer, sauf celle d'une entreprise ; un titre à ne pas manquer ; le tort de l'investisseur
-    (rf"\b(opportunit[ée]|occasion)s?\s+[àa]\s+(saisir|ne\s+pas\s+(manquer|laisser\s+passer|rater))"
-     rf"(?!\s+pour\s+({_VERBE_D_ENTREPRISE}))"
+    # Seconde relecture du 07/11 : l'exception ne vaut que si une ENTREPRISE voit l'occasion (« le groupe y voit une
+    # occasion ») ET qu'elle sert sa propre activité, sans mot de conseil ensuite ; « LVMH est une occasion à saisir
+    # pour se diversifier » et « Cette action est à ne pas manquer » sont refusés.
+    (r"(?<!voit une )(?<!voit là une )(?<!voit ici une )\b(opportunit[ée]|occasion)s?\s+[àa]\s+"
+     r"(saisir|ne\s+pas\s+(manquer|laisser\s+passer|rater))"
+     rf"|\b(opportunit[ée]|occasion)s?\s+[àa]\s+(saisir|ne\s+pas\s+(manquer|laisser\s+passer|rater))"
+     rf"(?!\s+pour\s+({_VERBE_D_ENTREPRISE})(?![^.;!?]{{0,80}}?\b{_MOTS_DE_CONSEIL}\b))"
      r"|\b(titre|valeur)s?\b[^.;]{0,40}?\b[àa]\s+ne\s+pas\s+(manquer|laisser\s+passer|rater)"
+     rf"|((ce|cette|le|la|l['’]|une|un)\s*(titre|valeur|action|dossier)|{_SOCIETE})\s+(est|reste|serait|demeure)\s+"
+     r"[àa]\s+ne\s+pas\s+(manquer|laisser\s+passer|rater)"
      r"|\b(investisseurs?|actionnaires?|[ée]pargnants?|lecteurs?|vous)\s+(aurai(en)?t|auriez)\s+tort\s+de\s+ne\s+pas"
      r"|\b(worth|time\s+for)\s+(adding|buying|owning)", "occasion_a_saisir"),
     # la vente ou l'abstention présentées comme une évidence (tournures de conseil, objets admis par verbe)
@@ -126,6 +133,10 @@ FAMILLES_AMF = [
     (r"\b(titre|valeur)s?\b[^.;]{0,40}?\b[àa]\s+(accumuler|all[ée]ger|renforcer)\b"
      rf"|{_SOCIETE}\s*(:|\s+(reste|est|demeure|serait|semble|para[iî]t))\s+(un\s+titre\s+|une\s+valeur\s+)?"
      r"[àa]\s+(accumuler|all[ée]ger|renforcer)\b"
+     # la forme nominale, une société nommée puis la consigne et la fin de la phrase : « LVMH à renforcer. » ; un objet
+     # après le verbe laisse passer le fait (« Le Parlement invite Bruxelles à renforcer les contrôles »)
+     rf"|{_SOCIETE}\s*,?\s+[àa]\s+(accumuler|all[ée]ger|renforcer)({_FIN_DE_PHRASE}"
+     r"|\s+(sur|en|au|apr[èe]s|avant)\s+(repli|baisse|faiblesse|rebond|hausse|creux|cours|niveaux?))"
      r"|:\s*[àa]\s+(accumuler|all[ée]ger|renforcer)\b"
      r"|\b[àa]\s+(accumuler|all[ée]ger|renforcer)\s+(sur|en|au|apr[èe]s|avant)\s+(repli|baisse|faiblesse|rebond|hausse|creux|cours|niveaux?)"
      r"|\b(renforcer|all[ée]ger|accumuler)\s+(votre|vos)\s+(positions?|lignes?|expositions?|participations?)"
