@@ -55,4 +55,5 @@
   compte donc trois fois ; 10 échecs, c'est trois ou quatre fautes de frappe en 15 minutes.
 - **Une clé absente ne compte pas** : ce n'est pas un essai, et l'interface n'envoie jamais de clé vide
   (`frontend/commun.js`, `frontend/tableau-de-bord.js`).
-- Hors du plan, non traité : la clé d'exercice (`X-Cle-Exercice`, routes `/exercice/*`) n'a pas de frein.
+- **La clé d'exercice** (`X-Cle-Exercice`, routes `/exercice/*`), d'abord laissée hors du plan, a reçu le même frein,
+  sur le même compteur par adresse, après la revue de sécurité automatique du 07/11 (`api/exercice.py`, deux tests).

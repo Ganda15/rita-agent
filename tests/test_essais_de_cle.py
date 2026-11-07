@@ -140,3 +140,26 @@ def test_le_contrat_annonce_le_frein():
 
     authentification = DESCRIPTION.split("### Authentification", 1)[1].split("###", 1)[0]
     assert "TROP_D_ESSAIS" in authentification and "15 minutes" in authentification
+
+
+# --- La clé d'exercice (revue de sécurité automatique du 07/11 : même frein sur la route sœur) -----------------------
+
+def test_la_cle_d_exercice_a_le_meme_frein(client, monkeypatch):
+    """`/exercice/*` a sa propre clé (`X-Cle-Exercice`) : sans frein, elle restait la seule porte à essais illimités.
+    Même compteur par adresse que la clé d'API : 10 mauvaises clés, quelle que soit la porte, puis 429."""
+    monkeypatch.setenv("RITA_CLE_EXERCICE", "cle-d-exercice-de-test-32-caracteres")
+    demande = {"nom": "Era", "motif": "essai du frein"}
+    codes = [client.post("/exercice/panne", json=demande,
+                         headers={"X-Cle-Exercice": f"mauvaise-cle-exercice-{i:02d}-xxxxxx"}).status_code
+             for i in range(10)]
+    assert codes == [403] * 10
+    reponse = client.post("/exercice/panne", json=demande, headers={"X-Cle-Exercice": "mauvaise-cle-exercice-11-xxxxxx"})
+    assert reponse.status_code == 429 and reponse.json()["detail"]["motif"] == "TROP_D_ESSAIS"
+    # Le compteur est commun : l'adresse est aussi bloquée sur les routes de données.
+    assert client.get(ROUTE, headers={"X-API-Key": CLE_DE_TEST}).status_code == 429
+
+
+def test_une_cle_d_exercice_absente_ne_compte_pas(client, monkeypatch):
+    monkeypatch.setenv("RITA_CLE_EXERCICE", "cle-d-exercice-de-test-32-caracteres")
+    demande = {"nom": "Era", "motif": "essai du frein"}
+    assert [client.post("/exercice/panne", json=demande).status_code for _ in range(12)] == [403] * 12

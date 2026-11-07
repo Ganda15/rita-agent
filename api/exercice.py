@@ -20,6 +20,7 @@ from fastapi import APIRouter, HTTPException, Request, Security
 from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel, ConfigDict, Field
 
+from api.limiteur import noter_mauvaise_cle, refuser_si_bloquee
 from monitorage import exercice as module_exercice
 
 logger = logging.getLogger(__name__)
@@ -40,8 +41,13 @@ def verifier_cle_exercice(request: Request, cle: str = Security(ENTETE_CLE)) -> 
     if len(attendue) < LONGUEUR_MINIMALE_CLE:
         raise HTTPException(status_code=503,
                             detail="Exercices désactivés : RITA_CLE_EXERCICE absente ou trop courte sur ce serveur.")
+    # Constat S3 (07/11/2026) : même frein que la clé d'API, même compteur par adresse (revue de sécurité automatique du
+    # 07/11 : sans lui, cette clé restait la seule porte à essais illimités). Une clé absente ne compte pas.
+    refuser_si_bloquee(request)
     if not cle or not secrets.compare_digest(cle, attendue):
         logger.warning("cle d'exercice refusee : request_id=%s route=%s", request_id_courant(), request.url.path)
+        if cle:
+            noter_mauvaise_cle(request)
         raise HTTPException(status_code=403, detail="Clé d'exercice invalide ou absente")
 
 

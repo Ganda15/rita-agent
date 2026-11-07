@@ -20,6 +20,8 @@ Une mauvaise clé recevait 403 et laissait une ligne de journal ; rien ne freina
   (`evidence/C17/correctif-port-8001-2026-11-07.md`).
 - Registre RGPD : traitement **T9**, inscrit avant sa mise en service (adresse en mémoire, 15 minutes au plus).
 - `docs/exploitation.md` : « Une adresse bloquée par le frein des essais de clé ».
+- La clé d'exercice (`X-Cle-Exercice`, routes `/exercice/*`) : même frein, même compteur, ajouté le 07/11 après la revue
+  de sécurité automatique (2 tests dans `tests/test_essais_de_cle.py`, rouge avant, vert après).
 
 ## Tests, écrits avant le code
 
@@ -35,4 +37,3 @@ Une mauvaise clé recevait 403 et laissait une ligne de journal ; rien ne freina
   - les mêmes appels avec un `X-Forwarded-For` inventé, différent à chaque fois : la 11e reçoit quand même 429 (Caddy
     remplace l'en-tête envoyé par le visiteur) ; sinon, l'option A ne tient pas ;
   - la vraie clé depuis une autre connexion répond 200.
-- La clé d'exercice (`X-Cle-Exercice`, routes `/exercice/*`) n'a pas de frein ; hors du plan.
