@@ -70,6 +70,8 @@ def test_tri_et_recherche_portent_sur_toutes_les_valeurs_et_ramenent_a_la_premie
 def test_sous_vingt_et_une_valeurs_pas_de_boutons(navigateur, serveur):  # noqa: F811
     contexte, page = _ouvrir(navigateur, serveur, 20)
     assert len(_tickers(page)) == 20
+    # Revue Claude Code de #226 : is_hidden() vaut aussi pour un élément absent ; la barre doit exister, masquée.
+    assert page.locator("#pagination").count() == 1
     assert page.locator("#pagination").is_hidden()
     contexte.close()
 
@@ -96,7 +98,9 @@ def test_les_boutons_de_page_sont_des_boutons_qui_pilotent_le_tableau(navigateur
     for bouton in ("#pages-precedentes", "#pages-suivantes"):
         assert page.locator(bouton).evaluate("b => b.tagName === 'BUTTON' && b.type === 'button'")
         assert page.locator(bouton).get_attribute("aria-controls") == "tableau-indicateurs"
-    assert page.locator("#position-pages").get_attribute("aria-live") == "polite"
+    # Revue Claude Code de #226 : la position visible n'est plus une zone annoncée (elle changeait à chaque touche de la
+    # recherche) ; une zone dédiée annonce le changement de page (test plus bas).
+    assert page.locator("#annonce-pages").get_attribute("aria-live") == "polite"
     contexte.close()
 
 
@@ -114,8 +118,10 @@ def _zone_descendue(page) -> tuple[int, int]:
 def _premiere_ligne_visible(page) -> bool:
     return page.evaluate("""() => {
         const z = document.querySelector('.tableau-large').getBoundingClientRect();
+        const t = document.querySelector('.tableau-large thead').getBoundingClientRect();
         const l = document.querySelector('#lignes tr').getBoundingClientRect();
-        return l.top >= z.top && l.bottom <= z.bottom;
+        // sous l'en-tête fixe, pas seulement dans la zone (revue Claude Code de #226)
+        return l.top >= t.bottom - 1 && l.bottom <= z.bottom;
     }""")
 
 
@@ -153,4 +159,42 @@ def test_au_clavier_le_focus_reste_sur_le_bouton_tant_qu_il_sert(navigateur, ser
     page.keyboard.press("Enter")
     assert page.locator("#position-pages").inner_text() == "Valeurs 41 à 45 sur 45"
     assert page.evaluate("document.activeElement.id") == "pages-precedentes", "dernière page : le focus passe à l'autre bouton"
+    contexte.close()
+
+
+# --- Revue Claude Code de #226 (07/11) -------------------------------------------------------------------------------
+def test_recharger_les_donnees_ramene_a_la_premiere_page(navigateur, serveur):  # noqa: F811
+    """Une nouvelle clé recharge les données : le tableau repart de la première page, comme pour la recherche."""
+    contexte, page = _ouvrir(navigateur, serveur, 45)
+    page.locator("#pages-suivantes").click()
+    assert page.locator("#position-pages").inner_text() == "Valeurs 21 à 40 sur 45"
+    page.evaluate("""() => {
+        document.getElementById('cle').value = 'cle-de-test-smoke-ui-32-caracteres-x';
+        document.getElementById('form-cle').requestSubmit();
+    }""")
+    # `expect` et non `wait_for_function` : la politique de sécurité de la page (CSP) interdit l'évaluation d'une chaîne,
+    # et `wait_for_function` échouait pour cette raison, pas pour le défaut cherché (vu le 07/11).
+    from playwright.sync_api import expect
+    expect(page.locator("#position-pages")).to_have_text("Valeurs 1 à 20 sur 45", timeout=3000)
+    assert _tickers(page)[0] == "V01.PA"
+    contexte.close()
+
+
+def test_la_case_des_cotations_perimees_ramene_a_la_premiere_page(navigateur, serveur):  # noqa: F811
+    contexte, page = _ouvrir(navigateur, serveur, 45)
+    page.locator("#pages-suivantes").click()
+    page.locator("#masquer-perimees").click()
+    assert page.locator("#position-pages").inner_text() == "Valeurs 1 à 20 sur 45"
+    contexte.close()
+
+
+def test_la_position_n_est_annoncee_qu_au_changement_de_page(navigateur, serveur):  # noqa: F811
+    """Un lecteur d'écran n'entend pas la position à chaque touche de la recherche, seulement au changement de page."""
+    contexte, page = _ouvrir(navigateur, serveur, 45)
+    assert page.locator("#position-pages").get_attribute("aria-live") is None
+    annonce = page.locator("#annonce-pages")
+    page.fill("#recherche", "VAL")
+    assert annonce.text_content() == ""
+    page.locator("#pages-suivantes").click()
+    assert annonce.text_content() == "Valeurs 21 à 40 sur 45"
     contexte.close()

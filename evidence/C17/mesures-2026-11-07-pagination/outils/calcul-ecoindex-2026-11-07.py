@@ -16,8 +16,9 @@ Version corrigée le 07/11 au soir, après la relecture d'un autre agent du comm
    (cnumr/EcoIndex_python, components/ecoindex/scraper/scrap.py : « size=self.all_requests.total_size / 1000 ») ;
 3. les requêtes suivent le périmètre du poids (le collecteur officiel compte toutes les requêtes du chargement).
 
-Usage : python calcul-ecoindex-2026-11-07.py <dossier avant> <dossier apres> [<fichier de sortie>]
-(par défaut : ecoindex-2026-11-07-corrige.json, à côté du dossier « apres »)
+Usage : python calcul-ecoindex-2026-11-07.py <dossier avant> <dossier apres> <fichier de sortie>
+Le fichier de sortie est obligatoire (revue Claude Code de #226) : sans lui, le script écrivait à côté du second
+dossier, et lancé sur les relevés du 06/11, il aurait ajouté un fichier dans une preuve d'une autre date.
 """
 import json
 import sys
@@ -93,8 +94,10 @@ def mesurer(dossier):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) != 4:
+        sys.exit("usage : calcul-ecoindex-2026-11-07.py <dossier avant> <dossier apres> <fichier de sortie>")
     sans, avec = mesurer(sys.argv[1]), mesurer(sys.argv[2])
-    destination = Path(sys.argv[3]) if len(sys.argv) > 3 else Path(sys.argv[2]).parent / "ecoindex-2026-11-07-corrige.json"
+    destination = Path(sys.argv[3])
     print("| Écran | DOM avant | DOM après | Requêtes avant, après | Poids avant | Poids après | EcoIndex avant | EcoIndex après |")
     print("|---|---:|---:|---:|---:|---:|---|---|")
     for ecran in sans:

@@ -121,6 +121,7 @@ async function chargerIndicateurs(cle) {
   document.getElementById("note-risque").textContent = risque
     ? "" : "Volatilité, pire baisse et RSI indisponibles pour le moment ; les performances restent à jour.";
   remplirListeDesValeurs();
+  debutPage = 0;   // de nouvelles données repartent de la première page (revue Claude Code de #226)
   afficher();
 }
 
@@ -332,6 +333,9 @@ function changerDePage(nouveauDebut, bouton) {
   debutPage = nouveauDebut;
   afficher();
   document.querySelector(".tableau-large").scrollTop = 0;
+  // Seul le changement de page s'annonce aux lecteurs d'écran : la position visible change aussi à chaque touche de la
+  // recherche, et l'annoncer alors serait du bruit (revue Claude Code de #226).
+  document.getElementById("annonce-pages").textContent = document.getElementById("position-pages").textContent;
   if (avaitLeFocus && bouton.disabled) {
     const autre = document.getElementById(bouton.id === "pages-suivantes" ? "pages-precedentes" : "pages-suivantes");
     if (!autre.disabled) autre.focus();

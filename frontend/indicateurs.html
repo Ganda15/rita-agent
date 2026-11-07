@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RITA : Indicateurs de marché</title>
-  <link rel="stylesheet" href="style.css?v=52626f29d4">
+  <link rel="stylesheet" href="style.css?v=c947d646ed">
   <link rel="icon" type="image/png" href="logo-rita-clair.png">
   <script src="theme.js?v=32a0dab24c"></script>
 </head>
@@ -99,7 +99,9 @@
            portent sur toutes les valeurs avant le découpage. Masqué sous 21 valeurs. -->
       <nav id="pagination" class="pagination" aria-label="Pages du tableau des indicateurs" hidden>
         <button type="button" id="pages-precedentes" aria-controls="tableau-indicateurs">Valeurs précédentes</button>
-        <p id="position-pages" aria-live="polite"></p>
+        <p id="position-pages"></p>
+        <!-- Annoncé au seul changement de page, pas à chaque touche de la recherche. -->
+        <p id="annonce-pages" class="annonce-ecran" aria-live="polite"></p>
         <button type="button" id="pages-suivantes" aria-controls="tableau-indicateurs">Valeurs suivantes</button>
       </nav>
       <p id="legende-couleurs" class="precision">
@@ -165,6 +167,6 @@
 
   <script src="commun.js?v=854b0d315c"></script>
   <script src="graphiques.js?v=864f0a6e64"></script>
-  <script src="indicateurs.js?v=a5a6c747bf"></script>
+  <script src="indicateurs.js?v=1cc58c780c"></script>
 </body>
 </html>

@@ -82,7 +82,8 @@ sous-estimés ; corrigés : 102,6 ; 36,2 ko et 65,0 ; 28,0 ko. Le rapport E4 (§
 | Mobile, avant puis après | 96, puis 97 | 100, puis 100 | 100, puis 100 | 90, puis 90 |
 
 Le score automatique Lighthouse d'accessibilité reste à 100 avant et après dans cette mesure locale. La pagination
-utilise des boutons natifs et une zone `aria-live` pour la position. Cela ne constitue pas un audit complet
+utilise des boutons natifs ; la position est annoncée par une zone `aria-live` au seul changement de page (depuis la
+revue Claude Code de #226 : elle l'était aussi à chaque touche de la recherche). Cela ne constitue pas un audit complet
 d'accessibilité ni une vérification de l'annonce avec un lecteur d'écran. Le rapport Lighthouse signale aussi
 `label-content-name-mismatch` (108 éléments avant, 20 après, compte du relecteur), pondéré à zéro dans le score ; ce
 constat est antérieur à la pagination et n'est pas traité ici. Rapports complets de l'écran après pagination :
