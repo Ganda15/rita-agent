@@ -10,6 +10,22 @@
 h2#glossaire + ul{ columns:2; column-gap:18pt; font-size:9pt; }
 h2#glossaire + ul li{ margin-bottom:0; }
 h2#matrice + p + table td:first-child{ width:27%; }
+/* 07/11, demande d'Era : les couleurs du rapport E2 (choix du 06/11 sur le nuancier) : tableaux d'information en
+   style A (en-tête marine, lignes zébrées, première colonne marine), titres en dégradé marine vers sarcelle, code
+   coloré. L'espacement d'E2 n'est pas repris, pour garder le nombre de pages. */
+:root{ --zebre:#F2F6FA; }
+table thead th{ background:var(--marine); color:#fff; padding:2.5pt 5pt; }
+table tbody tr:nth-child(even) td{ background:var(--zebre); }
+table tbody td:first-child{ font-weight:600; color:var(--marine); }
+td{ padding-top:2.5pt; padding-bottom:2.5pt; padding-left:5pt; }
+table thead th code{ color:#fff; background:rgba(255,255,255,.16); border:none; }
+body h1, body h2{ background:linear-gradient(90deg, #12395E, #14607F); color:#fff; }
+body h1{ padding:2pt 10pt; }
+body h2{ padding:1pt 10pt; }
+body h3{ background:linear-gradient(90deg, #D6E6F7, #EEF5FC); color:#12395E; padding:1pt 9pt; }
+pre{ background:#0F2A44; color:#E8EEF5; border:none; border-radius:4pt; padding:6pt 9pt; }
+pre code{ color:inherit; background:none; }
+code{ background:#E3F0F3; color:#0D4C5E; border-radius:2pt; }
 </style>
 
 <div><img class="logo" src="../E3/logo/rita-logo-marque.png" alt="Logo de RITA"></div>
