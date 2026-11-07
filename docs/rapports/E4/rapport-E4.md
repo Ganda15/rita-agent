@@ -16,7 +16,7 @@ h2#matrice + p + table td:first-child{ width:27%; }
 
 # Rapport E4 : réaliser une application intégrant un service d'IA (C14 à C19)
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.7, 6 novembre 2026 · version de référence de l'application : commit `174b0c1` de `main` (tags `livrable-E1-v5`, `livrable-E2-v1` et `livrable-E3-v3`), en production le 02/11/2026 ; interface refaite en production depuis le 04/11 (`8ecc5a7`, § 6.5) ; les exécutions citées en section 6 vont du 21/10 au 02/11 · code et preuves : dépôt GitHub privé [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5)
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.8, 7 novembre 2026 · version de référence de l'application : commit `174b0c1` de `main` (tags `livrable-E1-v5`, `livrable-E2-v1` et `livrable-E3-v3`), en production le 02/11/2026 ; interface refaite en production depuis le 04/11 (`8ecc5a7`, § 6.5) ; les exécutions citées en section 6 vont du 21/10 au 02/11 · code et preuves : dépôt GitHub privé [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5)
 {: .identite }
 
 > **En une minute.** RITA aide un investisseur particulier à suivre son portefeuille et à lire l'actualité d'une
@@ -471,7 +471,7 @@ RSI d'une série plate (#78) et la pire baisse positive d'un cours qui ne fait q
 Sur les 111 valeurs réelles, aucune valeur affichée ne change. Reste un écart d'affichage : « +0,00 % » pour une
 pire baisse nulle.
 
-### 4.5 Les droits d'accès (critère 5, à consolider)
+### 4.5 Les droits d'accès (critère 5)
 
 | Règle | Dans le code |
 |---|---|
@@ -504,9 +504,10 @@ def test_question_sans_cle_403(client):
 Il n'y a qu'**une clé partagée pour les accès utilisateurs**, sans droits par utilisateur : c'est un choix pour un
 outil personnel, défendu avec son modèle de menace ([`evidence/C17/preuve-droits-acces-2026-10-03.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C17/preuve-droits-acces-2026-10-03.md)).
 
-**Ce qui n'est pas conforme** : la matrice des droits validée donne à l'API une lecture limitée des données et une
-écriture limitée au journal d'audit ; or l'API se connecte avec le rôle propriétaire (carte #76, ouverte). La
-documentation `/docs` reste publique, par décision motivée du 06/11 (D7).
+**Ce qui n'était pas conforme, corrigé le 07/11** : la matrice des droits validée donne à l'API une lecture limitée et
+une écriture limitée au journal d'audit ; l'API se connectait avec le rôle propriétaire. Depuis le 07/11, elle lit la
+base avec son rôle `rita_api` (#76), et 10 clés refusées en 15 minutes bloquent l'adresse (S3) : vérifié en production
+(`evidence/C17/verification-production-2026-11-07/`). La documentation `/docs` reste publique, décision motivée (D7).
 
 ### 4.6 La sécurité : la revue OWASP Top 10 (critère 8, à consolider)
 
@@ -517,7 +518,7 @@ applications web. Dix constats, S1 à S10 ([`evidence/C17/revue-owasp-top10-2025
 |---|---|
 | S4 : refus d'authentification non journalisés | corrigé ([`api/main.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/api/main.py), ligne 206) |
 | S5 : ticker sans longueur maximale | corrigé : 20 caractères au plus (ligne 281) |
-| S3 : aucune limite de débit | en partie : limite partagée sur `/briefing` et `/question` ; les essais de clé ne sont pas freinés |
+| S3 : aucune limite de débit | **corrigé** : limite partagée sur `/briefing` et `/question` ; essais de clé freinés par adresse (#220), vérifiés en production le 07/11 |
 | S7 : chaîne d'approvisionnement | en partie : recherche de secrets sur tout l'historique (`gitleaks`), machine de CI fixée ; dépendances de développement libres |
 | S10 : certificat proche de l'expiration | renouvelé seul le 19/10, valable jusqu'au 17/01/2027 ([`ETAT.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/ETAT.md)) |
 | S1 : aucun en-tête de sécurité | **corrigé** (#210) et mesuré en production le 07/11 sur les cinq écrans : politique de contenu, HSTS, `nosniff`, `X-Frame-Options`, `Referrer-Policy`, `Server` retiré ; reste `Via`, ajouté par Caddy |
@@ -580,12 +581,12 @@ format contrôlé ([`evidence/C17/controle-accessibilite-readme-2026-11-02.md`](
 - **La conformité aux maquettes n'est vérifiée qu'en partie** : la refonte, construite d'après les maquettes du 04/10 et
   livrée le 04/11, n'est comparée que sur la partie capturée des écrans (annexe A7) ; Question et Tableau de bord n'ont qu'un schéma
   de parcours relevé sur l'existant.
-- **Des défauts ouverts** : le rôle propriétaire de l'API (#76) ; l'affichage « +0,00 % » d'une pire baisse nulle ; sur
+- **Des défauts ouverts** : l'affichage « +0,00 % » d'une pire baisse nulle ; sur
   l'écran Briefing livré, une aide qui promet trop et des astérisques affichés (annexe A7).
   #73, #78 et #79 sont corrigés et déployés le 02/11 ; leurs cartes restent ouvertes sur GitHub jusqu'à une
   vérification manuelle en production.
-- **Sécurité** : en-têtes absents en production au 03/10 et non revérifiés depuis (S1), `/docs` public décidé (S2), mots
-  de passe par défaut (S8), garde-fous sous leur seuil (S9) ; S6 corrigé le 04/11.
+- **Sécurité** : garde-fous sous leur seuil (S9), `/docs` public décidé (S2) ; S1, S3, S6 et S8 corrigés, vérifiés en
+  production le 07/11.
 - **Les tests** : 22 ignorés en CI faute d'un élément absent de la CI ; une couverture qui exclut l'interface, la
   recherche documentaire, la surveillance et la passerelle MCP.
 - **L'éco-conception** n'a que des mesures historiques, sans mesure « après », sur trois écrans sur cinq.
@@ -763,7 +764,7 @@ Le détail est dans les limites de chaque section.
 | Besoin (C14) | spécification de l'écran 5 et compléments de l'écran 4 rétrospectifs (02/11) ; table `article` hors du modèle ; aucun test avec un lecteur d'écran ni un utilisateur extérieur | § 1.7, § 1.8 |
 | Cadre technique (C15) | schéma d'architecture sans la vigie ; hébergeur non choisi sur un critère environnemental | § 2.7 |
 | Organisation (C16) | tableau non mis à jour après le 14/10 ; revues du lundi sans compte rendu ; pas de rétrospective | § 3.6 |
-| Développement (C17) | environnement non entièrement reproductible ; écrans comparés à leurs maquettes ou au système de conception (A7) ; défaut ouvert #76, un écart d'affichage (« +0,00 % ») et deux défauts de Briefing (A7) ; constats OWASP S1, S8, S9 ; #74 mesurée, non déployée | § 4.10 |
+| Développement (C17) | environnement non entièrement reproductible ; écrans comparés à leurs maquettes ou au système de conception (A7) ; un écart d'affichage (« +0,00 % ») et deux défauts de Briefing (A7) ; constat OWASP S9 ; Indicateurs en D | § 4.10 |
 | Tests (C18) | 22 tests ignorés en CI ; couverture sans l'interface, la recherche, la surveillance ni la passerelle MCP ; trois paquets de CI sans version | § 5.6 |
 | Livraison (C19) | un tag reconstruit l'image ; retour arrière sans la base ; aucune sauvegarde automatique ; collecte non planifiée ; script de rattrapage à renforcer | § 6.4, 6.5 |
 
@@ -792,10 +793,10 @@ mais une partie du critère manque, écrite dans la colonne « Limite restante �
 | **C17.2** Interfaces intégrées et conformes aux maquettes | ✅ | trois écrans comparés à leurs maquettes, deux au système de conception (A7, test) | système écrit après le code ; comparaison à l'œil | 4.3 |
 | **C17.3** Comportements des composants et navigation conformes | ✅ | recette initiale du 02/11 (54 tests en navigateur) ; sur `8ecc5a7` (04/11), 19 tests au clavier et 8 cas d'erreur verts en CI ; #73 déployé | API simulée ; 375 px, pas 320 ; pas de recette des cinq écrans en production | 4.3 |
 | **C17.4** Composants métier conformes aux spécifications | ✅ | composants testés ; #78 et #79 déployés ; 111 valeurs vérifiées | « +0,00 % » affiché pour un zéro ; valeurs vérifiées en local | 4.4 |
-| **C17.5** Gestion des droits d'accès développée et conforme | 🟡 | clé sur les routeurs, journal des refus, quota partagé | rôle propriétaire (#76) | 4.5 |
+| **C17.5** Gestion des droits d'accès développée et conforme | ✅ | clé, refus journalisés, quota ; rôle `rita_api`, frein des essais (production, 07/11) | une clé, pas une par client | 4.5 |
 | **C17.6** Flux de données intégrés | ✅ | briefing ([`evidence/C10/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C10), 03/10) ; Question : évaluation en production du 16/10 sur `72dba4d` ([`evidence/sprint-3/evaluation-production-2026-10-16-relecture.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/sprint-3/evaluation-production-2026-10-16-relecture.md)) et tests | preuves antérieures à la version de référence | 4.4 |
-| **C17.7** Éco-conception | 🟡 | pratiques documentées ; mesure avant et après #74, cinq écrans (06/11) | #74 non déployée ; Indicateurs en D | 4.7 |
-| **C17.8** Préconisations OWASP Top 10 implémentées | 🟡 | revue S1 à S10 ; S4, S5 et S6 corrigés (S6 le 04/11), S3 et S7 en partie | S1, S8, S9 ouverts ; S2 décidé (D7) | 4.6 |
+| **C17.7** Éco-conception | 🟡 | pratiques documentées ; #74 mesurée (06/11), en production (07/11) | Indicateurs en D | 4.7 |
+| **C17.8** Préconisations OWASP Top 10 implémentées | 🟡 | revue S1 à S10 ; S1, S3 à S6 et S8 corrigés, en production (07/11) ; S7 en partie | S9 ouvert ; S2 décidé (D7) | 4.6 |
 | **C17.9** Tests couvrant composants métier et gestion des accès | ✅ | les tests des composants métier et des accès API ont été exécutés avec succès (1 925 réussis, couverture 96,32 %, 02/11) ; les 4 tests du rôle en lecture seule passent dans le job `base` | 22 tests ignorés ; couverture sans interface, `rag/`, `monitorage/`, MCP | 4.8 |
 | **C17.10** Sources versionnées et accessibles sur un dépôt distant | ✅ | dépôt GitHub privé, 21 tags `livrable-*` protégés | jury pas encore invité | 4.9 |
 | **C17.11** Documentation technique : installation, architecture, dépendances, tests, accessible | ✅ | [`docs/ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/ARCHITECTURE.md), [`README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/README.md), [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md), [`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/exploitation.md) ; format contrôlé pour le guide (31/10), [`ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/ARCHITECTURE.md) et [`CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md) (01/11), [`README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/README.md) (02/11, [`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17)) ; envoyée au formateur le 03/11 | réception et liens confirmés par Elbby, 04/11 | 4.9 |
@@ -813,14 +814,14 @@ mais une partie du critère manque, écrite dans la colonne « Limite restante �
 | **C19.6** Documentation : installation, configuration et test de la chaîne de livraison | ✅ | [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md), § 5 (installation) et § 6 (huit vérifications, dont la publication d'un tag) | vérification d'un tag écrite le 01/11, sur l'exécution du 27/10 de `livrable-E3-v2` (40490834495) | 6.1 |
 | **C19.7** Documentation communiquée, format accessible | ✅ | format de [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md) contrôlé le 01/11 ([`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17)) ; lien envoyé au formateur le 03/11 | réception et liens confirmés par Elbby, 04/11 | 6.1 |
 
-**Total : 33 ✅, 5 🟡, 0 ❌.**
+**Total : 34 ✅, 4 🟡, 0 ❌.**
 
 | Compétence | ✅ | 🟡 |
 |---|---|---|
 | C14 | 5 | 0 |
 | C15 | 5 | 0 |
 | C16 | 2 | 2 |
-| C17 | 8 | 3 |
+| C17 | 9 | 2 |
 | C18 | 6 | 0 |
 | C19 | 7 | 0 |
 
@@ -829,9 +830,8 @@ référentiel ; deux lignes C19 ajoutées pour la documentation de la chaîne, d
 C14.3, C14.4, C15.3, C17.3 et C17.4 passent à ✅ avec les preuves du 02/11 ; chaque limite, comparée aux mots du
 critère, ne le contredit pas et reste écrite dans sa colonne. 1.2 (03/11) : C16.3, C17.11, C18.6 et C19.7 passent à ✅
 après l'envoi au formateur du 03/11 ; les lignes incomplètes s'écrivent « à consolider » (🟡), comme dans la grille des compétences.
-1.3 à 1.6 (04 au 06/11) : mises à jour datées, incohérences corrigées, un seul PDF balisé, titres au style d'E2 ; aucun
-statut ne change. 1.7 (06/11, soir) : après le retour du formateur, C15.2 passe à ✅ (prestataires réévalués, § 2.5), C17.2 aussi
-(système de conception écrit, Question et Tableau de bord comparés en A7).
+1.3 à 1.6 (04 au 06/11) : mises à jour datées, sans changement de statut. 1.7 (06/11, soir) : après le retour du formateur, C15.2 passe à ✅ (prestataires réévalués, § 2.5), C17.2 aussi
+(système de conception écrit, Question et Tableau de bord comparés en A7). 1.8 (07/11) : C17.5 passe à ✅ (vérifié en production).
 
 **Pourquoi ce total diffère du recomptage du 30/10 (30 ✅, 6 🟡).** Le recomptage comptait un ✅ dès qu'une preuve
 existait, ateliers des sprints compris ; ici, un ✅ exige tout le critère, sur les cinq écrans de la version présentée.
