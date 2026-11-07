@@ -9,6 +9,19 @@
 
 ---
 
+## 2026-11-07, matin : vérifications en production terminées ; E2 v1.4, E3 v2.4, E4 v1.8 pour leurs tags
+
+**Livrables.**
+- E2 v1.4 (C8.2 tenu, 20 ✅) pour `livrable-E2-v4`.
+- E3 v2.4 (ligne OWASP tenue, 39 ✅) pour `livrable-E3-v5`.
+- E4 v1.8 (C17.5 tenu, 34 ✅ · 4 🟡) pour `livrable-E4-v6`.
+- Ces versions remplacent E2 v1.3, E3 v2.3 et E4 v1.7, jamais taguées.
+- Chaque changement de statut repose sur une mesure du site réel du 07/11 (`evidence/C17/verification-production-2026-11-07/`).
+
+**Manque.** E4 disait encore « #74 non déployée » et « rôle propriétaire (#76) » à trois endroits ; corrigés.
+
+---
+
 ## 2026-11-07, 3 h UTC : livraison en production de `develop` (#221) ; port en clair et collecte non planifiée découverts
 
 **Livré.** `main` à `a68f2cf` le 07/11 à 1 h 54 UTC : en-têtes de sécurité, compression, rôle `rita_api`, mots de passe

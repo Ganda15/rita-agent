@@ -21,6 +21,33 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ---
 
+## ▶️ 07/11, MATIN : PRODUCTION VÉRIFIÉE ; E2 v1.4, E3 v2.4, E4 v1.8 RENDUES, PRÊTES POUR LE DOUBLE CONTRÔLE PUIS LES TAGS
+
+**Prochaine action** : Era pousse la branche `verifications-production-07-11`, puis PR vers `develop`. Ensuite, le
+double contrôle par un autre agent (brief : `Documents\RITA PRO\output\double-controle-2026-11-06.md`). Puis
+`develop` vers `main` et les tags, un par push : `livrable-E2-v4` (E2 v1.4), `livrable-E3-v5` (E3 v2.4),
+`livrable-E4-v6` (E4 v1.8), `livrable-E5-v4` (E5 v0.9). Porte `tag_cite` verte pour les quatre.
+
+- **Vérifié en production le 07/11** (`evidence/C17/verification-production-2026-11-07/`) :
+  - à 2 h UTC : en-têtes et gzip sur les cinq écrans, port 8001 muet, contrat 1.2.0, consigne de l'écran Question ;
+  - le matin :
+    - #76 : `rita_api` par le code de l'API, `DATABASE_URL` absente ;
+    - frein des essais de clé à 08:51 UTC : dix 403 puis 429 ; `X-Forwarded-For` inventé sans effet ; 403 depuis une
+      autre adresse pendant le blocage, donc compteur par adresse.
+- **Ingestion** relancée par Era le 07/11 (run 42356863532, réussie ; index de 2166 à 2196 articles). Date des
+  cotations affichée après l'ingestion : à relire sur l'écran Portefeuille.
+- **Grilles** :
+  - E2 20 ✅ · 0 🟡 ;
+  - E3 39 ✅ · 0 🟡 ;
+  - E4 34 ✅ · 4 🟡 : C16.1, C16.4, C17.7 (Indicateurs en D, décision d'Era), C17.8 (S9) ;
+  - E5 : C20.5 attend le secret `RITA_API_KEY_VIGIE`, en dernier.
+- **Restent ouverts** :
+  - l'en-tête `Via` (commande Caddy proposée) ;
+  - la règle `ufw` du port 8001, devenue inutile ;
+  - aucune collecte planifiée en production ;
+  - la capture de la consigne de l'écran Question, preuve visible, pas encore faite ;
+  - l'accès du jury au dépôt.
+
 ## ▶️ 07/11, 3 H UTC : LIVRÉ EN PRODUCTION (`main` à `a68f2cf`) ; RESTENT DES VÉRIFICATIONS, LES RAPPORTS ET LES TAGS
 
 **Prochaine action** :
