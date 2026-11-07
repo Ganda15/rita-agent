@@ -287,6 +287,18 @@ button:hover { box-shadow: inset 0 0 0 999px rgba(0, 0, 0, .12); }
 .pagination[hidden] { display: none; }
 .pagination p { margin: 0; font-family: var(--police-chiffres); }
 .pagination button:disabled { cursor: not-allowed; opacity: 0.6; }
+/* Texte lu par les lecteurs d'écran, invisible à l'écran (technique courante : pas de display:none, qui le tairait). */
+.annonce-ecran {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 /* --- Tableau ---------------------------------------------------------------- */
 table {
