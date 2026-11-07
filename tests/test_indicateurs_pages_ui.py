@@ -98,3 +98,59 @@ def test_les_boutons_de_page_sont_des_boutons_qui_pilotent_le_tableau(navigateur
         assert page.locator(bouton).get_attribute("aria-controls") == "tableau-indicateurs"
     assert page.locator("#position-pages").get_attribute("aria-live") == "polite"
     contexte.close()
+
+
+# --- Relecture de 1479ffe (autre agent) : une nouvelle page s'affiche depuis son début ------------------------------
+# Après avoir descendu le tableau, « Valeurs suivantes » gardait le défilement : la position disait « 21 à 40 » mais la
+# zone visible commençait vers V31. Le changement de page remet la zone en haut, garde la colonne consultée (défilement
+# horizontal) et laisse le focus sur le bouton.
+def _zone_descendue(page) -> tuple[int, int]:
+    page.set_viewport_size({"width": 800, "height": 700})
+    zone = page.locator(".tableau-large")
+    zone.evaluate("z => { z.scrollTop = z.scrollHeight; z.scrollLeft = 200; }")
+    return tuple(zone.evaluate("z => [z.scrollTop, z.scrollLeft]"))
+
+
+def _premiere_ligne_visible(page) -> bool:
+    return page.evaluate("""() => {
+        const z = document.querySelector('.tableau-large').getBoundingClientRect();
+        const l = document.querySelector('#lignes tr').getBoundingClientRect();
+        return l.top >= z.top && l.bottom <= z.bottom;
+    }""")
+
+
+def test_valeurs_suivantes_affiche_le_debut_de_la_nouvelle_page(navigateur, serveur):  # noqa: F811
+    contexte, page = _ouvrir(navigateur, serveur, 45)
+    haut, gauche = _zone_descendue(page)
+    assert haut > 0, "le tableau défile bien dans sa zone"
+    page.locator("#pages-suivantes").click()
+    assert page.locator(".tableau-large").evaluate("z => z.scrollTop") == 0
+    assert page.locator(".tableau-large").evaluate("z => z.scrollLeft") == gauche, "la colonne consultée reste visible"
+    assert _premiere_ligne_visible(page), "V21 doit se voir dans la zone"
+    contexte.close()
+
+
+def test_au_clavier_valeurs_precedentes_affiche_aussi_le_debut_et_garde_le_focus(navigateur, serveur):  # noqa: F811
+    """Revenu en première page, « Valeurs précédentes » est désactivé : un bouton désactivé perd le focus, qui tombait
+    sur le corps de la page (vu par ce test le 07/11). Le focus passe alors au bouton de page encore utilisable."""
+    contexte, page = _ouvrir(navigateur, serveur, 45)
+    page.locator("#pages-suivantes").click()
+    _zone_descendue(page)
+    page.locator("#pages-precedentes").focus()
+    page.keyboard.press("Enter")
+    assert page.locator(".tableau-large").evaluate("z => z.scrollTop") == 0
+    assert _premiere_ligne_visible(page)
+    assert page.evaluate("document.activeElement.id") == "pages-suivantes", "le focus reste sur un bouton de page"
+    contexte.close()
+
+
+def test_au_clavier_le_focus_reste_sur_le_bouton_tant_qu_il_sert(navigateur, serveur):  # noqa: F811
+    contexte, page = _ouvrir(navigateur, serveur, 45)
+    page.locator("#pages-suivantes").focus()
+    page.keyboard.press("Enter")
+    assert page.locator("#position-pages").inner_text() == "Valeurs 21 à 40 sur 45"
+    assert page.evaluate("document.activeElement.id") == "pages-suivantes"
+    page.keyboard.press("Enter")
+    assert page.locator("#position-pages").inner_text() == "Valeurs 41 à 45 sur 45"
+    assert page.evaluate("document.activeElement.id") == "pages-precedentes", "dernière page : le focus passe à l'autre bouton"
+    contexte.close()

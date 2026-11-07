@@ -323,14 +323,24 @@ for (const reglage of [elMasquer, elTri]) {
   reglage.addEventListener("change", () => { if (donneesChargees) { debutPage = 0; afficher(); } });
 }
 elRecherche.addEventListener("input", () => { if (donneesChargees) { debutPage = 0; afficher(); } });
-document.getElementById("pages-precedentes").addEventListener("click", () => {
-  debutPage = Math.max(0, debutPage - TAILLE_PAGE);
+// Une nouvelle page s'affiche depuis son début (relecture du 07/11) : la zone du tableau revient en haut, la colonne
+// consultée reste visible (le défilement horizontal ne bouge pas) et le focus reste sur le bouton. À la première ou à
+// la dernière page, ce bouton devient désactivé et perdrait le focus (il tomberait sur le corps de la page) : le focus
+// passe alors à l'autre bouton de page.
+function changerDePage(nouveauDebut, bouton) {
+  const avaitLeFocus = document.activeElement === bouton;
+  debutPage = nouveauDebut;
   afficher();
-});
-document.getElementById("pages-suivantes").addEventListener("click", () => {
-  debutPage += TAILLE_PAGE;
-  afficher();
-});
+  document.querySelector(".tableau-large").scrollTop = 0;
+  if (avaitLeFocus && bouton.disabled) {
+    const autre = document.getElementById(bouton.id === "pages-suivantes" ? "pages-precedentes" : "pages-suivantes");
+    if (!autre.disabled) autre.focus();
+  }
+}
+const elPrecedentes = document.getElementById("pages-precedentes");
+const elSuivantes = document.getElementById("pages-suivantes");
+elPrecedentes.addEventListener("click", () => changerDePage(Math.max(0, debutPage - TAILLE_PAGE), elPrecedentes));
+elSuivantes.addEventListener("click", () => changerDePage(debutPage + TAILLE_PAGE, elSuivantes));
 
 const cleMemorisee = RITA.lireCle();
 // Refonte 001 (R7, décision D1) : en simulation, cet écran n'a pas encore de données d'exemple. Il ne démarre pas :
