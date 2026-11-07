@@ -25,7 +25,7 @@ Les 5 cas de test ne sont pas invente : ce sont les 5 questions de la famille
 mesurees a 3 fuites sur 5 le 06/09.
 """
 import re
-
+from guardrails.normalisation import textes_de_controle
 # Intentions interdites — l'interdit AMF vu depuis la QUESTION, pas depuis la reponse.
 # Chaque motif exige une SOLLICITATION de conseil (« dois-je », « faut-il », « quelle
 # action acheter »), pas le simple mot « action » ou « acheter » isole : une question
@@ -62,7 +62,11 @@ def verifier_intention(question: str) -> dict:
         (`rag/recherche.py:rechercher`) ne doit pas être appelée : `message_refus`
         porte le texte à renvoyer à la place. Fail-closed, comme `sortie.py`.
     """
-    motifs = [nom for regex, nom in _COMPILES if regex.search(question)]
+    # Chaque règle lit la question telle que tapée et ses copies normalisées (caractères invisibles, pleine chasse,
+    # espaces : `guardrails/normalisation.py`, revue de sécurité du 07/11, go d'Era) : le modèle reçoit la question
+    # sans ses caractères invisibles, la règle doit la lire de même.
+    controles = textes_de_controle(question)
+    motifs = [nom for regex, nom in _COMPILES if any(regex.search(t) for t in controles)]
     bloque = bool(motifs)
     return {
         "bloque": bloque,
