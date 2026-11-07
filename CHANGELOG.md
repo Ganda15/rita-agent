@@ -9,6 +9,18 @@
 
 ---
 
+## 2026-11-07, soir : S9, C17.7 et les corrections de #226 livrés et vérifiés en production ; C16.1 gardé à consolider
+
+- **Livré** : PR #228 (`develop` vers `main`, `6f428d6`), fusionnée par Era à 19 h 32 UTC ; `/health` du site réel dit
+  ce commit, l'écran Indicateurs servi est paginé (`evidence/C17/verification-production-2026-11-07-soir/`).
+- **Décision d'Era (S9)** : dans les tournures de conseil, la sortie AMF passe en liste fermée, choix « fail-closed » ;
+  coût accepté et testé : 4 faits refusés par choix. Trois réécritures en liste ouverte avaient chacune été contournées.
+- **Décision d'Era (C16.1)** : le critère reste à consolider ; la revue du lundi reprend le 09/11, consignée ; aucun
+  document passé reconstitué. Règle retenue : un vert avec limites exige que chaque élément du critère soit prouvé.
+- **Manque découvert** : le calcul EcoIndex des 03/10 au 06/11 classait des fichiers de l'interface comme des routes de
+  l'API ; corrigé le 07/11, notes inchangées, poids de Briefing et Question publiés dans E4 (§ 4.7) sous-estimés.
+- **Manque découvert** : aucune revue du lundi n'a jamais été consignée depuis la mise en place de la méthode (28/09).
+
 ## 2026-11-07, après-midi : second regard d'un autre agent sur la branche du banc ; E2 v1.5 harmonisée
 
 **Corrigé.** Six phrases d'E2 encore au passé du banc : l'introduction, § 3.7, la latence (une prise ne garantit pas les
