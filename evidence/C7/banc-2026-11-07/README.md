@@ -38,5 +38,6 @@ les preuves : le chiffre exact pour ce déploiement n'est pas établi.
 
 - Seul, ce passage dit comment Azure se comporte aujourd'hui ; la comparaison avec Mistral Large 3, même jeu et même
   budget, est dans `../banc-2026-11-07-comparaison/`.
-- Le français : noté par Era à l'aveugle, avec les 30 textes de Mistral Large 3 (`../banc-2026-11-07-comparaison/`).
+- Le français : notes proposées par une IA à l'aveugle, acceptées par Era sans modification, avec les 30 textes de
+  Mistral Large 3 (`../banc-2026-11-07-comparaison/`).
 - Un seul passage, un samedi matin : la latence d'un autre jour ou d'une démonstration chargée peut être différente.

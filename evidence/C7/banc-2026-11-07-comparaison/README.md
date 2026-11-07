@@ -22,7 +22,8 @@ production reste sur Azure seul tant que le contrat de Mistral n'est pas lu (rè
 
 ## Pourquoi Large 3 et pas Large 4
 
-Mesuré le 07/11 sur un cas réel du jeu (MC.PA), avant le passage :
+Observé le 07/11 sur un cas réel du jeu (MC.PA), avant le passage. Observations consignées pendant la session de travail ;
+leurs réponses brutes n'ont pas été conservées, sauf le refus 400 (dossier du passage refusé) :
 
 | Réglage | Résultat |
 |---|---|
@@ -51,7 +52,8 @@ Résumés : [`../banc-2026-11-07/resume-2026-11-07.json`](../banc-2026-11-07/res
 | Français, de 0 à 2 (notes proposées par une IA à l'aveugle, acceptées par Era sans modification) | moyenne **1,10** : 3 textes à 2, 27 à 1, 0 à 0 | moyenne **1,37** : 11 textes à 2, 19 à 1, 0 à 0 |
 
 **Le coût estimé affiché par Mistral** (ni une facture ni un prix garanti) : la console de Mistral, onglet « Usage », relevée par Era le 07/11 à 11:13 heure de Paris
-([`mistral-usage-2026-11-07.png`](mistral-usage-2026-11-07.png)), affiche pour `mistral-large-2512` 32 requêtes et
+([`mistral-usage-2026-11-07.png`](mistral-usage-2026-11-07.png), détail par modèle ; vue d'ensemble :
+[`mistral-usage-total-2026-11-07.png`](mistral-usage-total-2026-11-07.png), 35 requêtes, coût total estimé 0,02 €), affiche pour `mistral-large-2512` 32 requêtes et
 **0,02 €** depuis le 01/11 : les 30 appels du banc et 2 appels de diagnostic ; avec les 3 de Large 4, 35 requêtes. Le
 calcul au prix public (0,0215 USD pour les 30) est du même ordre. `mistral-large-4-0` : 3 requêtes, les trois essais de diagnostic ; les appels refusés (400) ne sont pas
 facturés.

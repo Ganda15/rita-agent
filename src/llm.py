@@ -128,8 +128,10 @@ def _texte_mistral(contenu) -> str:
     """Une chaîne telle quelle ; une liste de blocs (modèle à raisonnement), ses seuls blocs `text`, jamais la
     réflexion. Sans aucun texte, `ValueError` : une panne du fournisseur, pas une réponse."""
     if isinstance(contenu, str):
-        return contenu
-    texte = "".join(b.get("text", "") for b in contenu or [] if isinstance(b, dict) and b.get("type") == "text")
+        texte = contenu
+    else:
+        texte = "".join(b.get("text", "") for b in contenu or [] if isinstance(b, dict) and b.get("type") == "text")
+    # Les deux formes passent par le même contrôle (double contrôle du 07/11 : une chaîne vide passait).
     if not texte.strip():
         raise ValueError("Réponse Mistral sans texte (réflexion seule ou vide).")
     return texte

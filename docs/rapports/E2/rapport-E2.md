@@ -96,7 +96,8 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 >
 > Le service retenu est **Azure AI Foundry, modèle GPT-5.4, configuré en zone de données UE**. Le banc du 03/10 compare
 > Azure à Claude via OpenRouter : Azure est plus rapide en médiane, avec les mêmes résultats aux contrôles minimaux. Ce
-> banc utilisait le déploiement Global Standard ; ses performances ne sont pas remesurées en zone UE.
+> premier banc utilisait Global Standard. Le 07/11, un nouveau banc compare Azure en zone UE à Mistral Large 3, avec le
+> prompt corrigé (3.4).
 >
 > Ce rapport présente la veille (C6), le choix du service (C7) et sa configuration avec ses preuves (C8). Azure reste le
 > seul fournisseur actif ; Mistral est une alternative expérimentée, non intégrée.
@@ -114,7 +115,7 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 <li><a href="#glossaire">Glossaire</a><span>p. 17</span></li>
 <li><a class="vers-annexe" href="#a1">Annexe A1 : la veille (PDF avec annexe)</a><span>p. 19</span></li>
 <li><a class="vers-annexe" href="#a2">Annexe A2 : le choix du service</a><span>p. 20</span></li>
-<li><a class="vers-annexe" href="#a3">Annexe A3 : le service aujourd'hui</a><span>p. 21</span></li>
+<li><a class="vers-annexe" href="#a3">Annexe A3 : le service au 03/11</a><span>p. 21</span></li>
 <li><a class="vers-annexe" href="#a4">Annexe A4 : les preuves de la veille</a><span>p. 22</span></li>
 <li><a class="vers-annexe" href="#a5">Annexe A5 : le détail du banc</a><span>p. 26</span></li>
 <li><a class="vers-annexe" href="#a6">Annexe A6 : les preuves du service</a><span>p. 28</span></li>
@@ -436,16 +437,16 @@ dans le code.
 
 Depuis le 31/10, la production n'appelle qu'Azure (4.2) : il n'y a pas de fournisseur de secours. Ce qui ferait changer
 la décision : la fin de la prise en charge des frais d'Azure, ou Mistral une fois son contrat lu et son Markdown réglé.
-La queue de latence d'Azure n'en est plus une : 2,55 s au 95e centile le 07/11.
+Sur les 30 appels Azure du 07/11, le 95e centile est de 2,55 s ; ce résultat ne garantit pas le délai des prochains appels.
 
 ### 3.7 Ce qui n'est pas fait {: #s3-7 }
 
-- **La notation du français** est assistée par IA, puis validée par moi : ce n'est pas un jugement humain indépendant,
-  et son barème à trois niveaux ne départage pas les services.
-- **Le banc Azure contre Mistral**, prévu le 11/10, n'est pas fait : un briefing par modèle seulement. Ce report protège
-  le temps des autres livrables ; rien ne l'empêche techniquement.
-- **L'usage Question** n'est pas comparé entre fournisseurs ; **l'API directe d'Anthropic** et **la variation d'un jour à
-  l'autre** ne sont pas mesurées.
+- **La notation du français** : notes proposées par une IA à l'aveugle, puis acceptées par Era sans modification. Les
+  moyennes diffèrent sur ce jeu ; cela ne prouve pas une supériorité générale, et ce n'est pas une notation humaine
+  indépendante.
+- **Le banc du 07/11** compare Azure UE à Mistral Large 3 sur dix cas, avec trois répétitions ; il ne mesure ni l'usage
+  Question ni la variation d'un jour à l'autre. Large 4 n'a pas fait l'objet de cette comparaison complète.
+- **L'API directe d'Anthropic** n'est pas mesurée.
 - **Le contrat de Mistral** (sous-traitants, conservation, entraînement) n'est pas lu.
 
 ---
@@ -564,7 +565,7 @@ relevé n'est pas une facture (`docs/BUDGET.md`).
 
 <div class="encadre limite">
 <p class="encadre-titre">Limites</p>
-<ul><li>l'issue #77, ouverte par la première alerte du 04/10, est toujours ouverte ;</li><li>le contrat de Langfuse permet un traitement hors de la région choisie : la décision de le garder ou de le remplacer n'est pas écrite (registre, § 5).</li></ul>
+<ul><li>l'issue #77, ouverte par la première alerte du 04/10, est toujours ouverte ;</li><li>le maintien de Langfuse comme outil de l'exploitant est consigné le 06/11, avec la règle UE précisée et ses garanties vérifiées ; ses exceptions contractuelles et les limites d'accessibilité restent documentées (<code>evidence/C11/</code>, <code>evidence/C8/regle-ue-2026-11-06/</code>).</li></ul>
 </div>
 
 ### 4.5 La documentation {: #s4-5 }

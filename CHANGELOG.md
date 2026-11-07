@@ -9,6 +9,17 @@
 
 ---
 
+## 2026-11-07, après-midi : second regard d'un autre agent sur la branche du banc ; E2 v1.5 harmonisée
+
+**Corrigé.** Six phrases d'E2 encore au passé du banc : l'introduction, § 3.7, la latence (une prise ne garantit pas les
+suivantes), la décision Langfuse du 06/11, la provenance des notes dans la preuve Azure, les annexes A2 et A3 datées
+comme état du 03/11.
+
+**Manque découvert.** `_texte_mistral` acceptait une chaîne vide comme réponse : un appel sans texte aurait été compté
+comme disponible au banc. Aucune des 60 réponses n'est concernée ; corrigé avec son test.
+
+---
+
 ## 2026-11-07, midi : banc C7 refait (Azure en zone UE, Mistral Large 3) ; corrections du double contrôle de #222 ; E2 v1.5
 
 **Livrables.** E2 v1.5 remplace la v1.4 pour `livrable-E2-v4`. E3 v2.4 et E4 v1.8 corrigées sans changer de numéro de

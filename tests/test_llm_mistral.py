@@ -139,3 +139,12 @@ def test_la_cascade_ignore_mistral_meme_si_le_reglage_le_nomme():
     """Mistral n'entre dans la cascade qu'après la lecture de son contrat : son nom n'est pas parmi les noms valides."""
     from src import llm
     assert "mistral" not in llm._NOMS_VALIDES
+
+
+@pytest.mark.parametrize("contenu", ["", "   ", "\n"])
+def test_une_reponse_mistral_vide_en_chaine_est_une_indisponibilite(contenu):
+    """Relevé par le double contrôle du 07/11 : une chaîne vide passait, alors qu'un texte vide n'est pas une réponse.
+    Même règle que pour les blocs : sinon un appel sans texte serait compté comme disponible au banc."""
+    from src import llm
+    with pytest.raises(ValueError):
+        llm._texte_mistral(contenu)
