@@ -1,0 +1,42 @@
+# Tests du defilement, AVANT la correction, commit 1479ffe + tests ajoutes, 07/11/2026 a 18:33 (heure de Paris)
+# Commande : python -m pytest -q -p no:cacheprovider tests/test_indicateurs_pages_ui.py -k debut --tb=line
+FF                                                                       [100%]
+================================== FAILURES ===================================
+E   AssertionError: assert 800 == 0
+     +  where 800 = evaluate('z => z.scrollTop')
+     +    where evaluate = <Locator frame=<Frame name= url='http://127.0.0.1:61378/indicateurs.html'> selector='.tableau-large'>.evaluate
+     +      where <Locator frame=<Frame name= url='http://127.0.0.1:61378/indicateurs.html'> selector='.tableau-large'> = locator('.tableau-large')
+     +        where locator = <Page url='http://127.0.0.1:61378/indicateurs.html'>.locator
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_indicateurs_pages_ui.py:127: AssertionError: assert 800 == 0
+E   AssertionError: assert 800 == 0
+     +  where 800 = evaluate('z => z.scrollTop')
+     +    where evaluate = <Locator frame=<Frame name= url='http://127.0.0.1:61378/indicateurs.html'> selector='.tableau-large'>.evaluate
+     +      where <Locator frame=<Frame name= url='http://127.0.0.1:61378/indicateurs.html'> selector='.tableau-large'> = locator('.tableau-large')
+     +        where locator = <Page url='http://127.0.0.1:61378/indicateurs.html'>.locator
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_indicateurs_pages_ui.py:139: AssertionError: assert 800 == 0
+tests/test_indicateurs_pages_ui.py::test_valeurs_suivantes_affiche_le_debut_de_la_nouvelle_page
+=========================== short test summary info ===========================
+FAILED tests/test_indicateurs_pages_ui.py::test_valeurs_suivantes_affiche_le_debut_de_la_nouvelle_page
+FAILED tests/test_indicateurs_pages_ui.py::test_au_clavier_valeurs_precedentes_affiche_aussi_le_debut_et_garde_le_focus
+2 failed, 7 deselected, 1 warning in 9.22s
+
+# Tests du focus au clavier, AVANT la correction du focus (defilement deja corrige), 07/11/2026 a 18:35 (heure de Paris)
+# Commande : python -m pytest -q -p no:cacheprovider tests/test_indicateurs_pages_ui.py -k clavier --tb=line
+FF                                                                       [100%]
+================================== FAILURES ===================================
+E   AssertionError: le focus reste sur un bouton de page
+    assert '' == 'pages-suivantes'
+      
+      - pages-suivantes
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_indicateurs_pages_ui.py:143: AssertionError: le focus reste sur un bouton de page
+E   AssertionError: dernière page : le focus passe à l'autre bouton
+    assert 'pages-suivantes' == 'pages-precedentes'
+      
+      - pages-precedentes
+      + pages-suivantes
+D:\KandaWork\RITA_PROJECT\rita-agent\tests\test_indicateurs_pages_ui.py:155: AssertionError: dernière page : le focus passe à l'autre bouton
+tests/test_indicateurs_pages_ui.py::test_au_clavier_valeurs_precedentes_affiche_aussi_le_debut_et_garde_le_focus
+=========================== short test summary info ===========================
+FAILED tests/test_indicateurs_pages_ui.py::test_au_clavier_valeurs_precedentes_affiche_aussi_le_debut_et_garde_le_focus
+FAILED tests/test_indicateurs_pages_ui.py::test_au_clavier_le_focus_reste_sur_le_bouton_tant_qu_il_sert
+2 failed, 8 deselected, 1 warning in 9.54s

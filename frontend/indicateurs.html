@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RITA : Indicateurs de marché</title>
-  <link rel="stylesheet" href="style.css?v=d0e888a819">
+  <link rel="stylesheet" href="style.css?v=52626f29d4">
   <link rel="icon" type="image/png" href="logo-rita-clair.png">
   <script src="theme.js?v=32a0dab24c"></script>
 </head>
@@ -95,6 +95,13 @@
           <tbody id="lignes"></tbody>
         </table>
       </div>
+      <!-- R2, critère 11 (éco-conception, décision d'Era du 07/11) : 20 valeurs à la fois. La recherche, le tri et la case
+           portent sur toutes les valeurs avant le découpage. Masqué sous 21 valeurs. -->
+      <nav id="pagination" class="pagination" aria-label="Pages du tableau des indicateurs" hidden>
+        <button type="button" id="pages-precedentes" aria-controls="tableau-indicateurs">Valeurs précédentes</button>
+        <p id="position-pages" aria-live="polite"></p>
+        <button type="button" id="pages-suivantes" aria-controls="tableau-indicateurs">Valeurs suivantes</button>
+      </nav>
       <p id="legende-couleurs" class="precision">
         Chaque case garde son chiffre écrit et sa flèche (▲ hausse, ▼ baisse) ; la couleur ne fait que le répéter.
         Choisir une valeur ouvre son détail : son RSI, sa courbe, ses moyennes et son risque.
@@ -158,6 +165,6 @@
 
   <script src="commun.js?v=854b0d315c"></script>
   <script src="graphiques.js?v=864f0a6e64"></script>
-  <script src="indicateurs.js?v=6fcaef099f"></script>
+  <script src="indicateurs.js?v=a5a6c747bf"></script>
 </body>
 </html>
