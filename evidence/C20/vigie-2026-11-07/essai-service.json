@@ -1,0 +1,116 @@
+{
+  "scenario": "service_unavailable_then_recovered",
+  "commit": "6f428d61511019d7b6013fb007e290c133d48c2e",
+  "image": "rita-api:c20-6f428d615110",
+  "address": "http://localhost:8011",
+  "events": [
+    {
+      "at_utc": "2026-11-07T20:53:50.674754+00:00",
+      "event": "baseline",
+      "health": {
+        "status": "ok",
+        "project": "RITA",
+        "commit": "6f428d61511019d7b6013fb007e290c133d48c2e",
+        "construit_le": "2026-11-07T19:40:46Z",
+        "index": null
+      },
+      "service_threshold": {
+        "libelle": "Le service répond",
+        "unite": "sondes de /health",
+        "essais": 2,
+        "intervalle_s": 10,
+        "pourquoi": "Une API arrêtée ne peut pas annoncer sa propre panne : la vigie la sonde de l'extérieur. Deux essais à 10 secondes d'écart évitent une alerte sur un seul paquet perdu.",
+        "action": "docs/exploitation.md#diagnostiquer-une-panne",
+        "que_faire": "Suivre « Diagnostiquer une panne » dans la documentation d'exploitation : vérifier que la copie tourne, puis lire son journal.",
+        "resolution": "Une sonde de /health répond de nouveau 200."
+      }
+    },
+    {
+      "at_utc": "2026-11-07T20:53:51.779453+00:00",
+      "event": "copy_stopped",
+      "container": "rita-api-c20-20261107"
+    },
+    {
+      "at_utc": "2026-11-07T20:53:56.526406+00:00",
+      "event": "http",
+      "path": "/health",
+      "status": null,
+      "error_type": "ConnectError",
+      "duration_s": 4.101
+    },
+    {
+      "at_utc": "2026-11-07T20:54:10.635468+00:00",
+      "event": "http",
+      "path": "/health",
+      "status": null,
+      "error_type": "ConnectError",
+      "duration_s": 4.108
+    },
+    {
+      "at_utc": "2026-11-07T20:54:11.897108+00:00",
+      "event": "monitor_during_outage",
+      "actions": [
+        "ouverte : Incident : vigie (prototype local) « service »"
+      ],
+      "exit_code": 1
+    },
+    {
+      "at_utc": "2026-11-07T20:54:13.036366+00:00",
+      "event": "copy_restarted_in_cleanup"
+    },
+    {
+      "at_utc": "2026-11-07T20:54:13.036962+00:00",
+      "event": "trial_failed",
+      "error_type": "AssertionError"
+    },
+    {
+      "at_utc": "2026-11-07T20:55:12.756041+00:00",
+      "event": "alert_verified_after_list_refresh",
+      "issue_number": 230
+    },
+    {
+      "at_utc": "2026-11-07T20:55:14.961554+00:00",
+      "event": "copy_recovered",
+      "health": {
+        "status": "ok",
+        "project": "RITA",
+        "commit": "6f428d61511019d7b6013fb007e290c133d48c2e",
+        "construit_le": "2026-11-07T19:40:46Z",
+        "index": null
+      }
+    },
+    {
+      "at_utc": "2026-11-07T20:55:17.589367+00:00",
+      "event": "http",
+      "path": "/health",
+      "status": 200,
+      "duration_s": 2.084
+    },
+    {
+      "at_utc": "2026-11-07T20:55:22.318241+00:00",
+      "event": "http",
+      "path": "/sante",
+      "status": 200,
+      "duration_s": 2.043
+    },
+    {
+      "at_utc": "2026-11-07T20:55:22.319020+00:00",
+      "event": "monitor_after_recovery",
+      "actions": [
+        "fermée : Incident : vigie (prototype local) « service »"
+      ],
+      "exit_code": 0
+    },
+    {
+      "at_utc": "2026-11-07T20:55:22.889008+00:00",
+      "event": "trial_complete",
+      "issue_state": "CLOSED",
+      "issue_url": "https://github.com/Ganda15/rita-agent/issues/230"
+    }
+  ],
+  "scope": "Signal service uniquement ; protection des autres incidents par adaptateur GitHub",
+  "cloud_model_calls": 0,
+  "production_mutated": false,
+  "issue_number": 230,
+  "issue_url": "https://github.com/Ganda15/rita-agent/issues/230"
+}

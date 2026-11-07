@@ -1,0 +1,141 @@
+{
+  "derniers": {
+    "erreur_technique": null,
+    "refus_securite": null
+  },
+  "dernier_resultat": null,
+  "mesures_depuis": "2026-11-07T20:52:05+00:00",
+  "rejets_depuis": "2026-11-07T20:52:05+00:00",
+  "fenetre_min": 15,
+  "erreurs_techniques": {
+    "valeur": null,
+    "numerateur": 0,
+    "effectif": 0
+  },
+  "refus_securite": {
+    "valeur": null,
+    "numerateur": 0,
+    "effectif": 0
+  },
+  "refus_corpus": {
+    "valeur": null,
+    "numerateur": 0,
+    "effectif": 0
+  },
+  "refus_qualite": {
+    "valeur": null,
+    "numerateur": 0,
+    "effectif": 0
+  },
+  "latence_p95_ms": {
+    "valeur": null,
+    "effectif": 0
+  },
+  "rejets_15_min": 0,
+  "jetons_24h": {
+    "entree": 0,
+    "sortie": 0,
+    "depuis": "2026-11-07T20:52:05+00:00"
+  },
+  "fraicheur": {
+    "pire": "inconnu",
+    "nb_valeurs": 0,
+    "en_retard": [],
+    "message": "aucune valeur suivie"
+  },
+  "calcule_a": "2026-11-07T20:52:34+00:00",
+  "cout_24h": {
+    "valeur": 0.0,
+    "devise": "EUR",
+    "depuis": "2026-11-07T20:52:05+00:00",
+    "prix_du": "2026-03-01",
+    "estimation": "majorant : jetons en cache comptés au prix plein (monitorage/prix.json)"
+  },
+  "verdicts": {
+    "erreurs_techniques": {
+      "libelle": "Réponses en erreur",
+      "unite": "part des résultats",
+      "orange": 0.1,
+      "rouge": 0.2,
+      "pourquoi": "Une erreur technique (fournisseur, format, erreur imprévue) est un service rendu à personne. Le trafic de RITA est faible : 1 erreur sur 5 vaut déjà 20 %, d'où un minimum de 5 requêtes avant de juger.",
+      "action": "docs/exploitation.md#diagnostiquer-une-panne",
+      "que_faire": "Suivre « Diagnostiquer une panne » : chercher le motif des erreurs dans le journal, vérifier qu'aucun exercice de panne n'est en cours (bandeau du tableau de bord), puis vérifier le fournisseur du modèle.",
+      "resolution": "Aucune erreur technique dans les 15 dernières minutes, ou un taux sous 20 % avec au moins 5 requêtes.",
+      "valeur": null,
+      "effectif": 0,
+      "minimum_requetes": 5,
+      "fenetre_min": 15,
+      "etat": "inconnu",
+      "numerateur": 0
+    },
+    "refus_securite": {
+      "libelle": "Refus de sécurité",
+      "unite": "part des résultats",
+      "orange": 0.15,
+      "rouge": 0.3,
+      "pourquoi": "Une hausse des refus de détournement, de conseil ou de fuite signale une attaque en cours ou un garde-fou qui bloque des questions légitimes. Elle demande un diagnostic, elle ne prouve pas une attaque.",
+      "action": "docs/exploitation.md#alerte-refus-de-securite",
+      "que_faire": "Lire les lignes de refus du journal : des attaques ne demandent rien de plus ; de vraies questions refusées sont un faux positif à signaler.",
+      "resolution": "Aucun refus de sécurité dans les 15 dernières minutes, ou un taux sous 30 % avec au moins 10 requêtes.",
+      "valeur": null,
+      "effectif": 0,
+      "minimum_requetes": 10,
+      "fenetre_min": 15,
+      "etat": "inconnu",
+      "numerateur": 0
+    },
+    "latence_p95_ms": {
+      "libelle": "Temps de réponse",
+      "unite": "millisecondes (p95)",
+      "orange": 10000,
+      "rouge": 20000,
+      "pourquoi": "Au-delà de 10 secondes, l'écran semble figé ; au-delà de 20, le fournisseur ralentit ou la recherche peine. Valeurs à relire : aucune durée n'a encore été mesurée sur un trafic réel.",
+      "action": "docs/exploitation.md#alerte-latence",
+      "que_faire": "Ouvrir Langfuse et regarder la durée de l'appel au modèle : si le fournisseur ralentit, surveiller ; sinon, vérifier la recherche.",
+      "resolution": "Un p95 sous 20 secondes avec au moins 5 requêtes, ou aucune requête dans les 15 dernières minutes.",
+      "valeur": null,
+      "effectif": 0,
+      "minimum_requetes": 5,
+      "fenetre_min": 15,
+      "etat": "inconnu"
+    },
+    "cout_24h": {
+      "libelle": "Coût estimé",
+      "unite": "€ sur 24 h",
+      "orange": 1.0,
+      "rouge": 5.0,
+      "pourquoi": "Une question coûte environ 0,01 € au prix public : 1 € par jour, c'est déjà une centaine de questions pour un service mono-utilisateur ; 5 € signalent une consommation qui s'emballe.",
+      "action": "docs/exploitation.md#alerte-cout",
+      "que_faire": "Regarder combien d'appels sont servis dans le journal ; si un client boucle, changer la clé d'API puis redéployer, ou arrêter l'API.",
+      "resolution": "Un coût estimé sous 5 € sur les 24 dernières heures disponibles.",
+      "valeur": 0.0,
+      "etat": "sain"
+    },
+    "fraicheur": {
+      "libelle": "Fraîcheur des cours",
+      "unite": "jours ouvrés de retard, par valeur",
+      "orange": 2,
+      "rouge": 4,
+      "pourquoi": "Un briefing rédigé sur des cours anciens trompe le lecteur. La séance du jour n'entre en base qu'après la collecte du soir, d'où 1 jour ouvré toléré (règles de monitorage/fraicheur.py).",
+      "action": "docs/exploitation.md#alerte-fraicheur",
+      "que_faire": "Lancer la collecte des cours (documentation, alerte de fraîcheur), puis vérifier la date de la dernière séance.",
+      "resolution": "Toutes les valeurs suivies ont une cotation de moins de 4 jours ouvrés.",
+      "valeur": null,
+      "en_retard": [],
+      "etat": "inconnu"
+    },
+    "rejets_15_min": {
+      "libelle": "Appels rejetés (clé, saisie, débit)",
+      "unite": "nombre sur 15 minutes",
+      "orange": 20,
+      "rouge": 100,
+      "pourquoi": "Un usage normal fait peu de rejets ; une rafale de 403 signale une clé essayée au hasard, une rafale de 429 un client qui boucle.",
+      "action": "docs/exploitation.md#alerte-rejets",
+      "que_faire": "Lire les refus de clé et de débit dans le journal : une clé essayée au hasard se signale, un client qui boucle se corrige.",
+      "resolution": "Moins de 100 rejets sur les 15 dernières minutes.",
+      "valeur": 0,
+      "etat": "sain"
+    }
+  },
+  "exercice": null
+}

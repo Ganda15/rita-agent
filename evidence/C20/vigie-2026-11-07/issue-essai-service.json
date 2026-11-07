@@ -1,0 +1,25 @@
+{
+  "closedAt": "2026-11-07T20:55:19Z",
+  "comments": [
+    {
+      "id": "IC_kwDOSdv45s8AAAABkB676A",
+      "author": {
+        "login": "Ganda15"
+      },
+      "authorAssociation": "OWNER",
+      "body": "Retour à la normale le 07/11/2026 21:55 : /health répond de nouveau 200.",
+      "createdAt": "2026-11-07T20:55:18Z",
+      "includesCreatedEdit": false,
+      "isMinimized": false,
+      "minimizedReason": "",
+      "reactionGroups": [],
+      "url": "https://github.com/Ganda15/rita-agent/issues/230#issuecomment-6712900584",
+      "viewerDidAuthor": true
+    }
+  ],
+  "createdAt": "2026-11-07T20:54:11Z",
+  "number": 230,
+  "state": "CLOSED",
+  "title": "Incident : vigie (prototype local) « service »",
+  "url": "https://github.com/Ganda15/rita-agent/issues/230"
+}
