@@ -246,3 +246,17 @@ def test_le_script_du_mot_de_passe_passe_par_une_variable_psql_et_garde_des_fins
     assert texte.startswith("#!/bin/sh")
     assert "ALTER ROLE rita_api PASSWORD :'mdp'" in texte   # le mot de passe n'est jamais collé dans le SQL
     assert "$POSTGRES_PASSWORD_API" in texte
+
+
+# Constat S3 (07/11/2026, plan validé par Era) : derrière Caddy, l'API ne voit que la passerelle du réseau Docker ; le
+# frein des essais de clé compte par adresse, il lui faut celle du visiteur, que Caddy écrit dans `X-Forwarded-For`.
+# `uvicorn` ne lit cet en-tête que pour les appelants de `FORWARDED_ALLOW_IPS`. Faire confiance à tout appelant n'est
+# sûr que parce que le port n'écoute que la machine (tests/test_port_api_local.py) : seul Caddy, sur le serveur, l'appelle.
+def test_l_api_lit_l_adresse_du_visiteur_transmise_par_caddy(compose):
+    api = compose["services"]["api"]
+    assert api["environment"]["FORWARDED_ALLOW_IPS"] == "*"
+    assert api["ports"] == ["127.0.0.1:8001:8000"]
+
+
+def test_le_seuil_du_frein_des_essais_se_regle_sur_le_serveur(compose):
+    assert compose["services"]["api"]["environment"]["RITA_ESSAIS_DE_CLE_MAX"] == "${RITA_ESSAIS_DE_CLE_MAX:-10}"

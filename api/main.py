@@ -33,7 +33,7 @@ from fastapi.staticfiles import StaticFiles
 from agents.analyst import CONSIGNES_REDACTION, ROLE_REDACTEUR, articles_surs
 from api.donnees import routeur as routeur_donnees
 from api.exercice import routeur as routeur_exercice, verifier_cle_exercice
-from api.limiteur import limiter_debit
+from api.limiteur import limiter_debit, noter_mauvaise_cle, refuser_si_bloquee
 from api.question import routeur as routeur_question
 from api.sante import routeur as routeur_sante
 from db import audit_mcp
@@ -85,6 +85,9 @@ Deux clés, chacune dans son en-tête, jamais l'une pour l'autre.
 
 `/briefing` et `/question` appellent le modèle : au-delà du quota (`RITA_QUOTA_PAR_MINUTE`, 10 appels par minute
 par défaut), la réponse est **429** avec `Retry-After`. Chaque réponse, erreur comprise, porte un `X-Request-ID`.
+
+Après 10 clés refusées en 15 minutes depuis une même adresse, toute route protégée répond **429** à cette adresse,
+quelle que soit la clé, avec `Retry-After` et le motif `TROP_D_ESSAIS`. Une clé absente ne compte pas.
 
 ### Les familles de routes
 | Préfixe | Contenu |
@@ -243,6 +246,8 @@ def verify_api_key(request: Request, api_key: str = Security(API_KEY_HEADER)):
     # `compare_digest` et non `!=` : une comparaison de chaînes ordinaire s'arrête au
     # premier caractère différent, et son temps d'exécution renseigne donc un attaquant
     # sur le nombre de caractères devinés. La différence est infime, la parade gratuite.
+    # Constat S3 (07/11/2026) : une adresse qui a envoyé trop de mauvaises clés reçoit 429 avant toute comparaison.
+    refuser_si_bloquee(request)
     if not api_key or not secrets.compare_digest(api_key, cle_attendue()):
         # Sprint 4 (C2) : critère 4 du contrat du sprint 1. Un refus laisse UNE ligne de journal : l'identifiant de
         # requête (le même que l'en-tête X-Request-ID), la route et le motif. Jamais la clé, ni un morceau, ni sa
@@ -250,6 +255,8 @@ def verify_api_key(request: Request, api_key: str = Security(API_KEY_HEADER)):
         motif = "absente" if not api_key else "invalide"
         logger.warning("cle d'API refusee : request_id=%s route=%s motif=%s",
                        request_id_courant(), request.url.path, motif)
+        if api_key:   # une clé absente n'est pas un essai : l'interface n'envoie jamais de clé vide
+            noter_mauvaise_cle(request)
         raise HTTPException(status_code=403, detail="Cle d'API invalide ou absente")
     return api_key
 

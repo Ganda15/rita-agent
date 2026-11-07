@@ -100,6 +100,12 @@ services:
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
       # Azure seul par défaut, comme `src/llm.py` (règle UE seule, décision du 11/10 ; production lue le 31/10).
       LLM_ORDRE: ${LLM_ORDRE:-foundry}
+      # --- Frein des essais de clé (constat S3, 07/11/2026, plan validé par Era) ---------------
+      # `uvicorn` lit l'adresse du visiteur dans `X-Forwarded-For`, écrit par Caddy. Faire confiance à tout appelant
+      # n'est sûr que parce que le port n'écoute que la machine (`127.0.0.1:8001` plus bas). Seuil réglable sur le
+      # serveur : 10 mauvaises clés en 15 minutes par adresse, puis 429 (api/limiteur.py).
+      FORWARDED_ALLOW_IPS: "*"
+      RITA_ESSAIS_DE_CLE_MAX: ${RITA_ESSAIS_DE_CLE_MAX:-10}
       # --- Traçage Langfuse (C11), facultatif ---------------------------------------
       # Audit du 02/10/2026 : rien n'était transmis ici, donc l'API en conteneur (pré-production
       # et serveur) servait des briefings que Langfuse ne voyait jamais. Les clés se lisent
