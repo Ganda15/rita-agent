@@ -338,8 +338,9 @@ que Kanban n'a pas.
 ### 3.3 Les outils de pilotage
 
 - **Le tableau Kanban** (GitHub Projects) : 34 cartes, dont 16 « Fait », 15 « Backlog », 2 « Cette semaine », 1 « En
-  cours ». Le dernier mouvement de carte constaté date du 14/10 à 19:56 (UTC). Le tableau ne reflétait pas
-  systématiquement tout le travail réalisé.
+  cours » au 14/10. Le dernier mouvement de carte constaté avant la reprise date du 14/10 à 19:56 (UTC). Le tableau ne
+  reflétait pas systématiquement tout le travail réalisé. **Repris le 07/11** : sept cartes passées à « Fait » sur
+  preuve (tags, rapports livrés), les cartes #74 à #76 ajoutées ; les cartes sans preuve restent où elles étaient.
 - **Le backlog** : les issues du dépôt, avec des étiquettes par livrable (`E2` à `E5`, `veille-C6`, `decision-era`).
 - **Les plans de travail** des cycles courts : 73, 86 et 62 tâches en listes à cocher.
 - **[`ETAT.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/ETAT.md)** pour la prochaine action et l'état du jour, et **[`CHANGELOG.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/CHANGELOG.md)** pour les décisions et les livrables :
@@ -383,7 +384,8 @@ Le même travail a fait découvrir un autre manque, écrit le jour même : la sa
 
 ### 3.6 Les limites, dites franchement
 
-- **Le tableau n'a plus bougé après le 14/10**, et il ne reflétait pas tout le travail avant. Pendant les cycles
+- **Le Kanban n'a pas été maintenu du 14/10 au 07/11**, et il ne reflétait pas tout le travail avant. Le travail restait
+  tracé ailleurs (pull requests, ETAT, CHANGELOG) ; le tableau est repris le 07/11, sans compte rendu reconstitué. Pendant les cycles
   courts, les tâches ont été suivies dans les plans de travail, dans [`ETAT.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/ETAT.md) et mes notes, et avec l'assistant. Sur
   les huit issues ouvertes du 12 au 26/10, sept viennent de la surveillance automatique ; la #152 est une carte de correction.
 - **Les cases des plans de travail ne sont pas cochées dans le dépôt** (0 sur 221). Cela montre que les listes n'ont
@@ -764,7 +766,7 @@ Le détail est dans les limites de chaque section.
 |---|---|---|
 | Besoin (C14) | spécification de l'écran 5 et compléments de l'écran 4 rétrospectifs (02/11) ; table `article` hors du modèle ; aucun test avec un lecteur d'écran ni un utilisateur extérieur | § 1.7, § 1.8 |
 | Cadre technique (C15) | schéma d'architecture sans la vigie ; hébergeur non choisi sur un critère environnemental | § 2.7 |
-| Organisation (C16) | tableau non mis à jour après le 14/10 ; revues du lundi sans compte rendu ; pas de rétrospective | § 3.6 |
+| Organisation (C16) | Kanban non maintenu du 14/10 au 07/11, repris le 07/11 ; revues du lundi sans compte rendu ; pas de rétrospective | § 3.6 |
 | Développement (C17) | environnement non entièrement reproductible ; écrans comparés à leurs maquettes ou au système de conception (A7) ; un écart d'affichage (« +0,00 % ») et deux défauts de Briefing (A7) ; constat OWASP S9 ; Indicateurs en D | § 4.10 |
 | Tests (C18) | 22 tests ignorés en CI ; couverture sans l'interface, la recherche, la surveillance ni la passerelle MCP ; trois paquets de CI sans version | § 5.6 |
 | Livraison (C19) | un tag reconstruit l'image ; retour arrière sans la base ; aucune sauvegarde automatique ; collecte non planifiée ; script de rattrapage à renforcer | § 6.4, 6.5 |
@@ -786,8 +788,8 @@ mais une partie du critère manque, écrite dans la colonne « Limite restante �
 | **C15.3** Diagramme de flux de données | ✅ | [`evidence/C15/flux/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C15/flux), relevé sur le code le 02/11 ; celui du 18/08 gardé | relevé après le code ; questions (T8) non marquées personnelles ; purge RGPD absente | 2.4 |
 | **C15.4** Preuve de concept accessible et fonctionnelle en pré-production | ✅ | preuve du 18/08 ; pré-test sur le serveur depuis le 14/10 | | 2.6 |
 | **C15.5** Conclusion de la preuve de concept donnant un avis précis | ✅ | « Poursuivre », [`evidence/C15/preuve-preproduction-docker.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C15/preuve-preproduction-docker.md) | avis antérieur à la mise en production | 2.6 |
-| **C16.1** Cycles, étapes, rôles, rituels et outils de la méthode respectés tout au long du projet | 🟡 | méthode écrite ; cycles réels datés | suivi interrompu après le 14/10 ; revues sans compte rendu ; agile seulement depuis le 26/09 | 3.2, 3.6 |
-| **C16.2** Outils de pilotage disponibles (kanban, burndown, backlog) | ✅ | tableau Kanban, backlog d'issues, plans de travail ; burndown écarté et expliqué | tableau non tenu après le 14/10 | 3.3 |
+| **C16.1** Cycles, étapes, rôles, rituels et outils de la méthode respectés tout au long du projet | 🟡 | méthode écrite ; cycles réels datés | Kanban non maintenu du 14/10 au 07/11 (travail tracé dans les PR, ETAT et CHANGELOG), repris le 07/11 ; revues sans compte rendu ; agile seulement depuis le 26/09 | 3.2, 3.6 |
+| **C16.2** Outils de pilotage disponibles (kanban, burndown, backlog) | ✅ | tableau Kanban, backlog d'issues, plans de travail ; burndown écarté et expliqué | tableau non tenu du 14/10 au 07/11 | 3.3 |
 | **C16.3** Objectifs et modalités des rituels partagés aux parties prenantes | ✅ | méthode dans le dépôt, file de validation ; section des rituels envoyée au formateur le 03/11 ([preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C8/envoi-documents-formateur-2026-11-03.md)) | partage surtout documentaire ; réception et liens confirmés par Elbby, 04/11 | 3.4 |
 | **C16.4** Éléments de pilotage accessibles à toutes les parties tout au long du projet | 🟡 | dépôt en lecture pour le formateur (vérifié le 30/10) ; Kanban confirmé par Elbby le 03/11 ([preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C16/preuve-acces-kanban-formateur-2026-11-03.md)) | accès du jury à organiser | 3.4 |
 | **C17.1** Environnement de développement conforme aux spécifications | ✅ | environnement prévu ([`evidence/C15/preuve-specifications-techniques.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C15/preuve-specifications-techniques.md)) et installé, rapprochés le 01/11 : Windows 11, Python 3.14.6, PostgreSQL 18.4 sur le port 5433 ; Python 3.13 en CI ([`test.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/.github/workflows/test.yml)) | [`requirements.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/requirements.txt) et trois paquets de CI sans version : limite de reproductibilité | 4.2 |
