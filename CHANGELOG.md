@@ -9,6 +9,15 @@
 
 ---
 
+## 2026-11-08, matin : rapports finaux pour la remise du 09/11
+
+- **Livré** : `livrable-E1-v7` posé sur `05df824`, exécution verte.
+- **Décision** : C16.1, C16.4 et C17.8 en vert dans l'auto-évaluation d'E4, chacun avec sa limite (revue hebdomadaire
+  sans compte rendu ; accès du jury à organiser pour l'examen ; S7 : alertes de vulnérabilités et dépendances
+  indirectes) ; rapports rédigés à la première personne, sans nom d'intervenant.
+- **Pour la remise** : `livrable-E1-v8`, `livrable-E2-v5`, `livrable-E3-v6`, `livrable-E4-v7`, `livrable-E5-v5`,
+  posés sur `main` un par push ; les tags déjà publiés ne bougent pas.
+
 ## 2026-11-08, nuit, suite : E4 v1.10 pour `livrable-E4-v7`
 
 - **Manque découvert** : E4 v1.9 (`livrable-E4-v6`) compte sept workflows au lieu de huit depuis `vigie.yml` ; corrigé
