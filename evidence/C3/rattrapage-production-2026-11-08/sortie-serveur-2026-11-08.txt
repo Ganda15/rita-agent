@@ -1,0 +1,73 @@
+root@ubuntu-4gb-fsn1-1:~# cd /root/rita-agent
+root@ubuntu-4gb-fsn1-1:~/rita-agent#
+root@ubuntu-4gb-fsn1-1:~/rita-agent# export IMAGE="$(docker inspect --format '{{.Config.Image}}' rita-api-preprod)"
+root@ubuntu-4gb-fsn1-1:~/rita-agent# export RESEAU="$(docker inspect -f '{{range $k, $v := .NetworkSettings.Networks}}{{println $k}}{{end}}' rita-api-preprod | head -n 1)"
+root@ubuntu-4gb-fsn1-1:~/rita-agent# export DATABASE_URL="$(docker exec rita-api-preprod printenv DATABASE_URL)"
+root@ubuntu-4gb-fsn1-1:~/rita-agent# echo "image=$IMAGE reseau=$RESEAU utilisateur=$(echo "$DATABASE_URL" | cut -d: -f2 | tr -d /)"
+image=ghcr.io/ganda15/rita-api@sha256:e99909e130e31dc559642134e98f3b8b06235c8457884bc550eaa5fa376fad18 reseau=rita-agent_default utilisateur=
+root@ubuntu-4gb-fsn1-1:~/rita-agent# docker exec rita-postgres-preprod psql -U rita -d rita -At -c "SELECT MAX(date_seance), COUNT(*) FROM cotation"
+2026-11-04|281166
+root@ubuntu-4gb-fsn1-1:~/rita-agent# docker run --rm --network "$RESEAU" -e DATABASE_URL -v /root/rita-deploy/rapports:/app/logs "$IMAGE" python -m pipelines.ingest --etapes cotations,ecb --du 2026-11-04 --au 2026-11-08 --simulation
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/app/pipelines/ingest.py", line 682, in <module>
+    r = executer(args.dsn,
+                 args.etapes.split(",") if args.etapes else None,
+                 args.simulation,
+                 periode=(args.du, args.au) if args.du else None)
+  File "/app/pipelines/ingest.py", line 530, in executer
+    conn = psycopg2.connect(dsn or os.getenv("DATABASE_URL", DSN_DEFAUT))
+  File "/usr/local/lib/python3.13/site-packages/psycopg2/__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: No such file or directory
+        Is the server running locally and accepting connections on that socket?
+
+root@ubuntu-4gb-fsn1-1:~/rita-agent# export DATABASE_URL="host=postgres port=5432 dbname=rita user=rita"
+root@ubuntu-4gb-fsn1-1:~/rita-agent# export PGPASSWORD="$(docker exec rita-postgres-preprod printenv POSTGRES_PASSWORD)"
+root@ubuntu-4gb-fsn1-1:~/rita-agent# echo "image=$IMAGE reseau=$RESEAU adresse=[$DATABASE_URL] mot_de_passe=$(test -n "$PGPASSWORD" && echo present || echo ABSENT)"
+image=ghcr.io/ganda15/rita-api@sha256:e99909e130e31dc559642134e98f3b8b06235c8457884bc550eaa5fa376fad18 reseau=rita-agent_default adresse=[host=postgres port=5432 dbname=rita user=rita] mot_de_passe=present
+root@ubuntu-4gb-fsn1-1:~/rita-agent# docker run --rm --network "$RESEAU" -e DATABASE_URL -e PGPASSWORD -v /root/rita-deploy/rapports:/app/logs "$IMAGE" python -m pipelines.ingest --etapes cotations,ecb --du 2026-11-04 --au 2026-11-08 --simulation
+INFO Failed to create TzCache, reason: Error creating TzCache folder: '/home/rita/.cache/py-yfinance' reason: [Errno 17] File exists: '/home/rita/.cache/py-yfinance'. TzCache will not be used. Tip: You can direct cache to use a different location with 'set_tz_cache_location(mylocation)'
+
+====================================================================
+PIPELINE D'AGREGATION  --  SIMULATION (rien n'est ecrit)  --  RATTRAPAGE du 2026-11-04 au 2026-11-08
+====================================================================
+
+  cotations (yfinance)         lues  325 | ecrites    0 | rejetees   0
+      - 3 valeur(s) radiee(s) non demandee(s) : ELE.PA, GTO.PA, ZC.PA
+      - seances du 2026-11-03 au 2026-11-06
+
+  taux_change (BCE)            lues   12 | ecrites    0 | rejetees   0
+
+  Etapes reussies : 2/2   Duree : 17.8 s
+  Manifeste : /app/logs/manifeste-2026-11-08-181040.json
+
+root@ubuntu-4gb-fsn1-1:~/rita-agent# docker run --rm --network "$RESEAU" -e DATABASE_URL -e PGPASSWORD -v /root/rita-deploy/rapports:/app/logs "$IMAGE" python -m pipelines.ingest --etapes cotations,ecb --du 2026-11-04 --au 2026-11-08 --strict
+
+====================================================================
+PIPELINE D'AGREGATION  --  EXECUTION  --  RATTRAPAGE du 2026-11-04 au 2026-11-08
+====================================================================
+
+  cotations (yfinance)         lues  325 | ecrites  325 | rejetees   0
+      - 3 valeur(s) radiee(s) non demandee(s) : ELE.PA, GTO.PA, ZC.PA
+      - seances du 2026-11-03 au 2026-11-06
+
+  taux_change (BCE)            lues   12 | ecrites   15 | rejetees   0
+
+  Etapes reussies : 2/2   Duree : 17.8 s
+  Manifeste : /app/logs/manifeste-2026-11-08-181207.json
+
+root@ubuntu-4gb-fsn1-1:~/rita-agent# docker exec rita-postgres-preprod psql -U rita -d rita -At -c "SELECT MAX(date_seance), COUNT(*) FROM cotation"
+2026-11-06|281383
+root@ubuntu-4gb-fsn1-1:~/rita-agent# docker exec rita-postgres-preprod psql -U rita -d rita -At -c "SELECT devise, MAX(date_taux) FROM taux_change GROUP BY devise ORDER BY devise"
+CHF|2026-11-06
+EUR|2026-11-06
+GBP|2026-11-06
+JPY|2026-11-06
+USD|2026-11-06
+root@ubuntu-4gb-fsn1-1:~/rita-agent# docker exec rita-postgres-preprod psql -U rita -d rita -c "ANALYZE cotation; ANALYZE taux_change;"
+ANALYZE
+ANALYZE
+root@ubuntu-4gb-fsn1-1:~/rita-agent# unset DATABASE_URL PGPASSWORD IMAGE RESEAU
+root@ubuntu-4gb-fsn1-1:~/rita-agent#

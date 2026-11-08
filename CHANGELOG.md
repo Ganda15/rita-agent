@@ -9,6 +9,16 @@
 
 ---
 
+## 2026-11-08, soir : cours de production rattrapés au 06/11 ; manque découvert dans le guide du rattrapage
+
+- **Manque découvert** : depuis la carte #76 (en production le 07/11), le conteneur de l'API n'a plus l'adresse du
+  propriétaire de la base ; l'étape 3 du rattrapage des cours l'y lisait encore. Le premier passage à blanc du 08/11 a
+  échoué sans rien écrire. Guide corrigé (adresse clé=valeur, mot de passe dans `PGPASSWORD`, jamais affiché) ; deux
+  tests tiennent désormais la doc d'accord avec `docker-compose.yml`.
+- **Décision** : l'option C du 06/11 (aucune écriture en production avant l'oral blanc) est levée pour ce rattrapage.
+- Production : dernière séance le 06/11, 281 383 cotations, cinq devises au 06/11. Preuve :
+  `evidence/C3/rattrapage-production-2026-11-08/`. La collecte des cours n'est toujours pas planifiée sur le serveur.
+
 ## 2026-11-08, matin : rapports finaux pour la remise du 09/11
 
 - **Livré** : `livrable-E1-v7` posé sur `05df824`, exécution verte.
