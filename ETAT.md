@@ -21,7 +21,7 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ---
 
-## ▶️ 08/11, NUIT : E1 v7 ET E3 v2.5 AUX COULEURS D'E2, POUR `livrable-E1-v7` ET `livrable-E3-v6`
+## ▶️ 08/11, NUIT : E1 v7 ET E3 v2.5 AUX COULEURS D'E2, POUR `livrable-E1-v7` ET `livrable-E3-v6` ; E4 v1.10 POUR `livrable-E4-v7`
 
 **Prochaine action** :
 1. **Era relit** `rapport-E1-v7-avec-annexes.pdf` (10 pages) et `rapport-E3.pdf` (v2.5, 20 pages).
@@ -39,6 +39,10 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
   couverture remplacée (texte seul, image intacte), 11 liens de la couverture recréés ; les 30 liens du livret vont vers
   `livrable-E1-v7` (22 chemins, tous présents). Le script d'assemblage du 28/10, hors du dépôt, n'est pas repris.
 - **README** : tableau des livrables à l'état du 08/11 (versions, pages, auto-évaluations, tags).
+- **E4 v1.10, pour `livrable-E4-v7`** (contrôle d'un autre agent, 08/11) : « huit workflows » et non sept depuis `vigie.yml`
+  (§ 2.2, § 5.1 avec « les cinq autres », § 5.4, C18.5) ; les « sept contrôles » exigés avant fusion restent justes. Les
+  liens vers `.github/workflows/` et `docs/CI-CD.md` vont vers le nouveau tag (au tag E4-v5, il y avait sept fichiers).
+  `livrable-E4-v6` reste tel quel ; 20 pages, 35 avec l'annexe ; grille inchangée.
 - **Contrôle final d'un autre agent (08/11), appliqué** : E1 : Viridien présenté comme défaut corrigé le 04/11 (preuve
   C3), règle UE du 06/11 avec ses réserves, neuf fiches de traitement dont T9, clé par client à 32,5 h (environ 1 700 €
   HT, réévaluée le 14/11), trois renvois au code recalés (`db/importer.py` 152 et 339, `api/main.py` 312) ; E3 § 9 : la

@@ -27,10 +27,10 @@ img.zoom{ display:block; max-height:12mm; margin:1mm 0 0; }
 
 # Annexe du rapport E4 : les schémas
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · compétences C14 à C19 · annexe du rapport E4, version 1.9, 7 novembre 2026
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · compétences C14 à C19 · annexe du rapport E4, version 1.10, 8 novembre 2026
 {: .identite }
 
-> Annexes du rapport E4 v1.9 du 07/11/2026 : chaque schéma cité, sur sa page, avec sa légende. Les schémas historiques
+> Annexes du rapport E4 v1.10 du 08/11/2026 : chaque schéma cité, sur sa page, avec sa légende. Les schémas historiques
 > conservent leur date et leur contenu (commit `174b0c1`, 02/11/2026) ; leurs limites sont dans les légendes. A7 compare
 > les maquettes aux écrans livrés le 04/11, et Question et Tableau de bord au système de conception (captures locales du 06/11).
 

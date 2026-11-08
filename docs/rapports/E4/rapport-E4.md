@@ -32,7 +32,7 @@ code{ background:#E3F0F3; color:#0D4C5E; border-radius:2pt; }
 
 # Rapport E4 : réaliser une application intégrant un service d'IA (C14 à C19)
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.9, 7 novembre 2026, soir · version de référence de l'application : commit `6f428d6` de `main`, en production le 07/11/2026 (S9 et pagination d'Indicateurs) ; les mesures datées gardent leur commit (`174b0c1`, en production le 02/11, pour la section 6) ; interface refaite en production depuis le 04/11 (`8ecc5a7`, § 6.5) ; les exécutions citées en section 6 vont du 21/10 au 02/11 · code et preuves : dépôt GitHub privé [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v6), tag de cette version ; preuves du 07/11 : [`verification-production-2026-11-07`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v6/evidence/C17/verification-production-2026-11-07) et [`verification-production-2026-11-07-soir`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v6/evidence/C17/verification-production-2026-11-07-soir) ; un lien daté du corps garde le tag de sa mesure (souvent `livrable-E4-v5`)
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.10, 8 novembre 2026 · version de référence de l'application : commit `6f428d6` de `main`, en production le 07/11/2026 (S9 et pagination d'Indicateurs) ; les mesures datées gardent leur commit (`174b0c1`, en production le 02/11, pour la section 6) ; interface refaite en production depuis le 04/11 (`8ecc5a7`, § 6.5) ; les exécutions citées en section 6 vont du 21/10 au 02/11 · code et preuves : dépôt GitHub privé [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7), tag de cette version ; preuves du 07/11 : [`verification-production-2026-11-07`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7/evidence/C17/verification-production-2026-11-07) et [`verification-production-2026-11-07-soir`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7/evidence/C17/verification-production-2026-11-07-soir) ; un lien daté du corps garde le tag de sa mesure (souvent `livrable-E4-v5`)
 {: .identite }
 
 > **En une minute.** RITA aide un investisseur particulier à suivre son portefeuille et à lire l'actualité d'une
@@ -251,7 +251,7 @@ et une n'a qu'une borne basse (limite reprise en C17).
 |---|---|---|
 | Poste de développement | API (port 8000), PostgreSQL (port 5433), collecte planifiée chaque soir | `uvicorn`, tâche planifiée Windows |
 | Pré-production locale | API et PostgreSQL en conteneurs | `docker compose up -d --build` (port 8001) |
-| Intégration continue | lint, secrets, tests, garde-fous, construction et vérification de l'image | GitHub Actions, sept workflows ([`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md)) |
+| Intégration continue | lint, secrets, tests, garde-fous, construction et vérification de l'image | GitHub Actions, huit workflows ([`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v7/docs/CI-CD.md)) |
 | Production | API en conteneur derrière Caddy (HTTPS), serveur Hetzner | livrée automatiquement après chaque fusion dans `main`, depuis le 14/10 (un fichier Compose modifié s'installe à la main) |
 
 Un **conteneur** est un paquet qui contient l'application et tout ce qu'il lui faut pour démarrer, isolé du reste de
@@ -630,8 +630,8 @@ peuvent exiger ses résultats.
 | [`livraison.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/.github/workflows/livraison.yml), Livraison | chaque envoi et chaque pull request sur `main` et `develop`, chaque tag `livrable-*` | `lint` (`ruff`), `secrets` (`gitleaks` sur tout l'historique), puis la construction et la vérification de l'image (section 6) |
 | [`revue-pr.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/.github/workflows/revue-pr.yml), Revue PR | chaque pull request vers `main` | une revue automatisée commentée sur la pull request |
 
-Il y a sept workflows en tout ([`.github/workflows/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/.github/workflows)) ; les quatre autres servent la surveillance, l'évaluation des
-garde-fous, le retour arrière et l'ingestion ([`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md), § 3).
+Il y a huit workflows en tout ([`.github/workflows/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7/.github/workflows)) ; les cinq autres servent les alertes Langfuse, la vigie
+planifiée, l'évaluation des garde-fous, le retour arrière et l'ingestion ([`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v7/docs/CI-CD.md), § 3).
 
 ### 5.2 Les étapes, dans l'ordre
 
@@ -654,7 +654,7 @@ contournement possible). Une pull request dont un contrôle est rouge ne peut do
 
 ### 5.4 Les configurations sont versionnées
 
-Les sept workflows sont dans le dépôt ([`.github/workflows/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/.github/workflows)), comme les règles de lint ([`ruff.toml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/ruff.toml)), de couverture
+Les huit workflows sont dans le dépôt ([`.github/workflows/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7/.github/workflows)), comme les règles de lint ([`ruff.toml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/ruff.toml)), de couverture
 ([`.coveragerc`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/.coveragerc)) et de recherche de secrets ([`.gitleaks.toml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/.gitleaks.toml)). La version de `ruff` est la même dans la CI et dans
 [`requirements.txt`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/requirements.txt), et un test le vérifie ([`tests/test_lint_config.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/tests/test_lint_config.py)).
 
@@ -825,7 +825,7 @@ mais une partie du critère manque, écrite dans la colonne « Limite restante �
 | **C18.2** Outil d'intégration continue cohérent avec l'environnement | ✅ | GitHub Actions, machine et Python fixés | | 5.1, 5.2 |
 | **C18.3** Étapes préalables aux tests intégrées (build, configuration) | ✅ | installation, navigateur, tests des données d'abord | | 5.2 |
 | **C18.4** La chaîne exécute les tests au déclenchement | ✅ | [`test.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/.github/workflows/test.yml) ; sept contrôles exigés avant toute fusion, dont la base jetable | | 5.3 |
-| **C18.5** Configurations versionnées sur le dépôt distant | ✅ | sept workflows, [`ruff.toml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/ruff.toml), [`.coveragerc`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/.coveragerc) | | 5.4 |
+| **C18.5** Configurations versionnées sur le dépôt distant | ✅ | huit workflows, [`ruff.toml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/ruff.toml), [`.coveragerc`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/.coveragerc) | | 5.4 |
 | **C18.6** Documentation d'installation, configuration et test de la chaîne, format accessible | ✅ | [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md), § 4 à § 7 ; format contrôlé le 01/11 ([`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17)) ; lien envoyé au formateur le 03/11 | réception et liens confirmés par Elbby, 04/11 | 5.5 |
 | **C19.1** Documentation : étapes, tâches, déclencheurs | ✅ | [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md), § 3 | | 6.1 |
 | **C19.2** Fichiers de configuration reconnus et exécutés | ✅ | [`livraison.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/.github/workflows/livraison.yml) ; exécutions vertes sur `main`, `develop` et les tags | | 6.2 |
@@ -841,7 +841,7 @@ C18, 6 ✅ ; C19, 7 ✅.
 **Versions, décisions d'Era.** Un ✅ exige tout le critère, preuves datées à l'appui, et aucune limite écrite ne le
 contredit ; une ligne incomplète s'écrit « à consolider » (🟡). 1.0 (01/11) : C14.1, C14.5, C17.1, C19.6. 1.1 (02/11) :
 C14.2 à C14.4, C15.3, C17.3, C17.4. 1.2 (03/11) : C16.3, C17.11, C18.6, C19.7. 1.7 (06/11) : C15.2, C17.2. 1.8 (07/11) :
-C17.5. 1.9 (07/11, soir) : C17.7 ; C17.8 reste à consolider pour S7 seul. Le recomptage du 30/10 (30 ✅, 6 🟡) comptait
+C17.5. 1.9 (07/11, soir) : C17.7 ; C17.8 reste à consolider pour S7 seul. 1.10 (08/11) : huit workflows, statuts inchangés. Le recomptage du 30/10 (30 ✅, 6 🟡) comptait
 un ✅ dès qu'une preuve existait.
 
 ## 📖 Glossaire {: #glossaire }
