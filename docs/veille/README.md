@@ -47,7 +47,7 @@ presse.
 | S36 (31/08 au 06/09) | ✅ (relevé du 31/08) | ✅ | rédigée en rattrapage le 08/09, l'en-tête le dit |
 | S37 (07 au 13/09) | ✅ (relevé du 08/09) | 🔴 aucune | carte #31 |
 | S38, S39 (14 au 27/09) | 🔴 aucun | 🔴 aucune | carte #31 : deux semaines sans séance, à dire tel quel |
-| S40 (28/09 au 04/10) | ✅ (relevé du 28/09, fenêtre élargie au 14/09) | 🔴 à écrire par Era | carte #30 |
+| S40 (28/09 au 04/10) | ✅ (relevé du 28/09, fenêtre élargie au 14/09) | 🔴 à écrire par moi | carte #30 |
 | S41 (05 au 11/10) | ✅ (relevé du 11/10, fenêtre élargie au 29/09) | ✅ rédigée en rattrapage le 11/10, partagée à la promo le 11/10 (`_JOURNAL-DES-ENVOIS.md`, envoi 3) | créneau du lundi 05/10 non tenu ; relevé fait le dimanche 11/10, et dit |
 
 Synthèse des quatre notes : `Veille-C6-synthese-S33-a-S36.pdf` (§6). Partage : un seul, Discord le 16/08, sans
@@ -57,7 +57,7 @@ capture des réponses à ce jour (`_JOURNAL-DES-ENVOIS.md`, `../../evidence/C6/R
 ⚠️ **Ce que le relevé fait, et ce qu'il ne fait pas.** Il **prépare le terrain** : les nouveautés
 des sources ci-dessous sont relevées (au besoin avec l'assistant de développement, qui lit les
 flux et les pages) et déposées dans `_candidats-AAAA-Sxx.md`, avec la période balayée, la date
-du relevé et les sources balayées. Il **n'écrit pas la note à la place d'Era** — la sélection, le
+du relevé et les sources balayées. Il **n'écrit pas la note à ma place** : la sélection, le
 jugement de fiabilité et la conclusion « ce que ça change dans RITA » sont le travail de veille
 lui-même. Une note produite automatiquement ne prouverait aucune compétence.
 
@@ -134,7 +134,7 @@ sans savoir lequel fait foi. **Tranché le 15/08/2026.**
 | **Rôle pour C6** | ✅ **l'outil de la veille C6** — celui qui produit la preuve | ❌ **hors C6** — veille personnelle d'éveil |
 | **Thématique** | sécurité des agents LLM, injection de prompt | IA en finance, IA agentique, outils de dev (`config.yaml`, `focus_weights`) |
 | **Sources** | les flux et pages des 5 sources pesées au §3, relevés à la main | Google News, Hacker News, DuckDuckGo, arXiv (`src/websearch.py`) |
-| **Sortie** | une liste de candidats — **Era écrit la note** | top-10 quotidien sur Telegram, puis diapositives et script oral **rédigés par un LLM** |
+| **Sortie** | une liste de candidats ; **j'écris la note** | top-10 quotidien sur Telegram, puis diapositives et script oral **rédigés par un LLM** |
 | **Budget** | 0 € | 0 € (OpenRouter, modèle gratuit) |
 | **Versionné et testé** | ✅ relevés et notes dans le dépôt Git ; rien à tester, il n'y a pas de code | ❌ ni versionné, ni testé |
 
@@ -145,7 +145,7 @@ sans savoir lequel fait foi. **Tranché le 15/08/2026.**
    diapositives générées par un LLM comme preuve d'une veille personnelle serait une **preuve
    fabriquée**.
 2. **Sa thématique n'est pas celle de C6.** Ses pondérations visent l'IA en finance et l'IA
-   agentique — utile pour la culture d'Era, sans rapport avec l'injection de prompt.
+   agentique — utile pour ma culture, sans rapport avec l'injection de prompt.
 3. **Il est hors du dépôt**, donc invisible pour un évaluateur qui ne dispose que de Git.
 
 **État réel de l'outil, mesuré le 15/08/2026** : `data/latest.json` date du **27/07**, et
@@ -195,7 +195,7 @@ veille du rendu se voit : les dates ne collent plus avec les notes qu'il préten
 ### 5.3 Ce qui reste non résolu — à dire franchement
 
 - **Aucun envoi n'a encore eu lieu au 15/08/2026.** Le registre existe, il est vide. Le
-  premier envoi est à faire par Era — aucun outil ne peut le faire à sa place.
+  premier envoi est à faire par moi : aucun outil ne peut le faire à ma place.
 - **L'animation du travail collectif reste le point faible du dispositif.** Elle dépend de
   réponses que d'autres personnes doivent écrire. Si aucune réponse n'arrive après deux
   notes, il faudra changer de canal plutôt que continuer à publier dans le vide.

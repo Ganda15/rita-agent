@@ -1,8 +1,8 @@
 # Schémas du rapport E3
 
 Cinq schémas. Leurs textes viennent d'une seule description, `generer_schemas.py`, qui écrit le `.drawio` (éditable
-dans draw.io) et le `.svg` : c'est là qu'on corrige un texte. L'image publiée dans le rapport est la **mise en forme
-d'Era** (`E3-<nom>-illustre.svg`, 24/10/2026), rendue en `.png` par Chrome sans fenêtre. `tests/test_schemas_e3.py`
+dans draw.io) et le `.svg` : c'est là qu'on corrige un texte. L'image publiée dans le rapport est **ma mise en forme**
+(`E3-<nom>-illustre.svg`, 24/10/2026), rendue en `.png` par Chrome sans fenêtre. `tests/test_schemas_e3.py`
 compare chaque texte de la mise en forme à ceux du générateur : un texte changé d'un côté seulement fait tomber le
 test. Règle du dépôt : un `.drawio` pour corriger, une image pour voir.
 
@@ -38,7 +38,7 @@ est celle du `.svg` généré). Chaque PNG est regardé avant
 d'être rangé : aucune flèche ne traverse une boîte ni un titre, aucun texte n'est coupé (les cinq le 24/10/2026,
 après la remise à jour).
 
-**Charte (refaite le 04/10/2026, à la demande d'Era)** : texte presque noir et plus grand, traits épais ; une couleur
+**Charte (refaite le 04/10/2026, à ma demande)** : texte presque noir et plus grand, traits épais ; une couleur
 par rôle de boîte (bande à gauche) et par sens de flèche ; une légende dessinée en bas de chaque schéma, qui ne montre
 que les couleurs employées et ce qu'elles veulent dire dans ce schéma.
 
@@ -46,7 +46,7 @@ que les couleurs employées et ce qu'elles veulent dire dans ce schéma.
 11,5 px dans un schéma réduit à 516 points de large, passait à environ 4 points une fois imprimé : il est passé à
 15,5 px (environ 5,7 points), les textes ont été raccourcis, et les explications sont dans le corps du rapport.
 
-**Mise en forme d'Era (24/10/2026)** : une première version, faite à partir d'un rendu intermédiaire, disait
+**Ma mise en forme (24/10/2026)** : une première version, faite à partir d'un rendu intermédiaire, disait
 « 6 h à 9 h » pour le créneau du matin et deux textes déjà corrigés ; la seconde, faite depuis
 `TEXTES-EXACTS`, a les textes du générateur mot pour mot (comparaison automatique : 0 absent, 0 en plus
 hors trois étiquettes de flèche vérifiées) et un texte courant de 6 à 6,9 points une fois imprimé (5 au

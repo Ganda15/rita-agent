@@ -56,14 +56,14 @@ Même commande pour les trois autres, chacun depuis son `-illustre.html` et à l
 (`E1-nettoyage` : `--window-size=1920,1318`). Les trois PNG du 27/10 ont été regardés le soir même.
 Les deux PNG du 4 octobre (collecte et nettoyage, dans leur version d'alors) ont été regardés le
 04/10/2026 au soir, après la refonte de la charte : aucune flèche ne traverse une boîte ni un titre, aucun texte n'est coupé.
-**Collecte, depuis le 24/10/2026 (à la demande d'Era)** : le PNG remis au jury est rendu depuis
-`E1-collecte-illustre.html`, une mise en forme illustrée fournie par Era (icônes, formes de base de données). Les
+**Collecte, depuis le 24/10/2026 (à ma demande)** : le PNG remis au jury est rendu depuis
+`E1-collecte-illustre.html`, une mise en forme illustrée que j'ai fournie (icônes, formes de base de données). Les
 sources `E1-collecte.svg` et `.drawio` restent générées et modifiables (bandeaux de colonne pleins, flèches à angle
 droit, étiquettes en pastille). Le test `test_le_schema_illustre_dit_exactement_ce_que_dit_le_schema_genere` vérifie que
 l'illustration porte les mêmes textes que le schéma généré : il a d'abord échoué sur deux textes de la maquette
 (« cours du jour » sur un bus qui porte aussi BCE, FRED et RSS ; un pied qui la disait générée), corrigés. Quand un
 chiffre change, régénérer le `.svg`, reporter le texte dans le `.html`, relancer le test, puis le rendu PNG.
-**Nettoyage, requêtes et API, depuis le 27/10/2026 (à la demande d'Era)** : même mise en forme, mais produite par le
+**Nettoyage, requêtes et API, depuis le 27/10/2026 (à ma demande)** : même mise en forme, mais produite par le
 générateur (`illustre`), avec les positions du schéma généré multipliées par 1,28. Régénérer suffit donc : le `.html`
 suit, et un test refuse une illustration qui ne serait plus celle du générateur. Le nettoyage est passé au tracé de la
 collecte (trois colonnes à bandeau).
@@ -74,7 +74,7 @@ des libellés CGG (addendum C3 du 26/10). L'API se disait « en lecture seule »
 `/donnees` compris, écrit une ligne dans `mcp_calls`, et promettait le « jeu complet » sans route pour les taux de
 change. Le plan Spark montre des partitions écartées, pas « des fichiers jamais ouverts ». Cinq tests tiennent ces
 corrections ; ils ont échoué avant elles.
-**Charte (refaite le 04/10/2026, à la demande d'Era)** : texte presque noir et plus grand, traits épais ; une couleur
+**Charte (refaite le 04/10/2026, à ma demande)** : texte presque noir et plus grand, traits épais ; une couleur
 par rôle de boîte (bande à gauche) et par sens de flèche ; une légende dessinée en bas de chaque schéma, qui ne montre
 que les couleurs employées et ce qu'elles veulent dire dans ce schéma. Le 04/10, le texte de chaque boîte a été
 mesuré dans Chrome (largeur réelle de chaque ligne) : aucun ne dépasse de sa boîte.
@@ -85,4 +85,4 @@ par année » ; nettoyage : « 11 partitions, une par année » (la forme longue
 rendu). Test d'abord (`test_les_partitions_se_comptent_au_total_une_par_annee`, 2 échecs), puis générateur, texte de
 l'illustration de la collecte, rendu PNG, et les deux images remplacées dans les pages 7 et 9 du PDF avec annexes.
 
-Corrigé le 02/11/2026 (livret E1 v5) : dans `../images/mcd-recadre.png`, la cardinalité côté VALEUR de « est cotée lors » passe de `1,n` à `0,n` (décision d'Era, `evidence/C4/preuve-mcd-merise.md`, section 5 bis) ; seul ce chiffre a été redessiné, le reste de la figure est inchangé.
+Corrigé le 02/11/2026 (livret E1 v5) : dans `../images/mcd-recadre.png`, la cardinalité côté VALEUR de « est cotée lors » passe de `1,n` à `0,n` (ma décision, `evidence/C4/preuve-mcd-merise.md`, section 5 bis) ; seul ce chiffre a été redessiné, le reste de la figure est inchangé.
