@@ -85,13 +85,14 @@ h2#glossaire ~ table td{ padding:3pt 6pt 3pt 0; line-height:1.45; font-size:9.8p
 /* 08/11 : mise en forme « luxe fintech » de la maquette E2 du 08/11 (formes seules, texte inchangé) : en-tête de
    tableau en bleus par colonne, cellules sur fond pâle sans zébrage, filets fins, sous-titres en bandeau uni avec barre
    marine, filets marine et sarcelle en bord de page (boîtes de marge de @page ; page 1 : sous le titre, sans filet haut). */
+/* 08/11, après la maquette : bleus clairs des en-têtes assombris, texte blanc à 5:1 au moins (WCAG AA). */
 table{ --rule:#C5D0DA; --rule-strong:#C5D0DA; }
 table thead th:nth-child(1), table thead th.azure:nth-child(1), table thead th.claude:nth-child(1){ background:#0A2550; }
 table thead th:nth-child(2), table thead th.azure:nth-child(2), table thead th.claude:nth-child(2){ background:#0066A3; }
-table thead th:nth-child(3), table thead th.azure:nth-child(3), table thead th.claude:nth-child(3){ background:#0095BA; }
-table thead th:nth-child(4), table thead th.azure:nth-child(4), table thead th.claude:nth-child(4){ background:#00B0C7; }
-table thead th:nth-child(n+5), table thead th.azure:nth-child(n+5), table thead th.claude:nth-child(n+5){ background:#1A9BB0; }
-table thead th:nth-child(2):last-child{ background:#0095BA; }
+table thead th:nth-child(3), table thead th.azure:nth-child(3), table thead th.claude:nth-child(3){ background:#007494; }
+table thead th:nth-child(4), table thead th.azure:nth-child(4), table thead th.claude:nth-child(4){ background:#007B86; }
+table thead th:nth-child(n+5), table thead th.azure:nth-child(n+5), table thead th.claude:nth-child(n+5){ background:#00798F; }
+table thead th:nth-child(2):last-child{ background:#007494; }
 p.glossaire-suite{ background:#D6E6F7; border-left:4px solid #12395E; margin-left:-7pt; padding-left:calc(7pt - 4px); }
 table tbody tr td:not(.ok):not(.alerte){ background:#EEF2F6; }
 table tbody tr td:first-child:not(.ok):not(.alerte){ background:#E6EEF5; }

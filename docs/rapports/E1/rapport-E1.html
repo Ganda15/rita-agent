@@ -65,7 +65,8 @@ code { background: #E3F0F3; color: #0D4C5E; }
    en trois bleus, cellules sur fond pâle sans zébrage, filets fins, bandeau du titre, filets marine et sarcelle en bord de page
    (boîtes de marge de @page : Chrome ne peint ni le fond de @page ni un élément fixe hors de la zone de contenu). */
 .titre h1 { background: #BFD7F2; border-left: 3.2pt solid #12395E; margin: -.4pt 0 -.5pt -5.5pt; padding: 1.8pt 0 2.8pt 2.5pt; }
-th { background: #0A2550; } th:nth-child(2) { background: #0066A3; } th:nth-child(3) { background: #0095BA; } th:nth-child(4) { background: #00B0C7; }
+/* 08/11, après la maquette : bleus clairs des en-têtes assombris, texte blanc à 5:1 au moins (WCAG AA). */
+th { background: #0A2550; } th:nth-child(2) { background: #0066A3; } th:nth-child(3) { background: #007494; } th:nth-child(4) { background: #007B86; }
 table tr td, table tr:nth-child(even) td, table tr:has(th) ~ tr:nth-child(even) td, table tr:has(th) ~ tr:nth-child(odd) td { background: #EEF2F6; border-bottom-color: #C5D0DA; }
 table tr td:first-child, table tr:nth-child(even) td:first-child, table tr:has(th) ~ tr:nth-child(even) td:first-child, table tr:has(th) ~ tr:nth-child(odd) td:first-child { background: #E6EEF5; }
 @page {
