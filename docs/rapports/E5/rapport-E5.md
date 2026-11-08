@@ -12,7 +12,7 @@ h2#glossaire + ul{ columns:2; column-gap:18pt; }
 h2#criteres + p + table td:first-child{ width:53%; }
 h2#preuves + table th:nth-child(1){ width:15%; } h2#preuves + table th:nth-child(2){ width:10%; }
 h2#preuves + table th:nth-child(3){ width:25%; }
-/* 07/11, demande d'Era : les couleurs du rapport E2 (choix du 06/11 sur le nuancier) : tableaux d'information en
+/* 07/11 : les couleurs du rapport E2 (choix du 06/11 sur le nuancier) : tableaux d'information en
    style A (en-tête marine, lignes zébrées, première colonne marine), titres en dégradé marine vers sarcelle, code
    coloré. L'espacement d'E2 n'est pas repris, pour garder le nombre de pages. */
 :root{ --zebre:#F2F6FA; }
@@ -34,7 +34,7 @@ code{ background:#E3F0F3; color:#0D4C5E; border-radius:2pt; }
 
 # Rapport E5 : surveiller l'application et résoudre un incident (C20 et C21)
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C20 et C21 · version 1.0, 7 novembre 2026 · application de référence : commit `6f428d6` de `main`, en production le 07/11/2026 ; correctif de l'incident : PR #171 du 31/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C20 et C21 · version 1.1, 8 novembre 2026 · application de référence : commit `6f428d6` de `main`, en production le 07/11/2026 ; correctif de l'incident : PR #171 du 31/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
 {: .identite }
 
 > **En une minute.** Ce document est la documentation technique du monitorage de RITA, écrite pour la personne qui
@@ -251,7 +251,7 @@ Huit autres incidents ont leur fiche dans [`evidence/C21/`](https://github.com/G
 
 ## 9. Les douze critères {: #criteres }
 
-Auto-évaluation d'Era au 07/11/2026 ; les limites sont dites dans les lignes et au § 8.
+Mon auto-évaluation au 07/11/2026 ; les limites sont dites dans les lignes et au § 8.
 
 | Critère | Statut | Preuve |
 |---|---|---|

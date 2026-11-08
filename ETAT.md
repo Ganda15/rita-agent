@@ -21,6 +21,15 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ---
 
+## ▶️ 08/11, MATIN : RAPPORTS FINAUX POUR LA REMISE DU 09/11 (`livrable-E1-v8`, `livrable-E2-v5`, `livrable-E3-v6`, `livrable-E4-v7`, `livrable-E5-v5`)
+
+- **Fait le 08/11** : `livrable-E1-v7` posé sur `05df824` (exécution verte) avant la dernière passe. Dernière passe :
+  aucun « Era » ni nom d'intervenant dans les cinq rapports (rédaction à la première personne) ; E4 : C16.1, C16.4 et
+  C17.8 en vert (décision du 08/11), chacun avec sa limite exacte, total 38 ✅ ; accès du jury « à organiser pour
+  l'examen » ; E2 v1.6 : notation décrite selon la preuve (textes sans le fournisseur, notes d'une IA relues et
+  retenues sans modification), vigie planifiée ; E5 v1.1 ; E1 v8 (annexe A sans « Era »). Lundi 09/11 : remise,
+  pas de revue. Les cinq tags se posent sur le commit de `main` qui contient cette passe, un par push.
+
 ## ▶️ REPRISE DU 08/11 : POSER `livrable-E1-v7`, `livrable-E3-v6`, `livrable-E4-v7` SUR `05df824`
 
 **Prochaine action, dans l'ordre** :

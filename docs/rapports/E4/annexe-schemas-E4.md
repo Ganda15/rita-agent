@@ -190,7 +190,7 @@ sa date. Le statut des astérisques est traité séparément.
 
 <div class="duo">
 <figure><img src="schemas/E4-A7-maquette-portefeuille-recadree.png" alt="Maquette de l'écran Portefeuille, style clair, valeurs illustratives"><figcaption>Maquette du 04/10, recadrée de la maquette 3</figcaption></figure>
-<figure><img src="../../../evidence/C3/captures-viridien-production/5-portefeuille-apres-rattrapage-2026-11-04.webp" alt="Écran Portefeuille livré, thème sombre, en production le 4 novembre 2026"><figcaption>Écran livré, en production, capture d'Era du 04/11 au soir ; page entière et aide dépliée : captures 4 et 5 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a></figcaption></figure>
+<figure><img src="../../../evidence/C3/captures-viridien-production/5-portefeuille-apres-rattrapage-2026-11-04.webp" alt="Écran Portefeuille livré, thème sombre, en production le 4 novembre 2026"><figcaption>Écran livré, en production, ma capture du 04/11 au soir ; page entière et aide dépliée : captures 4 et 5 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a></figcaption></figure>
 </div>
 
 | Élément | Constat | Explication |
@@ -209,7 +209,7 @@ sa date. Le statut des astérisques est traité séparément.
 
 <div class="duo bas">
 <figure><img src="schemas/E4-A7-maquette-indicateurs-recadree.png" alt="Maquette de l'écran Indicateurs, style clair, valeurs illustratives"><figcaption>Maquette du 04/10, recadrée de la maquette 3</figcaption></figure>
-<figure><img src="../../../evidence/C3/captures-viridien-production/6-indicateurs-apres-rattrapage-2026-11-04.webp" alt="Écran Indicateurs livré, thème sombre, en production le 4 novembre 2026"><figcaption>Écran livré, en production, capture d'Era du 04/11 au soir ; carte, colonnes de droite, aide et détail : captures 2, 3, 6 et 7 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a></figcaption></figure>
+<figure><img src="../../../evidence/C3/captures-viridien-production/6-indicateurs-apres-rattrapage-2026-11-04.webp" alt="Écran Indicateurs livré, thème sombre, en production le 4 novembre 2026"><figcaption>Écran livré, en production, ma capture du 04/11 au soir ; carte, colonnes de droite, aide et détail : captures 2, 3, 6 et 7 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a></figcaption></figure>
 </div>
 
 | Élément | Constat | Explication |
@@ -229,7 +229,7 @@ sa date. Le statut des astérisques est traité séparément.
 
 <div class="duo">
 <figure><img src="schemas/E4-A7-maquette-briefing-flux-vertical.png" alt="Maquette de l'écran Briefing, flux vertical retenu, style clair"><figcaption>Maquette du 04/10, mise en page retenue (flux vertical), recadrée de la <a href="https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/conception/frontend/maquettes/maquette-2-ecran-briefing.png">maquette 2</a></figcaption></figure>
-<figure><img src="../../../evidence/C17/refonte-ecrans-livres-2026-11-04/1-briefing-AIR-PA-production-2026-11-04.png" alt="Écran Briefing livré, thème sombre, briefing AIR.PA en production le 4 novembre 2026"><figcaption>Écran livré, en production, briefing AIR.PA, capture d'Era du 04/11 au soir (capture 1 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a>)</figcaption></figure>
+<figure><img src="../../../evidence/C17/refonte-ecrans-livres-2026-11-04/1-briefing-AIR-PA-production-2026-11-04.png" alt="Écran Briefing livré, thème sombre, briefing AIR.PA en production le 4 novembre 2026"><figcaption>Écran livré, en production, briefing AIR.PA, ma capture du 04/11 au soir (capture 1 de <a href="https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17/refonte-ecrans-livres-2026-11-04">evidence/C17/refonte-ecrans-livres-2026-11-04/</a>)</figcaption></figure>
 </div>
 
 | Élément | Constat | Explication |

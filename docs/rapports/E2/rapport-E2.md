@@ -21,7 +21,7 @@ img.demi{ display:inline-block; width:48.5%; margin:4pt .5% 2pt; vertical-align:
 img.cadre{ border:.4pt solid var(--rule); }
 img.gauche{ display:inline-block; width:62%; vertical-align:top; border:.4pt solid var(--rule); margin:4pt 1% 2pt 0; }
 img.droite{ display:inline-block; width:33%; vertical-align:top; border:.4pt solid var(--rule); margin:4pt 0 2pt 1%; }
-/* 06/11, choix d'Era sur le nuancier : tableaux d'information en style A (en-tête marine, lignes zébrées) ;
+/* 06/11, choix sur le nuancier : tableaux d'information en style A (en-tête marine, lignes zébrées) ;
    grille des critères, banc et matrice en style C (grille, bandes de compétence, couleurs des services, pastilles). */
 :root{ --zebre:#F2F6FA; --sarcelle:#14607F; --ciel:#D6E6F7; --ok-fond:#DFF2E5; --ok-texte:#17633A;
   --alerte-fond:#FFF0C7; --alerte-texte:#7A4E00; --c6:#0F7A6B; --c7:#3B3FA8; --c8:#A35A00; --azure:#0B5CAD; --claude:#7A3E8F;
@@ -54,13 +54,13 @@ table.banc td.gagne::after{ content:" ▲"; font-size:7pt; }
 .chip.mesure{ background:var(--p-mesure); color:var(--p-mesure-t); } .chip.observe{ background:var(--p-observe); color:var(--p-observe-t); }
 .chip.doc{ background:var(--p-doc); color:var(--p-doc-t); } .chip.na{ background:var(--p-na); color:var(--p-na-t); }
 .chip.essai{ background:var(--p-essai); color:var(--p-essai-t); }
-/* Titres (06/11, choix d'Era sur le nuancier des titres, style 3) : dégradé marine vers sarcelle, sans bande ni filet ;
+/* Titres (06/11, choix sur le nuancier des titres, style 3) : dégradé marine vers sarcelle, sans bande ni filet ;
    pour E2 seulement, la feuille commune (scripts/rendre_pdf.py) garde les bandeaux bleus des autres rapports. */
 body h1, body h2{ background:linear-gradient(90deg, #12395E, #14607F); color:#fff; }
 body h1{ padding:3pt 10pt; }
 body h2{ padding:2pt 10pt; }
 body h3{ background:linear-gradient(90deg, #D6E6F7, #EEF5FC); color:#12395E; padding:1pt 9pt; }
-/* Code et encadrés (06/11, demande d'Era) : le code sur fond marine foncé, comme un éditeur ; les longs passages en
+/* Code et encadrés (06/11) : le code sur fond marine foncé, comme un éditeur ; les longs passages en
    encadrés sans bordure, colorés par rôle : méthode (bleu), preuve (vert), limite (ambre), décision (indigo). */
 pre{ background:#0F2A44; color:#E8EEF5; border:none; border-radius:4pt; padding:7pt 10pt; }
 pre code{ color:inherit; background:none; }
@@ -88,7 +88,7 @@ h2#glossaire ~ table td{ padding:3pt 6pt 3pt 0; line-height:1.45; font-size:9.8p
 
 # Rapport E2 : veille, choix d'un service de modèle, et son paramétrage
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 1.5, 7 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 1.6, 8 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
 {: .identite }
 
 > **En une minute.** RITA rédige des briefings boursiers et répond à des questions sur les articles collectés. Elle
@@ -128,7 +128,7 @@ Chaque section relie les critères à une décision et à ses preuves datées. L
 distinguées des informations documentaires et des éléments non évalués. Les annexes regroupent les schémas et les
 captures complètes ; les renvois permettent de les ouvrir directement. Les corrections postérieures à la version de
 référence portent leur date. Trois preuves s'ouvrent dans le dépôt privé, à la version `922349d` (accès du formateur
-vérifié le 30/10, celui du jury non confirmé) :
+vérifié le 30/10 ; celui du jury à organiser pour l'examen) :
 [les 60 résultats du banc](https://github.com/Ganda15/rita-agent/blob/922349da2042a6f2272f9c7c0738641aa63eb1f3/evidence/C7/resultats-2026-10-03.jsonl),
 [le réglage d'Azure](https://github.com/Ganda15/rita-agent/blob/922349da2042a6f2272f9c7c0738641aa63eb1f3/src/llm.py#L31-L36) et [son test](https://github.com/Ganda15/rita-agent/blob/922349da2042a6f2272f9c7c0738641aa63eb1f3/tests/test_llm.py#L13-L18),
 [le guide d'exploitation](https://github.com/Ganda15/rita-agent/blob/922349da2042a6f2272f9c7c0738641aa63eb1f3/docs/exploitation.md).
@@ -386,7 +386,7 @@ version présentée.
 **Le banc du 07/11** (`evidence/C7/banc-2026-11-07-comparaison/`) : le jeu du 03/10, le prompt du 06/11, 500 jetons,
 Azure en zone UE. Lors des essais du 07/11, le réglage `none` a été refusé ; avec `low` et 500 jetons, aucun texte n'a
 été obtenu ; avec 2 000 jetons, un texte a été obtenu. Large 3 (`mistral-large-2512`) a donc été retenu pour la
-comparaison à 500 jetons (choix d'Era). Ce banc ne mesure pas la route Question.
+comparaison à 500 jetons (mon choix). Ce banc ne mesure pas la route Question.
 
 | Mesure | Azure `gpt-5.4`, zone UE | Mistral Large 3, UE |
 |---|---|---|
@@ -396,8 +396,9 @@ comparaison à 500 jetons (choix d'Era). Ce banc ne mesure pas la route Question
 | Coût d'un briefing au prix public | 0,0044 USD | **0,00072 USD** |
 | Français, de 0 à 2, moyenne | 1,10 (3 textes à 2) | **1,37** (11 textes à 2) |
 
-Les notes de français sont des notes proposées par une IA à l'aveugle, acceptées par Era sans modification ; la forme
-trahit en partie l'auteur (Mistral ouvre par un titre). Console Mistral : coût total estimé de 0,02 € pour 35 requêtes,
+Les textes ont été mélangés et présentés sans indication du fournisseur. Les notes de français ont été proposées par
+une IA ; je les ai relues en les confrontant à d'autres agents d'IA, puis retenues sans modification. Certains indices de style
+pouvaient suggérer le fournisseur (Mistral ouvre par un titre). Console Mistral : coût total estimé de 0,02 € pour 35 requêtes,
 ni une facture ni le coût des seuls 30 appels du banc.
 
 ### 3.5 L'environnement et les prérequis techniques {: #s3-5 }
@@ -441,7 +442,8 @@ Sur les 30 appels Azure du 07/11, le 95e centile est de 2,55 s ; ce résultat ne
 
 ### 3.7 Ce qui n'est pas fait {: #s3-7 }
 
-- **La notation du français** : notes proposées par une IA à l'aveugle, puis acceptées par Era sans modification. Les
+- **La notation du français** : textes présentés sans le fournisseur, notes proposées par une IA, relues,
+  confrontées à d'autres agents d'IA et retenues sans modification. Les
   moyennes diffèrent sur ce jeu ; cela ne prouve pas une supériorité générale, et ce n'est pas une notation humaine
   indépendante.
 - **Le banc du 07/11** compare Azure UE à Mistral Large 3 sur dix cas, avec trois répétitions ; il ne mesure ni l'usage
@@ -557,7 +559,8 @@ simulée le 23/10 a déclenché l'alerte #130 : la chaîne fonctionne de bout en
 
 **`/sante` et la vigie.** `/sante` (`api/sante.py`) donne les mesures du service et leurs verdicts (erreurs, refus,
 latence, coût estimé, fraîcheur), avec des seuils argumentés (`monitorage/seuils.json`). La vigie
-(`monitorage/vigie.py`) interroge le service de dehors et peut ouvrir une alerte ; elle se lance à la main (rapport E5).
+(`monitorage/vigie.py`) interroge le service de dehors et peut ouvrir une alerte ; lancée à la main ou, depuis le 07/11,
+toutes les trois heures par GitHub Actions (premier passage planifié réussi le 07/11 à 21 h 52 UTC, rapport E5).
 
 **La supervision d'Azure, relevée le 06/11** (annexe A6, capture 11) : 735 requêtes du 06/10 au 06/11, 2,25 millions
 de jetons d'entrée et environ 304 000 de sortie. Azure indique des données partielles et n'affiche pas le coût : ce
@@ -633,13 +636,13 @@ preuve · 🟡 à consolider : le point qui manque est écrit · ❌ aucune preu
 </tbody>
 </table>
 
-**Décompte** : 20 ✅ · 0 🟡 · 0 ❌ sur 20. Décision d'Era.
+**Décompte** : 20 ✅ · 0 🟡 · 0 ❌ sur 20.
 
 ---
 
 ## 6. Ce qui n'est pas fait, et dans quel ordre le faire {: #reste }
 
-**Les versions.** 1.5 du 07/11 (C8.2 tenu, banc du 07/11), tag prévu : `livrable-E2-v4` ; 1.1 sous `livrable-E2-v3`, 1.0
+**Les versions.** 1.6 du 08/11 sous `livrable-E2-v5` ; 1.5 du 07/11 (C8.2 tenu, banc du 07/11) sous `livrable-E2-v4` ; 1.1 sous `livrable-E2-v3`, 1.0
 sous `livrable-E2-v2`, 0.9 sous `livrable-E2-v1` ; 1.2 à 1.4 non taguées.
 
 **Ensuite.**
@@ -665,7 +668,7 @@ sous `livrable-E2-v2`, 0.9 sous `livrable-E2-v1` ; 1.2 à 1.4 non taguées.
 | **Jeton** | unité de texte comptée et facturée par le fournisseur du modèle |
 | **Zone de données UE (Data Zone Standard EU)** | déploiement Azure configuré pour traiter les appels dans la zone de données de l'Union européenne |
 | **PUE** | indicateur d'efficacité énergétique d'un centre de données (1 serait parfait) |
-| **Évaluation assistée par IA** | un outil d'IA propose les notes et les remarques ; une personne les relit, les corrige si nécessaire et les valide. Au banc du 07/11 : 60 notes de français proposées par une IA à l'aveugle, acceptées par Era sans modification |
+| **Évaluation assistée par IA** | un outil d'IA propose les notes et les remarques ; une personne les relit, les corrige si nécessaire et les valide. Au banc du 07/11 : 60 notes de français proposées par une IA, relues avant d'être retenues |
 | **Déploiement** | l'instance d'un modèle réservée à un projet chez le fournisseur, avec son nom et sa zone |
 | **Hook** | contrôle automatique lancé par l'outil de développement avant une action, qui peut la refuser |
 | **Trace, métadonnées** | le relevé d'un appel (étapes, durée, modèle, jetons) ; les métadonnées décrivent l'appel sans son contenu |
