@@ -9,6 +9,11 @@
 
 ---
 
+## 2026-11-08, nuit, suite : E4 v1.10 pour `livrable-E4-v7`
+
+- **Manque découvert** : E4 v1.9 (`livrable-E4-v6`) compte sept workflows au lieu de huit depuis `vigie.yml` ; corrigé
+  dans E4 v1.10, pour `livrable-E4-v7`, sans déplacer `livrable-E4-v6`.
+
 ## 2026-11-08, nuit : E1 v7 et E3 v2.5 aux couleurs d'E2, pour `livrable-E1-v7` et `livrable-E3-v6`
 
 - **Décision d'Era** : tous les rapports aux couleurs du rapport E2 avant l'envoi (tableaux à en-tête marine et lignes
