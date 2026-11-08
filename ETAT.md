@@ -41,7 +41,8 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
   planifiée. Rattrapage lancé par Era sur le serveur : 325 cotations écrites, 0 rejetée, 281 166 puis 281 383 lignes,
   dernière séance 06/11 (07 et 08/11 : week-end), cinq devises au 06/11, `ANALYZE` passé. L'option C du 06/11 (aucune
   écriture en production avant l'oral blanc) est levée pour ce rattrapage. Contrôle à l'écran avec la clé, fait le
-  même soir après la fusion de #241 : bandeau à la séance du 06/11, sans retard (sans capture).
+  même soir après la fusion de #241 : bandeau à la séance du 06/11, sans retard ; capture de l'écran Indicateurs
+  (« cours du 06/11/2026 ») dans la preuve.
 - **Manque découvert** : étapes 3 et 4 du rattrapage périmées depuis la carte #76 (07/11) : elles lisaient
   `DATABASE_URL` dans le conteneur de l'API, qui ne l'a plus. Premier passage à blanc du 08/11 en échec, rien écrit.
   Corrigé sur la branche : adresse clé=valeur sans mot de passe, `PGPASSWORD` lu dans le conteneur de la base, jamais

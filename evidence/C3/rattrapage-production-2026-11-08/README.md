@@ -58,7 +58,9 @@ personnelle). Rien d'autre : les commandes et les résultats sont ceux du termin
 - La décision du 06/11 (aucune écriture en production avant l'oral blanc) a été levée le 08/11 pour ce rattrapage.
 - Contrôle à l'écran avec la clé, après le rattrapage : pas fait au moment où cette preuve est écrite. Fait le même
   soir, après la fusion de #241 (`23df640`) : bandeau à la dernière séance du 06/11/2026, sans retard. Constat à
-  l'écran, sans capture.
+  l'écran, sans capture. Puis capture de l'écran Indicateurs à 19 h 55 (heure de Paris) :
+  `capture-indicateurs-2026-11-08.png`, « Carte des performances : cours du 06/11/2026 », 108 valeurs, 3 cotations
+  périmées masquées.
 
 Guide corrigé : `docs/exploitation.md`, section « Rattraper les cours et les taux en production, à la main », étapes
 3 et 4 ; tests : `tests/test_exploitation_doc.py`.
