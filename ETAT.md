@@ -25,8 +25,9 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 **Prochaine action** :
 1. Era envoie la remise (les cinq liens de tags, message déjà rédigé), le 08/11 au soir ou le 09/11 au matin.
-2. Era pousse la branche `rattrapage-production-2026-11-08` et ouvre la PR vers `develop` (ne déploie rien) ; l'entrée
-   « remise envoyée » du `CHANGELOG` s'ajoute quand le message est parti.
+2. Fait : PR #241 fusionnée dans `develop` (`23df640`, 18 h 44 UTC, toutes les vérifications vertes, rien déployé).
+   Quand le message est parti : l'entrée « remise envoyée » du `CHANGELOG`, sur la branche
+   `controle-ecran-et-remise-2026-11-08` (qui porte déjà le contrôle à l'écran), puis PR vers `develop`.
 3. Répétitions de l'oral blanc des 12-13/11. Pour des cours frais ce jour-là : refaire le rattrapage le 11/11 après
    17 h 35 (`docs/exploitation.md#rattrapage-cours-production`) ; même chose le 30/11 pour le jury.
 
@@ -39,7 +40,8 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
   tourné chaque soir (code 0, séances jusqu'au 06/11) mais écrit dans la base du poste ; le serveur n'a aucune collecte
   planifiée. Rattrapage lancé par Era sur le serveur : 325 cotations écrites, 0 rejetée, 281 166 puis 281 383 lignes,
   dernière séance 06/11 (07 et 08/11 : week-end), cinq devises au 06/11, `ANALYZE` passé. L'option C du 06/11 (aucune
-  écriture en production avant l'oral blanc) est levée pour ce rattrapage. Contrôle à l'écran avec la clé : à faire.
+  écriture en production avant l'oral blanc) est levée pour ce rattrapage. Contrôle à l'écran avec la clé, fait le
+  même soir après la fusion de #241 : bandeau à la séance du 06/11, sans retard (sans capture).
 - **Manque découvert** : étapes 3 et 4 du rattrapage périmées depuis la carte #76 (07/11) : elles lisaient
   `DATABASE_URL` dans le conteneur de l'API, qui ne l'a plus. Premier passage à blanc du 08/11 en échec, rien écrit.
   Corrigé sur la branche : adresse clé=valeur sans mot de passe, `PGPASSWORD` lu dans le conteneur de la base, jamais
