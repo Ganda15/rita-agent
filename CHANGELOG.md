@@ -9,6 +9,25 @@
 
 ---
 
+## 2026-11-08, nuit, suite : E4 v1.10 pour `livrable-E4-v7`
+
+- **Manque découvert** : E4 v1.9 (`livrable-E4-v6`) compte sept workflows au lieu de huit depuis `vigie.yml` ; corrigé
+  dans E4 v1.10, pour `livrable-E4-v7`, sans déplacer `livrable-E4-v6`.
+
+## 2026-11-08, nuit : E1 v7 et E3 v2.5 aux couleurs d'E2, pour `livrable-E1-v7` et `livrable-E3-v6`
+
+- **Décision d'Era** : tous les rapports aux couleurs du rapport E2 avant l'envoi (tableaux à en-tête marine et lignes
+  zébrées, titres en dégradé, code coloré) ; contenu inchangé, hors l'accès des examinateurs dans E3, aligné sur E4.
+- **E1 v7** : livret rendu à nouveau, couverture et annexes reprises du PDF v6 (mention de version remplacée).
+- **README** : tableau des livrables remis à l'état du 08/11.
+
+## 2026-11-07, 23 h UTC : `livrable-E4-v6` et `livrable-E5-v4` livrés ; C20.5 validé ✅
+
+- **Livré** : tags `livrable-E4-v6` ([exécution](https://github.com/Ganda15/rita-agent/actions/runs/42423428277)) et `livrable-E5-v4` ([exécution](https://github.com/Ganda15/rita-agent/actions/runs/42423532295)) posés par Era sur
+  `fcf201e` (fusion de #232), un par push, exécutions vertes ; production livrée sur ce commit ([exécution](https://github.com/Ganda15/rita-agent/actions/runs/42422704093)).
+  E4 v1.9 : 20 pages, 35 avec l'annexe ; E5 v1.0 : 5 pages ; couleurs du rapport E2.
+- **Décision d'Era** : C20.5 passe à ✅ (règle 4 du registre des partiels), sur le passage planifié constaté le 07/11.
+
 ## 2026-11-07, nuit : C20.5 constaté en production, proposé ✅ ; E4 v1.9 et E5 v1.0 pour `livrable-E4-v6` et `livrable-E5-v4`
 
 - **Constaté** : premier passage planifié réussi de la vigie de production, le 07/11 à 21 h 52 UTC ([42417908976](https://github.com/Ganda15/rita-agent/actions/runs/42417908976),
