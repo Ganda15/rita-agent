@@ -26,6 +26,32 @@ body h3{ background:linear-gradient(90deg, #D6E6F7, #EEF5FC); color:#12395E; pad
 pre{ background:#0F2A44; color:#E8EEF5; border:none; border-radius:4pt; padding:6pt 9pt; }
 pre code{ color:inherit; background:none; }
 code{ background:#E3F0F3; color:#0D4C5E; border-radius:2pt; }
+/* 08/11 : mise en forme « luxe fintech » de la maquette E2 du 08/11 (formes seules, texte inchangé) : en-tête de
+   tableau en bleus par colonne, cellules sur fond pâle sans zébrage, filets fins, sous-titres en bandeau uni avec barre
+   marine, filets marine et sarcelle en bord de page (boîtes de marge de @page ; page 1 : sous le titre, sans filet haut). */
+table{ --rule:#C5D0DA; --rule-strong:#C5D0DA; }
+table thead th:nth-child(1), table thead th.azure:nth-child(1), table thead th.claude:nth-child(1){ background:#0A2550; }
+table thead th:nth-child(2), table thead th.azure:nth-child(2), table thead th.claude:nth-child(2){ background:#0066A3; }
+table thead th:nth-child(3), table thead th.azure:nth-child(3), table thead th.claude:nth-child(3){ background:#0095BA; }
+table thead th:nth-child(4), table thead th.azure:nth-child(4), table thead th.claude:nth-child(4){ background:#00B0C7; }
+table thead th:nth-child(n+5), table thead th.azure:nth-child(n+5), table thead th.claude:nth-child(n+5){ background:#1A9BB0; }
+table thead th:nth-child(2):last-child{ background:#0095BA; }
+table tbody tr td:not(.ok):not(.alerte){ background:#EEF2F6; }
+table tbody tr td:first-child:not(.ok):not(.alerte){ background:#E6EEF5; }
+body h3{ background:#D6E6F7; border-left:4px solid #12395E; padding-left:calc(9pt - 4px); }
+@page{
+  @top-left-corner{ content:""; border-left:3px solid #0B1F3A; border-top:2px solid #0B1F3A; background:linear-gradient(#1A7A8C, #1A7A8C) 0 0 / 100% 1px no-repeat, linear-gradient(#1A7A8C, #1A7A8C) 0 0 / 1px 100% no-repeat; }
+  @top-center{ content:""; width:100%; height:1px; margin-bottom:auto; background:#1A7A8C; border-top:2px solid #0B1F3A; }
+  @top-right-corner{ content:""; height:1px; margin-bottom:auto; background:#1A7A8C; border-top:2px solid #0B1F3A; }
+  @left-top{ content:""; width:1px; margin-right:auto; background:#1A7A8C; border-left:3px solid #0B1F3A; }
+  @left-middle{ content:""; width:1px; margin-right:auto; background:#1A7A8C; border-left:3px solid #0B1F3A; }
+  @left-bottom{ content:""; width:1px; margin-right:auto; background:#1A7A8C; border-left:3px solid #0B1F3A; }
+  @bottom-left-corner{ content:""; width:1px; margin-right:auto; background:#1A7A8C; border-left:3px solid #0B1F3A; }
+}
+@page :first{
+  @top-left-corner{ content:none; } @top-center{ content:none; } @top-right-corner{ content:none; }
+  @left-top{ border-left:0; width:4px; background:linear-gradient(#0B1F3A, #0B1F3A) 0 51.81pt / 3px 100% no-repeat, linear-gradient(#1A7A8C, #1A7A8C) 3px 51.81pt / 1px 100% no-repeat; }
+}
 </style>
 
 <div><img class="logo" src="../E3/logo/rita-logo-marque.png" alt="Logo de RITA"></div>
