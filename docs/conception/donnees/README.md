@@ -56,16 +56,16 @@ Lu fichier par fichier le 03/10 (`db/schema.sql`, `db/roles.sql`, `rag/indexatio
 | Jeu annoté (§4.4) | 53 questions annotées par un LLM, non revalidées ; Hit@1 0,547, MRR 0,605 en hybride | inchangé depuis le 07/09 | relecture humaine à planifier (E3, C12) |
 
 **Lecture honnête** : sur dix-sept lignes, cinq sont tenues par le code (dont trois depuis le rendu), neuf
-restent proposées, deux attendent une décision d'Era, une attend du temps de relecture. Rien de ce qui est
+restent proposées, deux attendent ma décision, une attend du temps de relecture. Rien de ce qui est
 proposé n'a été réalisé en silence : chaque ligne « issue » renvoie à une carte GitHub ouverte le 03/10.
 
 ## L'ordre d'intégration, et ses garde-fous
 
 1. **Sans zone sous garde, test d'abord** : métadonnée `titre` ; vérification de l'environnement de
    démonstration dans la passerelle ; cartographie des 32 cas vers les tests ; manifeste de collecte.
-2. **Avec plan validé par Era avant le code** (`AGENTS.md`, zones sous garde) : vue de valorisation
+2. **Avec un plan que je valide avant le code** (`AGENTS.md`, zones sous garde) : vue de valorisation
    (`COALESCE`) ; table `mcp_calls` ; clôture et purge des positions (schéma + registre RGPD).
-3. **Décisions d'Era** : politique des quasi-doublons ; `search_articles` (quatrième outil MCP : périmètre et
+3. **Mes décisions** : politique des quasi-doublons ; `search_articles` (quatrième outil MCP : périmètre et
    calendrier, après le gel du 15/10).
 
 Ce que ce chapitre apporte aux épreuves : E1 (C1 cartographie, C4 Merise et RGPD, retouches de la v2 du

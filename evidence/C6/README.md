@@ -62,7 +62,7 @@ Registre des envois : `../../docs/veille/_JOURNAL-DES-ENVOIS.md` — vide, et il
 
 [`controle-accessibilite-synthese-2026-11-01.md`](controle-accessibilite-synthese-2026-11-01.md) : la synthèse S33 à
 S36 rendue au format lisible (texte à 12 pt, 45 signets, liens soulignés) et contrôlée règle par règle, avant et après.
-Il prouve le **format** du document qui sera remis, pas son **envoi** : la remise reste à faire par Era, avec les
+Il prouve le **format** du document qui sera remis, pas son **envoi** : la remise reste à faire par moi, avec les
 livrables, et sa preuve datée sera ajoutée ici.
 
 ## 📖 Glossaire
