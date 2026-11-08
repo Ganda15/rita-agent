@@ -323,7 +323,7 @@ toujours à côté. La conclusion « Poursuivre » reste valable, mais elle date
 - **La taille de l'image (595 Mo) date du 18/08** et n'a pas été remesurée.
 - **Au 02/11, la production n'était vérifiée que par la page servie** : après la livraison (exécution 41488421204,
   déploiement réussi à 17 h 22 UTC), le tableau de bord contenait le nouveau bouton ; aucun parcours complet n'était rejoué.
-- **Le dossier [`evidence/C15/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C15) n'a reçu, depuis le 04/10, que le diagramme de flux du 02/11** : la pré-production réelle est prouvée ailleurs
+- **Le dossier [`evidence/C15/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7/evidence/C15) contient le diagramme de flux du 02/11 et la réévaluation de l'hébergeur du 06/11** : la pré-production réelle est prouvée ailleurs
   ([`deploy/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/deploy), [`evidence/sprint-2/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/sprint-2)).
 
 ## 3. Coordonner en agile (C16) {: #c16 }

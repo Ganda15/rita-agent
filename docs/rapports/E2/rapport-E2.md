@@ -396,6 +396,9 @@ comparaison à 500 jetons (mon choix). Ce banc ne mesure pas la route Question.
 | Coût d'un briefing au prix public | 0,0044 USD | **0,00072 USD** |
 | Français, de 0 à 2, moyenne | 1,10 (3 textes à 2) | **1,37** (11 textes à 2) |
 
+Coûts estimés à partir des jetons du banc : Azure au tarif Global Standard relevé le 03/10, Mistral au tarif relevé
+le 10/10. Le tarif propre au déploiement Azure UE n'a pas été relevé.
+
 Les textes ont été mélangés et présentés sans indication du fournisseur. Les notes de français ont été proposées par
 une IA ; je les ai relues en les confrontant à d'autres agents d'IA, puis retenues sans modification. Certains indices de style
 pouvaient suggérer le fournisseur (Mistral ouvre par un titre). Console Mistral : coût total estimé de 0,02 € pour 35 requêtes,
@@ -425,7 +428,7 @@ dans le code.
 
 <div class="encadre decision">
 <p class="encadre-titre">Le choix : Azure AI Foundry, <code>gpt-5.4</code>, pour le briefing, choix maintenu</p>
-<ul><li>le banc du 03/10 le comparait à Claude via OpenRouter : mêmes contrôles réussis, même français, une médiane deux fois plus courte ;</li><li>le banc du 07/11 le mesure en zone UE, avec le prompt corrigé, face à Mistral Large 3 : médiane de 2,19 s contre 2,80 s, texte sans Markdown ; Mistral obtient une meilleure note moyenne dans cette évaluation (1,37 contre 1,10) et coûte moins ;</li><li>ses frais ne sont pas facturés au candidat (déclaration du 31/10) ; les appels ont néanmoins un coût (0,0044 USD par briefing au prix public) ;</li><li>il reste le seul fournisseur actif en production, en zone de données UE.</li></ul>
+<ul><li>le banc du 03/10 le comparait à Claude via OpenRouter : mêmes contrôles réussis, même français, une médiane deux fois plus courte ;</li><li>le banc du 07/11 le mesure en zone UE, avec le prompt corrigé, face à Mistral Large 3 : médiane de 2,19 s contre 2,80 s, texte sans Markdown ; Mistral obtient une meilleure note moyenne dans cette évaluation (1,37 contre 1,10) et coûte moins ;</li><li>ses frais ne sont pas facturés au candidat (déclaration du 31/10) ; les appels ont néanmoins un coût (0,0044 USD estimé par briefing au tarif Global du 03/10 ; tarif UE propre non relevé) ;</li><li>il reste le seul fournisseur actif en production, en zone de données UE.</li></ul>
 <p>Le même service sert les questions : usage observé avec Azure, non comparé (3.3).</p>
 </div>
 
@@ -434,7 +437,7 @@ dans le code.
 | Azure AI Foundry, `gpt-5.4` (mesuré le 03/10 en Global Standard ; en zone UE depuis le 09/10) | **retenu** | 30 textes sur 30 acceptés par le garde-fou de sortie et fidèles au contrôle minimal ; 0 € déclaré pour le candidat ; médiane 3,21 s, puis 2,19 s en zone UE le 07/11 ; déploiement configuré en zone UE depuis le 09/10 | le 03/10, 2 appels sur 30 au-dessus de 10 s (aucun le 07/11) ; prise en charge des frais qui peut cesser ; DPA de Microsoft lu pour ses sections utiles (06/11), conditions des produits non vérifiées (4.2) |
 | Claude par OpenRouter | **écarté** | 30 textes sur 30 acceptés par le garde-fou de sortie et fidèles au contrôle minimal ; latence régulière (95e centile 7,20 s) | payant ; traitement dans l'UE non garanti, contraire à la règle du 05/10 |
 | Claude par l'API d'Anthropic | **écarté, non mesuré** | même famille Claude, version configurée différente (`claude-sonnet-5` en accès direct, `claude-sonnet-4.5` mesuré par OpenRouter) | API directe non mesurée, faute de clé ; société établie aux États-Unis, traitement dans l'UE non garanti |
-| Mistral, adresse européenne | **futur second fournisseur, sous conditions ; non actif** | hébergé dans l'UE ; Large 3 au banc du 07/11 : 30 sur 30, meilleure note de français dans cette évaluation (1,37 contre 1,10), six fois moins cher | Large 4 sans texte à 500 jetons (07/11) ; Large 3 écrit du Markdown ; contrat non lu ; hors de la cascade |
+| Mistral, adresse européenne | **futur second fournisseur, sous conditions ; non actif** | hébergé dans l'UE ; Large 3 au banc du 07/11 : 30 sur 30, meilleure note de français dans cette évaluation (1,37 contre 1,10), coût estimé environ six fois inférieur, aux tarifs de référence du § 3.4 | Large 4 sans texte à 500 jetons (07/11) ; Large 3 écrit du Markdown ; contrat non lu ; hors de la cascade |
 
 Depuis le 31/10, la production n'appelle qu'Azure (4.2) : il n'y a pas de fournisseur de secours. Ce qui ferait changer
 la décision : la fin de la prise en charge des frais d'Azure, ou Mistral une fois son contrat lu et son Markdown réglé.
