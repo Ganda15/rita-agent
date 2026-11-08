@@ -35,11 +35,10 @@ Simplon & Wild Code School · Eramalingam GANDAKUMAR · ganda70@gmail.com · 202
 | **E4** : Application | C14–C19 | ✅ rapport **v1.10 du 08/11** (20 pages, 35 avec l'annexe) ; auto-évaluation **38 ✅**, chacun avec sa limite | [rapport-E4-avec-annexe.pdf](docs/rapports/E4/rapport-E4-avec-annexe.pdf) · [rapport-E4.pdf](docs/rapports/E4/rapport-E4.pdf) · [evidence/C14/](evidence/C14/) · [evidence/C17/](evidence/C17/) | **[`livrable-E4-v7`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7)** |
 | **E5** : Monitorage | C20–C21 | ✅ rapport **v1.1 du 08/11** (5 pages) ; vigie planifiée constatée en production le 07/11 ; auto-évaluation **12 ✅** | [rapport-E5.pdf](docs/rapports/E5/rapport-E5.pdf) · [evidence/C20/](evidence/C20/) · [evidence/C21/](evidence/C21/) | **[`livrable-E5-v5`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v5)** |
 
-*Auto-évaluation d'Era au 03/11, critère par critère, dans les classeurs des compétences : **120 ✅ · 17 🟡 à consolider ·
-0 ❌** sur 137. « À consolider » : la ligne dit ce qui est fait, la preuve disponible et ce qui manque ; les points ouverts
-sont revus avec le formateur à l'examen blanc des 12 et 13 novembre. Les rapports E2 v1.1, E3 v2.1, E4 v1.5 et E5 v0.8
-portent ce décompte : les huit critères passés à ✅ après l'envoi du 03/11, les deux corrections d'E3 et la phrase d'E4 ;
-ils remplacent la [note de mise à jour du 03/11](docs/rapports/note-mise-a-jour-2026-11-03.pdf), écrite avant eux.*
+*Mon auto-évaluation au 08/11, dans les grilles des cinq rapports : **137 ✅** sur 137 lignes (E1 28, E2 20, E3 39,
+E4 38, E5 12), chaque ligne avec sa preuve et, s'il y en a une, sa limite écrite. La grille du 03/11 (120 ✅ · 17 🟡 sur
+les mêmes 137 lignes) reste celle remise ce jour-là ; la [note de mise à jour du 03/11](docs/rapports/note-mise-a-jour-2026-11-03.pdf)
+a été écrite avant ces corrections.*
 
 *Conception des données validée par le formateur le 03/10/2026 : [docs/conception/donnees/](docs/conception/donnees/).
 Tableau tenu à jour à chaque séance ; le détail du jour est dans [`ETAT.md`](ETAT.md), et les lignes à
