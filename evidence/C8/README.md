@@ -1,9 +1,9 @@
 # C8 : paramétrer le service de modèle retenu, et le remettre à quelqu'un d'autre
 
-> **C8** : *« Paramétrer un service d'intelligence artificielle pour l'intégrer dans un projet applicatif, en
+> C8 : *« Paramétrer un service d'intelligence artificielle pour l'intégrer dans un projet applicatif, en
 > documentant son accès, sa configuration, son monitorage et sa remise aux parties prenantes. »*
 >
-> Dossier créé le **03/10/2026**. Il ne contient aucune preuve nouvelle : il **indexe** celles qui existent ailleurs
+> Dossier créé le 03/10/2026. Il ne contient aucune preuve nouvelle : il indexe celles qui existent ailleurs
 > dans le dépôt, critère par critère, et dit ce qui manque. Livrable E2.
 
 ## Ce qui existe, et ce que ça prouve
@@ -18,18 +18,18 @@
 
 ## Ce qu'il faut dire tel quel
 
-- **Deux fournisseurs répondent sur le poste de démonstration** depuis le 03/10 au soir : Azure AI Foundry
+- Deux fournisseurs répondent sur le poste de démonstration depuis le 03/10 au soir : Azure AI Foundry
   (`gpt-5.4`, point compatible OpenAI, premier de la cascade, gratuit pour le projet) et OpenRouter
-  (`anthropic/claude-sonnet-4.5`, secours). L'API Anthropic directe n'a pas de clé. Le service **retenu et démontré**
+  (`anthropic/claude-sonnet-4.5`, secours). L'API Anthropic directe n'a pas de clé. Le service retenu et démontré
   est Foundry (briefing réel SAN.PA en 5,6 s, trace à une seule génération) ; « trois fournisseurs opérationnels »
   serait faux. Comparaison mesurée : `../C7/preuve-benchmark-2026-10-03.md` §9.
-- **Le coût affiché par Langfuse vaut 0** pour ce modèle (nom au format OpenRouter absent de la grille de prix) :
+- Le coût affiché par Langfuse vaut 0 pour ce modèle (nom au format OpenRouter absent de la grille de prix) :
   la métrique existe, elle est fausse ; correction dans l'interface ou dans le code, pas faite au 03/10.
-- **Quinze traces factices** (suite de tests, incident INC-006) polluent encore les métriques agrégées jusqu'à leur
-  suppression par le propriétaire du compte.
-- **Le guide d'exploitation a été corrigé le 03/10** : sa table des clés disait d'OpenRouter « 2ᵉ fournisseur » alors
+- Quinze traces factices (suite de tests, incident INC-006) polluent encore les métriques agrégées jusqu'à leur
+  suppression, à faire par moi en tant que propriétaire du compte.
+- Le guide d'exploitation a été corrigé le 03/10 : sa table des clés disait d'OpenRouter « 2ᵉ fournisseur » alors
   que le code le place troisième ; les trois fournisseurs y sont maintenant dans l'ordre réel de `LLM_ORDRE`.
-- **La remise aux parties prenantes n'est pas prouvée** (C8.5, carte #43) : le guide existe, il n'a été envoyé à
+- La remise aux parties prenantes n'est pas prouvée (C8.5, carte #43) : le guide existe, il n'a été envoyé à
   personne. La preuve attendue est un envoi daté au formateur (message ou mail) et sa réponse, rangés ici sous
   `envoi-<date>-formateur.*`. Un fichier dans le dépôt n'est pas une remise.
 
@@ -49,7 +49,7 @@ Le brouillon de rapport E2 de juillet 2026 (dans le coffre Obsidian, hors dépô
 (Anthropic plus un modèle local sur Mac, LangSmith, journaux JSON, alerte de coût par courriel). Rien de cela n'est
 dans le code d'aujourd'hui ; ce dossier décrit le montage réel, et le rapport E2 partira de lui.
 
-## 📖 Glossaire
+## Glossaire
 
 | Terme | En clair |
 |---|---|

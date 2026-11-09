@@ -11,14 +11,14 @@ Les scores sont notés tels qu'ils sont sortis, sans les présupposer.
 |---|---|
 | Date | 04/11/2026, de 08 h 57 à 08 h 59 UTC |
 | Code mesuré | commit `f7229bc` de `develop` ; le dossier `frontend/` n'a pas changé depuis `eca894b` |
-| Lighthouse | **13.5.0**, avec puppeteer-core **25.16.0**, installés par npm dans un dossier temporaire hors du dépôt (`--ignore-scripts`) |
-| Navigateur | **HeadlessChrome 156.0.0.0**. Le 03/10, c'était la 154 : Chrome s'est mis à jour entre-temps. C'est la seule différence d'outil |
+| Lighthouse | 13.5.0, avec puppeteer-core 25.16.0, installés par npm dans un dossier temporaire hors du dépôt (`--ignore-scripts`) |
+| Navigateur | HeadlessChrome 156.0.0.0. Le 03/10, c'était la 154 : Chrome s'est mis à jour entre-temps. C'est la seule différence d'outil |
 | Node | 24.18.0 |
 | Modes | bureau 1 350 × 940 sans ralentissement ; mobile 412 × 823, ralentissement standard de Lighthouse |
 | Serveur | l'API lancée en local sur le port 8001, sur la base locale ; arrêtée à la fin de la mesure |
-| Clé d'accès | une clé **jetable** de 32 caractères, créée dans le processus de mesure : jamais affichée, jamais écrite dans un fichier |
+| Clé d'accès | une clé jetable de 32 caractères, créée dans le processus de mesure : jamais affichée, jamais écrite dans un fichier |
 | Traçage | Langfuse coupé (`LANGFUSE_TRACING_ENABLED=false`) : rien n'est écrit en production |
-| Briefing | aucun appel au modèle : la réponse à `POST /briefing` est un **vrai texte** produit le 03/10 (banc C7, `evidence/C7/resultats-2026-10-03.jsonl`), servi par interception dans le navigateur |
+| Briefing | aucun appel au modèle : la réponse à `POST /briefing` est un vrai texte produit le 03/10 (banc C7, `evidence/C7/resultats-2026-10-03.jsonl`), servi par interception dans le navigateur |
 | Outils | copies exactes de `../mesures-2026-10-03/outils/` (comparaison par `diff` : aucune différence) ; le script qui a tout enchaîné est [`mesurer-avant.sh`](mesurer-avant.sh) |
 
 ## 2. Résultats
@@ -34,13 +34,13 @@ Les scores sont notés tels qu'ils sont sortis, sans les présupposer.
 | Briefing | bureau | 100 | **100** | 100 | 90 |
 | Briefing | mobile | 100 | **100** | 100 | 90 |
 
-Sur les **instantanés** (page affichée avec ses données, et le texte du briefing arrivé) : accessibilité **100** partout,
-bonnes pratiques 100, SEO 75. La performance y vaut « 0 », mais ce n'est **pas une mesure** : en mode instantané, la
+Sur les instantanés (page affichée avec ses données, et le texte du briefing arrivé) : accessibilité 100 partout,
+bonnes pratiques 100, SEO 75. La performance y vaut « 0 », mais ce n'est pas une mesure : en mode instantané, la
 catégorie ne contient qu'un audit (`unsized-images`), de poids 0, et il est réussi. Une moyenne sans aucun poids donne 0.
 La performance se lit sur les navigations.
 
-**Aucun audit d'accessibilité en échec**, sur aucune des vingt étapes. Tous les scores sont **identiques à ceux du
-03/10**, étape par étape (`resume-bureau.json`, `resume-mobile.json`).
+Aucun audit d'accessibilité n'est en échec, sur aucune des vingt étapes. Tous les scores sont identiques à ceux du
+03/10, étape par étape (`resume-bureau.json`, `resume-mobile.json`).
 
 ### EcoIndex (formule et tables officielles, `outils/calcul-ecoindex.py`)
 
@@ -62,15 +62,15 @@ Mêmes notes que le 03/10 ; chaque écran compte un ou deux éléments de plus (
 
 ## 3. Écarts déjà présents, notés tels quels
 
-1. **La navigation n'est pas la même partout** : Indicateurs et Briefing n'ont pas de lien « Question », Portefeuille
+1. La navigation n'est pas la même partout : Indicateurs et Briefing n'ont pas de lien « Question », Portefeuille
    l'a (ordre de tabulation, `clavier.json`). C'est l'exigence R5 de la spécification.
-2. **`favicon.ico` répond 404** : une erreur dans la console, d'où 96 en bonnes pratiques sur le Portefeuille
+2. `favicon.ico` répond 404 : une erreur dans la console, d'où 96 en bonnes pratiques sur le Portefeuille
    (constat F3 du 03/10, toujours là).
-3. **Pas de `meta description`** : SEO à 90 sur les navigations, 75 sur les instantanés. L'instantané ne compte que quatre
+3. Pas de `meta description` : SEO à 90 sur les navigations, 75 sur les instantanés. L'instantané ne compte que quatre
    audits SEO pondérés au lieu de sept, donc le même manque pèse plus (constat F7 du 03/10, noté et laissé tel quel).
-4. **L'API ne compresse pas ses réponses** : le gzip retirerait de 62 à 91 % des octets, mais l'EcoIndex ne bouge
+4. L'API ne compresse pas ses réponses : le gzip retirerait de 62 à 91 % des octets, mais l'EcoIndex ne bouge
    presque pas, car le poids ne compte que pour un sixième de la formule.
-5. **Indicateurs avec ses données : 1 861 éléments dans la page**, la cause de la note D. C'est le tableau complet des
+5. Indicateurs avec ses données : **1 861 éléments** dans la page, la cause de la note D. C'est le tableau complet des
    valeurs.
 6. Comme le 03/10, Lighthouse signale la feuille de style et le script qui bloquent le premier affichage, une durée de
    cache courte, et le CSS et le JavaScript non minifiés.
@@ -118,7 +118,7 @@ Empreintes SHA-256 des entrées (16 premiers caractères) :
 
 Comme le 03/10, les rapports mobiles et les fichiers bruts du mode flux (plusieurs Mo) sont restés hors du dépôt.
 
-## 📖 Glossaire
+## Glossaire
 
 - **Lighthouse** : outil d'audit de Google qui note une page sur quatre axes (performance, accessibilité, bonnes pratiques, référencement).
 - **Mode flux** : façon d'utiliser Lighthouse qui enchaîne plusieurs états d'une même page (sans clé, avec les données, texte affiché).

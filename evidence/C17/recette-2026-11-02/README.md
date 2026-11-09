@@ -11,13 +11,13 @@ recette · **Spécifications de référence** : écran 1 [`preuve-specifications
 
 ## Comment cette recette a été menée
 
-- **Dans un vrai navigateur** (Chrome, piloté par Playwright), l'interface servie par l'API locale. Les réponses de
-  l'API y sont **remplacées par des réponses fabriquées** sur les formes réelles : c'est un **test simulé**, pas une
-  preuve de production ; aucun appel payant au modèle. Résultat du passage du jour, 54 tests :
+- Dans un vrai navigateur (Chrome, piloté par Playwright), l'interface servie par l'API locale. Les réponses de
+  l'API y sont remplacées par des réponses fabriquées sur les formes réelles : c'est un **test simulé**, qui ne prouve
+  rien sur la production ; aucun appel payant au modèle. Résultat du passage du jour, 54 tests :
   [`navigateur-cinq-ecrans.txt`](navigateur-cinq-ecrans.txt) (54 réussis).
-- **Au clavier**, sur les cinq écrans : `tests/test_recette_clavier.py`, 14 tests, écrits pour cette recette. Mis à
+- Au clavier, sur les cinq écrans : `tests/test_recette_clavier.py`, 14 tests, écrits pour cette recette. Mis à
   l'épreuve : sans le focus visible ou sans le focus posé sur la fiche d'une source, 7 échouent (fichiers restaurés).
-- **Sur données réelles** pour C17.4 : la base locale (cotations jusqu'au 30/10), lue par le code et à l'écran
+- Sur données réelles pour C17.4 : la base locale (cotations jusqu'au 30/10), lue par le code et à l'écran
   Indicateurs, avec une clé de test sur `localhost` : [`c17-4-valeurs-reelles.txt`](c17-4-valeurs-reelles.txt). Le
   portefeuille n'a pas été affiché sur la base locale : il ne l'est que sur des réponses fabriquées.
 
@@ -68,11 +68,11 @@ trouve à l'écran est un défaut d'affichage, pas de calcul.
   28/05/2019), sur données réelles. Cause : le format des pourcentages (`frontend/indicateurs.js`,
   `signDisplay: "always"`, ligne 25). Le même format sert aux variations des écrans Portefeuille (`app.js:32`) et
   Briefing (`briefing.js:23`), où une variation nulle s'écrirait aussi « +0,00 % » ; aucun cas réel n'y a été vu.
-  **Correction proposée, non appliquée** : ne pas signer un zéro (`signDisplay: "exceptZero"`) ; elle touche la règle
-  « le signe est toujours écrit » (critère I3 de l'écran 2) : décision d'Era, test d'abord.
+  Correction proposée, non appliquée : ne pas signer un zéro (`signDisplay: "exceptZero"`) ; elle touche la règle
+  « le signe est toujours écrit » (critère I3 de l'écran 2) : c'est à moi de décider, test d'abord.
 - **E2, Tableau de bord : le focus n'est pas posé sur le champ de clé** à l'ouverture, alors que les quatre autres
-  écrans le posent. Le champ reste atteint par Tab après la navigation : ce n'est pas un blocage, c'est une
-  incohérence. **Correction proposée, non appliquée.**
+  écrans le posent. Le champ reste atteint par Tab après la navigation : c'est une incohérence, qui ne bloque
+  pas l'usage. Correction proposée, non appliquée.
 - **E3, des situations d'erreur ne sont vérifiées que par lecture du code** : la panne et l'oubli de la clé sur Portefeuille, la clé refusée
   et la panne sur Indicateurs, l'encart d'erreur sur Question. Des tests dans un navigateur manquent.
 - **Limites** : l'API est simulée dans le navigateur (sauf Indicateurs, sur la base locale) ; aucun lecteur d'écran
@@ -82,12 +82,12 @@ trouve à l'écran est un défaut d'affichage, pas de calcul.
 
 ## Suite donnée, 02/11/2026, 11 h 30
 
-- **E2 corrigé**, sur décision d'Era, test écrit d'abord : `test_a_l_ouverture_sans_cle_le_focus_est_sur_le_champ_de_cle`
+- E2 corrigé, sur ma décision, test écrit d'abord : `test_a_l_ouverture_sans_cle_le_focus_est_sur_le_champ_de_cle`
   (cinq écrans) a échoué sur le seul tableau de bord, puis réussi après une ligne dans `frontend/tableau-de-bord.js`.
   Preuves avant et après : [`../correctifs-2026-11-02/`](../correctifs-2026-11-02/README.md). Le texte ci-dessus reste
   tel qu'écrit pendant la recette.
-- **E1** attend la décision d'Era (elle change la règle I3) ; **E3** reste à faire.
-- **E3 fait à 12 h**, sans toucher au code de l'application : `tests/test_recette_erreurs.py`, 8 tests dans un vrai
+- E1 attend ma décision (elle change la règle I3) ; E3 reste à faire.
+- E3 fait à 12 h, sans toucher au code de l'application : `tests/test_recette_erreurs.py`, 8 tests dans un vrai
   navigateur (API simulée), qui jouent la panne et le serveur muet sur Portefeuille et Indicateurs, la clé refusée
   oubliée et redemandée sur les deux, la panne du lot 3 (le lot 1 reste lisible, trois tirets) et la panne 503 de
   Question dans l'encart d'erreur, jamais comme un refus. Mis à l'épreuve : 7 lignes du code cassées une à une, 7

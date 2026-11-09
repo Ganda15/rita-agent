@@ -1,6 +1,6 @@
 # Banc C7 du 07/11/2026 : Azure contre Mistral, même jeu, même budget
 
-Compétences : C7 (choix du service), C8 (contrainte UE). Demande d'Era du 07/11 (« A + B »). Le banc du 03/10 comparait
+Compétences : C7 (choix du service), C8 (contrainte UE). Ma demande du 07/11. Le banc du 03/10 comparait
 Azure (*Global Standard*, ancien prompt) à Claude par OpenRouter ; Mistral n'avait servi qu'un briefing par modèle, le
 10/10, sur la branche `mistral-ue` (PR #88, non fusionnée).
 
@@ -27,12 +27,12 @@ leurs réponses brutes n'ont pas été conservées, sauf le refus 400 (dossier d
 
 | Réglage | Résultat |
 |---|---|
-| Large 4, `reasoning_effort: "none"` (le réglage du 10/10) | **400** : « reasoning_effort none is not supported for this model », valeurs acceptées low, medium, high ; Mistral a changé son API depuis le 10/10. Passage refusé dès la sonde : `../banc-2026-11-07-mistral-large-4-refuse/` |
-| Large 4, `low`, 500 jetons | 200, mais 499 jetons de réflexion sur 500 : **aucun texte** |
+| Large 4, `reasoning_effort: "none"` (le réglage du 10/10) | 400 : « reasoning_effort none is not supported for this model », valeurs acceptées low, medium, high ; Mistral a changé son API depuis le 10/10. Passage refusé dès la sonde : `../banc-2026-11-07-mistral-large-4-refuse/` |
+| Large 4, `low`, 500 jetons | 200, mais 499 jetons de réflexion sur 500 : aucun texte |
 | Large 4, `low`, 2 000 jetons | texte rendu, 10,0 s, 1 249 jetons dont 1 150 de réflexion |
 | Large 3 (`mistral-large-2512`), sans réflexion, 500 jetons | texte rendu, 3,8 s, 283 jetons |
 
-Choix d'Era du 07/11 : Large 3, au même budget qu'Azure.
+Mon choix du 07/11 : Large 3, au même budget qu'Azure.
 
 ## Les résultats
 
@@ -44,17 +44,17 @@ Résumés : [`../banc-2026-11-07/resume-2026-11-07.json`](../banc-2026-11-07/res
 | Disponibilité | 30 sur 30 | 30 sur 30 |
 | Acceptés par le garde-fou de sortie (AMF) | 30 sur 30 | 30 sur 30 |
 | Fidèles aux faits fournis (contrôle minimal du script) | 30 sur 30 | 30 sur 30 |
-| Latence, médiane et 95e centile | **2,19 s et 2,55 s** | 2,80 s et 3,68 s |
+| Latence, médiane et 95e centile | 2,19 s et 2,55 s | 2,80 s et 3,68 s |
 | Longueur moyenne | 569 caractères | 685 caractères |
-| Textes contenant du Markdown (`**`) | 0 sur 30 | **30 sur 30** |
+| Textes contenant du Markdown (`**`) | 0 sur 30 | 30 sur 30 |
 | Jetons pour 30 briefings, entrée et sortie | 21 534 et 5 243 | 23 334 et 6 579 |
-| Coût d'un briefing au prix public | 0,0044 USD (2,50 et 15,00 USD par million, prix du 03/10) | **0,00072 USD** (0,5 et 1,5 USD par million, prix Mistral lu le 10/10) |
-| Français, de 0 à 2 (notes proposées par une IA à l'aveugle, acceptées par Era sans modification) | moyenne **1,10** : 3 textes à 2, 27 à 1, 0 à 0 | moyenne **1,37** : 11 textes à 2, 19 à 1, 0 à 0 |
+| Coût d'un briefing au prix public | 0,0044 USD (2,50 et 15,00 USD par million, prix du 03/10) | 0,00072 USD (0,5 et 1,5 USD par million, prix Mistral lu le 10/10) |
+| Français, de 0 à 2 (notes proposées par une IA à l'aveugle, que j'ai acceptées sans modification) | moyenne 1,10 : 3 textes à 2, 27 à 1, 0 à 0 | moyenne 1,37 : 11 textes à 2, 19 à 1, 0 à 0 |
 
-**Le coût estimé affiché par Mistral** (ni une facture ni un prix garanti) : la console de Mistral, onglet « Usage », relevée par Era le 07/11 à 11:13 heure de Paris
+Le coût estimé affiché par Mistral (ni une facture ni un prix garanti) : la console de Mistral, onglet « Usage », que j'ai relevée le 07/11 à 11:13 heure de Paris
 ([`mistral-usage-2026-11-07.png`](mistral-usage-2026-11-07.png), détail par modèle ; vue d'ensemble :
 [`mistral-usage-total-2026-11-07.png`](mistral-usage-total-2026-11-07.png), 35 requêtes, coût total estimé 0,02 €), affiche pour `mistral-large-2512` 32 requêtes et
-**0,02 €** depuis le 01/11 : les 30 appels du banc et 2 appels de diagnostic ; avec les 3 de Large 4, 35 requêtes. Le
+0,02 € depuis le 01/11 : les 30 appels du banc et 2 appels de diagnostic ; avec les 3 de Large 4, 35 requêtes. Le
 calcul au prix public (0,0215 USD pour les 30) est du même ordre. `mistral-large-4-0` : 3 requêtes, les trois essais de diagnostic ; les appels refusés (400) ne sont pas
 facturés.
 
@@ -69,17 +69,17 @@ fournisseur, `**` retirés pour ne pas désigner Mistral. La clé est à part :
 [`notes-francais-2026-11-07-cle.csv`](notes-francais-2026-11-07-cle.csv). Script :
 [`preparer_notation_aveugle.py`](preparer_notation_aveugle.py).
 
-**Provenance des notes, à garder telle quelle** : notes proposées par une IA à l'aveugle, acceptées par Era sans
+Provenance des notes, à garder telle quelle : notes proposées par une IA à l'aveugle, que j'ai acceptées sans
 modification. Une autre session d'IA a lu les 60 textes sans la clé, en deux lectures ; elles concordaient sur 36 notes,
-et 23 désaccords venaient du sigle RSI écrit sans explication (retenu à 1 pour la lisibilité). Era a reporté les 60
+et 23 désaccords venaient du sigle RSI écrit sans explication (retenu à 1 pour la lisibilité). J'ai reporté les 60
 propositions dans [`notes-francais-2026-11-07.csv`](notes-francais-2026-11-07.csv) le 07/11 : 60 sur 60 identiques aux
 propositions, textes inchangés (contrôle du 07/11).
 
-**Limites écrites** : la forme trahit en partie l'auteur (Mistral ouvre par une ligne de titre, Azure par la date) ; ce
+Limites écrites : la forme trahit en partie l'auteur (Mistral ouvre par une ligne de titre, Azure par la date) ; ce
 n'est pas une notation humaine indépendante.
 
 ## Ce que ce banc ne prouve pas
 
 - Un passage chacun, un samedi matin : la latence d'un autre jour peut être différente.
 - Le prix de la zone de données UE d'Azure n'est pas relevé ; celui de Mistral date du 10/10.
-- La route `/question` n'est pas comparée entre fournisseurs (limite gardée, choix d'Era du 07/11).
+- La route `/question` n'est pas comparée entre fournisseurs (limite gardée, mon choix du 07/11).

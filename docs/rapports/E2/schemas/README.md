@@ -2,8 +2,8 @@
 
 Trois schémas, un par compétence, montrés dans l'annexe du rapport (`docs/rapports/E2/annexe-schemas-E2.md`, A1 à A3).
 Ils ont été dessinés le 01/11/2026 pour le rapport, à partir des preuves qu'il cite : ce sont des figures de synthèse,
-pas des documents de conception d'époque. Leurs textes viennent d'une seule description, `generer_schemas.py`, qui
-écrit le `.drawio` (éditable dans draw.io) et le `.svg` : c'est là qu'on corrige un texte. Le dessin reprend le moteur
+et non des documents de conception d'époque. Leurs textes viennent d'une seule description, `generer_schemas.py`, qui
+écrit le `.drawio` (éditable dans draw.io) et le `.svg` : c'est là que je corrige un texte. Le dessin reprend le moteur
 des schémas d'E3 (`docs/rapports/E3/schemas/generer_schemas.py`), pour garder la même charte.
 `tests/test_schemas_e2.py` vérifie qu'aucun texte ne déborde de sa boîte et que les fichiers publiés sont ceux que le
 générateur écrit.

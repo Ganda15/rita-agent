@@ -10,7 +10,7 @@ retard », dernière séance du 04/11/2026, et l'écran Indicateurs « cours du 
 Ce n'était pas une collecte arrêtée :
 
 - la tâche planifiée du poste a tourné chaque soir (`logs/collecte-2026-11-03.log` à `collecte-2026-11-07.log` :
-  6 étapes sur 6, code de sortie 0, séances jusqu'au 06/11), mais elle écrit dans la base **du poste** ;
+  6 étapes sur 6, code de sortie 0, séances jusqu'au 06/11), mais elle écrit dans la base du poste ;
 - sur le serveur, aucune collecte planifiée des cours (constat du 04/11, `ETAT.md`) : les cours de production ne
   changent que par le rattrapage à la main ; le précédent datait du 04/11, 22 h 17 ;
 - `/health` de la production annonçait le commit `770d440`, celui de la livraison du 08/11.

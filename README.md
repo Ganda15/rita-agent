@@ -12,27 +12,27 @@ Simplon & Wild Code School · Eramalingam GANDAKUMAR · ganda70@gmail.com · 202
 
 ---
 
-## 📋 État des livrables
+## État des livrables
 
-> ### ⚠️ Vous évaluez un livrable ? Ouvrez son **tag**, pas cette page.
+> ### Pour évaluer un livrable, ouvrez son tag plutôt que cette page
 >
-> Cette branche (`main`) porte le projet **tel qu'il est aujourd'hui** : elle avance à
+> Cette branche (`main`) porte le projet tel qu'il est aujourd'hui : elle avance à
 > chaque session et contient donc déjà des travaux postérieurs aux livrables envoyés.
 >
-> **Chaque livrable est figé par un tag Git.** Ouvrir le tag montre le dépôt **exactement
-> tel qu'il était le jour de l'envoi**, ni plus, ni moins. C'est le lien de la colonne
-> « Livrable figé » ci-dessous qu'il faut suivre.
+> Chaque livrable est figé par un tag Git. Ouvrir le tag montre le dépôt exactement
+> tel qu'il était le jour de l'envoi. C'est le lien de la colonne « Livrable figé »
+> ci-dessous qu'il faut suivre.
 >
 > *Un dépôt unique qui grandit est la règle du référentiel ; le tag est ce qui permet
 > malgré tout d'évaluer un livrable dans son état d'origine.*
 
-| Épreuve | Compétences | État au 08/11/2026 | Documents | 🔒 Livrable figé |
+| Épreuve | Compétences | État au 08/11/2026 | Documents | Livrable figé |
 |---|---|---|---|---|
-| **E1** : Données | C1–C5 | ✅ livret **v8 du 08/11** : couleurs du rapport E2, rédaction à la première personne ; 5 pages, avec une couverture et 4 pages d'annexes (10 pages en tout) ; auto-évaluation **28 ✅** ; le livret v3 envoyé le 28/10 a été accepté par le formateur | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) · [rapport-E1-v8-avec-annexes.pdf](docs/rapports/E1/rapport-E1-v8-avec-annexes.pdf) · [budget détaillé](docs/BUDGET.md) · [preuves C1 à C5](evidence/) | **[`livrable-E1-v8`](https://github.com/Ganda15/rita-agent/tree/livrable-E1-v8)** |
-| **E2** : Veille & services IA | C6–C8 | ✅ rapport **v1.6 du 08/11** (18 pages, 32 avec l'annexe) ; auto-évaluation **20 ✅** | [rapport-E2-avec-annexe.pdf](docs/rapports/E2/rapport-E2-avec-annexe.pdf) · [rapport-E2.pdf](docs/rapports/E2/rapport-E2.pdf) · [docs/veille/](docs/veille/) · [evidence/C6/](evidence/C6/) | **[`livrable-E2-v5`](https://github.com/Ganda15/rita-agent/tree/livrable-E2-v5)** |
-| **E3** : API modèle & MLOps | C9–C13 | ✅ rapport **v2.5 du 08/11** (20 pages) : couleurs du rapport E2, contenu de la v2.4 du 07/11 ; auto-évaluation **39 ✅** | [rapport-E3.pdf](docs/rapports/E3/rapport-E3.pdf) · [evidence/C11/](evidence/C11/) · [evidence/C12/](evidence/C12/) | **[`livrable-E3-v6`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v6)** |
-| **E4** : Application | C14–C19 | ✅ rapport **v1.10 du 08/11** (20 pages, 35 avec l'annexe) ; auto-évaluation **38 ✅**, chacun avec sa limite | [rapport-E4-avec-annexe.pdf](docs/rapports/E4/rapport-E4-avec-annexe.pdf) · [rapport-E4.pdf](docs/rapports/E4/rapport-E4.pdf) · [evidence/C14/](evidence/C14/) · [evidence/C17/](evidence/C17/) | **[`livrable-E4-v7`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7)** |
-| **E5** : Monitorage | C20–C21 | ✅ rapport **v1.1 du 08/11** (5 pages) ; vigie planifiée constatée en production le 07/11 ; auto-évaluation **12 ✅** | [rapport-E5.pdf](docs/rapports/E5/rapport-E5.pdf) · [evidence/C20/](evidence/C20/) · [evidence/C21/](evidence/C21/) | **[`livrable-E5-v5`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v5)** |
+| **E1** : Données | C1-C5 | ✅ livret v8 du 08/11 : couleurs du rapport E2, rédaction à la première personne ; 5 pages, avec une couverture et 4 pages d'annexes (10 pages en tout) ; auto-évaluation **28 ✅** ; le livret v3 envoyé le 28/10 a été accepté par le formateur | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) · [rapport-E1-v8-avec-annexes.pdf](docs/rapports/E1/rapport-E1-v8-avec-annexes.pdf) · [budget détaillé](docs/BUDGET.md) · [preuves C1 à C5](evidence/) | **[`livrable-E1-v8`](https://github.com/Ganda15/rita-agent/tree/livrable-E1-v8)** |
+| **E2** : Veille & services IA | C6-C8 | ✅ rapport v1.6 du 08/11 (18 pages, 32 avec l'annexe) ; auto-évaluation **20 ✅** | [rapport-E2-avec-annexe.pdf](docs/rapports/E2/rapport-E2-avec-annexe.pdf) · [rapport-E2.pdf](docs/rapports/E2/rapport-E2.pdf) · [docs/veille/](docs/veille/) · [evidence/C6/](evidence/C6/) | **[`livrable-E2-v5`](https://github.com/Ganda15/rita-agent/tree/livrable-E2-v5)** |
+| **E3** : API modèle & MLOps | C9-C13 | ✅ rapport v2.5 du 08/11 (20 pages) : couleurs du rapport E2, contenu de la v2.4 du 07/11 ; auto-évaluation **39 ✅** | [rapport-E3.pdf](docs/rapports/E3/rapport-E3.pdf) · [evidence/C11/](evidence/C11/) · [evidence/C12/](evidence/C12/) | **[`livrable-E3-v6`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v6)** |
+| **E4** : Application | C14-C19 | ✅ rapport v1.10 du 08/11 (20 pages, 35 avec l'annexe) ; auto-évaluation **38 ✅**, chacun avec sa limite | [rapport-E4-avec-annexe.pdf](docs/rapports/E4/rapport-E4-avec-annexe.pdf) · [rapport-E4.pdf](docs/rapports/E4/rapport-E4.pdf) · [evidence/C14/](evidence/C14/) · [evidence/C17/](evidence/C17/) | **[`livrable-E4-v7`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7)** |
+| **E5** : Monitorage | C20-C21 | ✅ rapport v1.1 du 08/11 (5 pages) ; vigie planifiée constatée en production le 07/11 ; auto-évaluation **12 ✅** | [rapport-E5.pdf](docs/rapports/E5/rapport-E5.pdf) · [evidence/C20/](evidence/C20/) · [evidence/C21/](evidence/C21/) | **[`livrable-E5-v5`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v5)** |
 
 *Mon auto-évaluation au 08/11, dans les grilles des cinq rapports : **137 ✅** sur 137 lignes (E1 28, E2 20, E3 39,
 E4 38, E5 12), chaque ligne avec sa preuve et, s'il y en a une, sa limite écrite. La grille du 03/11 (120 ✅ · 17 🟡 sur
@@ -52,15 +52,15 @@ PostgreSQL conçue selon Merise, les met à disposition par une API REST, et pro
 briefing **rédigé** en français par un modèle d'IA : une aide à la lecture, jamais une
 recommandation d'achat ou de vente.
 
-## Ce qui existe aujourd'hui : chiffres mesurés, pas annoncés
+## Ce qui existe aujourd'hui, en chiffres mesurés
 
 | | |
 |---|---|
-| Tests | **3 213 collectés** · sur le poste : **3 131 réussis**, 82 ignorés, 0 en échec (08/11, commit `05df824`) ; en CI : 3 116 réussis, 97 ignorés, couverture 96,11 %, et 59 tests PostgreSQL réussis dans le job `base` (08/11) |
-| Base de données | **10 tables · 1 vue · 8 index créés explicitement · 12 contraintes CHECK** (compté dans `db/schema.sql`, inchangé depuis le 10/10, recompté le 02/11) |
-| Données en base | **273 608 lignes** importées en juillet (276 168 lues − 2 560 doublons) ; 278 473 cotations au 02/10 (mesure d'E1) |
-| Archive big data | **11 partitions Parquet · 14 Mo · 10 ans** (29/07/2016 → 29/07/2026, dates locales de la place depuis INC-005) |
-| API | **OpenAPI 3.1.0 · 19 chemins, 19 opérations, dont 12 chemins de données `/donnees`** (`app.openapi()`, 02/11) |
+| Tests | **3 213 collectés** · sur mon poste : 3 131 réussis, 82 ignorés, 0 en échec (08/11, commit `05df824`) ; en CI : 3 116 réussis, 97 ignorés, couverture 96,11 %, et 59 tests PostgreSQL réussis dans le job `base` (08/11) |
+| Base de données | 10 tables · 1 vue · 8 index créés explicitement · 12 contraintes CHECK (compté dans `db/schema.sql`, inchangé depuis le 10/10, recompté le 02/11) |
+| Données en base | 273 608 lignes importées en juillet (276 168 lues − 2 560 doublons) ; 278 473 cotations au 02/10 (mesure d'E1) |
+| Archive big data | 11 partitions Parquet · 14 Mo · 10 ans (29/07/2016 → 29/07/2026, dates locales de la place depuis INC-005) |
+| API | OpenAPI 3.1.0 · 19 chemins, 19 opérations, dont 12 chemins de données `/donnees` (`app.openapi()`, 02/11) |
 
 ### Les 5 types de sources (C1)
 
@@ -81,9 +81,9 @@ recommandation d'achat ou de vente.
 - **Modèle d'IA** : GPT-5.4 sur Azure AI Foundry (Data Zone EU), seul fournisseur par défaut depuis le 31/10/2026
   (règle UE seule) ; Claude par Anthropic ou OpenRouter n'est plus appelé sauf si `LLM_ORDRE` le nomme. Mistral Large 4
   est retenu comme second fournisseur, en Europe, après la lecture de son contrat (carte #82, PR #88) : modèle
-  **fourni**, aucun entraînement
+  fourni, aucun entraînement
 - **Orchestration** : LangGraph
-- **CI** : GitHub Actions, tests et **porte d'évaluation des garde-fous**
+- **CI** : GitHub Actions, tests et porte d'évaluation des garde-fous
 
 > **Présents au 08/11** : interface web de cinq écrans (portefeuille, indicateurs, briefing, question, tableau de bord
 > de la vigie, `frontend/`), passerelle MCP (`passerelle_mcp/`), conteneurisation (`Dockerfile`, `Dockerfile.tests`,
@@ -136,7 +136,7 @@ copy .env.example .env      # puis renseigner les clés
 
 *(Sous Linux/macOS, l'exécutable est `.venv/bin/python`.)*
 
-Le serveur tourne alors **en local**. La documentation interactive est servie sur
+Le serveur tourne alors en local. La documentation interactive est servie sur
 `http://127.0.0.1:8000/docs`, le contrat OpenAPI sur `http://127.0.0.1:8000/openapi.json`.
 Ces adresses ne sont pas atteignables depuis GitHub : elles n'existent que sur la machine
 qui lance le serveur.
@@ -147,7 +147,7 @@ qui lance le serveur.
 .venv\Scripts\python.exe -m pytest -q
 ```
 
-Si la création d'environnement virtuel est bloquée (sur le poste du projet, Smart App Control de Windows refuse les
+Si la création d'environnement virtuel est bloquée (sur mon poste, Smart App Control de Windows refuse les
 exécutables sans réputation, dont ceux d'un environnement virtuel), les tests s'exécutent aussi avec l'interpréteur
 système :
 
@@ -159,7 +159,7 @@ python -m pytest -q
 > 08/11/2026, commit `05df824`, par `scripts/verifier_livrable.py`). Les ignorés : les tests qui demandent PostgreSQL
 > (ci-dessous) et ceux qui ne tournent que sous Linux, dans la CI (simulations `bash`, `jq`, verrous de fichiers,
 > liens symboliques).
-> Les tests d'intégration PySpark de `tests/test_spark.py` sont **ignorés**, et non en échec, si aucun JDK 21 n'est
+> Les tests d'intégration PySpark de `tests/test_spark.py` sont ignorés (et non en échec) si aucun JDK 21 n'est
 > présent dans `JAVA_HOME`.
 
 ### Les tests qui demandent PostgreSQL

@@ -5,9 +5,9 @@
 > `develop` au commit `23318a6` (08/09). **Retour du formateur, 03/10/2026** : « Très bon travail.
 > Se montrera utile à l'exécution. Rien à redire. »
 >
-> Le chapitre a été écrit **à côté** du dépôt, en lecture seule, pour ne rien y changer avant la revue.
+> Le chapitre a été écrit à côté du dépôt, en lecture seule, pour ne rien y changer avant la revue.
 > Depuis le 03/10 il entre ici, et ses propositions deviennent du travail planifié : ce dossier dit
-> ce que le code fait déjà, ce qui reste proposé, et dans quel ordre on l'applique.
+> ce que le code fait déjà, ce qui reste proposé, et dans quel ordre je l'applique.
 
 ## Les fichiers
 
@@ -15,12 +15,12 @@
 |---|---|
 | `chapitre-donnees-version-courte-2026-09-07.pdf` | 12 pages, autoportant : cartographie, MCD/MPD et indexation, matrice d'accès, 32 cas de vérification, schémas. **À lire d'abord.** |
 | `chapitre-donnees-version-complete-2026-09-07.pdf` | 40 pages, développé et sourcé (annexes : preuves de certification, historique, liens). Fait foi en cas de doute. |
-| `schema-architecture-donnees.svg`, `schema-modele-donnees.svg` | les deux schémas du rendu : l'architecture des données (préparer, puis consulter et rédiger, avec ce qui est observé et ce qui est proposé) ; le modèle des **tables** (clés primaires et étrangères, vue de valorisation). Le MCD Merise de référence reste `evidence/C4/MCD-MERISE-RITA.png` (01/08) et sa version à jour, dans le rapport E1, § 5. |
+| `schema-architecture-donnees.svg`, `schema-modele-donnees.svg` | les deux schémas du rendu : l'architecture des données (préparer, puis consulter et rédiger, avec ce qui est observé et ce qui est proposé) ; le modèle des tables (clés primaires et étrangères, vue de valorisation). Le MCD Merise de référence reste `evidence/C4/MCD-MERISE-RITA.png` (01/08) et sa version à jour, dans le rapport E1, § 5. |
 
 Le chapitre emploie quatre statuts : **Observé** (dans le code au commit étudié), **Documenté** (rapporté par
 un document daté), **Proposé** (conception, rien de réalisé), **À vérifier** (manque ou décision attendue).
 
-**Relu le 04/10/2026 contre `db/schema.sql` et la base.** Le modèle des tables est celui du 07/09 : il ne montre ni
+Relu le 04/10/2026 contre `db/schema.sql` et la base. Le modèle des tables est celui du 07/09 : il ne montre ni
 `position.date_cloture` (03/10), ni `macro_observation` (27/09), ni `mcp_calls` (03/10), et sa note « devise sans taux
 ≠ taux 1 » est réglée depuis le 03/10 (la vue rend `taux_manquant` au lieu d'un taux supposé). Ses cardinalités sont
 celles des tables (0,N : une clé étrangère n'oblige pas une valeur à avoir un alias ou une cotation) ; le MCD donne
@@ -40,11 +40,11 @@ Lu fichier par fichier le 03/10 (`db/schema.sql`, `db/roles.sql`, `rag/indexatio
 | Socle (§6) | réutiliser PostgreSQL et les requêtes existantes ; vérifier volumes et version déployée | tenu : 9 tables, 1 vue depuis le 27/09 (`macro_observation` ajoutée) ; 276 530 cotations le 06/09, à remesurer avant démonstration | aucune action de code |
 | Text-to-SQL (§3.6) | **non retenu** ; réouverture sur besoin motivé seulement | aucun SQL généré dans le dépôt | décision à inscrire dans le ledger (fait le 03/10) |
 | Rôle lecture seule (§3.5) | privilèges réels du rôle PostgreSQL à vérifier | **fait** : `db/roles.sql` crée `rita_lecture` (SELECT seul), `tests/test_role_lecture.py` prouve les refus | rien |
-| Orphelins de l'index (§2.4) | l'indexeur ne supprime jamais ; 605 vecteurs pour 594 articles | **fait le 19/09** (revue revue automatisée de la PR #1) : `rag/indexation.py` supprime les identifiants retirés avant l'upsert | preuve à citer dans E3 |
+| Orphelins de l'index (§2.4) | l'indexeur ne supprime jamais ; 605 vecteurs pour 594 articles | **fait le 19/09** (revue automatisée de la PR #1) : `rag/indexation.py` supprime les identifiants retirés avant l'upsert | preuve à citer dans E3 |
 | Filtre par valeur (§2.4, R03) | le filtre dense s'appliquait après la sélection globale | **fait le 19/09** : classement dense restreint aux identifiants du ticker (`ids=`) ; filtre déterministe avant la recherche depuis le 30/08 | rien |
 | Corrélation des événements (A06) | événements corrélés, aucun inventé | **fait le 02/10** : `request_id` sur chaque réponse, dans le journal et la trace Langfuse | rien |
 | Métadonnée `titre` dans l'index (§2.4, R11) | titre à ajouter pour la citation | **fait le 03/10** (issue #59, 3 tests) : métadonnée `titre` et champ `titre` du passage ; index du poste à reconstruire par la collecte de 19 h | rien |
-| `search_articles` (§3.2, §3.3) | spécifier l'outil MCP et sa route REST ; ne pas annoncer quatre outils | **absent** : trois outils, aucune route de recherche | **décidé le 03/10** (#63) : périmètre confirmé, construction après le gel du 15/10 ; d'ici là on dit trois outils |
+| `search_articles` (§3.2, §3.3) | spécifier l'outil MCP et sa route REST ; ne pas annoncer quatre outils | **absent** : trois outils, aucune route de recherche | **décidé le 03/10** (#63) : périmètre confirmé, construction après le gel du 15/10 ; d'ici là je dis trois outils |
 | Journal `mcp_calls` (§3.6) | table proposée : `request_id`, client, outil, statut, code, durée, version de politique ; 90 jours ; écrite par l'API, jamais par la passerelle | **fait le 03/10** (issue #62, plan validé, 21 tests, migration jouée sur le poste, premières lignes réelles) : écrit par l'API seule, refus locaux remontés, T5 et P6 | Compose et Hetzner à migrer |
 | Valorisation (§2.3, D06) | pas de conversion avec un taux supposé ; `COALESCE(taux, 1)` à remplacer par « indisponible » | **fait le 03/10** (issue #65, plan validé, 23 tests, migration jouée sur le poste) : `CASE` sur `'EUR'`, `taux_manquant`, total et poids « indisponibles » | Compose et Hetzner à migrer |
 | Conservation des positions (§1.5) | la purge cherche `quantite = 0`, interdit par le schéma : elle ne s'applique jamais ; pas de date de clôture | **fait le 03/10** (issue #66, plan validé D1 à D4 = A) : `date_cloture` posée par l'import, index unique de ligne, P2 applicable, P3 retirée, T1 réécrit ; D07 (#69) signalé à l'import | rien : migration jouée sur le poste, Compose et Hetzner le 03/10 ; import réel rejoué sur le poste (7 mises à jour, 0 insérée, 0 close) ; `evidence/C4/preuve-cloture-positions.md` |
@@ -55,7 +55,7 @@ Lu fichier par fichier le 03/10 (`db/schema.sql`, `db/roles.sql`, `rag/indexatio
 | Les 32 cas de vérification (§4) | protocole de conception, non exécuté | **cartographiés le 03/10** (issue #61) : 23 couverts, 5 partiels, 4 manquants ; quatre tests écrits (D02, D05, R09, R13) ; `evidence/C12/cas-de-verification-chapitre-donnees.md` | les 4 manquants ont leur issue : #65, #69, #63, #70 |
 | Jeu annoté (§4.4) | 53 questions annotées par un LLM, non revalidées ; Hit@1 0,547, MRR 0,605 en hybride | inchangé depuis le 07/09 | relecture humaine à planifier (E3, C12) |
 
-**Lecture honnête** : sur dix-sept lignes, cinq sont tenues par le code (dont trois depuis le rendu), neuf
+Ce que j'en retiens : sur dix-sept lignes, cinq sont tenues par le code (dont trois depuis le rendu), neuf
 restent proposées, deux attendent ma décision, une attend du temps de relecture. Rien de ce qui est
 proposé n'a été réalisé en silence : chaque ligne « issue » renvoie à une carte GitHub ouverte le 03/10.
 
@@ -72,7 +72,7 @@ Ce que ce chapitre apporte aux épreuves : E1 (C1 cartographie, C4 Merise et RGP
 15/10), E3 (C10 outils MCP et matrice d'accès, C12 les 32 cas), E4 (C14 spécifications, C15 flux), E5
 (C20 journal d'audit). Détail dans l'annexe A de la version complète.
 
-## 📖 Glossaire
+## Glossaire
 
 - **Matrice d'accès** : tableau acteur × ressource ; une case absente vaut refus.
   Décision D7 du 06/11/2026 : la documentation de l'API (`/docs`, `/redoc`, `/openapi.json`) y est ajoutée comme

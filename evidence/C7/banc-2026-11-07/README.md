@@ -1,6 +1,6 @@
 # Banc C7 du 07/11/2026 : Azure tel qu'il tourne aujourd'hui (zone UE, prompt corrigé)
 
-Compétence : C7 (choix du service de modèle). Demande d'Era du 07/11, pendant le double contrôle : le banc du 03/10
+Compétence : C7 (choix du service de modèle). Ma demande du 07/11, pendant le double contrôle : le banc du 03/10
 mesurait Azure en déploiement *Global Standard* avec l'ancien prompt ; ni le déploiement en zone de données UE, ni le
 prompt corrigé le 06/11 (`548f1f5`) n'avaient été mesurés (rapport E2, 3.3).
 
@@ -24,8 +24,8 @@ C:\Python314\python.exe -X utf8 -m evals.benchmark_fournisseurs --jeu evidence/C
 | Disponibilité | 30 sur 30 | 30 sur 30, intervalle de Wilson [0,89 ; 1,00] |
 | Textes acceptés par le garde-fou de sortie (AMF) | 30 sur 30 | 30 sur 30 |
 | Fidélité aux faits fournis (contrôle minimal du script) | voir `preuve-benchmark-2026-10-03.md` | 30 sur 30 |
-| Latence, médiane | 3,21 s | **2,19 s** |
-| Latence, 95e centile | 10,69 s (2 appels sur 30 au-dessus de 10 s) | **2,55 s** |
+| Latence, médiane | 3,21 s | 2,19 s |
+| Latence, 95e centile | 10,69 s (2 appels sur 30 au-dessus de 10 s) | 2,55 s |
 | Jetons par briefing, entrée et sortie (moyenne) | 644 et 204 | 718 et 175 |
 | Coût d'un briefing au prix public *Global Standard* (2,50 et 15,00 USD par million) | 0,0047 USD | 0,0044 USD (calcul : 21 534 jetons d'entrée et 5 243 de sortie pour 30 appels) |
 
@@ -38,6 +38,6 @@ les preuves : le chiffre exact pour ce déploiement n'est pas établi.
 
 - Seul, ce passage dit comment Azure se comporte aujourd'hui ; la comparaison avec Mistral Large 3, même jeu et même
   budget, est dans `../banc-2026-11-07-comparaison/`.
-- Le français : notes proposées par une IA à l'aveugle, acceptées par Era sans modification, avec les 30 textes de
+- Le français : notes proposées par une IA à l'aveugle, que j'ai acceptées sans modification, avec les 30 textes de
   Mistral Large 3 (`../banc-2026-11-07-comparaison/`).
 - Un seul passage, un samedi matin : la latence d'un autre jour ou d'une démonstration chargée peut être différente.
