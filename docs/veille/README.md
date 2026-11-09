@@ -19,8 +19,8 @@ n'est pas un sujet choisi pour l'exercice : c'est **une menace active sur RITA**
 RITA lit des pages web (`sources/scraper.py`), des flux RSS (`sources/rss.py`) et des articles
 écrits par des tiers, puis passe ce texte à un modèle. Une page hostile peut donc tenter de
 faire produire au modèle une **recommandation d'achat** — soit exactement l'interdit AMF que
-le projet s'impose. Le garde-fou existe déjà (`guardrails/injection.py`, 9 motifs), et il est
-mesuré (`evals/mesurer_gardefou.py`).
+le projet s'impose. Le garde-fou existe déjà (`guardrails/injection.py`, 12 motifs nommés
+plus la détection `consigne_deguisee`), et il est mesuré (`evals/mesurer_gardefou.py`).
 
 **Conséquence pratique** : chaque note se termine par une section **« Ce que ça change dans
 RITA »**. Une veille qui ne modifie jamais le projet n'est pas une veille, c'est une revue de
@@ -35,9 +35,9 @@ presse.
 | **Créneau** | **lundi, 09h00 → 10h00** |
 | **Durée** | 1 heure — le minimum exigé par le critère |
 | **Sortie** | une note datée dans ce dossier, une par semaine |
-| **Rappel** | aucune tâche planifiée : une tâche `veille-hebdo-securite-llm` avait été annoncée ici, elle **n'a jamais existé** sur le poste (vérifié le 24/08 et le 03/10/2026, `Get-ScheduledTask` ; incident INC-004). Le relevé se fait à la main, le lundi ou en rattrapage, et chaque relevé porte sa date |
+| **Rappel** | La tâche planifiée de l'application Claude `veille-hebdo-securite-llm` existe depuis le 14/08/2026 et est configurée pour le lundi à 09 h, heure de Paris. Les contrôles des 24/08 et 03/10 (`Get-ScheduledTask`, incident INC-004) portaient sur le Planificateur de tâches de Windows et ne pouvaient pas voir cette tâche Claude ; cette conclusion est corrigée le 09/11. L'historique local contient 13 lancements du 17/08 au 09/11, dont deux sessions interrompues (19/10 et 02/11). Un lancement ne prouve pas qu'un relevé a été produit : aucun fichier de candidats S42 ni S44 n'est présent dans ce dossier au 09/11. La tâche prépare le relevé ; la rédaction de la note reste le travail d'Era. |
 
-**État réel de la récurrence au 11/10/2026**, lu dans ce dossier (un trou se voit, on ne le bouche pas) :
+**État réel de la récurrence au 09/11/2026**, lu dans ce dossier (un trou se voit, on ne le bouche pas) :
 
 | Semaine ISO | Candidats relevés | Note écrite | Quand, et comment |
 |---|---|---|---|
@@ -49,9 +49,13 @@ presse.
 | S38, S39 (14 au 27/09) | 🔴 aucun | 🔴 aucune | carte #31 : deux semaines sans séance, à dire tel quel |
 | S40 (28/09 au 04/10) | ✅ (relevé du 28/09, fenêtre élargie au 14/09) | 🔴 à écrire par moi | carte #30 |
 | S41 (05 au 11/10) | ✅ (relevé du 11/10, fenêtre élargie au 29/09) | ✅ rédigée en rattrapage le 11/10, partagée à la promo le 11/10 (`_JOURNAL-DES-ENVOIS.md`, envoi 3) | créneau du lundi 05/10 non tenu ; relevé fait le dimanche 11/10, et dit |
+| S42 (12 au 18/10) | 🔴 aucun | 🔴 aucune | Aucun relevé ni note retrouvé au 09/11 ; période non balayée d’après le relevé S46 |
+| S43 (19 au 25/10) | 🔴 aucun | 🔴 aucune | Aucun relevé ni note retrouvé au 09/11 ; période non balayée d’après le relevé S46 |
+| S44 (26/10 au 01/11) | 🔴 aucun | 🔴 aucune | Aucun relevé ni note retrouvé au 09/11 ; période non balayée d’après le relevé S46 |
+| S45 (02 au 08/11) | ⚠️ aucun fichier S45 ; période reprise dans le [relevé S46 du 09/11](_candidats-2026-S46.md) | 🔴 aucune | La collecte du 09/11 couvre le 02 au 09/11 ; elle ne constitue pas une note S45 |
+| S46 (09 au 15/11) | ✅ [relevé du 09/11](_candidats-2026-S46.md), fenêtre du 02 au 09/11 | ✅ [note assistée du 09/11](2026-S46-regex-et-autorite-des-sources.md), contribution d’Era et corrections attribuées | Synthèse partagée à la promo le 09/11 à 11 h 41, [envoi 4](_JOURNAL-DES-ENVOIS.md) ; retour en attente. Durée d’une heure non attestée |
 
-Synthèse des quatre notes : `Veille-C6-synthese-S33-a-S36.pdf` (§6). Partage : un seul, Discord le 16/08, sans
-capture des réponses à ce jour (`_JOURNAL-DES-ENVOIS.md`, `../../evidence/C6/README.md`).
+Synthèse des quatre premières notes : `Veille-C6-synthese-S33-a-S36.pdf` (§6). Au 09/11/2026, trois partages à la promo sont consignés : S33 le 16/08, S41 le 11/10 et S46 le 09/11. Le retour S41 et sa capture sont relevés dans le [journal des envois](_JOURNAL-DES-ENVOIS.md) ; le retour S46 reste en attente et l’envoi au formateur reste à faire.
 
 
 ⚠️ **Ce que le relevé fait, et ce qu'il ne fait pas.** Il **prépare le terrain** : les nouveautés
@@ -174,10 +178,11 @@ ici pour qu'aucun évaluateur ne le découvre sans explication. Il ne produit au
 **Pourquoi le formateur en destinataire principal.** C'est la partie prenante la plus
 incontestable devant un jury : son rôle est écrit, sa réception vérifiable.
 
-**Pourquoi mensuel et non hebdomadaire.** Un envoi hebdomadaire à un formateur devient du
-bruit et cesse d'être lu — une trace non lue ne prouve rien. Trois envois d'ici le 05/11
-valent mieux que douze ignorés. **La note reste hebdomadaire** ; c'est l'*envoi* qui est
-mensuel.
+**Pourquoi mensuel et non hebdomadaire.** La cadence prévue est une synthèse mensuelle
+pour regrouper les notes et faciliter leur lecture par le formateur. Au 09/11/2026, aucun
+envoi au formateur n'est consigné dans le [journal des envois](_JOURNAL-DES-ENVOIS.md) :
+l'objectif de trois envois avant le 05/11 n'a pas été atteint et le premier envoi reste à faire.
+**La note reste hebdomadaire** ; c'est l'*envoi au formateur* qui est prévu chaque mois.
 
 **Pourquoi une question ouverte dans le canal de la promo.** *« Animer le travail collectif »*
 n'est pas *« publier »*. Un message sans réponse ne prouve aucune animation. Chaque note
