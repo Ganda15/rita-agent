@@ -24,7 +24,7 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 ## ▶️ 08/11, SOIR : CINQ TAGS POSÉS SUR `770d440` ; COURS DE PRODUCTION RATTRAPÉS AU 06/11 ; GUIDE DU RATTRAPAGE CORRIGÉ
 
 **Prochaine action** :
-1. Era envoie la remise (les cinq liens de tags, message déjà rédigé), le 08/11 au soir ou le 09/11 au matin.
+1. Fait le 09/11 à 14 h 00 : remise déposée dans le Drive partagé (formateur, cheffe de projet, cheffe pédagogique), 7 fichiers identiques aux tags ; entrée du `CHANGELOG` du 09/11.
 2. Fait : PR #241 fusionnée dans `develop` (`23df640`, 18 h 44 UTC, toutes les vérifications vertes, rien déployé).
    Quand le message est parti : l'entrée « remise envoyée » du `CHANGELOG`, sur la branche
    `controle-ecran-et-remise-2026-11-08` (qui porte déjà le contrôle à l'écran), puis PR vers `develop`.

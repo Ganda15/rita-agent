@@ -9,6 +9,15 @@
 
 ---
 
+## 2026-11-09, 14 h 00 : remise envoyée
+
+- **Livrable envoyé** : 7 fichiers déposés dans le Drive partagé avec le formateur, la cheffe de projet et la cheffe
+  pédagogique, prévenus le même jour. Les 5 rapports PDF sont identiques (empreinte SHA-256) à ceux de leurs tags :
+  `livrable-E1-v8`, `livrable-E2-v5`, `livrable-E3-v6`, `livrable-E4-v7`, `livrable-E5-v5`. Les 2 grilles xlsx sont
+  celles du 08/11 : `Era-Grille-jury-RITA_08_11_26.xlsx` (137 ✅) et `Era-Preparation-livrables-RNCP_08_11_26.xlsx`.
+- Contrôle avant l'envoi : les 300 liens des 5 PDF répondent (294 liens GitHub vérifiés avec un compte qui a accès au
+  dépôt privé, 6 autres ouverts directement). Le dépôt est privé : l'accès du jury reste à organiser avant le 01/12.
+
 ## 2026-11-08, soir : cours de production rattrapés au 06/11 ; manque découvert dans le guide du rattrapage
 
 - **Manque découvert** : depuis la carte #76 (en production le 07/11), le conteneur de l'API n'a plus l'adresse du
