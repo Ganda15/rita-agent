@@ -3,7 +3,7 @@
 *Suivi et analyse de portefeuille : une aide à la lecture, jamais une recommandation*
 
 **Certification RNCP37827 : Développeur en Intelligence Artificielle**
-Simplon & Wild Code School · Eramalingam GANDAKUMAR · ganda70@gmail.com · 2026
+Simplon & Wild Code School · Eramalingam GANDAKUMAR · 2026
 
 > **Remise du 09/11/2026** : les cinq rapports et leur tag sont dans le tableau ci-dessous. Pour retrouver, fichier
 > par fichier, ce que chaque compétence demande : le [guide du jury](docs/jury/README.md).
