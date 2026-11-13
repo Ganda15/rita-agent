@@ -102,8 +102,49 @@
     });
   }
 
+  // --- L'échelle des prix : des valeurs rondes à pas régulier -------------------
+  // Oral blanc du 13/11 : « des graphiques sans axes ni échelle ». Le pas vaut 1, 2, 2,5 ou 5 fois une puissance de 10,
+  // pour environ quatre intervalles ; l'échelle est élargie aux graduations qui encadrent les données, si bien que le
+  // plus bas et le plus haut du dessin sont écrits.
+  function graduations(bas, haut) {
+    var brut = (haut - bas) / 4;
+    var puissance = Math.pow(10, Math.floor(Math.log10(brut)));
+    var r = brut / puissance;
+    var pas = (r <= 1 ? 1 : r <= 2 ? 2 : r <= 2.5 ? 2.5 : r <= 5 ? 5 : 10) * puissance;
+    var premier = Math.floor(bas / pas + 1e-9), dernier = Math.ceil(haut / pas - 1e-9);
+    var decimales = 0;
+    while (decimales < 4 && Math.abs(Math.round(pas * Math.pow(10, decimales)) - pas * Math.pow(10, decimales)) > 1e-6) {
+      decimales += 1;
+    }
+    var valeurs = [];
+    for (var k = premier; k <= dernier; k += 1) {
+      valeurs.push(Math.round(k * pas * 1e6) / 1e6);
+    }
+    return { valeurs: valeurs, decimales: decimales };
+  }
+
+  // Les séances datées sur l'axe : la première, la dernière et jusqu'à trois intermédiaires, également réparties.
+  function indicesDates(n) {
+    var cible = Math.min(5, n), indices = [];
+    for (var k = 0; k < cible; k += 1) {
+      var i = cible === 1 ? 0 : Math.round(k * (n - 1) / (cible - 1));
+      if (indices.indexOf(i) === -1) {
+        indices.push(i);
+      }
+    }
+    return indices;
+  }
+
+  // Sur un écran étroit, une graduation sur deux s'efface ; la première et la dernière restent toujours.
+  function classeGraduation(k, total, sorte) {
+    var secondaire = k !== 0 && k !== total - 1 && k % 2 === 1;
+    return "etiquette graduation graduation-" + sorte + (secondaire ? " secondaire" : "");
+  }
+
   // --- La courbe du cours, avec ses moyennes 20 et 50 séances -----------------
-  function courbe(cotations) {
+  // `options.devise` : le code ISO lu dans les données par l'écran (/donnees/cotations ne la rend pas) ; jamais devinée.
+  function courbe(cotations, options) {
+    var devise = options && /^[A-Z]{3}$/.test(String(options.devise)) ? String(options.devise) : null;
     var ecartees = 0;
     var valides = [];
     (cotations || []).forEach(function (c) {
@@ -140,8 +181,13 @@
       bas -= 1;
       haut += 1;
     }
+    var echelleDesPrix = graduations(bas, haut);
+    bas = echelleDesPrix.valeurs[0];
+    haut = echelleDesPrix.valeurs[echelleDesPrix.valeurs.length - 1];
 
-    var L = 640, H = 240, gauche = 12, droite = 72, dessus = 28, dessous = 30;
+    // `dessus` laisse la place à la légende et à l'unité, agrandies sur un écran étroit, au-dessus de la plus haute
+    // graduation (rendu vérifié à 412 px le 13/11).
+    var L = 640, H = 240, gauche = 12, droite = 84, dessus = 38, dessous = 34;
     var largeurUtile = L - gauche - droite, hauteurUtile = H - dessus - dessous;
     function x(i) {
       return visibles.length === 1 ? gauche + largeurUtile / 2 : gauche + i * largeurUtile / (visibles.length - 1);
@@ -172,25 +218,43 @@
       return true;
     }
 
+    // Les axes d'abord, sous les courbes : une ligne de grille par graduation de prix, l'axe des prix à droite (comme
+    // sur un graphique boursier), l'axe des dates en bas.
+    var basZone = H - dessous, axePrix = L - droite;
+    var textesPrix = echelleDesPrix.valeurs.map(function (v) { return nombre(v, echelleDesPrix.decimales); });
+    echelleDesPrix.valeurs.forEach(function (v, k) {
+      svg.appendChild(element("line", { x1: gauche, y1: arrondi(y(v)), x2: axePrix, y2: arrondi(y(v)), class: "grille" }));
+      svg.appendChild(element("line", { x1: axePrix, y1: arrondi(y(v)), x2: axePrix + 4, y2: arrondi(y(v)), class: "axe" }));
+      svg.appendChild(texteSvg(axePrix + 8, y(v) + 4, textesPrix[k],
+                               { class: classeGraduation(k, textesPrix.length, "prix") }));
+    });
+    svg.appendChild(element("line", { x1: axePrix, y1: dessus, x2: axePrix, y2: basZone, class: "axe axe-y" }));
+    svg.appendChild(element("line", { x1: gauche, y1: basZone, x2: axePrix, y2: basZone, class: "axe axe-x" }));
+    var indices = indicesDates(visibles.length);
+    var textesDates = indices.map(function (i) { return dateFr(visibles[i].date); });
+    indices.forEach(function (i, k) {
+      var ancrage = indices.length === 1 ? "middle" : (k === 0 ? "start" : (k === indices.length - 1 ? "end" : "middle"));
+      svg.appendChild(element("line", { x1: arrondi(x(i)), y1: basZone, x2: arrondi(x(i)), y2: basZone + 4, class: "axe" }));
+      svg.appendChild(texteSvg(x(i), H - 12, textesDates[k],
+                               { class: classeGraduation(k, indices.length, "date"), "text-anchor": ancrage }));
+    });
+
     trace(coursVisibles, "cours", "trace-cours");
     var avec20 = trace(vmm20, "mm20", "trace-mm20");
     var avec50 = trace(vmm50, "mm50", "trace-mm50");
 
-    // Légende, puis repères : plus haut et plus bas du cours, première et dernière date.
+    // La légende, toujours lisible (agrandie sur un écran étroit), et l'unité des prix quand l'écran la connaît.
     var legende = [["Cours", "trace-cours"]];
     if (avec20) { legende.push(["MM20", "trace-mm20"]); }
     if (avec50) { legende.push(["MM50", "trace-mm50"]); }
-    // Deux sortes d'étiquettes : la légende (toujours lisible, agrandie sur un écran étroit) et les repères de prix et
-    // de dates (cachés sur un écran étroit, où ils deviendraient minuscules : l'alternative les donne en entier).
     legende.forEach(function (entree, k) {
       var x0 = gauche + k * 120;
       svg.appendChild(element("line", { x1: x0, y1: 12, x2: x0 + 22, y2: 12, class: entree[1] }));
       svg.appendChild(texteSvg(x0 + 28, 16, entree[0], { class: "etiquette legende" }));
     });
-    svg.appendChild(texteSvg(L - droite + 6, y(plusHaut) + 4, nombre(plusHaut, 2), { class: "etiquette repere" }));
-    svg.appendChild(texteSvg(L - droite + 6, y(plusBas) + 4, nombre(plusBas, 2), { class: "etiquette repere" }));
-    svg.appendChild(texteSvg(gauche, H - 8, premiere, { class: "etiquette repere" }));
-    svg.appendChild(texteSvg(L - droite, H - 8, derniere, { class: "etiquette repere", "text-anchor": "end" }));
+    if (devise) {
+      svg.appendChild(texteSvg(L - 4, 16, "Prix en " + devise, { class: "etiquette legende unite", "text-anchor": "end" }));
+    }
 
     var lignes = ["Du " + premiere + " au " + derniere + " : " + visibles.length + " séances affichées"
                   + (valides.length > visibles.length ? " sur " + valides.length + " lues." : "."),
@@ -204,6 +268,9 @@
     } else {
       lignes.push("Moyenne 20 séances : " + nombre(dernier20, 2) + " ; moyenne 50 séances : " + nombre(dernier50, 2) + ".");
     }
+    // Les mêmes graduations qu'à l'écran : personne n'est privé d'un chiffre du dessin.
+    lignes.push("Échelle des prix" + (devise ? " en " + devise : "") + " : " + textesPrix.join(" ; ") + ".");
+    lignes.push("Dates de l'axe : " + textesDates.join(", ") + ".");
     return { svg: svg, alternative: alternative(lignes.concat(noteEcartees)) };
   }
 

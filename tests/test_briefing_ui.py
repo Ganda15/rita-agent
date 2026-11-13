@@ -308,7 +308,8 @@ def test_tout_s_actionne_au_clavier(ecran):
 
 def test_courbe_lisible_sur_mobile(navigateur, serveur):  # noqa: F811
     """À 412 px, la courbe (640 unités de large) est réduite de moitié : ses étiquettes de 12 unités feraient 6 px.
-    La légende grandit, et les repères de prix et de dates s'effacent : ils sont écrits en entier juste dessous."""
+    La légende grandit, et les axes restent : une graduation sur deux s'efface, les autres grandissent (avant le 13/11,
+    tous les repères s'effaçaient ; l'oral blanc a relevé une courbe sans axes ni échelle)."""
     contexte = navigateur.new_context(viewport={"width": 412, "height": 900})
     page = contexte.new_page()
     servir(page, "**/donnees/valeurs?*", 200, {"nb": 0, "valeurs": []})
@@ -323,8 +324,12 @@ def test_courbe_lisible_sur_mobile(navigateur, serveur):  # noqa: F811
     page.wait_for_selector("#courbe svg")
     hauteurs = page.evaluate("[...document.querySelectorAll('#courbe .legende')].map(t => t.getBoundingClientRect().height)")
     assert hauteurs and min(hauteurs) >= 9, hauteurs
-    assert page.evaluate("[...document.querySelectorAll('#courbe .repere')].every(t => getComputedStyle(t).display === 'none')")
-    assert page.evaluate("document.querySelectorAll('#courbe .repere').length") == 4
+    principales = page.evaluate("""[...document.querySelectorAll('#courbe .graduation:not(.secondaire)')]
+        .map(t => getComputedStyle(t).display === 'none' ? 0 : t.getBoundingClientRect().height)""")
+    assert len(principales) >= 4 and min(principales) >= 9, f"au moins 2 prix et 2 dates lisibles : {principales}"
+    assert page.evaluate("""[...document.querySelectorAll('#courbe .graduation.secondaire')]
+        .every(t => getComputedStyle(t).display === 'none')""")
+    assert page.evaluate("document.querySelectorAll('#courbe line.axe-x, #courbe line.axe-y').length") == 2
     largeur_champ = page.evaluate("document.getElementById('ticker').getBoundingClientRect().width")
     assert largeur_champ >= 200, f"le champ du code reste utilisable sur un téléphone ({largeur_champ} px)"
     contexte.close()
