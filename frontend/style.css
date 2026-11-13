@@ -515,6 +515,7 @@ circle.trace-mm50 { fill: var(--couleur-marque); }
 .barre-baisse { fill: var(--alerte); }
 .barre-nulle { fill: var(--texte-doux); }
 .graphique .axe { stroke: var(--bord); stroke-width: 1; }
+.graphique .grille { stroke: var(--bord); stroke-width: 1; opacity: .45; }
 .jauge-arc { fill: none; stroke: var(--bord); stroke-width: 14; }
 .jauge-repere { stroke: var(--texte-doux); stroke-width: 2; }
 .jauge-aiguille { stroke: var(--texte); stroke-width: 3; stroke-linecap: round; }
@@ -555,10 +556,12 @@ circle.trace-mm50 { fill: var(--couleur-marque); }
 #form-briefing label { flex: 0 0 100%; }
 #form-briefing input { flex: 1 1 14rem; min-width: 0; padding: .5rem .6rem; border-radius: 4px; font: inherit; }
 
-/* Écran étroit : la courbe est réduite de moitié ; la légende grandit, les repères (écrits dessous) s'effacent. */
+/* Écran étroit : la courbe est réduite de moitié ; la légende grandit, les axes restent. Une graduation sur deux
+   s'efface (la première et la dernière restent), les autres grandissent pour rester lisibles. */
 @media (max-width: 40rem) {
-  .graphique-courbe .repere { display: none; }
+  .graphique-courbe .secondaire { display: none; }
   .graphique-courbe .legende { font-size: 24px; }
+  .graphique-courbe .graduation { font-size: 22px; }
 }
 
 /* --- Écran Indicateurs (refonte 001, tâche 8) : la carte des performances et le détail de la valeur choisie ---------

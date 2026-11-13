@@ -156,6 +156,123 @@ def test_cours_constants(page):
     assert len(ys) == 1, "un cours constant est une ligne plate"
 
 
+# --- les axes et l'échelle (oral blanc du 13/11 : « des graphiques sans axes ni échelle ») -------------------------------
+
+def axes(page, donnees, options=None):
+    """Les axes tels qu'un lecteur les voit : les traits, les graduations de prix (texte et hauteur) et de dates."""
+    return page.evaluate("""([donnees, options]) => {
+        const svg = GRAPHIQUES.courbe(donnees, options).svg;
+        const lire = (selecteur) => [...svg.querySelectorAll(selecteur)].map(t => ({texte: t.textContent,
+            x: Number(t.getAttribute('x')), y: Number(t.getAttribute('y')), secondaire: t.classList.contains('secondaire')}));
+        return {axe_x: svg.querySelectorAll('line.axe-x').length, axe_y: svg.querySelectorAll('line.axe-y').length,
+                prix: lire('text.graduation-prix'), dates: lire('text.graduation-date'),
+                unite: [...svg.querySelectorAll('text.unite')].map(t => t.textContent), svg: svg.outerHTML};
+    }""", [donnees, options])
+
+
+def _fr(texte):
+    """Un nombre écrit à la française (« 1 234,50 », espace fine insécable) relu comme un nombre."""
+    return float(texte.replace(" ", "").replace(" ", "").replace(" ", "").replace(",", "."))
+
+
+@pytest.mark.parametrize("echelle", [1, 50])
+def test_courbe_a_une_echelle_des_prix_a_pas_regulier(page, echelle):
+    """Un axe des prix gradué : 3 à 7 valeurs rondes, à pas régulier, placées à leur hauteur, qui encadrent le cours.
+    L'échelle 50 donne des cours autour de 5 000 : le séparateur des milliers doit rester lisible."""
+    clotures = [round(c * echelle, 4) for c in serie(60)]
+    a = axes(page, seances(clotures))
+    assert a["axe_y"] == 1 and a["axe_x"] == 1, "un axe des prix et un axe des dates"
+    valeurs = [_fr(g["texte"]) for g in a["prix"]]
+    assert 3 <= len(valeurs) <= 7, valeurs
+    ecarts = [b - v for v, b in zip(valeurs, valeurs[1:])]
+    assert min(ecarts) > 0 and max(ecarts) - min(ecarts) < 1e-6, f"croissantes, à pas régulier : {valeurs}"
+    pas = ecarts[0]
+    assert valeurs[0] - pas <= min(clotures) and valeurs[-1] + pas >= max(clotures), "l'échelle encadre le cours"
+    ys = [g["y"] for g in a["prix"]]
+    assert ys == sorted(ys, reverse=True), "le prix le plus haut est écrit le plus haut"
+    hauteurs = [h - b for h, b in zip(ys, ys[1:])]
+    assert max(hauteurs) - min(hauteurs) <= 0.3, "des graduations également espacées : l'échelle est linéaire"
+
+
+def test_courbe_a_un_axe_des_dates_dans_l_ordre(page):
+    lignes = seances(serie(60))
+    a = axes(page, lignes)
+    dates = [g["texte"] for g in a["dates"]]
+    jjmmaaaa = lambda iso: f"{iso[8:10]}/{iso[5:7]}/{iso[:4]}"
+    assert dates[0] == jjmmaaaa(lignes[-1]["date_seance"]), "la première séance, à gauche"
+    assert dates[-1] == jjmmaaaa(lignes[0]["date_seance"]), "la dernière séance, à droite"
+    assert len(dates) >= 3, "au moins une date intermédiaire"
+    xs = [g["x"] for g in a["dates"]]
+    assert xs == sorted(xs) and len(set(xs)) == len(xs)
+    vers_iso = lambda d: d[6:] + d[3:5] + d[:2]
+    assert [vers_iso(d) for d in dates] == sorted(vers_iso(d) for d in dates), "les dates vont dans l'ordre"
+
+
+def test_la_devise_est_ecrite_quand_elle_est_connue_jamais_devinee(page):
+    """`/donnees/cotations` ne rend pas la devise : seul l'écran qui la lit dans les données peut la donner."""
+    assert axes(page, seances(serie(30)), {"devise": "EUR"})["unite"] == ["Prix en EUR"]
+    sans = axes(page, seances(serie(30)))
+    assert sans["unite"] == [] and "EUR" not in sans["svg"], "sans devise lue, aucune n'est inventée"
+    assert axes(page, seances(serie(30)), {"devise": "<b>X</b>"})["unite"] == [], "seul un code ISO à 3 lettres est écrit"
+
+
+@pytest.mark.parametrize("clotures", [[50.0] * 30, [42.0], [12.5, 12.75]])
+def test_echelle_d_un_cours_constant_ou_tres_court(page, clotures):
+    a = axes(page, seances(clotures))
+    assert "NaN" not in a["svg"] and "Infinity" not in a["svg"]
+    valeurs = [_fr(g["texte"]) for g in a["prix"]]
+    assert len(valeurs) >= 3, valeurs
+    assert valeurs[0] <= min(clotures) and valeurs[-1] >= max(clotures), "le cours est dans l'échelle"
+    dates = [g["texte"] for g in a["dates"]]
+    assert 1 <= len(dates) <= len(clotures) and len(set(dates)) == len(dates), "une date n'est jamais écrite deux fois"
+
+
+def test_des_graduations_toujours_distinctes_meme_pour_un_ecart_minime(page):
+    """Revue automatique de #244 (13/11) : avec 1,0000 et 1,0001, le pas valait 0,000025 et les étiquettes, plafonnées
+    à 4 décimales, se répétaient (« 1,0000 » deux fois, à deux hauteurs). Le pas ne descend plus sous la précision des
+    cours (4 décimales, le NUMERIC rendu par l'API) : chaque étiquette est distincte, et il en reste au moins trois."""
+    a = axes(page, seances(["1.0000", "1.0001"]))
+    textes = [g["texte"] for g in a["prix"]]
+    assert len(textes) >= 3 and len(set(textes)) == len(textes), textes
+    valeurs = [_fr(t) for t in textes]
+    ecarts = [b - v for v, b in zip(valeurs, valeurs[1:])]
+    assert min(ecarts) >= 0.0001 - 1e-12 and max(ecarts) - min(ecarts) < 1e-9, valeurs
+    assert valeurs[0] <= 1.0 and valeurs[-1] >= 1.0001
+
+
+@pytest.mark.parametrize("clotures", [[1000.0, 1002.0], [4856.76, 4861.31], [0.5, 9.5], [12.5, 12.75]])
+def test_sur_un_ecran_etroit_aucune_graduation_de_prix_n_est_coupee(page, clotures):
+    """Revue automatique de #244 (13/11) : à 412 px, les graduations passent à 22 unités ; « 1 000,0 » commençait à
+    x = 564 dans un cadre de 640 et ses derniers chiffres étaient coupés. Chaque étiquette visible tient entière."""
+    page.set_viewport_size({"width": 412, "height": 900})
+    try:
+        mesure = page.evaluate("""(donnees) => {
+            const svg = GRAPHIQUES.courbe(donnees).svg;
+            document.body.appendChild(svg);
+            const etiquettes = [...svg.querySelectorAll('text.graduation-prix')]
+                .filter(t => getComputedStyle(t).display !== 'none')
+                .map(t => { const b = t.getBBox();
+                            return {texte: t.textContent, droite: b.x + b.width, taille: getComputedStyle(t).fontSize}; });
+            const largeur = svg.viewBox.baseVal.width;
+            svg.remove();
+            return {largeur, etiquettes};
+        }""", seances(clotures))
+    finally:
+        page.set_viewport_size({"width": 1280, "height": 720})
+    assert mesure["etiquettes"] and all(e["taille"] == "22px" for e in mesure["etiquettes"]), mesure
+    for e in mesure["etiquettes"]:
+        assert e["droite"] <= mesure["largeur"] + 0.5, e
+
+
+def test_sur_un_ecran_etroit_les_graduations_principales_restent(page):
+    """Sur un téléphone, une graduation sur deux s'efface (classe `secondaire`) ; il reste au moins le plus bas, le
+    plus haut et les dates extrêmes."""
+    for n in (130, 61, 2):
+        a = axes(page, seances(serie(n)))
+        for liste in (a["prix"], a["dates"]):
+            assert not liste[0]["secondaire"] and not liste[-1]["secondaire"], (n, liste)
+
+
 # --- l'anneau, les barres, la jauge -------------------------------------------------------------------------------------------
 
 def test_anneau_non_dessine_si_poids_nuls(page):
