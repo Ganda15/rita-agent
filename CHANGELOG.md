@@ -9,6 +9,16 @@
 
 ---
 
+## 2026-11-13, soir : consignes de remise et d'accès du jury ; la courbe gagne ses axes
+
+- **Décision** (consignes de la dernière séance, 13/11) : 5 PDF, annexes comprises, remis le 23/11 ; le dépôt sera
+  public avant la remise, après un audit en lecture seule (fait le 13/11 : seuls secrets, les deux clés révoquées
+  d'INC-008) ; la clé de l'application du jury passe par une notice séparée, jamais par un PDF ni par le dépôt ; un PDF
+  ne change que s'il devient faux, a un lien cassé ou contredit la version présentée (relus le 13/11 : aucun).
+- **Décision d'Era** : adresses de courriel retirées des documents (#247) ; gel du code le 16/11.
+- **Manque découvert** (oral blanc 2, 13/11) : la courbe du cours n'avait ni axe ni échelle. Corrigé dans #244, tests
+  d'abord ; deux défauts relevés par la revue automatique, reproduits puis corrigés (`abee0bd`).
+
 ## 2026-11-11, soir : cours de production rattrapés au 11/11 ; deux manques découverts dans le guide du rattrapage
 
 - **Manque découvert** : le guide garde le nom du réseau Docker dans `RESEAU` et ne dit de s'arrêter que si le mot de
