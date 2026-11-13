@@ -203,10 +203,12 @@ def indicateurs(
     pas assez loin pour ce calcul. Une MA50 sur 30 séances serait un chiffre inventé.
 
     ⚠️ **`cotation_perimee`** vaut vrai quand la dernière séance connue dépasse
-    `SEUIL_PERIME_JOURS`. Trois valeurs de l'univers sont radiées depuis 2018-2019 et
-    portent pourtant `statut_qualite = "OK"` — le statut décrit la **qualité** de
-    l'historique, pas sa **fraîcheur**. Les deux champs sont donc exposés séparément,
-    et les lignes sont renvoyées par défaut : *on montre le chiffre, on signale le doute.*
+    `SEUIL_PERIME_JOURS`. Les trois valeurs radiées en 2018 et 2019 portent
+    `statut_qualite = "DELISTEE"` depuis la carte #48 (27/09/2026) ; avant, elles étaient
+    « OK ». Le statut décrit la **qualité** de l'historique, pas sa **fraîcheur** : une
+    valeur « OK » dont la collecte s'arrête devient périmée sans changer de statut. Les
+    deux champs sont donc exposés séparément, et les lignes sont renvoyées par défaut :
+    *on montre le chiffre, on signale le doute.*
     """
     lignes = socle.lire_socle(ticker or None)
     if masquer_perimees:
