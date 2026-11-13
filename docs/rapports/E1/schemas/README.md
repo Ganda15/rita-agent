@@ -67,7 +67,7 @@ chiffre change, régénérer le `.svg`, reporter le texte dans le `.html`, relan
 générateur (`illustre`), avec les positions du schéma généré multipliées par 1,28. Régénérer suffit donc : le `.html`
 suit, et un test refuse une illustration qui ne serait plus celle du générateur. Le nettoyage est passé au tracé de la
 collecte (trois colonnes à bandeau).
-**Relecture croisée du 28/10/2026** (un second agent, chaque remarque vérifiée contre le code avant correction) : le
+**Relecture croisée du 28/10/2026** (faite par un second assistant de code ; chaque remarque a été vérifiée contre le code avant correction) : le
 nettoyage disait que « les requêtes ne lisent que 'OK' » (R1, le portefeuille, ne filtre pas : `db/requetes.sql`) et
 dédoublonnait « sur (ticker, date_seance) » (le code : `(ticker, date)`, `db/importer.py`) ; il dit maintenant la limite
 des libellés CGG (addendum C3 du 26/10). L'API se disait « en lecture seule » alors qu'un appel de la passerelle MCP,

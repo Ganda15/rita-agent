@@ -10,7 +10,7 @@ retard », dernière séance du 04/11/2026, et l'écran Indicateurs « cours du 
 Ce n'était pas une collecte arrêtée :
 
 - la tâche planifiée du poste a tourné chaque soir (`logs/collecte-2026-11-03.log` à `collecte-2026-11-07.log` :
-  6 étapes sur 6, code de sortie 0, séances jusqu'au 06/11), mais elle écrit dans la base **du poste** ;
+  6 étapes sur 6, code de sortie 0, séances jusqu'au 06/11), mais elle écrit dans la base du poste ;
 - sur le serveur, aucune collecte planifiée des cours (constat du 04/11, `ETAT.md`) : les cours de production ne
   changent que par le rattrapage à la main ; le précédent datait du 04/11, 22 h 17 ;
 - `/health` de la production annonçait le commit `770d440`, celui de la livraison du 08/11.
@@ -56,7 +56,11 @@ personnelle). Rien d'autre : les commandes et les résultats sont ceux du termin
 - Le bandeau de fraîcheur conseille « Vérifier la collecte de 19h00 » : cette collecte ne concerne que le poste. En
   production, la formulation envoie au mauvais endroit ; correction à faire plus tard, test d'abord.
 - La décision du 06/11 (aucune écriture en production avant l'oral blanc) a été levée le 08/11 pour ce rattrapage.
-- Contrôle à l'écran avec la clé, après le rattrapage : pas fait au moment où cette preuve est écrite.
+- Contrôle à l'écran avec la clé, après le rattrapage : pas fait au moment où cette preuve est écrite. Fait le même
+  soir, après la fusion de #241 (`23df640`) : bandeau à la dernière séance du 06/11/2026, sans retard. Constat à
+  l'écran, sans capture. Puis capture de l'écran Indicateurs à 19 h 55 (heure de Paris) :
+  `capture-indicateurs-2026-11-08.png`, « Carte des performances : cours du 06/11/2026 », 108 valeurs, 3 cotations
+  périmées masquées.
 
 Guide corrigé : `docs/exploitation.md`, section « Rattraper les cours et les taux en production, à la main », étapes
 3 et 4 ; tests : `tests/test_exploitation_doc.py`.

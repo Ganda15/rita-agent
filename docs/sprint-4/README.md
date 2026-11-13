@@ -27,7 +27,7 @@ d'entrée et de sortie, mesurés dans `evidence/sprint-4/README.md`.
 Trois opérations modifient bien le système. Elles ne font pas partie de la composante : un humain les lance, depuis
 GitHub, avec son nom.
 
-| Opération | Comment on la lance | Nom et motif | Trace |
+| Opération | Comment la lancer | Nom et motif | Trace |
 |---|---|---|---|
 | Ingestion (collecte, nouvel index, pré-test, bascule) | onglet Actions, « Ingestion », *Run workflow* (`.github/workflows/ingestion.yml`) | champs `acteur` et `motif` obligatoires | le passage GitHub garde le nom et le motif ; le serveur reçoit le seul numéro du passage |
 | Livraison | fusion sur `main` d'une PR relue, contrôles exigés verts (`.github/workflows/livraison.yml`) | l'auteur de la fusion et la PR | le passage GitHub et la PR |
@@ -35,7 +35,7 @@ GitHub, avec son nom.
 
 Seul un compte qui a accès en écriture au dépôt GitHub peut les lancer. Sur le serveur, `deploy/deployer.py` ne laisse
 passer qu'une opération à la fois (un verrou sur le disque) et ajoute une ligne à `/root/rita-deploy/journal.jsonl`
-pour chacune ; on n'y efface ni n'y modifie jamais rien. Exemple mesuré : le retour arrière du 14/10/2026,
+pour chacune ; rien n'y est jamais effacé ni modifié. Exemple mesuré : le retour arrière du 14/10/2026,
 `evidence/sprint-2/N1-retour-arriere-2026-10-14.md`.
 
 ## 3. Le périmètre d'accès (CA5.2)

@@ -35,7 +35,7 @@ Document d'entrée du sprint 3 du fil rouge RITA. Il dit où voir chaque critèr
   index reconstruit avec la même empreinte de contenu que celui de N5.
 - **Ingestions** : à 21:08, 29 articles écrits (2052 à 2081) ; à 21:21, aucun (dédoublonnage). Rejeux sans écart.
 - **Évaluation en production** : sur ce passage, 8 sur 8 conformes aux contrôles du jeu ; 3 faits sur 9 retrouvés
-  automatiquement ; aucune affirmation non soutenue selon la relecture d'Era.
+  automatiquement ; aucune affirmation non soutenue selon ma relecture.
 - **Collecte du poste** : reprise sur le code de N6, sans Google News (première collecte à 22:01, 6 étapes sur 6).
 - **N7** (PR #105, commit `66963da`) : les caractères de contrôle du texte du modèle remplacés par une espace (relevé
   par l'évaluation en production), avec les documents de fin de sprint ; livrée à 22:10 UTC, vert du premier coup,
@@ -45,7 +45,7 @@ Document d'entrée du sprint 3 du fil rouge RITA. Il dit où voir chaque critèr
 - **Ingestions du 18 et du 19/10** (passages `39115076808` et `39265862974`) : réussies ; la seconde lancée en direct
   pendant l'atelier, 2110 puis 2140 articles.
 - **Livrable** : `docs/sprint-3/livrable/livrable-sprint-3.pdf`, version 2 (16 pages, après l'atelier du 19/10) ; la
-  version 1 (10 pages, validée par Era le 17/10) reste au tag `livrable-sprint-3-v1`. Quatre captures de
+  version 1 (10 pages, que j'ai validée le 17/10) reste au tag `livrable-sprint-3-v1`. Quatre captures de
   production : `evidence/sprint-3/captures/`.
 
 ## Ce qui n'est pas fait

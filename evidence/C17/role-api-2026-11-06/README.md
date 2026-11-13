@@ -1,6 +1,6 @@
 # Carte #76, tâche T5 : le rôle `rita_api` essayé sur une copie, avant la production, 6 novembre 2026
 
-**Pourquoi.** Le plan de la carte #76 (`docs/PLAN-76-role-api.md`), validé par Era le 06/11, demande d'essayer le
+Pourquoi : le plan de la carte #76 (`docs/PLAN-76-role-api.md`), que j'ai validé le 06/11, demande d'essayer le
 changement sur une copie avant de toucher la production. La preuve attendue : les lectures et l'audit fonctionnent ; les
 écritures métier et les changements de structure sont refusés.
 
@@ -10,7 +10,7 @@ changement sur une copie avant de toucher la production. La preuve attendue : le
 |---|---|
 | Code | branche `role-api-76`, commit `d065116` (tâches T1 à T4) |
 | Copie | une pile de démonstration neuve sur le poste : projet Compose `rita-demo-t76`, ses propres volumes, port `8076` (`docker-compose.yml` et `docker-compose.demo.yml`), image construite depuis le code ; jeu de démonstration chargé par le service `initialisation` |
-| Secrets | mots de passe et clé d'API **jetables**, tirés dans le processus de l'essai, jamais écrits dans un fichier du dépôt ; traçage Langfuse coupé |
+| Secrets | mots de passe et clé d'API jetables, tirés dans le processus de l'essai, jamais écrits dans un fichier du dépôt ; traçage Langfuse coupé |
 | Heure | 06/11/2026, vers 22 h UTC ; pile supprimée après l'essai (`down -v`, ses seuls volumes) |
 
 ## Les résultats
@@ -33,16 +33,16 @@ demandent PostgreSQL passent ; suite complète du dépôt : 2247 réussis, 0 en 
 
 ## Ce que l'essai ne prouve pas
 
-- **La production n'est pas encore changée** : sa base existe déjà, elle ne lance pas les scripts de démarrage. L'étape
-  du serveur (appliquer `db/roles.sql`, poser le mot de passe, ajouter `POSTGRES_PASSWORD_API`) est faite par Era,
-  **avant** la fusion dans `main` (`docs/exploitation.md`, « Le rôle de l'API en production »).
+- La production n'est pas encore changée : sa base existe déjà, elle ne lance pas les scripts de démarrage. L'étape
+  du serveur (appliquer `db/roles.sql`, poser le mot de passe, ajouter `POSTGRES_PASSWORD_API`), je la fais moi-même,
+  avant la fusion dans `main` (`docs/exploitation.md`, « Le rôle de l'API en production »).
 - La copie sert le jeu de démonstration, pas les données de production.
 - Le pré-test de la livraison (compte en lecture seule) n'a pas été rejoué ici : il ne reçoit ni `DATABASE_URL` de
   production ni `POSTGRES_*`, ce que le code de `deploy/deployer.py` garantit déjà.
 
-## L'étape du serveur, faite par Era (06/11 au soir, 23 h 48 UTC, puis le 07/11 vers 0 h UTC)
+## L'étape du serveur, que j'ai faite (06/11 au soir, 23 h 48 UTC, puis le 07/11 vers 0 h UTC)
 
-Ajouté le 07/11/2026, sur la sortie du terminal collée par Era. Aucune valeur de mot de passe n'est recopiée ici.
+Ajouté le 07/11/2026, d'après la sortie du terminal que j'ai relevée. Aucune valeur de mot de passe n'est recopiée ici.
 
 | Commande, sur le serveur | Sortie |
 |---|---|
@@ -52,14 +52,14 @@ Ajouté le 07/11/2026, sur la sortie du terminal collée par Era. Aucune valeur 
 | Connexion en `rita_api` par le réseau du conteneur (règle de mot de passe, pas la confiance locale), `SELECT current_user` | `rita_api` |
 | `grep -c '^POSTGRES_PASSWORD_API=' .env` après l'ajout par `printf` | `1` |
 
-**Manque écrit.** Le premier mot de passe, tiré par `openssl rand -hex 16`, s'est affiché dans le terminal et s'est
-retrouvé dans la conversation avec l'assistant ; la ligne de `.env` n'avait pas été enregistrée (`grep -c` : `0`).
+Manque écrit : le premier mot de passe, tiré par `openssl rand -hex 16`, s'est affiché dans le terminal et s'est
+retrouvé dans ma conversation avec l'assistant de code ; la ligne de `.env` n'avait pas été enregistrée (`grep -c` : `0`).
 Le mot de passe a été remplacé par un autre, tiré dans une variable et jamais affiché ; le premier ne sert plus.
 
-Reste, **juste avant la fusion dans `main`** : installer le nouveau `docker-compose.yml` dans `/root/rita-deploy/bin/`
+Reste, juste avant la fusion dans `main` : installer le nouveau `docker-compose.yml` dans `/root/rita-deploy/bin/`
 (étape 4 de `docs/exploitation.md`, section du rôle de l'API), puis les vérifications après la livraison.
 
-## 📖 Glossaire
+## Glossaire
 
 - **Rôle** (PostgreSQL) : un compte de la base, avec ses droits.
 - **Pile de démonstration** : une copie complète de RITA (base, API) lancée sur le poste, isolée par son nom de projet.

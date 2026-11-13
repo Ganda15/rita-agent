@@ -1,6 +1,6 @@
 # Schémas de parcours des écrans 4 et 5 (C14.2)
 
-Deux schémas fonctionnels, **relevés le 02/11/2026 sur la version actuelle** (commit `12cc00c`) : ce ne sont pas des
+Deux schémas fonctionnels, relevés le 02/11/2026 sur la version actuelle (commit `12cc00c`) : ce ne sont pas des
 maquettes initiales, et la note en bas de chaque schéma le dit. Ils suivent les scénarios de
 `evidence/C14/preuve-specifications-ecrans-4-et-5.md` et sont montrés dans son § 7. Leurs textes viennent d'une seule
 description, `generer_parcours.py`, qui écrit le `.drawio` (éditable dans draw.io) et le `.svg` ; c'est là qu'on corrige
