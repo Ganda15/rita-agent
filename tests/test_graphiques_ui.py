@@ -227,6 +227,43 @@ def test_echelle_d_un_cours_constant_ou_tres_court(page, clotures):
     assert 1 <= len(dates) <= len(clotures) and len(set(dates)) == len(dates), "une date n'est jamais écrite deux fois"
 
 
+def test_des_graduations_toujours_distinctes_meme_pour_un_ecart_minime(page):
+    """Revue automatique de #244 (13/11) : avec 1,0000 et 1,0001, le pas valait 0,000025 et les étiquettes, plafonnées
+    à 4 décimales, se répétaient (« 1,0000 » deux fois, à deux hauteurs). Le pas ne descend plus sous la précision des
+    cours (4 décimales, le NUMERIC rendu par l'API) : chaque étiquette est distincte, et il en reste au moins trois."""
+    a = axes(page, seances(["1.0000", "1.0001"]))
+    textes = [g["texte"] for g in a["prix"]]
+    assert len(textes) >= 3 and len(set(textes)) == len(textes), textes
+    valeurs = [_fr(t) for t in textes]
+    ecarts = [b - v for v, b in zip(valeurs, valeurs[1:])]
+    assert min(ecarts) >= 0.0001 - 1e-12 and max(ecarts) - min(ecarts) < 1e-9, valeurs
+    assert valeurs[0] <= 1.0 and valeurs[-1] >= 1.0001
+
+
+@pytest.mark.parametrize("clotures", [[1000.0, 1002.0], [4856.76, 4861.31], [0.5, 9.5], [12.5, 12.75]])
+def test_sur_un_ecran_etroit_aucune_graduation_de_prix_n_est_coupee(page, clotures):
+    """Revue automatique de #244 (13/11) : à 412 px, les graduations passent à 22 unités ; « 1 000,0 » commençait à
+    x = 564 dans un cadre de 640 et ses derniers chiffres étaient coupés. Chaque étiquette visible tient entière."""
+    page.set_viewport_size({"width": 412, "height": 900})
+    try:
+        mesure = page.evaluate("""(donnees) => {
+            const svg = GRAPHIQUES.courbe(donnees).svg;
+            document.body.appendChild(svg);
+            const etiquettes = [...svg.querySelectorAll('text.graduation-prix')]
+                .filter(t => getComputedStyle(t).display !== 'none')
+                .map(t => { const b = t.getBBox();
+                            return {texte: t.textContent, droite: b.x + b.width, taille: getComputedStyle(t).fontSize}; });
+            const largeur = svg.viewBox.baseVal.width;
+            svg.remove();
+            return {largeur, etiquettes};
+        }""", seances(clotures))
+    finally:
+        page.set_viewport_size({"width": 1280, "height": 720})
+    assert mesure["etiquettes"] and all(e["taille"] == "22px" for e in mesure["etiquettes"]), mesure
+    for e in mesure["etiquettes"]:
+        assert e["droite"] <= mesure["largeur"] + 0.5, e
+
+
 def test_sur_un_ecran_etroit_les_graduations_principales_restent(page):
     """Sur un téléphone, une graduation sur deux s'efface (classe `secondaire`) ; il reste au moins le plus bas, le
     plus haut et les dates extrêmes."""

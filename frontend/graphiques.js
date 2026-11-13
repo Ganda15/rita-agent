@@ -15,6 +15,10 @@
 
   var NS = "http://www.w3.org/2000/svg";
   var SEANCES_AFFICHEES = 130;   // 179 lues : les 130 dernières ont une moyenne 50 séances complète
+  var PAS_MINIMAL = 0.0001;      // la précision des cours rendus par /donnees/cotations (NUMERIC à 4 décimales)
+  // Largeur d'un caractère de --police-chiffres (une police à chasse fixe : 0,55 à 0,6 em selon la police), arrondie
+  // vers le haut, et taille des graduations sur un écran étroit (style.css) : de quoi réserver la marge des prix.
+  var CHASSE = 0.62, TAILLE_GRADUATION_ETROITE = 22;
 
   // --- Petits outils ---------------------------------------------------------
   function fini(valeur) {
@@ -111,9 +115,16 @@
     var puissance = Math.pow(10, Math.floor(Math.log10(brut)));
     var r = brut / puissance;
     var pas = (r <= 1 ? 1 : r <= 2 ? 2 : r <= 2.5 ? 2.5 : r <= 5 ? 5 : 10) * puissance;
+    // Revue de #244 (13/11) : sous 0,0001, le pas dépassait la précision des cours (4 décimales, le NUMERIC de l'API) et
+    // des étiquettes se répétaient. Le pas n'en descend plus, et l'échelle garde au moins trois graduations.
+    pas = Math.max(pas, PAS_MINIMAL);
     var premier = Math.floor(bas / pas + 1e-9), dernier = Math.ceil(haut / pas - 1e-9);
+    while (dernier - premier < 2) {
+      dernier += 1;
+    }
+    // Les décimales que le pas exige, sans plafond arbitraire : chaque étiquette reste distincte de sa voisine.
     var decimales = 0;
-    while (decimales < 4 && Math.abs(Math.round(pas * Math.pow(10, decimales)) - pas * Math.pow(10, decimales)) > 1e-6) {
+    while (decimales < 8 && Math.abs(Math.round(pas * Math.pow(10, decimales)) - pas * Math.pow(10, decimales)) > 1e-6) {
       decimales += 1;
     }
     var valeurs = [];
@@ -187,7 +198,12 @@
 
     // `dessus` laisse la place à la légende et à l'unité, agrandies sur un écran étroit, au-dessus de la plus haute
     // graduation (rendu vérifié à 412 px le 13/11).
-    var L = 640, H = 240, gauche = 12, droite = 84, dessus = 38, dessous = 34;
+    // La marge de droite tient la plus longue graduation à sa taille d'écran étroit (revue de #244 : « 1 000,0 » était
+    // coupé à 412 px), jamais moins de 84 unités.
+    var textesPrix = echelleDesPrix.valeurs.map(function (v) { return nombre(v, echelleDesPrix.decimales); });
+    var plusLongue = Math.max.apply(null, textesPrix.map(function (t) { return t.length; }));
+    var L = 640, H = 240, gauche = 12, dessus = 38, dessous = 34;
+    var droite = Math.max(84, Math.ceil(8 + 4 + plusLongue * TAILLE_GRADUATION_ETROITE * CHASSE));
     var largeurUtile = L - gauche - droite, hauteurUtile = H - dessus - dessous;
     function x(i) {
       return visibles.length === 1 ? gauche + largeurUtile / 2 : gauche + i * largeurUtile / (visibles.length - 1);
@@ -221,7 +237,6 @@
     // Les axes d'abord, sous les courbes : une ligne de grille par graduation de prix, l'axe des prix à droite (comme
     // sur un graphique boursier), l'axe des dates en bas.
     var basZone = H - dessous, axePrix = L - droite;
-    var textesPrix = echelleDesPrix.valeurs.map(function (v) { return nombre(v, echelleDesPrix.decimales); });
     echelleDesPrix.valeurs.forEach(function (v, k) {
       svg.appendChild(element("line", { x1: gauche, y1: arrondi(y(v)), x2: axePrix, y2: arrondi(y(v)), class: "grille" }));
       svg.appendChild(element("line", { x1: axePrix, y1: arrondi(y(v)), x2: axePrix + 4, y2: arrondi(y(v)), class: "axe" }));
