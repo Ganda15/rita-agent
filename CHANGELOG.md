@@ -9,6 +9,18 @@
 
 ---
 
+## 2026-11-11, soir : cours de production rattrapés au 11/11 ; deux manques découverts dans le guide du rattrapage
+
+- **Manque découvert** : le guide garde le nom du réseau Docker dans `RESEAU` et ne dit de s'arrêter que si le mot de
+  passe manque. Le 11/11, cette ligne a été sautée deux fois : `reseau=` vide, Docker a refusé de démarrer, rien n'a été
+  écrit. Le soir même, le nom `rita-agent_default` a été écrit en clair dans la commande, vérifié juste avant. Guide à
+  corriger après l'oral blanc, test d'abord.
+- **Manque découvert** : le conseil « après 17 h 35 » (preuve du 08/11, `ETAT.md`) ne vaut que pour les places
+  européennes. Un passage à 18 h 39 a écrit des cours de mi-séance pour FTI et SLB, cotées à New York ; un second
+  passage à 22 h 04 les a remplacés, sans doublon. Règle : après 22 h 05, heure de Paris.
+- Production : dernière séance le 11/11, 281 706 cotations, cinq devises au 11/11 ; CRI.PA reste au 10/11. Preuve :
+  `evidence/C3/rattrapage-production-2026-11-11/`.
+
 ## 2026-11-09, 14 h 00 : remise envoyée
 
 - **Livrable envoyé** : 7 fichiers déposés dans le Drive partagé avec le formateur, la cheffe de projet et la cheffe
