@@ -15,7 +15,7 @@
 | E4 | [rapport E4 v1.10, 20 pages et 15 d'annexes](../rapports/E4/rapport-E4-avec-annexe.pdf) | C14 à C19 : besoin, cadre technique, méthode agile, développement, tests, livraison |
 | E5 | [rapport E5 v1.1, 5 pages](../rapports/E5/rapport-E5.pdf) | C20 et C21 : monitorage de l'application, résolution d'un incident |
 
-Les preuves sont rangées par compétence dans [`evidence/`](../../evidence/README.md), chacune datée et constituée au fil
+J'ai rangé les preuves par compétence dans [`evidence/`](../../evidence/README.md), chacune datée et constituée au fil
 du travail. Chaque rapport se termine par sa grille : une ligne par critère, avec sa preuve et sa limite.
 
 ## E1 : les données, de la collecte à l'API

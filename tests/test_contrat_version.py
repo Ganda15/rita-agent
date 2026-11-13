@@ -26,3 +26,17 @@ def test_chaque_route_du_contrat_a_sa_famille_decrite():
         famille = "/donnees/*" if chemin.startswith("/donnees/") else (
             "/exercice/*" if chemin.startswith("/exercice/") else chemin)
         assert f"`{famille}`" in familles, chemin
+
+
+def test_la_description_des_indicateurs_suit_le_statut_des_radiees():
+    """Carte #48 (27/09/2026) : les trois valeurs radiées sont `DELISTEE` en base, plus `OK`.
+    Le 11/11/2026, la description publique de la route (OpenAPI, /docs) disait encore « OK ».
+    Rangé ici et pas dans test_api_donnees.py : le schéma E1-api compte les tests de ce fichier."""
+    from db.importer import QUALITE
+
+    radiees = [t for t, (statut, _) in QUALITE.items() if statut == "DELISTEE"]
+    description = app.openapi()["paths"]["/donnees/indicateurs"]["get"]["description"]
+
+    assert len(radiees) == 3                      # « les trois valeurs radiées » de la description
+    assert 'statut_qualite = "DELISTEE"' in description
+    assert 'portent pourtant `statut_qualite = "OK"`' not in description

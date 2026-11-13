@@ -23,8 +23,8 @@ Critères de la grille : 1. sources licites ; 2. traçabilité ; 3. refus hors c
 
 | Preuve | Fichier | Critère |
 |---|---|---|
-| Évaluation sur l'API locale (deux passages) et relecture d'Era : 8 sur 8 conformes, aucune affirmation non soutenue | `evaluation-2026-10-16-1714.json`, `evaluation-2026-10-16-1717.json`, `evaluation-2026-10-16-relecture.md` | 2, 3 |
-| Évaluation en production et relecture d'Era : 8 sur 8 conformes, caractère de contrôle relevé dans Q4 | `evaluation-2026-10-16-2146.json`, `evaluation-production-2026-10-16-relecture.md` | 2, 3, 5 |
+| Évaluation sur l'API locale (deux passages) et ma relecture : 8 sur 8 conformes, aucune affirmation non soutenue | `evaluation-2026-10-16-1714.json`, `evaluation-2026-10-16-1717.json`, `evaluation-2026-10-16-relecture.md` | 2, 3 |
+| Évaluation en production et ma relecture : 8 sur 8 conformes, caractère de contrôle relevé dans Q4 | `evaluation-2026-10-16-2146.json`, `evaluation-production-2026-10-16-relecture.md` | 2, 3, 5 |
 | Deux essais refusés en production (403 : la clé envoyée n'était pas celle du serveur) | `evaluation-2026-10-16-2140.json`, `evaluation-2026-10-16-2142.json` | 5 |
 
 ## L'ingestion en production
@@ -51,7 +51,7 @@ Critères de la grille : 1. sources licites ; 2. traçabilité ; 3. refus hors c
 
 ## L'écran de question en production, avec la clé (17/10)
 
-Captures prises par Era dans Chrome, après N7. La clé est tapée dans un champ masqué, qui disparaît après la
+Captures que j'ai prises dans Chrome, après N7. La clé est tapée dans un champ masqué, qui disparaît après la
 connexion : elle n'apparaît sur aucune image. Les découpes sont faites dans la capture entière, sans retouche
 (recadrage seul).
 

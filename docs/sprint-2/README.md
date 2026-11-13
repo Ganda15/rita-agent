@@ -21,7 +21,7 @@ demandés, exigence par exigence, preuves, ce qui n'est pas fait). Index des pre
 | Des tests bloquants, prouvés par un commit cassé | règle de protection de `main` : six contrôles exigés (`evidence/C19/ruleset-main-2026-10-14.json`) ; la PR cassée #93, ouverte pendant l'atelier du 15/10, bloquée et jamais fusionnée : `evidence/sprint-2/journaux/pr-93-commit-casse.txt` |
 | Un retour arrière en une opération, répété | `.github/workflows/retour-arriere.yml` (*Run workflow*), ordre `revenir` du script du serveur ; répété le 14/10 : `evidence/sprint-2/N1-retour-arriere-2026-10-14.md` |
 
-## Décisions d'Era avant la première livraison (14/10/2026)
+## Mes décisions avant la première livraison (14/10/2026)
 
 1. **Tâches 4 à 6 faites avant N0.** Le jeu de démonstration, le mode `--demo` de l'importateur et le service
    `initialisation` sont livrés avec N0. Seul le travail `reconstruction` de la chaîne (automatisation dans la CI)
@@ -30,11 +30,11 @@ demandés, exigence par exigence, preuves, ce qui n'est pas fait). Index des pre
    14/10 (image `sha256:2a5004248ff8…aa6f`, configuration, environnement effectif, base), et les archives se
    relisent. L'essai de redémarrage de cette version (port 8003) démarre et répond, mais ne produit plus de briefing :
    ses variables de clé de modèle sont vides. Si la première livraison échoue après la bascule, le secours est donc
-   cette version dégradée, restaurée à la main. Era accepte de faire la première bascule dans ces conditions.
+   cette version dégradée, restaurée à la main. J'accepte de faire la première bascule dans ces conditions.
 
 ## Préparation du serveur (tâche 10, 14/10/2026)
 
-Faite par Era, chaque point vérifié par une commande :
+Je l'ai faite moi-même, chaque point vérifié par une commande :
 - `.env` du serveur lisible par root seul (600) ; clés du modèle Azure ajoutées sans être affichées (l'adresse,
   collée deux fois, a été corrigée le soir même ; un appel réel au modèle depuis le serveur répond 200) ;
 - compte PostgreSQL `rita_lecture` avec un mot de passe aléatoire jamais affiché ; lecture vérifiée, écriture refusée ;
@@ -42,7 +42,7 @@ Faite par Era, chaque point vérifié par une commande :
 - jeton GHCR en lecture seule ; clé SSH dédiée à GitHub, limitée par une commande forcée à `deployer.sh` ;
   environnement GitHub `production` et ses trois secrets ; empreinte du serveur vérifiée. Le secret
   `DEPLOY_KNOWN_HOSTS` se pose par `gh secret set --body` avec la ligne vérifiée, jamais par `ssh-keyscan | gh` : sur
-  le poste, le `ssh-keyscan` de Windows échoue face à ce serveur et le secret part vide ;
+  mon poste, le `ssh-keyscan` de Windows échoue face à ce serveur et le secret part vide ;
 - articles de la base de production remplacés une fois par ceux du poste (2 052 articles, dont 54 sur L'Oréal) : le
   contrôle de livraison exige au moins un article pour `OR.PA`.
 

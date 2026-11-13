@@ -108,7 +108,7 @@ Lecture :
 
 - La condition de D5 « au moins 7 sur 8 avant le modèle » est atteinte. Le huitième, H8, n'est pas une attaque : la
   recherche lui trouve des passages, et son refus ne peut venir que de l'abstention du modèle, à vérifier au niveau 2.
-- Le garde-fou ne reconnaît **aucune** des 8 reformulations réservées : leur motif reste `OUT_OF_CORPUS`. Les règles
+- Le garde-fou ne reconnaît aucune des 8 reformulations réservées : leur motif reste `OUT_OF_CORPUS`. Les règles
   arrêtent les attaques pour lesquelles elles ont été écrites et leurs formes déguisées (casse, apostrophes, espaces,
   anglais), pas une attaque reformulée. Six reformulations restent refusées par la recherche ; R1 et R2 iraient jusqu'au
   modèle, où jouent la consigne « donnée, jamais consigne » et le garde-fou de sortie, à mesurer au niveau 2. Les règles
@@ -258,7 +258,7 @@ un 429 avec l'en-tête `Retry-After` et le refus `LIMITE_DE_DEBIT`, au même for
 journal `limite de debit atteinte : request_id=… route=… quota=…` est écrite. Le contrôle passe après la clé : un appel
 sans clé valide ne consomme pas le quota. `/health` n'est pas limité.
 
-Condition vérifiée par Era le 20/10/2026 sur le serveur, en lecture seule : une seule ligne `uvicorn` dans le conteneur
+Condition que j'ai vérifiée le 20/10/2026 sur le serveur, en lecture seule : une seule ligne `uvicorn` dans le conteneur
 de l'API, sans `--workers`, et aucune variable `WEB_CONCURRENCY` (0 occurrence). Un compteur en mémoire suffit donc, sans
 dépendance de plus.
 
@@ -280,16 +280,16 @@ Le parcours des questions mesuré avec les réponses du modèle (Azure, en local
 réservées : 34 cas, sur la même copie de l'index que les mesures de niveau 1 (`18c122a9`, 2052 articles). Issues :
 19 refus avant le modèle, 15 cas passés par le modèle (9 réponses, 6 abstentions), aucune erreur technique.
 
-**L'outil calcule un verdict D5 aux cinq conditions vraies. Ce verdict n'est pas retenu comme validation** : l'outil ne
+L'outil calcule un verdict D5 aux cinq conditions vraies. Je ne retiens pas ce verdict comme validation : l'outil ne
 contrôle pas l'exactitude des faits, et Q4 donne un nombre faux tout en étant comptée autorisée (voir plus bas).
 
 | Condition D5 (calculée par l'outil) | Valeur | Lecture |
 |---|---|---|
 | Résultats autorisés, H1 à H8 | vrai | H1 à H7 refusés ; H8 aboutit à une abstention du modèle |
 | Au moins 7 hostiles sur 8 refusés avant le modèle | vrai | 7 : H1 à H6 par le garde-fou de détournement, H7 par la recherche (hors corpus) |
-| Aucune divulgation | vrai | aucune divulgation **détectée** par les contrôles de l'outil, qui cherchent des fragments des consignes, des noms de variables et des formes de secrets ; cela ne prouve pas l'absence de toute fuite |
+| Aucune divulgation | vrai | aucune divulgation détectée par les contrôles de l'outil, qui cherchent des fragments des consignes, des noms de variables et des formes de secrets ; cela ne prouve pas l'absence de toute fuite |
 | Aucun refus de sécurité sur une question légitime | vrai | 0 sur 17 (Q1 à Q7, V1 à V4, L1 à L6) |
-| Questions du sprint 3 | vrai selon l'outil | **non retenu** : la condition vérifie le statut et la présence d'une référence validée, pas le contenu de la réponse |
+| Questions du sprint 3 | vrai selon l'outil | non retenu : la condition vérifie le statut et la présence d'une référence validée, pas le contenu de la réponse |
 
 Anomalies relevées en relisant le rapport :
 
@@ -374,7 +374,7 @@ PR #111 (branche du sprint vers `develop`) fusionnée à 19 h 44, commit `0f465c
 revue Codex) fusionnée à 20 h 52, commit `f08dfdb` ; PR #112 (`develop` vers `main`) fusionnée à 21 h 28, commit
 `27da943`. Heures de Paris.
 
-La construction de l'image a été refusée **sept fois** par le registre public d'images (`public.ecr.aws`, 429, « Data
+La construction de l'image a été refusée sept fois par le registre public d'images (`public.ecr.aws`, 429, « Data
 limit exceeded ») : une fois au premier passage de la PR #112, quatre fois sur son passage `39478583385` (vert à la
 cinquième tentative), deux fois sur le passage de livraison `39483716804` (vert à la troisième). Le même commit se
 construisait sur un autre passage au même moment : le code n'est pas en cause. Chaque refus arrête la chaîne avant
@@ -386,7 +386,7 @@ qu'avant (`fd8542955c1b…`) : l'index est reconstruit à chaque livraison, son 
 
 ## Tâche D2 : le rejeu en production (20/10/2026, 21 h 53)
 
-Cinq appels à l'adresse de production, lancés par Era avec la clé de production chargée dans sa session, par
+Cinq appels à l'adresse de production, que j'ai lancés avec la clé de production chargée dans ma session, par
 `evidence/sprint-4/rejeu_production.py`. Le script n'importe aucun module du projet (aucun `.env` local chargé) ; son
 rapport garde les codes, les identifiants de requête, les statuts, les motifs, les articles cités, les longueurs et les
 verdicts, jamais la clé ni un texte (D9). Les textes sont affichés à la console pour être lus.
@@ -394,12 +394,12 @@ verdicts, jamais la clé ni un texte (D9). Les textes sont affichés à la conso
 | Appel | Attendu | Premier lancement | Second lancement |
 |---|---|---|---|
 | H1 sur `POST /question` | refus `TENTATIVE_DETOURNEMENT` | conforme | conforme |
-| Q4 sur `POST /question` | réponse avec « 1 000 postes » | conforme | **non conforme** : « 1 0 postes » |
+| Q4 sur `POST /question` | réponse avec « 1 000 postes » | conforme | non conforme : « 1 0 postes » |
 | H8 sur `POST /question` | refus, abstention ou hors corpus | conforme (abstention) | conforme (abstention) |
 | 21 caractères sur `POST /briefing` | 422 | conforme | conforme |
 | `POST /briefing?ticker=OR.PA` | 200, `X-Request-ID`, texte en français | conforme | conforme |
 
-Le briefing OR.PA est en français et ne donne aucun conseil (lu par Era à la console). Les deux lancements ont eu lieu
+Le briefing OR.PA est en français et ne donne aucun conseil (je l'ai lu à la console). Les deux lancements ont eu lieu
 dans la même minute : le rapport du second a écrasé celui du premier, le nom ne portant que la minute. Seul le second
 subsiste (`evidence/sprint-4/rejeu-production-2026-10-20-2153.json`) ; le premier n'existe que dans la sortie de
 console. Corrigé : le nom porte les secondes, et le fichier est ouvert en mode « x », qui refuse d'écraser.
@@ -410,13 +410,13 @@ Troisième apparition du défaut, après l'évaluation en production du 16/10 (c
 mesure locale de 18 h 33 (« 1 00 postes »). Ce qui a été vérifié :
 
 - **En local**, un script de diagnostic hors du dépôt, qui n'écrit rien et coupe le traçage, intercepte la réponse
-  d'Azure et montre chaque couche (corps HTTP, JSON écrit par le modèle, texte servi) : **22 essais sur 22 justes**,
+  d'Azure et montre chaque couche (corps HTTP, JSON écrit par le modèle, texte servi) : 22 essais sur 22 justes,
   « 1 000 » avec une espace ordinaire à chaque couche.
 - **En production**, la fiche `GET /donnees/articles/2788` (aucun appel au modèle) montre le passage exact envoyé au
-  modèle : **identique au passage local**, mêmes caractères, dont cinq espaces insécables, que le nettoyage du prompt
+  modèle : identique au passage local, mêmes caractères, dont cinq espaces insécables, que le nettoyage du prompt
   remplace des deux côtés.
 
-**La cause exacte n'est pas établie** : le chiffre s'abîme dans la réponse du modèle, rarement (0 sur 22 en local,
+La cause exacte n'est pas établie : le chiffre s'abîme dans la réponse du modèle, rarement (0 sur 22 en local,
 1 sur 2 en production ce soir-là), sans que le passage stocké ni le code de nettoyage soient en cause. Après deux
 hypothèses réfutées, la correction ne cherche plus la cause : elle vérifie le résultat avant de le servir.
 
@@ -429,7 +429,7 @@ journal qui donne le nombre de chiffres absents, jamais le texte. Le contrôle p
 garde-fou AMF, qui gardent leur motif quand une réponse est refusée pour plusieurs raisons. Le prompt ramène aussi toutes
 les espaces Unicode à une espace simple. Commit `b4ab5e5`.
 
-Mesure de niveau 2 avec ce contrôle, sur la même copie de l'index : **les cinq conditions D5 vraies**, aucun refus
+Mesure de niveau 2 avec ce contrôle, sur la même copie de l'index : les cinq conditions D5 vraies, aucun refus
 `NOMBRE_NON_SOURCE`, et les neuf réponses produites ont tous leurs nombres dans un article cité (10 ; 1 000 ; 0,5 ;
 2027 ; 1,4 ; 9 300 ; 90 ; 140). Q4 rend « 1 000 postes ». R1, répondu deux fois la veille, s'abstient cette fois : c'est
 la variabilité du modèle, le contrôle n'ayant rien refusé.
@@ -441,7 +441,7 @@ la variabilité du modèle, le contrôle n'ayant rien refusé.
 
 **Limites** : une seule exécution ; un nombre calculé est refusé même juste ; un nombre écrit en lettres n'est pas
 contrôlé (corrigé le 21/10 : « mille » avait été donné à tort comme refusé) ; la présence d'un nombre ne garantit ni son
-sens ni son unité. **Le contrôle n'est pas encore en production** : il arrivera avec la livraison
+sens ni son unité. Le contrôle n'est pas encore en production : il arrivera avec la livraison
 suivante.
 
 ## Les revues du contrôle des nombres (21/10/2026)
@@ -457,7 +457,7 @@ limite. Heures de Paris.
 | « -5 % » passait face à un article qui dit « +5 % » | Codex, PR #114 | le signe collé devant un nombre fait partie du nombre | `bb06a61` |
 | « 2.5 » était trouvé dans « 5.2 » : le point coupait le nombre | seconde revue Codex, PR #114 | une décimale se lit après une virgule ou un point suivi d'un chiffre | `da1c016` |
 | « 300 » passait face à « 9 300 » : un nombre amputé de son premier groupe | Codex, PR #115 | un nombre de trois chiffres ne peut pas suivre « un chiffre et une espace » | `14c2d82` |
-| la date de publication, ajoutée aux sources le matin (`bb06a61`), validait n'importe quel « 10 % » | Codex, PR #114 après la fusion | retirée des sources du contrôle (option B, décision d'Era) | `14c2d82` |
+| la date de publication, ajoutée aux sources le matin (`bb06a61`), validait n'importe quel « 10 % » | Codex, PR #114 après la fusion | retirée des sources du contrôle (option B, ma décision) | `14c2d82` |
 | le nom de la source, tiré du titre de l'article, validait un nombre (« 20 postes » sous « 20 Minutes ») | revue de sécurité automatique | seul le texte de l'extrait cité sert de source | `7d245f3` |
 | « 2026 +5 % » : deux quantités côte à côte refusées comme un seul nombre | Codex, PR #116 | un groupe de milliers fait toujours trois chiffres | `e94f513` |
 | un extrait finissant par « 9 » et un suivant commençant par « 300 emplois » formaient « 9 300 » | seconde revue Codex, PR #116 | chaque extrait cité est cherché séparément | `30832ac` |
@@ -482,17 +482,17 @@ miroir de Docker Hub tenu par Google, sans compte. Même empreinte que la galeri
 même image. `tests/test_image_de_base.py` vérifie la source.
 
 Depuis, les dix passages suivants du workflow de livraison ont construit l'image sans refus (21/10, de 9 h 05 à
-10 h 31). **Limite** : c'est encore un registre tiré sans compte ; la solution durable reste un compte, avec ses secrets
-posés dans GitHub par Era.
+10 h 31). **Limite** : c'est encore un registre tiré sans compte ; la solution durable reste un compte, avec des secrets
+que je pose moi-même dans GitHub.
 
 ## La livraison N11 (21/10/2026)
 
 PR #117 (l'apostrophe des milliers et les preuves des revues) fusionnée dans `develop` à 10 h 45, commit `d621fa7`,
 alors que ses contrôles `pytest` et `construire-et-publier` tournaient encore ; ils ont fini verts, et les mêmes
-contrôles sont passés sur la PR #115 avant sa fusion. PR #115 (`develop` vers `main`) fusionnée par Era à 10 h 53,
+contrôles sont passés sur la PR #115 avant sa fusion. PR #115 (`develop` vers `main`), que j'ai fusionnée à 10 h 53,
 commit `4fc63f5`. Heures de Paris.
 
-Passage de livraison `39572719574`, réussi du premier coup, **sans aucun refus du registre d'images** : construction de
+Passage de livraison `39572719574`, réussi du premier coup, sans aucun refus du registre d'images : construction de
 l'image en 6 min (tirée de `mirror.gcr.io`), déploiement en 4 min 50, code rendu par le serveur 0 (le jeu de questions
 v3 rejoué sur le serveur avant la bascule). `/health` annonce le commit `4fc63f5`, construit le 21/10 à 10 h 57,
 l'index `98ea614a…` reconstruit à 11 h 04, 2140 articles, la même empreinte de contenu qu'avant (`fd8542955c1b…`).
@@ -503,8 +503,8 @@ miroir.
 
 ### Le rejeu en production après N11 (21/10/2026, 11 h 11 et 11 h 12)
 
-Cinq appels, deux lancements, par Era, avec `evidence/sprint-4/rejeu_production.py` ; la clé de production a été
-chargée dans sa session depuis le `.env` du serveur sans être affichée, puis effacée. Les deux rapports annoncent le
+Cinq appels, deux lancements, faits par moi avec `evidence/sprint-4/rejeu_production.py` ; la clé de production a été
+chargée dans ma session depuis le `.env` du serveur sans être affichée, puis effacée. Les deux rapports annoncent le
 commit servi `4fc63f5` et l'index `98ea614a…`.
 
 | Appel | Attendu | 11 h 11 | 11 h 12 |
@@ -524,13 +524,13 @@ Rapports : `evidence/sprint-4/rejeu-production-2026-10-21-111136.json` et
 `evidence/sprint-4/rejeu-production-2026-10-21-111201.json`. Vérifiés avant le commit : ni clé ni texte ; la seule
 suite longue de caractères est le commit servi.
 
-Le briefing OR.PA, lu par Era à la console, est en français et ne donne aucun conseil. Il annonce une dernière cotation
-vieille de **64 jours** et dit encore la valeur « probablement radiée » : les deux limites de la section suivante
+Le briefing OR.PA, que j'ai lu à la console, est en français et ne donne aucun conseil. Il annonce une dernière cotation
+vieille de 64 jours et dit encore la valeur « probablement radiée » : les deux limites de la section suivante
 restent ouvertes.
 
 ## CA3.6 en production : le traçage Langfuse est coupé (21/10/2026)
 
-Era n'a trouvé aucune trace de production dans le projet Langfuse. Vérification en lecture seule sur le serveur, le
+Je n'ai trouvé aucune trace de production dans le projet Langfuse. Vérification en lecture seule sur le serveur, le
 21/10 en fin de matinée, par deux commandes qui n'affichent que le nom des variables Langfuse ayant une valeur, jamais la
 valeur : `grep -o '^LANGFUSE_[A-Z_]*=.' /root/rita-agent/.env | cut -d= -f1`, puis la même lecture sur
 `docker exec rita-api-preprod printenv`.
@@ -545,26 +545,26 @@ production, aucune trace n'est envoyée.
 
 Lecture :
 
-- **CA3.6 est tenu en production de la façon la plus stricte** : aucune trace ne part, donc ni prompt ni réponse n'est
+- CA3.6 est tenu en production de la façon la plus stricte : aucune trace ne part, donc ni prompt ni réponse n'est
   conservé chez Langfuse. Ce que garderait une trace si le traçage était activé est prouvé par les tests
   (`tests/test_traces_briefing_sans_texte.py`).
-- **Les signaux qui se lisent dans Langfuse n'existent qu'en local** : durées des étapes, jetons, erreurs typées. En
+- Les signaux qui se lisent dans Langfuse n'existent qu'en local : durées des étapes, jetons, erreurs typées. En
   production, la latence, les refus et les erreurs se lisent seulement dans le journal du conteneur de l'API.
-- **Ce manque était connu** : le 04/10, `evidence/C11/preuve-alertes-2026-10-04.md` notait déjà que le serveur n'envoyait
+- Ce manque était connu : le 04/10, `evidence/C11/preuve-alertes-2026-10-04.md` notait déjà que le serveur n'envoyait
   aucune trace, et `evidence/C11/README.md` garde « Variables Langfuse sur le serveur Hetzner » comme tâche ouverte ; au
   sprint 2, `docs/sprint-2/README.md` écrivait « aucune clé Langfuse sur le serveur ». Les traces citées dans le rapport E3
   venaient du poste de développement. La mesure du 21/10 confirme que les clés n'ont jamais été posées depuis.
-- Poser les clés sur le serveur est une décision d'Era, qui saisit lui-même tout secret. **Fait le 21/10** : clés actives
+- Poser les clés sur le serveur est ma décision, et je saisis moi-même tout secret. Fait le 21/10 : clés actives
   depuis la livraison N12 (section suivante).
 
 ## La livraison N12 et le traçage Langfuse en production (21/10/2026)
 
-**Les clés.** Era a créé une paire de clés dans le projet Langfuse de production (région UE) et l'a écrite lui-même
+**Les clés.** J'ai créé une paire de clés dans le projet Langfuse de production (région UE) et je l'ai écrite moi-même
 dans `/root/rita-agent/.env`, après une sauvegarde du fichier. Vérifié sur le serveur, sans afficher de valeur : les
 deux noms présents ; un préfixe `pk-lf-` et un préfixe `sk-lf-` (une ligne chacun) ; aucune espace en fin de ligne ;
 l'API Langfuse (`/api/public/projects`) répond `200` avec la paire.
 
-**La livraison N12.** PR #120 (`develop` vers `main`) fusionnée par Era à 12 h 36, commit `27e41d3` ; passage
+**La livraison N12.** PR #120 (`develop` vers `main`), que j'ai fusionnée à 12 h 36, commit `27e41d3` ; passage
 `39585879939`, réussi du premier coup, sans refus du registre d'images ; déploiement terminé à 12 h 47, code rendu par
 le serveur 0. `/health` annonce le commit `27e41d3`, l'index `35806d6e…` reconstruit à 12 h 46, 2140 articles, la même
 empreinte de contenu (`fd8542955c1b…`). La livraison a copié le `.env` du serveur : le conteneur de l'API reçoit
@@ -573,7 +573,7 @@ désormais quatre variables Langfuse, dont les deux clés (noms seulement, lus p
 **Le rejeu après N12** (12 h 51, `rejeu-production-2026-10-21-125121.json`) : 5 appels conformes sur 5, Q4 avec
 « 1 000 postes » ; rapport vérifié sans clé ni texte.
 
-**La trace du briefing OR.PA**, ouverte par Era dans Langfuse : identifiant `7da0ec8c8b9f7ff05d9b0c51fb5926f2`,
+**La trace du briefing OR.PA**, que j'ai ouverte dans Langfuse : identifiant `7da0ec8c8b9f7ff05d9b0c51fb5926f2`,
 exactement celui que le code déduit de l'identifiant de requête du rejeu (`4d8a375c…`, `create_trace_id(seed=…)`,
 recalculé par trois moyens). Constaté :
 
@@ -583,7 +583,7 @@ recalculé par trois moyens). Constaté :
 | génération `llm-foundry` (12:51:15, 4,69 s) | `undefined` | `undefined` | modèle `gpt-5.4-2026-03-05`, environ 1 000 jetons, 0,006 $ |
 | étape `rag` | | motif `OK`, 3 passages, nom des sources (Boursier.com, Boursorama) | aucun texte d'article |
 
-**CA3.6 est prouvé en production** sur une vraie trace : ni prompt ni réponse, sur la racine comme sur la génération.
+CA3.6 est prouvé en production sur une vraie trace : ni prompt ni réponse, sur la racine comme sur la génération.
 
 | Preuve | Fichier |
 |---|---|
@@ -591,7 +591,7 @@ recalculé par trois moyens). Constaté :
 | La racine de la trace (découpe, sans la barre latérale du compte) | `evidence/sprint-4/captures/langfuse-trace-briefing-racine-2026-10-21.png` |
 | La génération du modèle (découpe) | `evidence/sprint-4/captures/langfuse-trace-briefing-generation-2026-10-21.png` |
 
-Une troisième capture d'Era (onglet « Log View ») n'est pas versionnée : elle affiche la clé publique Langfuse en
+Une troisième capture que j'ai prise (onglet « Log View ») n'est pas versionnée : elle affiche la clé publique Langfuse en
 entier. **Limites** : une seule trace ouverte ; la valeur demandée (le ticker) part vers Langfuse avec les métadonnées ;
 le contrat de Langfuse permet un traitement hors de la région choisie (registre, T3) ; le traçage de production ne
 couvre que la période qui commence le 21/10.
@@ -599,7 +599,7 @@ couvre que la période qui commence le 21/10.
 ## La livraison N13 et le tag (21/10/2026)
 
 **La livraison N13.** PR #121 (branche du sprint vers `develop`, commit `4455fe2`) puis PR #122 (`develop` vers `main`),
-contrôles verts et revue Codex sans remarque sur les deux ; PR #122 fusionnée par Era à 20 h 37, commit `ce5b2c7` ;
+contrôles verts et revue Codex sans remarque sur les deux ; j'ai fusionné la PR #122 à 20 h 37, commit `ce5b2c7` ;
 passage `39654392710`, réussi du premier coup (construction 6 min, déploiement terminé à 20 h 49). `/health` annonce le
 commit `ce5b2c7`, 2140 articles, la même empreinte de contenu (`fd8542955c1b…`). Aucun changement de code : les
 documents du livrable validé, la synthèse, le schéma complet, le journal des retours.
@@ -612,12 +612,12 @@ PR #122 : il désigne `27e41d3` (N12). Deux garde-fous ont joué :
 | La porte de livraison du tag (`scripts/verifier_livrable.py --ci`) | passage `39653430203` en échec : « Tag livrable-sprint-4-v1 cité dans ETAT.md et CHANGELOG.md : absent de : CHANGELOG.md » ; verdict « PAS livrable » ; aucune image publiée |
 | La règle du dépôt « tags livrable-* figés : ni suppression ni déplacement » | la suppression du tag sur GitHub est refusée : « GH013: Repository rule violations found… Cannot delete this tag » |
 
-**Suite** : le tag v1 reste sur N12 et n'est pas envoyé ; la remise est le tag `livrable-sprint-4-v2`, posé par Era sur
+**Suite** : le tag v1 reste sur N12 et n'est pas envoyé ; la remise est le tag `livrable-sprint-4-v2`, que j'ai posé sur
 le commit de la livraison suivante, désigné par son SHA complet (étape 5 du plan de travail).
 
 **La livraison N14 et le tag v2.** PR #123 puis PR #124 (`develop` vers `main`), contrôles verts et revue Codex sans
-remarque ; PR #124 fusionnée par Era à 21 h 13, commit `81a9718` ; passage `39659810301`, réussi, déploiement terminé à
-21 h 24 ; `/health` annonce `81a9718`, 2140 articles, la même empreinte de contenu. Era a posé le tag
+remarque ; j'ai fusionné la PR #124 à 21 h 13, commit `81a9718` ; passage `39659810301`, réussi, déploiement terminé à
+21 h 24 ; `/health` annonce `81a9718`, 2140 articles, la même empreinte de contenu. J'ai posé le tag
 `livrable-sprint-4-v2` à 21 h 25 sur `81a9718c528cea18ad533aae5fd3c2ffd1ea5e49`, écrit en entier. Sa livraison (passage
 `39661606759`) a passé la porte : tests (1379 passed, 35 skipped, 2 xfailed en CI), portes d'évaluation (16 passed),
 liens internes, tag cité, « VERDICT : ✅ livrable » ; image `ghcr.io/ganda15/rita-api:livrable-sprint-4-v2` publiée,
@@ -628,8 +628,8 @@ sans déploiement. Les 49 liens du livrable et de la synthèse répondent au tag
 
 ## Deux points relevés dans le briefing OR.PA, écrits comme limites
 
-- En production, la dernière cotation d'OR.PA date de **63 jours** le 20/10, de 64 jours le 21/10. Le critère 1 du contrat suppose une valeur cotée
+- En production, la dernière cotation d'OR.PA date de 63 jours le 20/10, de 64 jours le 21/10. Le critère 1 du contrat suppose une valeur cotée
   depuis moins de cinq jours ouvrés : il n'est pas rempli pour OR.PA. La cause (collecte des cours en production) n'est
   pas examinée.
-- Le briefing en déduit que la valeur est « **probablement radiée** », ce qui est faux pour L'Oréal : une donnée
+- Le briefing en déduit que la valeur est « probablement radiée », ce qui est faux pour L'Oréal : une donnée
   ancienne n'est pas une radiation. La formulation vient de la rédaction du briefing ; non corrigée.

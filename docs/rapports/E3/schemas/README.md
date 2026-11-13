@@ -1,7 +1,7 @@
 # Schémas du rapport E3
 
 Cinq schémas. Leurs textes viennent d'une seule description, `generer_schemas.py`, qui écrit le `.drawio` (éditable
-dans draw.io) et le `.svg` : c'est là qu'on corrige un texte. L'image publiée dans le rapport est **ma mise en forme**
+dans draw.io) et le `.svg` : c'est là que je corrige un texte. L'image publiée dans le rapport est ma mise en forme
 (`E3-<nom>-illustre.svg`, 24/10/2026), rendue en `.png` par Chrome sans fenêtre. `tests/test_schemas_e3.py`
 compare chaque texte de la mise en forme à ceux du générateur : un texte changé d'un côté seulement fait tomber le
 test. Règle du dépôt : un `.drawio` pour corriger, une image pour voir.

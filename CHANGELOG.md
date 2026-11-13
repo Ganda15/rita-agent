@@ -9,6 +9,47 @@
 
 ---
 
+## 2026-11-13, soir : consignes de remise et d'accès du jury ; la courbe gagne ses axes
+
+- **Décision** (consignes de la dernière séance, 13/11) : 5 PDF, annexes comprises, remis le 23/11 ; le dépôt sera
+  public avant la remise, après un audit en lecture seule (fait le 13/11 : seuls secrets, les deux clés révoquées
+  d'INC-008) ; la clé de l'application du jury passe par une notice séparée, jamais par un PDF ni par le dépôt ; un PDF
+  ne change que s'il devient faux, a un lien cassé ou contredit la version présentée (relus le 13/11 : aucun).
+- **Décision d'Era** : adresses de courriel retirées des documents (#247) ; gel du code le 16/11.
+- **Manque découvert** (oral blanc 2, 13/11) : la courbe du cours n'avait ni axe ni échelle. Corrigé dans #244, tests
+  d'abord ; deux défauts relevés par la revue automatique, reproduits puis corrigés (`abee0bd`).
+
+## 2026-11-11, soir : cours de production rattrapés au 11/11 ; deux manques découverts dans le guide du rattrapage
+
+- **Manque découvert** : le guide garde le nom du réseau Docker dans `RESEAU` et ne dit de s'arrêter que si le mot de
+  passe manque. Le 11/11, cette ligne a été sautée deux fois : `reseau=` vide, Docker a refusé de démarrer, rien n'a été
+  écrit. Le soir même, le nom `rita-agent_default` a été écrit en clair dans la commande, vérifié juste avant. Guide à
+  corriger après l'oral blanc, test d'abord.
+- **Manque découvert** : le conseil « après 17 h 35 » (preuve du 08/11, `ETAT.md`) ne vaut que pour les places
+  européennes. Un passage à 18 h 39 a écrit des cours de mi-séance pour FTI et SLB, cotées à New York ; un second
+  passage à 22 h 04 les a remplacés, sans doublon. Règle : après 22 h 05, heure de Paris.
+- Production : dernière séance le 11/11, 281 706 cotations, cinq devises au 11/11 ; CRI.PA reste au 10/11. Preuve :
+  `evidence/C3/rattrapage-production-2026-11-11/`.
+
+## 2026-11-09, 14 h 00 : remise envoyée
+
+- **Livrable envoyé** : 7 fichiers déposés dans le Drive partagé avec le formateur, la cheffe de projet et la cheffe
+  pédagogique, prévenus le même jour. Les 5 rapports PDF sont identiques (empreinte SHA-256) à ceux de leurs tags :
+  `livrable-E1-v8`, `livrable-E2-v5`, `livrable-E3-v6`, `livrable-E4-v7`, `livrable-E5-v5`. Les 2 grilles xlsx sont
+  celles du 08/11 : `Era-Grille-jury-RITA_08_11_26.xlsx` (137 ✅) et `Era-Preparation-livrables-RNCP_08_11_26.xlsx`.
+- Contrôle avant l'envoi : les 300 liens des 5 PDF répondent (294 liens GitHub vérifiés avec un compte qui a accès au
+  dépôt privé, 6 autres ouverts directement). Le dépôt est privé : l'accès du jury reste à organiser avant le 01/12.
+
+## 2026-11-08, soir : cours de production rattrapés au 06/11 ; manque découvert dans le guide du rattrapage
+
+- **Manque découvert** : depuis la carte #76 (en production le 07/11), le conteneur de l'API n'a plus l'adresse du
+  propriétaire de la base ; l'étape 3 du rattrapage des cours l'y lisait encore. Le premier passage à blanc du 08/11 a
+  échoué sans rien écrire. Guide corrigé (adresse clé=valeur, mot de passe dans `PGPASSWORD`, jamais affiché) ; deux
+  tests tiennent désormais la doc d'accord avec `docker-compose.yml`.
+- **Décision** : l'option C du 06/11 (aucune écriture en production avant l'oral blanc) est levée pour ce rattrapage.
+- Production : dernière séance le 06/11, 281 383 cotations, cinq devises au 06/11. Preuve :
+  `evidence/C3/rattrapage-production-2026-11-08/`. La collecte des cours n'est toujours pas planifiée sur le serveur.
+
 ## 2026-11-08, matin : rapports finaux pour la remise du 09/11
 
 - **Livré** : `livrable-E1-v7` posé sur `05df824`, exécution verte.

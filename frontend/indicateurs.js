@@ -306,7 +306,7 @@ async function choisirValeur(i) {
                                                                        textContent: "Courbe indisponible pour le moment." }));
     return;
   }
-  const dessin = GRAPHIQUES.courbe(cotations);
+  const dessin = GRAPHIQUES.courbe(cotations, { devise: i.devise });   // la devise lue dans les données de la valeur
   zone.replaceChildren(...[dessin.svg, dessin.alternative].filter(Boolean));
 }
 

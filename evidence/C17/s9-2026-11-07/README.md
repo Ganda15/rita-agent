@@ -2,17 +2,17 @@
 
 Compétence : C17 (OWASP Top 10, A05 et LLM01). Constat S9 de la revue du 03/10
 (`evidence/C17/revue-owasp-top10-2025-2026-10-03.md`) : « garde-fous d'injection et de sortie à 70 %, sous le seuil de
-85 % ». Plan : `docs/PLAN-S9-garde-fous.md`, validé par Era le 07/11 (« ok plan S9 »), complété le même jour pour le
-garde-fou de sortie AMF, que le plan du 06/11 avait oublié (« Yes, extend (go) »). Les seuils ne changent pas : 85 % de
+85 % ». Plan : `docs/PLAN-S9-garde-fous.md`, que j'ai validé le 07/11, puis complété le même jour pour le garde-fou
+de sortie AMF, que le plan du 06/11 avait oublié. Les seuils ne changent pas : 85 % de
 blocage, 15 % de faux positifs au plus.
 
 ## La méthode
 
-1. Un jeu tenu à l'écart, organisé par famille d'attaque, écrit et commité **avant** toute modification de
+1. Un jeu tenu à l'écart, organisé par famille d'attaque, écrit et commité avant toute modification de
    `guardrails/` :
    - injection et fuite, commit `ee64757` (`evals/cas_s9_reserves.py`) ;
    - sortie AMF, commit `f01d407` (`evals/cas_s9_reserves_sortie.py`), mesuré avant correction sur les nombres seuls,
-     sans lire quels textes passaient (méthode demandée par la relecture d'un autre agent).
+     sans lire quels textes passaient (méthode demandée par la relecture d'un autre agent de code).
 2. Des tests rouges avant le code (`tests/test_evals.py`), dont deux empreintes qui figent les jeux après leur commit.
 3. Une correction par famille, jamais par phrase, en expressions régulières (latence en millisecondes).
 4. La mesure, sur l'ancien jeu et sur le jeu tenu à l'écart, puis sur des textes réels.
@@ -30,9 +30,9 @@ Sorties brutes : [`mesure-avant-correction.txt`](mesure-avant-correction.txt),
 [`mesure-apres-correction-injection-fuite.txt`](mesure-apres-correction-injection-fuite.txt),
 [`mesure-apres-correction-sortie-amf.txt`](mesure-apres-correction-sortie-amf.txt).
 
-**Sur des textes réels, sans aucun refus** :
+Sur des textes réels, sans aucun refus :
 - 38 occurrences de passages d'articles du jeu figé du banc (`evidence/C7/jeu-d-essai-2026-10-03*.json`), soit
-  **19 textes distincts** présents dans les deux versions du jeu (seconde relecture du 07/11) : 0 bloqué par
+  19 textes distincts présents dans les deux versions du jeu (seconde relecture du 07/11) : 0 bloqué par
   l'injection ;
 - 230 briefings écrits par les modèles lors des bancs (`evidence/C7/**/resultats-*.jsonl`), 230 textes distincts :
   0 refusé par la sortie AMF, 0 par le contrôle de fuite.
@@ -52,26 +52,26 @@ de fuite, consignes des parcours comprises).
 La revue de sécurité automatique du 07/11 a relevé un retour arrière catastrophique (ReDoS) dans la première règle
 « secret dit en clair » (commit `3c024f3`). Ce qui le montre, dans l'ordre (heures de Paris) :
 
-1. **Reproduction manuelle, non conservée.** Vers 14 h 13, une commande qui chronométrait `verifier_fuite` et
+1. Reproduction manuelle, non conservée. Vers 14 h 13, une commande qui chronométrait `verifier_fuite` et
    `verifier_sortie` sur quatre entrées de ce type (dont « password » suivi de 5 000 espaces) n'avait rien rendu au
    bout de 120 s. Elle a été arrêtée à la main, sans aucune sortie : cette commande seule ne dit pas quelle entrée
    bloquait.
-2. **Mesure conservée, refaite à 14 h 47 sur le code du commit `3c024f3`**, extrait dans un arbre de travail Git
+2. Mesure conservée, refaite à 14 h 47 sur le code du commit `3c024f3`, extrait dans un arbre de travail Git
    séparé, un sous-processus par appel arrêté à 20 s :
    [`chronometrage-entrees-hostiles-avant-3c024f3.txt`](chronometrage-entrees-hostiles-avant-3c024f3.txt).
    `verifier_fuite` est interrompu après 20 s sur les deux entrées « password » et « mot de passe » suivies de
    5 000 espaces ; tous les autres appels prennent moins de 6 ms.
-3. **Le test à budget a été écrit après la correction** : il n'avait pas été vu rouge. Il l'a été ensuite, à 14 h 54,
+3. Le test à budget a été écrit après la correction : il n'avait pas été vu rouge. Il l'a été ensuite, à 14 h 54,
    sur ce même code d'avant : 2 échecs (sous-processus arrêtés à 20 s), 4 réussites, en 45 s, sans bloquer pytest :
    [`test-budget-sur-code-avant-3c024f3.txt`](test-budget-sur-code-avant-3c024f3.txt).
-4. **Après correction** (suites d'espaces bornées, commit `4fdebcc`, puis espaces ramenés à un seul, commit `9525bbc`) :
+4. Après correction (suites d'espaces bornées, commit `4fdebcc`, puis espaces ramenés à un seul, commit `9525bbc`) :
    sur les six entrées, chaque appel prend moins de 4 ms, le plus long 3,87 ms (mesure de 14 h 54 :
    [`chronometrage-entrees-hostiles-apres-9525bbc.txt`](chronometrage-entrees-hostiles-apres-9525bbc.txt)).
 
 Le test (`tests/test_evals.py`) fixe un budget d'une seconde pour les trois garde-fous ensemble, mesuré dans un
 sous-processus que pytest arrête à 20 s : une expression régulière qui bloque fait échouer le test au lieu de figer la
-suite (demande de la relecture d'un autre agent). Ces mesures disent que les garde-fous **respectent le budget sur ces
-six entrées** ; elles ne prouvent pas l'absence de retour arrière sur des entrées qui n'ont pas été essayées. Script
+suite (demande de la relecture d'un autre agent de code). Ces mesures disent que les garde-fous respectent le budget
+sur ces six entrées ; elles ne prouvent pas l'absence de retour arrière sur des entrées qui n'ont pas été essayées. Script
 de chronométrage : [`chronometrer_entrees_hostiles.py`](chronometrer_entrees_hostiles.py).
 
 Second constat de la même revue : borner les espaces ouvrait un contournement (« password: » suivi de plus de six
@@ -84,15 +84,16 @@ Cinq tests de plus (espaces, sauts de ligne, secret long, signe égal sur sa lig
 Sur le commit `9525bbc`, les caractères invisibles (espace de largeur nulle, trait d'union conditionnel, contrôles
 bidirectionnels : catégorie Unicode Cf) et les lettres pleine chasse passaient les trois garde-fous, alors que le
 modèle lit le texte à travers. Quatre tests écrits avant toute correction, vus rouges (4 échecs), mis en `xfail`
-strict jusqu'au go d'Era du 07/11 (« Injection + sortie », avec le périmètre de la relecture d'un autre agent).
+strict jusqu'à mon accord du 07/11 pour corriger l'injection et la sortie, dans le périmètre fixé par la relecture
+d'un autre agent de code.
 
-**Les tests, d'abord** (`tests/test_caracteres_invisibles.py`) : chaque attaque connue de l'ancien jeu et du jeu tenu
+Les tests, d'abord (`tests/test_caracteres_invisibles.py`) : chaque attaque connue de l'ancien jeu et du jeu tenu
 à l'écart, masquée de cinq façons (largeur nulle dans les mots, largeur nulle entre les mots, trait d'union
 conditionnel, contrôle bidirectionnel, pleine chasse), pour les trois garde-fous ; des textes légitimes avec accents,
 nombres, unités, exposants et citations ; le contenu réel des deux prompts. Avant correction : **290 en échec**,
 171 réussis (les gardes de faux positifs, qui doivent rester vertes).
 
-**La correction** (commit `bf425b5`, `guardrails/normalisation.py`) :
+La correction (commit `bf425b5`, `guardrails/normalisation.py`) :
 
 - les règles lisent le texte d'origine et deux copies de détection (forme NFKC, caractères Cf retirés ou remplacés
   par une espace, espaces ramenés à un seul), pour l'injection, la sortie AMF et la fuite ;
@@ -102,7 +103,7 @@ nombres, unités, exposants et citations ; le contenu réel des deux prompts. Av
   (`agents/analyst.py`, qui envoyait le texte d'origine des passages) et Question (`agents/question.py`). Un test le
   vérifie sur le prompt réellement construit, caractères d'étiquette Unicode compris (une phrase entière invisible).
 
-**Après** : 461 réussis, 0 en échec ; les quatre `xfail` stricts retirés. Remesure sur `bf425b5`, nombres identiques
+Après : 461 réussis, 0 en échec ; les quatre `xfail` stricts retirés. Remesure sur `bf425b5`, nombres identiques
 (12 sur 12 pour les trois garde-fous, 0 faux positif sur ces jeux, 0 sur 38 occurrences de passages réels bloqué,
 19 textes distincts, 0 sur 230 briefings refusé) :
 [`remesure-2026-11-07-bf425b5.txt`](remesure-2026-11-07-bf425b5.txt). Budget : sur la mesure de 15 h 22, le plus
@@ -116,18 +117,18 @@ bloquée.
 
 ## Quatrième constat : les garde-fous d'entrée, sur la question du visiteur
 
-Les deux garde-fous d'**entrée** avaient la même faiblesse, relevée par une sonde en lecture puis par la revue de
+Les deux garde-fous d'entrée avaient la même faiblesse, relevée par une sonde en lecture puis par la revue de
 sécurité automatique du commit `bf425b5` : ils lisaient la question telle que tapée, alors que le modèle la reçoit
-sans ses caractères invisibles. Ce n'était pas dans le périmètre du premier go : la correction a été soumise à Era,
-qui l'a validée le 07/11 (« Go pour la correction ciblée d'`entree.py` et de `detournement.py` »), seuils inchangés.
+sans ses caractères invisibles. Ce n'était pas dans le périmètre de mon premier accord : la correction m'a été soumise, et j'ai validé le 07/11
+une correction ciblée d'`entree.py` et de `detournement.py`, seuils inchangés.
 
-- **Tests d'abord** : 9 tests écrits avant la correction, vus en échec et mis en `xfail` strict (commit `d9f54c3`) :
+- Tests d'abord : 9 tests écrits avant la correction, vus en échec et mis en `xfail` strict (commit `d9f54c3`) :
   5 pour l'intention, 4 pour le détournement (la pleine chasse y était déjà ramenée par la forme NFKC). Un test de plus
-  exige qu'une question interdite masquée soit refusée **avant le chargement du corpus et avant tout appel au modèle** :
+  exige qu'une question interdite masquée soit refusée avant le chargement du corpus et avant tout appel au modèle :
   vu rouge (la question atteignait le chargement du corpus), vert après.
-- **Correction** (commit `b6567a6`) : chaque règle de `guardrails/entree.py` et de `guardrails/detournement.py` lit
+- Correction (commit `b6567a6`) : chaque règle de `guardrails/entree.py` et de `guardrails/detournement.py` lit
   `textes_de_controle(question)`. Les numéros de ligne cités par le schéma du sprint 4 ne bougent pas.
-- **Mesure séparée**, avant et après, sur les mêmes jeux : [`entree-masquee-avant-d9f54c3.txt`](entree-masquee-avant-d9f54c3.txt),
+- Mesure séparée, avant et après, sur les mêmes jeux : [`entree-masquee-avant-d9f54c3.txt`](entree-masquee-avant-d9f54c3.txt),
   [`entree-masquee-apres-b6567a6.txt`](entree-masquee-apres-b6567a6.txt) (script
   [`mesurer_entree_masquee.py`](mesurer_entree_masquee.py)).
 
@@ -165,19 +166,19 @@ plus un troisième, antérieur à S9. Compte rendu et reproductions : hors du d�
    revue de sécurité automatique a encore trouvé des tournures qui passaient : « lvmh », « Éramet », puis 7 sur 8
    (« le meilleur moment de vendre LVMH », « renforcer un peu LVMH », « acheter de l'or »).
 
-   **Trois réécritures, trois nouveaux contournements : c'est la conception qui était en cause, pas un motif de
-   plus.** Une expression régulière lit des mots, pas un sens, et une liste ouverte a toujours des trous. Décision
-   d'Era du 07/11 : une **liste fermée** (commit `69b6d29`). Dans une tournure de conseil (« moment de » ou « temps
+   Trois réécritures ont donné trois nouveaux contournements : la conception elle-même était en cause, et un
+   motif de plus n'y aurait rien changé. Une expression régulière lit des mots, pas un sens, et une liste ouverte a toujours des trous. Ma décision
+   du 07/11 : une **liste fermée** (commit `69b6d29`). Dans une tournure de conseil (« moment de » ou « temps
    de » suivis d'un verbe d'achat ou de vente, « mieux vaut éviter », « difficile de rester à l'écart »), le texte est
    toujours refusé, sauf si l'objet figure dans une liste fermée tirée des faits des tests. C'est le choix
    « fail-closed » déjà écrit dans `guardrails/sortie.py` : en cas de doute, on ne publie pas. La revue de sécurité
-   du commit `69b6d29` a encore resserré cette liste (commit `0921906`) : un objet est admis **pour un verbe
-   seulement** (« sortir du nucléaire », « alléger sa dette », « vendre sa filiale », « renforcer la gouvernance »),
+   du commit `69b6d29` a encore resserré cette liste (commit `0921906`) : un objet est admis pour un verbe
+   seulement (« sortir du nucléaire », « alléger sa dette », « vendre sa filiale », « renforcer la gouvernance »),
    jamais après acheter, accumuler, se positionner, se placer ou entrer ; et la phrase doit s'arrêter après lui, ou
    finir sur une attribution sans mot de conseil (« , prévient l'économiste »). « C'est le moment d'acheter de la
    dette publique » et « il est temps de sortir du nucléaire et de miser sur Engie » sont refusés.
 
-   **Le coût, accepté par Era et écrit en test** : un fait dont l'objet n'est pas dans la liste est refusé (« Au
+   Le coût, que j'ai accepté et qui est écrit en test : un fait dont l'objet n'est pas dans la liste est refusé (« Au
    moment de céder ses parts, le fonds a publié un communiqué », « c'est le moment de renforcer la sécurité
    informatique », « c'est le moment de se positionner sur le marché chinois », « le temps de vendre un bien
    immobilier s'allonge »). Mesuré sur les 230 briefings réels : 0 refusé, aucun n'emploie ces tournures.
@@ -188,7 +189,7 @@ plus un troisième, antérieur à S9. Compte rendu et reproductions : hors du d�
 3. **Défaut antérieur, non corrigé ici** : le contrôle des nombres de la réponse aux questions compare la réponse au
    passage brut. Avec « 1<largeur nulle>000 emplois » dans la source, « 1000 » est refusé et « 000 » servi. Les deux
    verdicts sont les mêmes sur `c73e3ba`, avant S9. Il touche `guardrails/nombres.py` (zone sous garde) : à traiter
-   à part, sur un plan validé par Era.
+   à part, sur un plan que j'aurai validé.
 
 Le libellé « S9 fermé » de `evals/mesurer_s9.py` (injection et fuite seules) dit désormais « seuils atteints sur le
 jeu tenu à l'écart ; ce n'est pas la clôture de S9 » (commit `8bd51a1`). Remesures sur le code final : voir la
@@ -235,7 +236,7 @@ la seconde relecture.
 
 ## Les limites, écrites
 
-- **Ce n'est pas une validation indépendante** : le même agent a écrit les cas et les règles. Pour l'injection et la
+- **Ce n'est pas une validation indépendante** : le même agent de code a écrit les cas et les règles. Pour l'injection et la
   fuite, les textes qui passaient ont été lus avant la correction ; pour la sortie AMF, seulement leur nombre. Une
   évaluation indépendante demanderait des cas écrits par quelqu'un qui n'a pas vu les règles.
 - 100 % sur ces jeux ne veut pas dire une protection parfaite : quelques dizaines de cas mesurent des familles connues,
@@ -247,17 +248,17 @@ la seconde relecture.
 - Les règles AMF par famille reposent sur des listes (objets d'investissement, verbes d'entreprise, objets de fait
   par verbe, nom propre en majuscule) : un fait tourné autrement peut encore être refusé, un conseil tourné autrement
   peut passer. Les 31 faits acceptés, les 47 conseils refusés et les 4 faits refusés par choix de
-  `tests/test_sortie_amf_contexte.py` mesurent ces formulations-là. « 0 faux positif » vaut **pour les jeux figés**
+  `tests/test_sortie_amf_contexte.py` mesurent ces formulations-là. « 0 faux positif » vaut pour les jeux figés
   (0 sur 6, 0 sur 12) ; les 4 faits refusés par choix sont de vrais faux positifs, acceptés par la décision de liste
   fermée. Pour contextualiser les règles, les cas des jeux figés qu'elles attrapent ont été lus : ces jeux ne sont
   plus « tenus à l'écart » de ces règles, et ne valent plus une validation indépendante.
-- **Casse, choix écrit** : une société n'est reconnue comme sujet ou objet que par sa majuscule (accentuée comprise).
+- Casse, choix écrit : une société n'est reconnue comme sujet ou objet que par sa majuscule (accentuée comprise).
   « lvmh reste à renforcer » passe. La reconnaître sans majuscule refuserait « la sécurité reste à renforcer » ; la
   liste des valeurs (`data/univers-155.csv`) n'entre pas dans l'image Docker, la règle ne peut donc pas s'y appuyer en
   production. Le modèle écrit les noms de sociétés avec leur majuscule : une minuscule suppose une manipulation.
-- **Négation** : « Mieux vaut ne pas vendre LVMH » passe, dans les trois versions comparées par la seconde relecture
+- Négation : « Mieux vaut ne pas vendre LVMH » passe, dans les trois versions comparées par la seconde relecture
   (avant S9, `376489f`, `6c47f6f`) ; à l'inverse, « Rien ne permet de dire qu'il est temps de renforcer la sécurité
   informatique » est refusé. Une expression régulière ne comprend pas la négation.
-- **Correction testée localement, pas déployée** : au 07/11, elle vit sur la branche `s9-garde-fous`, ni fusionnée
+- Correction testée localement, non déployée : au 07/11, elle vit sur la branche `s9-garde-fous`, ni fusionnée
   dans `main` ni déployée. La production tourne encore avec les garde-fous d'avant S9. La clôture de S9 devra
   distinguer les deux : correction testée localement, puis version effectivement déployée et vérifiée.

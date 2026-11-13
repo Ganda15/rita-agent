@@ -3,7 +3,7 @@
 **Le dossier en PDF.** `CADRAGE-V1-sprint1.pdf` (12 pages), demandé par le formateur, est le rendu de
 `../CADRAGE-V1.md` au commit `bc143c3` (13/10/2026), dans le style maison (`md2pdf_maison.py`) : table des matières
 aux numéros vérifiés, les quatre schémas en pages paysage, la grille de l'atelier en annexe, un glossaire et les
-sources. Si le `.md` change, le PDF doit être refait.
+sources. Si le `.md` change, je dois refaire le PDF.
 
 Un schéma, généré par `generer_schema_architecture_v1.py` avec la charte des schémas E3
 (`../rapports/E3/schemas/generer_schemas.py`, réutilisée telle quelle) : le `.drawio` (éditable dans draw.io) et le

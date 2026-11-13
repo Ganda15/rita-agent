@@ -21,7 +21,7 @@ Limite : le bouton enfoncé ne change pas d'aspect par lui-même ; l'état est d
 
 Trouvé par la recette des cinq écrans (`evidence/C17/recette-2026-11-02/README.md`, écart E2) : à l'ouverture, le
 tableau de bord était le seul écran à ne pas poser le focus sur le champ de clé. Test écrit d'abord, sur le code de
-`99de9fa`, correction ensuite, sur décision d'Era.
+`99de9fa`, correction ensuite, sur ma décision.
 
 | Écart | Avant | Après | Correction |
 |---|---|---|---|
