@@ -18,7 +18,6 @@
 # Formation : Wild Code School — Bootcamp Dev IA Agentique
 # ─────────────────────────────────────────────────────────
 # Candidat    : Eramalingam GANDAKUMAR
-# Email       : kanda21081940@gmail.com
 # Promotion   : Dev IA Agentique 2026 — WCS Nice
 # Date début  : 11 mai 2026
 # Version     : 0.1 — DRAFT (pour validation formatrice)
