@@ -21,6 +21,24 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 
 ---
 
+## ▶️ 13/11, NUIT : AZURE REFUSE LA CLÉ (HTTP 401) ; LIVRAISON REFUSÉE AU PRÉ-TEST ; PRODUCTION INCHANGÉE (`770d440`)
+
+**État** : depuis le 13/11 vers 20 h (heure de Paris), Azure répond 401 à la clé du serveur, testée seule hors de RITA
+(`curl` sur `/models`, seul le code affiché). Briefings et questions sont en panne en production ; les données, les
+indicateurs et la protection par clé fonctionnent. La livraison de #249 (`main` à `b276e9a`) a été **refusée au
+pré-test** (`briefing`, `question`) : la production est restée sur `770d440`, saine. La page publique de Microsoft ne
+montrait aucun incident (20 h 40 UTC) ; le portail Azure ne s'ouvrait pas pour Era.
+
+**Prochaine action** (plan A puis B, décision d'Era du 13/11) :
+1. Le 14/11 au matin : refaire le test de la clé sur le serveur. Si 200 : relancer la livraison échouée
+   (`gh run rerun 43489074587 --failed`), puis vérifier la production et faire la session E5.
+2. Si 401 : portail Azure (clés de la ressource, état de l'abonnement, crédit, Service Health). Clé changée : Era la
+   remplace dans le fichier d'environnement du serveur, puis la livraison est relancée.
+3. Plan B, dans tous les cas : Mistral en second fournisseur, briefings **et** questions (aujourd'hui, les questions
+   passent par Azure seul et le pré-test exige une question : toute livraison est refusée tant qu'Azure répond 401).
+   Avant le code : les quatre vérifications de la fiche `docs/lecture-contrat-mistral-2026-11-13.md` (préparée le
+   13/11, non commitée, en attente de la décision d'Era).
+
 ## ▶️ 13/11, SOIR : ORAL BLANC 2 PASSÉ ; CONSIGNES DE REMISE DU 23/11 ; AXES DE LA COURBE ET GUIDE DU RATTRAPAGE DANS `develop`
 
 **Partage du travail jusqu'au jury (décision d'Era, 13/11)** : l'application, les 5 PDF et le dépôt d'un côté ; la
