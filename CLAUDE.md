@@ -82,7 +82,7 @@ tests/      pytest : 61 fichiers
 
 ## Chiffres à ne jamais réinventer : les vérifier avant de les citer
 
-**836** tests collectés (10/10) · **10** tables · **1** vue · **19** objets d'index (8 explicites) · **12** contraintes `CHECK` ·
+**3 232** tests collectés (13/11) · **10** tables · **1** vue · **19** objets d'index (8 explicites) · **12** contraintes `CHECK` ·
 **273 608** lignes importées en juillet, **278 473** cotations au 02/10 · **111** valeurs · **112** alias ·
 **7** positions · **11** partitions Parquet · OpenAPI **3.1.0** · **14** chemins documentés, dont **11** de données
 
