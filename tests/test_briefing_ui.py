@@ -150,6 +150,19 @@ def test_les_essais_echoues_sont_dits_sans_message(ecran):
     assert "modèle non communiqué par le fournisseur" in texte
 
 
+def test_un_briefing_ecrit_par_mistral_nomme_mistral(ecran):
+    # 14/11/2026 : Mistral en secours d'Azure (`LLM_ORDRE=foundry,mistral`). Sans son nom dans la table, l'écran
+    # affichait le code brut « mistral ».
+    diag = dict(DIAGNOSTIC, fournisseur="mistral", modele="mistral-large-2512",
+                tentatives=[{"fournisseur": "foundry", "reussi": False}, {"fournisseur": "mistral", "reussi": True}])
+    servir(ecran, "**/briefing?*", 200, dict(BRIEFING, diagnostic=diag))
+    demander(ecran)
+    attendre_resultat(ecran)
+    texte = ecran.locator("#comprendre").inner_text()
+    assert "Mistral, mistral-large-2512" in texte
+    assert "Azure AI Foundry : échec" in texte and "Mistral : réussi" in texte
+
+
 def test_hors_euronext_seul_l_age_est_donne(ecran):
     diag = dict(DIAGNOSTIC, jours_bourse_ecoules=None, calendrier=None)
     servir(ecran, "**/briefing?*", 200, dict(BRIEFING, diagnostic=diag))

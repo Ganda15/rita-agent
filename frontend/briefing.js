@@ -20,7 +20,8 @@ const ENDPOINT_VALEURS = "/donnees/valeurs";
 const VERDICT_CONFORME = "Aucune recommandation d'achat ou de vente détectée";
 const TEXTE_RETENU = "Texte retenu par le garde-fou de sortie : le modèle avait produit une formulation assimilable "
   + "à une recommandation d'achat ou de vente ; elle n'est pas diffusée.";
-const NOMS_FOURNISSEURS = new Map([["foundry", "Azure AI Foundry"], ["anthropic", "Anthropic"], ["openrouter", "OpenRouter"]]);
+const NOMS_FOURNISSEURS = new Map([["foundry", "Azure AI Foundry"], ["mistral", "Mistral"], ["anthropic", "Anthropic"],
+                                   ["openrouter", "OpenRouter"]]);
 
 const elStatut = document.getElementById("statut");
 const elConnexion = document.getElementById("connexion");

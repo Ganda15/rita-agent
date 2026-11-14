@@ -50,10 +50,12 @@
                   placeholder="Combien de postes Netflix va-t-il supprimer ?"></textarea>
         <button type="submit">Poser la question</button>
       </form>
-      <!-- Règle UE précisée du 06/11/2026 (registre RGPD, § 5, point 13) : le texte part tel quel vers Azure. -->
+      <!-- Règle UE précisée du 06/11/2026 (registre RGPD, § 5, point 13) : le texte part tel quel vers Azure ; depuis le
+           14/11, vers Mistral si Azure échoue (registre, T8 ; docs/lecture-contrat-mistral-2026-11-13.md). -->
       <p class="precision" id="consigne-donnees">
         N'écrivez aucune donnée personnelle (nom, adresse, numéro) : le texte de la question est envoyé au modèle
-        d'Azure, en zone de données de l'Union européenne, et RITA ne le conserve pas.
+        d'Azure, en zone de données de l'Union européenne, ou, si Azure ne répond pas, à celui de Mistral, dans l'Union
+        européenne et l'AELE. RITA ne le conserve pas.
       </p>
       <p class="precision">
         La réponse est rédigée uniquement à partir des articles collectés par RITA, et chaque affirmation renvoie à
