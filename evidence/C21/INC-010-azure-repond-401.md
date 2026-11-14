@@ -20,7 +20,8 @@ Journal de l'API de production (heure UTC du serveur) :
 ```
 
 La même clé, testée seule sur le serveur, hors de RITA (`curl` sur la liste des modèles d'Azure, seul le code de
-réponse affiché) : **401**. Le 14/11 au matin, même test, même résultat.
+réponse affiché) : **401**. Le 14/11 au matin, même test, même résultat ; et encore le 14/11 vers 17 h 20 UTC, après
+l'annonce du rétablissement par Microsoft (section 4, hypothèse 5).
 
 Ce qui fonctionnait : `/health` (200), les données, les indicateurs. La vigie de 19 h 43 UTC n'a ouvert aucune issue.
 Ce qu'elle regarde l'explique : elle sonde `/health`, qui n'appelle pas le modèle, puis lit les taux de `/sante`, qui
@@ -57,13 +58,14 @@ soir et duré jusqu'au 14/11 :
 |---|---|
 | la panne couvre la période du 401 (12/11 au soir, 14/11) | les services nommés sont ceux de **Microsoft 365** ; aucune des trois sources ne cite Azure, Azure AI Foundry, Azure OpenAI ni l'authentification par clé d'API |
 | Microsoft parle d'un changement de réseau et d'une forte charge dans plusieurs régions | les erreurs décrites sont des **503**, des délais dépassés et des échecs de connexion, pas des **401** |
-| | le 14/11 au matin, Azure refusait encore la clé ; je ne sais pas à quelle heure Microsoft a déclaré le service rétabli |
+| | le 14/11 vers 17 h 20 UTC, après l'annonce du rétablissement, Azure refusait **encore** la clé (401) |
 
-Le chevauchement dans le temps est réel ; le lien n'est pas prouvé, et les faits lus vont plutôt contre. **Ce qui
-trancherait** : (1) refaire le test de la clé maintenant que Microsoft annonce le service rétabli : 200 sans changer
-la clé renforcerait l'hypothèse de la panne ; 401 la rendrait très peu probable ; (2) dans le portail Azure, le
-journal d'activité de la ressource (clés régénérées ?), l'état de l'abonnement et le crédit, et Service Health pour
-l'abonnement ; (3) dans Langfuse, l'heure du dernier appel réussi à Azure, que je n'ai pas relevée.
+Le chevauchement dans le temps est réel ; le lien n'est pas prouvé, et les faits vont contre. Le test décisif est
+fait : si la panne de Microsoft était la cause, la clé aurait dû répondre de nouveau une fois le service rétabli,
+sans être changée. Elle reçoit toujours 401. **Je tiens donc cette hypothèse pour très peu probable** : la cause est
+à chercher côté compte Azure. **Ce qui trancherait encore** : (1) dans le portail Azure, le journal d'activité de la
+ressource (clés régénérées ?), l'état de l'abonnement et le crédit, et Service Health pour l'abonnement ; (2) dans
+Langfuse, l'heure du dernier appel réussi à Azure, que je n'ai pas relevée.
 
 **Cause de conception, elle, établie** : RITA n'avait qu'un fournisseur pour les questions, et le pré-test de la
 livraison exige un briefing et une question réels. Une panne du seul fournisseur bloquait donc à la fois le service
@@ -82,7 +84,7 @@ le refus d'Azure est simulé par les tests du secours (section 6) ; la cause, in
 | 2 | Incident déclaré par Microsoft sur Azure | page publique d'état d'Azure, 13/11 à 20 h 40 UTC | aucun incident affiché |
 | 3 | Panne passagère | nouveau test le 14/11 au matin | écartée pour une coupure de quelques heures : toujours 401 |
 | 4 | Clé régénérée, abonnement suspendu ou crédit épuisé | portail Azure | **non testée** : le portail ne s'ouvrait pas le 13/11 |
-| 5 | Panne mondiale de Microsoft du 12 au 14/11 | trois sources lues le 14/11 (section 2) | **non confirmée** : produits et types d'erreur différents |
+| 5 | Panne mondiale de Microsoft du 12 au 14/11 | trois sources lues le 14/11 (section 2), puis la clé testée de nouveau le 14/11 vers 17 h 20 UTC, après l'annonce du rétablissement | **très peu probable** : produits et types d'erreur différents, et toujours 401 une fois le service annoncé rétabli |
 
 Le débogage n'a pas été écrit dans l'issue #250 au fil de l'eau : il l'a été dans `ETAT.md` et `CHANGELOG.md` (13/11
 au soir et 14/11), puis ici le 14/11.
@@ -122,5 +124,5 @@ cartes du tableau de bord saines (`evidence/C20/session-test-2026-11-14/`).
 - **Limite** : la vigie n'a pas vu cette panne ; sur un trafic aussi faible, ses taux restaient « inconnu ». Ce sont
   le pré-test et l'alerte Langfuse qui l'ont vue. Je garde ce partage : une sonde qui appellerait le modèle à chaque
   passage coûterait des appels pour une information que Langfuse donne déjà.
-- **Reste ouvert** : la cause du 401 (section 2, « ce qui trancherait »). L'issue #250 reste ouverte jusque-là. Pour
-  ce critère, cet incident n'a **pas** de cause racine établie.
+- **Reste ouvert** : la cause du 401, côté compte Azure (section 2, « ce qui trancherait encore »). L'issue #250 reste
+  ouverte jusque-là. Pour ce critère, cet incident n'a **pas** de cause racine établie.

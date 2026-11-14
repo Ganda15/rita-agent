@@ -48,9 +48,10 @@ sont comptés au prix d'Azure, plusieurs fois plus cher que celui de Mistral Lar
    après 22 h 05 et du 01/12 avant 9 h).
 5. Azure : fiche d'incident `evidence/C21/INC-010-azure-repond-401.md` (issue #250, toujours ouverte), cause non
    établie. Une panne mondiale de Microsoft 365 (12 au 14/11, MO1550821) coïncide, sans lien prouvé : services et
-   erreurs différents (503, délais, pas de 401). Ce qui trancherait, dans l'ordre : refaire le test de la clé sur le
-   serveur maintenant que Microsoft annonce le service rétabli ; puis le portail (journal d'activité de la ressource,
-   état de l'abonnement, crédit, Service Health) ; l'heure du dernier appel réussi dans Langfuse. Si la clé change, Era
+   erreurs différents (503, délais, pas de 401), et la clé reçoit **encore 401** le 14/11 vers 17 h 20 UTC, après
+   l'annonce du rétablissement : hypothèse très peu probable, la cause est côté compte. Ce qui trancherait encore : le
+   portail (journal d'activité de la ressource, état de l'abonnement, crédit, Service Health) ; l'heure du dernier
+   appel réussi dans Langfuse. Si la clé change, Era
    la remplace dans le fichier d'environnement du serveur, puis l'API est relancée ; la cascade reprend Azure en premier
    sans autre livraison.
 
