@@ -54,6 +54,21 @@ def test_citations_valides(texte, citations, nb_extraits, attendu):
     assert citations_valides(sortie, nb_extraits) is attendu
 
 
+def test_l_exemple_donne_au_modele_passe_le_controle_des_citations():
+    """14/11/2026 : la consigne montre un exemple de forme (Mistral Large 3 omettait le « [1] » du texte, 0 réponse
+    valide sur 6). Si l'exemple lui-même ne passait pas `citations_valides`, le modèle apprendrait une forme refusée."""
+    import json
+    import re
+
+    from agents.question import CONSIGNES, SortieModele, citations_valides
+
+    exemple = re.search(r"Exemple de forme : (\{.*\})\.", CONSIGNES.replace("\n", " ")).group(1)
+    sortie = SortieModele.model_validate(json.loads(exemple))
+    assert sortie.statut == "reponse"
+    assert citations_valides(sortie, nb_extraits=1)
+    assert not re.search(r"\d", re.sub(r"\[\d+\]", "", sortie.texte)), "aucun chiffre dans l'exemple"
+
+
 def test_le_prompt_numerote_les_extraits_et_isole_la_question():
     question = "Combien de postes Netflix va-t-il supprimer ?"
     prompt = construire_prompt(question, [_passage(1, "Netflix va supprimer 1 000 postes"),
