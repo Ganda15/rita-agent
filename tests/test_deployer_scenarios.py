@@ -1592,6 +1592,66 @@ def test_une_livraison_dont_la_question_echoue_est_refusee_au_pretest(serveur):
     assert dernier["resultat"] == "refusee au pre-test" and "question" in dernier["echecs"]
 
 
+# --- 14/11/2026 : la raison d'un contrôle en échec, écrite au journal ------------------------------------------------
+# Deux livraisons du 14/11 ont échoué après la bascule sur « question » (Azure refusait sa clé, Mistral en secours), et
+# le journal ne gardait que le nom du contrôle : impossible de savoir si c'était une panne, un refus ou une limite de
+# débit. La raison (code HTTP, statut, motif) va dans `detail`, que le journal garde déjà (`detail_bascule`,
+# `detail_restauration`), et désormais aussi pour le pré-test. Jamais le texte d'une réponse. Les noms des contrôles ne
+# changent pas : la comparaison bascule et restauration (« cause externe possible ») en dépend.
+
+@pytest.mark.parametrize("question, attendu", [
+    ("panne", "question : HTTP 503, statut erreur, motif FOURNISSEUR_INDISPONIBLE"),
+    ("refus", "question : HTTP 200, statut refus, motif OUT_OF_CORPUS"),
+    ("sans_reference", "question : HTTP 200, statut reponse, motif OK, references 0"),
+])
+def test_le_detail_dit_pourquoi_la_question_echoue(question, attendu):
+    docker = FauxDocker({REF_C: _comportement(commit="ccc", question=question)})
+    docker.pretest = REF_C
+    controle = d.controler(d.URL_PRETEST, ENV["RITA_API_KEY"], "pretest", "ccc",
+                           lambda: docker.journal_du_conteneur(d.CONTENEUR_PRETEST), faux_http(docker))
+    assert controle.echecs == ("question",)
+    assert controle.detail == attendu
+
+
+def test_le_detail_d_un_briefing_refuse_dit_le_code_et_la_conformite():
+    docker = FauxDocker({REF_C: _comportement(commit="ccc", briefing="refus")})
+    docker.pretest = REF_C
+    controle = d.controler(d.URL_PRETEST, ENV["RITA_API_KEY"], "pretest", "ccc",
+                           lambda: docker.journal_du_conteneur(d.CONTENEUR_PRETEST), faux_http(docker))
+    assert "briefing" in controle.echecs
+    assert controle.detail.startswith("briefing : HTTP 200, conforme non")
+
+
+def test_le_detail_ne_porte_jamais_le_texte_de_la_reponse_ni_un_motif_inattendu():
+    def http(methode, url, entetes=None, delai=None, corps=None):
+        if url.endswith("/health"):
+            return d.Reponse(200, {}, json.dumps({"commit": "ccc", "index": {"nb_articles": 3}}).encode())
+        if url.endswith("/donnees/valeurs"):
+            return d.Reponse(403, {}, b"{}")
+        if "/briefing?" in url:
+            corps = {"briefing": "Texte.", "conforme_amf": True, "articles_transmis": 2}
+            return d.Reponse(200, {"x-request-id": "rid-1"}, json.dumps(corps).encode())
+        corps = {"statut": "refus_qualite", "motif": "<b>CITATIONS</b>", "texte": "MARQUEUR-TEXTE-REPONSE"}
+        return d.Reponse(200, {}, json.dumps(corps).encode())
+    controle = d.controler(d.URL_PRETEST, "k", "pretest", "ccc", lambda: "request_id=rid-1", http)
+    assert controle.echecs == ("question",)
+    assert "MARQUEUR-TEXTE-REPONSE" not in controle.detail and "<" not in controle.detail
+    # Le nombre de références n'est écrit que pour un statut « reponse » : c'est le seul cas où son absence explique
+    # l'échec (une réponse sans citation).
+    assert controle.detail == "question : HTTP 200, statut refus_qualite, motif bCITATIONSb"
+
+
+def test_un_refus_au_pretest_garde_la_raison_au_journal(serveur):
+    dossier, env = serveur
+    d.ecrire_etat(dossier / "etat.json", d.Etat(active=_version(REF_A, dossier, "a")))
+    docker = FauxDocker({REF_A: _comportement(commit="aaa"), REF_C: _comportement(commit="ccc", question="panne")},
+                        production=REF_A)
+    assert _livrer(REF_C, docker, dossier, env) == 1
+    dernier = _journal(dossier)[-1]
+    assert dernier["resultat"] == "refusee au pre-test"
+    assert dernier["detail_pretest"] == "question : HTTP 503, statut erreur, motif FOURNISSEUR_INDISPONIBLE"
+
+
 @pytest.mark.parametrize("operation", ["livrer", "ingerer"])
 def test_les_variables_azure_sont_exigees(serveur, operation):
     dossier, env = serveur
