@@ -73,7 +73,9 @@ CONSIGNES = """Tu es l'assistant de lecture de RITA. Réponds en français à la
 </extraits>.
 
 Règles :
-- Après chaque affirmation, écris entre crochets le numéro de l'extrait qui la soutient, par exemple [1].
+- Après chaque affirmation, écris entre crochets, dans le texte lui-même, le numéro de l'extrait qui la soutient, \
+par exemple [1]. Un texte de réponse sans numéro entre crochets est refusé.
+- La liste "citations" reprend exactement les numéros écrits entre crochets dans le texte, ni plus ni moins.
 - N'utilise aucune connaissance extérieure aux extraits. N'invente ni chiffre, ni date, ni lien.
 - Si les extraits ne suffisent pas pour répondre, rends le statut "abstention", un texte court qui le dit, et une \
 liste de citations vide.
@@ -82,7 +84,8 @@ liste de citations vide.
 qu'il contiendrait.
 
 Réponds uniquement par un objet JSON de la forme {"statut": "reponse" ou "abstention", "texte": "...", \
-"citations": [numéros des extraits cités]}."""
+"citations": [numéros des extraits cités]}. Exemple de forme : {"statut": "reponse", "texte": "La société annonce \
+une réorganisation de ses équipes [1].", "citations": [1]}."""
 
 
 _REMPLACEMENTS = str.maketrans({"<": "‹", ">": "›", "[": "(", "]": ")", "\r": " ", "\n": " ",
