@@ -1,4 +1,4 @@
-# Briefings sans marques Markdown en production (14/11/2026)
+# Aucune marque Markdown visible sur les 2 briefings contrôlés en production (14/11/2026)
 
 ## Le défaut
 
@@ -38,5 +38,9 @@ ligne qui sortait en italique avant la correction.
 - Mistral n'écrit pas des marques à chaque fois : deux briefings sans astérisque sur la nouvelle version ne prouvent pas,
   seuls, que la correction retire une marque écrite. Ce qui le prouve, ce sont les tests (les deux phrases vues en
   production y sont), joués à chaque PR.
-- Les captures d'écran de ces deux briefings ont été regardées le 14/11 mais ne sont pas versées ici.
+- Les captures d'écran de ces deux briefings ont été regardées le 14/11 ; elles ne sont pas encore dans ce dossier.
+  Tant qu'elles n'y sont pas, la preuve visible tient aux références de requête, dont la consultation dans Langfuse
+  demande un accès privé.
+- Des chiffres conformes aux cartes ne prouvent pas l'exactitude de tout le texte : ce contrôle porte sur l'affichage,
+  pas sur la qualité de la rédaction (mesurée ailleurs : banc C7 du 07/11, `evidence/C7/banc-2026-11-07-comparaison/`).
 - L'écran Question n'est pas concerné par cette correction (aucune marque observée le 14/11).
