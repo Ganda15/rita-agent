@@ -116,7 +116,7 @@ body h3{ background:#D6E6F7; border-left:4px solid #12395E; padding-left:calc(9p
 
 # Rapport E2 : veille, choix d'un service de modèle, et son paramétrage
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 1.6, 8 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 1.6, 8 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves versionnés : `Ganda15/rita-agent`, version figée au tag `livrable-E2-v6`
 {: .identite }
 
 > **En une minute.** RITA rédige des briefings boursiers et répond à des questions sur les articles collectés. Elle
@@ -128,7 +128,8 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 > prompt corrigé (3.4).
 >
 > Ce rapport présente la veille (C6), le choix du service (C7) et sa configuration avec ses preuves (C8). Azure reste le
-> seul fournisseur actif ; Mistral est une alternative expérimentée, non intégrée.
+> premier fournisseur. Depuis le 14/11, Mistral Large 3, par son adresse européenne, répond en secours quand Azure
+> échoue : Azure refuse la clé du serveur depuis le 13/11, cause non établie (4.2).
 
 <div class="sommaire" role="navigation" aria-label="Sommaire">
 <p class="sommaire-titre">Sommaire</p>
@@ -155,8 +156,8 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 Chaque section relie les critères à une décision et à ses preuves datées. Les mesures réalisées dans RITA sont
 distinguées des informations documentaires et des éléments non évalués. Les annexes regroupent les schémas et les
 captures complètes ; les renvois permettent de les ouvrir directement. Les corrections postérieures à la version de
-référence portent leur date. Trois preuves s'ouvrent dans le dépôt privé, à la version `922349d` (accès du formateur
-vérifié le 30/10 ; celui du jury à organiser pour l'examen) :
+référence portent leur date. Trois preuves s'ouvrent dans le dépôt, à la version `922349d` (les modalités d'accès du
+jury sont transmises à part) :
 [les 60 résultats du banc](https://github.com/Ganda15/rita-agent/blob/922349da2042a6f2272f9c7c0738641aa63eb1f3/evidence/C7/resultats-2026-10-03.jsonl),
 [le réglage d'Azure](https://github.com/Ganda15/rita-agent/blob/922349da2042a6f2272f9c7c0738641aa63eb1f3/src/llm.py#L31-L36) et [son test](https://github.com/Ganda15/rita-agent/blob/922349da2042a6f2272f9c7c0738641aa63eb1f3/tests/test_llm.py#L13-L18),
 [le guide d'exploitation](https://github.com/Ganda15/rita-agent/blob/922349da2042a6f2272f9c7c0738641aa63eb1f3/docs/exploitation.md).
@@ -315,7 +316,8 @@ Au 03/10, date du banc, RITA demandait au modèle **une seule tâche** : rédige
 
 Ce que le besoin n'exige pas : du code, de l'image, de la conversation, un long contexte (le prompt tient en moins de
 1 000 jetons). Depuis le 16/10, un second usage s'ajoute : répondre à une question libre à partir des articles
-(`/question`), avec Azure seul et une réponse au format JSON imposé (registre RGPD, T8) ; le texte saisi par
+(`/question`), avec Azure seul jusqu'au 13/11, Mistral en secours depuis le 14/11 (4.2), et une réponse au format
+JSON imposé (registre RGPD, T8) ; le texte saisi par
 l'utilisateur est alors transmis au modèle (4.3). Le banc du 03/10 ne le couvre
 pas.
 
@@ -408,8 +410,8 @@ verdicts sur Question sont les miens, sur un seul passage en production, avec de
 
 ### 3.4 Mistral : l'essai du 10/10, le banc du 07/11 {: #s3-4 }
 Le 10/10, **un briefing par modèle** (MC.PA) : Large 3 a inventé une date de séance, Large 4 non, pour un coût voisin
-(0,10 contre 0,08 centime) ; preuve sur la branche `mistral-ue`, PR #88 non fusionnée : Mistral n'est pas dans la
-version présentée.
+(0,10 contre 0,08 centime) ; preuve sur la branche `mistral-ue`, PR #88 non fusionnée : Large 4 n'a jamais été
+activé. Large 3 est intégré en secours depuis le 14/11 (4.2).
 
 **Le banc du 07/11** (`evidence/C7/banc-2026-11-07-comparaison/`) : le jeu du 03/10, le prompt du 06/11, 500 jetons,
 Azure en zone UE. Lors des essais du 07/11, le réglage `none` a été refusé ; avec `low` et 500 jetons, aucun texte n'a
@@ -465,10 +467,12 @@ dans le code.
 | Azure AI Foundry, `gpt-5.4` (mesuré le 03/10 en Global Standard ; en zone UE depuis le 09/10) | **retenu** | 30 textes sur 30 acceptés par le garde-fou de sortie et fidèles au contrôle minimal ; 0 € déclaré pour le candidat ; médiane 3,21 s, puis 2,19 s en zone UE le 07/11 ; déploiement configuré en zone UE depuis le 09/10 | le 03/10, 2 appels sur 30 au-dessus de 10 s (aucun le 07/11) ; prise en charge des frais qui peut cesser ; DPA de Microsoft lu pour ses sections utiles (06/11), conditions des produits non vérifiées (4.2) |
 | Claude par OpenRouter | **écarté** | 30 textes sur 30 acceptés par le garde-fou de sortie et fidèles au contrôle minimal ; latence régulière (95e centile 7,20 s) | payant ; traitement dans l'UE non garanti, contraire à la règle du 05/10 |
 | Claude par l'API d'Anthropic | **écarté, non mesuré** | même famille Claude, version configurée différente (`claude-sonnet-5` en accès direct, `claude-sonnet-4.5` mesuré par OpenRouter) | API directe non mesurée, faute de clé ; société établie aux États-Unis, traitement dans l'UE non garanti |
-| Mistral, adresse européenne | **futur second fournisseur, sous conditions ; non actif** | hébergé dans l'UE ; Large 3 au banc du 07/11 : 30 sur 30, meilleure note de français dans cette évaluation (1,37 contre 1,10), coût estimé environ six fois inférieur, aux tarifs de référence du § 3.4 | Large 4 sans texte à 500 jetons (07/11) ; Large 3 écrit du Markdown ; contrat non lu ; hors de la cascade |
+| Mistral, adresse européenne | **second fournisseur, en secours depuis le 14/11 (4.2)** ; au 08/11 : futur second fournisseur, sous conditions, non actif | hébergé dans l'UE ; Large 3 au banc du 07/11 : 30 sur 30, meilleure note de français dans cette évaluation (1,37 contre 1,10), coût estimé environ six fois inférieur, aux tarifs de référence du § 3.4 | Large 4 sans texte à 500 jetons (07/11) ; Large 3 écrit du Markdown, retiré avant l'affichage depuis le 14/11 ; contrat lu le 13/11, sauf la liste de ses sous-traitants |
 
-Depuis le 31/10, la production n'appelle qu'Azure (4.2) : il n'y a pas de fournisseur de secours. Ce qui ferait changer
+Du 31/10 au 13/11, la production n'appelait qu'Azure (4.2), sans fournisseur de secours. Ce qui devait faire changer
 la décision : la fin de la prise en charge des frais d'Azure, ou Mistral une fois son contrat lu et son Markdown réglé.
+Les deux conditions posées pour Mistral sont remplies le 14/11 : contrat lu le 13/11, marques Markdown retirées avant
+l'affichage. Azure reste premier ; Mistral répond en secours depuis le 14/11 (4.2).
 Sur les 30 appels Azure du 07/11, le 95e centile est de 2,55 s ; ce résultat ne garantit pas le délai des prochains appels.
 
 ### 3.7 Ce qui n'est pas fait {: #s3-7 }
@@ -480,7 +484,8 @@ Sur les 30 appels Azure du 07/11, le 95e centile est de 2,55 s ; ce résultat ne
 - **Le banc du 07/11** compare Azure UE à Mistral Large 3 sur dix cas, avec trois répétitions ; il ne mesure ni l'usage
   Question ni la variation d'un jour à l'autre. Large 4 n'a pas fait l'objet de cette comparaison complète.
 - **L'API directe d'Anthropic** n'est pas mesurée.
-- **Le contrat de Mistral** (sous-traitants, conservation, entraînement) n'est pas lu.
+- **Le contrat de Mistral** : lu le 13/11 (`docs/lecture-contrat-mistral-2026-11-13.md`), sauf la liste de ses
+  sous-traitants, quatrième vérification de la fiche.
 
 ---
 
@@ -526,12 +531,12 @@ fournis, sans jamais recommander d'acheter ou de vendre (contrainte AMF). Le pro
 (`agents/analyst.py`) ; un garde-fou d'entrée et un garde-fou de sortie la font respecter, en code testé. Les modèles
 GPT-5 refusent `max_tokens` : RITA envoie `max_completion_tokens` (`src/llm.py`, lignes 71 à 73).
 
-**Le réglage qui décide du fournisseur.** `LLM_ORDRE` liste les fournisseurs essayés dans l'ordre ; le code en connaît
-trois : Azure (`foundry`), Anthropic et OpenRouter ; Mistral, ajouté le 07/11 pour le banc, n'en fait pas partie (3.4).
-La règle initiale du projet (05/10, registre RGPD, § 0) a conduit à retenir Azure seul : Anthropic et OpenRouter ne la
-garantissaient pas. Ce choix reste en place après la précision du 06/11 (4.2) ; les conditions d'un autre fournisseur
-sont à vérifier avant son activation. C'est la valeur par défaut
-depuis le 31/10 (fonction complète : `src/llm.py`, lignes 31 à 36, à `922349d`) :
+**Le réglage qui décide du fournisseur.** `LLM_ORDRE` liste les fournisseurs essayés dans l'ordre. Au 08/11, le code
+en connaissait trois : Azure (`foundry`), Anthropic et OpenRouter ; Mistral, ajouté le 07/11 pour le banc, n'en faisait
+pas partie (3.4). La règle initiale du projet (05/10, registre RGPD, § 0) a conduit à retenir Azure seul : Anthropic et
+OpenRouter ne la garantissaient pas. Depuis le 14/11, Mistral fait partie de la cascade, vérifié avant son activation
+(encadré « Depuis le 14/11 » ci-dessous). Azure seul reste la valeur par défaut depuis le 31/10 (fonction complète :
+`src/llm.py`, lignes 31 à 36, à `922349d`) :
 
 ```python
 ordre = os.getenv("LLM_ORDRE", "foundry")   # src/llm.py, ligne 35 : Azure seul si rien n'est configuré
@@ -539,7 +544,9 @@ ordre = os.getenv("LLM_ORDRE", "foundry")   # src/llm.py, ligne 35 : Azure seul 
 
 Un test vérifie que, sans configuration, la liste ne contient qu'Azure (`tests/test_llm.py`, lignes 13 à 18) ; un
 second, que Compose ne remplace pas cet ordre (`tests/test_docker_compose.py`, ligne 144). Le parcours Question
-n'appelle qu'Azure, sans repli (registre RGPD, T8).
+n'appelait qu'Azure, sans repli, jusqu'au 13/11 ; depuis le 14/11, il n'appelle que des fournisseurs de l'UE, Azure puis
+Mistral si `LLM_ORDRE` le nomme, jamais Anthropic ni OpenRouter (`src/llm.py`, `FOURNISSEURS_DES_QUESTIONS` ; registre
+RGPD, T8).
 
 <div class="encadre preuve">
 <p class="encadre-titre">La preuve en production</p>
@@ -561,9 +568,16 @@ n'appelle qu'Azure, sans repli (registre RGPD, T8).
 <p class="ligne evaluation"><b>L'évaluation</b> : la décision ne rendait pas le critère vert ; C8.2 restait à consolider tant que la consigne de l'écran Question (n'y écrire aucune donnée personnelle) n'était pas en production. Elle l'est depuis la livraison du 07/11, reliée au champ de la question, vérifiée sur le site réel (<code>evidence/C17/verification-production-2026-11-07/</code>) : C8.2 est tenu (5).</p>
 </div>
 
+<div class="encadre preuve">
+<p class="encadre-titre">Depuis le 14/11 : Mistral en secours d'Azure</p>
+<p>Le 13/11 vers 19 h UTC, Azure refuse la clé du serveur (HTTP 401). Le pré-test de la livraison exige un briefing et une question réels : toute mise en service est alors refusée. Cause non établie : la clé, testée seule hors de RITA, reçoit le même refus, encore le 14/11 après l'annonce du rétablissement d'une panne de Microsoft 365 (<code>evidence/C21/INC-010-azure-repond-401.md</code>).</p>
+<ul><li><i>avant l'activation</i> : contrat de Mistral lu le 13/11 (<code>docs/lecture-contrat-mistral-2026-11-13.md</code>) : inférence dans l'UE et l'AELE par l'adresse européenne, conservation de 30 jours pour la modération des abus ; console vérifiée le 14/11 : données de l'API non utilisées pour l'entraînement, modèles Labs désactivés ;</li><li><i>la configuration</i> : <code>LLM_ORDRE=foundry,mistral</code> sur le serveur, Azure d'abord ; Mistral Large 3 (<code>mistral-large-2512</code>), adresse européenne écrite dans le code ; les questions ne vont qu'à Azure ou à Mistral ;</li><li><i>deux réglages demandés par Mistral</i> : la consigne des questions exige le numéro de l'extrait dans le texte (0 réponse valide sur 6 avant, 8 sur 8 après, <code>evidence/C11/citations-mistral-2026-11-14/</code>) ; les marques Markdown d'un briefing sont retirées avant l'affichage ;</li><li><i>la preuve</i> : livraison du 14/11 passée (pré-test, bascule, contrôle après bascule) ; session de test du tableau de bord, 11 requêtes servies par Mistral, aucune erreur (<code>evidence/C20/session-test-2026-11-14/</code>).</li></ul>
+<p>Les mesures d'Azure de ce rapport ne deviennent pas des mesures de Mistral : pour Mistral Large 3, la mesure comparable est le banc du 07/11 (3.4).</p>
+</div>
+
 <div class="encadre limite">
 <p class="encadre-titre">Ce qui reste ouvert</p>
-<ul><li>aucun fournisseur de secours : depuis le 04/11, une panne d'Azure donne une réponse 503 claire (<code>AUCUN_FOURNISSEUR</code>, <code>tests/test_briefing_diagnostic.py</code>), et Mistral Large 4 n'est pas intégré (3.6) ;</li><li>la durée de conservation de l'échantillon des abus n'est pas indiquée.</li></ul>
+<ul><li>au 08/11, aucun fournisseur de secours : une panne d'Azure donnait une réponse 503 claire (<code>AUCUN_FOURNISSEUR</code>, <code>tests/test_briefing_diagnostic.py</code>) ; depuis le 14/11, Mistral Large 3 répond en secours ; la cause du refus de la clé d'Azure n'est pas établie ;</li><li>la liste des sous-traitants de Mistral n'est pas lue ;</li><li>la durée de conservation de l'échantillon des abus n'est pas indiquée par Microsoft.</li></ul>
 </div>
 
 ### 4.3 Ce qui est envoyé au service {: #s4-3 }
@@ -574,7 +588,8 @@ n'appelle qu'Azure, sans repli (registre RGPD, T8).
 | Ce qui reste personnel | la valeur demandée et l'heure de la demande disent ce qui intéresse l'utilisateur | le texte de la question |
 
 RITA ne conserve ni la question ni la réponse. La durée de conservation chez Microsoft n'est pas indiquée pour
-l'échantillon de la surveillance des abus (4.2).
+l'échantillon de la surveillance des abus (4.2). Depuis le 14/11, les mêmes données peuvent partir à Mistral quand Azure
+échoue ; Mistral les garde 30 jours pour la modération des abus (fiche de lecture de son contrat, 13/11).
 
 ### 4.4 Le monitorage disponible {: #s4-4 }
 
@@ -660,7 +675,7 @@ preuve · 🟡 à consolider : le point qui manque est écrit · ❌ aucune preu
 <tr><td>C7.7 conclusions</td><td class="etat ok">✅</td><td>service retenu et services écartés, avec avantages et limites (3.6)</td></tr>
 <tr class="groupe c8"><th colspan="3" scope="colgroup">C8 · le service retenu, paramétré, surveillé, documenté</th></tr>
 <tr><td>C8.1 service accessible, avec authentification</td><td class="etat ok">✅</td><td>accès par clé, adresse cliquable, connexion à clé masquée ; briefing et trace du 06/11, reliés par la même référence (4.1, annexe A6)</td></tr>
-<tr><td>C8.2 configuré selon les besoins et les contraintes</td><td class="etat ok">✅</td><td><b>fait</b> : prompt corrigé, Azure seul, zone UE, ressource en Suède (4.2) ; règle UE précisée et vérifiée le 06/11 ; consigne de l'écran Question en production depuis le 07/11, vérifiée sur le site réel (4.2)</td></tr>
+<tr><td>C8.2 configuré selon les besoins et les contraintes</td><td class="etat ok">✅</td><td><b>fait</b> : prompt corrigé, Azure en zone UE, ressource en Suède (4.2) ; Mistral Large 3 en secours depuis le 14/11, après lecture de son contrat (4.2) ; règle UE précisée et vérifiée le 06/11 ; consigne de l'écran Question en production depuis le 07/11, vérifiée sur le site réel (4.2)</td></tr>
 <tr><td>C8.3 monitorage opérationnel</td><td class="etat ok">✅</td><td>traces reliées au briefing, alertes, vigie, supervision d'Azure (4.4)</td></tr>
 <tr><td>C8.4 documentation complète</td><td class="etat ok">✅</td><td>guide d'exploitation, testé contre le code (4.5)</td></tr>
 <tr><td>C8.5 documentation communiquée, format accessible</td><td class="etat ok">✅</td><td>guide envoyé au formateur le 03/11, format contrôlé (4.6)</td></tr>
@@ -680,7 +695,9 @@ sous `livrable-E2-v2`, 0.9 sous `livrable-E2-v1` ; 1.2 à 1.4 non taguées.
 
 1. **Reprendre la veille** (C6) : relevés et notes des semaines suivantes, un échange collectif documenté.
 2. **La contrainte UE** (C8.2) : connaître la durée de conservation de l'échantillon des abus (registre, point 12).
-3. **Mistral** (C7, C8) : lire son contrat et régler le Markdown de Large 3 (3.4), avant la PR #88.
+3. **Mistral** (C7, C8) : contrat lu le 13/11 et Markdown retiré le 14/11 ; reste la liste de ses sous-traitants.
+4. **Azure** (C8) : trouver la cause du refus de la clé (journal d'activité de la ressource, abonnement, authentification
+   par clé), sans régénérer la clé tant que la cause n'est pas connue.
 
 ## 📖 Glossaire {: #glossaire }
 
