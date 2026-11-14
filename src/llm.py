@@ -243,11 +243,13 @@ def generer_json(prompt: str, schema: dict, nom_schema: str, max_tokens: int = 8
                 corps = reponse.json()
                 choix = corps["choices"][0]
                 tronquee = choix.get("finish_reason") in FINS_TRONQUEES
-                brut = choix["message"]["content"]
-                contenu = _texte_mistral(brut) if nom == "mistral" and not tronquee else brut
                 usage = corps.get("usage") or {}
                 # Sprint 5 (étape 1) : une réponse tronquée ou mal formée est facturée aussi ; ses jetons comptent.
+                # Comptés AVANT de lire le texte (revue de #251, 14/11) : une réponse Mistral vide, ou de réflexion
+                # seule, lève à la lecture, et ses jetons facturés n'arrivaient jamais au coût de `/sante`.
                 compteurs.ajouter_jetons(usage.get("prompt_tokens"), usage.get("completion_tokens"))
+                brut = choix["message"]["content"]
+                contenu = _texte_mistral(brut) if nom == "mistral" and not tronquee else brut
                 traces.terminer_etape(etape_llm, metadata={
                     "modele": corps.get("model") or modele,
                     "region": (getattr(reponse, "headers", None) or {}).get("x-ms-region") if nom == "foundry"

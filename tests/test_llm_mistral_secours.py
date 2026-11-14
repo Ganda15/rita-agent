@@ -181,6 +181,27 @@ def test_sans_cle_mistral_la_question_est_indisponible(deux_fournisseurs, monkey
     assert [a["url"] for a in appels] == [URL_AZURE], "sans clé, Mistral n'est pas appelé"
 
 
+@pytest.mark.parametrize("contenu", ["", [{"type": "thinking", "thinking": "..."}]])
+def test_une_reponse_mistral_vide_compte_ses_jetons(deux_fournisseurs, monkeypatch, contenu):
+    """Revue automatique de #251 (14/11) : une réponse vide, ou faite de réflexion seule, est facturée ; ses jetons
+    doivent compter dans le coût de `/sante`, comme pour Azure (« une réponse mal formée est facturée aussi »)."""
+    monkeypatch.setenv("LLM_ORDRE", "foundry,mistral")
+    comptes = []
+    monkeypatch.setattr(llm.compteurs, "ajouter_jetons", lambda entree, sortie: comptes.append((entree, sortie)))
+
+    def faux_post(url, headers, json, timeout):
+        if url == URL_AZURE:
+            return _ReponseHttp({}, statut=401)
+        return _ReponseHttp({"model": "mistral-large-2512", "choices": [{"message": {"content": contenu},
+                                                                         "finish_reason": "stop"}],
+                             "usage": {"prompt_tokens": 120, "completion_tokens": 800}})
+
+    monkeypatch.setattr(llm.httpx, "post", faux_post)
+    with pytest.raises(llm.FournisseurIndisponible):
+        llm.generer_json("prompt", SCHEMA, "reponse_rita")
+    assert comptes == [(120, 800)]
+
+
 def test_aucun_texte_dans_les_traces_quand_mistral_repond(deux_fournisseurs, monkeypatch):
     monkeypatch.setenv("LLM_ORDRE", "foundry,mistral")
     client = _Enregistreur()
