@@ -643,3 +643,14 @@ def test_l_ecran_question_demande_de_ne_pas_ecrire_de_donnee_personnelle():
     assert consigne
     texte = " ".join(consigne.group(1).split())
     assert "donnée personnelle" in texte and "Azure" in texte
+
+
+# 14/11/2026 : Mistral répond aux questions quand Azure échoue (`src/llm.py`, `FOURNISSEURS_DES_QUESTIONS`). La mention
+# disait « envoyé au modèle d'Azure » : elle doit nommer les deux destinataires possibles et leur zone (registre RGPD,
+# T8 ; inférence de Mistral en UE et AELE, `docs/lecture-contrat-mistral-2026-11-13.md`).
+def test_la_mention_de_l_ecran_question_nomme_mistral_en_secours():
+    html = _question_html()
+    consigne = re.search(r'<p\b[^>]*\bid="consigne-donnees"[^>]*>(.*?)</p>', html, flags=re.S)
+    texte = " ".join(consigne.group(1).split())
+    assert "Mistral" in texte and "AELE" in texte
+    assert "Union européenne" in texte and "RITA ne le conserve pas" in texte
