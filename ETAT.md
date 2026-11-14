@@ -46,8 +46,13 @@ sont comptés au prix d'Azure, plusieurs fois plus cher que celui de Mistral Lar
    Drive, le canal privé de la clé du jury, le dépôt public à partir du 22/11).
 4. Puis les points 4 à 6 du bloc du 13/11 au soir (22/11 dépôt public, 23/11 dépôt des 5 PDF, rattrapages du 30/11
    après 22 h 05 et du 01/12 avant 9 h).
-5. Azure : chercher la cause du 401 dans le portail (Era). Si la clé change, Era la remplace dans le fichier
-   d'environnement du serveur, puis l'API est relancée ; la cascade reprend Azure en premier sans autre livraison.
+5. Azure : fiche d'incident `evidence/C21/INC-010-azure-repond-401.md` (issue #250, toujours ouverte), cause non
+   établie. Une panne mondiale de Microsoft 365 (12 au 14/11, MO1550821) coïncide, sans lien prouvé : services et
+   erreurs différents (503, délais, pas de 401). Ce qui trancherait, dans l'ordre : refaire le test de la clé sur le
+   serveur maintenant que Microsoft annonce le service rétabli ; puis le portail (journal d'activité de la ressource,
+   état de l'abonnement, crédit, Service Health) ; l'heure du dernier appel réussi dans Langfuse. Si la clé change, Era
+   la remplace dans le fichier d'environnement du serveur, puis l'API est relancée ; la cascade reprend Azure en premier
+   sans autre livraison.
 
 **Fait le 14/11** :
 - Matin : clé Azure testée de nouveau, toujours 401. Plan B : #251 (Mistral en secours d'Azure, briefings et questions,
