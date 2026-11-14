@@ -9,6 +9,18 @@
 
 ---
 
+## 2026-11-13, nuit : minutes de CI épuisées, puis Azure refuse la clé ; livraison refusée au pré-test
+
+- **Manque découvert** : les minutes de GitHub Actions du mois étaient épuisées ; à partir de 18 h 41 UTC, aucun
+  travail ne démarrait (« recent account payments have failed or your spending limit needs to be increased »), y
+  compris la vigie planifiée. Rétabli par Era le soir même (crédit ajouté) ; environ 20 minutes facturées par PR.
+- **Manque découvert** : vers 20 h (heure de Paris), Azure répond 401 à la clé du serveur. Briefings et questions en
+  panne en production. La livraison de #249 a été refusée au pré-test (`briefing`, `question`) et la production est
+  restée sur `770d440` : le pré-test a fait son travail. Aucun second fournisseur n'est prêt : les questions passent
+  par Azure seul.
+- **Décision d'Era** : attendre le 14/11 au matin (A), puis ajouter Mistral en second fournisseur (B), après les
+  quatre vérifications de la fiche de lecture de son contrat.
+
 ## 2026-11-13, soir : consignes de remise et d'accès du jury ; la courbe gagne ses axes
 
 - **Décision** (consignes de la dernière séance, 13/11) : 5 PDF, annexes comprises, remis le 23/11 ; le dépôt sera

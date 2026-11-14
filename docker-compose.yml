@@ -98,6 +98,9 @@ services:
       AZURE_FOUNDRY_DEPLOYMENT: ${AZURE_FOUNDRY_DEPLOYMENT:-gpt-5.4-dzs-eu}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      # Mistral en secours d'Azure depuis le 14/11 (briefings et questions) : sa clé, vide par défaut, ne sert que si
+      # `LLM_ORDRE` le nomme dans le fichier d'environnement du serveur (`foundry,mistral`).
+      MISTRAL_API_KEY: ${MISTRAL_API_KEY:-}
       # Azure seul par défaut, comme `src/llm.py` (règle UE seule, décision du 11/10 ; production lue le 31/10).
       LLM_ORDRE: ${LLM_ORDRE:-foundry}
       # --- Frein des essais de clé (constat S3, 07/11/2026, plan validé par Era) ---------------

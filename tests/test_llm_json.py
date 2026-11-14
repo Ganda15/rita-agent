@@ -73,6 +73,9 @@ def azure(monkeypatch):
     monkeypatch.setenv("AZURE_FOUNDRY_ENDPOINT", "https://ressource.services.ai.azure.com/openai/v1")
     monkeypatch.setenv("AZURE_FOUNDRY_API_KEY", "cle-de-test")
     monkeypatch.setenv("AZURE_FOUNDRY_DEPLOYMENT", "gpt-5.4")
+    # Depuis le 14/11, les questions suivent `LLM_ORDRE` (Azure, puis Mistral s'il est nommé) : le `.env` local, chargé
+    # par `api/main.py`, ne doit pas changer l'ordre de ces tests, ni faire partir un vrai appel vers Mistral.
+    monkeypatch.delenv("LLM_ORDRE", raising=False)
 
     def interdit(*args, **kwargs):
         raise AssertionError("fournisseur non approuvé appelé par le parcours des questions")
