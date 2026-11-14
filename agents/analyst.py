@@ -1,7 +1,9 @@
 """Rédacteur — génère le briefing en français via src/llm.py (C8, C9, C10)."""
 import logging
+from dataclasses import replace
 from datetime import date
 
+from agents.mise_en_forme import sans_marques_markdown
 from guardrails.injection import neutraliser
 from guardrails.normalisation import sans_invisibles
 from src.llm import ResultatTexte, generer_texte_detaille
@@ -235,4 +237,9 @@ def generate_briefing_detaille(ticker: str, price: float, change_pct: float,
     """
     prompt = construire_prompt(ticker, price, change_pct, adtv20, currency,
                                fraicheur_jours, cotation_perimee, passages, indicateurs)
-    return generer_texte_detaille(prompt, max_tokens=500)
+    resultat = generer_texte_detaille(prompt, max_tokens=500)
+    # 14/11/2026 : l'écran affiche le texte tel quel ; les marques Markdown de Mistral (« *BFM Bourse* ») se voyaient.
+    # Retirées ici, avant le garde-fou de sortie (api/main.py), qui lit donc exactement le texte affiché. Sans marque,
+    # le résultat du fournisseur est rendu tel quel.
+    texte = sans_marques_markdown(resultat.texte)
+    return resultat if texte == resultat.texte else replace(resultat, texte=texte)
