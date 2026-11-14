@@ -8,7 +8,7 @@ Créé le 25/08/2026. Livrable E5.
 
 | # | Critère (texte officiel) | État | Pourquoi |
 |---|---|---|---|
-| 1 | Les causes du problème sont identifiées correctement | ✅ | chaque incident ci-dessous a une cause racine établie, pas une hypothèse |
+| 1 | Les causes du problème sont identifiées correctement | ✅ | chaque incident ci-dessous a une cause racine établie, pas une hypothèse, **sauf INC-010** (14/11) : la cause du 401 d'Azure n'est pas trouvée, la fiche le dit et liste ce qui trancherait |
 | 2 | Le problème est reproduit en environnement de développement | ✅ | reproduit pour INC-001, 002 et 004 ; INC-003 s'est produit *en* développement |
 | 3 | La procédure de débogage est documentée depuis l'outil de suivi | ✅ depuis le 27/09 | INC-005 : issues #47 à #53, débogage écrit au fil de l'eau. Avant : aucune issue (25/08). INC-006 (02/10) : pas d'issue, dit dans la fiche |
 | 4 | La solution documentée explicite chaque étape de résolution | ✅ | c'est l'objet des fiches ci-dessous |
@@ -70,6 +70,7 @@ régularité qui prouve.*
 | [INC-006](INC-006-tests-ecrivaient-en-production.md) | Douze générations de test dans le projet Langfuse de production | `7cf3ffd` | Observabilité : trouvé dans l'outil de surveillance, pas dans le code ; commit direct |
 | [INC-008](INC-008-cles-mistral-dans-l-historique.md) | Deux vraies clés Mistral dans l'historique de `.env.example` (branche `mistral-ue`) | sprint 2, tâche 3 | Sécurité : trouvé par la première analyse de l'historique (gitleaks) ; clés révoquées, historique gardé, exceptions documentées |
 | [INC-009](INC-009-retour-a-la-normale-ouvre-un-incident.md) | Un message de retour à la normale de Langfuse a ouvert un nouveau ticket d'incident (#137) | `a57dccb`, PR #171 | Chaîne d'alerte : trouvé en relisant les issues ouvertes pour E5 ; reproduit avant correctif dans un conteneur jetable (1 test rouge), 14 tests verts après ; débogage écrit dans l'issue |
+| [INC-010](INC-010-azure-repond-401.md) | Azure répond 401 à la clé du serveur : briefings et questions en panne, livraisons refusées (#250) | `2dd385f`, PR #251, #254, #256 | Fournisseur du modèle : vu par le pré-test et l'alerte Langfuse, pas par la vigie ; contourné par Mistral en secours ; **cause non établie** (une panne mondiale de Microsoft 365 du 12 au 14/11 coïncide, mais la clé reçoit toujours 401 après l'annonce du rétablissement : hypothèse très peu probable) |
 
 INC-004 est le plus important des quatre devant un jury. Ce n'est pas un simple bug : c'est un
 mode de défaillance du projet lui-même, repéré dans le projet, avec une contre-mesure.
