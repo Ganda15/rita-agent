@@ -9,6 +9,20 @@
 
 ---
 
+## 2026-11-14 : Mistral en secours d'Azure ; trois obstacles de livraison découverts ; production livrée sur `2dd385f`
+
+- **Décision d'Era** : Mistral en secours d'Azure, pas à sa place (`LLM_ORDRE=foundry,mistral` sur le serveur), après
+  la lecture du contrat et le contrôle de la console (entraînement sur les données d'API et modèles Labs désactivés).
+  Azure refuse toujours la clé (HTTP 401), cause non trouvée.
+- **Manque découvert** : le jeton qui permet au serveur de tirer l'image privée (GHCR) avait expiré le 13/11 ; renouvelé
+  jusqu'au 31/12/2026. Le budget GitHub Packages était à 0 $ ; budgets posés (Actions 25 $, Packages 10 $).
+- **Manque découvert** : quand un contrôle de livraison échouait, le journal du déployeur ne disait pas pourquoi. Corrigé
+  (#254) : code HTTP, statut et motif, jamais un texte. La raison suivante était lisible : `CITATIONS_INVALIDES`.
+- **Manque découvert** : Mistral Large 3 n'écrivait pas le numéro de l'extrait dans le texte (0 réponse valide sur 6).
+  Consigne précisée (#256) : 8 sur 8.
+- **Manque découvert** : deux endroits de l'interface supposent encore Azure seul (mention de l'écran Question, nom du
+  fournisseur sous un briefing). À corriger avant le gel du 16/11.
+
 ## 2026-11-13, nuit : minutes de CI épuisées, puis Azure refuse la clé ; livraison refusée au pré-test
 
 - **Manque découvert** : les minutes de GitHub Actions du mois étaient épuisées ; à partir de 18 h 41 UTC, aucun

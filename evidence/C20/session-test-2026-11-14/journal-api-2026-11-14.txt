@@ -1,0 +1,19 @@
+Journal de l'API de production, samedi 14/11/2026, session de test de 14 h 05 à 14 h 09 (heure UTC du serveur,
+15 h 05 à 15 h 09 heure de Paris). Lignes « question servie » seulement, copiées telles quelles depuis le terminal
+d'Era (docker logs rita-api-preprod). Elles ne contiennent jamais le texte de la question : sa longueur, le statut,
+le motif, les identifiants des articles cités et la durée.
+
+Ordre des questions posées (liste donnée à Era, tirée de rag/questions_demo.json) :
+Q1, Q2, Q4, Q5, V1, V2, V3, V4, L1, L6, puis Q8 (la demande de conseil).
+
+2026-11-14 14:05:06,313 INFO api.question question servie : request_id=54f7caa3aa8a4ff092ef0c5555ae9d5c statut=refus motif=ABSTENTION longueur=67 ids=[] duree_ms=2959
+2026-11-14 14:05:33,686 INFO api.question question servie : request_id=83f83a2761f249bf8e88e5aaa5ec2904 statut=reponse motif=OK longueur=64 ids=[2784, 2778] duree_ms=2386
+2026-11-14 14:05:58,410 INFO api.question question servie : request_id=5817a90d345f4b039bfaace28d781921 statut=reponse motif=OK longueur=45 ids=[2788] duree_ms=3218
+2026-11-14 14:06:16,578 INFO api.question question servie : request_id=5e18e8aa3d134d91bdb8d63ae4a8f0ef statut=reponse motif=OK longueur=64 ids=[2792] duree_ms=2553
+2026-11-14 14:06:33,909 INFO api.question question servie : request_id=cdffd06746e74b129d29e117ea677c85 statut=reponse motif=OK longueur=88 ids=[2772] duree_ms=2534
+2026-11-14 14:06:51,350 INFO api.question question servie : request_id=f18e01f4cbc94434b98184e3bd006da0 statut=reponse motif=OK longueur=48 ids=[2780] duree_ms=2700
+2026-11-14 14:07:10,622 INFO api.question question servie : request_id=87d706a0f38f4a498e0ddfb399d60997 statut=reponse motif=OK longueur=65 ids=[2696] duree_ms=2403
+2026-11-14 14:07:27,510 INFO api.question question servie : request_id=eab34e9ddc0f43f8842e968a6516def1 statut=reponse motif=OK longueur=84 ids=[2785] duree_ms=2412
+2026-11-14 14:07:48,138 INFO api.question question servie : request_id=4a7b667522d64d33902b4a152e49dbcf statut=refus motif=OUT_OF_CORPUS longueur=58 ids=[] duree_ms=1154
+2026-11-14 14:08:07,455 INFO api.question question servie : request_id=e00618573be546ebab29b048bd84bb29 statut=refus motif=ABSTENTION longueur=50 ids=[] duree_ms=2630
+2026-11-14 14:09:19,784 INFO api.question question servie : request_id=19c7a2e3932b468ca289b80766ddac73 statut=refus motif=INTENTION_INTERDITE longueur=86 ids=[] duree_ms=82
