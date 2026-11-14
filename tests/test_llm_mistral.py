@@ -135,10 +135,10 @@ def test_la_production_reste_sur_azure_seul(monkeypatch):
     assert llm._ordre_fournisseurs() == ["foundry"]
 
 
-def test_la_cascade_ignore_mistral_meme_si_le_reglage_le_nomme():
-    """Mistral n'entre dans la cascade qu'après la lecture de son contrat : son nom n'est pas parmi les noms valides."""
-    from src import llm
-    assert "mistral" not in llm._NOMS_VALIDES
+# Le 14/11/2026, `test_la_cascade_ignore_mistral_meme_si_le_reglage_le_nomme` est retiré, volontairement : il tenait la
+# règle « pas de Mistral avant la lecture de son contrat ». La lecture est faite (`docs/lecture-contrat-mistral-2026-11-13.md`)
+# et Era a décidé, après le refus de la clé Azure du 13/11, de mettre Mistral en secours. La règle nouvelle, éteint par
+# défaut et allumé seulement par `LLM_ORDRE`, est tenue par `tests/test_llm_mistral_secours.py`.
 
 
 @pytest.mark.parametrize("contenu", ["", "   ", "\n"])
