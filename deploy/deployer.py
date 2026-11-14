@@ -621,8 +621,12 @@ def controler(base: str, cle: str, profil: str, commit_attendu: str | None, jour
     except OSError:
         return Controle("degrade", tuple(echecs) + ("connexion",))
     corps = _json(briefing)
+    # 14/11/2026 : deux livraisons ont échoué sur « question » sans dire pourquoi. La raison de chaque contrôle en échec
+    # va dans `detail` (code HTTP, statut, motif : des codes, jamais un texte de réponse), que le journal garde.
+    raisons = []
     if briefing.statut != 200 or not str(corps.get("briefing", "")).strip() or corps.get("conforme_amf") is not True:
         echecs.append("briefing")
+        raisons.append(f"briefing : HTTP {briefing.statut}, conforme {'oui' if corps.get('conforme_amf') is True else 'non'}")
     elif f"request_id={briefing.entetes.get('x-request-id', '?')}" not in journal():
         echecs.append("journal")
     # Choix A d'Era (14/10) : un briefing est rédigé même sans article ; seul ce compte rend un index vide visible.
@@ -635,7 +639,17 @@ def controler(base: str, cle: str, profil: str, commit_attendu: str | None, jour
         if (question.statut != 200 or corps_question.get("statut") != "reponse"
                 or not corps_question.get("references")):
             echecs.append("question")
-    return Controle("sain" if not echecs else "degrade", tuple(echecs))
+            raison = (f"question : HTTP {question.statut}, statut {_code(corps_question.get('statut'))}, "
+                      f"motif {_code(corps_question.get('motif'))}")
+            if corps_question.get("statut") == "reponse":
+                raison += f", references {len(corps_question.get('references') or [])}"
+            raisons.append(raison)
+    return Controle("sain" if not echecs else "degrade", tuple(echecs), " ; ".join(raisons))
+
+
+def _code(valeur) -> str:
+    """Un statut ou un motif réduit aux lettres, chiffres et soulignés (40 au plus) : un code, jamais un texte."""
+    return re.sub(r"[^A-Za-z0-9_]", "", str(valeur if valeur is not None else ""))[:40] or "absent"
 
 
 def attendre_disponible(base: str, http=requete, dormir=time.sleep, echeance: float = ECHEANCE_DISPONIBLE,
@@ -815,7 +829,8 @@ def livrer(ref: str, docker, dossier: Path, env: dict, maintenant, http=requete,
         return 1
     if pretest.sante != "sain":
         docker.supprimer_index(version.index)
-        journaliser(dossier, maintenant(), **trace, resultat="refusee au pre-test", echecs=list(pretest.echecs))
+        journaliser(dossier, maintenant(), **trace, resultat="refusee au pre-test", echecs=list(pretest.echecs),
+                    **_details(pretest=pretest))
         fermer_operation(dossier)
         return 1
     # Sprint 3 (choix 9 du plan) : l'index candidat rejoue les questions de démonstration avant toute bascule.
