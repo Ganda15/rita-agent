@@ -4,7 +4,7 @@
 |---|---|
 | **Détecté le** | 13/11/2026, entre 19 h 16 et 19 h 20 UTC, par le **pré-test de la livraison** de #249 (refus sur `briefing` et `question`), puis à 19 h 30 UTC par l'**alerte Langfuse** « RITA : fournisseur en erreur », qui a ouvert l'issue #250 |
 | **Sévérité** | P2 : briefings et questions indisponibles ; données, indicateurs et protection par clé en état de marche |
-| **Durée** | panne visible du 13/11 vers 19 h UTC au 14/11 à 13 h 32 UTC (livraison de `2dd385f`, Mistral en secours). **La cause, elle, n'est pas trouvée** : Azure refusait encore la clé le 14/11 |
+| **Durée** | panne visible du 13/11 vers 19 h UTC au 14/11 à 13 h 32 UTC (livraison de `2dd385f`, Mistral en secours). **La cause, elle, n'est pas trouvée** : Azure refusait encore la clé au dernier test, le 15/11 à 23 h 03 UTC |
 | **Impact réel** | aucune donnée perdue ni faussée ; aucun texte de modèle servi à tort (une question en panne répond « indisponible ») ; toute livraison bloquée par le pré-test pendant la panne, la production restant sur `770d440` |
 | **Commit du contournement** | `2dd385f` (livraison), PR #251, #254 et #256 |
 | **Issue / demande de fusion** | issue #250 (ouverte par l'alerte, toujours ouverte) ; PR #251, #254, #256, puis #257 vers `main` |
@@ -21,14 +21,15 @@ Journal de l'API de production (heure UTC du serveur) :
 
 La même clé, testée seule sur le serveur, hors de RITA (`curl` sur la liste des modèles d'Azure, seul le code de
 réponse affiché) : **401**. Le 14/11 au matin, même test, même résultat ; et encore le 14/11 vers 17 h 20 UTC, après
-l'annonce du rétablissement par Microsoft (section 4, hypothèse 5).
+l'annonce du rétablissement par Microsoft (section 4, hypothèse 5). Dernier test, le 15/11 à 23 h 03 UTC (16/11 à
+0 h 03, heure de Paris), même commande, sans que la clé ait été changée : **401**.
 
 Ce qui fonctionnait : `/health` (200), les données, les indicateurs. La vigie de 19 h 43 UTC n'a ouvert aucune issue.
 Ce qu'elle regarde l'explique : elle sonde `/health`, qui n'appelle pas le modèle, puis lit les taux de `/sante`, qui
 restent « inconnu » sous 5 requêtes en 15 minutes (`monitorage/seuils.json`). Je n'ai pas relevé les valeurs de
 `/sante` à cette heure-là.
 
-## 2. Cause racine : **non établie au 14/11**
+## 2. Cause racine : **non établie au dernier test (15/11, 23 h 03 UTC)**
 
 Ce que je sais : un **401** veut dire que le service refuse l'authentification. Le code de RITA est hors de cause :
 la clé, testée seule hors de RITA, reçoit le même refus. Ce qui reste possible se trouve côté compte Azure ou côté
@@ -62,7 +63,7 @@ soir et duré jusqu'au 14/11 :
 
 Le chevauchement dans le temps est réel ; le lien n'est pas prouvé, et les faits vont contre. Le test décisif est
 fait : si la panne de Microsoft était la cause, la clé aurait dû répondre de nouveau une fois le service rétabli,
-sans être changée. Elle reçoit toujours 401. **Je tiens donc cette hypothèse pour très peu probable** : la cause est
+sans être changée. Elle reçoit toujours 401, encore le 15/11 à 23 h 03 UTC. **Je tiens donc cette hypothèse pour très peu probable** : la cause est
 à chercher côté compte Azure. **Ce qui trancherait encore** : (1) dans le portail Azure, le journal d'activité de la
 ressource (clés régénérées ?), l'état de l'abonnement et le crédit, et Service Health pour l'abonnement ; (2) dans
 Langfuse, l'heure du dernier appel réussi à Azure, que je n'ai pas relevée.
@@ -73,7 +74,7 @@ livraison exige un briefing et une question réels. Une panne du seul fournisseu
 
 ## 3. Reproduction
 
-En production : le test de la clé seule reproduisait le 401 à chaque essai, le 13/11 et le 14/11. En développement,
+En production : le test de la clé seule reproduisait le 401 à chaque essai, le 13/11, le 14/11 et le 15/11. En développement,
 le refus d'Azure est simulé par les tests du secours (section 6) ; la cause, inconnue, ne peut pas l'être.
 
 ## 4. Procédure de débogage
@@ -82,12 +83,12 @@ le refus d'Azure est simulé par les tests du secours (section 6) ; la cause, in
 |---|---|---|---|
 | 1 | Le code de RITA appelle mal Azure | la clé testée seule, hors de RITA | écartée : même 401 |
 | 2 | Incident déclaré par Microsoft sur Azure | page publique d'état d'Azure, 13/11 à 20 h 40 UTC | aucun incident affiché |
-| 3 | Panne passagère | nouveau test le 14/11 au matin | écartée pour une coupure de quelques heures : toujours 401 |
+| 3 | Panne passagère | nouveaux tests le 14/11 au matin et le 15/11 à 23 h 03 UTC | écartée : toujours 401 environ 52 heures après le premier refus |
 | 4 | Clé régénérée, abonnement suspendu ou crédit épuisé | portail Azure | **non testée** : le portail ne s'ouvrait pas le 13/11 |
 | 5 | Panne mondiale de Microsoft du 12 au 14/11 | trois sources lues le 14/11 (section 2), puis la clé testée de nouveau le 14/11 vers 17 h 20 UTC, après l'annonce du rétablissement | **très peu probable** : produits et types d'erreur différents, et toujours 401 une fois le service annoncé rétabli |
 
 Le débogage n'a pas été écrit dans l'issue #250 au fil de l'eau : il l'a été dans `ETAT.md` et `CHANGELOG.md` (13/11
-au soir et 14/11), puis ici le 14/11.
+au soir et 14/11), puis ici le 14/11 ; complété le 16/11 avec le test du 15/11 à 23 h 03 UTC.
 
 ## 5. Contournement, étape par étape
 
