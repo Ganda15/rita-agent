@@ -80,7 +80,6 @@ code{ background:#E3F0F3; color:#0D4C5E; border-radius:2pt; }
 .encadre .ligne.ecart{ background:#FFF4D9; } .encadre .ligne.ecart b{ color:#7A4E00; }
 .encadre .ligne.choix{ background:#ECEBFB; } .encadre .ligne.choix b{ color:#3B3FA8; }
 .encadre .ligne.evaluation{ background:#E9ECF0; } .encadre .ligne.evaluation b{ color:#4E5763; }
-p.glossaire-suite{ break-before:page; font-family:Georgia,"Times New Roman",serif; font-weight:600; font-size:12pt; color:var(--marine); margin:0 0 6pt; }
 h2#glossaire ~ table td{ padding:3pt 6pt 3pt 0; line-height:1.45; font-size:9.8pt; }  /* 07/11 : plus lisible, quitte à prendre une page de plus (20 au plus) */
 /* 08/11 : mise en forme « luxe fintech » de la maquette E2 du 08/11 (formes seules, texte inchangé) : en-tête de
    tableau en bleus par colonne, cellules sur fond pâle sans zébrage, filets fins, sous-titres en bandeau uni avec barre
@@ -93,7 +92,6 @@ table thead th:nth-child(3), table thead th.azure:nth-child(3), table thead th.c
 table thead th:nth-child(4), table thead th.azure:nth-child(4), table thead th.claude:nth-child(4){ background:#007B86; }
 table thead th:nth-child(n+5), table thead th.azure:nth-child(n+5), table thead th.claude:nth-child(n+5){ background:#00798F; }
 table thead th:nth-child(2):last-child{ background:#007494; }
-p.glossaire-suite{ background:#D6E6F7; border-left:4px solid #12395E; margin-left:-7pt; padding-left:calc(7pt - 4px); }
 table tbody tr td:not(.ok):not(.alerte){ background:#EEF2F6; }
 table tbody tr td:first-child:not(.ok):not(.alerte){ background:#E6EEF5; }
 body h3{ background:#D6E6F7; border-left:4px solid #12395E; padding-left:calc(9pt - 4px); }
@@ -458,7 +456,7 @@ dans le code.
 
 <div class="encadre decision">
 <p class="encadre-titre">Le choix : Azure AI Foundry, <code>gpt-5.4</code>, pour le briefing, choix maintenu</p>
-<ul><li>le banc du 03/10 le comparait à Claude via OpenRouter : mêmes contrôles réussis, même français, une médiane deux fois plus courte ;</li><li>le banc du 07/11 le mesure en zone UE, avec le prompt corrigé, face à Mistral Large 3 : médiane de 2,19 s contre 2,80 s, texte sans Markdown ; Mistral obtient une meilleure note moyenne dans cette évaluation (1,37 contre 1,10) et coûte moins ;</li><li>ses frais ne sont pas facturés au candidat (déclaration du 31/10) ; les appels ont néanmoins un coût (0,0044 USD estimé par briefing au tarif Global du 03/10 ; tarif UE propre non relevé) ;</li><li>il reste le seul fournisseur actif en production, en zone de données UE.</li></ul>
+<ul><li>le banc du 03/10 le comparait à Claude via OpenRouter : mêmes contrôles réussis, même français, une médiane deux fois plus courte ;</li><li>le banc du 07/11 le mesure en zone UE, avec le prompt corrigé, face à Mistral Large 3 : médiane de 2,19 s contre 2,80 s, texte sans Markdown ; Mistral obtient une meilleure note moyenne dans cette évaluation (1,37 contre 1,10) et coûte moins ;</li><li>ses frais ne sont pas facturés au candidat (déclaration du 31/10) ; les appels ont néanmoins un coût (0,0044 USD estimé par briefing au tarif Global du 03/10 ; tarif UE propre non relevé) ;</li><li>il reste le premier fournisseur appelé en production, en zone de données UE ; Mistral répond en secours depuis le 14/11 (4.2).</li></ul>
 <p>Le même service sert les questions : usage observé avec Azure, non comparé (3.3).</p>
 </div>
 
@@ -544,8 +542,8 @@ ordre = os.getenv("LLM_ORDRE", "foundry")   # src/llm.py, ligne 35 : Azure seul 
 
 Un test vérifie que, sans configuration, la liste ne contient qu'Azure (`tests/test_llm.py`, lignes 13 à 18) ; un
 second, que Compose ne remplace pas cet ordre (`tests/test_docker_compose.py`, ligne 144). Le parcours Question
-n'appelait qu'Azure, sans repli, jusqu'au 13/11 ; depuis le 14/11, il n'appelle que des fournisseurs de l'UE, Azure puis
-Mistral si `LLM_ORDRE` le nomme, jamais Anthropic ni OpenRouter (`src/llm.py`, `FOURNISSEURS_DES_QUESTIONS` ; registre
+n'appelait qu'Azure, sans repli, jusqu'au 13/11 ; depuis le 14/11, il n'appelle que des fournisseurs à traitement européen, Azure (zone de données UE) puis
+Mistral (UE et AELE) si `LLM_ORDRE` le nomme, jamais Anthropic ni OpenRouter (`src/llm.py`, `FOURNISSEURS_DES_QUESTIONS` ; registre
 RGPD, T8).
 
 <div class="encadre preuve">
@@ -571,7 +569,7 @@ RGPD, T8).
 <div class="encadre preuve">
 <p class="encadre-titre">Depuis le 14/11 : Mistral en secours d'Azure</p>
 <p>Le 13/11 vers 19 h UTC, Azure refuse la clé du serveur (HTTP 401). Le pré-test de la livraison exige un briefing et une question réels : toute mise en service est alors refusée. Cause non établie : la clé, testée seule hors de RITA, reçoit le même refus, encore le 14/11 après l'annonce du rétablissement d'une panne de Microsoft 365 (<code>evidence/C21/INC-010-azure-repond-401.md</code>).</p>
-<ul><li><i>avant l'activation</i> : contrat de Mistral lu le 13/11 (<code>docs/lecture-contrat-mistral-2026-11-13.md</code>) : inférence dans l'UE et l'AELE par l'adresse européenne, conservation de 30 jours pour la modération des abus ; console vérifiée le 14/11 : données de l'API non utilisées pour l'entraînement, modèles Labs désactivés ;</li><li><i>la configuration</i> : <code>LLM_ORDRE=foundry,mistral</code> sur le serveur, Azure d'abord ; Mistral Large 3 (<code>mistral-large-2512</code>), adresse européenne écrite dans le code ; les questions ne vont qu'à Azure ou à Mistral ;</li><li><i>deux réglages demandés par Mistral</i> : la consigne des questions exige le numéro de l'extrait dans le texte (0 réponse valide sur 6 avant, 8 sur 8 après, <code>evidence/C11/citations-mistral-2026-11-14/</code>) ; les marques Markdown d'un briefing sont retirées avant l'affichage (tests, dont les deux phrases vues en production) ; aucune marque visible sur les 3 briefings contrôlés en production le 14/11 (<code>evidence/C8/briefings-sans-markdown-2026-11-14/</code>) ;</li><li><i>la preuve</i> : livraison du 14/11 passée (pré-test, bascule, contrôle après bascule) ; session de test du tableau de bord, 11 requêtes servies par Mistral, aucune erreur (<code>evidence/C20/session-test-2026-11-14/</code>).</li></ul>
+<ul><li><i>avant l'activation</i> : contrat de Mistral lu le 13/11 (<code>docs/lecture-contrat-mistral-2026-11-13.md</code>) : inférence dans l'UE et l'AELE par l'adresse européenne, conservation de 30 jours pour la modération des abus ; console vérifiée le 14/11 : données de l'API non utilisées pour l'entraînement, modèles Labs désactivés ;</li><li><i>la configuration</i> : <code>LLM_ORDRE=foundry,mistral</code> sur le serveur, Azure d'abord ; Mistral Large 3 (<code>mistral-large-2512</code>), adresse européenne écrite dans le code ; les questions ne vont qu'à Azure ou à Mistral ;</li><li><i>deux réglages demandés par Mistral</i> : la consigne des questions exige le numéro de l'extrait dans le texte (0 réponse valide sur 6 avant, 8 sur 8 après, <code>evidence/C11/citations-mistral-2026-11-14/</code>) ; les marques Markdown d'un briefing sont retirées avant l'affichage (tests, dont les deux phrases vues en production) ; aucune marque visible sur les 3 briefings contrôlés en production le 14/11 (<code>evidence/C8/briefings-sans-markdown-2026-11-14/</code>) ;</li><li><i>la preuve</i> : livraison du 14/11 passée (pré-test, bascule, contrôle après bascule) ; session de test du tableau de bord : 11 demandes, 7 réponses et 4 refus, dont 2 avant le modèle, aucune erreur technique (<code>evidence/C20/session-test-2026-11-14/</code>).</li></ul>
 <p>Les mesures d'Azure de ce rapport ne deviennent pas des mesures de Mistral : pour Mistral Large 3, la mesure comparable est le banc du 07/11 (3.4).</p>
 </div>
 
@@ -722,11 +720,6 @@ sous `livrable-E2-v2`, 0.9 sous `livrable-E2-v1` ; 1.2 à 1.4 non taguées.
 | **Trace, métadonnées** | le relevé d'un appel (étapes, durée, modèle, jetons) ; les métadonnées décrivent l'appel sans son contenu |
 | **Vigie** | le programme `monitorage/vigie.py`, qui interroge le service de dehors et peut ouvrir ou mettre à jour une alerte (une issue GitHub) ; les mesures et leurs verdicts viennent de la route `/sante` |
 | **Remise (handover)** | donner la documentation à quelqu'un qui peut faire tourner le service sans vous, et en garder la preuve |
-
-<p class="glossaire-suite">Glossaire (suite)</p>
-
-| Terme | En clair |
-|---|---|
 | **Red team** | équipe qui attaque un système comme le ferait un adversaire, pour en trouver les failles avant lui |
 | **Relais** | site qui rapporte l'information d'une autre source et y renvoie, sans la reproduire lui-même |
 | **Sorties structurées (schéma JSON)** | réponse du modèle contrainte à un format décrit à l'avance |

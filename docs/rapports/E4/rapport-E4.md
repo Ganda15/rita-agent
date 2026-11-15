@@ -258,7 +258,7 @@ hors de l'API, n'y figure pas.
 | Collecte ([`pipelines/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/pipelines), [`sources/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/sources)) | six étapes indépendantes ; une étape en échec n'arrête pas les autres | Python, `httpx`, `feedparser`, `yfinance` |
 | Base ([`db/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/db)) | schéma Merise : 10 tables, 1 vue ; rôles, dont `rita_lecture` en lecture seule | PostgreSQL 18 |
 | Indicateurs ([`indicateurs/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/indicateurs)) | 13 indicateurs par valeur ; calculs SQL et traitements Python, dont le RSI de Wilder | SQL (fonctions fenêtre), Python |
-| Recherche ([`rag/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/rag)) | index des articles, recherche hybride (sens et mots-clés) | ChromaDB |
+| Recherche ([`rag/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/rag)) | un article entier par document, titre et résumé, sans découpage ; recherche hybride : embeddings all-MiniLM-L6-v2 (384 dimensions, distance cosinus) et BM25 sur les mots, classements fusionnés par RRF ; 3 passages au plus | ChromaDB, rank_bm25 |
 | Graphe ([`graph/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/graph)) | trois étapes fixes : lire la base, chercher les articles, rédiger | LangGraph |
 | Appel au modèle ([`src/llm.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/src/llm.py)) | fournisseurs réglés par `LLM_ORDRE` ; par défaut, Azure AI Foundry seul depuis le 31/10 (règle UE seule) | Azure AI Foundry |
 | Garde-fous ([`guardrails/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/guardrails)) | relisent la question, les articles collectés et le texte produit | Python |
@@ -391,7 +391,7 @@ que Kanban n'a pas.
 - **[`ETAT.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/ETAT.md)** pour la prochaine action et l'état du jour, et **[`CHANGELOG.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/CHANGELOG.md)** pour les décisions et les livrables :
   du 12 au 26/10, 40 commits ont modifié [`ETAT.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/ETAT.md) et 29 ont modifié [`CHANGELOG.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/CHANGELOG.md) (des commits, pas des réunions) ;
   mes notes de journal, pour reprendre le travail.
-- **Les sessions avec l'assistant** : j'y choisissais et validais la tâche suivante.
+- **Les sessions avec l'assistant** : j'y choisissais et validais la tâche suivante ; la règle du dépôt est le test avant le code ([`AGENTS.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/AGENTS.md)), et une pull request ne fusionne dans `main` que si les tests, les évaluations et la revue automatique sont verts.
 
 ### 3.4 Les rituels et le partage avec les parties prenantes
 
@@ -626,9 +626,10 @@ format contrôlé ([`evidence/C17/controle-accessibilite-readme-2026-11-02.md`](
 - **La conformité est vérifiée à l'œil** : les trois premiers écrans sont comparés à leurs maquettes sur les parties
   capturées. Question et Tableau de bord sont comparés au système de conception écrit le 06/11 après le code (annexe
   A7). La comparaison reste visuelle, appuyée par un test, sans mesure de conformité au pixel.
-- **Des défauts ouverts** : l'affichage « +0,00 % » d'une pire baisse nulle ; les astérisques affichés dans le texte
-  du Briefing (annexe A7). La capture du Briefing du 04/11 montre aussi une aide trop absolue : elle est corrigée dans
-  la version de production de référence, et la capture est conservée avec sa date.
+- **Des défauts ouverts** : l'affichage « +0,00 % » d'une pire baisse nulle. **Corrigés depuis** : la courbe sans axe
+  ni échelle, relevée à l'oral blanc du 13/11 (#244, livrée le 14/11), et les astérisques du texte du Briefing (#263,
+  vérifié en production le 14/11). La capture du Briefing du 04/11 (annexe A7) montre encore ces défauts et une aide
+  trop absolue, corrigée elle aussi ; elle est conservée avec sa date.
   #73, #78 et #79 sont corrigés et déployés le 02/11 ; leurs cartes restent ouvertes sur GitHub jusqu'à une
   vérification manuelle en production.
 - **Sécurité** : `/docs` public (S2, décidé) ; S7 en partie ; S1, S3, S6, S8 et S9 corrigés, en production le 07/11,
@@ -889,7 +890,8 @@ un ✅ dès qu'une preuve existait.
 - **Intégration continue** : chaîne qui lance automatiquement les contrôles et les tests à chaque envoi de code.
 - **Workflow** : fichier de GitHub Actions qui décrit une suite d'étapes automatiques.
 - **LangGraph** : bibliothèque qui enchaîne des étapes d'un agent sous forme de graphe.
-- **ChromaDB** : base qui range les articles découpés pour les retrouver par le sens.
+- **ChromaDB, embedding** : base qui range chaque article entier, sans découpage, sous forme d'embedding : un vecteur de 384 nombres, calculé par all-MiniLM-L6-v2, pour le retrouver par le sens.
+- **BM25, RRF** : BM25 cherche par les mots en pesant davantage les mots rares ; RRF fusionne deux classements par leurs rangs.
 - **Parquet** : format de fichier compressé, rangé par colonnes, adapté aux gros historiques.
 - **Caddy, HTTPS** : serveur placé devant l'API ; il chiffre les échanges avec le navigateur.
 - **Éco-responsable par effet** : choix qui réduit la consommation sans avoir été fait d'abord pour cette raison.
