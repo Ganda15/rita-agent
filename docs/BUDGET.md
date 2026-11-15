@@ -139,12 +139,12 @@ directement comparable à celle d'un briefing du banc du 03/10 (644 et 204, `evi
 Le scénario mensuel reste estimé à 2,31 USD pour 300 briefings et 150 questions, selon les hypothèses du tableau ; ce
 relevé ne permet pas encore de le confirmer.
 
-## L'évolution prévue avant le jury : une clé par client (C5)
+## L'évolution prévue : une clé par client (C5)
 
 **Au 03/11/2026** : une seule clé d'API partagée (`X-API-Key`, variable `RITA_API_KEY`), 403 sans elle (`api/main.py:208`).
 Révoquer la clé coupe tout le monde.
 
-**Prévu avant le jury** : une clé par client, révocable seule. Test d'acceptation : après la révocation de la clé du
+**Prévision au 03/11/2026 : réalisation avant le jury.** Une clé par client, révocable seule. Test d'acceptation : après la révocation de la clé du
 client A, A reçoit **403** et le client B garde son accès (**200**). Estimation : **1 à 2 journées**, soit **400 à
 800 € HT** au TJM de 400 € HT. Ce coût n'entre dans aucun des trois montants : c'est un travail à venir.
 
@@ -152,8 +152,13 @@ client A, A reçoit **403** et le client B garde son accès (**200**). Estimatio
 validée le 05/11, plan v2 du 06/11). Le plan estime **32,5 h, environ 4 journées, soit environ 1 700 € HT** au même
 TJM : la révocation sans redémarrage, la migration des consommateurs et la protection du retour arrière n'étaient pas
 comptées le 03/11. L'estimation du 03/11 reste ci-dessus, datée. **Implémentation reportée après l'oral blanc des
-12-13/11, réévaluée le 14/11** (décision d'Era). C'est toujours une estimation de travail à venir, ni une facture ni
+12-13/11, réévaluée le 14/11** (ma décision). C'est toujours une estimation de travail à venir, ni une facture ni
 du temps passé.
+
+**Mise à jour du 15/11/2026** : je reporte la réalisation après le jury du 01/12/2026. D'ici là, la clé partagée reste
+présentée comme une limite, avec la solution prévue et son coût. Les 32,5 h et environ 1 700 € HT restent une estimation
+de travail à venir. Le test d'acceptation prévu ne change pas : après la révocation de la clé du client A, A reçoit
+**403** et le client B garde son accès (**200**).
 
 ## 📖 Glossaire
 
