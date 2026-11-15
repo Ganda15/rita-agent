@@ -59,7 +59,7 @@ body h3{ background:#D6E6F7; border-left:4px solid #12395E; padding-left:calc(9p
 
 # Rapport E4 : réaliser une application intégrant un service d'IA (C14 à C19)
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.10, 8 novembre 2026 · version de référence de l'application : commit `6f428d6` de `main`, en production le 07/11/2026 (S9 et pagination d'Indicateurs) ; les mesures datées gardent leur commit (`174b0c1`, en production le 02/11, pour la section 6) ; interface refaite en production depuis le 04/11 (`8ecc5a7`, § 6.5) ; les exécutions citées en section 6 vont du 21/10 au 02/11 · code et preuves : dépôt GitHub privé [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7), tag de cette version ; preuves du 07/11 : [`verification-production-2026-11-07`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7/evidence/C17/verification-production-2026-11-07) et [`verification-production-2026-11-07-soir`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7/evidence/C17/verification-production-2026-11-07-soir) ; un lien daté du corps garde le tag de sa mesure (souvent `livrable-E4-v5`)
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.10, 8 novembre 2026 · version de référence de l'application : commit `6f428d6` de `main`, en production le 07/11/2026 (S9 et pagination d'Indicateurs) ; les mesures datées gardent leur commit (`174b0c1`, en production le 02/11, pour la section 6) ; interface refaite en production depuis le 04/11 (`8ecc5a7`, § 6.5) ; les exécutions citées en section 6 vont du 21/10 au 02/11 · code et preuves versionnés : [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7), version figée au tag de cette version ; preuves du 07/11 : [`verification-production-2026-11-07`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7/evidence/C17/verification-production-2026-11-07) et [`verification-production-2026-11-07-soir`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7/evidence/C17/verification-production-2026-11-07-soir) ; un lien daté du corps garde le tag de sa mesure (souvent `livrable-E4-v5`)
 {: .identite }
 
 > **En une minute.** RITA aide un investisseur particulier à suivre son portefeuille et à lire l'actualité d'une
@@ -305,7 +305,8 @@ déclenche l'appel.
 
 Deux traitements du registre RGPD passent par ces flux. **T1**, les positions : le fichier, la table `position` et
 l'écran du portefeuille. **T8**, les questions posées dans l'écran Question, actif depuis le 16/10 : le texte d'une
-question peut contenir une donnée personnelle ; il est envoyé au modèle (Azure, zone UE) et n'est jamais gardé par
+question peut contenir une donnée personnelle ; il est envoyé au modèle (Azure, zone UE ; depuis le 14/11, Mistral,
+UE et AELE, quand Azure échoue) et n'est jamais gardé par
 RITA. Rien du portefeuille n'est envoyé au modèle : l'étape qui lit la base
 pour le briefing ne lit que des données de marché publiques ([`docs/ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/ARCHITECTURE.md), § 5).
 
@@ -411,7 +412,7 @@ que Kanban n'a pas.
 **L'accès des parties prenantes.** Au dépôt : le formateur y a un accès en lecture depuis le 24/08 (compte `bybysker`), vérifié
 le 30/10 et le 03/11. Au tableau : un accès en lecture lui a été donné le 26/09 ([`docs/PILOTAGE-AGILE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/PILOTAGE-AGILE.md)), et il a confirmé par écrit le 03/11 qu'il l'ouvre ([preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/evidence/C16/preuve-acces-kanban-formateur-2026-11-03.md)).
 La méthode est écrite dans le dépôt ; un fichier présent dans le dépôt ne prouve pas, à lui seul, que ses règles ont été
-partagées et comprises. L'accès du jury est à organiser pour l'examen (dépôt public ou accès en lecture).
+partagées et comprises. Les modalités d'accès du jury sont transmises à part.
 
 ### 3.5 Un exemple de coordination, de bout en bout
 
@@ -607,9 +608,9 @@ toutes les tables, ne peut ni écrire ni créer de table.
 
 ### 4.9 Les sources et la documentation (critères 10 et 11)
 
-**Les sources** sont versionnées sur GitHub, dans le dépôt privé [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5). Le formateur y a un accès en
+**Les sources** sont versionnées sur GitHub, dans le dépôt [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5). Le formateur y a un accès en
 lecture. Chaque livrable est un tag `livrable-*` qu'on ne peut ni déplacer ni supprimer ; il y en a 21 le 02/11.
-L'accès du formateur est vérifié. L'accès du jury est à organiser pour l'examen (dépôt public ou accès en lecture).
+L'accès du formateur est vérifié. Les modalités d'accès du jury sont transmises à part.
 
 **La documentation technique** est rassemblée : [`docs/ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/ARCHITECTURE.md) (architecture, briques, points de terminaison,
 règles d'accès, état du 24/10), [`README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/README.md) (« Lancer le projet », « Lancer les tests »), [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md) et
@@ -843,7 +844,7 @@ reste à améliorer. 🟡 à consolider : une partie du critère est sans preuve
 | **C17.7** Éco-conception | ✅ | pratiques documentées ; cinq écrans mesurés (06/11, 07/11) ; #74 et la pagination d'Indicateurs (D puis B) en production le 07/11 | mesures locales, pas en production | 4.7 |
 | **C17.8** Préconisations OWASP Top 10 implémentées | ✅ | revue S1 à S10 ; S1, S3 à S6, S8 et S9 corrigés, en production (07/11) ; S2 décidé (D7) ; dépendances de l'image épinglées | S7 : alertes de vulnérabilités à activer et dépendances indirectes à verrouiller (#23) | 4.6 |
 | **C17.9** Tests couvrant composants métier et gestion des accès | ✅ | les tests des composants métier et des accès API ont été exécutés avec succès (3 116 réussis, couverture 96,11 %, 07/11) ; les 4 tests du rôle en lecture seule passent dans le job `base` | 97 ignorés dans `pytest`, pas tous liés à la base ; couverture sans interface, `rag/`, `monitorage/`, MCP | 4.8 |
-| **C17.10** Sources versionnées et accessibles sur un dépôt distant | ✅ | dépôt GitHub privé, 21 tags `livrable-*` protégés | accès du jury à organiser pour l'examen | 4.9 |
+| **C17.10** Sources versionnées et accessibles sur un dépôt distant | ✅ | dépôt GitHub, 21 tags `livrable-*` protégés au 02/11 | modalités d'accès du jury transmises à part | 4.9 |
 | **C17.11** Documentation technique : installation, architecture, dépendances, tests, accessible | ✅ | [`docs/ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/ARCHITECTURE.md), [`README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/README.md), [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md), [`docs/exploitation.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/exploitation.md) ; format contrôlé pour le guide (31/10), [`ARCHITECTURE.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/ARCHITECTURE.md) et [`CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md) (01/11), [`README.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/README.md) (02/11, [`evidence/C17/`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v5/evidence/C17)) ; envoyée au formateur le 03/11 | réception et liens confirmés par le formateur, 04/11 | 4.9 |
 | **C18.1** Documentation de la chaîne : outils, étapes, tâches, déclencheurs | ✅ | [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/CI-CD.md), § 2 et § 3 | | 5.5 |
 | **C18.2** Outil d'intégration continue cohérent avec l'environnement | ✅ | GitHub Actions, machine et Python fixés | | 5.1, 5.2 |
