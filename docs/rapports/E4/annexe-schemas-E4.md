@@ -182,7 +182,17 @@ avec son explication. **Limites d'A7** : comparaison visuelle, sur des captures 
 Question et Tableau de bord n'ont pas de maquette.
 **La capture du Briefing du 04/11 montre deux défauts historiques** (page 34) : l'aide trop absolue et des astérisques
 affichés. L'aide est corrigée dans la version de production de référence (`6f428d6`) ; la capture est conservée avec
-sa date. Le statut des astérisques est traité séparément.
+sa date. Les astérisques sont retirés depuis le 14/11 (#263, vérifié en production).
+
+**Les axes de la courbe**, absents des captures du 04/11 et relevés à l'oral blanc du 13/11, sont corrigés le 13/11
+(#244, tests d'abord) et livrés le 14/11 : dates en abscisse, échelle des prix à pas régulier en ordonnée, légende du
+cours et des deux moyennes.
+
+![Écran Briefing de production, MC.PA, le 14/11 : la courbe avec ses axes](schemas/E4-A7-axes-2026-11-14-recadree.png){: style="width:62%" }
+
+**Écran Briefing, MC.PA, ma capture de production du 14/11**, recadrée sur la courbe, avant le retrait des astérisques :
+dates en abscisse, prix en ordonnée de 350 à 550 ; la devise est écrite dans la carte « Cours », pas sur l'axe
+(original : `evidence/C17/courbe-axes-2026-11-14/`).
 
 <div class="saut"></div>
 
