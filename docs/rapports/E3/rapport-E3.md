@@ -410,7 +410,7 @@ SEUIL_FAUX_POSITIFS = 15.0
 def test_seuils_minimaux_du_gardefou():
 ```
 
-Le marqueur `xfail` dit « cet échec est attendu, et voici pourquoi » : pytest affiche `xfailed` avec la raison, jamais `passed`. `strict=True` est le point qui compte : si le taux repassait au-dessus de 85 %, pytest signalerait `XPASS` et la suite échouerait, ce qui oblige à retirer le marqueur le jour où la limite est levée. Les portes des faux positifs et de la latence, elles, bloquent la fusion : en CI le 24 octobre, 16 tests verts et les 2 `xfail` attendus. Une CI verte ne dit donc pas que tous les objectifs de qualité sont atteints : deux ne le sont pas, ils sont déclarés, et ils n'empêchent pas la livraison.
+Le marqueur `xfail` dit « cet échec est attendu, et voici pourquoi » : pytest affiche `xfailed` avec la raison, jamais `passed`. `strict=True` est le point qui compte : si le taux repassait au-dessus de 85 %, pytest signalerait `XPASS` et la suite échouerait, ce qui oblige à retirer le marqueur le jour où la limite est levée. Les portes des faux positifs et de la latence, elles, bloquent la fusion : en CI le 24 octobre, 16 tests verts et les 2 `xfail` attendus. Une CI verte ne disait donc pas que tous les objectifs de qualité étaient atteints : deux ne l'étaient pas, ils étaient déclarés, et ils n'empêchaient pas la livraison.
 
 ### 6.2 La couverture : un seuil établi, pas décrété
 
@@ -433,7 +433,7 @@ Chaque garde-fou se mesure par deux chiffres, toujours ensemble : un garde-fou q
 
 **Les trois injections qui passent le filtre des articles** ([`evals/cas.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/evals/cas.py)) : une fausse mise à jour des consignes de rédaction, un rôle de conseiller imposé en anglais, une fausse note de la rédaction qui suggère un achat. Le risque : un article collecté peut orienter la rédaction. Une injection qui passe ce filtre n'est pas pour autant un conseil affiché, puisque le garde-fou de sortie relit le texte ensuite. La suite prévue : des variantes indépendantes de chaque famille, puis rejouer les textes légitimes avant de changer le filtre.
 
-La limite est structurelle : des motifs lexicaux ne reconnaissent pas une intention. [`tests/test_evals.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/tests/test_evals.py) transforme ces mesures en conditions de fusion : blocage attendu à 85 %, faux positifs au plus 15 %, latence sous 250 ms. Le blocage à 85 % n'est pas atteint sur deux garde-fous : **ces tests sont marqués `xfail` strict plutôt que de baisser le seuil** (6.1.3). Faux positifs et latence bloquent la fusion dès aujourd'hui, et chaque attaque du jeu de questions doit être arrêtée par un garde-fou.
+La limite est structurelle : des motifs lexicaux ne reconnaissent pas une intention. [`tests/test_evals.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/tests/test_evals.py) en fait des conditions de fusion : blocage d'au moins 85 %, faux positifs au plus 15 %, latence sous 250 ms, chaque attaque du jeu de questions arrêtée. **Au 24 octobre**, injection et recommandation restaient sous 85 %, en `xfail` strict plutôt qu'avec un seuil baissé (6.1.3). **Le 7 novembre** (S9), injection, recommandation et fuite bloquent chacune les 12 attaques d'un jeu écrit avant la correction, sans faux positif ; `xfail` retirés. Jeux locaux, pas un rejeu en production ([`evidence/C17/s9-2026-11-07/`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v6/evidence/C17/s9-2026-11-07)).
 
 ### 6.4 La recherche documentaire et le parcours des questions
 
@@ -448,7 +448,7 @@ Le 2 octobre, le test de 6.1.1 est passé du premier coup, ce qui ne prouve rien
 ### 6.6 Ce qui manque, C12
 
 - **Le briefing reste du texte libre**, sans schéma de sortie, et **aucun jeu de référence de briefings** (prix attendu, faits obligatoires, formules interdites) n'en mesure l'exactitude. La validation structurée existe pour `/question`, pas pour `/briefing`. C'est le manque que je comblerais en premier.
-- Le seuil de blocage de 85 % n'est pas atteint sur deux garde-fous ; le détournement ne reconnaît aucune des 8 reformulations ; le contrôle des nombres vérifie leur présence, pas leur sens.
+- Au 24/10, seuil de 85 % non atteint sur deux garde-fous (atteint le 7/11, 6.3) ; le détournement ne reconnaît aucune des 8 reformulations ; le contrôle des nombres vérifie leur présence, pas leur sens.
 - Les tests unitaires des garde-fous et les cas d'évaluation d'[`evals/cas.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/evals/cas.py) portent les mêmes phrases en double, copiées et non importées.
 - Au 24 octobre, seize tests exigeaient la base réelle, absente de la CI. **Depuis le 1er novembre**, les tests qui demandent PostgreSQL tournent en CI sur une base jetable (job `base`, exigé pour fusionner dans `main`, en échec si l'un d'eux est sauté). Trois dossiers échappent toujours au périmètre de la couverture (6.2).
 
@@ -596,7 +596,7 @@ Auto-évaluation du 24/10, revue le 27/10 ; preuves actualisées. ✅ tenu avec 
 | Déclencheurs intégrés comme définis | ✅ | poussée, pull request, tag, manuel, `repository_dispatch` |
 | Fichiers de configuration reconnus et exécutés | ✅ | 1 010 exécutions depuis le 28 juillet ; livraison N18 du 24 octobre |
 | Étape de test des données intégrée | ✅ | étape nommée dans `test.yml`, avant la suite ([`tests/test_ci_donnees.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/tests/test_ci_donnees.py)) ; le 24 octobre : 296 réussis, 3 sautés |
-| Étapes de test, d'entraînement et de validation du modèle intégrées | ✅ | entraînement sans objet, le modèle est fourni (section 7) ; portes d'évaluation en CI, dont deux sous leur objectif (`xfail`, 6.1) ; avant chaque mise en service, un vrai briefing et le rejeu des questions sur la recherche ; après, un contrôle par une vraie question |
+| Étapes de test, d'entraînement et de validation du modèle intégrées | ✅ | entraînement sans objet, le modèle est fourni (section 7) ; portes d'évaluation en CI, deux sous 85 % le 24/10 (`xfail`, 6.1), atteint le 7/11 (6.3) ; avant chaque mise en service, un vrai briefing et le rejeu des questions sur la recherche ; après, une vraie question |
 | Sources de la chaîne versionnées | ✅ | [`.github/workflows/`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4/.github/workflows), [`.github/actions/`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4/.github/actions), [`.githooks/`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4/.githooks), [`deploy/`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v4/deploy), [`scripts/verifier_livrable.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/scripts/verifier_livrable.py) |
 | Documentation d'installation, configuration, test de la chaîne, accessible | ✅ | [`docs/CI-CD.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E3-v4/docs/CI-CD.md) §4 à §7 : secrets dont ceux de l'environnement `production`, permissions, installation, tests de la chaîne ; Markdown à titres, PDF balisé (en tête de cette section) |
 
