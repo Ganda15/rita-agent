@@ -80,7 +80,6 @@ code{ background:#E3F0F3; color:#0D4C5E; border-radius:2pt; }
 .encadre .ligne.ecart{ background:#FFF4D9; } .encadre .ligne.ecart b{ color:#7A4E00; }
 .encadre .ligne.choix{ background:#ECEBFB; } .encadre .ligne.choix b{ color:#3B3FA8; }
 .encadre .ligne.evaluation{ background:#E9ECF0; } .encadre .ligne.evaluation b{ color:#4E5763; }
-p.glossaire-suite{ break-before:page; font-family:Georgia,"Times New Roman",serif; font-weight:600; font-size:12pt; color:var(--marine); margin:0 0 6pt; }
 h2#glossaire ~ table td{ padding:3pt 6pt 3pt 0; line-height:1.45; font-size:9.8pt; }  /* 07/11 : plus lisible, quitte à prendre une page de plus (20 au plus) */
 /* 08/11 : mise en forme « luxe fintech » de la maquette E2 du 08/11 (formes seules, texte inchangé) : en-tête de
    tableau en bleus par colonne, cellules sur fond pâle sans zébrage, filets fins, sous-titres en bandeau uni avec barre
@@ -93,7 +92,6 @@ table thead th:nth-child(3), table thead th.azure:nth-child(3), table thead th.c
 table thead th:nth-child(4), table thead th.azure:nth-child(4), table thead th.claude:nth-child(4){ background:#007B86; }
 table thead th:nth-child(n+5), table thead th.azure:nth-child(n+5), table thead th.claude:nth-child(n+5){ background:#00798F; }
 table thead th:nth-child(2):last-child{ background:#007494; }
-p.glossaire-suite{ background:#D6E6F7; border-left:4px solid #12395E; margin-left:-7pt; padding-left:calc(7pt - 4px); }
 table tbody tr td:not(.ok):not(.alerte){ background:#EEF2F6; }
 table tbody tr td:first-child:not(.ok):not(.alerte){ background:#E6EEF5; }
 body h3{ background:#D6E6F7; border-left:4px solid #12395E; padding-left:calc(9pt - 4px); }
@@ -722,11 +720,6 @@ sous `livrable-E2-v2`, 0.9 sous `livrable-E2-v1` ; 1.2 à 1.4 non taguées.
 | **Trace, métadonnées** | le relevé d'un appel (étapes, durée, modèle, jetons) ; les métadonnées décrivent l'appel sans son contenu |
 | **Vigie** | le programme `monitorage/vigie.py`, qui interroge le service de dehors et peut ouvrir ou mettre à jour une alerte (une issue GitHub) ; les mesures et leurs verdicts viennent de la route `/sante` |
 | **Remise (handover)** | donner la documentation à quelqu'un qui peut faire tourner le service sans vous, et en garder la preuve |
-
-<p class="glossaire-suite">Glossaire (suite)</p>
-
-| Terme | En clair |
-|---|---|
 | **Red team** | équipe qui attaque un système comme le ferait un adversaire, pour en trouver les failles avant lui |
 | **Relais** | site qui rapporte l'information d'une autre source et y renvoie, sans la reproduire lui-même |
 | **Sorties structurées (schéma JSON)** | réponse du modèle contrainte à un format décrit à l'avance |
