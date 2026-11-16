@@ -72,7 +72,7 @@ pouvoir le rouvrir et le corriger.
 
 | Critère | Ce qui manque | Nature |
 |---|---|---|
-| C1#6 · C3#2 | *« accessible depuis un dépôt Git »* : le dépôt est sur GitHub ; le formateur y a accès depuis le 24/08 | rendu public après les tags du 16/11 (décision du 16/11) ; les modalités d'accès du jury sont transmises à part |
+| C1#6 · C3#2 | *« accessible depuis un dépôt Git »* : le dépôt est sur GitHub ; le formateur y a accès depuis le 24/08 | publication prévue juste après les tags du 16/11 (décision du 16/11) ; les modalités d'accès du jury sont transmises à part |
 
 ## Ordre de travail imposé
 

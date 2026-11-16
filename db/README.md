@@ -137,8 +137,8 @@ SELECT count(*) FROM pg_indexes                WHERE schemaname='public';   -- 1
 | Index | 19 (8 explicites) | ✅ 19 |
 | Contraintes `CHECK` | 12 | ✅ 12 |
 
-> Il y a deux façons de compter les index, et les deux sont justes. Le rapport E1 annonce
-> 6 index explicites ; `pg_indexes` en renvoie 15. Le détail, mesuré le 10/08 sur une
+> Il y a deux façons de compter les index, et les deux sont justes. La version du 10/08 du rapport E1 annonçait
+> 6 index explicites ; `pg_indexes` en renvoyait 15. Le détail, mesuré le 10/08 sur une
 > instance neuve :
 >
 > | Origine | Nombre | Lesquels |
