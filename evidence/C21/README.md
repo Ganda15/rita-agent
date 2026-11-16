@@ -38,7 +38,7 @@ Une issue ouverte et fermée dans la même minute, deux mois après le fait, ne 
 détruit la crédibilité du reste du dossier. Les fiches ci-dessous disent donc la vérité : les
 incidents sont réels et vérifiables dans Git, le processus de suivi ne l'était pas.
 
-## Ce qui rend C21 complet : à installer maintenant, sans attendre octobre
+## Ce qui rend C21 complet : la chaîne de résolution, posée le 25/08
 
 Le prochain incident (il y en aura un) doit suivre la chaîne complète :
 
@@ -72,7 +72,7 @@ régularité qui prouve.*
 | [INC-009](INC-009-retour-a-la-normale-ouvre-un-incident.md) | Un message de retour à la normale de Langfuse a ouvert un nouveau ticket d'incident (#137) | `a57dccb`, PR #171 | Chaîne d'alerte : trouvé en relisant les issues ouvertes pour E5 ; reproduit avant correctif dans un conteneur jetable (1 test rouge), 14 tests verts après ; débogage écrit dans l'issue |
 | [INC-010](INC-010-azure-repond-401.md) | Azure répond 401 à la clé du serveur : briefings et questions en panne, livraisons refusées (#250) | `2dd385f`, PR #251, #254, #256 | Fournisseur du modèle : vu par le pré-test et l'alerte Langfuse, pas par la vigie ; contourné par Mistral en secours ; Azure répond de nouveau le 16/11 ; **cause non établie** (une panne mondiale de Microsoft 365 du 12 au 14/11 coïncide, mais la clé reçoit toujours 401 après l'annonce du rétablissement : hypothèse très peu probable) |
 
-INC-004 est le plus important des quatre devant un jury. Ce n'est pas un simple bug : c'est un
+INC-009 est l'incident du rapport E5. INC-004 reste le plus instructif sur le projet lui-même. Ce n'est pas un simple bug : c'est un
 mode de défaillance du projet lui-même, repéré dans le projet, avec une contre-mesure.
 
 ## Glossaire

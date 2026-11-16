@@ -9,13 +9,13 @@ demandés, exigence par exigence, preuves, ce qui n'est pas fait). Index des pre
 - **Production** : <https://178-104-184-125.sslip.io> (serveur Hetzner, `178.104.184.125`). `/health` annonce le
   commit et la date de construction de la version servie.
 - **Conception** : `docs/CHAINE-V1.md` (la spec) ; plan de travail : `docs/sprint-2/PLAN-TRAVAIL.md`.
-- **Exploitation** : `docs/EXPLOITATION.md` (installation, reconstruction depuis le dépôt au § 3 ter, secrets).
+- **Exploitation** : `docs/exploitation.md` (installation, reconstruction depuis le dépôt au § 3 ter, secrets).
 
 ## Ce que le brief demande, et où le voir
 
 | Demande du brief | Où le voir |
 |---|---|
-| Un dépôt propre, des environnements reproductibles, des secrets hors du dépôt | `Dockerfile`, `docker-compose.yml` ; reconstruction depuis le dépôt : `docker-compose.demo.yml`, `data/demo/`, `docs/EXPLOITATION.md` § 3 ter ; secrets : travail `secrets` (gitleaks sur tout l'historique), `scripts/verifier_dockerfile.py`, `evidence/C21/INC-008-cles-mistral-dans-l-historique.md` |
+| Un dépôt propre, des environnements reproductibles, des secrets hors du dépôt | `Dockerfile`, `docker-compose.yml` ; reconstruction depuis le dépôt : `docker-compose.demo.yml`, `data/demo/`, `docs/exploitation.md` § 3 ter ; secrets : travail `secrets` (gitleaks sur tout l'historique), `scripts/verifier_dockerfile.py`, `evidence/C21/INC-008-cles-mistral-dans-l-historique.md` |
 | Un squelette : une route API, une interface minimale, un appel au modèle qui répond | `POST /briefing`, `GET /health` (`api/main.py`), `frontend/briefing.html`, `src/llm.py` |
 | Une chaîne lint, tests, construction, déploiement automatique, à travers les environnements | `.github/workflows/livraison.yml` : `lint`, `secrets`, `construire-et-publier`, `attendre-creneau`, `deployer` ; le serveur essaie chaque image en préproduction (port 8003, compte en lecture seule) avant de la mettre en service (`deploy/deployer.py`) ; première livraison : `evidence/sprint-2/N0-premiere-livraison-2026-10-14.md` |
 | Des tests bloquants, prouvés par un commit cassé | règle de protection de `main` : six contrôles exigés (`evidence/C19/ruleset-main-2026-10-14.json`) ; la PR cassée #93, ouverte pendant l'atelier du 15/10, bloquée et jamais fusionnée : `evidence/sprint-2/journaux/pr-93-commit-casse.txt` |
@@ -78,6 +78,6 @@ Détail, journal du serveur et mesure de `/health` : `evidence/sprint-2/N1-retou
 - Le journal du serveur nomme le contrôle en échec sans son code HTTP, et le conteneur du pré-test part avec ses
   journaux : un refus demande une enquête. À ajouter après l'atelier (le script du serveur devra être réinstallé).
 - Le retour arrière sans GitHub : prévu dans `docs/CHAINE-V1.md` § 5.2, qui le dit « écrit dans
-  `docs/EXPLOITATION.md` » ; la procédure n'y est pas encore, et elle n'a jamais été exercée.
+  `docs/exploitation.md` » ; la procédure n'y est pas encore, et elle n'a jamais été exercée.
 - Pas de traçage Langfuse en production : aucune clé Langfuse sur le serveur.
 - La fraîcheur des données de production n'entre pas dans ce sprint : les articles ont été copiés une fois, le 14/10.

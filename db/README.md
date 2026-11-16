@@ -125,17 +125,17 @@ Prérequis : le jeu Parquet doit exister. Sinon :
 
 ```sql
 SELECT count(*) FROM information_schema.tables
-  WHERE table_schema='public' AND table_type='BASE TABLE';   -- attendu : 8
+  WHERE table_schema='public' AND table_type='BASE TABLE';   -- attendu : 10
 SELECT count(*) FROM information_schema.views  WHERE table_schema='public';  -- 1
-SELECT count(*) FROM pg_indexes                WHERE schemaname='public';   -- 15
+SELECT count(*) FROM pg_indexes                WHERE schemaname='public';   -- 19
 ```
 
-| Objet | Attendu | Obtenu le 10/08 |
+| Objet | Attendu | Obtenu le 04/10 (le 10/08 : 8 tables, 15 index, 9 `CHECK`) |
 |---|---|---|
-| Tables | 8 | ✅ 8 |
+| Tables | 10 | ✅ 10 |
 | Vues | 1 | ✅ 1 |
-| Index | 15 | ✅ 15 |
-| Contraintes `CHECK` | 9 | ✅ 9 |
+| Index | 19 (8 explicites) | ✅ 19 |
+| Contraintes `CHECK` | 12 | ✅ 12 |
 
 > Il y a deux façons de compter les index, et les deux sont justes. Le rapport E1 annonce
 > 6 index explicites ; `pg_indexes` en renvoie 15. Le détail, mesuré le 10/08 sur une
@@ -230,7 +230,7 @@ Aucune de ces décisions ne vient d'une intuition de modélisation :
 ## 8. Données personnelles et RGPD
 
 La table `position` contient la situation financière de l'utilisateur (quantités, prix
-de revient). J'ai recensé 4 traitements dans
+de revient). J'ai recensé neuf traitements (T1 à T9, T7 arrêté le 16/10) dans
 [`RGPD-registre-des-traitements.md`](RGPD-registre-des-traitements.md) (article 30 du RGPD).
 
 Les procédures de tri automatisables sont exécutables :
@@ -263,7 +263,7 @@ Le fichier source n'est jamais versionné : voir `.gitignore` et
 |---|---|---|
 | Registre des traitements RGPD + procédures de tri | C4 | ✅ `RGPD-registre-des-traitements.md` + `rgpd_purge.py` |
 | MCD Merise (modèle conceptuel) | C4 | ✅ `../evidence/C4/` : le schéma (`.png` + `.drawio`) et sa justification cardinalité par cardinalité |
-| Masquer les montants dans les traces LangSmith | RGPD | 🔴 ouvert : transfert hors UE (registre §5) |
+| Masquer les montants dans les traces | RGPD | ✅ LangSmith remplacé par Langfuse en région UE ; métadonnées seules depuis le 20/10 (registre T3) |
 | Hook Git `pre-commit` bloquant les fichiers personnels | RGPD | 🟠 ouvert (procédure P4) |
 | 3 requêtes SQL documentées (sélections, jointures, optimisations) | C2 | ✅ `requetes.sql` + `../evidence/C2/preuve-requetes-sql.md` |
 | Extraction programmatique depuis la base = 5ᵉ type C1 | C1 | ✅ `../sources/database.py` + `../evidence/C1/preuve-07-base-de-donnees.md` |

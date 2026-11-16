@@ -2,7 +2,7 @@
 
 > **Établi le 03/10/2026**, après #65 et #62. **Zone sous garde** (`db/schema.sql`), **import** (`db/importer.py`,
 > seule écriture en base avec le pipeline) et **registre RGPD** (T1) : ce plan est relu et validé par Era **avant**
-> toute ligne de code. Rien de ce qui suit n'est fait. Quatre décisions en section 7.
+> toute ligne de code. Rien de ce qui suit n'était fait le 03/10 (statut au 16/11 : issue #66 fermée le 03/10 ; plan gardé tel qu'écrit). Quatre décisions en section 7.
 
 ## 1. Le défaut, mesuré
 

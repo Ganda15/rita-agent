@@ -19,7 +19,9 @@ capture d'écran horodatée, sortie de commande, fichier produit, lien vers un r
 
 Chaque ligne dit de quand elle date. Les lignes `C1/` à `C5/` décrivent les preuves constituées jusqu'au
 11/08/2026 (livrable E1, version 1) ; leurs chiffres d'aujourd'hui sont donnés entre parenthèses. Les lignes
-suivantes ont été créées ou complétées du 02 au 04/10/2026.
+suivantes ont été créées ou complétées du 02 au 04/10/2026. **État au 16/11** : ces lignes gardent leur date ;
+l'état qui fait foi est la grille de chaque rapport (137 ✅). Les dossiers C15, C19, C20 et C21 ont leur propre
+README, sans ligne ici.
 
 | Dossier | Compétence | Preuve | État |
 |---|---|---|---|
@@ -70,7 +72,7 @@ pouvoir le rouvrir et le corriger.
 
 | Critère | Ce qui manque | Nature |
 |---|---|---|
-| C1#6 · C3#2 | *« accessible depuis un dépôt Git »* : le dépôt est privé ; le formateur y a accès depuis le 24/08 | l'accès du jury est à organiser pour l'examen (dépôt public ou accès en lecture) |
+| C1#6 · C3#2 | *« accessible depuis un dépôt Git »* : le dépôt est sur GitHub ; le formateur y a accès depuis le 24/08 | rendu public après les tags du 16/11 (décision du 16/11) ; les modalités d'accès du jury sont transmises à part |
 
 ## Ordre de travail imposé
 

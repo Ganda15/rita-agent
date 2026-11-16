@@ -1,6 +1,6 @@
 # CONTINUITE — RITA (fil rouge RNCP 37827)
 
-> Dernière mise à jour : 2026-10-30, nuit · par : Claude, à la demande d'Era ; décisions du 30/10 (périmètre d'E4,
+> Dernière mise à jour : 2026-11-15 (clé par client après le jury, F et M) ; avant, 2026-10-30, nuit · par : Claude, à la demande d'Era ; décisions du 30/10 (périmètre d'E4,
 > ordre E4 puis E2 puis E5, règle de la matrice, convocation du jury) ajoutées en B, D, F et K.
 > Mise à jour précédente : 2026-10-28 ; décisions du 28/10 (budget du livret, versions envoyées d'E1 et d'E3,
 > tags laissés figés) ajoutées en D et F.
@@ -36,7 +36,8 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 - Dates : livrables **05/11/2026** · jury **30/11–01/12/2026** (mail Helena, 17/07/2026).
   **Ajout du 30/10/2026** : convocation d'Helena VICENTE datée du 30/10 : **passage d'Era le mardi 01/12 à 11 h 15,
   en visioconférence**, dans l'ordre E1, E3, E4, E2, E5 (80 min), puis 10 min d'échanges ; rapports remis le 05/11
-  (fenêtre du 5 au 9/11 selon Era, date fixée par lui).
+  (fenêtre du 5 au 9/11 selon Era, date fixée par lui). **Ajout du 16/11** : remise faite le 09/11 ;
+  versions du 16/11 ; les cinq PDF vont dans le Drive du jury le 23/11.
   **Ajout du 29/09/2026** (message du formateur après échange avec Elbby et Nadège) : **oral blanc 1 les
   29-30/10** (E1 15 min + E3 20 min + 10 min de retours, environ 45 min) · **oral blanc 2 les 12-13/11**
   (situation réelle d'examen, 90 min). Les dates « oraux blancs 09-10/11 » du mail de juillet sont

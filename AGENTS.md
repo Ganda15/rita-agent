@@ -57,7 +57,8 @@ L'agent implémente ; l'humain garde l'architecture, la sécurité et le seuil d
 
 ## Livraison
 - `main` ne bouge **que par une pull request** `develop → main`, relue par `Revue PR` (revue automatisée, Action GitHub). Jamais de push direct : `git config core.hooksPath .githooks` l'interdit (à activer une fois par clone),
-  et depuis le 03/10/2026 GitHub lui-même (ruleset `main protegee` : PR obligatoire, `pytest`, `evals` et `revue` verts, ni suppression ni force-push)
+  et depuis le 03/10/2026 GitHub lui-même (ruleset `main protegee` : PR obligatoire, sept checks verts : `lint`, `secrets`, `pytest`, `evals`, `base`,
+  `construire-et-publier`, `revue` ; ni suppression ni force-push)
 - Un livrable = un **tag** `livrable-E<n>-v<k>` posé sur `main` **après** la fusion ; on envoie le lien du tag,
   jamais celui du dépôt. Depuis le 03/10/2026, GitHub interdit de déplacer ou supprimer un tag `livrable-*` (ruleset)
 - Avant le tag : tests verts, évals vertes, liens vérifiés, `ETAT.md` à jour
