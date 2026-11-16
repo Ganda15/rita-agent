@@ -93,6 +93,6 @@ Le critère « mix de sources » n'est qu'un des 7. Les autres :
 | Périmètre des spécifications complet (extraction + agrégation) | `docs/rapports/E1/rapport-E1.pdf` §2 | ✅ |
 | Script d'extraction fonctionnel : toutes les données visées récupérées | sortie réelle par source, 8 preuves | ✅ |
 | Script structuré : lancement, init dépendances/connexions, logique, gestion erreurs, fin, sauvegarde | `pipelines/ingest.py`, repères `[1]` à `[6]` | ✅ |
-| Script versionné et accessible depuis un dépôt Git | `github.com/Ganda15/rita-agent`, privé sur invitation au 16/11, publication prévue juste après les tags du 16/11 ; version remise figée par le tag `livrable-E1-v9` | ✅ |
+| Script versionné et accessible depuis un dépôt Git | `github.com/Ganda15/rita-agent`, privé sur invitation au 16/11, publication prévue le 23/11 ; version remise figée par le tag `livrable-E1-v9` | ✅ |
 
-Le formateur a accès au dépôt depuis le 24/08 ; sa publication est prévue juste après les tags du 16/11. Les modalités d'accès du jury sont transmises à part.
+Le formateur a accès au dépôt depuis le 24/08 ; sa publication est prévue le 23/11. Les modalités d'accès du jury sont transmises à part.

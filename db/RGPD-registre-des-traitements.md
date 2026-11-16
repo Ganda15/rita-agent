@@ -373,7 +373,7 @@ accident est une perte de données irréversible.*
 | # | Procédure | Fréquence | Pourquoi pas automatique |
 |---|---|---|---|
 | **M1** | Relire le registre ci-dessus | À chaque nouvelle source de données | Un nouveau traitement doit être inscrit **avant** d'être codé |
-| **M2** | Vérifier que le dépôt public ne contient aucune donnée personnelle | **Avant chaque passage en public** | ⚠️ Au 16/11 : publication prévue juste après les tags du 16/11. Audit en lecture seule du 13/11 (`ETAT.md`) : seuls secrets, les deux clés révoquées d'INC-008 ; restent visibles l'historique d'avant le 27/10 et l'adresse d'auteur des commits ; noms de personnes tierces dans les fichiers courants, à trancher avant le changement de visibilité |
+| **M2** | Vérifier que le dépôt public ne contient aucune donnée personnelle | **Avant chaque passage en public** | ⚠️ Au 16/11 : publication prévue le 23/11. Contrôle en lecture seule du 16/11 : aucune adresse de courriel personnelle ni numéro de téléphone dans les fichiers suivis. Audit en lecture seule du 13/11 (`ETAT.md`) : seuls secrets, les deux clés révoquées d'INC-008 ; restent visibles l'historique d'avant le 27/10 et l'adresse d'auteur des commits ; noms de personnes tierces remplacés par leur rôle dans les documents de l'état actuel le 16/11, gardés dans les preuves datées |
 | **M3** | Décider du sort des doublons détectés par P3 | Mensuelle | Deux achats identiques le même jour sont possibles |
 | **M4** | Réévaluer le traçage Langfuse (T3) | Trimestrielle | Arbitrage entre valeur du monitorage et exposition des données |
 

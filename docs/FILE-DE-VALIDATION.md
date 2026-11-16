@@ -71,8 +71,8 @@ C:\Python314\python.exe scripts\verifier_liens.py
    liens internes, tag cité dans `ETAT.md` et `CHANGELOG.md`, arbre git propre.
 1. **Le tag existe** sur GitHub, et pointe où on croit.
 2. **Le lien du tag s'ouvre pour le destinataire.** Au 16/11, le dépôt est encore privé : vérifier que le
-   destinataire est collaborateur (une invitation envoyée n'est pas un accès donné). Publication prévue juste
-   après les tags du 16/11, par un changement de visibilité ; ensuite, ouvrir le lien sans connexion, dans une
+   destinataire est collaborateur (une invitation envoyée n'est pas un accès donné). Publication prévue le
+   23/11, par un changement de visibilité ; ensuite, ouvrir le lien sans connexion, dans une
    fenêtre privée.
 3. **Zéro lien cassé** dans le dépôt.
 
