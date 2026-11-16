@@ -4,20 +4,24 @@ Créé le 02/10/2026. Livrable E3. Outil : Langfuse Cloud, région UE (Irlande),
 palier gratuit (50 000 unités par mois, 30 jours de conservation, 2 alertes). Décision du 28/09
 (`CONTINUITE.md` D, registre RGPD §T3), première trace réelle le 02/10 à 18:39.
 
+> **État au 16/11** : cet index couvre le 02 au 04/10. Depuis : traçage en production depuis le 21/10
+> (livraison N12), accessibilité réévaluée le 06/11 (`reevaluation-accessibilite-langfuse-2026-11-06.md`), citations
+> de Mistral le 14/11 (`citations-mistral-2026-11-14/`). L'état qui fait foi est la grille du rapport E3 v2.6.
+
 ---
 
 ## Les 9 critères officiels, et où RITA en est au 02/10/2026 au soir
 
 | # | Critère (texte officiel) | État | Preuve ou manque |
 |---|---|---|---|
-| 1 | Les métriques du monitorage sont expliquées sans erreur d'interprétation | ✅ écrit | `docs/EXPLOITATION.md`, section « Monitorage Langfuse et alertes » : latence par étape, erreurs de repli, verdict AMF (note `conforme_amf`), jetons. À reprendre dans le rapport E3 |
+| 1 | Les métriques du monitorage sont expliquées sans erreur d'interprétation | ✅ écrit | `docs/exploitation.md`, section « Monitorage Langfuse et alertes » : latence par étape, erreurs de repli, verdict AMF (note `conforme_amf`), jetons. À reprendre dans le rapport E3 |
 | 2 | Le ou les outils sont adaptés au contexte et aux contraintes | ✅ décidé et mesuré | Langfuse retenu contre LangSmith et l'auto-hébergement : aucune donnée personnelle dans le prompt, région UE, pas de gRPC (bloqué sur le poste), 4 Go sur le serveur ; `CONTINUITE.md` D et E, registre §T3 |
 | 3 | Au moins un vecteur de restitution en temps réel (tableau de bord) | ✅ construit le 03/10 | Tableau « RITA C11 », trois tuiles (générations par fournisseur, p95 de `briefing-llm`, observations ERROR ou WARNING), créé par l'API publique : `dashboard-rita-c11-2026-10-03.json`, `preuve-langfuse-2026-10-03.md`. Capture d'écran encore à faire par moi |
 | 4 | Les enjeux d'accessibilité sont pris en compte dans le choix de l'outil | 🟠 argumenté le 04/10 | Rapport E3 v1.1, § 5.6 : texte et tableaux, clavier, rien par la seule couleur, export CSV de chaque tuile, alerte en texte ; reste partiel : examinée après le choix de l'outil, sans déclaration de l'éditeur ni test au lecteur d'écran |
 | 5 | La chaîne est d'abord testée dans un bac à sable | ✅ mesuré | Toute la suite de tests tourne avec le traçage coupé (`tests/conftest.py`) et des doubles de client ; l'incident [INC-006](../C21/INC-006-tests-ecrivaient-en-production.md) a précisément établi cette séparation |
 | 6 | La chaîne est en état de marche : les métriques sont évaluées et restituées | ✅ partiel | Traces réelles depuis le 02/10 18:39 (mes captures) ; les deux alertes ont sonné pour de vrai le 04/10 et ouvert l'issue #77 (`preuve-alertes-2026-10-04.md`) ; reste partiel parce que le serveur Hetzner n'envoie encore aucune trace |
 | 7 | Les sources sont versionnées sur un dépôt distant | ✅ | `src/traces.py`, `api/main.py`, `graph/workflow.py`, `.github/workflows/alerte-incident.yml`, dépôt `Ganda15/rita-agent` |
-| 8 | La documentation technique couvre l'installation, la configuration et l'utilisation | ✅ partiel | `docs/EXPLOITATION.md`, section « Monitorage Langfuse et alertes » (variables, tableau, alertes, test de la chaîne) |
+| 8 | La documentation technique couvre l'installation, la configuration et l'utilisation | ✅ partiel | `docs/exploitation.md`, section « Monitorage Langfuse et alertes » (variables, tableau, alertes, test de la chaîne) |
 | 9 | La documentation est communiquée dans un format accessible | ✅ 04/10 | Markdown dans le dépôt ; rapport E3 v1.1 en PDF de 20 pages (`docs/rapports/E3/rapport-E3.pdf`), relu page par page |
 
 Bilan au 03/10 : 6 critères tenus, 1 partiel, 2 à faire (le 02/10 : 5, 1, 3). Les deux manquants sont

@@ -41,7 +41,7 @@
 > Un fichier qui ne prétend jamais être à jour ne peut pas être périmé.
 
 Eramalingam GANDAKUMAR · Simplon × Wild Code School · deadline livrables **05/11/2026**
-Dépôt : `Ganda15/rita-agent` (**privé** — accès par invitation collaborateur)
+Dépôt : `Ganda15/rita-agent` (public après les tags du 16/11/2026 ; privé auparavant, accès par invitation)
 
 ## Ce qu'est RITA
 
@@ -55,8 +55,8 @@ inscrite en dur dans le prompt du rédacteur et vérifiée par le garde-fou de s
 
 - **Python** 3.13 (CI) / 3.14 (local) · **FastAPI** · **PostgreSQL** · **PySpark + Parquet**
 - **LangGraph** : graphe Scout → RAG → Rédacteur (`graph/workflow.py`)
-- **Modèle fourni** : Azure AI Foundry (`gpt-5.4`, Data Zone EU) seul par défaut (`LLM_ORDRE=foundry`, règle UE seule) ;
-  Mistral Large 4 en second après la lecture de son contrat (PR #88) ; Anthropic et OpenRouter (Claude) restent dans le
+- **Modèle fourni** : Azure AI Foundry (`gpt-5.4`, Data Zone EU) en premier (`LLM_ORDRE=foundry` dans le code,
+  règle UE seule) ; depuis le 14/11, `LLM_ORDRE=foundry,mistral` sur le serveur : Azure d'abord, Mistral Large 3 (`mistral-large-2512`, adresse européenne) si Azure échoue ; Anthropic et OpenRouter (Claude) restent dans le
   code mais ne sont appelés que si `LLM_ORDRE` les nomme (`src/llm.py`)
 - **Modèle FOURNI** — aucun entraînement, aucun réglage fin. Ce qui se teste n'est pas une
   métrique d'apprentissage mais le **comportement sous garde-fous**.
@@ -72,21 +72,21 @@ docs/       rapports/ (un dossier par épreuve) · veille/ (C6)
 evals/      mesure des garde-fous — porte de qualité de la CI
 evidence/   preuves par compétence : C1/ … C21/
 graph/      LangGraph — état + workflow
-guardrails/ trois garde-fous : entrée, injection indirecte, sortie
+guardrails/ cinq garde-fous à trois places : la question, les articles collectés, le texte produit
 pipelines/  ingestion (ingest.py)
 scripts/    planification de la collecte
 sources/    les 5 types de sources C1
 src/        appel du modèle (llm.py)
-tests/      pytest : 61 fichiers
+tests/      pytest : 157 fichiers (16/11)
 ```
 
 ## Chiffres à ne jamais réinventer : les vérifier avant de les citer
 
-**3 232** tests collectés (13/11) · **10** tables · **1** vue · **19** objets d'index (8 explicites) · **12** contraintes `CHECK` ·
+**3 273** tests collectés (16/11) · **10** tables · **1** vue · **19** objets d'index (8 explicites) · **12** contraintes `CHECK` ·
 **273 608** lignes importées en juillet, **278 473** cotations au 02/10 · **111** valeurs · **112** alias ·
-**7** positions · **11** partitions Parquet · OpenAPI **3.1.0** · **14** chemins documentés, dont **11** de données
+**7** positions · **11** partitions Parquet · OpenAPI **3.1.0** · **19** chemins documentés, dont **12** de données (02/11)
 
-Mesurés le 04/10/2026 : `pytest --collect-only -q`, requêtes SQL en lecture sur la base locale, `app.openapi()`.
+Mesurés le 04/10/2026 (base), le 02/11 (OpenAPI) et le 16/11 (tests) : `pytest --collect-only -q`, requêtes SQL en lecture sur la base locale, `app.openapi()`.
 Ces chiffres vieillissent : une date ancienne veut dire « à remesurer », pas « à recopier ».
 
 ## Règles de travail

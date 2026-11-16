@@ -1,6 +1,6 @@
 # Budget de RITA : dépenses, valeur du travail et coût de fonctionnement
 
-> **Version du 03/11/2026.** Montants relevés sur les justificatifs reçus par courriel, ou déclarés par Era quand la
+> **Version du 03/11/2026**, complétée les 06/11 et 15/11 (clé par client). Montants relevés sur les justificatifs reçus par courriel, ou déclarés par Era quand la
 > pièce n'a pas été retrouvée (c'est dit ligne par ligne). Aucun montant n'est inventé : une case « à lire » attend
 > sa pièce. Les factures ne vont jamais dans Git ; ce fichier dit seulement de
 > quelle pièce vient chaque montant.
@@ -9,7 +9,7 @@
 > montants séparés, jamais additionnés**. Les dépenses ([le tableau](#le-tableau)), la valeur du travail au taux
 > journalier ([deuxième montant](#deuxième-montant--la-valeur-du-travail-au-tjm)) et le fonctionnement par mois
 > ([troisième montant](#troisième-montant--le-fonctionnement-par-mois)). Elle remplace la décision du 28/10 (pas de
-> taux journalier, développement compté en argent réellement dépensé). Le livret E1 v6 porte une ligne « Budget » avec
+> taux journalier, développement compté en argent réellement dépensé). Le livret E1 (v6 à v9) porte une ligne « Budget » avec
 > les trois montants ; le détail est ici.
 
 ## Les règles de comptage

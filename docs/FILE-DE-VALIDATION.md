@@ -70,8 +70,9 @@ C:\Python314\python.exe scripts\verifier_liens.py
 0. **La Definition of Done est verte** : tests + couverture ≥ 90 %, portes d'évaluation,
    liens internes, tag cité dans `ETAT.md` et `CHANGELOG.md`, arbre git propre.
 1. **Le tag existe** sur GitHub, et pointe où on croit.
-2. **Le destinataire est bien collaborateur** — une invitation *envoyée* n'est pas un accès
-   *donné* : tant qu'elle n'est pas acceptée, le lien renvoie une page 404.
+2. **Le lien du tag s'ouvre sans connexion**, dans une fenêtre privée : le dépôt est public après les tags du
+   16/11. Avant, il fallait vérifier que le destinataire était collaborateur (une invitation envoyée n'est pas
+   un accès donné).
 3. **Zéro lien cassé** dans le dépôt.
 
 ### Gabarit du message
@@ -88,7 +89,7 @@ C:\Python314\python.exe scripts\verifier_liens.py
 > exactement tel qu'il était lors de la remise. La branche principale, elle, continue
 > d'avancer avec les livrables suivants — l'ouvrir donnerait une image faussée d'E1.
 >
-> Le dépôt est privé ; vous y avez été invité en tant que collaborateur.
+> Le dépôt est public à partir du 16/11/2026 : le lien du tag s'ouvre sans compte GitHub.
 >
 > Bien à vous,
 > Eramalingam GANDAKUMAR
@@ -111,6 +112,11 @@ git push origin refs/tags/livrable-E1-v1:refs/tags/livrable-E1-v1
 ---
 
 ## La file
+
+> **État au 16/11** : la file ci-dessous s'arrête au 28/10. Depuis, les remises sont consignées dans `CHANGELOG.md` :
+> remise du 09/11 (`livrable-E1-v8`, `livrable-E2-v5`, `livrable-E3-v6`, `livrable-E4-v7`, `livrable-E5-v5`), puis versions
+> du 16/11 (`livrable-E1-v9`, `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v8`, `livrable-E5-v6`) ; les cinq PDF vont
+> dans le Drive du jury le 23/11.
 
 | # | Gelé le | Livrable | Compétences | Tag / commit | Envoyé le | Retour reçu | Ce que le retour change |
 |---|---|---|---|---|---|---|---|
@@ -197,6 +203,8 @@ envoyés le même jour reçoivent un seul retour, superficiel.
 ---
 
 ## Ce qui reste à mettre en file, dans l'ordre du plan
+
+> **État au 16/11** : tout ce tableau est livré (E4, C7 dans E2, E3, E5) ; voir la note en tête de la file.
 
 | Attendu en | Livrable | Compétences |
 |---|---|---|

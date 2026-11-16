@@ -75,10 +75,10 @@ qu'il examinerait le schéma (*« Yep. I'll do that. »*).
 | 3 | Extraction programmatique (*partition pruning*) : 11 fichiers connus, 1 seul lu | `preuve-bigdata-spark.md` |
 | 4 | 3 requêtes Spark SQL : volumétrie, amplitude, fenêtrage `LAG` + `RANK` | `bigdata/query_spark.py` |
 
-La question posée au formateur (C1 seul, ou C2 aussi ?) n'a toujours pas reçu de réponse,
-mais elle n'est plus bloquante : les deux sont couvertes. L'étape 3 répond à C1 (connexion
+La question posée au formateur (C1 seul, ou C2 aussi ?) a reçu sa réponse : acceptée
+(`docs/FILE-DE-VALIDATION.md`, réponses du formateur). Les deux sont couvertes. L'étape 3 répond à C1 (connexion
 et extraction depuis un système big data), l'étape 4 à C2 (requêtes dans le langage propre au
-système). Il me reste à la lui poser pour confirmation.
+système).
 
 Voir `bigdata/CONCEPTION.md`.
 
@@ -93,6 +93,6 @@ Le critère « mix de sources » n'est qu'un des 7. Les autres :
 | Périmètre des spécifications complet (extraction + agrégation) | `docs/rapports/E1/rapport-E1.pdf` §2 | ✅ |
 | Script d'extraction fonctionnel : toutes les données visées récupérées | sortie réelle par source, 8 preuves | ✅ |
 | Script structuré : lancement, init dépendances/connexions, logique, gestion erreurs, fin, sauvegarde | `pipelines/ingest.py`, repères `[1]` à `[6]` | ✅ |
-| Script versionné et accessible depuis un dépôt Git | `github.com/Ganda15/rita-agent` ⚠️ encore privé | partiel |
+| Script versionné et accessible depuis un dépôt Git | `github.com/Ganda15/rita-agent`, public après les tags du 16/11 ; version remise figée par le tag `livrable-E1-v9` | ✅ |
 
-⚠️ Le dépôt doit être accessible au jury avant le 05/11, sinon ce critère tombe.
+Le formateur a accès au dépôt depuis le 24/08 ; il est public après les tags du 16/11. Les modalités d'accès du jury sont transmises à part.

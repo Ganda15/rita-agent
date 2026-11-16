@@ -2,7 +2,7 @@
 
 > **Établi le 03/10/2026** après la validation du chapitre « Données » par le formateur. **Zone sous garde**
 > (`db/schema.sql`, `AGENTS.md`) : ce plan est relu et validé par Era **avant** toute ligne de code.
-> Rien de ce qui suit n'est fait. Trois décisions sont à prendre (section 7).
+> Rien de ce qui suit n'était fait le 03/10 (statut au 16/11 : issue #65 fermée le 03/10 ; plan gardé tel qu'écrit). Trois décisions sont à prendre (section 7).
 
 ## 1. Le défaut, mesuré
 

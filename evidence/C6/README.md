@@ -6,6 +6,9 @@
 
 Dossier créé le 2026-08-16. Protocole complet : `../../docs/veille/README.md`.
 
+> **État au 16/11** : les passages datés plus bas gardent leur date. L'état des notes et des partages à la
+> promo est tenu dans `../../docs/veille/README.md` (§ 2, état au 09/11) ; la grille du rapport E2 v1.7 fait foi.
+
 ## Ce qui va dans ce dossier
 
 Une preuve = ce qu'un évaluateur peut ouvrir seul et comprendre sans explication orale.

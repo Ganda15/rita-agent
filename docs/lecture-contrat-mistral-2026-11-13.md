@@ -1,6 +1,6 @@
 # Lecture du contrat de Mistral AI : peut-il être le second fournisseur du modèle ?
 
-13/11/2026, soir. Décision d'Era le 14/11 au matin : Mistral en secours d'Azure, briefings et questions (Azure toujours 401). Le code le permet, éteint par défaut ; les quatre vérifications du verdict restent à faire avant de l'allumer sur le serveur.
+13/11/2026, soir. Décision d'Era le 14/11 au matin : Mistral en secours d'Azure, briefings et questions (Azure toujours 401). Le code le permet, éteint par défaut ; allumé sur le serveur le 14/11 (`LLM_ORDRE=foundry,mistral`). État des quatre conditions au 16/11 : 1, amélioration par les données d'API désactivée dans la console (14/11) ; 2, modèles Labs désactivés dans la console (14/11) et appels à `mistral-large-2512` réussis, statut officiel du modèle non lu ; 3, la liste des sous-traitants reste à lire (limite écrite dans le rapport E2) ; 4, registre mis à jour (T8 le 14/11, T6 le 16/11).
 
 ## Pourquoi maintenant
 

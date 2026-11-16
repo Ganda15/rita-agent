@@ -11,8 +11,8 @@ test. Règle du dépôt : un `.drawio` pour corriger, une image pour voir.
 | `E3-architecture` | les deux chemins vers le modèle (briefing, question) : clients, API, garde-fous avant et après, réserves, surveillance | 2 (C9) | 1400,946 |
 | `E3-integration-briefing` | une demande de briefing depuis l'écran, et ce que l'écran fait des réponses qui ne sont pas un briefing (403, 422, 429, 502, 500) | 4 (C10) | 1400,716 |
 | `E3-monitorage` | collecte des traces et des compteurs, Langfuse, les deux tableaux de bord, les deux alertes vers GitHub, ce qui manque | 5 (C11) | 1400,826 |
-| `E3-strategie-tests` | les 1 751 tests par ce qu'ils protègent, et où ils tournent (poste, CI, à la main) | 6 (C12) | 1400,716 |
-| `E3-chaine-livraison` | les sept workflows, le ruleset, le serveur, le déploiement et le retour arrière | 7 (C13) | 1400,886 |
+| `E3-strategie-tests` | les 1 751 tests du 24/10 par ce qu'ils protègent, et où ils tournent (poste, CI, à la main) | 6 (C12) | 1400,716 |
+| `E3-chaine-livraison` | les sept workflows du 24/10 (la vigie planifiée s'y ajoute en novembre), le ruleset, le serveur, le déploiement et le retour arrière | 7 (C13) | 1400,886 |
 
 ## Régénérer
 
