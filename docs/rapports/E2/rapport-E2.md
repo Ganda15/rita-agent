@@ -114,7 +114,7 @@ body h3{ background:#D6E6F7; border-left:4px solid #12395E; padding-left:calc(9p
 
 # Rapport E2 : veille, choix d'un service de modèle, et son paramétrage
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 1.6, 8 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves versionnés : `Ganda15/rita-agent`, version figée au tag `livrable-E2-v6`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 2, compétences C6 à C8 · version 1.7, 16 novembre 2026 · version de référence de l'application : commit `d3a4198` de `main`, en production le 27/10/2026 · code et preuves versionnés : `Ganda15/rita-agent`, version figée au tag `livrable-E2-v6`
 {: .identite }
 
 > **En une minute.** RITA rédige des briefings boursiers et répond à des questions sur les articles collectés. Elle
@@ -137,15 +137,15 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 <li><a href="#c6">2. C6 : la veille technique et réglementaire</a><span>p. 2</span></li>
 <li><a href="#c7">3. C7 : le choix du service de modèle</a><span>p. 6</span></li>
 <li><a href="#c8">4. C8 : le service retenu, paramétré et suivi</a><span>p. 11</span></li>
-<li><a href="#criteres">5. Les 20 critères, un par un</a><span>p. 15</span></li>
-<li><a href="#reste">6. Ce qui n'est pas fait</a><span>p. 17</span></li>
-<li><a href="#glossaire">Glossaire</a><span>p. 17</span></li>
-<li><a class="vers-annexe" href="#a1">Annexe A1 : la veille (PDF avec annexe)</a><span>p. 19</span></li>
-<li><a class="vers-annexe" href="#a2">Annexe A2 : le choix du service</a><span>p. 20</span></li>
-<li><a class="vers-annexe" href="#a3">Annexe A3 : le service au 03/11</a><span>p. 21</span></li>
-<li><a class="vers-annexe" href="#a4">Annexe A4 : les preuves de la veille</a><span>p. 22</span></li>
-<li><a class="vers-annexe" href="#a5">Annexe A5 : le détail du banc</a><span>p. 26</span></li>
-<li><a class="vers-annexe" href="#a6">Annexe A6 : les preuves du service</a><span>p. 28</span></li>
+<li><a href="#criteres">5. Les 20 critères, un par un</a><span>p. 17</span></li>
+<li><a href="#reste">6. Ce qui n'est pas fait</a><span>p. 18</span></li>
+<li><a href="#glossaire">Glossaire</a><span>p. 18</span></li>
+<li><a class="vers-annexe" href="#a1">Annexe A1 : la veille (PDF avec annexe)</a><span>p. 20</span></li>
+<li><a class="vers-annexe" href="#a2">Annexe A2 : le choix du service</a><span>p. 21</span></li>
+<li><a class="vers-annexe" href="#a3">Annexe A3 : le service au 03/11</a><span>p. 22</span></li>
+<li><a class="vers-annexe" href="#a4">Annexe A4 : les preuves de la veille</a><span>p. 23</span></li>
+<li><a class="vers-annexe" href="#a5">Annexe A5 : le détail du banc</a><span>p. 27</span></li>
+<li><a class="vers-annexe" href="#a6">Annexe A6 : les preuves du service</a><span>p. 29</span></li>
 </ol>
 </div>
 
@@ -686,7 +686,7 @@ preuve · 🟡 à consolider : le point qui manque est écrit · ❌ aucune preu
 
 ## 6. Ce qui n'est pas fait, et dans quel ordre le faire {: #reste }
 
-**Les versions.** 1.6 du 08/11 sous `livrable-E2-v5` ; 1.5 du 07/11 (C8.2 tenu, banc du 07/11) sous `livrable-E2-v4` ; 1.1 sous `livrable-E2-v3`, 1.0
+**Les versions.** 1.7 du 16/11 sous `livrable-E2-v6` (retours de l'oral blanc du 13/11, Mistral en secours d'Azure depuis le 14/11, retour d'Azure le 16/11) ; 1.6 du 08/11 sous `livrable-E2-v5` ; 1.5 du 07/11 (C8.2 tenu, banc du 07/11) sous `livrable-E2-v4` ; 1.1 sous `livrable-E2-v3`, 1.0
 sous `livrable-E2-v2`, 0.9 sous `livrable-E2-v1` ; 1.2 à 1.4 non taguées.
 
 **Ensuite.**

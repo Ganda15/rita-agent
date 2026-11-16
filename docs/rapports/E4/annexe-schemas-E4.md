@@ -44,7 +44,7 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 | A4 | Flux de données, des sources à l'écran | C15 | 02/11/2026 (celui du 18/08 gardé) | mise en forme du 03/11, texte inchangé | 27 |
 | A5 | Chaîne d'intégration et de livraison | C18, C19 | 24/10/2026 | mise en forme du 03/11, texte inchangé | 28 |
 | A6 | Parcours des écrans Question et Tableau de bord | C14 | 02/11/2026 | mise en forme du 03/11, texte inchangé | 29 et 30 |
-| A7 | Maquettes et système de conception, comparés aux écrans livrés | C14, C17 | maquettes 04/10 ; écrans 04/11 et 06/11 | maquettes recadrées, captures d'écran | 31 à 35 |
+| A7 | Maquettes et système de conception, comparés aux écrans livrés | C14, C17 | maquettes 04/10 ; écrans 04/11 et 06/11 | maquettes recadrées, captures d'écran | 31 à 36 |
 
 **Mise en forme du 03/11.** A1, A3, A4, A5 et A6 sont présentés au style des schémas du livret E1 ; leur texte est
 identique mot pour mot aux originaux du dépôt, cités dans chaque légende (A3 et A5 avaient déjà reçu une mise en forme

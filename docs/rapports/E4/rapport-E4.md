@@ -59,7 +59,7 @@ body h3{ background:#D6E6F7; border-left:4px solid #12395E; padding-left:calc(9p
 
 # Rapport E4 : réaliser une application intégrant un service d'IA (C14 à C19)
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.10, 8 novembre 2026 · version de référence de l'application : commit `6f428d6` de `main`, en production le 07/11/2026 (S9 et pagination d'Indicateurs) ; les mesures datées gardent leur commit (`174b0c1`, en production le 02/11, pour la section 6) ; interface refaite en production depuis le 04/11 (`8ecc5a7`, § 6.5) ; les exécutions citées en section 6 vont du 21/10 au 02/11 · code et preuves versionnés : [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7), version figée au tag de cette version ; preuves du 07/11 : [`verification-production-2026-11-07`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7/evidence/C17/verification-production-2026-11-07) et [`verification-production-2026-11-07-soir`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7/evidence/C17/verification-production-2026-11-07-soir) ; un lien daté du corps garde le tag de sa mesure (souvent `livrable-E4-v5`)
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C14 à C19 · version 1.11, 16 novembre 2026 · version de référence de l'application : commit `6f428d6` de `main`, en production le 07/11/2026 (S9 et pagination d'Indicateurs) ; les mesures datées gardent leur commit (`174b0c1`, en production le 02/11, pour la section 6) ; interface refaite en production depuis le 04/11 (`8ecc5a7`, § 6.5) ; les exécutions citées en section 6 vont du 21/10 au 02/11 · code et preuves versionnés : [`Ganda15/rita-agent`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v8), version figée au tag de cette version ; preuves du 07/11 : [`verification-production-2026-11-07`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7/evidence/C17/verification-production-2026-11-07) et [`verification-production-2026-11-07-soir`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7/evidence/C17/verification-production-2026-11-07-soir) ; un lien daté du corps garde le tag de sa mesure (souvent `livrable-E4-v5`)
 {: .identite }
 
 > **En une minute.** RITA aide un investisseur particulier à suivre son portefeuille et à lire l'actualité d'une
@@ -866,7 +866,7 @@ C19, 7 ✅.
 
 **Versions.** Chaque ✅ repose sur des preuves datées ; sa limite reste écrite. 1.0 (01/11) : C14.1, C14.5, C17.1, C19.6. 1.1 (02/11) :
 C14.2 à C14.4, C15.3, C17.3, C17.4. 1.2 (03/11) : C16.3, C17.11, C18.6, C19.7. 1.7 (06/11) : C15.2, C17.2. 1.8 (07/11) :
-C17.5. 1.9 (07/11, soir) : C17.7. 1.10 (08/11) : huit workflows ; C16.1, C16.4 et C17.8, chacun avec sa limite. Le recomptage du 30/10 (30 ✅, 6 🟡) comptait
+C17.5. 1.9 (07/11, soir) : C17.7. 1.10 (08/11) : huit workflows ; C16.1, C16.4 et C17.8, chacun avec sa limite. 1.11 (16/11) : retours de l'oral blanc du 13/11 (RAG nommé, axes de la courbe et astérisques corrigés, capture en A7) et Mistral en secours d'Azure ; aucun statut changé. Le recomptage du 30/10 (30 ✅, 6 🟡) comptait
 un ✅ dès qu'une preuve existait.
 
 ## 📖 Glossaire {: #glossaire }
