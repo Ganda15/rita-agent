@@ -633,7 +633,7 @@ modification du serveur.**
 
 - [ ] **Décision d'Era**, écrite dans `docs/sprint-2/README.md` : si l'essai d'août (tâche 10) est *dégradé* (pas de
   briefing), Era décide de faire la première bascule malgré tout, ou non.
-- [ ] Après le « validé » d'Elbby et le tag du 15/10 : PR du sprint 1 vers `develop` (commit de fusion), PR du
+- [ ] Après le « validé » du formateur et le tag du 15/10 : PR du sprint 1 vers `develop` (commit de fusion), PR du
   sprint 2 vers `develop`, puis PR `develop` vers `main`, **hors du créneau de 8 h**. La fusion dans `main` déclenche
   la livraison de N0.
 - [ ] Mesurer et noter : durée de la livraison complète, durée de l'indexation de test, versions active et précédente
