@@ -26,24 +26,30 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 **État** :
 - PR #268 et #269 fusionnées : `main` à `8b2509f`, en production (`/health`) ; CI : 3 176 réussis, 97 sautés,
   couverture 96,15 %, 59 tests PostgreSQL.
-- PR #270 fusionnée dans `develop` (`6e68657`) : README, guides et index mis d'accord avec l'état du 16/11. PR #271
-  (`develop` vers `main`) ouverte, sept contrôles verts, revues automatiques sans remarque.
-- Relecture de #271 par l'autre agent : quatre corrections reprises sur la branche `corrections-relecture-pr271`
-  (publication annoncée trop tôt ; codes 503 de `/briefing` et de `/question` distingués ; chronologie de
-  `docs/ARCHITECTURE.md` ; registre T6, T8 et M2), plus ses trois précisions facultatives.
+- PR #270 fusionnée dans `develop` (`6e68657`) : README, guides et index mis d'accord avec l'état du 16/11. Puis PR
+  #271 fusionnée dans `main` le 16/11 à 20 h 44 UTC (`0d8c58e`) : sept contrôles verts, revues automatiques sans
+  remarque ; Tests de `main` verts, livraison en cours au moment de ce commit.
+- Relecture de #271 par l'autre agent, finie après sa fusion : quatre corrections reprises sur la branche
+  `corrections-relecture-pr271` (publication annoncée trop tôt ; codes 503 de `/briefing` et de `/question`
+  distingués ; chronologie de `docs/ARCHITECTURE.md` ; registre T6, T8 et M2), plus ses trois précisions facultatives.
+  Elles vont dans `main` par une nouvelle PR `develop` vers `main`, avant les tags.
+- Relecture des huit éléments GitHub résolus, par l'autre agent : #152, #78, #79, #28 et #41 fermables avec leurs
+  preuves ; #73 après une note datée de résolution au critère R10 ; #21 pas entièrement terminé (la revue
+  hebdomadaire documentée n'est pas prouvée) ; PR #88 à fermer sans fusion, remplacée par la solution actuelle.
 - Décisions du 16/11 après l'audit des traces (lecture seule) : mentions de l'assistant d'IA gardées telles quelles ;
   tirets longs des anciens fichiers laissés ; **dépôt rendu public juste après les cinq tags**, au lieu du 22/11, puis
   tous les liens des PDF vérifiés sans connexion. Au 16/11, le dépôt est encore privé.
 
 **Prochaine action** :
-1. PR de `corrections-relecture-pr271` vers `develop`, CI verte, fusion ; #271 se met à jour ; contrôles du nouveau
-   commit, fusion dans `main` ; Tests et Livraison de `main` verts, `/health` sur le nouveau commit.
+1. PR de `corrections-relecture-pr271` vers `develop`, CI verte, fusion ; puis une nouvelle PR `develop` vers `main`,
+   contrôles verts, fusion ; Tests et Livraison de `main` verts, `/health` sur le nouveau commit.
 2. Les tags `livrable-E1-v9`, `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v8`, `livrable-E5-v6` sur ce `main`, un
    par push, chaque exécution Livraison vérifiée.
 3. M2 du registre, puis Era change la visibilité du dépôt et celle du Kanban (projet 4, réglage séparé) ; vérificateur
    de liens sans connexion, zéro lien cassé.
-4. À trancher par Era : fermeture des huit éléments GitHub résolus (#73, #152, #78, #79, #28, #41, #21, PR #88) ; noms
-   de personnes tierces dans les fichiers courants (la relecture conseille leurs rôles).
+4. À trancher par Era : fermeture des éléments GitHub selon la relecture ci-dessus (#21 reste ouvert ; #73 après sa
+   note) ; noms de personnes tierces dans les documents courants (la relecture conseille leurs rôles, preuves
+   historiques gardées).
 5. Classeurs (grille D38, préparation E2) et copies OneDrive datées ; notice d'accès du jury (sans la clé) et message à
    la cheffe de projet, envoyé par Era.
 
