@@ -70,9 +70,10 @@ C:\Python314\python.exe scripts\verifier_liens.py
 0. **La Definition of Done est verte** : tests + couverture ≥ 90 %, portes d'évaluation,
    liens internes, tag cité dans `ETAT.md` et `CHANGELOG.md`, arbre git propre.
 1. **Le tag existe** sur GitHub, et pointe où on croit.
-2. **Le lien du tag s'ouvre sans connexion**, dans une fenêtre privée : le dépôt est public après les tags du
-   16/11. Avant, il fallait vérifier que le destinataire était collaborateur (une invitation envoyée n'est pas
-   un accès donné).
+2. **Le lien du tag s'ouvre pour le destinataire.** Au 16/11, le dépôt est encore privé : vérifier que le
+   destinataire est collaborateur (une invitation envoyée n'est pas un accès donné). Publication prévue juste
+   après les tags du 16/11, par un changement de visibilité ; ensuite, ouvrir le lien sans connexion, dans une
+   fenêtre privée.
 3. **Zéro lien cassé** dans le dépôt.
 
 ### Gabarit du message
@@ -89,7 +90,8 @@ C:\Python314\python.exe scripts\verifier_liens.py
 > exactement tel qu'il était lors de la remise. La branche principale, elle, continue
 > d'avancer avec les livrables suivants — l'ouvrir donnerait une image faussée d'E1.
 >
-> Le dépôt est public à partir du 16/11/2026 : le lien du tag s'ouvre sans compte GitHub.
+> [Seulement une fois le dépôt rendu public et le lien ouvert sans connexion :] Le dépôt est public : le lien
+> du tag s'ouvre sans compte GitHub.
 >
 > Bien à vous,
 > Eramalingam GANDAKUMAR
