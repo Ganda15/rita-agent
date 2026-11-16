@@ -61,7 +61,7 @@ body h3{ background:#D6E6F7; border-left:4px solid #12395E; padding-left:calc(9p
 
 # Rapport E5 : surveiller l'application et résoudre un incident (C20 et C21)
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C20 et C21 · version 1.1, 8 novembre 2026 · application de référence : commit `6f428d6` de `main`, en production le 07/11/2026 ; correctif de l'incident : PR #171 du 31/10/2026 · code et preuves : dépôt GitHub privé `Ganda15/rita-agent`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C20 et C21 · version 1.2, 16 novembre 2026 · application de référence : commit `6f428d6` de `main`, en production le 07/11/2026 ; correctif de l'incident : PR #171 du 31/10/2026 · code et preuves versionnés : `Ganda15/rita-agent`, version figée au tag `livrable-E5-v6`
 {: .identite }
 
 > **En une minute.** Ce document est la documentation technique du monitorage de RITA, écrite pour la personne qui
@@ -103,9 +103,10 @@ version de production `6f428d6`.
 ## 2. Les signaux et leurs seuils {: #signaux }
 
 Les seuils sont écrits dans [`monitorage/seuils.json`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/monitorage/seuils.json) (version du 22/10/2026), chacun avec sa raison, l'action à mener
-et la condition de résolution. Ils sont **provisoires** : écrits avant toute mesure du trafic réel, à relire sur des
-données réelles. Pour les taux et le temps de réponse, sous le minimum de requêtes ou sans donnée, le verdict est « inconnu », jamais
-« sain » ; la fraîcheur est « inconnue » quand la base ne répond pas.
+et la condition de résolution. Ils sont **provisoires** : écrits avant toute mesure du trafic réel. Pour
+les taux et le temps de réponse, sous le minimum de requêtes ou sans donnée, le verdict est « inconnu », jamais
+« sain » ; la fraîcheur est « inconnue » quand la base ne répond pas. Le 14/11, une session contrôlée de 11
+demandes donne des cartes saines : 0 erreur, p95 de 3,2 s.
 
 | Signal | Mesure, fenêtre | Attention | Problème | Minimum |
 |---|---|---|---|---|

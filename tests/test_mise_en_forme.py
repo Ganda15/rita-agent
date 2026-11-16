@@ -21,6 +21,11 @@ from src.llm import ResultatTexte
     ("# Briefing sur LVMH (MC.PA)\nL'action a clôturé en repli.", "Briefing sur LVMH (MC.PA)\nL'action a clôturé en repli."),
     ("## Séance du 13/11/2026", "Séance du 13/11/2026"),
     ("*Les Échos* et **BFM Bourse** citent la demande chinoise.", "Les Échos et BFM Bourse citent la demande chinoise."),
+    # Second cas vu en production le 14/11 (MC.PA, avant la livraison du correctif) : toute une ligne en italique.
+    ("Volatilité annualisée élevée (22,12 %).\n*Source : Données de marché au 13/11/2026 (BFM Bourse, 13/10/2026, sur la "
+     "persistance des pressions chinoises).*",
+     "Volatilité annualisée élevée (22,12 %).\nSource : Données de marché au 13/11/2026 (BFM Bourse, 13/10/2026, sur la "
+     "persistance des pressions chinoises)."),
 ])
 def test_les_marques_appariees_et_les_titres_sont_retires(brut, attendu):
     assert sans_marques_markdown(brut) == attendu

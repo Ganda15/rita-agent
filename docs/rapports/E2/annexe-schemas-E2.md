@@ -41,7 +41,7 @@ Large 3 fait (rapport, 3.4).
 
 ## A3. Le service retenu au 03/11 : accès, réglage, surveillance (C8) {: #a3 }
 
-![Le service retenu aujourd'hui : l'appel d'un briefing, sa surveillance, et ce qui manque](schemas/E2-service-aujourdhui-illustre.png)
+![Le service retenu aujourd'hui : l'appel d'un briefing, sa surveillance, et ce qui manque](schemas/E2-service-aujourdhui-illustre.png){: style="max-height:120mm" }
 
 **Schéma historique : état au 03/11**, mise en forme du jour, texte identique à l'original du générateur (`schemas/E2-service-aujourdhui.svg`). **Ce qu'il montre pour E2** : l'appel d'un briefing, de l'écran au déploiement Azure configuré en zone UE, avec la clé lue dans
 l'environnement et le réglage `LLM_ORDRE` ; la surveillance, des traces Langfuse aux deux alertes et à l'issue GitHub,
@@ -51,6 +51,8 @@ section 4 du rapport. **Limites** : aucun secours si Azure tombe ; **Mistral Lar
 Azure UE sur 10 cas et la lecture de son contrat, et n'est pas activé ; les fonctions d'appel d'Anthropic et d'OpenRouter
 restent dans le code sans servir ; la supervision du portail Azure est relevée depuis le 06/11 (rapport, § 4.4 ; annexe A6) ; le guide a été envoyé au formateur le
 03/11 (rapport, § 4.6). **Au 07/11** : banc Azure UE contre Mistral Large 3 fait (rapport, 3.4) ; Azure seul actif.
+**Au 14/11** : Azure refuse la clé du serveur depuis le 13/11 ; Mistral Large 3 répond en secours, Azure restant premier
+(rapport, § 4.2, encadré « Depuis le 14/11 »). **Au 16/11** : Azure répond de nouveau ; Mistral reste en secours.
 
 ## A4. Les preuves de la veille : la source S36, vérifiée le 06/11 (C6) {: #a4 }
 

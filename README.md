@@ -5,7 +5,7 @@
 **Certification RNCP37827 : Développeur en Intelligence Artificielle**
 Simplon & Wild Code School · Eramalingam GANDAKUMAR · 2026
 
-> **Remise du 09/11/2026** : les cinq rapports et leur tag sont dans le tableau ci-dessous. Pour retrouver, fichier
+> **Versions du 16/11/2026**, pour la remise du 23/11 : les cinq rapports et leur tag sont dans le tableau ci-dessous. Pour retrouver, fichier
 > par fichier, ce que chaque compétence demande : le [guide du jury](docs/jury/README.md).
 > **Sprint 5 de la phase 6** (la vigie et la démo) : [`docs/sprint-5/README.md`](docs/sprint-5/README.md), figé sous le
 > tag [`livrable-sprint-5-v5`](https://github.com/Ganda15/rita-agent/tree/livrable-sprint-5-v5/docs/sprint-5).
@@ -26,15 +26,15 @@ Simplon & Wild Code School · Eramalingam GANDAKUMAR · 2026
 > *Un dépôt unique qui grandit est la règle du référentiel ; le tag est ce qui permet
 > malgré tout d'évaluer un livrable dans son état d'origine.*
 
-| Épreuve | Compétences | État au 08/11/2026 | Documents | Livrable figé |
+| Épreuve | Compétences | État au 16/11/2026 | Documents | Livrable figé |
 |---|---|---|---|---|
-| **E1** : Données | C1-C5 | ✅ livret v8 du 08/11 : couleurs du rapport E2, rédaction à la première personne ; 5 pages, avec une couverture et 4 pages d'annexes (10 pages en tout) ; auto-évaluation **28 ✅** ; le livret v3 envoyé le 28/10 a été accepté par le formateur | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) · [rapport-E1-v8-avec-annexes.pdf](docs/rapports/E1/rapport-E1-v8-avec-annexes.pdf) · [budget détaillé](docs/BUDGET.md) · [preuves C1 à C5](evidence/) | **[`livrable-E1-v8`](https://github.com/Ganda15/rita-agent/tree/livrable-E1-v8)** |
-| **E2** : Veille & services IA | C6-C8 | ✅ rapport v1.6 du 08/11 (18 pages, 32 avec l'annexe) ; auto-évaluation **20 ✅** | [rapport-E2-avec-annexe.pdf](docs/rapports/E2/rapport-E2-avec-annexe.pdf) · [rapport-E2.pdf](docs/rapports/E2/rapport-E2.pdf) · [docs/veille/](docs/veille/) · [evidence/C6/](evidence/C6/) | **[`livrable-E2-v5`](https://github.com/Ganda15/rita-agent/tree/livrable-E2-v5)** |
-| **E3** : API modèle & MLOps | C9-C13 | ✅ rapport v2.5 du 08/11 (20 pages) : couleurs du rapport E2, contenu de la v2.4 du 07/11 ; auto-évaluation **39 ✅** | [rapport-E3.pdf](docs/rapports/E3/rapport-E3.pdf) · [evidence/C11/](evidence/C11/) · [evidence/C12/](evidence/C12/) | **[`livrable-E3-v6`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v6)** |
-| **E4** : Application | C14-C19 | ✅ rapport v1.10 du 08/11 (20 pages, 35 avec l'annexe) ; auto-évaluation **38 ✅**, chacun avec sa limite | [rapport-E4-avec-annexe.pdf](docs/rapports/E4/rapport-E4-avec-annexe.pdf) · [rapport-E4.pdf](docs/rapports/E4/rapport-E4.pdf) · [evidence/C14/](evidence/C14/) · [evidence/C17/](evidence/C17/) | **[`livrable-E4-v7`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v7)** |
-| **E5** : Monitorage | C20-C21 | ✅ rapport v1.1 du 08/11 (5 pages) ; vigie planifiée constatée en production le 07/11 ; auto-évaluation **12 ✅** | [rapport-E5.pdf](docs/rapports/E5/rapport-E5.pdf) · [evidence/C20/](evidence/C20/) · [evidence/C21/](evidence/C21/) | **[`livrable-E5-v5`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v5)** |
+| **E1** : Données | C1-C5 | ✅ livret v9 du 16/11 : retours de l'oral blanc du 13/11, Mistral en secours d'Azure, clé par client reportée après le jury ; 5 pages, avec une couverture et 4 pages d'annexes (10 pages en tout) ; auto-évaluation **28 ✅** ; le livret v3 envoyé le 28/10 a été accepté par le formateur | [rapport-E1.pdf](docs/rapports/E1/rapport-E1.pdf) · [rapport-E1-v9-avec-annexes.pdf](docs/rapports/E1/rapport-E1-v9-avec-annexes.pdf) · [budget détaillé](docs/BUDGET.md) · [preuves C1 à C5](evidence/) | **[`livrable-E1-v9`](https://github.com/Ganda15/rita-agent/tree/livrable-E1-v9)** |
+| **E2** : Veille & services IA | C6-C8 | ✅ rapport v1.7 du 16/11 (19 pages, 33 avec l'annexe) : Mistral en secours d'Azure depuis le 14/11, retour d'Azure le 16/11 ; auto-évaluation **20 ✅** | [rapport-E2-avec-annexe.pdf](docs/rapports/E2/rapport-E2-avec-annexe.pdf) · [rapport-E2.pdf](docs/rapports/E2/rapport-E2.pdf) · [docs/veille/](docs/veille/) · [evidence/C6/](evidence/C6/) | **[`livrable-E2-v6`](https://github.com/Ganda15/rita-agent/tree/livrable-E2-v6)** |
+| **E3** : API modèle & MLOps | C9-C13 | ✅ rapport v2.6 du 16/11 (20 pages) : Mistral en secours d'Azure, garde-fous datés ; auto-évaluation **39 ✅** | [rapport-E3.pdf](docs/rapports/E3/rapport-E3.pdf) · [evidence/C11/](evidence/C11/) · [evidence/C12/](evidence/C12/) | **[`livrable-E3-v7`](https://github.com/Ganda15/rita-agent/tree/livrable-E3-v7)** |
+| **E4** : Application | C14-C19 | ✅ rapport v1.11 du 16/11 (20 pages, 36 avec l'annexe) : RAG nommé, axes de la courbe et astérisques corrigés ; auto-évaluation **38 ✅**, chacun avec sa limite | [rapport-E4-avec-annexe.pdf](docs/rapports/E4/rapport-E4-avec-annexe.pdf) · [rapport-E4.pdf](docs/rapports/E4/rapport-E4.pdf) · [evidence/C14/](evidence/C14/) · [evidence/C17/](evidence/C17/) | **[`livrable-E4-v8`](https://github.com/Ganda15/rita-agent/tree/livrable-E4-v8)** |
+| **E5** : Monitorage | C20-C21 | ✅ rapport v1.2 du 16/11 (5 pages) ; session contrôlée du 14/11 ; vigie planifiée constatée en production le 07/11 ; auto-évaluation **12 ✅** | [rapport-E5.pdf](docs/rapports/E5/rapport-E5.pdf) · [evidence/C20/](evidence/C20/) · [evidence/C21/](evidence/C21/) | **[`livrable-E5-v6`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v6)** |
 
-*Mon auto-évaluation au 08/11, dans les grilles des cinq rapports : **137 ✅** sur 137 lignes (E1 28, E2 20, E3 39,
+*Mon auto-évaluation au 16/11, inchangée depuis le 08/11, dans les grilles des cinq rapports : **137 ✅** sur 137 lignes (E1 28, E2 20, E3 39,
 E4 38, E5 12), chaque ligne avec sa preuve et, s'il y en a une, sa limite écrite. La grille du 03/11 (120 ✅ · 17 🟡 sur
 les mêmes 137 lignes) reste celle remise ce jour-là ; la [note de mise à jour du 03/11](docs/rapports/note-mise-a-jour-2026-11-03.pdf)
 a été écrite avant ces corrections.*
