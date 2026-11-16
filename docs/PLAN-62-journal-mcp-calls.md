@@ -1,7 +1,7 @@
 # Plan : le journal d'audit des appels MCP, table `mcp_calls` (issue #62, C20, chapitre « Données » §3.7)
 
 > **Établi le 03/10/2026**, après #65. **Zone sous garde** (`db/schema.sql`) et **nouveau traitement RGPD** : ce plan est
-> relu et validé par Era **avant** toute ligne de code. Rien de ce qui suit n'est fait. Trois décisions en section 7.
+> relu et validé par Era **avant** toute ligne de code. Rien de ce qui suit n'était fait le 03/10 (statut au 16/11 : issue #62 fermée le 03/10 ; plan gardé tel qu'écrit). Trois décisions en section 7.
 
 ## 1. Le besoin, et ce qui existe déjà
 

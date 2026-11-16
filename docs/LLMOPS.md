@@ -123,7 +123,7 @@ d'investissement n'a pas besoin du verbe « acheter » pour en être un.
 
 > Depuis le 03/10/2026, la chaîne complète (cinq workflows, tous les déclencheurs, secrets, permissions, installation, test) est décrite en un seul endroit : `docs/CI-CD.md`. Cette section garde les deux workflows d'origine et le pourquoi des portes.
 
-Deux workflows GitHub Actions d'origine, dans `.github/workflows/` (cinq aujourd'hui, voir `docs/CI-CD.md`).
+Deux workflows GitHub Actions d'origine, dans `.github/workflows/` (cinq le 07/09, huit au 16/11, voir `docs/CI-CD.md`).
 
 ### `test.yml` — à chaque poussée sur `main` et `develop`
 
@@ -149,7 +149,7 @@ qu'avant de pousser.*
 2. Construction de l'image Docker, **jamais publiée à cette étape** (chargée dans Docker pour être vérifiée)
 3. **Vérifier que l'image démarre et répond**, sur l'image construite, sans la reconstruire
 4. **Vérifier que l'accès est bien restreint** : l'API doit refuser sans clé
-5. **Publier l'image vérifiée**, seulement sur un tag `livrable-*` : c'est l'image testée aux étapes 3 et 4 qui part sur le registre (corrigé le 26/09/2026, issue #22 ; avant, la publication précédait la vérification)
+5. **Publier l'image vérifiée**, au 07/09 seulement sur un tag `livrable-*` (au 16/11, aussi après chaque fusion dans `main`) : c'est l'image testée aux étapes 3 et 4 qui part sur le registre (corrigé le 26/09/2026, issue #22 ; avant, la publication précédait la vérification)
 
 > ⚠️ **Docker n'est pas une chaîne de livraison continue.** Un `Dockerfile` seul ne coche
 > aucun critère. Ce qui coche C13 ici, c'est l'enchaînement **test → construction →
@@ -167,7 +167,8 @@ le justifier**. L'historique complet est dans `.coveragerc` ; l'essentiel :
 |---|---|---|
 | 19/08 (initiale) | 81 % | 80 % |
 | 19/08 (deux manques comblés) | 92 % | **90 %** |
-| 07/09 (aujourd'hui) | **92,23 %** | 90 % |
+| 07/09 | **92,23 %** | 90 % |
+| 16/11 (CI de `main`) | **96,15 %** | 90 % |
 
 **Le seuil suit la mesure, jamais l'inverse.** Il n'a été relevé qu'une fois les manques
 réellement fermés et le nouveau chiffre confirmé.

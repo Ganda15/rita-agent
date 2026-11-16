@@ -2,9 +2,9 @@
 
 > Mis en place le 26/09/2026. Compétence visée : **C16**, coordonner la réalisation technique
 > dans une conduite agile de projet. Tableau : **RITA - Pilotage Kanban (livrables E2-E5)**,
-> https://github.com/users/Ganda15/projects/4 (privé ; accès : Era, formateur en lecture).
-> Sans connexion ou sans accès, GitHub répond 404 : c'est le comportement normal d'un projet
-> privé. Le jury recevra un accès en lecture au moment de l'évaluation.
+> https://github.com/users/Ganda15/projects/4 (privé jusqu'au 16/11, formateur en lecture ; rendu public
+> avec le dépôt, par un réglage séparé). Tant qu'il est privé, GitHub répond 404 sans connexion. Les
+> modalités d'accès du jury sont transmises à part.
 
 ## 1. Pourquoi Kanban
 
@@ -14,7 +14,7 @@ n'ont pas de sens pour une personne seule. Kanban garde ce qui sert ici : un flu
 visible, une limite au travail en cours, une revue régulière.
 
 La cadence existe déjà : le plan `docs/PLAN-12-SEMAINES.md` (16/08) découpe le projet en
-semaines S34 à S45, chacune avec un objectif. **Un cycle Kanban = une semaine du plan.**
+semaines S34 à S45, chacune avec un objectif. **Un cycle Kanban = une semaine du plan** (prévu le 26/09 ; au 16/11, voir la section 7).
 
 ## 2. Les rôles
 
@@ -74,7 +74,8 @@ débit). Kanban ne se pilote pas au burndown, qui suppose un engagement de sprin
   le journal de bord et 20 pull requests : des traces réelles, mais pas un outil agile. Aucune
   trace n'est reconstituée après coup.
 - Un pilotage à une personne ne montre ni rétrospective d'équipe ni répartition des tâches.
-- La tenue des revues se prouvera dans la durée : cinq revues sont possibles d'ici au 05/11.
+- La tenue des revues, constatée au 16/11 (rapport E4, § 3.6) : tableau non tenu du 14/10 au 07/11, repris le
+  07/11 ; revues du lundi sans compte rendu ; aucune trace reconstituée après coup.
 
 ## 📖 Glossaire
 

@@ -4,7 +4,8 @@
 > vivent les données, comment l'accès est contrôlé, comment le modèle est surveillé et comment le code est livré.
 > Chaque brique renvoie à son dossier et aux tests qui la prouvent. Critères visés : C9 (« la documentation couvre
 > l'architecture, tous les points de terminaison et les règles d'authentification ») et C17 (documentation technique).
-> État du code : 24 octobre 2026, branche `develop` ; la production sert la version N18 (commit `b547cbf`). Les schémas
+> État décrit : 24 octobre 2026 (schémas et tableaux), complété le 16/11 par des notes datées ; au 16/11, la
+> production sert `8b2509f`. Les schémas
 > sont dans `docs/rapports/E3/schemas/` (un `.drawio` pour corriger, un `.png` pour lire, générés par un seul script).
 > Ils ont été refaits le 24/10 : le schéma d'architecture montre les deux chemins vers le modèle (briefing et questions)
 > et `/sante` ; la vigie, qui tourne hors de l'API, n'y figure pas.
@@ -42,7 +43,7 @@ d'achat ou de vente (contrainte AMF). Aide à la lecture, jamais un conseil.
 | Graphe | `graph/` | trois nœuds à arêtes fixes : `scout` (lit la base), `rag` (cherche les articles), `redacteur` (écrit) | LangGraph | `test_workflow`, `test_scout_base` |
 | Rédacteur | `agents/analyst.py` | construit le prompt du briefing : les faits (cours, variation, capitaux moyens, 10 indicateurs, passages), la consigne AMF | Python | `test_analyst` |
 | Question | `agents/question.py` | répond à une question libre : sortie du modèle en JSON imposé puis revérifiée ; les références montrées viennent des données stockées, jamais du texte du modèle | Python, Pydantic | `test_question_contrat`, `test_question_parcours`, `test_api_question` |
-| Appel au modèle | `src/llm.py` | briefing : ordre des fournisseurs réglé par `LLM_ORDRE`, par défaut Azure AI Foundry `gpt-5.4` seul depuis le 31/10 (règle UE seule ; le poste l'appliquait depuis le 11/10, la production le prend depuis la livraison du 31/10) ; Anthropic et OpenRouter ne sont appelés que si `LLM_ORDRE` les nomme ; question : Azure seul, en JSON strict (`generer_json`) | `httpx`, SDK `anthropic` | `test_llm` |
+| Appel au modèle | `src/llm.py` | **au 16/11** : depuis le 14/11, `LLM_ORDRE=foundry,mistral` sur le serveur : Azure d'abord, Mistral Large 3 (`mistral-large-2512`, adresse européenne) si Azure échoue, pour le briefing et la question ; une question ne part jamais chez Anthropic ni OpenRouter. **Au 24/10** : briefing : ordre des fournisseurs réglé par `LLM_ORDRE`, par défaut Azure AI Foundry `gpt-5.4` seul depuis le 31/10 (règle UE seule ; le poste l'appliquait depuis le 11/10, la production le prend depuis la livraison du 31/10) ; Anthropic et OpenRouter ne sont appelés que si `LLM_ORDRE` les nomme ; question : Azure seul, en JSON strict (`generer_json`) | `httpx`, SDK `anthropic` | `test_llm` |
 | Garde-fous | `guardrails/` | **question** : intention AMF (`entree.py`), injection et extraction (`detournement.py`) ; **articles collectés** : injection (`injection.py`) ; **texte produit** : recommandation et fuite (`sortie.py`), et pour une réponse, chaque nombre présent dans un article cité (`nombres.py`) | motifs lexicaux | `test_entree`, `test_garde_fou_question`, `test_injection`, `test_controle_nombres`, `test_evals` |
 | API | `api/` | FastAPI : 19 chemins, décrits au § 4 ; limite de débit sur les deux routes qui appellent le modèle (`limiteur.py`) ; documentation OpenAPI 3.1.0 sur `/docs` | FastAPI, Uvicorn | `test_health`, `test_api_donnees`, `test_request_id`, `test_audit_mcp`, `test_limiteur`, `test_exercice` |
 | Interface | `frontend/` | cinq écrans : portefeuille, indicateurs, briefing, question, tableau de bord de la vigie ; aucune clé dans le code, la clé est saisie | HTML, CSS, JavaScript sans outil de construction | `test_frontend`, `test_smoke_ui` (vrai navigateur) |
@@ -132,9 +133,10 @@ image. Le retour arrière de la production est écrit dans `exploitation.md`
 ## 9. Ce que cette architecture ne fait pas
 
 - Pas de comptes ni de rôles : un utilisateur, une clé, plus la clé d'exercice de l'opérateur.
-- Pas d'en-têtes de sécurité posés par l'API (revue OWASP, carte #75). La limite de débit existe depuis le sprint 4,
-  mais seulement sur les deux routes qui appellent le modèle.
-- L'API lit la base avec le rôle propriétaire, au lieu d'un rôle en lecture (carte #76).
+- Au 24/10, pas d'en-têtes de sécurité posés par l'API (revue OWASP, carte #75) : posés en production depuis le
+  07/11. La limite de débit existe depuis le sprint 4, mais seulement sur les deux routes qui appellent le modèle ;
+  depuis le 07/11, un frein des essais de clé par adresse (`api/limiteur.py`, registre T9).
+- Au 24/10, l'API lisait la base avec le rôle propriétaire (carte #76) : rôle `rita_api` en production depuis le 07/11.
 - Le retour arrière ne revient que d'un pas et ne restaure pas la base ; aucune approbation n'est demandée avant un
   déploiement.
 - Les compteurs de la vigie vivent en mémoire : ils repartent à zéro à chaque redémarrage de l'API.

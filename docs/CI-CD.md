@@ -20,7 +20,7 @@ chaîne sont versionnés avec le code dans `.github/workflows/`. Huit workflows,
 | `revue-pr.yml` | Revue PR | pull request vers `main` (ouverte, mise à jour, rouverte, prête) | `revue` | 42 s le 24/10 ; jusqu'à 20 min déjà vu | **oui** |
 | `scan-giskard.yml` | Scan Giskard | bouton manuel (`workflow_dispatch`), avec un plafond de scénarios saisi | scan des deux frontières | 10 à 30 min, coût du juge | non |
 | `alerte-incident.yml` | Alerte Langfuse vers issue incident | envoi de Langfuse (`repository_dispatch`, type `alerte-langfuse`) ou bouton manuel | `ouvrir-ou-commenter` | moins de 1 min | non |
-| `vigie.yml` | Vigie de la production | toutes les trois heures (`schedule`, à la 17e minute) et bouton manuel | `passage` | environ 1 min (estimation, avant la première exécution) | non |
+| `vigie.yml` | Vigie de la production | toutes les trois heures (`schedule`, à la 17e minute) et bouton manuel | `passage` | environ 1 min (estimé avant la première exécution ; passages planifiés depuis le 07/11) | non |
 | `retour-arriere.yml` | Retour arrière | bouton manuel, avec son nom et le motif | `revenir` | 28 s le 14/10, 35 s le 15/10 | non |
 | `ingestion.yml` | Ingestion | bouton manuel, avec son nom et le motif | `ingerer` | selon la collecte et le rejeu | non |
 
@@ -147,8 +147,8 @@ issue #71, fermée comme démonstration).
 Un travail `passage`, depuis le 06/11/2026. Il vérifie que le secret `RITA_API_KEY_VIGIE` existe (sinon il s'arrête en
 le disant), puis lance `python -m monitorage.vigie --adresse https://178-104-184-125.sslip.io --github` : sonde de
 `/health`, lecture de `/sante`, une issue `incident` par signal en problème, fermée au retour à la normale
-([La vigie](exploitation.md#vigie-et-exercices)). Toutes les trois heures : environ 240 minutes d'Actions par mois sur un
-dépôt privé, et une panne vue en trois heures au plus. Deux passages ne se chevauchent pas (`concurrency`).
+([La vigie](exploitation.md#vigie-et-exercices)). Toutes les trois heures : environ 240 minutes d'Actions par mois tant que le
+dépôt est privé, et une panne vue en trois heures au plus. Deux passages ne se chevauchent pas (`concurrency`).
 
 ### `retour-arriere.yml`, Retour arrière (C13, sprint 2)
 
@@ -250,7 +250,7 @@ Trois choses qu'on ne fait jamais pour « que ça passe » : désactiver un test
 
 ## 8. Limites, déclarées
 
-- **Tests ignorés en CI** : 30 le 24/10. 16 exigent une vraie base PostgreSQL, absente en CI, 9 testent les hooks de
+- **Tests ignorés en CI** : 30 le 24/10, 97 le 16/11 (détail par `pytest -rs`). 16 exigent une vraie base PostgreSQL, absente en CI, 9 testent les hooks de
   l'assistant de développement, muets hors Windows, et 5 exigent Spark (pas de JDK). Depuis le 01/11/2026, les tests
   qui demandent PostgreSQL tournent dans le job `base`, qui échoue si l'un d'eux est sauté ; ils restent ignorés dans
   le job `pytest`. Depuis le 02/11/2026, ils sont choisis par le marqueur `postgresql`, et un test qui demande la

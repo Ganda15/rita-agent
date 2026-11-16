@@ -56,7 +56,7 @@ recommandation d'achat ou de vente.
 
 | | |
 |---|---|
-| Tests | **3 213 collectés** · sur mon poste : 3 131 réussis, 82 ignorés, 0 en échec (08/11, commit `05df824`) ; en CI : 3 116 réussis, 97 ignorés, couverture 96,11 %, et 59 tests PostgreSQL réussis dans le job `base` (08/11) |
+| Tests | **3 273 collectés** · sur mon poste : 3 191 réussis, 82 ignorés, 0 en échec (16/11, commit `a2824c9`) ; en CI : 3 176 réussis, 97 ignorés, couverture 96,15 %, et 59 tests PostgreSQL réussis dans le job `base` (16/11, `main` à `8b2509f`) |
 | Base de données | 10 tables · 1 vue · 8 index créés explicitement · 12 contraintes CHECK (compté dans `db/schema.sql`, inchangé depuis le 10/10, recompté le 02/11) |
 | Données en base | 273 608 lignes importées en juillet (276 168 lues − 2 560 doublons) ; 278 473 cotations au 02/10 (mesure d'E1) |
 | Archive big data | 11 partitions Parquet · 14 Mo · 10 ans (29/07/2016 → 29/07/2026, dates locales de la place depuis INC-005) |
@@ -78,18 +78,18 @@ recommandation d'achat ou de vente.
 - **API** : FastAPI · documentation OpenAPI générée
 - **Base de données** : PostgreSQL (conception Merise : MCD et MPD)
 - **Big data** : PySpark + Parquet *(nécessite un JDK 21 dans `JAVA_HOME`)*
-- **Modèle d'IA** : GPT-5.4 sur Azure AI Foundry (Data Zone EU), seul fournisseur par défaut depuis le 31/10/2026
-  (règle UE seule) ; Claude par Anthropic ou OpenRouter n'est plus appelé sauf si `LLM_ORDRE` le nomme. Mistral Large 4
-  est retenu comme second fournisseur, en Europe, après la lecture de son contrat (carte #82, PR #88) : modèle
-  fourni, aucun entraînement
+- **Modèle d'IA** : GPT-5.4 sur Azure AI Foundry (Data Zone EU) en premier ; en production depuis le 14/11/2026,
+  Mistral Large 3 par son adresse européenne répond en secours quand Azure échoue (`LLM_ORDRE=foundry,mistral`,
+  contrat lu le 13/11, règle UE seule). Claude par Anthropic ou OpenRouter n'est appelé que si `LLM_ORDRE` le nomme.
+  Modèle fourni, aucun entraînement
 - **Orchestration** : LangGraph
 - **CI** : GitHub Actions, tests et porte d'évaluation des garde-fous
 
-> **Présents au 08/11** : interface web de cinq écrans (portefeuille, indicateurs, briefing, question, tableau de bord
+> **Présents au 16/11** : interface web de cinq écrans (portefeuille, indicateurs, briefing, question, tableau de bord
 > de la vigie, `frontend/`), passerelle MCP (`passerelle_mcp/`), conteneurisation (`Dockerfile`, `Dockerfile.tests`,
 > `docker-compose.yml`), huit workflows GitHub Actions (tests, livraison, revue des pull requests, scan Giskard, alerte
 > d'incident, ingestion, retour arrière, vigie planifiée), traces Langfuse avec deux alertes réglées, tableau de bord
-> de la vigie sur `/sante`. La production sert le code de `05df824` (`/health`, lu le 08/11).
+> de la vigie sur `/sante`. La production sert le code de `8b2509f` (`/health`, lu le 16/11).
 
 ## Structure
 
@@ -108,7 +108,7 @@ rita-agent/
 ├── evidence/     # preuves par compétence : C1/ … C21/
 ├── frontend/     # interface web : cinq écrans (C10, E4)
 ├── graph/        # LangGraph : état et workflow
-├── guardrails/   # trois garde-fous : entrée, injection indirecte, sortie
+├── guardrails/   # cinq garde-fous à trois places : question, articles collectés, texte produit
 ├── indicateurs/  # indicateurs de marché et de portefeuille
 ├── monitorage/   # vigie : fraîcheur, compteurs, seuils
 ├── passerelle_mcp/ # serveur MCP : trois outils en lecture
@@ -117,7 +117,7 @@ rita-agent/
 ├── scripts/      # planification de la collecte
 ├── sources/      # les 5 types de sources C1
 ├── src/          # appel du modèle
-└── tests/        # pytest : 3 213 tests collectés (08/11)
+└── tests/        # pytest : 3 273 tests collectés (16/11)
 ```
 
 L'architecture, avec le chemin d'un briefing et d'une question : [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
@@ -155,8 +155,8 @@ système :
 python -m pytest -q
 ```
 
-> **Dernière exécution vérifiée : 3 131 réussis, 82 ignorés, 0 en échec sur 3 213 collectés** (Python 3.14, Windows,
-> 08/11/2026, commit `05df824`, par `scripts/verifier_livrable.py`). Les ignorés : les tests qui demandent PostgreSQL
+> **Dernière exécution vérifiée : 3 191 réussis, 82 ignorés, 0 en échec sur 3 273 collectés** (Python 3.14, Windows,
+> 16/11/2026, commit `a2824c9`, par `scripts/verifier_livrable.py`). Les ignorés : les tests qui demandent PostgreSQL
 > (ci-dessous) et ceux qui ne tournent que sous Linux, dans la CI (simulations `bash`, `jq`, verrous de fichiers,
 > liens symboliques).
 > Les tests d'intégration PySpark de `tests/test_spark.py` sont ignorés (et non en échec) si aucun JDK 21 n'est
@@ -164,7 +164,7 @@ python -m pytest -q
 
 ### Les tests qui demandent PostgreSQL
 
-Ces 25 tests portent le marqueur `postgresql`. Ils n'écrivent que dans une base de test déclarée : `DATABASE_URL` doit
+Ces 59 tests portent le marqueur `postgresql` (16/11). Ils n'écrivent que dans une base de test déclarée : `DATABASE_URL` doit
 viser une base dont le nom est celui de `RITA_BASE_DE_TEST`, sinon ils sont ignorés (`tests/garde_base.py`). Pour les
 lancer seuls, sur une base de test chargée avec `db/schema.sql` puis `db/roles.sql` :
 

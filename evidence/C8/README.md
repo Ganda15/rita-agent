@@ -5,6 +5,11 @@
 >
 > Dossier créé le 03/10/2026. Il ne contient aucune preuve nouvelle : il indexe celles qui existent ailleurs
 > dans le dépôt, critère par critère, et dit ce qui manque. Livrable E2.
+>
+> **État au 16/11** : cet index date du 03/10 et reste tel quel. Depuis : Azure seul par défaut (31/10), remise au
+> formateur (`envoi-documents-formateur-2026-11-03.md`), règle UE précisée (`regle-ue-2026-11-06/`), Mistral Large 3
+> en secours (14/11), briefings sans Markdown (`briefings-sans-markdown-2026-11-14/`). L'état qui fait foi est
+> la grille du rapport E2 v1.7.
 
 ## Ce qui existe, et ce que ça prouve
 
@@ -13,7 +18,7 @@
 | Cascade de trois fournisseurs, clés lues dans l'environnement, modèle configurable par variable ; depuis le 03/10 au soir, Foundry par son point compatible OpenAI (`gpt-5.4`, gratuit pour le projet, 1ᵉʳ de la cascade) | `src/llm.py` (`LLM_ORDRE`, `AZURE_FOUNDRY_DEPLOYMENT`, `ANTHROPIC_MODEL`, `OPENROUTER_MODEL`), `.env.example` | l'accès et la configuration (C8.1, C8.2) |
 | Un briefing réel servi le 03/10 : OpenRouter répond en 5,6 s après deux fournisseurs en échec, 616 jetons entrée, 210 sortie | `../C9/preuve-api-modele-2026-10-03.md`, `../C11/preuve-langfuse-2026-10-03.md` §5 | le service est accessible et configuré ; le monitorage le montre (C8.1, C8.3) |
 | Chaque tentative tracée (fournisseur, modèle, jetons, erreur), tableau « RITA C11 », chaîne d'alerte exécutée une fois | `../C11/` | le monitorage disponible du service est en marche (C8.3), avec ses limites |
-| Guide d'exploitation : clés, installation avec et sans Docker, vérification, services externes, données, dépannage, monitorage | `../../docs/EXPLOITATION.md` | la documentation d'accès, d'installation, de tests, de dépendances, de flux de données (C8.4) |
+| Guide d'exploitation : clés, installation avec et sans Docker, vérification, services externes, données, dépannage, monitorage | `../../docs/exploitation.md` | la documentation d'accès, d'installation, de tests, de dépendances, de flux de données (C8.4) |
 | Tests de la cascade et du traçage | `tests/test_llm.py` (5), `tests/test_traces.py` (7), `tests/test_traces_robustesse.py` (8) | la configuration est testée, une panne du traçage ne casse pas le service |
 
 ## Ce qu'il faut dire tel quel
@@ -40,7 +45,7 @@
 | C8.1 Service accessible, authentification en place | ✅ | appel réel du 03/10, clé en variable d'environnement, 403 sans clé côté RITA |
 | C8.2 Configuration conforme aux besoins | 🟠 | briefings servis par Foundry et par OpenRouter ; un fournisseur sur trois sans clé, à dire ; `memory_audit` et inventaire #68 en cours côté RGPD |
 | C8.3 Monitorage disponible opérationnel | 🟠 | trace complète et tableau ; coût faux, traces factices, alertes non réglées |
-| C8.4 Documentation d'accès, d'installation, de tests, de dépendances, de flux | ✅ | `docs/EXPLOITATION.md`, ordre des fournisseurs corrigé le 03/10 |
+| C8.4 Documentation d'accès, d'installation, de tests, de dépendances, de flux | ✅ | `docs/exploitation.md`, ordre des fournisseurs corrigé le 03/10 |
 | C8.5 Documentation communiquée, format accessible | 🔴 | aucune remise prouvée (#43) ; Markdown lisible, PDF du rapport E2 à produire |
 
 ## Ce que ce dossier n'est pas

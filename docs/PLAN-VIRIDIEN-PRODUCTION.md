@@ -1,6 +1,6 @@
 # Plan : trois opérations en production, séparées (interface, Viridien, fraîcheur des données)
 
-**Statut** : à valider par Era. **Aucune écriture sur le serveur avant son accord**, donné séparément pour chaque
+**Statut au 16/11** : réalisé en production le 04/11 (voir `ETAT.md`, 04/11). **Statut d'origine** : à valider par Era. **Aucune écriture sur le serveur avant son accord**, donné séparément pour chaque
 opération, et pour chaque étape notée « accord ». Première version le 04/11/2026 (Viridien seul), réécrite le même soir
 en trois opérations à la demande de la revue : « Ne mélange pas correction de position et actualisation des cours. »
 Preuve de la correction locale : [`evidence/C3/preuve-correction-viridien-2026-11-04.md`](../evidence/C3/preuve-correction-viridien-2026-11-04.md) ;
