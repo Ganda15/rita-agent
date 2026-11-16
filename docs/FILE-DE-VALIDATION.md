@@ -137,7 +137,7 @@ git push origin refs/tags/livrable-E1-v1:refs/tags/livrable-E1-v1
 ### 🔴 28/08 — Retour formateur reçu, noté LE JOUR MÊME
 
 **RAG et MCP sont obligatoires. Text-to-SQL : « pas vraiment ».** Et le RAG doit être
-**avancé**. Échange direct avec Elbby, rapporté par Era le 28/08.
+**avancé**. Échange direct avec le formateur, rapporté par Era le 28/08.
 
 *Noté ici le jour même, contrairement aux trois réponses du Bloc 1 qui sont restées non
 tracées pendant trois semaines — c'est précisément la faute que ce registre existe pour
