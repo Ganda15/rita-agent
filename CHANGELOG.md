@@ -15,8 +15,7 @@
   présentée comme une limite, avec la solution spécifiée et son estimation (32,5 h, environ 1 700 € HT, travail à
   venir). Réponse écrite du formateur du 07/11 à la question 3 : « 3-B ». PR #267.
 - **Azure** : toujours 401 au test du 15/11 à 23 h 03 UTC. Le 16/11 à 10 h 05 UTC, un briefing réel est de nouveau
-  servi par Azure, par le même conteneur, donc avec la même clé : la clé n'avait pas été régénérée. Rien modifié côté
-  Azure ; cause toujours non établie (INC-010, issue #250 ouverte). **Décision d'Era** : on garde les deux fournisseurs,
+  servi par Azure ; aucun redémarrage du conteneur n'est observé depuis le 14/11. Rien modifié côté Azure ; cause toujours non établie (INC-010, issue #250 ouverte). **Décision d'Era** : on garde les deux fournisseurs,
   Azure premier, Mistral en secours.
 - **Versions** pour les tags `livrable-E1-v9`, `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v8` et
   `livrable-E5-v6`, à poser sur `main` après la fusion et le double contrôle d'Era : retours de l'oral blanc du 13/11
@@ -25,9 +24,10 @@
 - **Manque découvert (15/11)** : la suite complète des tests ne tournait plus sur le poste. Smart App Control refusait
   `uuid_utils` (roue `cp314`), que `langchain_core` importe ; seuls les tests des documents tournaient (`--noconftest`).
   Le 16/11, elle tourne de nouveau, sans changement de ma part (3 191 réussis, 82 sautés) ; cause du retour non établie.
-- **Double contrôle d'Era (16/11)** : huit corrections reprises avant les tags (E2 p. 7 et 9, E3 p. 17 et 20, E4 p. 16,
-  21 et 31) ; attendu du test de l'annexe d'E4 passé de 15 à 16 pages (décision d'Era : A7 gagne la capture des axes).
-  Gardé, avec sa preuve : « même conteneur, donc même clé » (E2 § 4.2, INC-010).
+- **Double contrôle d'Era (16/11)** : neuf corrections reprises avant les tags (E2 p. 7, 9 et 14, E3 p. 17 et 20, E4
+  p. 16, 21 et 31) ; attendu du test de l'annexe d'E4 passé de 15 à 16 pages (décision d'Era : A7 gagne la capture des
+  axes). « Donc avec la même clé » retiré d'E2 ; INC-010 garde les constats (conteneur sans redémarrage, aucun
+  `load_dotenv` avec `override`) et tient une clé régénérée pour très peu probable, sans le prouver.
 
 ## 2026-11-14 : Mistral en secours d'Azure ; trois obstacles de livraison découverts ; production livrée sur `2dd385f`
 
