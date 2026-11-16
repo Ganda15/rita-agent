@@ -27,10 +27,10 @@ img.zoom{ display:block; max-height:12mm; margin:1mm 0 0; }
 
 # Annexe du rapport E4 : les schémas
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · compétences C14 à C19 · annexe du rapport E4, version 1.10, 8 novembre 2026
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · compétences C14 à C19 · annexe du rapport E4, version 1.11, 16 novembre 2026
 {: .identite }
 
-> Annexes du rapport E4 v1.10 du 08/11/2026 : chaque schéma cité, sur sa page, avec sa légende. Les schémas historiques
+> Annexes du rapport E4 v1.11 du 16/11/2026 : chaque schéma cité, sur sa page, avec sa légende. Les schémas historiques
 > conservent leur date et leur contenu (commit `174b0c1`, 02/11/2026) ; leurs limites sont dans les légendes. A7 compare
 > les maquettes aux écrans livrés le 04/11, et Question et Tableau de bord au système de conception (captures locales du 06/11).
 
@@ -44,7 +44,7 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 | A4 | Flux de données, des sources à l'écran | C15 | 02/11/2026 (celui du 18/08 gardé) | mise en forme du 03/11, texte inchangé | 27 |
 | A5 | Chaîne d'intégration et de livraison | C18, C19 | 24/10/2026 | mise en forme du 03/11, texte inchangé | 28 |
 | A6 | Parcours des écrans Question et Tableau de bord | C14 | 02/11/2026 | mise en forme du 03/11, texte inchangé | 29 et 30 |
-| A7 | Maquettes et système de conception, comparés aux écrans livrés | C14, C17 | maquettes 04/10 ; écrans 04/11 et 06/11 | maquettes recadrées, captures d'écran | 31 à 35 |
+| A7 | Maquettes et système de conception, comparés aux écrans livrés | C14, C17 | maquettes 04/10 ; écrans 04, 06 et 14/11 | maquettes recadrées, captures d'écran | 31 à 36 |
 
 **Mise en forme du 03/11.** A1, A3, A4, A5 et A6 sont présentés au style des schémas du livret E1 ; leur texte est
 identique mot pour mot aux originaux du dépôt, cités dans chaque légende (A3 et A5 avaient déjà reçu une mise en forme
@@ -169,7 +169,7 @@ codées et livrées le 04/11 (`8ecc5a7`). **Chronologie du style** : le 04/10, l
 choisis le style B, sombre, par défaut, et je garde le A comme thème clair au choix (spécification 001, § 7). Les écrans
 livrés sont donc sombres, les maquettes claires. **Méthode** : maquette, écran livré, différences expliquées, sur la seule
 partie capturée. Une capture ne prouve pas à elle seule la conformité. L'annexe compare trois écrans aux maquettes et
-les deux autres au système de conception (p. 35). C17.2 est retenu comme satisfait, avec les limites de la comparaison
+les deux autres au système de conception (p. 36). C17.2 est retenu comme satisfait, avec les limites de la comparaison
 visuelle et du système écrit après le code.
 
 ![Maquette 1 : le même écran dans trois styles, A clair, B sombre, C éditorial](schemas/E4-A7-maquette-style-recadree.png)
@@ -177,10 +177,10 @@ visuelle et du système écrit après le code.
 **Maquette 1, les trois styles comparés le 04/10**, recadrée (original : [`maquette-1-style-visuel.png`](https://github.com/Ganda15/rita-agent/blob/livrable-E4-v5/docs/conception/frontend/maquettes/maquette-1-style-visuel.png)).
 Retenu le 04/10 : A ; changé le 04/11 : B par défaut, A en thème clair.
 
-**Les trois pages suivantes**, une par écran : la maquette et l'écran livré côte à côte, puis les différences, chacune
+**Pages 33 à 35**, une par écran : la maquette et l'écran livré côte à côte, puis les différences, chacune
 avec son explication. **Limites d'A7** : comparaison visuelle, sur des captures de production du 04/11 ; aucune mesure ;
 Question et Tableau de bord n'ont pas de maquette.
-**La capture du Briefing du 04/11 montre deux défauts historiques** (page 34) : l'aide trop absolue et des astérisques
+**La capture du Briefing du 04/11 montre deux défauts historiques** (page 35) : l'aide trop absolue et des astérisques
 affichés. L'aide est corrigée dans la version de production de référence (`6f428d6`) ; la capture est conservée avec
 sa date. Les astérisques sont retirés depuis le 14/11 (#263, vérifié en production).
 

@@ -61,7 +61,7 @@ body h3{ background:#D6E6F7; border-left:4px solid #12395E; padding-left:calc(9p
 
 # Rapport E5 : surveiller l'application et résoudre un incident (C20 et C21)
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C20 et C21 · version 1.1, 8 novembre 2026 · application de référence : commit `6f428d6` de `main`, en production le 07/11/2026 ; correctif de l'incident : PR #171 du 31/10/2026 · code et preuves versionnés : `Ganda15/rita-agent`, version figée au tag `livrable-E5-v6`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C20 et C21 · version 1.2, 16 novembre 2026 · application de référence : commit `6f428d6` de `main`, en production le 07/11/2026 ; correctif de l'incident : PR #171 du 31/10/2026 · code et preuves versionnés : `Ganda15/rita-agent`, version figée au tag `livrable-E5-v6`
 {: .identite }
 
 > **En une minute.** Ce document est la documentation technique du monitorage de RITA, écrite pour la personne qui
