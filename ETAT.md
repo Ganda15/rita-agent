@@ -36,8 +36,9 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 - **Décision d'Era (16/11, nuit)** : le dépôt devient public le 23/11, et non juste après les tags. Les fichiers figés
   par les tags disent « publication prévue juste après les tags du 16/11 » : plan daté, laissé tel quel ; `main` dit
   « le 23/11 ».
-- Liens après les tags : contrôle lancé le 16/11 au soir, résultat non lu ; à relancer le 17/11 (les 8 liens cassés
-  du 16/11 visaient les cinq tags, qui existent maintenant).
+- Liens après les tags, avec la connexion de l'auteur (dépôt encore privé) : 560 internes et 774 externes vérifiés,
+  0 cassé (16/11, nuit, sur `640f45e`) ; les 8 liens vers les tags passent. À refaire sans connexion le 23/11,
+  après la publication.
 
 **Prochaine action** :
 1. 23/11 : Era rend publics le dépôt puis le Kanban (projet 4, réglage séparé) ; vérificateur de liens et liens des
