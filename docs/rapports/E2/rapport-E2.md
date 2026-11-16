@@ -127,7 +127,7 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 >
 > Ce rapport présente la veille (C6), le choix du service (C7) et sa configuration avec ses preuves (C8). Azure reste le
 > premier fournisseur. Depuis le 14/11, Mistral Large 3, par son adresse européenne, répond en secours quand Azure
-> échoue : Azure refuse la clé du serveur depuis le 13/11, cause non établie (4.2).
+> échoue : Azure a refusé la clé du serveur du 13/11 au 15/11 et répond de nouveau le 16/11, cause non établie (4.2).
 
 <div class="sommaire" role="navigation" aria-label="Sommaire">
 <p class="sommaire-titre">Sommaire</p>
@@ -568,7 +568,7 @@ RGPD, T8).
 
 <div class="encadre preuve">
 <p class="encadre-titre">Depuis le 14/11 : Mistral en secours d'Azure</p>
-<p>Le 13/11 vers 19 h UTC, Azure refuse la clé du serveur (HTTP 401). Le pré-test de la livraison exige un briefing et une question réels : toute mise en service est alors refusée. Cause non établie : la clé, testée seule hors de RITA, reçoit le même refus, encore le 14/11 après l'annonce du rétablissement d'une panne de Microsoft 365, et toujours le 15/11 à 23 h 03 UTC (<code>evidence/C21/INC-010-azure-repond-401.md</code>).</p>
+<p>Le 13/11 vers 19 h UTC, Azure refuse la clé du serveur (HTTP 401). Le pré-test de la livraison exige un briefing et une question réels : toute mise en service est alors refusée. Cause non établie : la clé, testée seule hors de RITA, reçoit le même refus, encore le 14/11 après l'annonce du rétablissement d'une panne de Microsoft 365, et toujours le 15/11 à 23 h 03 UTC (<code>evidence/C21/INC-010-azure-repond-401.md</code>). Le 16/11 à 10 h 05 UTC, un briefing réel est de nouveau servi par Azure, par le même conteneur, donc avec la même clé : la clé n'avait pas été régénérée. La cause reste non établie.</p>
 <ul><li><i>avant l'activation</i> : contrat de Mistral lu le 13/11 (<code>docs/lecture-contrat-mistral-2026-11-13.md</code>) : inférence dans l'UE et l'AELE par l'adresse européenne, conservation de 30 jours pour la modération des abus ; console vérifiée le 14/11 : données de l'API non utilisées pour l'entraînement, modèles Labs désactivés ;</li><li><i>la configuration</i> : <code>LLM_ORDRE=foundry,mistral</code> sur le serveur, Azure d'abord ; Mistral Large 3 (<code>mistral-large-2512</code>), adresse européenne écrite dans le code ; les questions ne vont qu'à Azure ou à Mistral ;</li><li><i>deux réglages demandés par Mistral</i> : la consigne des questions exige le numéro de l'extrait dans le texte (0 réponse valide sur 6 avant, 8 sur 8 après, <code>evidence/C11/citations-mistral-2026-11-14/</code>) ; les marques Markdown d'un briefing sont retirées avant l'affichage (tests, dont les deux phrases vues en production) ; aucune marque visible sur les 3 briefings contrôlés en production le 14/11 (<code>evidence/C8/briefings-sans-markdown-2026-11-14/</code>) ;</li><li><i>la preuve</i> : livraison du 14/11 passée (pré-test, bascule, contrôle après bascule) ; session de test du tableau de bord : 11 demandes, 7 réponses et 4 refus, dont 2 avant le modèle, aucune erreur technique (<code>evidence/C20/session-test-2026-11-14/</code>).</li></ul>
 <p>Les mesures d'Azure de ce rapport ne deviennent pas des mesures de Mistral : pour Mistral Large 3, la mesure comparable est le banc du 07/11 (3.4).</p>
 </div>

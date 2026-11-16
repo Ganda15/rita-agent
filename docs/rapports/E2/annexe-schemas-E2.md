@@ -52,7 +52,7 @@ Azure UE sur 10 cas et la lecture de son contrat, et n'est pas activé ; les fon
 restent dans le code sans servir ; la supervision du portail Azure est relevée depuis le 06/11 (rapport, § 4.4 ; annexe A6) ; le guide a été envoyé au formateur le
 03/11 (rapport, § 4.6). **Au 07/11** : banc Azure UE contre Mistral Large 3 fait (rapport, 3.4) ; Azure seul actif.
 **Au 14/11** : Azure refuse la clé du serveur depuis le 13/11 ; Mistral Large 3 répond en secours, Azure restant premier
-(rapport, § 4.2, encadré « Depuis le 14/11 »).
+(rapport, § 4.2, encadré « Depuis le 14/11 »). **Au 16/11** : Azure répond de nouveau ; Mistral reste en secours.
 
 ## A4. Les preuves de la veille : la source S36, vérifiée le 06/11 (C6) {: #a4 }
 
