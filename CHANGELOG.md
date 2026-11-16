@@ -22,9 +22,12 @@
   `livrable-E5-v6`, à poser sur `main` après la fusion et le double contrôle d'Era : retours de l'oral blanc du 13/11
   (PR #266), Mistral en secours d'Azure, retour d'Azure. Pages : E1 5 (10 avec la couverture et les annexes), E2 19
   (33 avec l'annexe), E3 20, E4 20 (36), E5 5. Aucun statut d'auto-évaluation changé.
-- **Manque découvert (15/11)** : la suite complète des tests ne tourne plus sur le poste. Smart App Control refuse
-  `uuid_utils` (roue `cp314`), que `langchain_core` importe. En local, seuls les tests des documents tournent
-  (`--noconftest`) ; la suite complète passe par la CI.
+- **Manque découvert (15/11)** : la suite complète des tests ne tournait plus sur le poste. Smart App Control refusait
+  `uuid_utils` (roue `cp314`), que `langchain_core` importe ; seuls les tests des documents tournaient (`--noconftest`).
+  Le 16/11, elle tourne de nouveau, sans changement de ma part (3 191 réussis, 82 sautés) ; cause du retour non établie.
+- **Double contrôle d'Era (16/11)** : huit corrections reprises avant les tags (E2 p. 7 et 9, E3 p. 17 et 20, E4 p. 16,
+  21 et 31) ; attendu du test de l'annexe d'E4 passé de 15 à 16 pages (décision d'Era : A7 gagne la capture des axes).
+  Gardé, avec sa preuve : « même conteneur, donc même clé » (E2 § 4.2, INC-010).
 
 ## 2026-11-14 : Mistral en secours d'Azure ; trois obstacles de livraison découverts ; production livrée sur `2dd385f`
 

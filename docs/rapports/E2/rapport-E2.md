@@ -136,7 +136,7 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 <li><a href="#contexte">1. Le contexte, une seule fois</a><span>p. 1</span></li>
 <li><a href="#c6">2. C6 : la veille technique et réglementaire</a><span>p. 2</span></li>
 <li><a href="#c7">3. C7 : le choix du service de modèle</a><span>p. 6</span></li>
-<li><a href="#c8">4. C8 : le service retenu, paramétré et suivi</a><span>p. 11</span></li>
+<li><a href="#c8">4. C8 : le service retenu, paramétré et suivi</a><span>p. 12</span></li>
 <li><a href="#criteres">5. Les 20 critères, un par un</a><span>p. 17</span></li>
 <li><a href="#reste">6. Ce qui n'est pas fait</a><span>p. 18</span></li>
 <li><a href="#glossaire">Glossaire</a><span>p. 18</span></li>
@@ -337,7 +337,7 @@ scores d'exemple, jamais mesurés : rien n'en est repris.
 
 | Service | Place dans l'étude | Raison |
 |---|---|---|
-| Azure AI Foundry, `gpt-5.4` (OpenAI) | comparé sur le banc, 30 appels | branché dans `src/llm.py` ; seul service appelé aujourd'hui |
+| Azure AI Foundry, `gpt-5.4` (OpenAI) | comparé sur le banc, 30 appels | branché dans `src/llm.py` ; fournisseur prioritaire, Mistral en secours depuis le 14/11 (4.2) |
 | Claude par OpenRouter | comparé sur le banc, 30 appels | branché dans `src/llm.py` le 03/10 ; plus appelé aujourd'hui (4.2) |
 | Claude par l'API d'Anthropic | inclus, non mesuré | aucune clé sur le poste le 03/10 ; plus appelé aujourd'hui (4.2) |
 | Mistral Large 3 et 4 | essai du 10/10 ; Large 3 au banc du 07/11 (3.4) | Large 4 sans texte à 500 jetons le 07/11 |
@@ -398,7 +398,7 @@ des réponses de RITA avec ce service.
 <tr><td>GPT-5.4 par Azure</td><td><span class="chip mesure">mesuré</span><b>retenu</b> : le 03/10, 30 textes sur 30 passent le garde-fou de sortie et le contrôle minimal de fidélité ; médiane de 3,21 s ; français noté 1 sur 2 ; mesuré le 07/11 en zone UE : 30 appels, médiane de 2,19 s, 95e centile de 2,55 s (3.4)</td><td><span class="chip observe">observé</span><b>retenu</b> : le 16/10, sur le poste puis en production, les 8 scénarios connus donnent le résultat attendu : 4 réponses jugées fidèles aux passages cités, 1 abstention après appel au modèle, 3 refus avant tout appel</td></tr>
 <tr><td>Claude par OpenRouter</td><td><span class="chip mesure">mesuré</span><b>non retenu</b> : sur le même banc, 30 sur 30 aux mêmes contrôles ; médiane de 6,33 s ; français noté 1 sur 2 ; traitement dans l'UE non garanti (3.6)</td><td><span class="chip doc">documentation</span> le format imposé par un schéma n'est pris en charge que par certains points d'accès, et son respect strict n'est pas garanti partout (<a href="https://openrouter.ai/docs/features/structured-outputs">OpenRouter</a>) ; <span class="chip na">non évalué</span> dans RITA</td></tr>
 <tr><td>Claude par l'API directe d'Anthropic</td><td><span class="chip na">non mesuré</span> aucune clé sur le poste le 03/10 ; les résultats d'OpenRouter ne sont pas ceux de l'API directe</td><td><span class="chip doc">documentation</span> sorties structurées par schéma déclarées stables pour <code>claude-sonnet-4-5</code> et <code>claude-sonnet-5</code> (<a href="https://platform.claude.com/docs/en/build-with-claude/structured-outputs">Anthropic</a>) ; <span class="chip na">non évalué</span> dans RITA</td></tr>
-<tr><td>Mistral Large 3 et 4</td><td><span class="chip mesure">mesuré</span>le 07/11, Large 3 : mêmes dix cas, trois répétitions, 30 sur 30 au garde-fou ; médiane de 2,80 s, 95e centile de 3,68 s ; Markdown dans les 30 textes ; absent de la production (3.4)</td><td><span class="chip doc">documentation</span> sorties structurées par schéma pour tous les modèles actuels sauf un (<a href="https://docs.mistral.ai/capabilities/structured-output/custom_structured_output/">Mistral</a>) ; <span class="chip na">non évalué</span> dans RITA</td></tr>
+<tr><td>Mistral Large 3 et 4</td><td><span class="chip mesure">mesuré</span>le 07/11, Large 3 : mêmes dix cas, trois répétitions, 30 sur 30 au garde-fou ; médiane de 2,80 s, 95e centile de 3,68 s ; Markdown dans les 30 textes ; absent de la production au 07/11, en secours depuis le 14/11 (3.4, 4.2)</td><td><span class="chip doc">documentation</span> sorties structurées par schéma pour tous les modèles actuels sauf un (<a href="https://docs.mistral.ai/capabilities/structured-output/custom_structured_output/">Mistral</a>) ; <span class="chip na">non comparé</span> dans ce banc ; en secours depuis le 14/11, intégration testée (4.2)</td></tr>
 </tbody>
 </table>
 

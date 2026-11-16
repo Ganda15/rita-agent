@@ -811,7 +811,7 @@ Le détail est dans les limites de chaque section.
 | Besoin (C14) | spécification de l'écran 5 et compléments de l'écran 4 rétrospectifs (02/11) ; table `article` hors du modèle ; aucun test avec un lecteur d'écran ni un utilisateur extérieur | § 1.7, § 1.8 |
 | Cadre technique (C15) | schéma d'architecture sans la vigie ; hébergeur non choisi sur un critère environnemental | § 2.7 |
 | Organisation (C16) | Kanban non maintenu du 14/10 au 07/11, repris le 07/11 ; revues du lundi sans compte rendu ; pas de rétrospective | § 3.6 |
-| Développement (C17) | environnement non entièrement reproductible ; écrans comparés à leurs maquettes ou au système de conception (A7) ; un écart d'affichage (« +0,00 % ») et les astérisques du Briefing (A7) ; S7 en partie ; mesures d'éco-conception locales | § 4.10 |
+| Développement (C17) | environnement non entièrement reproductible ; écrans comparés à leurs maquettes ou au système de conception (A7) ; un écart d'affichage (« +0,00 % », A7) ; S7 en partie ; mesures d'éco-conception locales | § 4.10 |
 | Tests (C18) | 97 tests ignorés dans `pytest` (07/11), pas tous liés à la base ; couverture sans l'interface, la recherche, la surveillance ni la passerelle MCP ; trois paquets de CI sans version | § 5.6 |
 | Livraison (C19) | un tag reconstruit l'image ; retour arrière sans la base ; aucune sauvegarde automatique ; collecte non planifiée ; script de rattrapage à renforcer | § 6.4, 6.5 |
 

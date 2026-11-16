@@ -32,13 +32,14 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
   E1 v9 (5 pages ; `rapport-E1-v9-avec-annexes.pdf`, 10 pages, couverture et annexes de la v8), E2 1.7 (19, 33 avec
   l'annexe), E3 2.6 (20 ; note des versions raccourcie, la première rédaction donnait 21 pages), E4 1.11 (20, 36), E5 1.2
   (5). README et guide du jury aux nouveaux tags ; CHANGELOG du 16/11.
-- Tests des documents : 173 réussis, 1 en échec : `tests/test_pdf_avec_annexe_accessible.py` attend 15 pages d'annexe
-  pour E4, il y en a 16 (A7 gagne la capture des axes du 14/11, page 36 pleine). Changer la constante du test est une
-  décision d'Era.
+- Double contrôle d'Era fait (relevé de l'autre agent) : huit corrections reprises, E2, E3 et E4 rendus de nouveau,
+  pages inchangées ; attendu du test de l'annexe d'E4 passé de 15 à 16 pages (décision d'Era). Gardé avec sa preuve :
+  « même conteneur, donc même clé » (le code servi ne recharge pas l'environnement, INC-010).
+- Suite complète en local de nouveau possible le 16/11 : 3 191 réussis, 82 sautés, 0 échec.
 
 **Prochaine action** :
-1. Era décide de la constante du test (15 vers 16 pages d'annexe pour E4).
-2. Relecture d'Era (double contrôle), push de `versions-16-11`, PR vers `develop`, CI verte, fusion ; puis PR
+1. Era : garder ou retirer « donc avec la même clé » (E2 § 4.2), la seule correction du relevé non reprise.
+2. Push de `versions-16-11`, PR vers `develop`, CI verte, fusion ; puis PR
    `develop` vers `main`, revue, fusion.
 3. Les tags `livrable-E1-v9`, `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v8`, `livrable-E5-v6` sur `main`, un par
    push ; liens vérifiés après les tags.

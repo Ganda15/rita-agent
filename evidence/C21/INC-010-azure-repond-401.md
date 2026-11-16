@@ -78,7 +78,9 @@ sans être changée. Elle reçoit toujours 401, encore le 15/11 à 23 h 03 UTC. 
 à chercher côté compte Azure.
 
 **Ce que le retour du 16/11 écarte** : une clé régénérée. Le conteneur de l'API a démarré le 14/11 à 19 h 14 UTC et n'a
-pas redémarré depuis (`docker inspect` : 0 redémarrage) ; il lit la clé dans son environnement, fixé au démarrage. Avec
+pas redémarré depuis (`docker inspect` : 0 redémarrage) ; il lit la clé dans son environnement, fixé au démarrage. Le
+code servi ne le remplace pas ensuite : `load_dotenv` ne remplace jamais une variable déjà définie (aucun appel avec
+`override` dans `api/`, `src/`, `pipelines/`, `monitorage/`, `sources/`, vérifié le 16/11). Avec
 cette clé, Azure a répondu 401 le 14/11 entre 19 h 15 et 19 h 23 UTC (quatre refus au journal, Mistral a répondu à chaque
 fois), puis l'a acceptée le 16/11. Une clé régénérée ne redevient pas valide. Restent possibles l'abonnement, le crédit
 ou une cause côté Microsoft, sans preuve pour l'une ou l'autre. **Ce qui trancherait encore** : (1) dans le portail Azure, le journal d'activité de la
