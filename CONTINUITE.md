@@ -1,6 +1,7 @@
 # CONTINUITE — RITA (fil rouge RNCP 37827)
 
-> Dernière mise à jour : 2026-11-16 (publication du dépôt juste après les tags, F ; ajout du 16/11 en B) ; avant,
+> Dernière mise à jour : 2026-11-16, nuit (cinq tags posés ; publication le 23/11, F) ; avant, 2026-11-16
+> (publication du dépôt juste après les tags, F ; ajout du 16/11 en B) ; avant,
 > 2026-11-15 (clé par client après le jury, F et M) ; avant, 2026-10-30, nuit · par : Claude, à la demande d'Era ; décisions du 30/10 (périmètre d'E4,
 > ordre E4 puis E2 puis E5, règle de la matrice, convocation du jury) ajoutées en B, D, F et K.
 > Mise à jour précédente : 2026-10-28 ; décisions du 28/10 (budget du livret, versions envoyées d'E1 et d'E3,
@@ -231,6 +232,7 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | 06/11 | choisi | **Clé par client reportée après l'oral blanc des 12-13/11, réévaluée le 14/11** (décision d'Era) : la spécification 002 est validée (05/11) et son plan relu deux fois (v2 du 06/11) ; le plan estime 32,5 h, environ 4 journées et 1 700 € HT, contre 1 à 2 journées estimées le 03/11. Priorité à la fin de la préparation le 07/11, puis aux répétitions. D'ici là, la clé partagée est présentée honnêtement comme une limite, avec sa solution (`specs/002-cle-par-client/`) et son estimation, comme le retour du formateur du 03/11 l'autorise. Rapports figés inchangés | C5 (E1), C17.5 (E4) |
 | 15/11 | choisi | **Clé par client : réalisation reportée après le jury du 01/12/2026** (décision d'Era, après l'oral blanc) : la clé partagée reste présentée comme une limite, avec la solution spécifiée (`specs/002-cle-par-client/`) et son estimation (plan du 06/11 : 32,5 h, environ 1 700 € HT, travail à venir) ; test d'acceptation prévu : A révoquée reçoit 403, B garde 200. Réponse écrite du formateur du 07/11 à la question 3 : « 3-B », l'option qui présente la limite actuelle, la solution prévue et son coût. Le temps restant va aux livrables et à la soutenance. Écrit dans E1 § 7, `docs/BUDGET.md` (mise à jour du 15/11) et le statut du plan 002 | C5 (E1), C17.5 (E4) |
 | 16/11 | choisi | **Dépôt rendu public juste après les cinq tags du 16/11**, au lieu du 22/11, puis tous les liens des PDF vérifiés sans connexion ; jusqu'au changement de visibilité, accès privé sur invitation, et le Kanban suit par un réglage séparé. Après l'audit des traces (lecture seule) : mentions de l'assistant d'IA gardées telles quelles ; tirets longs des anciens fichiers laissés | publication du dépôt, E1 (C1), M2 du registre |
+| 16/11 | changé | **Dépôt public le 23/11**, et non juste après les tags (décision d'Era, une fois les cinq tags posés) : les fichiers figés par les tags gardent « publication prévue juste après les tags du 16/11 », plan daté qu'on ne corrige pas (tags figés) ; `main` dit « le 23/11 » ; liens vérifiés sans connexion le 23/11, avant le dépôt des PDF | publication du dépôt, M2 du registre |
 
 ## G. Questions ouvertes
 

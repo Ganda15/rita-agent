@@ -41,7 +41,7 @@
 > Un fichier qui ne prétend jamais être à jour ne peut pas être périmé.
 
 Eramalingam GANDAKUMAR · Simplon × Wild Code School · deadline livrables **05/11/2026**
-Dépôt : `Ganda15/rita-agent` (privé, accès par invitation ; publication prévue juste après les tags du 16/11/2026)
+Dépôt : `Ganda15/rita-agent` (privé, accès par invitation ; publication prévue le 23/11/2026)
 
 ## Ce qu'est RITA
 
