@@ -9,6 +9,17 @@
 
 ---
 
+## 2026-11-16, nuit : cinq tags posés sur `fe13d24` ; dépôt public le 23/11
+
+- **Livrables** : `livrable-E1-v9`, `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v8` et `livrable-E5-v6` posés par
+  Era sur `fe13d24` (PR #273), un par push ; chaque exécution Livraison verte (Definition of Done rejouée, image
+  `ghcr.io/ganda15/rita-api:livrable-*` publiée). Production sur `fe13d24`.
+- **Relecture indépendante de #271**, finie après sa fusion : corrections portées par #272 et #273 (publication
+  annoncée trop tôt, deux réponses 503 distinctes, chronologie, registre T6, T8 et M2) ; noms de personnes tierces
+  remplacés par leur rôle dans les documents de l'état actuel, gardés dans les preuves datées.
+- **Décision d'Era** : le dépôt devient public le 23/11, et non juste après les tags comme décidé plus tôt le 16/11.
+  Les fichiers des tags gardent cette première date : plan daté, laissé tel quel.
+
 ## 2026-11-16 : versions E1 v9, E2 1.7, E3 2.6, E4 1.11, E5 1.2 ; Azure répond de nouveau ; clé par client après le jury
 
 - **Décision d'Era (15/11)** : la clé par client sera réalisée après le jury du 01/12. D'ici là, la clé partagée est
