@@ -1,0 +1,94 @@
+Rattrapage des cours et des taux en production, mercredi 18/11/2026 vers 22 h 14 (heure de Paris), à la main dans la
+session du serveur, avec le guide (docs/exploitation.md, « Rattraper les cours et les taux en production, à la main »).
+Sortie copiée depuis le terminal en plusieurs fois, au fil des étapes, et remise bout à bout dans l'ordre ; aucune
+bannière de connexion ni adresse IP de connexion dedans. Les seules lignes ajoutées sont entre crochets et commencent
+par « [note ».
+
+root@ubuntu-4gb-fsn1-1:~# cd /root/rita-agent
+root@ubuntu-4gb-fsn1-1:~/rita-agent# export IMAGE="$(docker inspect --format '{{.Config.Image}}' rita-api-preprod)"
+root@ubuntu-4gb-fsn1-1:~/rita-agent# export RESEAU="$(docker inspect -f '{{range $k, $v := .NetworkSettings.Networks}}{{println $k}}{{end}}' rita-api-preprod | head -n 1)"
+root@ubuntu-4gb-fsn1-1:~/rita-agent# export DATABASE_URL="host=postgres port=5432 dbname=rita user=rita"
+root@ubuntu-4gb-fsn1-1:~/rita-agent# export DATABASE_URL="host=postgres port=5432 dbname=rita user=rita"
+root@ubuntu-4gb-fsn1-1:~/rita-agent# export PGPASSWORD="$(docker exec rita-postgres-preprod printenv POSTGRES_PASSWORD)"
+root@ubuntu-4gb-fsn1-1:~/rita-agent# echo "image=$IMAGE reseau=$RESEAU adresse=[$DATABASE_URL] mot_de_passe=$(test -n "$PGPASSWORD" && echo present || echo ABSENT)"
+image=ghcr.io/ganda15/rita-api@sha256:761e953237d1be344619b9c518f74e1b673a24424ace8683c8043165bc2cab42 reseau=rita-agent_default adresse=[host=postgres port=5432 dbname=rita user=rita] mot_de_passe=present
+root@ubuntu-4gb-fsn1-1:~/rita-agent# docker exec rita-postgres-preprod psql -U rita -d rita -At -c "SELECT MAX(date_seance), COUNT(*) FROM cotation"
+2026-11-17|282138
+root@ubuntu-4gb-fsn1-1:~/rita-agent# docker run --rm --network "${RESEAU:?vide : refaire les étapes 2 et 4}" -e DATABASE_URL -e PGPASSWORD -v /root/rita-deploy/rapports:/app/logs "$IMAGE" python -m pipelines.ingest --etapes cotations,ecb --du 2026-11-17 --au 2026-11-18 --simulation
+INFO Failed to create TzCache, reason: Error creating TzCache folder: '/home/rita/.cache/py-yfinance' reason: [Errno 17] File exists: '/home/rita/.cache/py-yfinance'. TzCache will not be used. Tip: You can direct cache to use a different location with 'set_tz_cache_location(mylocation)'
+
+====================================================================
+PIPELINE D'AGREGATION  --  SIMULATION (rien n'est ecrit)  --  RATTRAPAGE du 2026-11-17 au 2026-11-18
+====================================================================
+
+  cotations (yfinance)         lues  216 | ecrites    0 | rejetees   0
+      - 3 valeur(s) radiee(s) non demandee(s) : ELE.PA, GTO.PA, ZC.PA
+      - seances du 2026-11-16 au 2026-11-18
+
+  taux_change (BCE)            lues    8 | ecrites    0 | rejetees   0
+
+  Etapes reussies : 2/2   Duree : 23.5 s
+  Manifeste : /app/logs/manifeste-2026-11-18-211443.json
+
+root@ubuntu-4gb-fsn1-1:~/rita-agent# docker run --rm --network "${RESEAU:?vide : refaire les étapes 2 et 4}" -e DATABASE_URL -e PGPASSWORD -v /root/rita-deploy/rapports:/app/logs "$IMAGE" python -m pipelines.ingest --etapes cotations,ecb --du 2026-11-17 --au 2026-11-18 --strict
+INFO Failed to create TzCache, reason: Error creating TzCache folder: '/home/rita/.cache/py-yfinance' reason: [Errno 17] File exists: '/home/rita/.cache/py-yfinance'. TzCache will not be used. Tip: You can direct cache to use a different location with 'set_tz_cache_location(mylocation)'
+
+====================================================================
+PIPELINE D'AGREGATION  --  EXECUTION  --  RATTRAPAGE du 2026-11-17 au 2026-11-18
+====================================================================
+
+  cotations (yfinance)         lues  216 | ecrites  216 | rejetees   0
+      - 3 valeur(s) radiee(s) non demandee(s) : ELE.PA, GTO.PA, ZC.PA
+      - seances du 2026-11-16 au 2026-11-18
+
+  taux_change (BCE)            lues    8 | ecrites   10 | rejetees   0
+
+  Etapes reussies : 2/2   Duree : 34.4 s
+  Manifeste : /app/logs/manifeste-2026-11-18-211550.json
+
+[note : ici, la sortie ci-dessus a été recollée par erreur dans le terminal (clic droit = coller). Le shell l'a lue
+ comme des commandes : la première ligne commence par l'invite, donc docker run n'a pas été relancé ; l'apostrophe de
+ « D'AGREGATION » a ouvert une chaîne jamais fermée, d'où l'invite « > » ; la commande tapée ensuite est restée dans
+ cette chaîne et n'a rien exécuté. Sortie de l'erreur telle qu'affichée, puis Ctrl+C.]
+root@ubuntu-4gb-fsn1-1:~/rita-agent# root@ubuntu-4gb-fsn1-1:~/rita-agent# docker run --rm --network "${RESEAU:?vide : refaire les étapes 2 et 4}" -e DATABASE_URL -e PGPASSWORD -v /root/rita-deploy/rapports:/app/logs "$IMAGE" python -m pipelines.ingest --etapes cotations,ecb --du 2026-11-17 --au 2026-11-18 --strict
+INFO Failed to create TzCache, reason: Error creating TzCache folder: '/home/rita/.cache/py-yfinance' reason: [Errno 17] File exists: '/home/rita/.cache/py-yfinance'. TzCache will not be used. Tip: You can direct cache to use a different location with 'set_tz_cache_location(mylocation)'
+
+====================================================================
+PIPELINE D'AGREGATION  --  EXECUTION  --  RATTRAPAGE du 2026-11-17 au 2026-11-18
+====================================================================
+
+  cotations (yfinance)         lues  216 | ecrites  216 | rejetees   0
+      - 3 valeur(s) radiee(s) non demandee(s) : ELE.PA, GTO.PA, ZC.PA
+      - seances du 2026-11-16 au 2026-11-18
+
+  taux_change (BCE)            lues    8 | ecrites   10 | rejetees   0
+
+  Etapes reussies : 2/2   Duree : 34.4 s
+-bash: root@ubuntu-4gb-fsn1-1:~/rita-agent#: No such file or directory
+INFO: command not found
+====================================================================: command not found
+> docker exec rita-postgres-preprod psql -U rita -d rita -At -c "SELECT devise, MAX(date_taux) FROM taux_change GROUP BY devise ORDER BY devise"
+>
+[note : Ctrl+C, retour à l'invite normale ; les variables de la session sont restées en mémoire.]
+root@ubuntu-4gb-fsn1-1:~/rita-agent# docker exec rita-postgres-preprod psql -U rita -d rita -At -c "SELECT MAX(date_seance), COUNT(*) FROM cotation"
+2026-11-18|282246
+root@ubuntu-4gb-fsn1-1:~/rita-agent# docker exec rita-postgres-preprod psql -U rita -d rita -At -c "SELECT devise, MAX(date_taux) FROM taux_change GROUP BY devise ORDER BY devise"
+CHF|2026-11-18
+EUR|2026-11-18
+GBP|2026-11-18
+JPY|2026-11-18
+USD|2026-11-18
+root@ubuntu-4gb-fsn1-1:~/rita-agent# docker exec rita-postgres-preprod psql -U rita -d rita -At -c "SELECT ticker, date_seance, cloture FROM cotation WHERE ticker = 'CRI.PA' AND date_seance >= '2026-11-14' ORDER BY date_seance"
+CRI.PA|2026-11-16|7.4600
+CRI.PA|2026-11-17|7.3700
+root@ubuntu-4gb-fsn1-1:~/rita-agent# docker exec rita-postgres-preprod psql -U rita -d rita -c "ANALYZE cotation; ANALYZE taux_change;"
+ANALYZE
+ANALYZE
+root@ubuntu-4gb-fsn1-1:~/rita-agent# unset DATABASE_URL PGPASSWORD IMAGE RESEAU
+root@ubuntu-4gb-fsn1-1:~/rita-agent# docker exec rita-postgres-preprod psql -U rita -d rita -At -c "SELECT date_seance, COUNT(*) FROM cotation WHERE date_seance >= '2026-11-16' GROUP BY date_seance ORDER BY date_seance"
+2026-11-16|108
+2026-11-17|108
+2026-11-18|107
+root@ubuntu-4gb-fsn1-1:~/rita-agent# docker exec rita-postgres-preprod psql -U rita -d rita -At -c "SELECT ticker FROM cotation WHERE date_seance = '2026-11-17' EXCEPT SELECT ticker FROM cotation WHERE date_seance = '2026-11-18'"
+CRI.PA
+root@ubuntu-4gb-fsn1-1:~/rita-agent#
