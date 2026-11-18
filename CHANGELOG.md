@@ -9,6 +9,21 @@
 
 ---
 
+## 2026-11-18 : rapport E5 v1.3, annexe A, pour `livrable-E5-v7`
+
+- **Livrable** : rapport E5 en version 1.3 (commit `76f6502`, branche `e5-v1-3-corrections`), tag `livrable-E5-v7` à
+  poser sur `main` après la fusion et le double contrôle d'Era. Passages corrigés : traces Langfuse en métadonnées seules
+  depuis le 20/10 (avant, celles du poste gardaient le prompt et la réponse d'un briefing) ; neuf autres incidents,
+  INC-005 et INC-009 documentés de bout en bout ; retour à OK du 15/11 commenté dans #250 déjà ouverte ; une alerte
+  Langfuse ouvre ou commente une issue, sauf OK sans issue.
+- **Annexe A** (`annexe-schema-E5.md`) : A1, le dispositif (C20) ; A2, l'incident INC-009 (C21). Rendue avec le rapport
+  dans `rapport-E5-avec-annexe.pdf` (7 pages, dont 2 en paysage) ; `rapport-E5.pdf` garde 5 pages. Les chiffres d'A2
+  sont ceux du rapport v1.2.
+- **Vérifié le 18/11** : 384 tests de documents verts (`--noconftest`, poste) ; 33 liens GitHub d'E5, 0 cassé (`gh`) ;
+  faits relus sur leurs sources (registre T3, PR #171 et #172, commentaire de #250 du 15/11 à 19 h 30 UTC, fiches
+  INC-001 à INC-010 au tag v6) ; rendu regardé page par page. Le PDF d'E5 à déposer le 23/11 devient la version avec
+  l'annexe, comme pour E1, E2 et E4.
+
 ## 2026-11-16, nuit : cinq tags posés sur `fe13d24` ; dépôt public le 23/11
 
 - **Livrables** : `livrable-E1-v9`, `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v8` et `livrable-E5-v6` posés par
