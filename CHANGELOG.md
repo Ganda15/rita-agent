@@ -9,6 +9,17 @@
 
 ---
 
+## 2026-11-19, soir : les cinq PDF de la remise du 23/11 fixés, E5 avec son annexe A
+
+- **Décision d'Era** : E5 va dans le Drive avec son annexe A (`rapport-E5-avec-annexe.pdf`, 7 pages, tag
+  `livrable-E5-v7`), comme le veut la consigne du 13/11 (5 PDF, annexes comprises). Le plan du 17/11 prévoyait E5 seul,
+  quand il n'avait pas encore d'annexe. Les cinq PDF du 23/11, pris à leur tag : `rapport-E1-v10-avec-annexes.pdf`
+  (`livrable-E1-v10`), `rapport-E2-avec-annexe.pdf` (`livrable-E2-v6`), `rapport-E3.pdf` (`livrable-E3-v7`, sans
+  annexe), `rapport-E4-avec-annexe.pdf` (`livrable-E4-v9`) et `rapport-E5-avec-annexe.pdf` (`livrable-E5-v7`). Détail :
+  `CONTINUITE.md`, section F.
+
+---
+
 ## 2026-11-19 : E1 v10 et E4 1.12, registre RGPD précisé, pour `livrable-E1-v10` et `livrable-E4-v9`
 
 - **Manque découvert le 17/11** : E1 § 5 (« dont deux avec une donnée personnelle ») et E4 § 2.4 (« Deux traitements

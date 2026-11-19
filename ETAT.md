@@ -32,17 +32,17 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 - **E2 et E3 : rien à refaire** (contrôle en lecture seule, 19/11 au soir). Ils restent `livrable-E2-v6` (E2 1.7) et
   `livrable-E3-v7` (E3 2.6), sur `fe13d24` : `docs/rapports/E2` et `docs/rapports/E3` n'ont pas changé entre `fe13d24`
   et `4b2d8ad`. La correction RGPD ne les touche pas : aucun des deux ne compte les traitements ni ne parle de
-  « 15 minutes » ; E2 cite T6 et T8, inchangés ; E3 date le frein des essais de clé du 7/11, comme le registre corrigé.
+  « 15 minutes » ; E2 cite le § 0, T6, T8 et le point 12 du registre, tous inchangés ; E3 date le frein des essais de clé du 7/11, comme le registre corrigé.
   PDF du dépôt et copies OneDrive du 16/11 (E2 avec et sans annexe, E3) identiques aux tags, empreintes SHA-256
   comparées. Limite : seuls les passages que la correction pouvait toucher ont été cherchés ; la dernière relecture
   d'E2 et d'E3 est le double contrôle du 16/11.
 - **Copies OneDrive d'E5 v1.3 déjà faites** : `rapport-E5-2026-11-18-v1.3-relu.pdf` et
-  `rapport-E5-avec-annexe-2026-11-18-v1.3-relu.pdf` (18/11, 17 h 41) ont la même empreinte que les fichiers du tag
+  `rapport-E5-avec-annexe-2026-11-18-v1.3-relu.pdf` (18/11, 17 h 41 à Paris) ont la même empreinte que les fichiers du tag
   `livrable-E5-v7`. Les trois autres copies du 18/11 à côté (`rapport-E5-2026-11-18-v1.3.pdf`,
   `rapport-E5-2026-11-18-v1.3-annexe-au-sommaire.pdf`, `rapport-E5-avec-annexe-2026-11-18-v1.3.pdf`) sont des états
   intermédiaires, différents du tag : ne pas les prendre pour le Drive.
 - Copies OneDrive d'E1 v10 et d'E4 1.12 : pas encore faites (les dernières sont celles du 16/11, E1 v9 et E4 1.11).
-- Cours de production au 18/11 (rattrapage du 18/11 à 22 h 14) ; CRI.PA sans son 18/11, retard connu.
+- Cours de production au 18/11 (rattrapage du 18/11 à 22 h 14 à Paris) ; CRI.PA sans son 18/11, retard connu.
 
 **Prochaine action** :
 1. Era : push de la branche `etat-19-11-soir`, PR vers `develop`, CI verte, fusion.
@@ -51,7 +51,7 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
      au tag par empreinte : `rapport-E1-2026-11-19-v10.pdf`, `rapport-E1-2026-11-19-v10-avec-annexes.pdf`,
      `rapport-E4-2026-11-19-v1.12.pdf`, `rapport-E4-avec-annexe-2026-11-19-v1.12.pdf` ;
    - classeurs : chercher « deux traitements » et « 15 minutes » dans les copies `_17_11_26` ; si une correction est
-     nécessaire, nouvelles copies datées, versions du 19/11 citées (E1 v10, E4 1.12, E5 v1.3), statuts inchangés sauf
+     nécessaire, nouvelles copies datées, versions taguées le 19/11 citées (E1 v10 et E4 1.12 du 19/11, E5 v1.3 du 18/11), statuts inchangés sauf
      décision d'Era ;
    - oraux Obsidian (`Projets/RITA/03-Oraux`) : même recherche, constats montrés à Era avant toute modification.
 3. **Fixé le 19/11 au soir (décision d'Era)** : E5 va dans le Drive avec son annexe A (`rapport-E5-avec-annexe.pdf`,
@@ -62,7 +62,9 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 4. 21/11 : réserve, pour ce qui n'est pas fini le 20/11.
 5. 22/11 : notice d'accès du jury (sans la clé) et message à la cheffe de projet, rédigés avec Era.
 6. 23/11, dans cet ordre : Era rend publics le dépôt puis le Kanban (projet 4) ; vérificateur de liens et liens des
-   tags ouverts sans connexion, zéro lien cassé (revoir le 503 de la CNIL et `docs/rapports/E4/rapport-E4.md:643`) ;
+   tags ouverts sans connexion, zéro lien cassé ; revoir les deux liens trouvés en 503 : la note de la CNIL
+   (`docs/veille/2026-S34-top10-agentique.md:27`, tout le site en 503 le 18/11, 200 le 19/11) et
+   `docs/rapports/E4/rapport-E4.md:643` (demande anonyme vers le dépôt encore privé) ;
    Era dépose les cinq PDF des tags dans le Drive ; Era envoie la notice et le message.
 7. Avant le jury : redémarrage du serveur (« System restart required »), puis `/health` ; rattrapages des cours le
    30/11 après 22 h 05 et le 01/12 avant 9 h ; le 18/11 de CRI.PA au prochain rattrapage.
