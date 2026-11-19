@@ -1,18 +1,18 @@
 # Pour le jury : RITA en fichiers essentiels (E1 à E5)
 
 > Ouvrez cette page depuis le tag d'un livrable : chaque lien s'ouvre alors dans le code tel qu'il a été remis, et non
-> dans le projet d'aujourd'hui. Tags des versions du 16/11/2026 : `livrable-E1-v9`, `livrable-E2-v6`, `livrable-E3-v7`,
-> `livrable-E4-v8`, `livrable-E5-v6`. Les modalités d'accès du jury sont transmises à part.
+> dans le projet d'aujourd'hui. Tags des versions remises (16/11, puis 18 et 19/11) : `livrable-E1-v10`, `livrable-E2-v6`,
+> `livrable-E3-v7`, `livrable-E4-v9`, `livrable-E5-v7`. Les modalités d'accès du jury sont transmises à part.
 
 ## Les cinq rapports
 
 | Épreuve | Rapport | Ce qu'il couvre |
 |---|---|---|
-| E1 | [livret E1 v9, 5 pages et 4 d'annexes](../rapports/E1/rapport-E1-v9-avec-annexes.pdf) | C1 à C5 : collecte, requêtes, nettoyage, base et RGPD, API de données |
+| E1 | [livret E1 v10, 5 pages et 4 d'annexes](../rapports/E1/rapport-E1-v10-avec-annexes.pdf) | C1 à C5 : collecte, requêtes, nettoyage, base et RGPD, API de données |
 | E2 | [rapport E2 v1.7, 19 pages et 14 d'annexes](../rapports/E2/rapport-E2-avec-annexe.pdf) | C6 à C8 : veille, choix du service de modèle, configuration et suivi |
 | E3 | [rapport E3 v2.6, 20 pages](../rapports/E3/rapport-E3.pdf) | C9 à C13 : API du modèle, intégration, monitorage, tests, livraison continue |
-| E4 | [rapport E4 v1.11, 20 pages et 16 d'annexes](../rapports/E4/rapport-E4-avec-annexe.pdf) | C14 à C19 : besoin, cadre technique, méthode agile, développement, tests, livraison |
-| E5 | [rapport E5 v1.2, 5 pages](../rapports/E5/rapport-E5.pdf) | C20 et C21 : monitorage de l'application, résolution d'un incident |
+| E4 | [rapport E4 v1.12, 20 pages et 16 d'annexes](../rapports/E4/rapport-E4-avec-annexe.pdf) | C14 à C19 : besoin, cadre technique, méthode agile, développement, tests, livraison |
+| E5 | [rapport E5 v1.3, 5 pages et 2 d'annexe](../rapports/E5/rapport-E5-avec-annexe.pdf) | C20 et C21 : monitorage de l'application, résolution d'un incident |
 
 J'ai rangé les preuves par compétence dans [`evidence/`](../../evidence/README.md), chacune datée et constituée au fil
 du travail. Chaque rapport se termine par sa grille : une ligne par critère, avec sa preuve et sa limite.

@@ -115,9 +115,10 @@ git push origin refs/tags/livrable-E1-v1:refs/tags/livrable-E1-v1
 
 ## La file
 
-> **État au 16/11** : la file ci-dessous s'arrête au 28/10. Depuis, les remises sont consignées dans `CHANGELOG.md` :
+> **État au 19/11** : la file ci-dessous s'arrête au 28/10. Depuis, les remises sont consignées dans `CHANGELOG.md` :
 > remise du 09/11 (`livrable-E1-v8`, `livrable-E2-v5`, `livrable-E3-v6`, `livrable-E4-v7`, `livrable-E5-v5`), puis versions
-> du 16/11 (`livrable-E1-v9`, `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v8`, `livrable-E5-v6`) ; les cinq PDF vont
+> du 16/11 (`livrable-E1-v9`, `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v8`, `livrable-E5-v6`), puis E5 v1.3 (`livrable-E5-v7`,
+> 18/11), E1 v10 et E4 1.12 (`livrable-E1-v10`, `livrable-E4-v9`, 19/11) ; les cinq PDF vont
 > dans le Drive du jury le 23/11.
 
 | # | Gelé le | Livrable | Compétences | Tag / commit | Envoyé le | Retour reçu | Ce que le retour change |

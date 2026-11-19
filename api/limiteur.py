@@ -83,8 +83,9 @@ def limiter_debit(request: Request) -> None:
 #
 # L'adresse est celle que voit l'API. Derrière Caddy, `uvicorn` la lit dans `X-Forwarded-For` parce que le service
 # `api` reçoit `FORWARDED_ALLOW_IPS` (docker-compose.yml) ; c'est sûr seulement parce que le port n'écoute que la
-# machine (`127.0.0.1:8001`, tests/test_port_api_local.py). Donnée personnelle : gardée en mémoire 15 minutes au plus,
-# jamais écrite dans le journal (registre RGPD, T9).
+# machine (`127.0.0.1:8001`, tests/test_port_api_local.py). Donnée personnelle : en mémoire seulement, jamais écrite
+# dans le journal ; les clés refusées sont comptées sur une fenêtre de 15 minutes, et une adresse est oubliée à son
+# prochain appel après la fenêtre, au-delà de 10 000 adresses suivies, ou au redémarrage (registre RGPD, T9).
 
 TEXTE_TROP_D_ESSAIS = "Trop de clés refusées depuis cette adresse. Réessayez dans quelques minutes."
 
