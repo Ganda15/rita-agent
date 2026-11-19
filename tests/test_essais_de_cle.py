@@ -4,9 +4,10 @@ Pourquoi : rien ne freinait les essais de clé. La clé de production est longue
 réaliste ; le risque réel est un flot d'essais qui remplit le journal et occupe le service (OWASP API4:2023). Au-delà de
 10 mauvaises clés en 15 minutes depuis une même adresse, l'API répond 429 sans même comparer la clé.
 
-L'adresse IP est une donnée personnelle : gardée en mémoire 15 minutes au plus, jamais écrite dans le journal
-(registre RGPD, traitement T9). Une clé absente ne compte pas : ce n'est pas un essai, et l'interface n'envoie jamais de
-clé vide. Une bonne clé ne compte pas non plus.
+L'adresse IP est une donnée personnelle : en mémoire seulement, jamais écrite dans le journal ; les clés refusées sont
+comptées sur une fenêtre de 15 minutes, et une adresse est oubliée à son prochain appel après la fenêtre, au-delà de
+10 000 adresses suivies, ou au redémarrage (registre RGPD, traitement T9). Une clé absente ne compte pas : ce n'est
+pas un essai, et l'interface n'envoie jamais de clé vide. Une bonne clé ne compte pas non plus.
 """
 import logging
 
