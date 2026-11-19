@@ -9,6 +9,43 @@
 
 ---
 
+## 2026-11-19 : E1 v10 et E4 1.12, registre RGPD précisé, pour `livrable-E1-v10` et `livrable-E4-v9`
+
+- **Manque découvert le 17/11** : E1 § 5 (« dont deux avec une donnée personnelle ») et E4 § 2.4 (« Deux traitements
+  du registre RGPD passent par ces flux ») comptaient trop peu de traitements : les traces (T3), le journal MCP (T5),
+  le briefing (T6), les questions (T8) et le frein des essais de clé (T9) en portent ou peuvent en porter. Le registre
+  donnait pour T9 « 15 minutes au plus » : le code (`api/limiteur.py`, lignes 108 à 118) n'oublie une adresse qu'à son
+  prochain appel après la fenêtre, au-delà de 10 000 adresses suivies ou au redémarrage ; mesuré le 17/11 sur une
+  horloge simulée, adresse encore en mémoire deux heures après.
+- **Livrables** : E1 v10 (`rapport-E1.pdf`, 5 pages, sections aux mêmes pages ; `rapport-E1-v10-avec-annexes.pdf`,
+  10 pages, couverture et annexes de la v9) et E4 1.12 (20 et 36 pages, sommaire et signets inchangés). Tags
+  `livrable-E1-v10` et `livrable-E4-v9` à poser sur `main` après la fusion et le double contrôle, avec
+  `livrable-E5-v7`, un par push.
+- **Registre** : T9 corrigé (fenêtre de comptage ; pas de durée maximale garantie, écrit comme limite ; actif depuis le
+  07/11). Même texte dans le commentaire de `api/limiteur.py` et la docstring de `tests/test_essais_de_cle.py`, sans
+  changer le code. README, guide du jury (qui citait encore E5 v1.2), file de validation et plan E4 pointent les
+  nouvelles versions.
+- **Vérifié le 19/11** : suite complète sur le poste, 3 196 tests réussis, 82 sautés, 0 échec ; tests du frein des
+  essais de clé, 14 réussis ; 563 liens internes, 0 cassé (les liens vers les deux nouveaux tags se vérifient après
+  leur pose) ; `tag_cite` vrai pour `livrable-E1-v10`, `livrable-E4-v9` et `livrable-E5-v7` ; pages d'E1 et d'E4
+  comparées à la version précédente (E4 : texte décalé des pages 6 à 10, rattrapé avant la page 11) ; 0 tiret long
+  ajouté.
+
+## 2026-11-18 : rapport E5 v1.3, annexe A, pour `livrable-E5-v7`
+
+- **Livrable** : rapport E5 en version 1.3 (commit `76f6502`, branche `e5-v1-3-corrections`), tag `livrable-E5-v7` à
+  poser sur `main` après la fusion et le double contrôle d'Era. Passages corrigés : traces Langfuse en métadonnées seules
+  depuis le 20/10 (avant, celles du poste gardaient le prompt et la réponse d'un briefing) ; neuf autres incidents,
+  INC-005 et INC-009 documentés de bout en bout ; retour à OK du 15/11 commenté dans #250 déjà ouverte ; une alerte
+  Langfuse ouvre ou commente une issue, sauf OK sans issue.
+- **Annexe A** (`annexe-schema-E5.md`) : A1, le dispositif (C20) ; A2, l'incident INC-009 (C21). Rendue avec le rapport
+  dans `rapport-E5-avec-annexe.pdf` (7 pages, dont 2 en paysage) ; `rapport-E5.pdf` garde 5 pages. Les chiffres d'A2
+  sont ceux du rapport v1.2.
+- **Vérifié le 18/11** : 384 tests de documents verts (`--noconftest`, poste) ; 33 liens GitHub d'E5, 0 cassé (`gh`) ;
+  faits relus sur leurs sources (registre T3, PR #171 et #172, commentaire de #250 du 15/11 à 19 h 30 UTC, fiches
+  INC-001 à INC-010 au tag v6) ; rendu regardé page par page. Le PDF d'E5 à déposer le 23/11 devient la version avec
+  l'annexe, comme pour E1, E2 et E4.
+
 ## 2026-11-16, nuit : cinq tags posés sur `fe13d24` ; dépôt public le 23/11
 
 - **Livrables** : `livrable-E1-v9`, `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v8` et `livrable-E5-v6` posés par

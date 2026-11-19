@@ -1,6 +1,6 @@
 # Plan E4 : le rapport de l'application (C14 à C19), du point de départ du 03/10 au gel du 25/10
 
-> **Statut au 16/11 : réalisé ; rapport E4 v1.11, tag `livrable-E4-v8`. Plan proposé le 03/10/2026, gardé tel qu'écrit.** Aucun rapport n'est écrit : `docs/rapports/`
+> **Statut au 19/11 : réalisé ; rapport E4 v1.12, tag `livrable-E4-v9`. Plan proposé le 03/10/2026, gardé tel qu'écrit.** Aucun rapport n'est écrit : `docs/rapports/`
 > contient E1, E2 (v0.1) et E3, pas E4. Ce plan dit ce que le jury attend, où RITA en est mesuré, ce qui manque carte par
 > carte, comment le rapport est construit, la démonstration, et le calendrier jusqu'au tag `livrable-E4-v1`.
 > Sources : la vérification des 36 critères du 26/09 (Obsidian, `Projets/RITA/04-Certif/RITA - Vérification critères RNCP E4 (2026-09-26).md`),

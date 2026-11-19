@@ -35,3 +35,18 @@ def test_le_rapport_tient_en_cinq_pages_au_plus():
     """Rapport pro 5 : de 2 à 5 pages (référentiel, détail des livrables, E5)."""
     pypdf = pytest.importorskip("pypdf", reason="pypdf absent : le PDF se relit sur le poste")
     assert 2 <= len(pypdf.PdfReader(str(RAPPORT.with_suffix(".pdf"))).pages) <= 5
+
+
+ANNEXE = re.compile(r'<li><a class="vers-annexe" href="#a\d">Annexe (A\d)[^<]*</a><span>p\. (\d+)</span></li>')
+
+
+def test_les_pages_de_l_annexe_annoncees_sont_celles_du_pdf_avec_annexe():
+    # E5 v1.3 (18/11/2026) : le schéma global en annexe A, une page pour C20 (A1) et une pour C21 (A2), hors des cinq
+    # pages du rapport. Comme pour E2, ces numéros ne sont pas calculés par `scripts/rendre_pdf.py` : ce test les tient.
+    fitz = pytest.importorskip("fitz", reason="PyMuPDF absent : le PDF se relit sur le poste, la CI ne rend pas de PDF")
+    annonces = ANNEXE.findall(RAPPORT.read_text(encoding="utf-8"))
+    assert [a for a, _ in annonces] == ["A1", "A2"]
+    with fitz.open(RAPPORT.with_name("rapport-E5-avec-annexe.pdf")) as pdf, fitz.open(RAPPORT.with_suffix(".pdf")) as seul:
+        assert len(pdf) == len(seul) + 2
+        for schema, page in annonces:
+            assert f"{schema}. " in pdf[int(page) - 1].get_text(), f"{schema} n'est pas en page {page}"

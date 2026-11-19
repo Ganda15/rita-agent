@@ -1,10 +1,11 @@
 <style>
 .logo{ float:right; width:15mm; margin:7pt 0 2pt 12pt; }
 .identite{ color:var(--ink-soft); font-size:9.4pt; }
-.sommaire{ margin:9pt 0 2pt; padding:6pt 10pt 5pt; border:.5pt solid var(--rule); border-radius:2pt; }
+.sommaire{ margin:8pt 0 2pt; padding:4pt 10pt 4pt; border:.5pt solid var(--rule); border-radius:2pt; }
 .sommaire-titre{ font-family:Georgia,"Times New Roman",serif; font-weight:600; font-size:11pt; margin:0 0 4pt; }
 .sommaire ol{ list-style:none; padding:0; margin:0; columns:2; column-gap:22pt; }
-.sommaire li{ display:flex; justify-content:space-between; gap:8pt; margin:0 0 2pt; break-inside:avoid; font-size:9.4pt; }
+.sommaire li{ display:flex; justify-content:space-between; gap:8pt; margin:0 0 .4pt; break-inside:avoid; font-size:9.4pt; }
+/* 18/11 (v1.3) : deux entrées d'annexe en plus, soit une rangée ; marges du sommaire resserrées pour garder cinq pages. */
 .sommaire li a{ color:var(--ink); }
 .sommaire li span{ color:var(--accent); font-weight:600; }
 p, li{ orphans:3; widows:3; }
@@ -61,7 +62,7 @@ body h3{ background:#D6E6F7; border-left:4px solid #12395E; padding-left:calc(9p
 
 # Rapport E5 : surveiller l'application et résoudre un incident (C20 et C21)
 
-Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C20 et C21 · version 1.2, 16 novembre 2026 · application de référence : commit `6f428d6` de `main`, en production le 07/11/2026 ; correctif de l'incident : PR #171 du 31/10/2026 · code et preuves versionnés : `Ganda15/rita-agent`, version figée au tag `livrable-E5-v6`
+Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intelligence artificielle, RNCP 37827 · Simplon × Wild Code School · bloc de compétences 3, compétences C20 et C21 · version 1.3, 18 novembre 2026 · application de référence : commit `6f428d6` de `main`, en production le 07/11/2026 ; correctif de l'incident : PR #171 du 31/10/2026 · code et preuves versionnés : `Ganda15/rita-agent`, version figée au tag `livrable-E5-v7`
 {: .identite }
 
 > **En une minute.** Ce document est la documentation technique du monitorage de RITA, écrite pour la personne qui
@@ -83,6 +84,8 @@ Projet fil rouge **RITA** · **Eramalingam Gandakumar** · Développeur en intel
 <li><a href="#limites">8. Les limites</a><span>p. 5</span></li>
 <li><a href="#criteres">9. Les douze critères</a><span>p. 5</span></li>
 <li><a href="#glossaire">Glossaire</a><span>p. 5</span></li>
+<li><a class="vers-annexe" href="#a1">Annexe A1 : le dispositif (PDF avec annexe)</a><span>p. 6</span></li>
+<li><a class="vers-annexe" href="#a2">Annexe A2 : l'incident INC-009</a><span>p. 7</span></li>
 </ol>
 </div>
 
@@ -98,7 +101,7 @@ version de production `6f428d6`.
 | Les **verdicts** | `GET /sante` ([`api/sante.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/api/sante.py), [`monitorage/signaux.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/monitorage/signaux.py), [`monitorage/seuils.json`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/monitorage/seuils.json)) | calcule chaque signal sur sa fenêtre et le classe : sain, attention, problème ou inconnu |
 | Le **tableau de bord** | [`frontend/tableau-de-bord.html`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/frontend/tableau-de-bord.html) | affiche les verdicts de `/sante`, avec la clé de l'API ; s'actualise toutes les 30 s, suspendable depuis le 02/11 |
 | La **vigie** | hors de l'API, [`monitorage/vigie.py`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/monitorage/vigie.py) | sonde `/health`, lit `/sante`, ouvre une issue `incident` par signal en problème et la ferme à la résolution écrite |
-| Les **alertes Langfuse** | Langfuse Cloud, puis [`.github/workflows/alerte-incident.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/.github/workflows/alerte-incident.yml) | deux alertes sur les traces du modèle ; chacune ouvre ou commente une issue `incident` |
+| Les **alertes Langfuse** | Langfuse Cloud, puis [`.github/workflows/alerte-incident.yml`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/.github/workflows/alerte-incident.yml) | deux alertes sur les traces ; chacune ouvre ou commente une issue incident (sauf OK sans issue) |
 
 ## 2. Les signaux et leurs seuils {: #signaux }
 
@@ -143,7 +146,7 @@ faire et quand l'alerte est résolue ([`docs/exploitation.md`](https://github.co
   de 4 Go déjà occupé). Le palier gratuit offre deux alertes, et ses canaux sont Slack, un webhook signé ou GitHub
   Actions, sans courriel.
 - **Les issues GitHub comme outil de suivi** : les incidents vivent déjà dans le dépôt (fiches, PR, tests) ; une
-  alerte y ouvre une fiche datée, et la boucle de C21 (issue, diagnostic, PR, post-mortem) commence d'elle-même.
+  alerte y ouvre ou commente une fiche datée, puis je diagnostique et je corrige (PR, post-mortem).
 
 ## 4. La journalisation et les données personnelles {: #journaux }
 
@@ -155,10 +158,10 @@ ajouté à ses métadonnées pour retrouver l'exécution correspondante. Format 
 de sécurité, refus de corpus, refus de qualité, erreur technique, rejet d'accès) : un motif inconnu compte comme
 erreur technique, avec une ligne de journal, parce qu'une mesure inconnue n'est jamais verte.
 
-**Ce qui n'est jamais enregistré** : les journaux applicatifs et les traces Langfuse de RITA n'enregistrent ni le
-contenu des questions et réponses, ni les consignes envoyées au modèle (prompts), ni la clé API. Depuis le 20/10, les
-traces conservent des métadonnées techniques : identifiant de requête, ticker, verdicts du garde-fou, modèle,
-fournisseur, consommation et durées. Ces traitements sont
+**Ce qui n'est pas enregistré** : les journaux applicatifs de RITA n'enregistrent ni le contenu des questions et
+réponses, ni les consignes envoyées au modèle (prompts), ni la clé API. Les traces Langfuse non plus depuis le 20/10
+(avant, celles du poste gardaient le prompt et la réponse d'un briefing) : métadonnées techniques seules, identifiant de
+requête, ticker, verdicts du garde-fou, modèle, fournisseur, consommation et durées. Ces traitements sont
 inscrits au registre RGPD ([`db/RGPD-registre-des-traitements.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/db/RGPD-registre-des-traitements.md)) : T3 pour les traces (Langfuse, région UE, actives
 en production depuis le 21/10), T5 pour le journal des appels MCP (huit colonnes, purge à 90 jours), T8 pour les
 questions (texte jamais conservé, vérifié par des tests).
@@ -259,7 +262,7 @@ passent**. Sur la PR #171, [l'intégration continue passe](https://github.com/Ga
 [`evidence/C21/INC-009-retour-a-la-normale-ouvre-un-incident.md`](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/evidence/C21/INC-009-retour-a-la-normale-ouvre-un-incident.md), les journaux avant et après dans
 [`evidence/C21/INC-009-reproduction/`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v4/evidence/C21/INC-009-reproduction).
 
-Huit autres incidents ont leur fiche dans [`evidence/C21/`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v4/evidence/C21) ; seuls INC-005 et INC-009 ont suivi la chaîne complète
+Neuf autres incidents ont leur fiche dans [`evidence/C21/`](https://github.com/Ganda15/rita-agent/tree/livrable-E5-v6/evidence/C21) ; INC-005 et INC-009 sont documentés de bout en bout
 (issue, PR, post-mortem), les autres sont passés le plus souvent par un commit direct, chaque fiche le dit.
 
 ## 8. Les limites {: #limites }
@@ -274,8 +277,9 @@ Huit autres incidents ont leur fiche dans [`evidence/C21/`](https://github.com/G
   sur `rita-copie-sprint5`, vérifié par l'API ([preuve](https://github.com/Ganda15/rita-agent/blob/livrable-E5-v4/evidence/sprint-5/test-doc-et-repetitions-2026-10-23.md), l. 48). Vaut pour cette copie, pas pour tous les postes.
 - **Aucune routine ne relit les issues `incident`** : le 07/11, #77 (depuis le 04/10) et #132 (vigie, copie locale,
   depuis le 23/10) sont encore ouvertes ; #137 l'est restée sept jours.
-- **Le correctif d'INC-009 est sur `main` depuis le 01/11** (`922349d`), tests de non-régression verts. Au 07/11, le
-  workflow GitHub d'alerte n'a pas tourné depuis le 24/10 : aucun retour à la normale réel observé depuis.
+- **Le correctif d'INC-009 est sur `main` depuis le 01/11** (`922349d`), tests de non-régression verts. Le 15/11,
+  après le correctif, un retour à OK est commenté dans [#250](https://github.com/Ganda15/rita-agent/issues/250#issuecomment-6900029490)
+  déjà ouverte ; sans issue ouverte, seul le test le prouve.
 
 ## 9. Les douze critères {: #criteres }
 
