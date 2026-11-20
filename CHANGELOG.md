@@ -9,6 +9,24 @@
 
 ---
 
+## 2026-11-20 : données de tiers floutées dans trois captures, avant la publication du 23/11
+
+- **Manque découvert** (audit de publication en lecture seule, 20/11) : trois captures Discord de `evidence/C6/`
+  montraient des données de tiers. `retour-S41-capture-2026-11-09.jpg` : le nom complet et la photo de profil d'un
+  étudiant de la promotion, avec son message, l'avatar et le nom du formateur, les membres d'un salon vocal et l'icône
+  d'un serveur ; `envoi-2026-11-09-promo-discord.png` : les membres du salon vocal et l'icône ;
+  `envoi-2026-10-11-promo-discord-veille.png` : l'icône. Ces personnes n'ont pas consenti à leur publication (registre
+  RGPD, mesure M2, « Vérifier que le dépôt public ne contient aucune donnée personnelle »).
+- **Décision d'Era** : flouter ces zones sur la branche courante, sans refaire les captures ; messages, dates et liens
+  restent lisibles. Les originaux restent dans l'historique et dans les tags, figés par une règle du dépôt : le flou
+  rend ces données plus difficiles à trouver, il ne les retire pas. Détail : `evidence/C6/README.md` (ajout du 20/11)
+  et la mesure M2 du registre.
+- **Vérifié le même jour** : aucune adresse de courriel personnelle ni numéro de téléphone dans les fichiers de `main` ;
+  aucun workflow ne donne de secret à une pull request venue d'un autre dépôt (`pull_request` seulement, jeton en
+  lecture par défaut) ; secrets masqués dans les journaux d'exécution relus (vigie, livraison, ingestion).
+
+---
+
 ## 2026-11-19, soir : les cinq PDF de la remise du 23/11 fixés, E5 avec son annexe A
 
 - **Décision d'Era** : E5 va dans le Drive avec son annexe A (`rapport-E5-avec-annexe.pdf`, 7 pages, tag
