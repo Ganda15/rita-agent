@@ -1,6 +1,7 @@
 # CONTINUITE — RITA (fil rouge RNCP 37827)
 
-> Dernière mise à jour : 2026-11-20, après-midi (noms de deux étudiants remplacés par leur rôle, F) ; avant, 2026-11-20
+> Dernière mise à jour : 2026-11-20, soir (clé du jury dans les cinq PDF du Drive ; sprints expliqués dans le README, F) ;
+> avant, 2026-11-20, après-midi (noms de deux étudiants remplacés par leur rôle, F) ; avant, 2026-11-20
 > (clé du jury donnée deux fois ; rattrapage des cours chaque jour de bourse, F) ;
 > avant, 2026-11-19 (E5 dans le Drive avec son annexe A, F) ; avant, 2026-11-17 (cours de production à la main
 > jusqu'au jury, F et G) ; avant, 2026-11-16,
@@ -242,6 +243,8 @@ conception Merise), les expose par une API REST, et rédige un **briefing en fra
 | 20/11 | choisi | **Clé du jury donnée deux fois** (décision d'Era) : dans une notice d'accès séparée des rapports, déposée avec les cinq PDF le 23/11, puis de nouveau au début de l'oral ; jamais dans un rapport ni dans le dépôt, qui devient public (règle du 13/11 : la clé passe par une notice séparée) ; essai d'accès le 22/11, en suivant la notice avant son envoi, puis le 30/11 ; clé changée après le jury. Même jour : noms et photos de tiers floutés dans trois captures avant la publication (M2) ; adresse d'auteur des commits laissée visible, car réécrire l'historique est exclu (tags figés) | accès du jury, publication du 23/11, `ETAT.md` |
 | 20/11 | changé | **Rattrapage des cours chaque jour de bourse jusqu'au jury** (décision d'Era), au lieu des seuls 30/11 et 01/12 (décision du 17/11) : le jury peut ouvrir l'application dès le 23/11, et la carte « Fraîcheur des cours » est verte jusqu'à 1 jour ouvré de retard, orange jusqu'à 3, rouge au-delà (`monitorage/fraicheur.py`) ; soirs des 20, 23, 24, 25, 26, 27 et 30/11 après 22 h 05, puis le 01/12 avant 9 h ; sortie du serveur gardée chaque soir, versée dans `evidence/C3/` par une seule PR le 30/11 ; la planification sur le serveur reste pour après le jury (#36) | collecte de production, `docs/exploitation.md` § 8 |
 | 20/11 | choisi | **Noms de deux étudiants remplacés par leur rôle dans le texte du dépôt** (décision d'Era, la première des trois options proposées) : le journal des envois nommait l'étudiant flouté le matin, avec l'heure de son message ; cinq fichiers corrigés, dont les deux grilles des ateliers croisés, avec une note (seul le nom change) ; pour le formateur, la seule ligne qui renvoie à son message flouté ; les autres mentions du formateur et du jury blanc restent (rôle professionnel), comme le nom gardé dans une ancienne entrée du `CHANGELOG` (ajout seul) ; les trois PDF suivis qui portent ces noms restent tels quels | publication du 23/11, M2 du registre |
+| 20/11 | changé | **Clé du jury dans les cinq PDF du Drive** (décision d'Era, le soir), au lieu d'une notice séparée : la cheffe de projet ne transmet au jury que cinq PDF (réunion du 13/11) ; chaque PDF déposé reçoit une page finale « Accès pour le jury » (application, clé, GitHub, tag de l'épreuve, guide du jury) et une ligne de renvoi en page 1 ; la clé n'entre jamais dans le dépôt, qui devient public ; elle est redonnée au début de l'oral et changée le 01/12 au soir | remise du 23/11, accès du jury, `ETAT.md` |
+| 20/11 | choisi | **Sprints expliqués dans le README, hors de l'encadré d'entrée** (décision d'Era) : un court paragraphe après le tableau des livrables ; les sprints sont des cycles de la formation appliqués à RITA, pas des livrables ; l'encadré gardait seul le sprint 5 depuis le 08/11 | README, #289 |
 
 ## G. Questions ouvertes
 

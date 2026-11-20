@@ -9,6 +9,24 @@
 
 ---
 
+## 2026-11-20, soir : clé du jury dans les cinq PDF du Drive ; fausse alerte Langfuse venue de mes tests locaux
+
+- **Décision structurante** (Era, 20/11 au soir) : la cheffe de projet ne transmet au jury que cinq PDF (réunion du
+  13/11), donc la notice d'accès séparée prévue le matin ne lui parviendrait pas. Chaque PDF déposé dans le Drive reçoit
+  une page finale « Accès pour le jury » (application, clé, GitHub, tag de l'épreuve, guide du jury) et une ligne de
+  renvoi en page 1. Ces copies restent hors du dépôt : la clé n'y entre jamais, le dépôt devenant public le 23/11. Les
+  pages d'origine sont identiques aux tags `livrable-E1-v10`, `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v9` et
+  `livrable-E5-v7`.
+- **Manque découvert** (20/11) : l'alerte Langfuse « fournisseur en erreur » commentée sur #250 à 11 h 00 UTC venait de
+  quatre lancements locaux de `pytest --noconftest` (10 h 38 à 10 h 40 UTC). Sans `tests/conftest.py`, le traçage
+  n'était pas coupé et les briefings simulés sont partis dans le vrai projet Langfuse : 12 erreurs en 0,00 s, sans
+  appel réseau, ni la production ni Anthropic en cause. Expliqué dans #250 ; sur le poste, un lancement sans
+  `conftest.py` se fait désormais avec `LANGFUSE_TRACING_ENABLED=false`.
+- **Décision** (Era, 20/11) : l'encadré d'entrée du README ne parle plus que de la remise ; un court paragraphe, après
+  le tableau des livrables, explique les sprints : des cycles de la formation appliqués à RITA, pas des livrables (#289).
+
+---
+
 ## 2026-11-20, après-midi : noms de deux étudiants remplacés par leur rôle dans le texte du dépôt
 
 - **Manque découvert** (ma revue de #286, 20/11) : le flou du matin cachait le nom d'un étudiant dans une capture, mais
