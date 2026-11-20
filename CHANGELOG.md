@@ -23,7 +23,7 @@
   membres du jury blanc restent : elles les nomment dans leur rôle professionnel.
 - **Limites** : un des deux noms reste dans une entrée ancienne de ce fichier, qu'on ne réécrit pas ; tous restent dans
   l'historique Git et dans les tags. Des prénoms seuls de camarades restent dans d'anciennes entrées et décisions.
-  Trois PDF suivis portent encore ces noms (`docs/cadrage/CADRAGE-V1-sprint1.pdf`,
+  Trois PDF suivis portent encore ces noms et restent tels quels, par décision d'Era (`docs/cadrage/CADRAGE-V1-sprint1.pdf`,
   `docs/sprint-3/livrable/livrable-sprint-3.pdf`, `eval/ateliers/sprint-2-grille-originale.pdf`). Une recherche de
   texte ne voit pas le contenu des images.
 

@@ -32,7 +32,7 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 - Trouvé par cette revue, hors de #286 : le journal des envois nommait en clair l'étudiant flouté, avec l'heure de son
   message. Décision d'Era (option A) : les noms des deux étudiants remplacés par leur rôle dans cinq fichiers texte,
   sur la branche `noms-tiers-20-11` (détail et limites dans `CHANGELOG.md`). Restent : un nom dans une ancienne entrée
-  du `CHANGELOG`, l'historique et les tags, et trois PDF suivis (à décider par Era).
+  du `CHANGELOG`, l'historique et les tags, et trois PDF suivis, laissés tels quels (décision d'Era du 20/11).
 
 **Prochaine action** :
 1. Era : push de `noms-tiers-20-11`, PR vers `develop`, ma revue, CI verte, fusion. #286 (`develop` vers `main`) la
