@@ -51,18 +51,21 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 **Prochaine action** :
 1. Era : push de `floutage-captures-20-11`, PR vers `develop`, CI verte, fusion ; puis PR `develop` vers `main`, pour que
    `main` porte les captures floutées le 23/11.
-2. Ce soir, 20/11, après 22 h 05 à Paris (décision d'Era) : rattrapage des cours de production, séances du 19 et du
-   20/11, guide `docs/exploitation.md` § 8, preuve dans `evidence/C3/`.
-3. 22/11 : notice d'accès du jury, rédigée avec Era, hors du dépôt. Décision d'Era (20/11) : la clé est donnée deux
-   fois, dans cette notice séparée des rapports, déposée avec les cinq PDF, puis de nouveau au début de l'oral ;
-   jamais dans un rapport ni dans le dépôt. Message à la cheffe de projet pour qu'elle transmette la notice au jury.
+2. Rattrapage des cours de production chaque jour de bourse jusqu'au jury, après 22 h 05 à Paris (décision d'Era du
+   20/11) : ce soir 20/11 (séances du 19 et du 20/11, et le 18/11 de CRI.PA), puis les 23, 24, 25, 26, 27 et 30/11, et
+   le 01/12 avant 9 h. Guide `docs/exploitation.md` § 8. La sortie du serveur est gardée chaque soir, puis versée dans
+   `evidence/C3/` par une seule PR le 30/11. Le 26/11, New York est fermé (Thanksgiving) : FTI et SLB n'ont pas de cours
+   ce jour-là, c'est attendu.
+3. 22/11 : notice d'accès du jury, rédigée avec Era, hors du dépôt, puis essai d'accès en la suivant pas à pas, comme un
+   membre du jury, avant son envoi. Décision d'Era (20/11) : la clé est donnée deux fois, dans cette notice séparée des
+   rapports, déposée avec les cinq PDF, puis de nouveau au début de l'oral ; jamais dans un rapport ni dans le dépôt.
+   Message à la cheffe de projet pour qu'elle transmette la notice au jury.
 4. 23/11, dans cet ordre : dépôt public puis Kanban, réglages ci-dessus, liens vérifiés sans connexion (revoir les deux
    liens trouvés en 503 : la note de la CNIL, `docs/veille/2026-S34-top10-agentique.md:27`, et
    `docs/rapports/E4/rapport-E4.md:643`), cinq PDF et la notice dans le Drive, envoi par Era. L'adresse d'auteur des
    commits reste visible (décision d'Era du 20/11 : réécrire l'historique est exclu, les tags sont figés).
-5. Avant le jury : essai d'accès avec la clé le 30/11, depuis une fenêtre privée ; redémarrage du serveur (« System
-   restart required »), puis `/health` ; rattrapages des cours le 30/11 après 22 h 05 et le 01/12 avant 9 h ; le 18/11
-   de CRI.PA au prochain rattrapage.
+5. Avant le jury : nouvel essai d'accès avec la clé le 30/11, depuis une fenêtre privée ; redémarrage du serveur
+   (« System restart required »), puis `/health`.
 6. Après le jury, le 01/12 au soir : changer la clé de production, et `RITA_API_KEY_VIGIE` si elle porte la même
    valeur.
 
