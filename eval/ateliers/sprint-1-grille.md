@@ -4,7 +4,7 @@ Phase 6, fil rouge. Grille remplie par l'évaluateur pendant la présentation, p
 
 | Présenté | Évaluateur | Date | Projet |
 |---|---|---|---|
-| Eramalingam GANDAKUMAR | David LEGRAND | 13/10/2026 | RITA, dossier [`docs/CADRAGE-V1.md`](../../docs/CADRAGE-V1.md) |
+| Eramalingam GANDAKUMAR | un pair de la promotion | 13/10/2026 | RITA, dossier [`docs/CADRAGE-V1.md`](../../docs/CADRAGE-V1.md) |
 
 **Format (2 h en tout, puis on inverse les rôles).** 20 min de présentation du dossier de conception (pas de code).
 15 min de questions guidées par la grille : ✓ démontré, ~ partiel, ✗ absent ; chaque cotation s'appuie sur une preuve
@@ -44,3 +44,5 @@ Recopiée mot pour mot depuis la grille Excel remplie par l'évaluateur (`grille
 | 5 · « LANGGRAPH pour un LLM ? » | traitée | § 4 : une raison par outil, dont LangGraph et sa limite (commit « Atelier 1 », 13/10) |
 | 6 · « Pas de test pour verifier ?? » | traitée | § 6 : la preuve de chaque critère ; tests existants pour 1, 2 et le 403 du 4 ; tests des jours 3 et 5, vérification chronométrée du jour 2 (commit « Atelier 1 », 13/10) |
 | Conseil · rôle de MCP et où se trouve le serveur | traitée | § 5 : « La passerelle MCP », sur le poste de l'utilisateur, sans port réseau, trois outils en lecture seule, aucun accès au briefing (commit « Atelier 1 », 13/10) |
+
+> Nom de l'évaluateur remplacé par son rôle le 20/11/2026, avant la publication du dépôt (registre RGPD, mesure M2). Le reste de la grille est inchangé ; l'original reste dans l'historique Git et dans les tags.

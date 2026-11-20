@@ -9,6 +9,55 @@
 
 ---
 
+## 2026-11-20, après-midi : noms de deux étudiants remplacés par leur rôle dans le texte du dépôt
+
+- **Manque découvert** (ma revue de #286, 20/11) : le flou du matin cachait le nom d'un étudiant dans une capture, mais
+  `docs/veille/_JOURNAL-DES-ENVOIS.md` l'écrivait en clair, avec l'heure du message flouté ; le nom du formateur y
+  figurait aussi, avec la date de son message. Les noms complets de deux étudiants de la promotion, évaluateurs des
+  ateliers croisés n°1 et n°2, figuraient dans cinq fichiers texte.
+- **Décision d'Era** : remplacer ces noms par leur rôle (« un pair de la promotion », « un étudiant de la promotion »,
+  et « le formateur » pour la seule ligne qui renvoie à son message flouté) dans `docs/veille/_JOURNAL-DES-ENVOIS.md`,
+  `eval/ateliers/sprint-1-grille.md`, `eval/ateliers/sprint-2-grille.md`,
+  `docs/rapports/E4/recomptage-criteres-2026-10-30.md` et `docs/sprint-3/livrable/livrable-sprint-3.md`. Les deux
+  grilles le disent dans une note : seul le nom change, pas l'évaluation. Les autres mentions du formateur et des
+  membres du jury blanc restent : elles les nomment dans leur rôle professionnel.
+- **Limites** : un des deux noms reste dans une entrée ancienne de ce fichier, qu'on ne réécrit pas ; tous restent dans
+  l'historique Git et dans les tags. Des prénoms seuls de camarades restent dans d'anciennes entrées et décisions.
+  Trois PDF suivis portent encore ces noms et restent tels quels, par décision d'Era (`docs/cadrage/CADRAGE-V1-sprint1.pdf`,
+  `docs/sprint-3/livrable/livrable-sprint-3.pdf`, `eval/ateliers/sprint-2-grille-originale.pdf`). Une recherche de
+  texte ne voit pas le contenu des images.
+
+---
+
+## 2026-11-20 : données de tiers floutées dans trois captures, avant la publication du 23/11
+
+- **Manque découvert** (audit de publication en lecture seule, 20/11) : trois captures Discord de `evidence/C6/`
+  montraient des données de tiers. `retour-S41-capture-2026-11-09.jpg` : le nom complet et la photo de profil d'un
+  étudiant de la promotion, avec son message, l'avatar et le nom du formateur, les membres d'un salon vocal et l'icône
+  d'un serveur ; `envoi-2026-11-09-promo-discord.png` : les membres du salon vocal et l'icône ;
+  `envoi-2026-10-11-promo-discord-veille.png` : l'icône. Ces personnes n'ont pas consenti à leur publication (registre
+  RGPD, mesure M2, « Vérifier que le dépôt public ne contient aucune donnée personnelle »).
+- **Décision d'Era** : flouter ces zones sur la branche courante, sans refaire les captures ; messages, dates et liens
+  restent lisibles. Les originaux restent dans l'historique et dans les tags, figés par une règle du dépôt : le flou
+  rend ces données plus difficiles à trouver, il ne les retire pas. Détail : `evidence/C6/README.md` (ajout du 20/11)
+  et la mesure M2 du registre.
+- **Vérifié le même jour** : aucune adresse de courriel personnelle ni numéro de téléphone dans les fichiers de `main` ;
+  aucun workflow ne donne de secret à une pull request venue d'un autre dépôt (`pull_request` seulement, jeton en
+  lecture par défaut) ; secrets masqués dans les journaux d'exécution relus (vigie, livraison, ingestion).
+
+---
+
+## 2026-11-19, soir : les cinq PDF de la remise du 23/11 fixés, E5 avec son annexe A
+
+- **Décision d'Era** : E5 va dans le Drive avec son annexe A (`rapport-E5-avec-annexe.pdf`, 7 pages, tag
+  `livrable-E5-v7`), comme le veut la consigne du 13/11 (5 PDF, annexes comprises). Le plan du 17/11 prévoyait E5 seul,
+  quand il n'avait pas encore d'annexe. Les cinq PDF du 23/11, pris à leur tag : `rapport-E1-v10-avec-annexes.pdf`
+  (`livrable-E1-v10`), `rapport-E2-avec-annexe.pdf` (`livrable-E2-v6`), `rapport-E3.pdf` (`livrable-E3-v7`, sans
+  annexe), `rapport-E4-avec-annexe.pdf` (`livrable-E4-v9`) et `rapport-E5-avec-annexe.pdf` (`livrable-E5-v7`). Détail :
+  `CONTINUITE.md`, section F.
+
+---
+
 ## 2026-11-19 : E1 v10 et E4 1.12, registre RGPD précisé, pour `livrable-E1-v10` et `livrable-E4-v9`
 
 - **Manque découvert le 17/11** : E1 § 5 (« dont deux avec une donnée personnelle ») et E4 § 2.4 (« Deux traitements
