@@ -4,7 +4,7 @@ Phase 6, fil rouge. Grille remplie par l'évaluateur pendant la démonstration, 
 
 | Présenté | Évaluateur | Date | Projet |
 |---|---|---|---|
-| Eramalingam GANDAKUMAR (case laissée vide sur la grille) | Alpha DIALLO | 15/10/2026 | RITA, document d'entrée [`docs/sprint-2/README.md`](../../docs/sprint-2/README.md) |
+| Eramalingam GANDAKUMAR (case laissée vide sur la grille) | un pair de la promotion | 15/10/2026 | RITA, document d'entrée [`docs/sprint-2/README.md`](../../docs/sprint-2/README.md) |
 
 **Format (2 h en tout, puis on inverse les rôles).** 2 min de journal des retours, puis 20 min de démonstration en live
 sur l'environnement déployé. On note du démontré, jamais du déclaré. 15 min de questions guidées par la grille :
@@ -45,3 +45,5 @@ Pour chaque remarque : traitée (commit), reportée (sprint et raison) ou écart
 | Point fort · CI/CD comprise | rien à faire | point positif |
 | Conseil · « RAS » | aucun conseil à traiter | à reporter tel quel dans le journal des retours de l'atelier n°3 |
 | Journal des retours · laissé vide | à signaler | le conseil de l'atelier n°1 (rôle de MCP et place du serveur) était traité : `docs/CADRAGE-V1.md`, § 5 |
+
+> Nom de l'évaluateur remplacé par son rôle le 20/11/2026, avant la publication du dépôt (registre RGPD, mesure M2). Le reste de la grille est inchangé ; l'original reste dans l'historique Git et dans les tags.

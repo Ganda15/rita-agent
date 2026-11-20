@@ -84,6 +84,10 @@ script (pixelisation puis flou). Les originaux restent dans l'historique Git (co
 les tags déjà posés, figés par une règle du dépôt : le flou rend ces données plus difficiles à trouver, il ne les
 retire pas de l'historique.
 
+Le même jour, les mentions écrites qui nommaient ces personnes à côté de leurs messages
+(`docs/veille/_JOURNAL-DES-ENVOIS.md`) et les noms des deux évaluateurs des ateliers croisés sont remplacés par leur
+rôle (`CHANGELOG.md`, 20/11 après-midi).
+
 ## Glossaire
 
 | Terme | En clair |

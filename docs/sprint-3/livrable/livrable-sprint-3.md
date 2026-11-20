@@ -319,7 +319,7 @@ le 19/10 à 14:09 UTC, est celui de l'ingestion de l'atelier (2140 articles, ide
 
 ### 8.1 Le conseil de l'atelier n°2
 
-Évaluateur : Alpha DIALLO, le 15/10/2026
+Évaluateur : un pair de la promotion, le 15/10/2026
 ([grille](https://github.com/Ganda15/rita-agent/blob/livrable-sprint-3-v2/eval/ateliers/sprint-2-grille.md)). Les cinq
 critères ont été notés ✓. Point fort : « Era a compris comment ça la CI/CD fonctionne ». Conseil prioritaire pour le
 sprint 3 : « RAS ».
