@@ -29,8 +29,9 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
   `rapport-E4-avec-annexe-2026-11-19-v1.12.pdf`.
 - Classeurs `_20_11_26` (hors du dépôt), faits depuis ceux du 17/11 restés intacts : versions taguées le 19/11 citées,
   T9 corrigé dans le classeur détaillé (B18), 51 tags ; statuts inchangés (137 OK), mise en forme identique, rendu
-  regardé. Aucune « deux traitements ». Limite : la colonne D de la grille cite encore, environ 50 fois, des versions
-  plus anciennes (E2 v1.0, E4 v1.2, E5 v0.7, E3 v1.9), déjà le 17/11 ; leurs numéros de section ne sont pas vérifiés.
+  regardé. Aucune « deux traitements ». Limite : la colonne D de la grille cite encore 61 fois des versions antérieures
+  au 16/11 (comptées le 20/11 : E4 v1.2 28, E2 v1.0 14, E5 v0.7 8, E3 v1.9 6, E1 v6 2, E3 v1.5 2, E1 v3 1), déjà le
+  17/11 ; leurs numéros de section ne sont pas vérifiés.
 - Note d'oral Obsidian (hors du dépôt) : la réponse modèle du 07/11 sur le frein des essais de clé ne dit plus
   « quinze minutes au plus ». Le présentateur n'a pas été cherché.
 - Rattrapage des cours : la fenêtre d'avant 9 h à Paris est passée (session ouverte à 9 h 47) ; cours de production
@@ -38,9 +39,11 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 - Audit de publication en lecture seule : gitleaks vert sur tout l'historique de toutes les branches ; aucun workflow
   en `pull_request_target`, aucun exécuteur auto-hébergé, jeton en lecture par défaut ; secrets masqués dans les
   journaux relus (vigie, livraison, ingestion) ; aucune adresse de courriel personnelle ni numéro de téléphone dans
-  `main`. Trouvé : le nom et la photo d'un étudiant dans une capture. Floutés, avec les membres d'un salon vocal, un
-  avatar et l'icône d'un serveur, dans trois captures de `evidence/C6/` (branche `floutage-captures-20-11`, registre M2
-  et `CHANGELOG.md`) ; les originaux restent dans l'historique et dans les tags.
+  `main`. Trouvé : le nom et la photo d'un étudiant dans une capture. Floutés, avec l'avatar et le nom du formateur, les
+  membres d'un salon vocal et l'icône d'un serveur, dans trois captures de `evidence/C6/` (détail par fichier dans
+  `evidence/C6/README.md`, registre M2, `CHANGELOG.md`) ; les originaux restent dans l'historique et dans les tags. Le
+  doublon non flouté `evidence/C6/retour-S41-capture-2026-11-09-1140.png` reste hors du dépôt, exclu localement
+  (`.git/info/exclude`) pour qu'aucun `git add .` ne le publie.
 - À régler par Era juste après le passage en public : approbation des workflows des contributeurs extérieurs
   (« Require approval for all outside collaborators », réglage absent tant que le dépôt est privé) ; wiki désactivé
   (vide) ; alertes de secret scanning attendues sur les deux clés révoquées d'INC-008 ; visibilité du Kanban.
@@ -48,13 +51,20 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 **Prochaine action** :
 1. Era : push de `floutage-captures-20-11`, PR vers `develop`, CI verte, fusion ; puis PR `develop` vers `main`, pour que
    `main` porte les captures floutées le 23/11.
-2. À trancher par Era : le canal de la clé du jury (proposé : un message séparé à la cheffe de projet, et en secours au
-   début de l'oral) ; l'adresse d'auteur des commits, visible et non modifiable sans réécrire l'historique ; l'heure
-   du rattrapage des cours (proposé : ce soir après 22 h 05 à Paris).
-3. 22/11 : notice d'accès du jury (sans la clé) et message à la cheffe de projet, rédigés avec Era.
-4. 23/11, dans cet ordre : dépôt public puis Kanban, réglages ci-dessus, liens vérifiés sans connexion, cinq PDF dans
-   le Drive, envoi par Era.
-5. Après le jury : changer la clé de production, et `RITA_API_KEY_VIGIE` si elle porte la même valeur.
+2. Ce soir, 20/11, après 22 h 05 à Paris (décision d'Era) : rattrapage des cours de production, séances du 19 et du
+   20/11, guide `docs/exploitation.md` § 8, preuve dans `evidence/C3/`.
+3. 22/11 : notice d'accès du jury, rédigée avec Era, hors du dépôt. Décision d'Era (20/11) : la clé est donnée deux
+   fois, dans cette notice séparée des rapports, déposée avec les cinq PDF, puis de nouveau au début de l'oral ;
+   jamais dans un rapport ni dans le dépôt. Message à la cheffe de projet pour qu'elle transmette la notice au jury.
+4. 23/11, dans cet ordre : dépôt public puis Kanban, réglages ci-dessus, liens vérifiés sans connexion (revoir les deux
+   liens trouvés en 503 : la note de la CNIL, `docs/veille/2026-S34-top10-agentique.md:27`, et
+   `docs/rapports/E4/rapport-E4.md:643`), cinq PDF et la notice dans le Drive, envoi par Era. L'adresse d'auteur des
+   commits reste visible (décision d'Era du 20/11 : réécrire l'historique est exclu, les tags sont figés).
+5. Avant le jury : essai d'accès avec la clé le 30/11, depuis une fenêtre privée ; redémarrage du serveur (« System
+   restart required »), puis `/health` ; rattrapages des cours le 30/11 après 22 h 05 et le 01/12 avant 9 h ; le 18/11
+   de CRI.PA au prochain rattrapage.
+6. Après le jury, le 01/12 au soir : changer la clé de production, et `RITA_API_KEY_VIGIE` si elle porte la même
+   valeur.
 
 ---
 
