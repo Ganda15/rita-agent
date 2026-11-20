@@ -17,8 +17,7 @@
   d'un serveur ; `envoi-2026-11-09-promo-discord.png` : les membres du salon vocal et l'icône ;
   `envoi-2026-10-11-promo-discord-veille.png` : l'icône. Ces personnes n'ont pas consenti à leur publication (registre
   RGPD, mesure M2, « Vérifier que le dépôt public ne contient aucune donnée personnelle »).
-- **Décision d'Era** : flouter ces zones dans les fichiers actuels du dépôt (PR #285, portée sur `main` par #286), sans
-  refaire les captures ; messages, dates et liens
+- **Décision d'Era** : flouter ces zones sur la branche courante, sans refaire les captures ; messages, dates et liens
   restent lisibles. Les originaux restent dans l'historique et dans les tags, figés par une règle du dépôt : le flou
   rend ces données plus difficiles à trouver, il ne les retire pas. Détail : `evidence/C6/README.md` (ajout du 20/11)
   et la mesure M2 du registre.

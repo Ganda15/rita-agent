@@ -65,8 +65,10 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
    `docs/rapports/E4/rapport-E4.md:643`), cinq PDF et la notice dans le Drive, envoi par Era. L'adresse d'auteur des
    commits reste visible (décision d'Era du 20/11 : réécrire l'historique est exclu, les tags sont figés).
 5. Samedi 28/11 : redémarrage du serveur (« System restart required »), puis `/health` et un essai d'accès ; un jour
-   sans bourse ni rattrapage, qui laisse trois jours pour corriger si le service ne revient pas. Le 30/11 : nouvel
-   essai d'accès avec la clé, depuis une fenêtre privée.
+   sans bourse ni rattrapage, qui laisse trois jours pour corriger si le service ne revient pas. La procédure, absente
+   de `docs/exploitation.md`, s'écrit avant, le 27/11 : conteneurs de l'API et de la base relancés (`restart:
+   unless-stopped` dans `docker-compose.yml`), Caddy actif (hors de Compose), `/health`, essai de clé, retour arrière
+   si l'API ne revient pas. Le 30/11 : nouvel essai d'accès avec la clé, depuis une fenêtre privée.
 6. Après le jury, le 01/12 au soir : changer la clé de production, et `RITA_API_KEY_VIGIE` si elle porte la même
    valeur.
 
