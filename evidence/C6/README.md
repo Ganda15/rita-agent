@@ -68,6 +68,22 @@ S36 rendue au format lisible (texte à 12 pt, 45 signets, liens soulignés) et c
 Il prouve le format du document qui sera remis, pas son envoi : la remise reste à faire par moi, avec les
 livrables, et sa preuve datée sera ajoutée ici.
 
+## Ajout du 20/11/2026 : trois captures floutées avant la publication du dépôt
+
+Le dépôt devient public le 23/11. Avant, j'ai flouté dans trois captures Discord ce qui ne m'appartient pas :
+
+| Capture | Ce qui est flouté | Ce qui reste lisible |
+|---|---|---|
+| `retour-S41-capture-2026-11-09.jpg` | photo et nom de l'étudiant qui répond, avatar et nom du formateur, membres du salon vocal, icône d'un serveur | les messages, leurs dates, les liens (la vidéo YouTube partagée est publique) |
+| `envoi-2026-11-09-promo-discord.png` | membres du salon vocal, icône d'un serveur | mon message S46 et sa date |
+| `envoi-2026-10-11-promo-discord-veille.png` | icône d'un serveur | mon message S41 et sa date |
+
+Pourquoi : un nom et une photo de profil sont des données personnelles de tiers, qui n'ont pas consenti à leur
+publication (registre RGPD, mesure M2). Les captures ne sont pas refaites : seules ces zones sont floutées, par un
+script (pixelisation puis flou). Les originaux restent dans l'historique Git (commits `88b8e0a` et `5fc8306`) et dans
+les tags déjà posés, figés par une règle du dépôt : le flou rend ces données plus difficiles à trouver, il ne les
+retire pas de l'historique.
+
 ## Glossaire
 
 | Terme | En clair |
