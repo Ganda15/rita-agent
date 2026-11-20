@@ -46,7 +46,7 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
   à part ne lui parviendrait pas. Décision d'Era (20/11 soir), qui remplace la notice séparée du point 3 du bloc du
   matin : chaque PDF déposé reçoit une page finale « Accès pour le jury » (application, clé, GitHub, tag de l'épreuve,
   guide du jury) et une ligne de renvoi en page 1 ; la clé n'est que dans ces copies, jamais dans le dépôt. Les cinq PDF
-  sont prêts hors du dépôt (`GANDAKUMAR Eramalingam - E1.pdf` à `E5.pdf`), pages d'origine identiques aux tags ; clé
+  sont prêts hors du dépôt (`GANDAKUMAR Eramalingam - E1.pdf` à `E5.pdf`), autres pages identiques aux tags, la page 1 garde tout son texte plus la ligne de renvoi ; clé
   testée par Era depuis la page 11 d'E1. Les deux classeurs `_20_11_26` remplaceront ceux du 08/11. Le Drive contient
   encore les sept fichiers du 09/11.
 - Rattrapage des cours de production le 20/11, de 22 h 07 à 22 h 10 à Paris (`--du 2026-11-18 --au 2026-11-20`) : 324

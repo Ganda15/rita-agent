@@ -15,8 +15,8 @@
   13/11), donc la notice d'accès séparée prévue le matin ne lui parviendrait pas. Chaque PDF déposé dans le Drive reçoit
   une page finale « Accès pour le jury » (application, clé, GitHub, tag de l'épreuve, guide du jury) et une ligne de
   renvoi en page 1. Ces copies restent hors du dépôt : la clé n'y entre jamais, le dépôt devenant public le 23/11. Les
-  pages d'origine sont identiques aux tags `livrable-E1-v10`, `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v9` et
-  `livrable-E5-v7`.
+  autres pages sont identiques aux tags `livrable-E1-v10`, `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v9` et
+  `livrable-E5-v7` ; la page 1 garde tout son texte, plus la ligne de renvoi.
 - **Manque découvert** (20/11) : l'alerte Langfuse « fournisseur en erreur » commentée sur #250 à 11 h 00 UTC venait de
   quatre lancements locaux de `pytest --noconftest` (10 h 38 à 10 h 40 UTC). Sans `tests/conftest.py`, le traçage
   n'était pas coupé et les briefings simulés sont partis dans le vrai projet Langfuse : 12 erreurs en 0,00 s, sans
