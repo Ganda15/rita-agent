@@ -87,16 +87,21 @@ CAPTURES = ["copie-1-panne-en-cours", "copie-2-service-retabli-alerte-ouverte", 
             "copie-0-redemarrage-pendant-le-retour-arriere"]
 
 
-def test_le_readme_racine_renvoie_au_sprint_5_et_a_sa_remise():
-    """Le lien d'un tag ouvre la racine du dépôt : son encadré parlait encore du sprint 2 (constat du 26/10)."""
+def test_le_readme_racine_explique_les_sprints_apres_les_livrables():
+    """Décision du 20/11 : l'encadré d'entrée ne parle que de la remise du 23/11. Il gardait seul le sprint 5, sans
+    explication (reste du 08/11, quand l'encadré est passé des sprints aux cinq rapports). Les sprints sont expliqués
+    dans un paragraphe placé après le tableau des livrables : des cycles de formation, pas des livrables."""
     readme = (RACINE / "README.md").read_text(encoding="utf-8")
     encadre = readme[:readme.index("## ")]
-    assert "Sprint 5" in encadre and "sprint-2" not in encadre
-    assert "livrable-sprint-5-v5" in encadre
+    assert "sprint" not in encadre.lower()
     liens = re.findall(r"\]\(([^)\s#]+)\)", encadre)
     internes = [l for l in liens if not l.startswith("http")]
-    assert "docs/sprint-5/README.md" in internes
+    assert "docs/jury/README.md" in internes
     assert all((RACINE / l).exists() for l in internes), internes
+    debut = readme.index("### Les sprints de la formation")
+    assert readme.index("## État des livrables") < debut < readme.index("## Concept")
+    paragraphe = readme[debut:readme.index("## Concept")]
+    assert "pas des livrables" in paragraphe and "C16" in paragraphe
 
 
 def test_le_livrable_v5_affiche_les_quatre_captures_du_tableau_de_bord_au_paragraphe_5_6():
