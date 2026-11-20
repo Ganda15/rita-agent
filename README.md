@@ -7,8 +7,6 @@ Simplon & Wild Code School · Eramalingam GANDAKUMAR · 2026
 
 > **Versions du 16/11/2026** (E5 v1.3 le 18/11 ; E1 v10 et E4 1.12 le 19/11, registre RGPD précisé), pour la remise du 23/11 : les cinq rapports et leur tag sont dans le tableau ci-dessous. Pour retrouver, fichier
 > par fichier, ce que chaque compétence demande : le [guide du jury](docs/jury/README.md).
-> **Sprint 5 de la phase 6** (la vigie et la démo) : [`docs/sprint-5/README.md`](docs/sprint-5/README.md), figé sous le
-> tag [`livrable-sprint-5-v5`](https://github.com/Ganda15/rita-agent/tree/livrable-sprint-5-v5/docs/sprint-5).
 
 ---
 
@@ -42,6 +40,16 @@ a été écrite avant ces corrections.*
 *Conception des données validée par le formateur le 03/10/2026 : [docs/conception/donnees/](docs/conception/donnees/).
 Le détail du jour est dans [`ETAT.md`](ETAT.md) ; [le registre de la recette](docs/recette/registre-des-partiels.md)
 garde l'historique des lignes qui ont été à consolider.*
+
+### Les sprints de la formation : des cycles d'apprentissage, pas des livrables
+
+Pendant la formation, j'ai appliqué la méthode agile à RITA, mon projet fil rouge, au cours de cinq sprints courts :
+cadrer le projet, poser le socle et la chaîne de livraison, ancrer les réponses dans les données, ajouter la
+composante agentique et ses garde-fous, puis la vigie et la démonstration. Ce ne sont pas des livrables de la
+certification : les épreuves sont les cinq rapports du tableau ci-dessus. J'ai travaillé chaque sprint dans sa propre
+branche et je n'ai intégré au projet que ce qui avait été validé, par des demandes de fusion relues : le code livré en
+production, puis les documents et les preuves de chaque sprint, rangés dans `docs/` et `evidence/`. Le rapport E4 les
+cite parmi ses cycles de travail (C16).
 
 ---
 
