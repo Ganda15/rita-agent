@@ -49,8 +49,8 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
   (vide) ; alertes de secret scanning attendues sur les deux clés révoquées d'INC-008 ; visibilité du Kanban.
 
 **Prochaine action** :
-1. Era : push de `floutage-captures-20-11`, PR vers `develop`, CI verte, fusion ; puis PR `develop` vers `main`, pour que
-   `main` porte les captures floutées le 23/11.
+1. #285 fusionnée le 20/11 à 11 h 36 UTC (`develop` à `6d5b400`) ; PR #286 (`develop` vers `main`) ouverte, à fusionner
+   après la correction de sa revue, pour que `main` porte les captures floutées le 23/11.
 2. Rattrapage des cours de production chaque jour de bourse jusqu'au jury, après 22 h 05 à Paris (décision d'Era du
    20/11) : ce soir 20/11 (séances du 19 et du 20/11, et le 18/11 de CRI.PA), puis les 23, 24, 25, 26, 27 et 30/11, et
    le 01/12 avant 9 h. Guide `docs/exploitation.md` § 8. La sortie du serveur est gardée chaque soir, puis versée dans
@@ -64,8 +64,11 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
    liens trouvés en 503 : la note de la CNIL, `docs/veille/2026-S34-top10-agentique.md:27`, et
    `docs/rapports/E4/rapport-E4.md:643`), cinq PDF et la notice dans le Drive, envoi par Era. L'adresse d'auteur des
    commits reste visible (décision d'Era du 20/11 : réécrire l'historique est exclu, les tags sont figés).
-5. Avant le jury : nouvel essai d'accès avec la clé le 30/11, depuis une fenêtre privée ; redémarrage du serveur
-   (« System restart required »), puis `/health`.
+5. Samedi 28/11 : redémarrage du serveur (« System restart required »), puis `/health` et un essai d'accès ; un jour
+   sans bourse ni rattrapage, qui laisse trois jours pour corriger si le service ne revient pas. La procédure, absente
+   de `docs/exploitation.md`, s'écrit avant, le 27/11 : conteneurs de l'API et de la base relancés (`restart:
+   unless-stopped` dans `docker-compose.yml`), Caddy actif (hors de Compose), `/health`, essai de clé, retour arrière
+   si l'API ne revient pas. Le 30/11 : nouvel essai d'accès avec la clé, depuis une fenêtre privée.
 6. Après le jury, le 01/12 au soir : changer la clé de production, et `RITA_API_KEY_VIGIE` si elle porte la même
    valeur.
 
