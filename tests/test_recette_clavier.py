@@ -158,6 +158,29 @@ def test_au_clavier_une_question_se_pose_et_la_fiche_s_ouvre(onglet, serveur):  
     attendre_que(onglet, "document.activeElement && document.activeElement.id === 'fiche'")
 
 
+def test_un_lien_d_origine_sans_espace_reste_dans_la_fiche(onglet, serveur):  # noqa: F811
+    """22/11/2026 : en production, le lien Google News d'un article (une seule chaîne, sans espace) dépassait de la
+    fiche de la source et faisait défiler la page de côté. Le lien doit revenir à la ligne dans la largeur de la fiche."""
+    fiche = dict(FICHE, lien="https://news.google.com/rss/articles/" + "CBMilwJBVV95cUxPeFVPNnVRZ0c0" * 12 + "?oc=5")
+    # La dernière route déclarée l'emporte sur celle du montage (`_servir`).
+    onglet.route("**/donnees/articles/*", lambda route: route.fulfill(
+        status=200, content_type="application/json", body=json.dumps(fiche)))
+    _ouvrir_sans_cle(onglet, serveur, "question.html")
+    onglet.focus("#cle")
+    onglet.keyboard.type(CLE)
+    onglet.keyboard.press("Enter")
+    attendre_que(onglet, "document.activeElement && document.activeElement.id === 'question'")
+    onglet.keyboard.type("Combien de postes Netflix va-t-il supprimer ?")
+    assert _tabuler_jusqu_a(onglet, "el.textContent.trim() === 'Poser la question'", maximum=3)
+    onglet.keyboard.press("Enter")
+    onglet.wait_for_selector("#references li", timeout=10_000)
+    onglet.click("text=Voir la fiche de la source 1")
+    onglet.wait_for_selector("#fiche-donnees a", state="visible", timeout=10_000)
+    largeurs = onglet.evaluate("(() => { const d = document.getElementById('fiche-donnees');"
+                               " return [d.scrollWidth, d.clientWidth]; })()")
+    assert largeurs[0] <= largeurs[1], f"le lien dépasse de la fiche : {largeurs[0]} px pour {largeurs[1]} px"
+
+
 def test_au_clavier_le_tableau_de_bord_s_actualise_et_se_suspend(onglet, serveur):  # noqa: F811
     onglet.goto(f"{serveur}/tableau-de-bord.html")
     onglet.evaluate(f"sessionStorage.setItem('rita_api_key', '{CLE}')")
