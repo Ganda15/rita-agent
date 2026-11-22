@@ -160,8 +160,10 @@ def test_au_clavier_une_question_se_pose_et_la_fiche_s_ouvre(onglet, serveur):  
 
 def test_un_lien_d_origine_sans_espace_reste_dans_la_fiche(onglet, serveur):  # noqa: F811
     """22/11/2026 : en production, le lien Google News d'un article (une seule chaîne, sans espace) dépassait de la
-    fiche de la source et faisait défiler la page de côté. Le lien doit revenir à la ligne dans la largeur de la fiche."""
-    fiche = dict(FICHE, lien="https://news.google.com/rss/articles/" + "CBMilwJBVV95cUxPeFVPNnVRZ0c0" * 12 + "?oc=5")
+    fiche de la source et faisait défiler la page de côté. Le lien, comme le passage cité, doit revenir à la ligne dans
+    la largeur de la fiche."""
+    lien = "https://news.google.com/rss/articles/" + "CBMilwJBVV95cUxPeFVPNnVRZ0c0" * 12 + "?oc=5"
+    fiche = dict(FICHE, lien=lien, extrait=f"Netflix supprime 2 000 postes. Source : {lien}")
     # La dernière route déclarée l'emporte sur celle du montage (`_servir`).
     onglet.route("**/donnees/articles/*", lambda route: route.fulfill(
         status=200, content_type="application/json", body=json.dumps(fiche)))
@@ -174,11 +176,15 @@ def test_un_lien_d_origine_sans_espace_reste_dans_la_fiche(onglet, serveur):  # 
     assert _tabuler_jusqu_a(onglet, "el.textContent.trim() === 'Poser la question'", maximum=3)
     onglet.keyboard.press("Enter")
     onglet.wait_for_selector("#references li", timeout=10_000)
-    onglet.click("text=Voir la fiche de la source 1")
+    assert _tabuler_jusqu_a(onglet, "el.textContent.startsWith('Voir la fiche de la source 1')")
+    onglet.keyboard.press("Enter")
     onglet.wait_for_selector("#fiche-donnees a", state="visible", timeout=10_000)
-    largeurs = onglet.evaluate("(() => { const d = document.getElementById('fiche-donnees');"
-                               " return [d.scrollWidth, d.clientWidth]; })()")
-    assert largeurs[0] <= largeurs[1], f"le lien dépasse de la fiche : {largeurs[0]} px pour {largeurs[1]} px"
+    page_l, page_v, fiche_l, fiche_v = onglet.evaluate(
+        "(() => { const p = document.documentElement, f = document.getElementById('fiche');"
+        " return [p.scrollWidth, p.clientWidth, f.scrollWidth, f.clientWidth]; })()")
+    # Un pixel de marge : les largeurs sont arrondies, un contenu qui tient peut mesurer 1 px de plus.
+    assert fiche_l <= fiche_v + 1, f"le contenu dépasse de la fiche : {fiche_l} px pour {fiche_v} px"
+    assert page_l <= page_v + 1, f"la page défile de côté : {page_l} px pour {page_v} px"
 
 
 def test_au_clavier_le_tableau_de_bord_s_actualise_et_se_suspend(onglet, serveur):  # noqa: F811

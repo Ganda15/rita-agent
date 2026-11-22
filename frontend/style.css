@@ -346,8 +346,9 @@ summary {
 dl { margin: .5rem 0 0; }
 dt { margin-top: .7rem; font-weight: 600; }
 dd { margin: .15rem 0 0 1.5rem; color: var(--texte-doux); }
-/* 22/11 : un lien d'origine sans espace (Google News) revient à la ligne au lieu de dépasser de la fiche. */
-#fiche-donnees dd { overflow-wrap: anywhere; }
+/* 22/11 : un lien sans espace (Google News), dans la fiche ou dans le passage cité, revient à la ligne au lieu de
+   dépasser de la fiche. */
+#fiche { overflow-wrap: anywhere; }
 
 /* --- Pied de page ----------------------------------------------------------- */
 footer {
