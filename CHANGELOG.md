@@ -9,6 +9,28 @@
 
 ---
 
+## 2026-11-23 : dépôt public et cinq PDF au Drive ; vigie refusée deux fois pour facturation ; sortie complète de la revue coupée
+
+- **Livrable envoyé** (23/11) : les cinq PDF, E1 à E5, chacun avec sa page « Accès pour le jury », et les deux
+  classeurs des compétences du 20/11 sont au Drive. Les pages des rapports correspondent aux tags `livrable-E1-v10`,
+  `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v9` et `livrable-E5-v7` ; seule la page 1 change, avec le renvoi vers
+  la page d'accès. Le dépôt est public depuis le même jour, comme décidé le 16/11.
+- **Manque découvert** (23/11) : deux passages planifiés de la vigie n'ont pas démarré, le 22/11 à 19 h 42 UTC et le
+  23/11 à 1 h 44 UTC ; GitHub signale un problème de paiement ou de plafond Actions sur le compte. Le premier passage
+  après la publication a réussi, le 23/11 à 12 h 46 UTC : un dépôt public n'utilise pas ce budget sur les exécuteurs
+  standard. **Décision** : le dépôt reste public jusqu'au jury, sinon la CI et la vigie s'arrêtent ; rien ne prouve que
+  le problème du compte est réglé.
+- **Manque découvert** (23/11) : `.github/workflows/revue-pr.yml` gardait `show_full_output: true`, justifié par un
+  dépôt privé. Depuis la publication, le journal de chaque passage est public. Réglage coupé (`faa4647`), à ne pas
+  rouvrir tant que le dépôt est public ; il vaut sur `main` à partir de la prochaine PR `develop` vers `main`. Les 130
+  journaux de revue déjà publiés ont été lus sans jamais afficher une valeur : aucun secret, aucun journal supprimé.
+- **Manque découvert** (23/11) : `.github/workflows/vigie.yml` et `docs/CI-CD.md` promettaient un passage toutes les
+  trois heures au plus. GitHub ne garantit pas les passages planifiés : trous de plus de 8 h les 22 et 23/11. Le texte
+  dit maintenant « programmée », passage non garanti. Dans le même lot, `CONTINUITE.md` n'avait pas la décision du
+  14/11 (Mistral Large 3 en secours d'Azure) : ligne ajoutée, datée du 23/11.
+
+---
+
 ## 2026-11-20, soir : clé du jury dans les cinq PDF du Drive ; fausse alerte Langfuse venue de mes tests locaux
 
 - **Décision structurante** (Era, 20/11 au soir) : la cheffe de projet ne transmet au jury que cinq PDF (réunion du
