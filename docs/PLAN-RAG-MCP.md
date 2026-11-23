@@ -196,6 +196,8 @@ dérobée qui contourne le 403.
 
 ## 8. Ce que ce plan ne dit pas — à lire avant d'y croire
 
+> État au 28/08/2026. Depuis : C16 est traité dans E4 § 3 (Kanban, sprints), C11 dans E3 § 5 (Langfuse), et la passerelle MCP dans E3 § 4 (C10).
+
 - **Il suppose que « avancé » signifie hybride + reranker + ablation.** C'est une
   interprétation, tirée du brief Sorabel — **pas une réponse du formateur**. Si sa définition
   diffère, les étapes 3 et 5 changent.

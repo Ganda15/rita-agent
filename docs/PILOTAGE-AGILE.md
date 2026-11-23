@@ -2,9 +2,9 @@
 
 > Mis en place le 26/09/2026. Compétence visée : **C16**, coordonner la réalisation technique
 > dans une conduite agile de projet. Tableau : **RITA - Pilotage Kanban (livrables E2-E5)**,
-> https://github.com/users/Ganda15/projects/4 (privé au 16/11, formateur en lecture ; publication prévue
-> avec le dépôt, par un réglage séparé). Tant qu'il est privé, GitHub répond 404 sans connexion. Les
-> modalités d'accès du jury sont transmises à part.
+> https://github.com/users/Ganda15/projects/4, public au 23/11/2026 (API GitHub : `public: true` ; la page
+> s'ouvre sans connexion), par un réglage séparé de celui du dépôt. Avant, il était privé, formateur en
+> lecture, et GitHub répondait 404 sans connexion.
 
 ## 1. Pourquoi Kanban
 
