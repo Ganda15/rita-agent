@@ -147,8 +147,10 @@ issue #71, fermée comme démonstration).
 Un travail `passage`, depuis le 06/11/2026. Il vérifie que le secret `RITA_API_KEY_VIGIE` existe (sinon il s'arrête en
 le disant), puis lance `python -m monitorage.vigie --adresse https://178-104-184-125.sslip.io --github` : sonde de
 `/health`, lecture de `/sante`, une issue `incident` par signal en problème, fermée au retour à la normale
-([La vigie](exploitation.md#vigie-et-exercices)). Toutes les trois heures : environ 240 minutes d'Actions par mois tant que le
-dépôt est privé, et une panne vue en trois heures au plus. Deux passages ne se chevauchent pas (`concurrency`).
+([La vigie](exploitation.md#vigie-et-exercices)). Programmée toutes les trois heures : environ 240 minutes d'Actions par mois,
+gratuites sur le runner standard de GitHub depuis que le dépôt est public (23/11/2026). Un passage programmé n'est pas
+garanti : les 22 et 23/11, deux passages n'ont pas démarré, GitHub a signalé un problème de paiement ou de plafond
+Actions. Deux passages ne se chevauchent pas (`concurrency`).
 
 ### `retour-arriere.yml`, Retour arrière (C13, sprint 2)
 

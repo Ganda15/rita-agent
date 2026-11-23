@@ -5,10 +5,12 @@
 # (titre stable « Incident : vigie (production) … »), la commente au retour du service et la ferme quand la résolution
 # écrite est atteinte. Jusqu'ici, elle était lancée à la main (rapport E5, § 6). Ce workflow la lance seule.
 #
-# Cadence : toutes les trois heures, à la 17e minute (pas à l'heure pile, où GitHub retarde les tâches planifiées).
-# Choix de coût : le dépôt est privé, chaque passage consomme environ une minute d'Actions, soit environ 240 minutes
-# par mois. Une panne est donc vue en trois heures au plus ; l'alerte Langfuse (`alerte-incident.yml`) couvre les
-# erreurs du modèle entre deux passages. Une tâche planifiée ne tourne que sur la branche par défaut (`main`).
+# Cadence : programmée toutes les trois heures, à la 17e minute (pas à l'heure pile, où GitHub retarde les tâches
+# planifiées). Choix de coût : chaque passage consomme environ une minute d'Actions, soit environ 240 minutes par mois ;
+# c'était compté sur le quota du dépôt privé, c'est gratuit sur le runner standard de GitHub depuis que le dépôt est
+# public (23/11/2026). Un passage programmé n'est pas garanti : les 22 et 23/11, deux passages n'ont pas démarré, GitHub
+# a signalé un problème de paiement ou de plafond Actions. L'alerte Langfuse (`alerte-incident.yml`) couvre les erreurs
+# du modèle entre deux passages. Une tâche planifiée ne tourne que sur la branche par défaut (`main`).
 #
 # Secret : `RITA_API_KEY_VIGIE`, la clé de l'API de production, créé par Era dans les réglages du dépôt
 # (Settings > Secrets and variables > Actions). Jamais affichée : la vigie ne l'écrit nulle part.
