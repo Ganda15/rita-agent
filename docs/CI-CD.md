@@ -20,7 +20,7 @@ chaîne sont versionnés avec le code dans `.github/workflows/`. Huit workflows,
 | `revue-pr.yml` | Revue PR | pull request vers `main` (ouverte, mise à jour, rouverte, prête) | `revue` | 42 s le 24/10 ; jusqu'à 20 min déjà vu | **oui** |
 | `scan-giskard.yml` | Scan Giskard | bouton manuel (`workflow_dispatch`), avec un plafond de scénarios saisi | scan des deux frontières | 10 à 30 min, coût du juge | non |
 | `alerte-incident.yml` | Alerte Langfuse vers issue incident | envoi de Langfuse (`repository_dispatch`, type `alerte-langfuse`) ou bouton manuel | `ouvrir-ou-commenter` | moins de 1 min | non |
-| `vigie.yml` | Vigie de la production | toutes les trois heures (`schedule`, à la 17e minute) et bouton manuel | `passage` | environ 1 min (estimé avant la première exécution ; passages planifiés depuis le 07/11) | non |
+| `vigie.yml` | Vigie de la production | programmée toutes les trois heures (`schedule`, à la 17e minute), passage non garanti, et bouton manuel | `passage` | environ 1 min (estimé avant la première exécution ; passages planifiés depuis le 07/11) | non |
 | `retour-arriere.yml` | Retour arrière | bouton manuel, avec son nom et le motif | `revenir` | 28 s le 14/10, 35 s le 15/10 | non |
 | `ingestion.yml` | Ingestion | bouton manuel, avec son nom et le motif | `ingerer` | selon la collecte et le rejeu | non |
 

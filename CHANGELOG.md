@@ -13,8 +13,10 @@
 
 - **Livrable envoyé** (23/11) : les cinq PDF, E1 à E5, chacun avec sa page « Accès pour le jury », et les deux
   classeurs des compétences du 20/11 sont au Drive. Les pages des rapports correspondent aux tags `livrable-E1-v10`,
-  `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v9` et `livrable-E5-v7` ; seule la page 1 change, avec le renvoi vers
-  la page d'accès. Le dépôt est public depuis le même jour, comme décidé le 16/11.
+  `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v9` et `livrable-E5-v7` ; hors de la page d'accès ajoutée à la fin,
+  seule la page 1 change, avec le renvoi vers elle. Le dépôt est public depuis le même jour, comme décidé le 16/11 ;
+  `CLAUDE.md`, le guide d'exploitation, la file de validation, le pilotage agile et `CONTINUITE.md` le disent depuis la
+  revue de #295, comme pour le Kanban.
 - **Manque découvert** (23/11) : deux passages planifiés de la vigie n'ont pas démarré, le 22/11 à 19 h 42 UTC et le
   23/11 à 1 h 44 UTC ; GitHub signale un problème de paiement ou de plafond Actions sur le compte. Le premier passage
   après la publication a réussi, le 23/11 à 12 h 46 UTC : un dépôt public n'utilise pas ce budget sur les exécuteurs
@@ -26,8 +28,10 @@
   journaux de revue déjà publiés ont été lus sans jamais afficher une valeur : aucun secret, aucun journal supprimé.
 - **Manque découvert** (23/11) : `.github/workflows/vigie.yml` et `docs/CI-CD.md` promettaient un passage toutes les
   trois heures au plus. GitHub ne garantit pas les passages planifiés : trous de plus de 8 h les 22 et 23/11. Le texte
-  dit maintenant « programmée », passage non garanti. Dans le même lot, `CONTINUITE.md` n'avait pas la décision du
-  14/11 (Mistral Large 3 en secours d'Azure) : ligne ajoutée, datée du 23/11.
+  dit maintenant « programmée », passage non garanti, dans ces deux fichiers et dans `docs/exploitation.md`. Dans le
+  même lot, `CONTINUITE.md` n'avait pas la décision du 14/11 (Mistral Large 3 en secours d'Azure) : ligne ajoutée,
+  datée du 23/11. Le registre RGPD marque le point 13 du § 5 fait ; le point 6 l'est pour les fournisseurs, le contrat
+  de Microsoft restant à relire en entier.
 
 ---
 

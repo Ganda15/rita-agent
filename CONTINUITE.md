@@ -764,7 +764,7 @@ Source : `Projets/RITA-Industrialisation/RITA-Industrialisation - Index.md` ; ch
 | Plan de tests (U-1, I-1, I-2, S1, S2, cliquet de couverture) | Suite de 588 tests collectés ; scénarios S1 et S2 non écrits |
 | Chaîne en 8 étapes de la PR au retour arrière | `livraison.yml` : contrôle, construction, test de fumée, publication sur tag. **Manque** : retour arrière, manifeste de version, filtre de chemin. La publication sur tag n'a jamais été exécutée |
 | Cinq décisions gardées pour plus tard (outil de migration, budget de coût par briefing, quel bot Telegram, horaires Euronext, partage du serveur avec Sorabel) | Toujours ouvertes, sauf Telegram, sans objet depuis Langfuse |
-| Le dépôt est privé : le jury d'E3 doit y avoir accès | À régler avant l'envoi |
+| Le dépôt est privé : le jury d'E3 doit y avoir accès | À régler avant l'envoi ; **réglé** : dépôt public depuis le 23/11/2026 |
 
 ---
 
