@@ -27,7 +27,8 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 - #295 fusionnée dans `develop` le 23/11 à 22 h 57 UTC (`9655fd2`), après ma revue (six constats corrigés) et une CI
   verte : pytest 3 177 réussis, 102 ignorés, 0 échec, couverture 96,15 % (seuil 90 %)
   ([Tests 45283035587](https://github.com/Ganda15/rita-agent/actions/runs/45283035587)).
-- #296, `develop` vers `main`, ouverte : son diff est celui de #295, ligne à ligne (330 lignes). La revue automatique
+- #296, `develop` vers `main`, ouverte le 23/11 : au moment de ma revue, son diff était celui de #295, ligne à
+  ligne (330 lignes) ; il reprend aussi ces corrections une fois fusionnées dans `develop`. La revue automatique
   n'a pas tourné : l'action refuse de s'exécuter sur une PR qui modifie son workflow (« Action skipped due to workflow
   validation »), et le contrôle `revue` est resté vert en 17 s, sans commentaire
   ([passage 45284474354](https://github.com/Ganda15/rita-agent/actions/runs/45284474354)). Ma revue de #296 a trouvé cinq constats, corrigés sur la branche
@@ -36,7 +37,8 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
   ne rien prouver ; trois fichiers qui disaient encore le dépôt privé ou sa publication à venir (`evidence/README.md`,
   `docs/PLAN-E4-rapport.md`, `docs/sprint-5/DEMO.md`) ; cet état, qui aurait décrit #295 encore ouverte après la
   fusion ; une phrase ambiguë du `CHANGELOG`.
-- Production toujours sur `3e5e365` ; elle passera sur le commit de fusion de #296.
+- Production sur `3e5e365` le 24/11 à la nuit, à l'écriture de ce bloc ; la fusion de #296 dans `main` la fait passer
+  sur son commit de fusion, que `/health` donne.
 
 **Prochaine action** :
 1. Era pousse `revue-296-24-11` et ouvre la PR vers `develop` ; je la relis ; Era fusionne. #296 la reprend d'elle-même.
