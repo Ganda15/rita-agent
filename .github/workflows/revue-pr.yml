@@ -27,9 +27,11 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          # Sortie de Claude visible dans le log du run (19/09 : deux revues « succes » sans rien
-          # publier, cause invisible). Depot prive : rien de sensible n'est expose.
-          show_full_output: true
+          # Sortie complete coupee le 23/11 : le depot est public, et les journaux de ses passages aussi, sur
+          # toutes les branches. L'action previent que cette sortie peut contenir des secrets lus par les
+          # outils. Elle avait ete ouverte le 19/09 pour comprendre deux revues « succes » sans rien
+          # publier ; ne pas la rouvrir tant que le depot est public.
+          show_full_output: false
           plugin_marketplaces: "https://github.com/anthropics/claude-code.git"
           plugins: "code-review@claude-code-plugins"
           prompt: "/code-review:code-review --comment ${{ github.repository }}/pull/${{ github.event.pull_request.number }}"

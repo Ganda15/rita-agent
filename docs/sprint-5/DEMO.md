@@ -85,8 +85,9 @@ dans main déploie toute seule : c'est la livraison N16 qui a mis ce sprint en p
 pas ici, pour ne pas toucher la production. »
 
 L'exécution N16 (commit `845e3b3`, conclusion `success`, avec son job `deployer`), citée et pas rejouée, se montre dans
-l'onglet 5 : `github.com/Ganda15/rita-agent/actions/runs/39983152061`. Le dépôt est privé : la page ne s'ouvre qu'une
-fois connecté avec un compte qui a accès au dépôt.
+l'onglet 5 : `github.com/Ganda15/rita-agent/actions/runs/39983152061`. Le dépôt était privé lors de la démo : la page ne
+s'ouvrait qu'une fois connecté avec un compte qui avait accès au dépôt. Depuis le 23/11/2026, il est public, et elle
+s'ouvre sans connexion.
 
 Le segment s'arrête là : un seul `deployer`. Le retour arrière se montre dans la documentation (segment 7:20), pas ici :
 un `revenir` remettrait la copie sur l'ancienne version et fausserait la suite de la démonstration.

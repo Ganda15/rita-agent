@@ -20,7 +20,7 @@ chaîne sont versionnés avec le code dans `.github/workflows/`. Huit workflows,
 | `revue-pr.yml` | Revue PR | pull request vers `main` (ouverte, mise à jour, rouverte, prête) | `revue` | 42 s le 24/10 ; jusqu'à 20 min déjà vu | **oui** |
 | `scan-giskard.yml` | Scan Giskard | bouton manuel (`workflow_dispatch`), avec un plafond de scénarios saisi | scan des deux frontières | 10 à 30 min, coût du juge | non |
 | `alerte-incident.yml` | Alerte Langfuse vers issue incident | envoi de Langfuse (`repository_dispatch`, type `alerte-langfuse`) ou bouton manuel | `ouvrir-ou-commenter` | moins de 1 min | non |
-| `vigie.yml` | Vigie de la production | toutes les trois heures (`schedule`, à la 17e minute) et bouton manuel | `passage` | environ 1 min (estimé avant la première exécution ; passages planifiés depuis le 07/11) | non |
+| `vigie.yml` | Vigie de la production | programmée toutes les trois heures (`schedule`, à la 17e minute), passage non garanti, et bouton manuel | `passage` | environ 1 min (estimé avant la première exécution ; passages planifiés depuis le 07/11) | non |
 | `retour-arriere.yml` | Retour arrière | bouton manuel, avec son nom et le motif | `revenir` | 28 s le 14/10, 35 s le 15/10 | non |
 | `ingestion.yml` | Ingestion | bouton manuel, avec son nom et le motif | `ingerer` | selon la collecte et le rejeu | non |
 
@@ -130,6 +130,11 @@ Un seul travail : l'action GitHub officielle de l'assistant de développement re
 et `CLAUDE.md` comme grille, et publie ses remarques en commentaires. Les remarques se traitent par un commit et un
 test sur `develop`, jamais par une réponse seule. Délai maximal 25 minutes.
 
+Un contrôle `revue` vert ne prouve pas qu'une revue a eu lieu. Quand une PR modifie ce workflow, l'action refuse de
+tourner, car son fichier doit être identique à celui de `main` (« Action skipped due to workflow validation »), et le
+travail finit quand même en succès. Vu le 19/09 à la première PR, puis le 23/11 sur #296
+([passage 45284474354](https://github.com/Ganda15/rita-agent/actions/runs/45284474354)) : une telle PR n'a que la revue humaine.
+
 ### `scan-giskard.yml`, Scan Giskard (C10, C21)
 
 Scan d'attaques sur les deux frontières (question, résultats d'outils), juge Claude par OpenRouter, plafond de
@@ -147,8 +152,10 @@ issue #71, fermée comme démonstration).
 Un travail `passage`, depuis le 06/11/2026. Il vérifie que le secret `RITA_API_KEY_VIGIE` existe (sinon il s'arrête en
 le disant), puis lance `python -m monitorage.vigie --adresse https://178-104-184-125.sslip.io --github` : sonde de
 `/health`, lecture de `/sante`, une issue `incident` par signal en problème, fermée au retour à la normale
-([La vigie](exploitation.md#vigie-et-exercices)). Toutes les trois heures : environ 240 minutes d'Actions par mois tant que le
-dépôt est privé, et une panne vue en trois heures au plus. Deux passages ne se chevauchent pas (`concurrency`).
+([La vigie](exploitation.md#vigie-et-exercices)). Programmée toutes les trois heures : environ 240 minutes d'Actions par mois,
+gratuites sur le runner standard de GitHub depuis que le dépôt est public (23/11/2026). Un passage programmé n'est pas
+garanti : les 22 et 23/11, deux passages n'ont pas démarré, GitHub a signalé un problème de paiement ou de plafond
+Actions. Deux passages ne se chevauchent pas (`concurrency`).
 
 ### `retour-arriere.yml`, Retour arrière (C13, sprint 2)
 

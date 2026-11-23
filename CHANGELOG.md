@@ -9,6 +9,47 @@
 
 ---
 
+## 2026-11-24, nuit : revue automatique de #296 sautée, contrôle `revue` vert sans revue
+
+- **Manque découvert** (24/11, ma revue de #296) : la revue automatique de #296 (`develop` vers `main`) n'a pas tourné.
+  L'action refuse de s'exécuter quand une PR modifie son workflow, ici `revue-pr.yml` (« Action skipped due to
+  workflow validation »), et le contrôle `revue`, exigé par la règle de `main`, est resté vert en 17 s, sans
+  commentaire (passage 45284474354, le 23/11 à 22 h 57 UTC). Le comportement était noté le 19/09, à la première PR,
+  mais pas dans `docs/CI-CD.md`, et l'entrée du 23/11 annonçait #296 comme la première revue avec
+  `show_full_output: false`. Corrigé avant la fusion : `docs/CI-CD.md` dit qu'un `revue` vert ne prouve pas une revue,
+  et le réglage vaut sur `main` après la fusion de #296. #296 a eu ma revue, ligne à ligne.
+- **Manque découvert** (24/11, même revue) : trois fichiers disaient encore le dépôt privé ou sa publication à venir
+  (`evidence/README.md`, `docs/PLAN-E4-rapport.md`, `docs/sprint-5/DEMO.md`). Une mention datée l'ajoute ; l'ancien
+  texte reste.
+
+---
+
+## 2026-11-23 : dépôt public et cinq PDF au Drive ; vigie refusée deux fois pour facturation ; sortie complète de la revue coupée
+
+- **Livrable envoyé** (23/11) : les cinq PDF, E1 à E5, chacun avec sa page « Accès pour le jury », et les deux
+  classeurs des compétences du 20/11 sont au Drive. Les pages des rapports correspondent aux tags `livrable-E1-v10`,
+  `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v9` et `livrable-E5-v7` ; hors de la page d'accès ajoutée à la fin,
+  seule la page 1 change, avec le renvoi vers elle. Le dépôt est public depuis le même jour, comme décidé le 16/11 ;
+  `CLAUDE.md`, le guide d'exploitation, la file de validation, le pilotage agile et `CONTINUITE.md` le disent depuis la
+  revue de #295 ; le pilotage agile dit aussi le Kanban public.
+- **Manque découvert** (23/11) : deux passages planifiés de la vigie n'ont pas démarré, le 22/11 à 19 h 42 UTC et le
+  23/11 à 1 h 44 UTC ; GitHub signale un problème de paiement ou de plafond Actions sur le compte. Le premier passage
+  après la publication a réussi, le 23/11 à 12 h 46 UTC : un dépôt public n'utilise pas ce budget sur les exécuteurs
+  standard. **Décision** : le dépôt reste public jusqu'au jury, sinon la CI et la vigie s'arrêtent ; rien ne prouve que
+  le problème du compte est réglé.
+- **Manque découvert** (23/11) : `.github/workflows/revue-pr.yml` gardait `show_full_output: true`, justifié par un
+  dépôt privé. Depuis la publication, le journal de chaque passage est public. Réglage coupé (`faa4647`), à ne pas
+  rouvrir tant que le dépôt est public ; il vaut sur `main` après la fusion de #296 (`develop` vers `main`). Les 130
+  journaux de revue déjà publiés ont été lus sans jamais afficher une valeur : aucun secret, aucun journal supprimé.
+- **Manque découvert** (23/11) : `.github/workflows/vigie.yml` et `docs/CI-CD.md` promettaient un passage toutes les
+  trois heures au plus. GitHub ne garantit pas les passages planifiés : trous de plus de 8 h les 22 et 23/11. Le texte
+  dit maintenant « programmée », passage non garanti, dans ces deux fichiers et dans `docs/exploitation.md`. Dans le
+  même lot, `CONTINUITE.md` n'avait pas la décision du 14/11 (Mistral Large 3 en secours d'Azure) : ligne ajoutée,
+  datée du 23/11. Le registre RGPD marque le point 13 du § 5 fait ; le point 6 l'est pour les fournisseurs, le contrat
+  de Microsoft restant à relire en entier.
+
+---
+
 ## 2026-11-20, soir : clé du jury dans les cinq PDF du Drive ; fausse alerte Langfuse venue de mes tests locaux
 
 - **Décision structurante** (Era, 20/11 au soir) : la cheffe de projet ne transmet au jury que cinq PDF (réunion du

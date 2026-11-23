@@ -17,7 +17,8 @@
 | Gel | **25/10/2026**, tag `livrable-E4-v1`, lien du tag envoyé par Era | `ETAT.md`, `docs/FILE-DE-VALIDATION.md` |
 | Passage | les cinq livrables sont évalués le 05/11 ; l'oral blanc du 29-30/10 ne porte que sur E1 et E3 | chef de projet, 03/10 |
 
-Le dépôt est privé, le formateur et le jury y sont invités ; un livrable ne pointe jamais hors du dépôt.
+Le dépôt était privé au moment de ce plan, le formateur et le jury y étaient invités ; il est public depuis le
+23/11/2026. Un livrable ne pointe jamais hors du dépôt.
 
 ## 2. Où RITA en est, mesuré
 
