@@ -130,6 +130,11 @@ Un seul travail : l'action GitHub officielle de l'assistant de développement re
 et `CLAUDE.md` comme grille, et publie ses remarques en commentaires. Les remarques se traitent par un commit et un
 test sur `develop`, jamais par une réponse seule. Délai maximal 25 minutes.
 
+Un contrôle `revue` vert ne prouve pas qu'une revue a eu lieu. Quand une PR modifie ce workflow, l'action refuse de
+tourner, car son fichier doit être identique à celui de `main` (« Action skipped due to workflow validation »), et le
+travail finit quand même en succès. Vu le 19/09 à la première PR, puis le 23/11 sur #296
+([passage 45284474354](https://github.com/Ganda15/rita-agent/actions/runs/45284474354)) : une telle PR n'a que la revue humaine.
+
 ### `scan-giskard.yml`, Scan Giskard (C10, C21)
 
 Scan d'attaques sur les deux frontières (question, résultats d'outils), juge Claude par OpenRouter, plafond de
