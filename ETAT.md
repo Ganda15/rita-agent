@@ -47,7 +47,8 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
    `main` du 29/11 au jury.
 3. Ce soir après 22 h 05 : rattrapage du 24/11 (guide d'exploitation, § 8), avec un contrôle par séance qui dit quel
    jour manque à CRI.PA, le 20/11 ou le 23/11.
-4. Le reste est inchangé : points 2 à 7 du bloc du 23/11 au soir, ci-dessous.
+4. Le reste est inchangé : points 3 à 7 du bloc du 23/11 au soir, ci-dessous ; le point 2, la question 115, est
+   fait dans les deux notes d'Obsidian.
 
 ---
 

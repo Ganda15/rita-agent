@@ -16,8 +16,9 @@
   à 22 h 57 UTC. Ce fichier est append-only (`AGENTS.md`), et « pas encore sur `main` » n'en est pas une exception. Ma
   relecture de #297 n'a pas lu ce commentaire : #297 puis #296 ont été fusionnées avec les deux phrases réécrites, que
   `main` porte depuis le 23/11 à 23 h 43 UTC. Les deux phrases d'origine sont remises à l'identique, et leurs
-  précisions vont ici : la « prochaine PR `develop` vers `main` » était #296 ; le pilotage agile dit aussi le Kanban
-  public. Aucun tag `livrable-*` ne contient `780f370`.
+  précisions vont ici : la « prochaine PR `develop` vers `main` » était #296, et le réglage vaut sur `main` après sa
+  fusion, pas pour sa propre revue, qui a été sautée ; le pilotage agile dit aussi le Kanban public. Aucun tag
+  `livrable-*` ne contient `780f370`.
 
 ---
 
