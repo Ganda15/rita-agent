@@ -9,6 +9,19 @@
 
 ---
 
+## 2026-11-24, midi : deux phrases de l'entrée du 23/11 réécrites, remises à l'identique
+
+- **Manque découvert** (24/11, revue Codex de #297, fil ouvert le 23/11 à 23 h 11 UTC) : en corrigeant #296, j'ai
+  réécrit deux phrases de l'entrée du 23/11 (`780f370`, 23 h 05 UTC), alors que #295 l'avait déjà portée sur `develop`
+  à 22 h 57 UTC. Ce fichier est append-only (`AGENTS.md`), et « pas encore sur `main` » n'en est pas une exception. Ma
+  relecture de #297 n'a pas lu ce commentaire : #297 puis #296 ont été fusionnées avec les deux phrases réécrites, que
+  `main` porte depuis le 23/11 à 23 h 43 UTC. Les deux phrases d'origine sont remises à l'identique, et leurs
+  précisions vont ici : la « prochaine PR `develop` vers `main` » était #296, et le réglage vaut sur `main` après sa
+  fusion, pas pour sa propre revue, qui a été sautée ; le pilotage agile dit aussi le Kanban public. Aucun tag
+  `livrable-*` ne contient `780f370`.
+
+---
+
 ## 2026-11-24, nuit : revue automatique de #296 sautée, contrôle `revue` vert sans revue
 
 - **Manque découvert** (24/11, ma revue de #296) : la revue automatique de #296 (`develop` vers `main`) n'a pas tourné.
@@ -31,7 +44,7 @@
   `livrable-E2-v6`, `livrable-E3-v7`, `livrable-E4-v9` et `livrable-E5-v7` ; hors de la page d'accès ajoutée à la fin,
   seule la page 1 change, avec le renvoi vers elle. Le dépôt est public depuis le même jour, comme décidé le 16/11 ;
   `CLAUDE.md`, le guide d'exploitation, la file de validation, le pilotage agile et `CONTINUITE.md` le disent depuis la
-  revue de #295 ; le pilotage agile dit aussi le Kanban public.
+  revue de #295, comme pour le Kanban.
 - **Manque découvert** (23/11) : deux passages planifiés de la vigie n'ont pas démarré, le 22/11 à 19 h 42 UTC et le
   23/11 à 1 h 44 UTC ; GitHub signale un problème de paiement ou de plafond Actions sur le compte. Le premier passage
   après la publication a réussi, le 23/11 à 12 h 46 UTC : un dépôt public n'utilise pas ce budget sur les exécuteurs
@@ -39,7 +52,7 @@
   le problème du compte est réglé.
 - **Manque découvert** (23/11) : `.github/workflows/revue-pr.yml` gardait `show_full_output: true`, justifié par un
   dépôt privé. Depuis la publication, le journal de chaque passage est public. Réglage coupé (`faa4647`), à ne pas
-  rouvrir tant que le dépôt est public ; il vaut sur `main` après la fusion de #296 (`develop` vers `main`). Les 130
+  rouvrir tant que le dépôt est public ; il vaut sur `main` à partir de la prochaine PR `develop` vers `main`. Les 130
   journaux de revue déjà publiés ont été lus sans jamais afficher une valeur : aucun secret, aucun journal supprimé.
 - **Manque découvert** (23/11) : `.github/workflows/vigie.yml` et `docs/CI-CD.md` promettaient un passage toutes les
   trois heures au plus. GitHub ne garantit pas les passages planifiés : trous de plus de 8 h les 22 et 23/11. Le texte
