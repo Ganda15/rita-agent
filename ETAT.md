@@ -41,9 +41,14 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
   suivant. Écart mesuré : 107 séances du 24/11 plus le 23/11 de CRI.PA, soit 108. Sortie du serveur gardée hors du
   dépôt, avec celles du 20 et du 23/11, pour la PR des preuves du 30/11.
 - Vigie : deux passages réussis le 24/11, à 2 h 14 et à 13 h 45 UTC ([45310877913](https://github.com/Ganda15/rita-agent/actions/runs/45310877913),
-  [45406781002](https://github.com/Ganda15/rita-agent/actions/runs/45406781002)), aucun autre jusqu'à 21 h 32 UTC. C'est le rythme
-  mesuré du 16 au 23/11 : deux ou trois déclenchements par jour pour huit créneaux programmés. Rien de nouveau : la cadence
-  « programmée, passage non garanti » est déjà écrite (`docs/CI-CD.md`, `docs/exploitation.md`).
+  [45406781002](https://github.com/Ganda15/rita-agent/actions/runs/45406781002)), aucun autre jusqu'à 21 h 32 UTC :
+  11 h 31 entre les deux passages. C'est le rythme mesuré du 16 au 23/11 (`gh run list --workflow "Vigie de la
+  production" --limit 25`, lu le 24/11 vers 21 h 33 UTC) : deux ou trois déclenchements par jour pour huit créneaux
+  programmés ; les autres créneaux n'ont aucune exécution, pas même en échec. Les trous sont déjà consignés (entrée du
+  23/11 du `CHANGELOG`, « trous de plus de 8 h ») et la vigie est dite « programmée », passage non garanti
+  (`docs/CI-CD.md`, `docs/exploitation.md`). Mais ces deux documents ne citent que les deux passages qui n'ont pas
+  démarré les 22 et 23/11, et la preuve C20 du 07/11 dit qu'une panne peut attendre « plus de trois heures » son
+  alerte : le rythme mesuré et l'attente de plus de 11 h ne sont écrits qu'ici.
 - Production sur `b5d7f33` : `/health`, lu le 24/11 à 21 h 32 UTC, donne ce commit. La bannière du serveur affiche
   toujours « System restart required » : redémarrage prévu le 28/11.
 
@@ -55,7 +60,8 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
 3. Du 25 au 27/11 : rattrapage chaque soir de bourse après 22 h 05, `--du` égal à la dernière date des taux (le 24/11
    pour demain), avec le contrôle par séance avant et après ; CRI.PA doit reprendre son 24/11. Le 26/11, New York est
    fermé (Thanksgiving) : pas de cours pour FTI et SLB ce jour-là.
-4. Le reste est inchangé : points 4 à 7 du bloc du 23/11 au soir, ci-dessous.
+4. Le reste est inchangé : points 4 à 7 du bloc du 23/11 au soir, ci-dessous. Après le jury, s'y ajoute le rythme
+   mesuré de la vigie, à écrire dans `docs/CI-CD.md` et `docs/exploitation.md`.
 
 ---
 
