@@ -29,14 +29,16 @@ au matin, tag v1 prévu dimanche) ; avant : 2026-10-16, nuit (sprint 3 en produc
   est bien `sha256:9df3acb6…`, celle de la livraison 45501437374.
 - Cotations : 216 lues et écrites, 0 rejetée ; la table passe de 282 678 à 282 786 lignes (+108). Par séance : 20, 23
   et 24/11 à 108, 25/11 à 107. CRI.PA a reçu son 24/11 ; son 25/11 viendra au prochain rattrapage (retard de
-  publication d'un jour, connu). Taux : 8 lus, 10 écrits, cinq devises au 25/11. `ANALYZE` passé. Tous ces chiffres
-  sont ceux que j'avais prévus avant le passage.
+  publication d'un jour, connu). Taux : 8 lus, 10 écrits, cinq devises au 25/11. `ANALYZE` passé. Le compte se
+  vérifie : 107 valeurs x 2 séances (24/11 réécrit, 25/11 ajouté) + 2 lignes de CRI.PA (23/11 réécrit, 24/11 ajouté)
+  = 216 ; +108 lignes = 107 séances du 25/11 + le 24/11 de CRI.PA.
 - La simulation a été lancée deux fois, avec le même résultat ; elle n'écrit rien, donc sans effet sur la base.
 - Sortie complète, bannière retirée : `D:\KandaWork\RITA_PROJECT\rattrapages-production\2026-11-25-sortie-serveur.txt`
   (hors dépôt).
 - Bannière du serveur : disque à 65,9 % de 37,21 Go, contre 63,5 % le 24/11 avant la livraison de `d70dfab` (+2,4
   points, environ 0,9 Go) ; mémoire à 35 %. Il reste environ 12,7 Go libres et aucune livraison n'est prévue avant le
-  jury. La vigie ne surveille pas le disque : c'est une limite connue, un signal disque est à proposer après le jury.
+  jury. La vigie ne surveille pas le disque : c'est une limite, que la documentation ne signale pas encore ; un signal
+  disque est à proposer après le jury.
 
 **Prochaine action** :
 1. 26/11 après 22 h 05 : rattrapage, `--du 2026-11-25 --au 2026-11-26`. New York est fermé (Thanksgiving) : FTI et
