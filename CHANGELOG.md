@@ -9,6 +9,21 @@
 
 ---
 
+## 2026-11-25 : le disque du serveur n'est suivi par aucun signal
+
+- **Manque découvert** (25/11, en relisant la bannière de connexion du serveur) : la vigie et le tableau de bord
+  suivent sept signaux (`monitorage/seuils.json` : `service`, `erreurs_techniques`, `refus_securite`,
+  `latence_p95_ms`, `cout_24h`, `fraicheur`, `rejets_15_min`), tous vus du côté du service. Aucun ne regarde le
+  disque ni la mémoire du serveur. Je ne les lis que dans la bannière, à la connexion : disque à 63,5 % de 37,21 Go
+  le 24/11 à 21 h 36 UTC, avant la livraison de `d70dfab`, puis à 65,9 % le 25/11 à 21 h 11 UTC (+2,4 points,
+  environ 0,9 Go en une journée) ; mémoire à 35 %. Un disque plein pourrait arrêter la base, donc l'API, sans
+  qu'aucune alerte ne parte avant. Ni `monitorage/`, ni `docs/exploitation.md`, ni le rapport E5 ne signalent
+  cette limite. Rien ne change sur le serveur avant le jury : il ne bouge que pour les rattrapages et le
+  redémarrage du 28/11, il reste environ 12,7 Go et aucune livraison n'est prévue. Un signal disque, avec un
+  seuil, est à proposer après le jury ; d'ici là, la bannière est relue à chaque connexion.
+
+---
+
 ## 2026-11-24, midi : deux phrases de l'entrée du 23/11 réécrites, remises à l'identique
 
 - **Manque découvert** (24/11, revue Codex de #297, fil ouvert le 23/11 à 23 h 11 UTC) : en corrigeant #296, j'ai
